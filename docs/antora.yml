@@ -1,0 +1,6 @@
+name: d4l-kotlin-multi-template
+title: Kotlin Multiplatform Template
+version: master
+start_page: ROOT:index.adoc
+nav:
+  - modules/ROOT/nav.adoc

@@ -1,0 +1,32 @@
+site:
+  title: The Kotlin Multiplatform Template @ data4life
+  url: https://stuff.d4l.io
+  start_page: d4l-kotlin-multi-template::index
+
+content:
+  sources:
+    - url: ..
+      branches: HEAD
+      start_path: docs/
+
+ui:
+  bundle:
+    url: https://d4l-docs-antora-ui.netlify.com/bundle/ui-bundle.zip
+    snapshot: true
+
+asciidoc:
+  extensions:
+    - asciidoctor-kroki
+  attributes:
+    kroki-server-url: 'http://localhost:8000'
+    kroki-fetch-diagram: true
+
+output:
+  clean: true
+  dir: build/public
+  destinations:
+    - provider: archive
+
+runtime:
+  pull: true
+  cache_dir: build/cache

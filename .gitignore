@@ -1,0 +1,51 @@
+# Gradle
+.gradle/
+build/
+local.properties
+gen/
+
+# IDEA/Android Studio ignores
+*iml
+.idea/*
+
+# IDEA/Android Studio includes
+!.idea/vcs.xml
+!.idea/fileTemplates/
+!.idea/inspectionProfiles/
+!.idea/scopes/
+!.idea/codeStyles/
+!.idea/encoding.xml
+!.idea/copyright/
+
+# Others
+captures/
+
+.asciidoctor/
+
+.DS_Store
+
+#Xcode ignores
+xcuserdata/
+build/
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+*.xccheckout
+profile/
+*.moved-aside
+.externalNativeBuild
+.cxx
+*.xcuserstate
+*.xcbkptlist
+*.xcscmblueprint
+DerivedData/
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+Pods/

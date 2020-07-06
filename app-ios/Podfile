@@ -1,0 +1,16 @@
+source 'https://github.com/CocoaPods/Specs.git'
+source 'git@github.com:gesundheitscloud/cocoapods-specs.git'
+
+platform :ios, '11.0'
+
+install! 'cocoapods', :deterministic_uuids => false
+
+target 'TemplateApp' do
+    use_frameworks!
+
+    pod 'common', :path => '../common/'
+
+    pod 'Data4LifeSDK'
+    pod 'Data4LifeFHIR'
+    pod 'Data4LifeFHIRProfiles'
+end

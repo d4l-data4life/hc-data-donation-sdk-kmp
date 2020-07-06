@@ -1,0 +1,69 @@
+PODS:
+  - Alamofire (4.9.1)
+  - AppAuth (1.0.0):
+    - AppAuth/Core (= 1.0.0)
+    - AppAuth/ExternalUserAgent (= 1.0.0)
+  - AppAuth/Core (1.0.0)
+  - AppAuth/ExternalUserAgent (1.0.0)
+  - common (0.0.1)
+  - CryptoSwift (1.2.0)
+  - Data4LifeCrypto (1.1.2):
+    - CryptoSwift (= 1.2.0)
+  - Data4LifeFHIR (0.11.2):
+    - Data4LifeSDKUtils (= 0.1.6)
+  - Data4LifeFHIRProfiles (0.2.2):
+    - Data4LifeFHIR (= 0.11.2)
+    - Data4LifeSDKUtils (= 0.1.6)
+  - Data4LifeSDK (1.7.1):
+    - Alamofire (~> 4.9.1)
+    - AppAuth (~> 1.0.0)
+    - Data4LifeCrypto (~> 1.1.2)
+    - Data4LifeFHIR (~> 0.11.2)
+    - Data4LifeSDKUtils (~> 0.1.6)
+    - SVProgressHUD (= 2.2.5)
+    - thenPromise (~> 5.1.1)
+  - Data4LifeSDKUtils (0.1.6):
+    - CryptoSwift (= 1.2.0)
+  - SVProgressHUD (2.2.5)
+  - thenPromise (5.1.2)
+
+DEPENDENCIES:
+  - common (from `../common/`)
+  - Data4LifeFHIR
+  - Data4LifeFHIRProfiles
+  - Data4LifeSDK
+
+SPEC REPOS:
+  "git@github.com:gesundheitscloud/cocoapods-specs.git":
+    - Data4LifeCrypto
+    - Data4LifeFHIR
+    - Data4LifeFHIRProfiles
+    - Data4LifeSDK
+    - Data4LifeSDKUtils
+  https://github.com/CocoaPods/Specs.git:
+    - Alamofire
+    - AppAuth
+    - CryptoSwift
+    - SVProgressHUD
+    - thenPromise
+
+EXTERNAL SOURCES:
+  common:
+    :path: "../common/"
+
+SPEC CHECKSUMS:
+  Alamofire: 85e8a02c69d6020a0d734f6054870d7ecb75cf18
+  AppAuth: c42547576838bf025b852736dd9b8a1c943fe68f
+  common: 9967dea02056bcd9da5003f2d69b5b06e6deba58
+  CryptoSwift: 40e374e45291d8dceedcb0d6184da94533eaabdf
+  Data4LifeCrypto: d43f7f91b5e66d9f30f9f9ec893498095b328e22
+  Data4LifeFHIR: 2d5c50e21bd337906cda8383a0eac48bada9bbc3
+  Data4LifeFHIRProfiles: af27f44aaf8760fb70c71274e344756ffd911455
+  Data4LifeSDK: 538efa555c552c16ef3f2205814d9ab021f39734
+  Data4LifeSDKUtils: 11d5c94962f55e894d639909e7e134490d552702
+  SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
+  thenPromise: c1a319348c6052652b071d8dd4c6db9984860209
+
+PODFILE CHECKSUM: 907b3bc922a9b12709edb8689bb4ed67d1223f90
+
+COCOAPODS: 1.9.1

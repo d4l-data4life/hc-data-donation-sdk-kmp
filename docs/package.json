@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "@antora/cli": "2.2.0",
+    "@antora/site-generator-default": "2.2.0",
+    "@asciidoctor/core": "2.1.1",
+    "asciidoctor-kroki": "0.7.0",
+    "broken-link-checker": "0.7.8",
+    "live-server": "1.2.1",
+    "mkdirp": "1.0.3"
+  }
+}
