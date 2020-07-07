@@ -30,11 +30,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = "mpp-data-donation-sdk"
+package care.data4life.datadonation.domain.usecases
 
-enableFeaturePreview("GRADLE_METADATA")
+interface Usecase<ReturnType> {
 
-include(
-    ":data-donation-sdk",
-    ":docs"
-)
+    suspend fun execute(): ReturnType
+
+}

@@ -1,5 +1,5 @@
-name: d4l-kotlin-multi-template
-title: Kotlin Multiplatform Template
+name: d4l-mpp-data-donation-sdk
+title: Data Donation Mobile SDK
 version: master
 start_page: ROOT:index.adoc
 nav:

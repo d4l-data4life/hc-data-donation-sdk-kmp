@@ -32,20 +32,20 @@
 
 object LibraryConfig {
     const val version = "0.0.1"
-    const val group = "care.data4life.template.common"
+    const val group = "care.data4life.datadonation.common"
     const val versionCode = 1
 
 
     val android = AndroidLibraryConfig
 
     object AndroidLibraryConfig {
-        const val minSdkVersion = 21
+        const val minSdkVersion = 23
         const val compileSdkVersion = 29
         const val targetSdkVersion = 29
 
         const val versionCode = LibraryConfig.versionCode
         const val versionName = LibraryConfig.version
 
-        const val resourcePrefix = "d4l_template_"
+        const val resourcePrefix = "d4l_data_donation_"
     }
 }

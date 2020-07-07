@@ -1,5 +1,5 @@
-= Kotlin Multiplatform Template @ Data4life
+= Data Donation Mobile SDK @ Data4life
 
-Template version: {project-version}
+Project version: {project-version}
 
-A template to quickly start off any Kotlin multiplatform project at Data4Life.
+Kotlin multi platform library for implementing Data Donation using Data4life ecosystem.

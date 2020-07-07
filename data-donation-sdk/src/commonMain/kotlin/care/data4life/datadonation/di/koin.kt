@@ -30,11 +30,31 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = "mpp-data-donation-sdk"
+package care.data4life.datadonation.di
 
-enableFeaturePreview("GRADLE_METADATA")
+import org.koin.core.context.startKoin
+import org.koin.core.module.Module
+import org.koin.dsl.KoinAppDeclaration
+import org.koin.dsl.module
 
-include(
-    ":data-donation-sdk",
-    ":docs"
-)
+fun initKoin(appDeclaration: KoinAppDeclaration = {}) = startKoin {
+    appDeclaration()
+    modules(
+        platformModule,
+        coreModule
+    )
+}
+
+private val coreModule = module {
+
+    //DataStores
+
+
+    //Repositories
+
+
+    //Usecases
+
+}
+
+expect val platformModule: Module
