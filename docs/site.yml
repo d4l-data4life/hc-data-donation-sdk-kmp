@@ -1,7 +1,7 @@
 site:
   title: Data Donation Mobile SDK @ Data4life
   url: https://stuff.d4l.io
-  start_page: mpp-data-donation-sdk::index
+  start_page: data-donation-sdk-native::index
 
 content:
   sources:
