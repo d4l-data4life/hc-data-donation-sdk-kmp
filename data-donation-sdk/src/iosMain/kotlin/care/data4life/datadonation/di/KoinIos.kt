@@ -30,11 +30,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = "mpp-data-donation-sdk"
+package care.data4life.datadonation.di
 
-enableFeaturePreview("GRADLE_METADATA")
+import org.koin.dsl.module
 
-include(
-    ":data-donation-sdk",
-    ":docs"
-)
+actual val platformModule = module {
+
+}

@@ -30,11 +30,41 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = "mpp-data-donation-sdk"
+package care.data4life.datadonation.presentation.common
 
-enableFeaturePreview("GRADLE_METADATA")
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import org.koin.core.KoinComponent
+import kotlin.coroutines.CoroutineContext
 
-include(
-    ":data-donation-sdk",
-    ":docs"
-)
+expect val defaultDispatcher: CoroutineDispatcher
+
+internal expect fun printThrowable(t: Throwable)
+
+open class CommonViewModel : KoinComponent {
+    internal val clientScope =
+        MainScope(
+            defaultDispatcher
+        )
+
+    protected open fun onCleared() {
+        clientScope.job.cancel()
+    }
+}
+
+internal class MainScope(private val mainContext: CoroutineContext) : CoroutineScope {
+    override val coroutineContext: CoroutineContext
+        get() = mainContext + job + exceptionHandler
+
+    internal val job = SupervisorJob()
+    private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        showError(throwable)
+    }
+
+    //TODO: Some way of exposing this to the caller without trapping a reference and freezing it.
+    private fun showError(t: Throwable) {
+        printThrowable(t)
+    }
+}

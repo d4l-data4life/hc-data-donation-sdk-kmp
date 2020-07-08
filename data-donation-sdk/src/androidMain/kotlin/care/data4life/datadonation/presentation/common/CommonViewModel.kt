@@ -30,11 +30,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = "mpp-data-donation-sdk"
+package care.data4life.datadonation.presentation.common
 
-enableFeaturePreview("GRADLE_METADATA")
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 
-include(
-    ":data-donation-sdk",
-    ":docs"
-)
+actual val defaultDispatcher: CoroutineDispatcher
+    get() = Dispatchers.Main
+
+internal actual fun printThrowable(t: Throwable) {
+    t.printStackTrace()
+}

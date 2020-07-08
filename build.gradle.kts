@@ -3,6 +3,9 @@ buildscript {
         mavenCentral()
         google()
         jcenter()
+        maven {
+            url = uri("https://plugins.gradle.org/m2/")
+        }
     }
     dependencies {
         classpath(Dependency.GradlePlugin.kotlin)
@@ -33,10 +36,11 @@ allprojects {
         maven("https://jitpack.io")
         maven(url = "https://dl.bintray.com/touchlabpublic/kotlin")
         maven(url = "https://oss.sonatype.org/content/repositories/snapshots/")
+        maven(url = "https://dl.bintray.com/korlibs/korlibs")
     }
 }
 
 tasks.named<Wrapper>("wrapper") {
-    gradleVersion = "6.3"
+    gradleVersion = "6.5"
     distributionType = Wrapper.DistributionType.ALL
 }

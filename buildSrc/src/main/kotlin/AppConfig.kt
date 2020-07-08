@@ -33,7 +33,7 @@
 object AppConfig {
 
     const val version = LibraryConfig.version
-    const val group = "care.data4life.template"
+    const val group = "care.data4life.datadonation"
 
 
     val android = AndroidConfig

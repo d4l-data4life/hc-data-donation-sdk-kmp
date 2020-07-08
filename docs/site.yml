@@ -1,7 +1,7 @@
 site:
-  title: The Kotlin Multiplatform Template @ data4life
+  title: Data Donation Mobile SDK @ Data4life
   url: https://stuff.d4l.io
-  start_page: d4l-kotlin-multi-template::index
+  start_page: data-donation-sdk-native::index
 
 content:
   sources:
