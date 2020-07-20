@@ -76,6 +76,7 @@ kotlin {
                 //
                 implementation(Dependency.android.threeTenABP)
                 implementation(Dependency.Multiplatform.ktor.androidSerialization)
+                implementation (Dependency.android.tink)
 
             }
         }
@@ -99,6 +100,21 @@ kotlin {
         val iosTest by getting {
             dependencies {
 
+            }
+        }
+
+        configure(listOf(targets["ios"])) {
+            compilations["main"].kotlinOptions.freeCompilerArgs = mutableListOf(
+                "-include-binary", "$projectDir/Pods/Tink/Frameworks/Tink.framework/Tink.a"
+            )
+            compilations.getByName("main") {
+                this as org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeCompilation
+
+                val tink by cinterops.creating {
+                    packageName("google.tink")
+                    defFile = file("$projectDir/src/iosMain/cinterop/Tink.def")
+                    header("$projectDir/Pods/Tink/Frameworks/Tink.framework/Headers/Tink.h")
+                }
             }
         }
     }
