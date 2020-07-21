@@ -54,7 +54,6 @@ object Version {
     const val androidXEspresso = "3.2.0"
     const val androidXUiAutomator = "2.2.0"
 
-
     // Material
     const val material = "1.1.0-rc01"
 
@@ -71,6 +70,8 @@ object Version {
     // https://github.com/cashapp/sqldelight
     const val sqlDelight = "1.3.0"
 
+    //Encryption
+    const val tinkAndroid = "1.4.0"
 
     // Junit Test
     const val testJUnit = "4.13"
