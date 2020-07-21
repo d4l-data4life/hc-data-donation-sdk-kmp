@@ -73,6 +73,8 @@ object Version {
     //Encryption
     const val tinkAndroid = "1.4.0"
 
+    const val protobuff = "0.20.0"
+
     // Junit Test
     const val testJUnit = "4.13"
 

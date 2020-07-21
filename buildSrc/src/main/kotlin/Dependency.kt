@@ -127,6 +127,16 @@ object Dependency {
         val stately = "co.touchlab:stately-common:${Version.stately}"
         val multiplatformSettings =
             "com.russhwolf:multiplatform-settings:${Version.multiplatformSettings}"
+
+        val protobuff = Protobuff
+        object Protobuff {
+            const val native = "org.jetbrains.kotlinx:kotlinx-serialization-protobuf-native:${Version.protobuff}"
+            const val common = "org.jetbrains.kotlinx:kotlinx-serialization-protobuf-common:${Version.protobuff}"
+            const val android = "org.jetbrains.kotlinx:kotlinx-serialization-protobuf:${Version.protobuff}"
+            const val common_runtime = "org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:${Version.protobuff}"
+        }
+
+
     }
 
 
