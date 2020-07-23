@@ -54,6 +54,8 @@ kotlin {
                 implementation(Dependency.Multiplatform.ktor.commonJson)
                 implementation(Dependency.Multiplatform.ktor.commonSerialization)
 
+                implementation(Dependency.Multiplatform.protobuff.common)
+                implementation(Dependency.Multiplatform.protobuff.common_runtime)
             }
         }
         commonTest {
@@ -78,6 +80,7 @@ kotlin {
                 implementation(Dependency.Multiplatform.ktor.androidSerialization)
                 implementation (Dependency.android.tink)
 
+                implementation(Dependency.Multiplatform.protobuff.android)
             }
         }
         val androidTest by getting {
@@ -95,6 +98,7 @@ kotlin {
                     }
                 }
                 implementation(Dependency.Multiplatform.ktor.iosSerialization)
+                implementation(Dependency.Multiplatform.protobuff.native)
             }
         }
         val iosTest by getting {
