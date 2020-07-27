@@ -32,14 +32,19 @@
 
 package care.data4life.datadonation.encryption
 
+import care.data4life.datadonation.toByteArray
+import care.data4life.datadonation.toNSData
 import google.tink.*
 import kotlinx.cinterop.addressOf
+import kotlinx.cinterop.pointed
 import kotlinx.cinterop.usePinned
 import platform.Foundation.NSData
 import platform.Foundation.dataWithBytesNoCopy
+import platform.Security.SecKeyCopyExternalRepresentation
+import platform.Security.SecKeyCreateRandomKey
 import platform.posix.memcpy
 
-class SignatureKeyHandle:SignatureKey {
+class SignatureKeyHandle:SignatureKeyPublic,SignatureKeyPrivate {
     constructor(keyTemplate: TINKSignatureKeyTemplates) {
         handle = TINKKeysetHandle(TINKSignatureKeyTemplate(keyTemplate, null), null)
     }
@@ -58,22 +63,28 @@ class SignatureKeyHandle:SignatureKey {
         return signer!!.signatureForData(data.toNSData(), null)!!.toByteArray()
     }
 
+
+
+    override val pkcs1Private: String
+        get() = TODO("Not yet implemented")
+    override val pkcs1Public: String
+        get() = TODO("Not yet implemented")
+
     override fun verify(data: ByteArray, signature: ByteArray): Boolean {
+
         val verifier = TINKPublicKeyVerifyFactory.primitiveWithKeysetHandle(handle, null)
         return verifier!!.verifySignature(signature.toNSData(), data.toNSData(), null)
     }
 
-    override fun serialized(): ByteArray = handle.serializedKeyset().toByteArray()
+    override fun serializedPublic(): ByteArray {
+        TODO("Not yet implemented")
+    }
+
+    override fun serializedPrivate(): ByteArray {
+        TODO("Not yet implemented")
+    }
+
 
 }
 
 
-
-fun ByteArray.toNSData() = asUByteArray().usePinned {
-    NSData.dataWithBytesNoCopy(it.addressOf(0), it.get().size.toULong())
-}
-
-fun NSData.toByteArray() = ByteArray(length.toInt()).usePinned {
-    memcpy(it.addressOf(0), bytes, length)
-    it.get()
-}

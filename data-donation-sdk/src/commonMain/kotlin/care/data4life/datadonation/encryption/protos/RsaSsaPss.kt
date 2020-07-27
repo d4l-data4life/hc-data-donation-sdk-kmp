@@ -32,6 +32,7 @@
 
 package care.data4life.datadonation.encryption.protos
 
+import care.data4life.datadonation.encryption.Asn1Exportable
 import care.data4life.datadonation.encryption.sequence
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.protobuf.ProtoId
@@ -70,8 +71,8 @@ class RsaSsaPssPublicKey(
     // Unsigned big integer in bigendian representation.
     @ProtoId(4)
     val e: ByteArray
-) {
-    fun toAsn1() = "RSAPublicKey" sequence {
+):Asn1Exportable {
+    override fun toAsn1() = "RSAPublicKey" sequence {
         "modulus" integer n
         "publicExponent" integer e
     }
@@ -116,8 +117,8 @@ class RsaSsaPrivateKey(
     // Required.
     @ProtoId(8)
     val crt: ByteArray
-) {
-    fun toAsn1() =
+):Asn1Exportable {
+    override fun toAsn1() =
         "RSAPrivateKey" sequence {
             "version" integer byteArrayOf(0)
             "modulus" integer publicKey.n

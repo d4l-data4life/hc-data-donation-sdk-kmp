@@ -36,12 +36,33 @@ import care.data4life.datadonation.encryption.protos.Keyset
 import care.data4life.datadonation.encryption.protos.RsaSsaPrivateKey
 import kotlinx.serialization.protobuf.ProtoBuf
 
-internal interface SignatureKey {
+expect fun SignatureKeyPrivate(serializedPrivate: ByteArray, serializedPublic: ByteArray, size: Int, algorithm: Algorithm):SignatureKeyPrivate
 
+expect fun SignatureKeyPublic(serialized: ByteArray, size: Int, algorithm: Algorithm):SignatureKeyPublic
+
+expect fun SignatureKeyPrivate(size: Int, algorithm: Algorithm):SignatureKeyPrivate
+
+sealed class Algorithm {
+   class RsaPSS(val hashSize:HashSize):Algorithm()
+}
+
+enum class HashSize(val bits: Int) {
+    Hash256(256)
+}
+
+//TODO: expect fun SignatureKeyPublic(pkcs1: String):SignatureKeyPublic
+
+//TODO: expect fun SignatureKeyPrivate(pkcs1: String):SignatureKeyPrivate
+
+
+interface SignatureKeyPrivate:SignatureKeyPublic {
     fun sign(data:ByteArray):ByteArray
+    fun serializedPrivate():ByteArray
+    val pkcs1Private:String
+}
 
+interface SignatureKeyPublic {
     fun verify(data:ByteArray,signature:ByteArray):Boolean
-
-    fun serialized():ByteArray
-
+    fun serializedPublic():ByteArray
+    val pkcs1Public:String
 }

@@ -32,13 +32,30 @@
 
 package care.data4life.datadonation.encryption
 
-import care.data4life.datadonation.encryption.protos.Keyset
-import care.data4life.datadonation.encryption.protos.RsaSsaPrivateKey
-import kotlinx.serialization.protobuf.ProtoBuf
+import platform.CoreFoundation.CFDataRef
+import platform.Foundation.CFBridgingRelease
+import platform.Foundation.CFBridgingRetain
+import platform.Foundation.NSData
+import platform.Security.SecKeyCreateSignature
+import platform.Security.SecKeyIsAlgorithmSupported
+import platform.Security.kSecAttrKeyTypeRSA
+import platform.Security.kSecKeyAlgorithmRSASignatureDigestPSSSHA256
+import kotlin.test.BeforeTest
+import kotlin.test.Test
 
 
-expect class RsaPss:SignatureKey
+class SignatureKeyNativeTest {
 
-fun RsaPss.export(): RsaSsaPrivateKey =
-    ProtoBuf.load(Keyset.serializer(), serialized()).key.first().key_data.value
-        .let { ProtoBuf.load(RsaSsaPrivateKey.serializer(), it) }
+    @BeforeTest
+    fun setup() {
+
+    }
+
+    @Test
+    fun testGen() {
+        val testData = byteArrayOf(1)
+        val key = SignatureKeyNative(kSecAttrKeyTypeRSA!!,kSecKeyAlgorithmRSASignatureDigestPSSSHA256!!, 2048)
+        key.verify(testData,key.sign(testData))
+    }
+
+}

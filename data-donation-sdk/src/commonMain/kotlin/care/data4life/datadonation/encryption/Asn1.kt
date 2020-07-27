@@ -104,7 +104,7 @@ class Asn1 constructor(private val root: List<SEQUENCE>){
         }
     }
 
-    fun intToUInt32ByteArray(value: Int): ByteArray {
+    private fun intToUInt32ByteArray(value: Int): ByteArray {
         val bytes = ByteArray(4)
         bytes[3] = (value and 0xFFFF).toByte()
         bytes[2] = ((value ushr 8) and 0xFFFF).toByte()
@@ -152,3 +152,6 @@ class SEQUENCE() : TLV<List<TLV<out Any>>>() {
 annotation class Asn1Dsl
 
 
+interface Asn1Exportable {
+    fun toAsn1():Asn1
+}
