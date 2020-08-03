@@ -58,11 +58,11 @@ enum class HashSize(val bits: Int) {
 interface SignatureKeyPrivate:SignatureKeyPublic {
     fun sign(data:ByteArray):ByteArray
     fun serializedPrivate():ByteArray
-    val pkcs1Private:String
+    val pkcs8Private:String
 }
 
 interface SignatureKeyPublic {
     fun verify(data:ByteArray,signature:ByteArray):Boolean
     fun serializedPublic():ByteArray
-    val pkcs1Public:String
+    val pkcs8Public:String
 }

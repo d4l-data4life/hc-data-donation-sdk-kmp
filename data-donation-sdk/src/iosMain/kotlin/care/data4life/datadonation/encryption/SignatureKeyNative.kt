@@ -32,6 +32,7 @@
 
 package care.data4life.datadonation.encryption
 
+import care.data4life.datadonation.encryption.protos.rsaPkcsIDENTIFIER
 import care.data4life.datadonation.toByteArray
 import care.data4life.datadonation.toNSData
 import kotlinx.cinterop.*
@@ -66,12 +67,18 @@ class SignatureKeyNative : SignatureKeyPrivate {
     }
 
 
-    override val pkcs1Private: String
+    override val pkcs8Private: String
         get() = (CFBridgingRelease(SecKeyCopyExternalRepresentation(privateKey, null)) as NSData)
+            .toByteArray()
+            .let(::toPkcs8Private)
+            .toNSData()
             .base64EncodedStringWithOptions(NSDataBase64EncodingEndLineWithLineFeed)
 
-    override val pkcs1Public: String
+    override val pkcs8Public: String
         get() = (CFBridgingRelease(SecKeyCopyExternalRepresentation(publicKey, null)) as NSData)
+            .toByteArray()
+            .let(::toPkcs8Public)
+            .toNSData()
             .base64EncodedStringWithOptions(NSDataBase64EncodingEndLineWithLineFeed)
 
 
@@ -88,6 +95,23 @@ class SignatureKeyNative : SignatureKeyPrivate {
     override fun serializedPrivate(): ByteArray =
         (CFBridgingRelease(SecKeyCopyExternalRepresentation(privateKey, null)) as NSData)
             .toByteArray()
+
+    fun toPkcs8Private(privateKey: ByteArray) =
+        ("PrivateKeyInfo" sequence {
+            "version" integer byteArrayOf(0)
+            "algorithm" sequence {
+                "algorithm" object_identifier rsaPkcsIDENTIFIER
+            }
+            "PrivateKey" octet_string { raw(privateKey) }
+        }).encoded
+
+    fun toPkcs8Public(publicKey: ByteArray) = (
+            "PublicKeyInfo" sequence {
+                "algorithm" sequence {
+                    "algorithm" object_identifier rsaPkcsIDENTIFIER
+                }
+                "PublicKey" bit_string  { raw(publicKey) }
+            }).encoded
 
 }
 

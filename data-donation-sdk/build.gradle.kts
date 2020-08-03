@@ -87,6 +87,7 @@ kotlin {
             dependencies {
                 implementation(Dependency.Multiplatform.kotlin.testJvm)
                 implementation(Dependency.Multiplatform.kotlin.testJvmJunit)
+                dependsOn(commonTest.get())
             }
         }
 
@@ -107,20 +108,6 @@ kotlin {
             }
         }
 
-        configure(listOf(targets["ios"])) {
-            compilations["main"].kotlinOptions.freeCompilerArgs = mutableListOf(
-                "-include-binary", "$projectDir/Pods/Tink/Frameworks/Tink.framework/Tink.a"
-            )
-            compilations.getByName("main") {
-                this as org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeCompilation
-
-                val tink by cinterops.creating {
-                    packageName("google.tink")
-                    defFile = file("$projectDir/src/iosMain/cinterop/Tink.def")
-                    header("$projectDir/Pods/Tink/Frameworks/Tink.framework/Headers/Tink.h")
-                }
-            }
-        }
     }
 }
 

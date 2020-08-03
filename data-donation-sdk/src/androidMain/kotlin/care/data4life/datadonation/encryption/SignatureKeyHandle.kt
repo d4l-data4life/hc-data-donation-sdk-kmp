@@ -33,13 +33,16 @@
 package care.data4life.datadonation.encryption
 
 import care.data4life.datadonation.encryption.protos.Keyset
+import care.data4life.datadonation.encryption.protos.PublicHandle
 import care.data4life.datadonation.encryption.protos.RsaSsaPrivateKey
 import com.google.crypto.tink.*
 import com.google.crypto.tink.subtle.Base64
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.protobuf.ProtoBuf
 
-class SignatureKeyHandle<Proto : Asn1Exportable> : SignatureKeyPrivate {
+class SignatureKeyHandle<Proto> : SignatureKeyPrivate
+    where Proto: Asn1Exportable,
+          Proto: PublicHandle {
     constructor(keyTemplate: KeyTemplate, deserializer: DeserializationStrategy<Proto>) {
         handle = KeysetHandle.generateNew(keyTemplate)
         this.deserializer = deserializer
@@ -73,10 +76,10 @@ class SignatureKeyHandle<Proto : Asn1Exportable> : SignatureKeyPrivate {
         .key_data.value
         .let { ProtoBuf.load(deserializer, it) }
 
-    override val pkcs1Private: String
+    override val pkcs8Private: String
         get() = getProto().toAsn1().encoded.asByteArray().let(Base64::encode)
-    override val pkcs1Public: String
-        get() = getProto().toAsn1().encoded.asByteArray().let(Base64::encode)
+    override val pkcs8Public: String
+        get() = getProto().publicKey.toAsn1().encoded.asByteArray().let(Base64::encode)
 
     override fun verify(data: ByteArray, signature: ByteArray): Boolean {
         val verifier = handle.publicKeysetHandle.getPrimitive(PublicKeyVerify::class.java)
@@ -89,5 +92,5 @@ class SignatureKeyHandle<Proto : Asn1Exportable> : SignatureKeyPrivate {
     override fun serializedPrivate() =
         CleartextKeysetHandle.getKeyset(handle).toByteArray()
 
-
 }
+

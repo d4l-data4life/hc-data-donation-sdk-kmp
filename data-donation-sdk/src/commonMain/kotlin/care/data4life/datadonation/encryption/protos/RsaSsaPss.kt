@@ -37,6 +37,8 @@ import care.data4life.datadonation.encryption.sequence
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.protobuf.ProtoId
 
+internal val rsaPkcsIDENTIFIER = listOf(42,34376,8845069,1,1,1)
+
 @Serializable
 class RsaSsaPssParams(
     // Hash function used in computing hash of the signing message
@@ -72,10 +74,18 @@ class RsaSsaPssPublicKey(
     @ProtoId(4)
     val e: ByteArray
 ):Asn1Exportable {
-    override fun toAsn1() = "RSAPublicKey" sequence {
-        "modulus" integer n
-        "publicExponent" integer e
-    }
+    override fun toAsn1() =
+        "PublicKeyInfo" sequence {
+            "algorithm" sequence {
+                "algorithm" object_identifier rsaPkcsIDENTIFIER
+            }
+            "PublicKey" bit_string  {
+                "RSAPublicKey" sequence {
+                    "modulus" integer n
+                    "publicExponent" integer e
+                }
+            }
+        }
 }
 
 @Serializable
@@ -85,7 +95,7 @@ class RsaSsaPrivateKey(
     val version: Int = 0,
     // Required.
     @ProtoId(2)
-    val publicKey: RsaSsaPssPublicKey,
+    override val publicKey: RsaSsaPssPublicKey,
     // Private exponent.
     // Unsigned big integer in bigendian representation.
     // Required.
@@ -117,20 +127,29 @@ class RsaSsaPrivateKey(
     // Required.
     @ProtoId(8)
     val crt: ByteArray
-):Asn1Exportable {
+):Asn1Exportable,PublicHandle {
     override fun toAsn1() =
-        "RSAPrivateKey" sequence {
+        "PrivateKeyInfo" sequence {
             "version" integer byteArrayOf(0)
-            "modulus" integer publicKey.n
-            "publicExponent" integer publicKey.e
-            "privateExponent" integer d
-            "prime1" integer p
-            "prime2" integer q
-            "exponent1" integer dp
-            "exponent2" integer dq
-            "crtCoefficient" integer crt
+            "algorithm" sequence {
+                "algorithm" object_identifier rsaPkcsIDENTIFIER
+            }
+            "PrivateKey" octet_string {
+               "" sequence {
+                    "version" integer byteArrayOf(0)
+                    "modulus" integer publicKey.n
+                    "publicExponent" integer publicKey.e
+                    "privateExponent" integer d
+                    "prime1" integer p
+                    "prime2" integer q
+                    "exponent1" integer dp
+                    "exponent2" integer dq
+                    "crtCoefficient" integer crt
+                }
+            }
         }
 }
+
 
 @Serializable
 enum class HashType() {
@@ -149,4 +168,8 @@ enum class HashType() {
 
     @ProtoId(4)
     SHA512
+}
+
+interface PublicHandle {
+    val publicKey: Asn1Exportable
 }

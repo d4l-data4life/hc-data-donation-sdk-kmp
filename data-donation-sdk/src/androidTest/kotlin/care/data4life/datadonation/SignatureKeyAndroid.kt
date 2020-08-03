@@ -30,32 +30,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.encryption
+package care.data4life.datadonation
 
-import platform.CoreFoundation.CFDataRef
-import platform.Foundation.CFBridgingRelease
-import platform.Foundation.CFBridgingRetain
-import platform.Foundation.NSData
-import platform.Security.SecKeyCreateSignature
-import platform.Security.SecKeyIsAlgorithmSupported
-import platform.Security.kSecAttrKeyTypeRSA
-import platform.Security.kSecKeyAlgorithmRSASignatureDigestPSSSHA256
-import kotlin.test.BeforeTest
-import kotlin.test.Test
+import SignatureKeyCommonTest
+import com.google.crypto.tink.config.TinkConfig
+import org.junit.Before
+import org.junit.Test
 
+class SignatureKeyAndroid():SignatureKeyCommonTest() {
 
-class SignatureKeyNativeTest {
-
-    @BeforeTest
+    @Before
     fun setup() {
-
+        TinkConfig.register()
     }
-
-    @Test
-    fun testGen() {
-        val testData = byteArrayOf(1)
-        val key = SignatureKeyNative(kSecAttrKeyTypeRSA!!,kSecKeyAlgorithmRSASignatureDigestPSSSHA256!!, 2048)
-        key.verify(testData,key.sign(testData))
-    }
-
 }
