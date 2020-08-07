@@ -30,29 +30,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.encryption.protos
+package care.data4life.datadonation.encryption
 
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.protobuf.ProtoId
+import com.google.crypto.tink.config.TinkConfig
 
-/**
- * Proto models are defined here:
- * https://github.com/google/tink/blob/master/proto/tink.proto
- */
-@Serializable
-class Keyset(
-    @ProtoId(2)
-    val key: List<Key>
-)
-
-@Serializable
-class Key(
-    @ProtoId(1)
-    val key_data: KeyData
-)
-
-@Serializable
-class KeyData(
-    @ProtoId(2)
-    val value: ByteArray
-)
+actual fun initEncryption() {
+    TinkConfig.register()
+}

@@ -30,17 +30,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation
+package care.data4life.datadonation.encryption
 
-import SignatureKeyCommonTest
-import com.google.crypto.tink.config.TinkConfig
-import org.junit.Before
-import org.junit.Test
-
-class SignatureKeyAndroid():SignatureKeyCommonTest() {
-
-    @Before
-    fun setup() {
-        TinkConfig.register()
-    }
+actual fun initEncryption() {
+    //Nothing to init on iOS side
 }

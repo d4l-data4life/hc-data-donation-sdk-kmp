@@ -1,6 +1,8 @@
 import care.data4life.datadonation.encryption.Algorithm
 import care.data4life.datadonation.encryption.HashSize
 import care.data4life.datadonation.encryption.SignatureKeyPrivate
+import care.data4life.datadonation.encryption.initEncryption
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
@@ -37,6 +39,11 @@ import kotlin.test.assertTrue
  */
 
 open class SignatureKeyCommonTest {
+
+    @BeforeTest
+    fun setup() {
+        initEncryption()
+    }
 
     @Test
     fun `Generate, sign and verify`() {
