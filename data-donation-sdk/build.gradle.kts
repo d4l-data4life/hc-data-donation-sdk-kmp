@@ -20,30 +20,35 @@ kotlin {
         publishLibraryVariants("release")
     }
 
-    // Revert to just ios() when gradle plugin can properly resolve it
-    val onPhone = System.getenv("SDK_NAME")?.startsWith("iphoneos") ?: false
-    if (onPhone) {
-        iosArm64("ios")
-    } else {
-        iosX64("ios")
+    iosX64("ios"){
+        mavenPublication {
+            artifactId = "${project.name}-iosx64"
+        }
+    }
+    iosArm64 {
+        compilations["main"].defaultSourceSet {
+            dependsOn(sourceSets["iosMain"])
+        }
+
+        // Remove the test compilation for Arm64, because it is not needed.
+        compilations.remove(compilations["test"])
     }
 
     targets.getByName<KotlinNativeTarget>("ios").compilations["main"].kotlinOptions.freeCompilerArgs +=
         listOf("-Xobjc-generics", "-Xg0")
+
+    targets.withType<KotlinNativeTarget> {
+        binaries.framework(listOf(RELEASE))
+    }
 
     sourceSets {
         all {
             languageSettings.apply {
                 useExperimentalAnnotation("kotlinx.coroutines.ExperimentalCoroutinesApi")
                 useExperimentalAnnotation("kotlinx.serialization.InternalSerializationApi")
+                useExperimentalAnnotation("kotlin.ExperimentalStdlibApi")
+                useExperimentalAnnotation("kotlin.ExperimentalUnsignedTypes")
             }
-        }
-    }
-
-    sourceSets {
-        all {
-            languageSettings.useExperimentalAnnotation("kotlin.ExperimentalStdlibApi")
-            languageSettings.useExperimentalAnnotation("kotlin.ExperimentalUnsignedTypes")
         }
         commonMain {
             dependencies {
@@ -174,15 +179,15 @@ publishing {
             name = "GithubPackages"
             url = uri("https://maven.pkg.github.com/gesundheitscloud/data-donation-sdk-native")
             credentials {
-                username = (project.findProperty("gpr.user") ?: "Username").toString()//System.getenv("USERNAME")).toString()
-                password = (project.findProperty("gpr.key") ?: "Token").toString() //System.getenv("TOKEN")).toString()
+                username = (project.findProperty("gpr.user") ?: System.getenv("USERNAME")).toString()
+                password = (project.findProperty("gpr.key") ?: System.getenv("TOKEN")).toString()
             }
         }
 
         publications {
             all {
                 if( this is MavenPublication){
-                    groupId = "${LibraryConfig.githubGroup}.${LibraryConfig.artifactId}"
+                    groupId = LibraryConfig.githubGroup
                     artifactId = LibraryConfig.artifactId
                     version = LibraryConfig.version
 
@@ -195,9 +200,6 @@ publishing {
                         }
                         "jvm" -> {
                             artifactId = "${project.name}-jvm"
-                        }
-                        "ios" -> {
-                            artifactId = "${project.name}-ios"
                         }
                     }
 
