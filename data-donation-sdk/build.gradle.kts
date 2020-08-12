@@ -196,12 +196,18 @@ publishing {
                         "jvm" -> {
                             artifactId = "${project.name}-jvm"
                         }
+                        "ios" -> {
+                            artifactId = "${project.name}-ios"
+                        }
+                        else -> {
+                            artifactId = "${project.name}-common"
+                        }
                     }
 
                     pom {
                         name.set(LibraryConfig.name)
                         url.set(LibraryConfig.url)
-                        inceptionYear.set("2020")
+                        inceptionYear.set(LibraryConfig.inceptionYear)
                         licenses {
                             license {
                                 name.set(LibraryConfig.licenseName)

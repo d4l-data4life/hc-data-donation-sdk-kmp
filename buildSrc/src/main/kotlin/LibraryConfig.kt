@@ -39,6 +39,7 @@ object LibraryConfig {
     const val name = "gesundheitscloud/$artifactId"
     const val host = "github.com"
     const val url = "https://$host/$name"
+    const val inceptionYear = "2020"
 
     // DEVELOPER
     const val developerId = "gesundheitscloud"
