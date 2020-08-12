@@ -7,7 +7,8 @@ plugins {
     // Android
     id("com.android.library")
 
-    // DB
+    // Publish
+    id("maven-publish")
 }
 
 version = LibraryConfig.version
@@ -40,6 +41,10 @@ kotlin {
     }
 
     sourceSets {
+        all {
+            languageSettings.useExperimentalAnnotation("kotlin.ExperimentalStdlibApi")
+            languageSettings.useExperimentalAnnotation("kotlin.ExperimentalUnsignedTypes")
+        }
         commonMain {
             dependencies {
                 implementation(Dependency.Multiplatform.kotlin.stdlibCommon)
@@ -163,3 +168,66 @@ android {
     }
 }
 
+publishing {
+    repositories {
+        maven {
+            name = "GithubPackages"
+            url = uri("https://maven.pkg.github.com/gesundheitscloud/data-donation-sdk-native")
+            credentials {
+                username = (project.findProperty("gpr.user") ?: "Username").toString()//System.getenv("USERNAME")).toString()
+                password = (project.findProperty("gpr.key") ?: "Token").toString() //System.getenv("TOKEN")).toString()
+            }
+        }
+
+        publications {
+            all {
+                if( this is MavenPublication){
+                    groupId = "${LibraryConfig.githubGroup}.${LibraryConfig.artifactId}"
+                    artifactId = LibraryConfig.artifactId
+                    version = LibraryConfig.version
+
+                    when (name) {
+                        "androidRelease" -> {
+                            artifactId = "${project.name}-android"
+                        }
+                        "metadata" -> {
+                            artifactId = "${project.name}-metadata"
+                        }
+                        "jvm" -> {
+                            artifactId = "${project.name}-jvm"
+                        }
+                        "ios" -> {
+                            artifactId = "${project.name}-ios"
+                        }
+                    }
+
+                    pom {
+                        name.set(LibraryConfig.name)
+                        url.set(LibraryConfig.url)
+                        inceptionYear.set("2020")
+                        licenses {
+                            license {
+                                name.set(LibraryConfig.licenseName)
+                                url.set(LibraryConfig.licenseUrl)
+                                distribution.set(LibraryConfig.licenseDistribution)
+                            }
+                        }
+                        developers {
+                            developer {
+                                id.set(LibraryConfig.developerId)
+                                name.set(LibraryConfig.developerName)
+                                email.set(LibraryConfig.developerEmail)
+                            }
+                        }
+
+                        scm {
+                            connection.set(LibraryConfig.scmConnection)
+                            developerConnection.set(LibraryConfig.scmDeveloperConnection)
+                            url.set(LibraryConfig.scmUrl)
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
