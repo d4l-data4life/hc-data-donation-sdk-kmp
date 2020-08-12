@@ -30,41 +30,39 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.presentation.common
+package care.data4life.datadonation.internal.data.service
 
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
-import org.koin.core.KoinComponent
-import kotlin.coroutines.CoroutineContext
+import care.data4life.datadonation.core.model.UserConsent
+import care.data4life.datadonation.internal.data.model.ConsentCreation
+import io.ktor.client.HttpClient
+import io.ktor.client.features.json.JsonFeature
+import io.ktor.client.request.post
+import io.ktor.client.request.url
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
 
-expect val defaultDispatcher: CoroutineDispatcher
+class ConsentService {
 
-internal expect fun printThrowable(t: Throwable)
-
-open class CommonViewModel : KoinComponent {
-    internal val clientScope =
-        MainScope(
-            defaultDispatcher
-        )
-
-    protected open fun onCleared() {
-        clientScope.job.cancel()
-    }
-}
-
-internal class MainScope(private val mainContext: CoroutineContext) : CoroutineScope {
-    override val coroutineContext: CoroutineContext
-        get() = mainContext + job + exceptionHandler
-
-    internal val job = SupervisorJob()
-    private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        showError(throwable)
+    companion object {
+        const val baseUrl = "https://api.data4life.local/consent/api/v1"
+        const val dataDonationKey = "data_donation"
     }
 
-    //TODO: Some way of exposing this to the caller without trapping a reference and freezing it.
-    private fun showError(t: Throwable) {
-        printThrowable(t)
+    private val client by lazy {
+        HttpClient {
+            install(JsonFeature)
+        }
+    }
+
+    suspend fun fetchConsentDocument(): String? {
+        return null
+    }
+
+    suspend fun createUserConsent(version: String, language: String?): UserConsent {
+        return client.post {
+            url("$baseUrl/userConsents")
+            contentType(ContentType.Application.Json)
+            body = ConsentCreation(dataDonationKey, version, "", language ?: "")
+        }
     }
 }

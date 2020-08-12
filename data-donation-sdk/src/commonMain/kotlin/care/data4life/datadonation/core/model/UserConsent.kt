@@ -32,9 +32,16 @@
 
 package care.data4life.datadonation.core.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class UserConsent(
     val consentDocumentKey: String,
     val consentDocumentVersion: String,
-    val accountId: String,
-    val event: String, // ENUM?
+    val accountId: String, // UUID
+    val event: String, // ENUM? -> ConsentEvent
     val createdAt: String /* Timestamp */)
+
+enum class ConsentEvent {
+    Consent, Revoke
+}

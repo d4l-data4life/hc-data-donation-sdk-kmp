@@ -30,21 +30,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.domain.usecases
+package care.data4life.datadonation.internal.data.model
 
-interface Usecase<ReturnType> {
-
-    suspend fun execute(): ReturnType
-
-}
-
-abstract class ParameterizedUsecase<Parameter : Any, ReturnType> : Usecase<ReturnType> {
-
-    protected lateinit var parameter: Parameter
-
-    fun withParams(parameter: Parameter): ParameterizedUsecase<Parameter, ReturnType> {
-        this.parameter = parameter
-        return this
-    }
-
-}
+data class ConsentCreation(
+    val consentDocumentKey: String,
+    val consentDocumentVersion: String,
+    val consentDate: String,
+    val notificationLanguage: String
+)

@@ -30,53 +30,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation
+package care.data4life.datadonation.internal.data.store
 
-import care.data4life.datadonation.core.listener.Callback
-import care.data4life.datadonation.core.listener.ResultListener
-import care.data4life.datadonation.core.model.ConsentDocument
-import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.UserConsent
-import care.data4life.datadonation.domain.usecases.CreateUserConsent
-import care.data4life.datadonation.internal.di.initKoin
-import org.koin.core.KoinComponent
-import org.koin.core.inject
+import care.data4life.datadonation.domain.repository.ConsentRepository
+import care.data4life.datadonation.internal.data.service.ConsentService
 
-class Client(donationKeyPair: KeyPair?, getUserSessionToken: () -> String?) : Contract.DataDonation,
-    KoinComponent {
+class ConsentDataStore(private val service: ConsentService): ConsentRepository.Remote {
 
-    private val createUserContent: CreateUserConsent by inject()
+    override suspend fun fetchConsentDocument(): String? = service.fetchConsentDocument()
 
-    init {
-        initKoin(donationKeyPair,getUserSessionToken)
-    }
-
-    override suspend fun fetchConsentDocument(
-        consentDocumentVersion: String?,
-        language: String?,
-        listener: ResultListener<List<ConsentDocument>>
-    ) {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun createUserConsent(
-        consentDocumentVersion: String,
-        language: String?,
-        callback: ResultListener<Pair<UserConsent, KeyPair>>
-    ) {
-        val params = CreateUserConsent.Parameters(consentDocumentVersion, language)
-        try {
-            callback.onSuccess(createUserContent.withParams(params).execute())
-        } catch (e: Exception) {
-            callback.onError(e)
-        }
-    }
-
-    override suspend fun fetchUserConsents(listener: ResultListener<List<UserConsent>>) {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun revokeUserConsent(language: String?, callback: Callback) {
-        TODO("Not yet implemented")
-    }
+    override suspend fun createUserConsent(version: String, language: String?) =
+        service.createUserConsent(version, language)
 }

@@ -30,14 +30,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.presentation.common
+package care.data4life.datadonation.domain.usecases
 
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
+import care.data4life.datadonation.core.model.KeyPair
+import care.data4life.datadonation.core.model.UserConsent
+import care.data4life.datadonation.domain.repository.ConsentRepository
 
-actual val defaultDispatcher: CoroutineDispatcher
-    get() = Dispatchers.Main
+class CreateUserConsent(private val repository: ConsentRepository) :
+    ParameterizedUsecase<CreateUserConsent.Parameters, Pair<UserConsent, KeyPair>>() {
 
-internal actual fun printThrowable(t: Throwable) {
-    t.printStackTrace()
+    override suspend fun execute(): Pair<UserConsent, KeyPair> {
+        val userConsent = repository.createUserConsent(parameter.version, parameter.language)
+        return Pair(userConsent, KeyPair(ByteArray(0), ByteArray(0)))
+    }
+
+    data class Parameters(val version: String, val language: String?)
 }

@@ -33,6 +33,10 @@
 package care.data4life.datadonation.internal.di
 
 import care.data4life.datadonation.core.model.KeyPair
+import care.data4life.datadonation.domain.repository.ConsentRepository
+import care.data4life.datadonation.domain.usecases.CreateUserConsent
+import care.data4life.datadonation.internal.data.service.ConsentService
+import care.data4life.datadonation.internal.data.store.ConsentDataStore
 import care.data4life.datadonation.internal.data.store.UserSessionTokenDataStore
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
@@ -52,14 +56,17 @@ internal fun initKoin(donationKeyPair: KeyPair?, getUserSessionToken: () -> Stri
 
 private val coreModule = module {
 
-    //DataStores
+    //Services
+    single { ConsentService() }
 
+    //DataStores
+    single<ConsentRepository.Remote> { ConsentDataStore(get()) }
 
     //Repositories
-
+    single { ConsentRepository(get()) }
 
     //Usecases
-
+    single { CreateUserConsent(get()) }
 }
 
 expect val platformModule: Module
