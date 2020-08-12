@@ -30,31 +30,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.di
+package care.data4life.datadonation.internal.data.store
 
-import org.koin.core.context.startKoin
-import org.koin.core.module.Module
-import org.koin.dsl.KoinAppDeclaration
-import org.koin.dsl.module
-
-fun initKoin(appDeclaration: KoinAppDeclaration = {}) = startKoin {
-    appDeclaration()
-    modules(
-        platformModule,
-        coreModule
-    )
+internal interface UserSessionTokenDataStore {
+    fun getUserSessionToken() : String?
 }
-
-private val coreModule = module {
-
-    //DataStores
-
-
-    //Repositories
-
-
-    //Usecases
-
-}
-
-expect val platformModule: Module
