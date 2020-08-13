@@ -30,10 +30,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.domain.usecases
+package care.data4life.datadonation.data.api
 
-interface Usecase<ReturnType> {
+import care.data4life.datadonation.data.models.ConsentDocument
+import io.ktor.client.HttpClient
+import io.ktor.client.features.json.JsonFeature
+import io.ktor.client.request.get
+import io.ktor.client.request.url
 
-    suspend fun execute(): ReturnType
+class ConsentApi() {
+    private val client by lazy {
+        HttpClient {
+            install(JsonFeature)
+        }
+    }
+
+    suspend fun fetchConsentDocument(dataDonationKey : String, version: String, language: String): ConsentDocument {
+        return client.get {
+            url("$baseUrl/admin/consentDocuments.json")
+        }
+    }
+    companion object {
+        private const val baseUrl = "https://api.data4life.local/consent/api/v1"
+    }
 
 }
