@@ -30,19 +30,34 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.domain.repository
+package care.data4life.datadonation.internal.domain.usecases
 
-import care.data4life.datadonation.core.model.UserConsent
+import care.data4life.datadonation.core.listener.ResultListener
 
-class ConsentRepository(private val remote: Remote) {
+interface Usecase<ReturnType> {
 
-    suspend fun fetchConsentDocument(): String? = remote.fetchConsentDocument()
+    suspend fun execute(): ReturnType
 
-    suspend fun createUserConsent(version: String, language: String?) =
-        remote.createUserConsent(version, language)
+}
 
-    interface Remote {
-        suspend fun fetchConsentDocument(): String?
-        suspend fun createUserConsent(version: String, language: String?): UserConsent
+abstract class ParameterizedUsecase<Parameter : Any, ReturnType> : Usecase<ReturnType> {
+
+    protected lateinit var parameter: Parameter
+
+    fun withParams(parameter: Parameter): ParameterizedUsecase<Parameter, ReturnType> {
+        this.parameter = parameter
+        return this
+    }
+
+}
+
+suspend fun <T : Any, R : Any> ParameterizedUsecase<T, R>.runWithParams(
+    parameters: T,
+    listener: ResultListener<R>
+) {
+    try {
+        listener.onSuccess(withParams(parameters).execute())
+    } catch (e: Exception) {
+        listener.onError(e)
     }
 }

@@ -37,7 +37,8 @@ import care.data4life.datadonation.core.listener.ResultListener
 import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.UserConsent
-import care.data4life.datadonation.domain.usecases.CreateUserConsent
+import care.data4life.datadonation.internal.domain.usecases.CreateUserConsent
+import care.data4life.datadonation.internal.domain.usecases.runWithParams
 import care.data4life.datadonation.internal.di.initKoin
 import org.koin.core.KoinComponent
 import org.koin.core.inject
@@ -64,12 +65,10 @@ class Client(donationKeyPair: KeyPair?, getUserSessionToken: () -> String?) : Co
         language: String?,
         callback: ResultListener<Pair<UserConsent, KeyPair>>
     ) {
-        val params = CreateUserConsent.Parameters(consentDocumentVersion, language)
-        try {
-            callback.onSuccess(createUserContent.withParams(params).execute())
-        } catch (e: Exception) {
-            callback.onError(e)
-        }
+        createUserContent.runWithParams(
+            CreateUserConsent.Parameters(consentDocumentVersion, language),
+            callback
+        )
     }
 
     override suspend fun fetchUserConsents(listener: ResultListener<List<UserConsent>>) {

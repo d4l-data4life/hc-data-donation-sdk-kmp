@@ -30,43 +30,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.di
+package care.data4life.datadonation.internal.domain.repository
 
-import care.data4life.datadonation.core.model.KeyPair
-import care.data4life.datadonation.internal.domain.repository.ConsentRepository
-import care.data4life.datadonation.internal.domain.usecases.CreateUserConsent
-import care.data4life.datadonation.internal.data.service.ConsentService
-import care.data4life.datadonation.internal.data.store.ConsentDataStore
-import care.data4life.datadonation.internal.data.store.UserSessionTokenDataStore
-import org.koin.core.context.startKoin
-import org.koin.core.module.Module
-import org.koin.dsl.module
+import care.data4life.datadonation.core.model.UserConsent
 
-internal fun initKoin(donationKeyPair: KeyPair?, getUserSessionToken: () -> String?) = startKoin {
-    modules(
-        module {
-            single<UserSessionTokenDataStore> { object : UserSessionTokenDataStore{
-                override fun getUserSessionToken(): String? = getUserSessionToken()
-            } }
-        },
-        platformModule,
-        coreModule
-    )
+class ConsentRepository(private val remote: Remote) {
+
+    suspend fun fetchConsentDocument(): String? = remote.fetchConsentDocument()
+
+    suspend fun createUserConsent(version: String, language: String?) =
+        remote.createUserConsent(version, language)
+
+    interface Remote {
+        suspend fun fetchConsentDocument(): String?
+        suspend fun createUserConsent(version: String, language: String?): UserConsent
+    }
 }
-
-private val coreModule = module {
-
-    //Services
-    single { ConsentService() }
-
-    //DataStores
-    single<ConsentRepository.Remote> { ConsentDataStore(get()) }
-
-    //Repositories
-    single { ConsentRepository(get()) }
-
-    //Usecases
-    single { CreateUserConsent(get()) }
-}
-
-expect val platformModule: Module

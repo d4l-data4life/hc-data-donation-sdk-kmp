@@ -30,21 +30,59 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.domain.usecases
+package care.data4life.datadonation.internal.domain.usecases
 
-interface Usecase<ReturnType> {
+import care.data4life.datadonation.core.listener.ResultListener
+import care.data4life.datadonation.core.model.KeyPair
+import care.data4life.datadonation.core.model.UserConsent
+import care.data4life.datadonation.internal.data.model.DummyData
+import care.data4life.datadonation.internal.domain.repository.ConsentRepository
+import io.mockk.*
+import runTest
+import kotlin.test.Ignore
+import kotlin.test.Test
 
-    suspend fun execute(): ReturnType
+abstract class CreateUserConsentTest {
 
-}
+    private val repository = mockk<ConsentRepository>()
+    private val usecase = CreateUserConsent(repository)
+    private val listener = spyk<CreateUserContentListener>()
 
-abstract class ParameterizedUsecase<Parameter : Any, ReturnType> : Usecase<ReturnType> {
+    @Test
+    fun createUserContentFullParams() = runTest {
+        //Given
+        coEvery { repository.createUserConsent(any(), any()) } returns DummyData.userConsent
 
-    protected lateinit var parameter: Parameter
+        //When
+        usecase.runWithParams(
+            CreateUserConsent.Parameters("version", "language"),
+            listener
+        )
 
-    fun withParams(parameter: Parameter): ParameterizedUsecase<Parameter, ReturnType> {
-        this.parameter = parameter
-        return this
+        //Then
+        coVerify(ordering = Ordering.SEQUENCE){
+            repository.createUserConsent(any(), any())
+            listener.onSuccess(any())
+        }
     }
 
+    @Ignore
+    @Test
+    fun createUserContentMissingLanguage() = runTest {
+
+    }
+
+    @Ignore
+    @Test
+    fun createUserContentWrongVersion() = runTest {
+
+    }
+
+    class CreateUserContentListener : ResultListener<Pair<UserConsent, KeyPair>> {
+        override fun onSuccess(t: Pair<UserConsent, KeyPair>) {
+        }
+
+        override fun onError(exception: Exception) {
+        }
+    }
 }

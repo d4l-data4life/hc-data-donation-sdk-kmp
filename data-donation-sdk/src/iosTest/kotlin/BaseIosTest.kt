@@ -1,3 +1,5 @@
+import kotlinx.coroutines.runBlocking
+
 /*
  * BSD 3-Clause License
  *
@@ -30,43 +32,4 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.di
-
-import care.data4life.datadonation.core.model.KeyPair
-import care.data4life.datadonation.internal.domain.repository.ConsentRepository
-import care.data4life.datadonation.internal.domain.usecases.CreateUserConsent
-import care.data4life.datadonation.internal.data.service.ConsentService
-import care.data4life.datadonation.internal.data.store.ConsentDataStore
-import care.data4life.datadonation.internal.data.store.UserSessionTokenDataStore
-import org.koin.core.context.startKoin
-import org.koin.core.module.Module
-import org.koin.dsl.module
-
-internal fun initKoin(donationKeyPair: KeyPair?, getUserSessionToken: () -> String?) = startKoin {
-    modules(
-        module {
-            single<UserSessionTokenDataStore> { object : UserSessionTokenDataStore{
-                override fun getUserSessionToken(): String? = getUserSessionToken()
-            } }
-        },
-        platformModule,
-        coreModule
-    )
-}
-
-private val coreModule = module {
-
-    //Services
-    single { ConsentService() }
-
-    //DataStores
-    single<ConsentRepository.Remote> { ConsentDataStore(get()) }
-
-    //Repositories
-    single { ConsentRepository(get()) }
-
-    //Usecases
-    single { CreateUserConsent(get()) }
-}
-
-expect val platformModule: Module
+internal actual fun <T> runTest(block: suspend () -> T) { runBlocking { block() } }

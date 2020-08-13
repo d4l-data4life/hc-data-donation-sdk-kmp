@@ -32,8 +32,7 @@
 
 package care.data4life.datadonation.internal.data.store
 
-import care.data4life.datadonation.core.model.UserConsent
-import care.data4life.datadonation.domain.repository.ConsentRepository
+import care.data4life.datadonation.internal.domain.repository.ConsentRepository
 import care.data4life.datadonation.internal.data.service.ConsentService
 
 class ConsentDataStore(private val service: ConsentService): ConsentRepository.Remote {

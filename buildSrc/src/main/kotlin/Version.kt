@@ -79,5 +79,5 @@ object Version {
     const val testJUnit = "4.13"
 
     // http://mockk.io
-    const val testMockk = "1.8.12"
+    const val testMockk = "1.10.0"
 }

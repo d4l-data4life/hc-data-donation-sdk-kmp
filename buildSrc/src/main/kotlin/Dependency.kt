@@ -136,9 +136,15 @@ object Dependency {
             const val common_runtime = "org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:${Version.protobuff}"
         }
 
+        val mockk = Mockk
+
+        object Mockk {
+            const val common = "io.mockk:mockk-common:${Version.testMockk}"
+            const val android = "io.mockk:mockk:${Version.testMockk}"
+        }
+
 
     }
-
 
     val test = Test
 
