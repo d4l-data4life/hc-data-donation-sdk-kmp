@@ -30,10 +30,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.di
+package care.data4life.datadonation.core.model
 
-import org.koin.dsl.module
-
-actual val platformModule = module {
-}
-
+data class UserConsent(
+    val consentDocumentKey: String,
+    val consentDocumentVersion: String,
+    val accountId: String,
+    val event: String, // ENUM?
+    val createdAt: String /* Timestamp */)
