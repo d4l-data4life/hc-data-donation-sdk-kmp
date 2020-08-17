@@ -30,22 +30,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.domain.usecases
+package care.data4life.datadonation.internal.data.model
 
-import care.data4life.datadonation.core.model.KeyPair
-import care.data4life.datadonation.core.model.UserConsent
-import care.data4life.datadonation.internal.domain.repository.ConsentRepository
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-class CreateUserConsent(private val consentRepository: ConsentRepository) :
-    ParameterizedUsecase<CreateUserConsent.Parameters, Pair<UserConsent, KeyPair>>() {
-
-    override suspend fun execute(): Pair<UserConsent, KeyPair> {
-        consentRepository.createUserConsent(parameter.version, parameter.language)
-        // Not sure if we really need to return the UserConsent here since it is not returned by `createUserConsent`
-        val userConsent = consentRepository.fetchConsentDocument().first()
-        val newKeyPair = KeyPair(ByteArray(0), ByteArray(0)) // TODO produce new valid KeyPair
-        return Pair(userConsent, newKeyPair)
-    }
-
-    data class Parameters(val version: String, val language: String?)
-}
+@Serializable
+data class TokenVerificationResult(@SerialName("studyID") val studyId: String,
+                                   @SerialName("externalID") val externalId: String,
+                                   val errors: String)

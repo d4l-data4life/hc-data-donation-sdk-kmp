@@ -51,7 +51,8 @@ abstract class CreateUserConsentTest {
     @Test
     fun createUserContentFullParams() = runTest {
         //Given
-        coEvery { repository.createUserConsent(any(), any()) } returns DummyData.userConsent
+        coEvery { repository.createUserConsent(any(), any()) } just Runs
+        coEvery { repository.fetchConsentDocument() } returns listOf(DummyData.userConsent)
 
         //When
         usecase.runWithParams(
@@ -62,6 +63,7 @@ abstract class CreateUserConsentTest {
         //Then
         coVerify(ordering = Ordering.SEQUENCE){
             repository.createUserConsent(any(), any())
+            repository.fetchConsentDocument()
             listener.onSuccess(any())
         }
     }

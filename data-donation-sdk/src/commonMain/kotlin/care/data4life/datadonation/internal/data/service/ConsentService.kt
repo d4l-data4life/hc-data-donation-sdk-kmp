@@ -33,9 +33,10 @@
 package care.data4life.datadonation.internal.data.service
 
 import care.data4life.datadonation.core.model.UserConsent
-import care.data4life.datadonation.internal.data.model.ConsentCreation
+import care.data4life.datadonation.internal.data.model.*
 import io.ktor.client.HttpClient
 import io.ktor.client.features.json.JsonFeature
+import io.ktor.client.features.json.serializer.KotlinxSerializer
 import io.ktor.client.request.post
 import io.ktor.client.request.url
 import io.ktor.http.ContentType
@@ -45,24 +46,34 @@ class ConsentService {
 
     companion object {
         const val baseUrl = "https://api.data4life.local/consent/api/v1"
-        const val dataDonationKey = "data_donation"
+        const val dataDonationKey = "data donation"
     }
 
     private val client by lazy {
         HttpClient {
-            install(JsonFeature)
+            install(JsonFeature) {
+                serializer = KotlinxSerializer() // Custom serializers can be added here if necessary
+            }
         }
     }
 
-    suspend fun fetchConsentDocument(): String? {
-        return null
+    suspend fun fetchConsentDocument(): List<UserConsent> {
+        return emptyList()
     }
 
-    suspend fun createUserConsent(version: String, language: String?): UserConsent {
+    suspend fun createUserConsent(version: String, language: String?): TokenVerificationResult {
         return client.post {
             url("$baseUrl/userConsents")
             contentType(ContentType.Application.Json)
-            body = ConsentCreation(dataDonationKey, version, "", language ?: "")
+            body = ConsentCreationPayload(dataDonationKey, version, "", language ?: "")
+        }
+    }
+
+    suspend fun requestSignature(message: String): ConsentSignature {
+        return client.post {
+            url("$baseUrl/userconsents/$dataDonationKey/signatures")
+            contentType(ContentType.Application.Json)
+            body = ConsentSigningRequest(dataDonationKey, message, ConsentSignatureType.ConsentOnce.apiValue)
         }
     }
 }

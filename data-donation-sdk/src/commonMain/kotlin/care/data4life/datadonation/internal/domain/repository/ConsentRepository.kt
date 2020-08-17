@@ -36,13 +36,13 @@ import care.data4life.datadonation.core.model.UserConsent
 
 class ConsentRepository(private val remote: Remote) {
 
-    suspend fun fetchConsentDocument(): String? = remote.fetchConsentDocument()
+    suspend fun fetchConsentDocument(): List<UserConsent> = remote.fetchConsentDocument()
 
     suspend fun createUserConsent(version: String, language: String?) =
         remote.createUserConsent(version, language)
 
     interface Remote {
-        suspend fun fetchConsentDocument(): String?
-        suspend fun createUserConsent(version: String, language: String?): UserConsent
+        suspend fun fetchConsentDocument(): List<UserConsent>
+        suspend fun createUserConsent(version: String, language: String?)
     }
 }
