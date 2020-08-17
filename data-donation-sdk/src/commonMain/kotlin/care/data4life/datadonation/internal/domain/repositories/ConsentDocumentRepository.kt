@@ -30,20 +30,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.domain.usecases
+package care.data4life.datadonation.internal.domain.repositories
 
-import care.data4life.datadonation.data.models.ConsentDocument
-import care.data4life.datadonation.domain.repositories.ConsentDocumentRepository
+import care.data4life.datadonation.core.model.ConsentDocument
 
-open class GetConsentDocument(private val consentDocumentRepository: ConsentDocumentRepository) :
-    ParameterizedUsecase<GetConsentDocument.Parameters, ConsentDocument>() {
 
-    override suspend fun execute(): ConsentDocument =
-        consentDocumentRepository.getConsentDocument(parameter.key, parameter.version, parameter.language)
+class ConsentDocumentRepository(private val remoteDS: Remote) {
 
-    sealed class Parameters {
-        abstract val key: String
-        abstract val language: String
-        abstract val version: String
+    suspend fun getConsentDocument(
+        key: String,
+        language: String,
+        version: String
+    ): ConsentDocument {
+        return remoteDS.getConsentDocument(key, language, version)
     }
+
+    interface Remote {
+
+        suspend fun getConsentDocument( dataDonationKey: String,
+                                        version: String,
+                                        language: String): ConsentDocument
+
+    }
+
+
 }

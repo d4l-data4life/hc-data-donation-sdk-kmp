@@ -32,11 +32,20 @@
 
 package care.data4life.datadonation.core.model
 
-data class ConsentDocument(
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+
+@Serializable
+data class ConsentDocument (
     val key: String,
-    val version: String,
+    val version: Int,
     val processor: String,
-    val recipient: String,
     val description: String,
+    val recipient: String,
     val language: String,
-    val text: String)
+    val text: String,
+    val requiresToken: Boolean,
+    @SerialName("studyID") val studyId: String,
+    val programName: String
+)
