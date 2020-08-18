@@ -30,40 +30,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.data.models
+package care.data4life.datadonation.internal.data.service
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import io.ktor.client.HttpClient
+import io.ktor.client.features.json.JsonFeature
 
-@Serializable
-data class ConsentDocument (
-    @SerialName("key")
-    val key: String,
+class DonationService() {
+    private val client by lazy {
+        HttpClient {
+            install(JsonFeature)
+        }
+    }
 
-    @SerialName("version")
-    val version: Int,
+    companion object {
+        private const val baseUrl = "https://api.data4life.local/donation/api/v1"
+    }
 
-    @SerialName("processor")
-    val processor: String,
-
-    @SerialName("description")
-    val description: String,
-
-    @SerialName("recipient")
-    val recipient: String,
-
-    @SerialName("language")
-    val language: String,
-
-    @SerialName("text")
-    val text: String,
-
-    @SerialName("requiresToken")
-    val requiresToken: Boolean,
-
-    @SerialName("studyID")
-    val studyId: String,
-
-    @SerialName("programName")
-    val programName: String
-)
+}

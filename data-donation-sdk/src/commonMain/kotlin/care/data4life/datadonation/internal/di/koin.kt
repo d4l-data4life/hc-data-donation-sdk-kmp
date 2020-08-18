@@ -32,8 +32,8 @@
 
 package care.data4life.datadonation.internal.di
 
-import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.internal.data.store.UserSessionTokenDataStore
+import care.data4life.datadonation.core.model.KeyPair
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
 import org.koin.dsl.module
@@ -41,7 +41,8 @@ import org.koin.dsl.module
 internal fun initKoin(donationKeyPair: KeyPair?, getUserSessionToken: () -> String?) = startKoin {
     modules(
         module {
-            single<UserSessionTokenDataStore> { object : UserSessionTokenDataStore{
+            single<UserSessionTokenDataStore> { object :
+                UserSessionTokenDataStore {
                 override fun getUserSessionToken(): String? = getUserSessionToken()
             } }
         },
@@ -52,13 +53,20 @@ internal fun initKoin(donationKeyPair: KeyPair?, getUserSessionToken: () -> Stri
 
 private val coreModule = module {
 
+    //Services
+    single { ConsentService() }
+    single { DonationService() }
+
     //DataStores
+    single<ConsentDocumentDatastore.Remote> { ConsentDocumentRepository(get(),get()) }
 
 
     //Repositories
+    single { ConsentDocumentRepository(get(), get()) }
 
 
     //Usecases
+    single { GetConsentDocument(get(), get()) }
 
 }
 

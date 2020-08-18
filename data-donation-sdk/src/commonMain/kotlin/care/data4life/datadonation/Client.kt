@@ -38,8 +38,11 @@ import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.di.initKoin
+import org.koin.core.inject
 
 class Client(donationKeyPair: KeyPair?, getUserSessionToken: () -> String?) : Contract.DataDonation {
+
+    private val getConsentDocument: GetConsentDocument by inject()
 
     init {
         initKoin(donationKeyPair,getUserSessionToken)
@@ -50,7 +53,10 @@ class Client(donationKeyPair: KeyPair?, getUserSessionToken: () -> String?) : Co
         language: String?,
         listener: ResultListener<List<ConsentDocument>>
     ) {
-        TODO("Not yet implemented")
+        getConsentDocument.runWithParams(
+            GetConsentDocument.Parameters(consentDocumentVersion, language),
+            listener
+        )
     }
 
     override fun createUserConsent(
