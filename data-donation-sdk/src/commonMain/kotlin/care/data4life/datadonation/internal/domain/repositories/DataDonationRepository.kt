@@ -30,19 +30,5 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.data.store
+package care.data4life.datadonation.internal.domain.repositories
 
-import care.data4life.datadonation.core.model.ConsentDocument
-import care.data4life.datadonation.internal.data.service.ConsentService
-import care.data4life.datadonation.internal.domain.repositories.ConsentDocumentRepository
-
-class ConsentDocumentDatastore(private val service: ConsentService) : ConsentDocumentRepository.Remote {
-
-    override suspend fun getConsentDocument(
-        dataDonationKey: String,
-        version: String,
-        language: String
-    ): ConsentDocument = service.fetchConsentDocument(dataDonationKey, version, language)
-
-
-}

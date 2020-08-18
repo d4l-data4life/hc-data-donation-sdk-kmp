@@ -30,19 +30,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.data.store
+package care.data4life.datadonation.internal.data.service
 
-import care.data4life.datadonation.core.model.ConsentDocument
-import care.data4life.datadonation.internal.data.service.ConsentService
-import care.data4life.datadonation.internal.domain.repositories.ConsentDocumentRepository
+import io.ktor.client.HttpClient
+import io.ktor.client.features.json.JsonFeature
 
-class ConsentDocumentDatastore(private val service: ConsentService) : ConsentDocumentRepository.Remote {
+class DonationService() {
+    private val client by lazy {
+        HttpClient {
+            install(JsonFeature)
+        }
+    }
 
-    override suspend fun getConsentDocument(
-        dataDonationKey: String,
-        version: String,
-        language: String
-    ): ConsentDocument = service.fetchConsentDocument(dataDonationKey, version, language)
-
+    companion object {
+        private const val baseUrl = "https://api.data4life.local/donation/api/v1"
+    }
 
 }
