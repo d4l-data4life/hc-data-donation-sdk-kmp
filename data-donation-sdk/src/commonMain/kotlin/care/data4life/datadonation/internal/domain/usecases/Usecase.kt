@@ -32,6 +32,8 @@
 
 package care.data4life.datadonation.internal.domain.usecases
 
+import care.data4life.datadonation.core.listener.ResultListener
+
 interface Usecase<ReturnType> {
 
     suspend fun execute(): ReturnType

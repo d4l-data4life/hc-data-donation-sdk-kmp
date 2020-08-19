@@ -38,25 +38,25 @@ import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.di.initKoin
-import org.koin.core.inject
+import care.data4life.datadonation.internal.domain.usecases.GetConsentDocument
+import care.data4life.datadonation.internal.domain.usecases.Usecase
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import org.koin.core.KoinApplication
 
 class Client(donationKeyPair: KeyPair?, getUserSessionToken: () -> String?) : Contract.DataDonation {
 
-    private val getConsentDocument: GetConsentDocument by inject()
-
-    init {
-        initKoin(donationKeyPair,getUserSessionToken)
-    }
-
+    private val koinApplication : KoinApplication = initKoin(donationKeyPair,getUserSessionToken)
+    private val getConsentDocument: GetConsentDocument by koinApplication.koin.inject()
+    private val context = GlobalScope
     override fun fetchConsentDocument(
         consentDocumentVersion: String?,
         language: String?,
         listener: ResultListener<List<ConsentDocument>>
     ) {
-        getConsentDocument.runWithParams(
-            GetConsentDocument.Parameters(consentDocumentVersion, language),
-            listener
-        )
+        getConsentDocument
+            .withParams(GetConsentDocument.Parameters(consentDocumentVersion, language))
+            .runForListener(listener)
     }
 
     override fun createUserConsent(
@@ -74,4 +74,18 @@ class Client(donationKeyPair: KeyPair?, getUserSessionToken: () -> String?) : Co
     override fun revokeUserConsent(language: String?, callback: Callback) {
         TODO("Not yet implemented")
     }
+
+    private fun <ReturnType : Any> Usecase<ReturnType>.runForListener(
+        listener: ResultListener<ReturnType>
+    ) {
+        context.launch {
+            try {
+               listener.onSuccess(this@runForListener.execute())
+            }catch (ex: Exception){
+                listener.onError(ex)
+            }
+        }
+    }
 }
+
+
