@@ -31,26 +31,3 @@
  */
 
 package care.data4life.datadonation.internal.domain.repositories
-
-import care.data4life.datadonation.core.model.ConsentDocument
-
-class ConsentDocumentRepository(private val remoteDS: Remote) {
-
-    suspend fun getConsentDocument(
-        key: String,
-        language: String,
-        version: String
-    ): ConsentDocument {
-        return remoteDS.getConsentDocument(key, language, version)
-    }
-
-    interface Remote {
-
-        suspend fun getConsentDocument( dataDonationKey: String,
-                                        version: String,
-                                        language: String): ConsentDocument
-
-    }
-
-
-}
