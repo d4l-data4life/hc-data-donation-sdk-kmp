@@ -47,7 +47,7 @@ class Client(donationKeyPair: KeyPair?, getUserSessionToken: () -> String?) : Co
 
     private val koinApplication = initKoin(donationKeyPair,getUserSessionToken)
     private val createUserContent: CreateUserConsent by koinApplication.koin.inject()
-    private val context = GlobalScope
+    private val context = GlobalScope //TODO use proper CoroutineScope
 
     override fun fetchConsentDocument(
         consentDocumentVersion: String?,
