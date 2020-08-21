@@ -7,7 +7,8 @@ plugins {
     // Android
     id("com.android.library")
 
-    // DB
+    // Publish
+    id("maven-publish")
 }
 
 version = LibraryConfig.version
@@ -15,6 +16,7 @@ group = LibraryConfig.group
 
 
 kotlin {
+
     android("android") {
         publishLibraryVariants("release")
     }
@@ -25,21 +27,24 @@ kotlin {
         iosArm64("ios")
     } else {
         iosX64("ios")
-    }
+    }   
 
     targets.getByName<KotlinNativeTarget>("ios").compilations["main"].kotlinOptions.freeCompilerArgs +=
         listOf("-Xobjc-generics", "-Xg0")
+
+    targets.withType<KotlinNativeTarget> {
+        binaries.framework(listOf(RELEASE))
+    }
 
     sourceSets {
         all {
             languageSettings.apply {
                 useExperimentalAnnotation("kotlinx.coroutines.ExperimentalCoroutinesApi")
                 useExperimentalAnnotation("kotlinx.serialization.InternalSerializationApi")
+                useExperimentalAnnotation("kotlin.ExperimentalStdlibApi")
+                useExperimentalAnnotation("kotlin.ExperimentalUnsignedTypes")
             }
         }
-    }
-
-    sourceSets {
         commonMain {
             dependencies {
                 implementation(Dependency.Multiplatform.kotlin.stdlibCommon)
@@ -163,3 +168,69 @@ android {
     }
 }
 
+publishing {
+    repositories {
+        maven {
+            name = "GithubPackages"
+            url = uri("https://maven.pkg.github.com/gesundheitscloud/data-donation-sdk-native")
+            credentials {
+                username = (project.findProperty("gpr.user") ?: System.getenv("USERNAME")).toString()
+                password = (project.findProperty("gpr.key") ?: System.getenv("TOKEN")).toString()
+            }
+        }
+
+        publications {
+            all {
+                if( this is MavenPublication){
+                    groupId = LibraryConfig.githubGroup
+                    artifactId = LibraryConfig.artifactId
+                    version = LibraryConfig.version
+
+                    when (name) {
+                        "androidRelease" -> {
+                            artifactId = "${project.name}-android"
+                        }
+                        "metadata" -> {
+                            artifactId = "${project.name}-metadata"
+                        }
+                        "jvm" -> {
+                            artifactId = "${project.name}-jvm"
+                        }
+                        "ios" -> {
+                            artifactId = "${project.name}-ios"
+                        }
+                        else -> {
+                            artifactId = "${project.name}-common"
+                        }
+                    }
+
+                    pom {
+                        name.set(LibraryConfig.name)
+                        url.set(LibraryConfig.url)
+                        inceptionYear.set(LibraryConfig.inceptionYear)
+                        licenses {
+                            license {
+                                name.set(LibraryConfig.licenseName)
+                                url.set(LibraryConfig.licenseUrl)
+                                distribution.set(LibraryConfig.licenseDistribution)
+                            }
+                        }
+                        developers {
+                            developer {
+                                id.set(LibraryConfig.developerId)
+                                name.set(LibraryConfig.developerName)
+                                email.set(LibraryConfig.developerEmail)
+                            }
+                        }
+
+                        scm {
+                            connection.set(LibraryConfig.scmConnection)
+                            developerConnection.set(LibraryConfig.scmDeveloperConnection)
+                            url.set(LibraryConfig.scmUrl)
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
