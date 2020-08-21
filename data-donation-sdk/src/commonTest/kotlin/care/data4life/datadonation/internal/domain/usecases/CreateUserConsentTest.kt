@@ -88,3 +88,15 @@ abstract class CreateUserConsentTest {
         }
     }
 }
+
+suspend fun <T : Any, R : Any> ParameterizedUsecase<T, R>.runWithParams(
+    parameters: T,
+    listener: ResultListener<R>
+) {
+    try {
+        listener.onSuccess(withParams(parameters).execute())
+    } catch (e: Exception) {
+        listener.onError(e)
+    }
+}
+

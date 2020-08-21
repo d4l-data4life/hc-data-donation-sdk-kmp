@@ -41,20 +41,20 @@ import care.data4life.datadonation.core.model.UserConsent
 interface Contract {
 
     interface DataDonation {
-        suspend fun fetchConsentDocument(
+        fun fetchConsentDocument(
             consentDocumentVersion: String?,
             language: String?,
             listener : ResultListener<List<ConsentDocument>>
         )
 
-        suspend fun createUserConsent(
+        fun createUserConsent(
             consentDocumentVersion: String,
             language: String?,
             callback: ResultListener<Pair<UserConsent, KeyPair>>)
 
-        suspend fun fetchUserConsents(listener: ResultListener<List<UserConsent>>)
+        fun fetchUserConsents(listener: ResultListener<List<UserConsent>>)
 
-        suspend fun revokeUserConsent(language: String?,callback: Callback)
+        fun revokeUserConsent(language: String?,callback: Callback)
 
         /** TODO Donation with FHIR models
          * fun <T : DomainResource> donateResource(
