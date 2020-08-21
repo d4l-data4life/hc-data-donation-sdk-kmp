@@ -30,24 +30,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.presentation.common
+package care.data4life.datadonation.internal.data.store
 
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Runnable
-import platform.darwin.dispatch_async
-import platform.darwin.dispatch_get_main_queue
-import kotlin.coroutines.CoroutineContext
+import care.data4life.datadonation.internal.data.service.DonationService
+import care.data4life.datadonation.internal.domain.repositories.RegistrationRepository
 
-actual val defaultDispatcher: CoroutineDispatcher
-    get() = IosMainDispatcher
+class RegistrationDataStore(val donationService: DonationService): RegistrationRepository.Remote {
 
-private object IosMainDispatcher : CoroutineDispatcher() {
+    override suspend fun requestRegistrationToken() = donationService.requestRegistrationToken()
 
-    override fun dispatch(context: CoroutineContext, block: Runnable) {
-        dispatch_async(dispatch_get_main_queue()) { block.run() }
-    }
-}
+    override suspend fun registerNewDonor(data: ByteArray) = donationService.registerNewDonor(data)
 
-internal actual fun printThrowable(t: Throwable) {
-    t.printStackTrace()
 }

@@ -42,7 +42,7 @@ class ConsentDocumentDatastore(private val service: ConsentService) : ConsentDoc
         dataDonationKey: String,
         version: String,
         language: String
-    ): ConsentDocument = service.fetchConsentDocument(dataDonationKey, version, language)
+    ): List<ConsentDocument> = service.fetchConsentDocument(dataDonationKey, version, language)
 
 
 }

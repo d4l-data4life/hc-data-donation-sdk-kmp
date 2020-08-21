@@ -33,10 +33,15 @@
 package care.data4life.datadonation.internal.data.service
 
 import care.data4life.datadonation.core.model.ConsentDocument
+import care.data4life.datadonation.core.model.UserConsent
+import care.data4life.datadonation.internal.data.model.*
 import io.ktor.client.HttpClient
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.request.get
+import io.ktor.client.request.post
 import io.ktor.client.request.url
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
 
 class ConsentService() {
     private val client by lazy {
@@ -45,13 +50,31 @@ class ConsentService() {
         }
     }
 
-    suspend fun fetchConsentDocument(dataDonationKey : String, version: String, language: String): ConsentDocument {
+    suspend fun fetchConsentDocument(dataDonationKey : String, version: String, language: String): List<ConsentDocument> {
         return client.get {
             url("$baseUrl/admin/consentDocuments.json")
         }
     }
+
+    suspend fun createUserConsent(version: String, language: String?): TokenVerificationResult {
+        return client.post {
+            url("$baseUrl/userConsents")
+            contentType(ContentType.Application.Json)
+            body = ConsentCreationPayload(dataDonationKey, version, "", language ?: "")
+        }
+    }
+
+    suspend fun requestSignature(message: String): ConsentSignature {
+        return client.post {
+            url("$baseUrl/userconsents/$dataDonationKey/signatures")
+            contentType(ContentType.Application.Json)
+            body = ConsentSigningRequest(dataDonationKey, message, ConsentSignatureType.ConsentOnce.apiValue)
+        }
+    }
+
     companion object {
         private const val baseUrl = "https://api.data4life.local/consent/api/v1"
+        const val dataDonationKey = "data donation"
     }
 
 }

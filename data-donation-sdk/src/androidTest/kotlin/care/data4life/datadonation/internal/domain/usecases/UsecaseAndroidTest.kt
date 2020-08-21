@@ -30,46 +30,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.data.service
+package care.data4life.datadonation.internal.domain.usecases
 
-import care.data4life.datadonation.internal.data.model.*
-import io.ktor.client.HttpClient
-import io.ktor.client.features.json.JsonFeature
-import io.ktor.client.features.json.serializer.KotlinxSerializer
-import io.ktor.client.request.get
-import io.ktor.client.request.put
-import io.ktor.client.request.url
-import io.ktor.http.ContentType
-import io.ktor.http.contentType
-import io.ktor.utils.io.ByteWriteChannel
-import kotlinx.io.ByteArrayInputStream
-import kotlinx.io.ByteArrayOutputStream
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
-class DonationService {
-
-    companion object {
-        const val baseUrl = "https://api-donation.local/api/v1"
-    }
-
-    private val client by lazy {
-        HttpClient {
-            install(JsonFeature) {
-                serializer = KotlinxSerializer() // Custom serializers can be added here if necessary
-            }
-        }
-    }
-
-    suspend fun requestRegistrationToken(): String {
-        return client.get {
-            url("$baseUrl/token")
-        }
-    }
-
-    suspend fun registerNewDonor(data: ByteArray) {
-        return client.put {
-            url("$baseUrl/userConsents")
-            contentType(ContentType.Application.OctetStream)
-            // TODO create body from data
-        }
-    }
-}
+@RunWith(JUnit4::class)
+class CreateUserConsentAndroidTest : CreateUserConsentTest()

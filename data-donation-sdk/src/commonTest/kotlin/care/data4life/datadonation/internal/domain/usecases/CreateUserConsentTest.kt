@@ -30,57 +30,61 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.di
+package care.data4life.datadonation.internal.domain.usecases
 
+import care.data4life.datadonation.core.listener.ResultListener
 import care.data4life.datadonation.core.model.KeyPair
-import care.data4life.datadonation.internal.domain.usecases.CreateUserConsent
-import care.data4life.datadonation.internal.data.service.ConsentService
-import care.data4life.datadonation.internal.data.service.DonationService
-import care.data4life.datadonation.internal.data.store.RegistrationDataStore
-import care.data4life.datadonation.internal.data.store.UserConsentDataStore
-import care.data4life.datadonation.internal.data.store.UserSessionTokenDataStore
-import care.data4life.datadonation.internal.domain.repositories.RegistrationRepository
+import care.data4life.datadonation.core.model.UserConsent
+import care.data4life.datadonation.internal.data.model.DummyData
 import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
-import org.koin.core.context.startKoin
-import org.koin.core.module.Module
-import org.koin.dsl.module
+import io.mockk.*
+import runTest
+import kotlin.test.Ignore
+import kotlin.test.Test
 
-internal fun initKoin(donationKeyPair: KeyPair?, getUserSessionToken: () -> String?) = startKoin {
-    modules(
-        module {
-            single<UserSessionTokenDataStore> { object : UserSessionTokenDataStore{
-                override fun getUserSessionToken(): String? = getUserSessionToken()
-            } }
-        },
-        platformModule,
-        coreModule
-    )
-}
+abstract class CreateUserConsentTest {
 
-private val coreModule = module {
+    private val repository = mockk<UserConsentRepository>()
+    private val usecase = CreateUserConsent(repository)
+    private val listener = spyk<CreateUserContentListener>()
 
-    //Services
-    single { ConsentService() }
-    single { DonationService() }
+    @Test
+    fun createUserContentFullParams() = runTest {
+        //Given
+        coEvery { repository.createUserConsent(any(), any()) } just Runs
+        coEvery { repository.fetchUserConsents() } returns listOf(DummyData.userConsent)
 
-    //DataStores
-    single<UserConsentRepository.Remote> { UserConsentDataStore(get()) }
-    single<RegistrationRepository.Remote> { RegistrationDataStore(get()) }
-
-    //Repositories
-    single {
-        UserConsentRepository(
-            get()
+        //When
+        usecase.runWithParams(
+            CreateUserConsent.Parameters("version", "language"),
+            listener
         )
-    }
-    single {
-        RegistrationRepository(
-            get()
-        )
+
+        //Then
+        coVerify(ordering = Ordering.SEQUENCE){
+            repository.createUserConsent(any(), any())
+            repository.fetchUserConsents()
+            listener.onSuccess(any())
+        }
     }
 
-    //Usecases
-    single { CreateUserConsent(get()) }
-}
+    @Ignore
+    @Test
+    fun createUserContentMissingLanguage() = runTest {
 
-expect val platformModule: Module
+    }
+
+    @Ignore
+    @Test
+    fun createUserContentWrongVersion() = runTest {
+
+    }
+
+    class CreateUserContentListener : ResultListener<Pair<UserConsent, KeyPair>> {
+        override fun onSuccess(t: Pair<UserConsent, KeyPair>) {
+        }
+
+        override fun onError(exception: Exception) {
+        }
+    }
+}

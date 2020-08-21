@@ -37,15 +37,22 @@ import care.data4life.datadonation.core.listener.ResultListener
 import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.UserConsent
+import care.data4life.datadonation.internal.domain.usecases.CreateUserConsent
+import care.data4life.datadonation.internal.domain.usecases.runWithParams
 import care.data4life.datadonation.internal.di.initKoin
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 
-class Client(donationKeyPair: KeyPair?, getUserSessionToken: () -> String?) : Contract.DataDonation {
+class Client(donationKeyPair: KeyPair?, getUserSessionToken: () -> String?) : Contract.DataDonation,
+    KoinComponent {
+
+    private val createUserContent: CreateUserConsent by inject()
 
     init {
         initKoin(donationKeyPair,getUserSessionToken)
     }
 
-    override fun fetchConsentDocument(
+    override suspend fun fetchConsentDocument(
         consentDocumentVersion: String?,
         language: String?,
         listener: ResultListener<List<ConsentDocument>>
@@ -53,19 +60,22 @@ class Client(donationKeyPair: KeyPair?, getUserSessionToken: () -> String?) : Co
         TODO("Not yet implemented")
     }
 
-    override fun createUserConsent(
+    override suspend fun createUserConsent(
         consentDocumentVersion: String,
         language: String?,
         callback: ResultListener<Pair<UserConsent, KeyPair>>
     ) {
+        createUserContent.runWithParams(
+            CreateUserConsent.Parameters(consentDocumentVersion, language),
+            callback
+        )
+    }
+
+    override suspend fun fetchUserConsents(listener: ResultListener<List<UserConsent>>) {
         TODO("Not yet implemented")
     }
 
-    override fun fetchUserConsents(listener: ResultListener<List<UserConsent>>) {
-        TODO("Not yet implemented")
-    }
-
-    override fun revokeUserConsent(language: String?, callback: Callback) {
+    override suspend fun revokeUserConsent(language: String?, callback: Callback) {
         TODO("Not yet implemented")
     }
 }

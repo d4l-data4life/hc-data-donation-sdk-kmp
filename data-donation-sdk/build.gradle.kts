@@ -62,6 +62,8 @@ kotlin {
             dependencies {
                 implementation(Dependency.Multiplatform.kotlin.testCommon)
                 implementation(Dependency.Multiplatform.kotlin.testCommonAnnotations)
+                implementation(Dependency.Multiplatform.mockk.common)
+                implementation(Dependency.Multiplatform.koin.test)
             }
         }
 
@@ -87,6 +89,8 @@ kotlin {
             dependencies {
                 implementation(Dependency.Multiplatform.kotlin.testJvm)
                 implementation(Dependency.Multiplatform.kotlin.testJvmJunit)
+                implementation(Dependency.Multiplatform.coroutines.test)
+                implementation(Dependency.Multiplatform.mockk.android)
             }
         }
 

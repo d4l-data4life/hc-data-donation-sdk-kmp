@@ -31,3 +31,18 @@
  */
 
 package care.data4life.datadonation.internal.domain.repositories
+
+import care.data4life.datadonation.core.model.UserConsent
+
+class UserConsentRepository(private val remote: Remote) {
+
+    suspend fun createUserConsent(version: String, language: String?) =
+        remote.createUserConsent(version, language)
+
+    suspend fun fetchUserConsents(): List<UserConsent> = remote.fetchUserConsents()
+
+    interface Remote {
+        suspend fun createUserConsent(version: String, language: String?)
+        suspend fun fetchUserConsents(): List<UserConsent>
+    }
+}
