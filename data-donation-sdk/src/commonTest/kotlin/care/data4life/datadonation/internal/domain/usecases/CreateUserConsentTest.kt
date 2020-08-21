@@ -30,36 +30,61 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation
+package care.data4life.datadonation.internal.domain.usecases
 
-import care.data4life.datadonation.core.listener.Callback
 import care.data4life.datadonation.core.listener.ResultListener
-import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.UserConsent
+import care.data4life.datadonation.internal.data.model.DummyData
+import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
+import io.mockk.*
+import runTest
+import kotlin.test.Ignore
+import kotlin.test.Test
 
-interface Contract {
+abstract class CreateUserConsentTest {
 
-    interface DataDonation {
-        suspend fun fetchConsentDocument(
-            consentDocumentVersion: String,
-            language: String,
-            listener : ResultListener<List<ConsentDocument>>
+    private val repository = mockk<UserConsentRepository>()
+    private val usecase = CreateUserConsent(repository)
+    private val listener = spyk<CreateUserContentListener>()
+
+    @Test
+    fun createUserContentFullParams() = runTest {
+        //Given
+        coEvery { repository.createUserConsent(any(), any()) } just Runs
+        coEvery { repository.fetchUserConsents() } returns listOf(DummyData.userConsent)
+
+        //When
+        usecase.runWithParams(
+            CreateUserConsent.Parameters("version", "language"),
+            listener
         )
 
-        suspend fun createUserConsent(
-            consentDocumentVersion: String,
-            language: String?,
-            callback: ResultListener<Pair<UserConsent, KeyPair>>)
+        //Then
+        coVerify(ordering = Ordering.SEQUENCE){
+            repository.createUserConsent(any(), any())
+            repository.fetchUserConsents()
+            listener.onSuccess(any())
+        }
+    }
 
-        suspend fun fetchUserConsents(listener: ResultListener<List<UserConsent>>)
+    @Ignore
+    @Test
+    fun createUserContentMissingLanguage() = runTest {
 
-        suspend fun revokeUserConsent(language: String?,callback: Callback)
+    }
 
-        /** TODO Donation with FHIR models
-         * fun <T : DomainResource> donateResource(
-         * resource: T,
-         * callback: Callback)
-         * */
+    @Ignore
+    @Test
+    fun createUserContentWrongVersion() = runTest {
+
+    }
+
+    class CreateUserContentListener : ResultListener<Pair<UserConsent, KeyPair>> {
+        override fun onSuccess(t: Pair<UserConsent, KeyPair>) {
+        }
+
+        override fun onError(exception: Exception) {
+        }
     }
 }

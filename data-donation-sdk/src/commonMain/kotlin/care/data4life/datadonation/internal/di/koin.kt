@@ -32,12 +32,15 @@
 
 package care.data4life.datadonation.internal.di
 
-import care.data4life.datadonation.internal.data.store.UserSessionTokenDataStore
 import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.internal.data.service.ConsentService
 import care.data4life.datadonation.internal.data.service.DonationService
-import care.data4life.datadonation.internal.data.store.ConsentDocumentDatastore
-import care.data4life.datadonation.internal.domain.repositories.ConsentDocumentRepository
+import care.data4life.datadonation.internal.data.store.RegistrationDataStore
+import care.data4life.datadonation.internal.data.store.UserConsentDataStore
+import care.data4life.datadonation.internal.data.store.UserSessionTokenDataStore
+import care.data4life.datadonation.internal.domain.repositories.RegistrationRepository
+import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
+import care.data4life.datadonation.internal.domain.usecases.CreateUserConsent
 import care.data4life.datadonation.internal.domain.usecases.GetConsentDocument
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
@@ -46,10 +49,12 @@ import org.koin.dsl.module
 internal fun initKoin(donationKeyPair: KeyPair?, getUserSessionToken: () -> String?) = startKoin {
     modules(
         module {
-            single<UserSessionTokenDataStore> { object :
-                UserSessionTokenDataStore {
-                override fun getUserSessionToken(): String? = getUserSessionToken()
-            } }
+            single<UserSessionTokenDataStore> {
+                object :
+                    UserSessionTokenDataStore {
+                    override fun getUserSessionToken(): String? = getUserSessionToken()
+                }
+            }
         },
         platformModule,
         coreModule
@@ -62,17 +67,26 @@ private val coreModule = module {
     single { ConsentService() }
     single { DonationService() }
 
-    //DataStores
-    single< ConsentDocumentRepository.Remote> { ConsentDocumentDatastore(get()) }
 
+    //DataStores
+    single<UserConsentRepository.Remote> { UserConsentDataStore(get()) }
+    single<RegistrationRepository.Remote> { RegistrationDataStore(get()) }
 
     //Repositories
-    single { ConsentDocumentRepository(get()) }
-
+    single {
+        UserConsentRepository(
+            get()
+        )
+    }
+    single {
+        RegistrationRepository(
+            get()
+        )
+    }
 
     //Usecases
+    single { CreateUserConsent(get()) }
     single { GetConsentDocument(get()) }
-
 }
 
 expect val platformModule: Module

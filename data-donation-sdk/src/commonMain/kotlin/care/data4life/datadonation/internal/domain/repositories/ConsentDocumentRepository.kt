@@ -47,7 +47,7 @@ class ConsentDocumentRepository(private val remoteDS: Remote) {
 
     interface Remote {
 
-        suspend fun getConsentDocument( dataDonationKey: String,
+        suspend fun getConsentDocument(dataDonationKey: String,
                                         version: String,
                                         language: String): List<ConsentDocument>
 

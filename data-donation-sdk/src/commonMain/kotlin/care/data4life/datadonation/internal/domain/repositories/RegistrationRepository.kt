@@ -30,14 +30,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.presentation.common
+package care.data4life.datadonation.internal.domain.repositories
 
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
+class RegistrationRepository(private val remote: Remote) {
 
-actual val defaultDispatcher: CoroutineDispatcher
-    get() = Dispatchers.Main
+    suspend fun requestRegistrationToken() = remote.requestRegistrationToken()
 
-internal actual fun printThrowable(t: Throwable) {
-    t.printStackTrace()
+    suspend fun registerNewDonor(data: ByteArray) = remote.registerNewDonor(data)
+
+    interface Remote {
+        suspend fun requestRegistrationToken(): String
+        suspend fun registerNewDonor(data: ByteArray)
+    }
 }

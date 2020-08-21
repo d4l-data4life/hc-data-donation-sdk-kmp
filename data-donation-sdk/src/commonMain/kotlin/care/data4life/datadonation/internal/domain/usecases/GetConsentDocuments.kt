@@ -30,46 +30,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.data.service
+package care.data4life.datadonation.internal.domain.usecases
 
-import care.data4life.datadonation.internal.data.model.*
-import io.ktor.client.HttpClient
-import io.ktor.client.features.json.JsonFeature
-import io.ktor.client.features.json.serializer.KotlinxSerializer
-import io.ktor.client.request.get
-import io.ktor.client.request.put
-import io.ktor.client.request.url
-import io.ktor.http.ContentType
-import io.ktor.http.contentType
-import io.ktor.utils.io.ByteWriteChannel
-import kotlinx.io.ByteArrayInputStream
-import kotlinx.io.ByteArrayOutputStream
+import care.data4life.datadonation.core.model.ConsentDocument
+import care.data4life.datadonation.internal.domain.repositories.ConsentDocumentRepository
 
-class DonationService {
+open class GetConsentDocument(private val consentDocumentRepository: ConsentDocumentRepository) :
+    ParameterizedUsecase<GetConsentDocument.Parameters, List<ConsentDocument>>() {
 
     companion object {
-        const val baseUrl = "https://api-donation.local/api/v1"
+        const val DOCUMENT_KEYWORD= "data donation"
     }
 
-    private val client by lazy {
-        HttpClient {
-            install(JsonFeature) {
-                serializer = KotlinxSerializer() // Custom serializers can be added here if necessary
-            }
-        }
-    }
+    override suspend fun execute(): List<ConsentDocument> =
+        consentDocumentRepository.getConsentDocument(
+            DOCUMENT_KEYWORD,
+            parameter.version,
+            parameter.language
+        )
 
-    suspend fun requestRegistrationToken(): String {
-        return client.get {
-            url("$baseUrl/token")
-        }
-    }
-
-    suspend fun registerNewDonor(data: ByteArray) {
-        return client.put {
-            url("$baseUrl/userConsents")
-            contentType(ContentType.Application.OctetStream)
-            // TODO create body from data
-        }
-    }
+    data class Parameters (val language: String, val version: String)
 }

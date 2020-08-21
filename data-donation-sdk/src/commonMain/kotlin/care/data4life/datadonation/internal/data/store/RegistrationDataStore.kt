@@ -30,29 +30,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.domain.usecases
+package care.data4life.datadonation.internal.data.store
 
-import care.data4life.datadonation.core.model.ConsentDocument
-import care.data4life.datadonation.internal.domain.repositories.ConsentDocumentRepository
+import care.data4life.datadonation.internal.data.service.DonationService
+import care.data4life.datadonation.internal.domain.repositories.RegistrationRepository
 
-open class GetConsentDocument(private val consentDocumentRepository: ConsentDocumentRepository) :
-    ParameterizedUsecase<GetConsentDocument.Parameters, List<ConsentDocument>>() {
+class RegistrationDataStore(val donationService: DonationService): RegistrationRepository.Remote {
 
-    private val DONATION_KEY =
-        "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqwTD2GY3SClkbmDVtgIE\n" +
-                "it7RGK1MqK8G1n6f7N7qixBTzTbtHCG0Z/gS7fGhZ3PlOJJZdrQakNvtNAk91i05\n" +
-                "IffIo1Uw3501R3wvv7KJ8NtT5EIvHL8/7nZBTl+M4+FwFS60VGS3C0ZRWuuNe8SP\n" +
-                "yuVrf/0ZYfI+jXVzhdUJ3qkm11GPQ4jSVKivDRISkPBgEXk36lm9+IsqC6Fk3dsv\n" +
-                "eON0/CEMpxvpTBWu5vc3t6qNAWO0qWVVc0XcJt9nKsTi1D75TC5JuvujpgLOKnJj\n" +
-                "Wt1u6JeH+bnf828NsURM/HJjU8iYksFkEateoX59qbqadWyaTmBU7gb406l2CdwF\n" +
-                "JQIDAQAB"
+    override suspend fun requestRegistrationToken() = donationService.requestRegistrationToken()
 
-    override suspend fun execute(): List<ConsentDocument> =
-        consentDocumentRepository.getConsentDocument(
-            DONATION_KEY,
-            parameter.version,
-            parameter.language
-        )
+    override suspend fun registerNewDonor(data: ByteArray) = donationService.registerNewDonor(data)
 
-    data class Parameters (val language: String, val version: String)
 }

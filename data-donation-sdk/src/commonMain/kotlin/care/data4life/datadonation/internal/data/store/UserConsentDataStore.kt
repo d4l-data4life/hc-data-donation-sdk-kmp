@@ -30,24 +30,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.presentation.common
+package care.data4life.datadonation.internal.data.store
 
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Runnable
-import platform.darwin.dispatch_async
-import platform.darwin.dispatch_get_main_queue
-import kotlin.coroutines.CoroutineContext
+import care.data4life.datadonation.core.model.UserConsent
+import care.data4life.datadonation.internal.data.service.ConsentService
+import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
 
-actual val defaultDispatcher: CoroutineDispatcher
-    get() = IosMainDispatcher
+class UserConsentDataStore(private val service: ConsentService): UserConsentRepository.Remote {
 
-private object IosMainDispatcher : CoroutineDispatcher() {
-
-    override fun dispatch(context: CoroutineContext, block: Runnable) {
-        dispatch_async(dispatch_get_main_queue()) { block.run() }
+    override suspend fun createUserConsent(version: String, language: String?) {
+        service.createUserConsent(version, language)
     }
-}
 
-internal actual fun printThrowable(t: Throwable) {
-    t.printStackTrace()
+    override suspend fun fetchUserConsents(): List<UserConsent> {
+        TODO()
+    }
+
 }
