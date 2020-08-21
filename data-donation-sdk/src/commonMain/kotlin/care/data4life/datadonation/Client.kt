@@ -50,8 +50,8 @@ class Client(donationKeyPair: KeyPair?, getUserSessionToken: () -> String?) : Co
     private val getConsentDocument: GetConsentDocument by koinApplication.koin.inject()
     private val context = GlobalScope
     override fun fetchConsentDocument(
-        consentDocumentVersion: String?,
-        language: String?,
+        consentDocumentVersion: String,
+        language: String,
         listener: ResultListener<List<ConsentDocument>>
     ) {
         getConsentDocument

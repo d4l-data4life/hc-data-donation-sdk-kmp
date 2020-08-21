@@ -54,5 +54,5 @@ open class GetConsentDocument(private val consentDocumentRepository: ConsentDocu
             parameter.language
         )
 
-    data class Parameters (val language: String?, val version: String?)
+    data class Parameters (val language: String, val version: String)
 }
