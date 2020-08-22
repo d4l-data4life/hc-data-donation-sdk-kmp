@@ -41,6 +41,9 @@ import care.data4life.datadonation.internal.data.store.UserConsentDataStore
 import care.data4life.datadonation.internal.data.store.UserSessionTokenDataStore
 import care.data4life.datadonation.internal.domain.repositories.RegistrationRepository
 import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
+import io.ktor.client.HttpClient
+import io.ktor.client.features.json.JsonFeature
+import io.ktor.client.features.json.serializer.KotlinxSerializer
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
 import org.koin.dsl.module
@@ -59,9 +62,18 @@ internal fun initKoin(donationKeyPair: KeyPair?, getUserSessionToken: () -> Stri
 
 private val coreModule = module {
 
+    //
+    single {
+        HttpClient {
+            install(JsonFeature) {
+                serializer = KotlinxSerializer() // Custom serializers can be added here if necessary
+            }
+        }
+    }
+
     //Services
-    single { ConsentService() }
-    single { DonationService() }
+    single { ConsentService(get()) }
+    single { DonationService(get()) }
 
     //DataStores
     single<UserConsentRepository.Remote> { UserConsentDataStore(get()) }

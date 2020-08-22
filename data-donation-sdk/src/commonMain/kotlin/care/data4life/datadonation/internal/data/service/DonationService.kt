@@ -32,31 +32,17 @@
 
 package care.data4life.datadonation.internal.data.service
 
-import care.data4life.datadonation.internal.data.model.*
 import io.ktor.client.HttpClient
-import io.ktor.client.features.json.JsonFeature
-import io.ktor.client.features.json.serializer.KotlinxSerializer
 import io.ktor.client.request.get
 import io.ktor.client.request.put
 import io.ktor.client.request.url
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
-import io.ktor.utils.io.ByteWriteChannel
-import kotlinx.io.ByteArrayInputStream
-import kotlinx.io.ByteArrayOutputStream
 
-class DonationService {
+class DonationService(private val client :HttpClient) {
 
     companion object {
         const val baseUrl = "https://api-donation.local/api/v1"
-    }
-
-    private val client by lazy {
-        HttpClient {
-            install(JsonFeature) {
-                serializer = KotlinxSerializer() // Custom serializers can be added here if necessary
-            }
-        }
     }
 
     suspend fun requestRegistrationToken(): String {

@@ -32,45 +32,55 @@
 
 package care.data4life.datadonation.internal.data.service
 
-import care.data4life.datadonation.core.model.ConsentDocument
-import care.data4life.datadonation.core.model.UserConsent
-import care.data4life.datadonation.internal.data.model.*
+import care.data4life.datadonation.internal.data.model.TokenVerificationResult
 import io.ktor.client.HttpClient
+import io.ktor.client.engine.config
+import io.ktor.client.engine.mock.*
 import io.ktor.client.features.json.JsonFeature
-import io.ktor.client.request.get
-import io.ktor.client.request.header
-import io.ktor.client.request.post
-import io.ktor.client.request.url
+import io.ktor.client.features.json.serializer.KotlinxSerializer
+import io.ktor.client.request.HttpRequestData
 import io.ktor.http.ContentType
-import io.ktor.http.contentType
+import io.ktor.http.HttpMethod
+import io.ktor.http.headersOf
+import kotlinx.serialization.*
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonConfiguration
+import runTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
-class ConsentService(private val client:HttpClient) {
+abstract class ConsentServiceTest {
 
-    suspend fun fetchConsentDocument(dataDonationKey : String, version: String, language: String): List<ConsentDocument> {
-        return client.get {
-            url("$baseUrl/admin/consentDocuments.json")
-        }
+    private lateinit var service: ConsentService
+    private lateinit var lastRequest : HttpRequestData
+    private val tokenVerificationResult = TokenVerificationResult("StudyId","externalId","")
+
+    @Test
+    fun createUserConsentTest() = runTest {
+        //Given
+        givenConsentServiceResponseWith(TokenVerificationResult.serializer(), tokenVerificationResult)
+
+        //When
+        val result = service.createUserConsent("1",null)
+
+        //Then
+        assertEquals(result,tokenVerificationResult)
+        assertEquals(lastRequest.method, HttpMethod.Post)
     }
 
-    suspend fun createUserConsent(version: String, language: String?): TokenVerificationResult {
-        return client.post {
-            url("$baseUrl/userConsents")
-            contentType(ContentType.Application.Json)
-            body = ConsentCreationPayload(dataDonationKey, version, "", language ?: "")
+    private fun <T> givenConsentServiceResponseWith(strategy: SerializationStrategy<T>, response : T) {
+        val engine= MockEngine.config {
+            addHandler { request ->
+                lastRequest  = request
+                respond(Json(JsonConfiguration.Stable).stringify(strategy, response),
+                    headers = headersOf("Content-Type", ContentType.Application.Json.toString())) }
         }
-    }
-
-    suspend fun requestSignature(message: String): ConsentSignature {
-        return client.post {
-            url("$baseUrl/userconsents/$dataDonationKey/signatures")
-            contentType(ContentType.Application.Json)
-            body = ConsentSigningRequest(dataDonationKey, message, ConsentSignatureType.ConsentOnce.apiValue)
-        }
-    }
-
-    companion object {
-        private const val baseUrl = "https://api.data4life.local/consent/api/v1"
-        const val dataDonationKey = "data donation"
+        service= ConsentService(HttpClient(engine){
+            install(JsonFeature){
+                serializer = KotlinxSerializer(Json(JsonConfiguration.Stable))
+                accept(ContentType.Application.Json)
+            }
+        })
     }
 
 }
