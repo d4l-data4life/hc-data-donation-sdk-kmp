@@ -43,7 +43,7 @@ import io.ktor.client.request.url
 
 class ConsentService(private val client: HttpClient, environment: Environment) {
 
-    private val baseUrl = "https://${environment.url}/consent/api/v1"
+    private val baseUrl = "${environment.url}/consent/api/v1"
 
     suspend fun fetchConsentDocument(
         dataDonationKey: String,
@@ -65,7 +65,8 @@ class ConsentService(private val client: HttpClient, environment: Environment) {
     suspend fun createUserConsent(version: String, language: String?): TokenVerificationResult {
         return client.postWithBody(
             "",//TODO
-            "$baseUrl/$userConsentsEndpoint",
+            baseUrl,
+            Endpoints.userConsents,
             ConsentCreationPayload(dataDonationKey, version, "", language ?: "")
         )
     }
@@ -73,7 +74,8 @@ class ConsentService(private val client: HttpClient, environment: Environment) {
     suspend fun requestSignature(message: String): ConsentSignature {
         return client.postWithBody(
             "",//TODO
-            "$baseUrl/$userConsentsEndpoint/$dataDonationKey/signatures",
+            baseUrl,
+            "${Endpoints.userConsents}/$dataDonationKey/signatures",
             ConsentSigningRequest(
                 dataDonationKey,
                 message,
@@ -83,8 +85,16 @@ class ConsentService(private val client: HttpClient, environment: Environment) {
     }
 
     companion object {
-        private const val userConsentsEndpoint = "userConsents"
         const val dataDonationKey = "data donation"
+
+        object Endpoints {
+            const val userConsents = "userConsents"
+        }
+
+        object Parameters {
+            const val consentDocumentKey = "consentDocumentKey"
+            const val latest = "latest"
+        }
     }
 
 }
