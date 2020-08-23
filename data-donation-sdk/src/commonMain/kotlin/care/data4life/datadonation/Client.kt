@@ -37,15 +37,15 @@ import care.data4life.datadonation.core.listener.ResultListener
 import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.UserConsent
-import care.data4life.datadonation.internal.domain.usecases.CreateUserConsent
 import care.data4life.datadonation.internal.di.initKoin
+import care.data4life.datadonation.internal.domain.usecases.CreateUserConsent
 import care.data4life.datadonation.internal.domain.usecases.Usecase
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-class Client(donationKeyPair: KeyPair?, getUserSessionToken: () -> String?) : Contract.DataDonation {
+class Client(configuration: Contract.Configuration) : Contract.DataDonation {
 
-    private val koinApplication = initKoin(donationKeyPair,getUserSessionToken)
+    private val koinApplication = initKoin(configuration)
     private val createUserContent: CreateUserConsent by koinApplication.koin.inject()
     private val context = GlobalScope //TODO use proper CoroutineScope
 

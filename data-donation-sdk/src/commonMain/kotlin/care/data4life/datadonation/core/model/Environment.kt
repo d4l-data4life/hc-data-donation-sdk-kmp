@@ -30,45 +30,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation
+package care.data4life.datadonation.core.model
 
-import care.data4life.datadonation.core.listener.Callback
-import care.data4life.datadonation.core.listener.ResultListener
-import care.data4life.datadonation.core.model.ConsentDocument
-import care.data4life.datadonation.core.model.Environment
-import care.data4life.datadonation.core.model.KeyPair
-import care.data4life.datadonation.core.model.UserConsent
-
-interface Contract {
-
-    interface Configuration {
-        fun getDonationKeyPair(): KeyPair?
-        fun getUserSessionToken(): String?
-        fun getEnvironment(): Environment
-    }
-
-    interface DataDonation {
-        fun fetchConsentDocument(
-            consentDocumentVersion: String?,
-            language: String?,
-            listener: ResultListener<List<ConsentDocument>>
-        )
-
-        fun createUserConsent(
-            consentDocumentVersion: String,
-            language: String?,
-            callback: ResultListener<Pair<UserConsent, KeyPair>>)
-
-        fun fetchUserConsents(listener: ResultListener<List<UserConsent>>)
-
-        fun revokeUserConsent(language: String?,callback: Callback)
-
-        /** TODO Donation with FHIR models
-         * fun <T : DomainResource> donateResource(
-         * resource: T,
-         * callback: Callback)
-         * */
-    }
+enum class Environment(val url: String) {
+    LOCAL("api.data4life.local"),
+    DEV("api-phdp-dev.hpsgc.de"),
+    SANDBOX("api-phdp-sandbox.hpsgc.de"),
+    STAGING("api-staging.data4life.care"),
+    PRODUCTION("api.data4life.care")
 }
-
-

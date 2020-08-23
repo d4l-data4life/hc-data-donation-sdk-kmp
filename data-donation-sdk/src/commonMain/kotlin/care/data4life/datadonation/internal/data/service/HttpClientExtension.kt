@@ -35,6 +35,7 @@ package care.data4life.datadonation.internal.data.service
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.header
+import io.ktor.client.request.post
 import io.ktor.client.request.url
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
@@ -50,7 +51,7 @@ suspend inline fun <reified T> HttpClient.postWithBody(
     accessToken: String,
     query: String,
     body: Any
-): T = get {
+): T = post {
     header("Authorization", "Bearer $accessToken")
     url(query)
     contentType(ContentType.Application.Json)

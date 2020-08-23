@@ -33,14 +33,21 @@
 package care.data4life.datadonation.internal.data.service
 
 import care.data4life.datadonation.core.model.ConsentDocument
+import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.internal.data.model.*
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.url
 
-class ConsentService(private val client:HttpClient) {
+class ConsentService(private val client: HttpClient, environment: Environment) {
 
-    suspend fun fetchConsentDocument(dataDonationKey : String, version: String, language: String): List<ConsentDocument> {
+    private val baseUrl = "https://${environment.url}/consent/api/v1"
+
+    suspend fun fetchConsentDocument(
+        dataDonationKey: String,
+        version: String,
+        language: String
+    ): List<ConsentDocument> {
         return client.get {
             url("$baseUrl/admin/consentDocuments.json")
         }
@@ -67,7 +74,6 @@ class ConsentService(private val client:HttpClient) {
     }
 
     companion object {
-        private const val baseUrl = "https://api.data4life.local/consent/api/v1"
         private const val userConsentsEndpoint = "userConsents"
         const val dataDonationKey = "data donation"
     }
