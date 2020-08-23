@@ -32,55 +32,27 @@
 
 package care.data4life.datadonation.internal.data.service
 
-import care.data4life.datadonation.core.model.ConsentDocument
-import care.data4life.datadonation.internal.data.model.*
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
+import io.ktor.client.request.header
 import io.ktor.client.request.url
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
 
-class ConsentService(private val client: HttpClient) {
-
-    suspend fun fetchConsentDocument(
-        dataDonationKey: String,
-        version: String,
-        language: String
-    ): List<ConsentDocument> {
-        return client.get {
-            url("$baseUrl/admin/consentDocuments.json")
-        }
+suspend inline fun <reified T> HttpClient.getWithQuery(accessToken: String, query: String): T =
+    get {
+        header("Authorization", "Bearer $accessToken")
+        url(query)
+        contentType(ContentType.Application.Json)
     }
 
-    suspend fun fetchUserConsents(accessToken: String, latest: Boolean?): List<UserConsent> {
-        return client.getWithQuery(
-            accessToken,
-            "$baseUrl/$userConsentsEndpoint?consentDocumentKey=$dataDonationKey&latest=$latest"
-        )
-    }
-
-    suspend fun createUserConsent(version: String, language: String?): TokenVerificationResult {
-        return client.postWithBody(
-            "",//TODO
-            "$baseUrl/$userConsentsEndpoint",
-            ConsentCreationPayload(dataDonationKey, version, "", language ?: "")
-        )
-    }
-
-    suspend fun requestSignature(message: String): ConsentSignature {
-        return client.postWithBody(
-            "",//TODO
-            "$baseUrl/$userConsentsEndpoint/$dataDonationKey/signatures",
-            ConsentSigningRequest(
-                dataDonationKey,
-                message,
-                ConsentSignatureType.ConsentOnce.apiValue
-            )
-        )
-    }
-
-    companion object {
-        private const val baseUrl = "https://api.data4life.local/consent/api/v1"
-        private const val userConsentsEndpoint = "userConsents"
-        const val dataDonationKey = "data donation"
-    }
-
+suspend inline fun <reified T> HttpClient.postWithBody(
+    accessToken: String,
+    query: String,
+    body: Any
+): T = get {
+    header("Authorization", "Bearer $accessToken")
+    url(query)
+    contentType(ContentType.Application.Json)
+    this.body = body
 }
