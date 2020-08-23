@@ -33,27 +33,34 @@
 package care.data4life.datadonation.internal.data.service
 
 import io.ktor.client.HttpClient
+import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.post
-import io.ktor.client.request.url
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 
-suspend inline fun <reified T> HttpClient.getWithQuery(accessToken: String, query: String): T =
-    get {
+suspend inline fun <reified T> HttpClient.getWithQuery(
+    accessToken: String,
+    baseUrl: String,
+    path: String,
+    block: HttpRequestBuilder.() -> Unit = {}
+): T =
+    get(scheme = "https", host = baseUrl, path = path) {
         header("Authorization", "Bearer $accessToken")
-        url(query)
         contentType(ContentType.Application.Json)
+        apply(block)
     }
 
 suspend inline fun <reified T> HttpClient.postWithBody(
     accessToken: String,
-    query: String,
-    body: Any
-): T = post {
+    baseUrl: String,
+    path: String,
+    body: Any,
+    block: HttpRequestBuilder.() -> Unit = {}
+): T = post(scheme = "https", host = baseUrl, path = path) {
     header("Authorization", "Bearer $accessToken")
-    url(query)
     contentType(ContentType.Application.Json)
     this.body = body
+    apply(block)
 }
