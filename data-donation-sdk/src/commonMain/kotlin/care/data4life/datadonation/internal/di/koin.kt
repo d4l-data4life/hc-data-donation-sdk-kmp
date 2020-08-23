@@ -85,16 +85,8 @@ private val coreModule = module {
     single<RegistrationRepository.Remote> { RegistrationDataStore(get()) }
 
     //Repositories
-    single {
-        UserConsentRepository(
-            get()
-        )
-    }
-    single {
-        RegistrationRepository(
-            get()
-        )
-    }
+    single { UserConsentRepository(get(), get()) }
+    single { RegistrationRepository(get()) }
 
     //Usecases
     single { CreateUserConsent(get()) }
