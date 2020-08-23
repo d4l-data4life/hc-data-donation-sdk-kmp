@@ -33,7 +33,9 @@
 package care.data4life.datadonation.internal.data.service
 
 import care.data4life.datadonation.core.model.Environment
+import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.model.TokenVerificationResult
+import care.data4life.datadonation.internal.data.service.ConsentService.Companion.dataDonationKey
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.config
 import io.ktor.client.engine.mock.MockEngine
@@ -45,39 +47,69 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpMethod
 import io.ktor.http.headersOf
 import kotlinx.serialization.SerializationStrategy
+import kotlinx.serialization.builtins.list
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 import runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 abstract class ConsentServiceTest {
 
     private lateinit var service: ConsentService
     private lateinit var lastRequest : HttpRequestData
-    private val tokenVerificationResult = TokenVerificationResult("StudyId","externalId","")
+    private val tokenVerificationResult = TokenVerificationResult("StudyId", "externalId", "")
+    private val userConsent = UserConsent("key", "version", "accountId", "event", "0")
 
     @Test
     fun createUserConsentTest() = runTest {
         //Given
-        givenConsentServiceResponseWith(TokenVerificationResult.serializer(), tokenVerificationResult)
+        givenConsentServiceResponseWith(
+            TokenVerificationResult.serializer(),
+            tokenVerificationResult
+        )
 
         //When
-        val result = service.createUserConsent("1",null)
+        val result = service.createUserConsent("1", null)
 
         //Then
         assertEquals(result, tokenVerificationResult)
         assertEquals(HttpMethod.Post, lastRequest.method)
     }
 
-    private fun <T> givenConsentServiceResponseWith(strategy: SerializationStrategy<T>, response : T) {
-        val engine= MockEngine.config {
+    @Test
+    fun fetchUserConsentsTest() = runTest {
+        //Given
+        givenConsentServiceResponseWith(UserConsent.serializer().list, listOf(userConsent))
+
+        //When
+        val result = service.fetchUserConsents("T", false)
+
+        //Then
+        assertEquals(listOf(userConsent), result)
+        assertEquals(HttpMethod.Get, lastRequest.method)
+        assertEquals(ConsentService.Companion.Endpoints.userConsents, lastRequest.url.encodedPath)
+        assertTrue(lastRequest.url.parameters.contains("consentDocumentKey"))
+        assertEquals(lastRequest.url.parameters["consentDocumentKey"], dataDonationKey)
+        assertTrue(lastRequest.url.parameters.contains("latest"))
+        assertEquals(lastRequest.url.parameters["latest"], false.toString())
+    }
+
+    private fun <T> givenConsentServiceResponseWith(
+        strategy: SerializationStrategy<T>,
+        response: T
+    ) {
+        val engine = MockEngine.config {
             addHandler { request ->
-                lastRequest  = request
-                respond(Json(JsonConfiguration.Stable).stringify(strategy, response),
-                    headers = headersOf("Content-Type", ContentType.Application.Json.toString())) }
+                lastRequest = request
+                respond(
+                    Json(JsonConfiguration.Stable).stringify(strategy, response),
+                    headers = headersOf("Content-Type", ContentType.Application.Json.toString())
+                )
+            }
         }
-        service= ConsentService(HttpClient(engine) {
+        service = ConsentService(HttpClient(engine) {
             install(JsonFeature) {
                 serializer = KotlinxSerializer(Json(JsonConfiguration.Stable))
                 accept(ContentType.Application.Json)
