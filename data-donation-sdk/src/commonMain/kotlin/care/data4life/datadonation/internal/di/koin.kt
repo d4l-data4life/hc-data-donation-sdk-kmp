@@ -32,8 +32,7 @@
 
 package care.data4life.datadonation.internal.di
 
-import care.data4life.datadonation.core.model.KeyPair
-import care.data4life.datadonation.internal.domain.usecases.CreateUserConsent
+import care.data4life.datadonation.Contract
 import care.data4life.datadonation.internal.data.service.ConsentService
 import care.data4life.datadonation.internal.data.service.DonationService
 import care.data4life.datadonation.internal.data.store.RegistrationDataStore
@@ -41,6 +40,7 @@ import care.data4life.datadonation.internal.data.store.UserConsentDataStore
 import care.data4life.datadonation.internal.data.store.UserSessionTokenDataStore
 import care.data4life.datadonation.internal.domain.repositories.RegistrationRepository
 import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
+import care.data4life.datadonation.internal.domain.usecases.CreateUserConsent
 import io.ktor.client.HttpClient
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.json.serializer.KotlinxSerializer
@@ -48,12 +48,16 @@ import org.koin.core.context.startKoin
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
-internal fun initKoin(donationKeyPair: KeyPair?, getUserSessionToken: () -> String?) = startKoin {
+internal fun initKoin(configuration: Contract.Configuration) = startKoin {
     modules(
         module {
-            single<UserSessionTokenDataStore> { object : UserSessionTokenDataStore{
-                override fun getUserSessionToken(): String? = getUserSessionToken()
-            } }
+            single<UserSessionTokenDataStore> {
+                object : UserSessionTokenDataStore {
+                    override fun getUserSessionToken(): String? =
+                        configuration.getUserSessionToken()
+                }
+            }
+            single { configuration.getEnvironment() }
         },
         platformModule,
         coreModule
@@ -66,14 +70,15 @@ private val coreModule = module {
     single {
         HttpClient {
             install(JsonFeature) {
-                serializer = KotlinxSerializer() // Custom serializers can be added here if necessary
+                serializer =
+                    KotlinxSerializer() // Custom serializers can be added here if necessary
             }
         }
     }
 
     //Services
-    single { ConsentService(get()) }
-    single { DonationService(get()) }
+    single { ConsentService(get(), get()) }
+    single { DonationService(get(), get()) }
 
     //DataStores
     single<UserConsentRepository.Remote> { UserConsentDataStore(get()) }

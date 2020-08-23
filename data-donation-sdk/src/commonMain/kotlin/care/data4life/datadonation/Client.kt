@@ -44,9 +44,9 @@ import care.data4life.datadonation.internal.domain.usecases.Usecase
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-class Client(donationKeyPair: KeyPair?, getUserSessionToken: () -> String?) : Contract.DataDonation {
+class Client(configuration: Contract.Configuration) : Contract.DataDonation {
 
-    private val koinApplication = initKoin(donationKeyPair,getUserSessionToken)
+    private val koinApplication = initKoin(configuration)
     private val createUserContent: CreateUserConsent by koinApplication.koin.inject()
     private val fetchUserConsents: FetchUserConsents by koinApplication.koin.inject()
     private val context = GlobalScope //TODO use proper CoroutineScope

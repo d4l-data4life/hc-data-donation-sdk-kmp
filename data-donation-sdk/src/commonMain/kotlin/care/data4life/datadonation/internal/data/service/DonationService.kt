@@ -32,6 +32,7 @@
 
 package care.data4life.datadonation.internal.data.service
 
+import care.data4life.datadonation.core.model.Environment
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.put
@@ -39,11 +40,9 @@ import io.ktor.client.request.url
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 
-class DonationService(private val client :HttpClient) {
+class DonationService(private val client: HttpClient, environment: Environment) {
 
-    companion object {
-        const val baseUrl = "https://api-donation.local/api/v1"
-    }
+    private val baseUrl = "https://${environment.url}/donation/api/v1"
 
     suspend fun requestRegistrationToken(): String {
         return client.get {

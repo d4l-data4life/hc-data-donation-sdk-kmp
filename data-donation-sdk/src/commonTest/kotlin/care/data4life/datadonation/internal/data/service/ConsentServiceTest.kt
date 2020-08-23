@@ -32,17 +32,19 @@
 
 package care.data4life.datadonation.internal.data.service
 
+import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.internal.data.model.TokenVerificationResult
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.config
-import io.ktor.client.engine.mock.*
+import io.ktor.client.engine.mock.MockEngine
+import io.ktor.client.engine.mock.respond
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.json.serializer.KotlinxSerializer
 import io.ktor.client.request.HttpRequestData
 import io.ktor.http.ContentType
 import io.ktor.http.HttpMethod
 import io.ktor.http.headersOf
-import kotlinx.serialization.*
+import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 import runTest
@@ -64,8 +66,8 @@ abstract class ConsentServiceTest {
         val result = service.createUserConsent("1",null)
 
         //Then
-        assertEquals(result,tokenVerificationResult)
-        assertEquals(lastRequest.method, HttpMethod.Post)
+        assertEquals(result, tokenVerificationResult)
+        assertEquals(HttpMethod.Post, lastRequest.method)
     }
 
     private fun <T> givenConsentServiceResponseWith(strategy: SerializationStrategy<T>, response : T) {
@@ -75,12 +77,12 @@ abstract class ConsentServiceTest {
                 respond(Json(JsonConfiguration.Stable).stringify(strategy, response),
                     headers = headersOf("Content-Type", ContentType.Application.Json.toString())) }
         }
-        service= ConsentService(HttpClient(engine){
-            install(JsonFeature){
+        service= ConsentService(HttpClient(engine) {
+            install(JsonFeature) {
                 serializer = KotlinxSerializer(Json(JsonConfiguration.Stable))
                 accept(ContentType.Application.Json)
             }
-        })
+        }, Environment.LOCAL)
     }
 
 }
