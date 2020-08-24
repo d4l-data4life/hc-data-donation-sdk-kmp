@@ -33,48 +33,59 @@
 package care.data4life.datadonation.internal.data.service
 
 import care.data4life.datadonation.core.model.ConsentDocument
-import care.data4life.datadonation.core.model.UserConsent
+import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.internal.data.model.*
 import io.ktor.client.HttpClient
-import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.request.get
-import io.ktor.client.request.post
 import io.ktor.client.request.url
-import io.ktor.http.ContentType
-import io.ktor.http.contentType
 
-class ConsentService() {
-    private val client by lazy {
-        HttpClient {
-            install(JsonFeature)
-        }
-    }
+class ConsentService(private val client: HttpClient, environment: Environment) {
 
-    suspend fun fetchConsentDocument(dataDonationKey : String, version: String, language: String): List<ConsentDocument> {
+    private val baseUrl = "${environment.url}/consent/api/v1"
+
+    suspend fun fetchConsentDocument(
+        dataDonationKey: String,
+        version: String,
+        language: String
+    ): List<ConsentDocument> {
         return client.get {
             url("$baseUrl/admin/consentDocuments.json")
         }
     }
 
     suspend fun createUserConsent(version: String, language: String?): TokenVerificationResult {
-        return client.post {
-            url("$baseUrl/userConsents")
-            contentType(ContentType.Application.Json)
-            body = ConsentCreationPayload(dataDonationKey, version, "", language ?: "")
-        }
+        return client.postWithBody(
+            "",//TODO
+            baseUrl,
+            Endpoints.userConsents,
+            ConsentCreationPayload(dataDonationKey, version, "", language ?: "")
+        )
     }
 
     suspend fun requestSignature(message: String): ConsentSignature {
-        return client.post {
-            url("$baseUrl/userconsents/$dataDonationKey/signatures")
-            contentType(ContentType.Application.Json)
-            body = ConsentSigningRequest(dataDonationKey, message, ConsentSignatureType.ConsentOnce.apiValue)
-        }
+        return client.postWithBody(
+            "",//TODO
+            baseUrl,
+            "${Endpoints.userConsents}/$dataDonationKey/signatures",
+            ConsentSigningRequest(
+                dataDonationKey,
+                message,
+                ConsentSignatureType.ConsentOnce.apiValue
+            )
+        )
     }
 
     companion object {
-        private const val baseUrl = "https://api.data4life.local/consent/api/v1"
         const val dataDonationKey = "data donation"
+
+        object Endpoints {
+            const val userConsents = "userConsents"
+        }
+
+        object Parameters {
+            const val consentDocumentKey = "consentDocumentKey"
+            const val latest = "latest"
+        }
     }
 
 }

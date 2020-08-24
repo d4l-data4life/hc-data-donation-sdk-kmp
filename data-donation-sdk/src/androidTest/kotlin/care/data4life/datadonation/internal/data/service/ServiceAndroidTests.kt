@@ -30,14 +30,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.data.model
+package care.data4life.datadonation.internal.data.service
 
-import kotlinx.serialization.Serializable
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
-@Serializable
-data class ConsentCreationPayload(
-    val consentDocumentKey: String,
-    val consentDocumentVersion: String,
-    val consentDate: String,
-    val notificationLanguage: String
-)
+@RunWith(JUnit4::class)
+class ConsentServiceAndroidTest : ConsentServiceTest()

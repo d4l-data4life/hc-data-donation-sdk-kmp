@@ -33,55 +33,52 @@
 package care.data4life.datadonation.internal.domain.usecases
 
 import care.data4life.datadonation.core.listener.ResultListener
-import care.data4life.datadonation.core.model.KeyPair
-import care.data4life.datadonation.core.model.UserConsent
-import care.data4life.datadonation.internal.data.model.DummyData
-import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
+import care.data4life.datadonation.core.model.ConsentDocument
+import care.data4life.datadonation.internal.domain.repositories.ConsentDocumentRepository
 import io.mockk.*
 import runTest
 import kotlin.test.Ignore
 import kotlin.test.Test
 
-abstract class CreateUserConsentTest {
+abstract class GetDocumentConsentTest {
 
-    private val repository = mockk<UserConsentRepository>()
-    private val usecase = CreateUserConsent(repository)
-    private val listener = spyk<CreateUserContentListener>()
+    private val consentDocumentRepository = mockk<ConsentDocumentRepository>()
+    private val consentDocument = GetConsentDocuments(consentDocumentRepository)
+    private val listener = spyk<DocumentContentListener>()
+    private var consentDocDummy = ConsentDocument("", 1, "","","","en","",true,"","")
 
     @Test
     fun createUserContentFullParams() = runTest {
         //Given
-        coEvery { repository.createUserConsent(any(), any()) } just Runs
-        coEvery { repository.fetchUserConsents() } returns listOf(DummyData.userConsent)
+        coEvery { consentDocumentRepository.getConsentDocument(any(), any(), any()) } returns listOf(consentDocDummy)
 
         //When
-        usecase.runWithParams(
-            CreateUserConsent.Parameters("version", "language"),
+        consentDocument.runWithParams(
+            GetConsentDocuments.Parameters("version", "en"),
             listener
         )
 
         //Then
         coVerify(ordering = Ordering.SEQUENCE){
-            repository.createUserConsent(any(), any())
-            repository.fetchUserConsents()
+            consentDocumentRepository.getConsentDocument(any(), any(), any())
             listener.onSuccess(any())
         }
     }
 
     @Ignore
     @Test
-    fun createUserContentMissingLanguage() = runTest {
+    fun getConsentDocumentMissingLanguage() = runTest {
 
     }
 
     @Ignore
     @Test
-    fun createUserContentWrongVersion() = runTest {
+    fun getConsentDocumentWrongVersion() = runTest {
 
     }
 
-    class CreateUserContentListener : ResultListener<Pair<UserConsent, KeyPair>> {
-        override fun onSuccess(t: Pair<UserConsent, KeyPair>) {
+    class DocumentContentListener : ResultListener<List<ConsentDocument>> {
+        override fun onSuccess(t: List<ConsentDocument>) {
         }
 
         override fun onError(exception: Exception) {
@@ -89,14 +86,5 @@ abstract class CreateUserConsentTest {
     }
 }
 
-suspend fun <T : Any, R : Any> ParameterizedUsecase<T, R>.runWithParams(
-    parameters: T,
-    listener: ResultListener<R>
-) {
-    try {
-        listener.onSuccess(withParams(parameters).execute())
-    } catch (e: Exception) {
-        listener.onError(e)
-    }
-}
 
+}

@@ -35,19 +35,16 @@ package care.data4life.datadonation.internal.domain.usecases
 import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.internal.domain.repositories.ConsentDocumentRepository
 
-open class GetConsentDocument(private val consentDocumentRepository: ConsentDocumentRepository) :
-    ParameterizedUsecase<GetConsentDocument.Parameters, List<ConsentDocument>>() {
+open class GetConsentDocuments(private val consentDocumentRepository: ConsentDocumentRepository) :
+    ParameterizedUsecase<GetConsentDocuments.Parameters, List<ConsentDocument>>() {
 
     companion object {
         const val DOCUMENT_KEYWORD= "data donation"
     }
 
-    override suspend fun execute(): List<ConsentDocument> =
-        consentDocumentRepository.getConsentDocument(
-            DOCUMENT_KEYWORD,
-            parameter.version,
-            parameter.language
-        )
 
-    data class Parameters (val language: String, val version: String)
+    override suspend fun execute(): List<ConsentDocument> =
+        consentDocumentRepository.getConsentDocument(DOCUMENT_KEYWORD, parameter.version, parameter.language)
+
+    data class Parameters(val version: String, val language: String)
 }

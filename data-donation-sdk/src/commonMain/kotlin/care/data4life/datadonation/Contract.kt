@@ -35,26 +35,34 @@ package care.data4life.datadonation
 import care.data4life.datadonation.core.listener.Callback
 import care.data4life.datadonation.core.listener.ResultListener
 import care.data4life.datadonation.core.model.ConsentDocument
+import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.UserConsent
 
 interface Contract {
 
+    interface Configuration {
+        fun getDonationKeyPair(): KeyPair?
+        fun getUserSessionToken(): String?
+        fun getEnvironment(): Environment
+    }
+
     interface DataDonation {
-        suspend fun fetchConsentDocument(
+        fun fetchConsentDocument(
             consentDocumentVersion: String,
             language: String,
-            listener : ResultListener<List<ConsentDocument>>
+            listener: ResultListener<List<ConsentDocument>>
         )
 
-        suspend fun createUserConsent(
+        fun createUserConsent(
             consentDocumentVersion: String,
             language: String?,
-            callback: ResultListener<Pair<UserConsent, KeyPair>>)
+            callback: ResultListener<Pair<UserConsent, KeyPair>>
+        )
 
-        suspend fun fetchUserConsents(listener: ResultListener<List<UserConsent>>)
+        fun fetchUserConsents(listener: ResultListener<List<UserConsent>>)
 
-        suspend fun revokeUserConsent(language: String?,callback: Callback)
+        fun revokeUserConsent(language: String?, callback: Callback)
 
         /** TODO Donation with FHIR models
          * fun <T : DomainResource> donateResource(
@@ -63,3 +71,5 @@ interface Contract {
          * */
     }
 }
+
+

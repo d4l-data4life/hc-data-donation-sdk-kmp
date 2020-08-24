@@ -64,6 +64,7 @@ kotlin {
                 implementation(Dependency.Multiplatform.kotlin.testCommonAnnotations)
                 implementation(Dependency.Multiplatform.mockk.common)
                 implementation(Dependency.Multiplatform.koin.test)
+                implementation(Dependency.Multiplatform.Ktor.Test.common)
             }
         }
 
@@ -79,7 +80,9 @@ kotlin {
 
                 //
                 implementation(Dependency.android.threeTenABP)
+                implementation(Dependency.Multiplatform.ktor.androidCore)
                 implementation(Dependency.Multiplatform.ktor.androidSerialization)
+
                 implementation (Dependency.android.tink)
 
                 implementation(Dependency.Multiplatform.protobuff.android)
@@ -91,6 +94,7 @@ kotlin {
                 implementation(Dependency.Multiplatform.kotlin.testJvmJunit)
                 implementation(Dependency.Multiplatform.coroutines.test)
                 implementation(Dependency.Multiplatform.mockk.android)
+                implementation(Dependency.Multiplatform.Ktor.Test.jvm)
             }
         }
 
@@ -101,13 +105,14 @@ kotlin {
                         strictly("1.3.5-native-mt")
                     }
                 }
+                implementation(Dependency.Multiplatform.ktor.iosCore)
                 implementation(Dependency.Multiplatform.ktor.iosSerialization)
                 implementation(Dependency.Multiplatform.protobuff.native)
             }
         }
         val iosTest by getting {
             dependencies {
-
+                implementation(Dependency.Multiplatform.Ktor.Test.native)
             }
         }
 

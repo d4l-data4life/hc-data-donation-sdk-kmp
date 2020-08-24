@@ -34,7 +34,8 @@ object Dependency {
             val stdlibAndroid = "org.jetbrains.kotlin:kotlin-stdlib:${Version.kotlin}"
 
             val testCommon = "org.jetbrains.kotlin:kotlin-test-common:${Version.kotlin}"
-            val testCommonAnnotations = "org.jetbrains.kotlin:kotlin-test-annotations-common:${Version.kotlin}"
+            val testCommonAnnotations =
+                "org.jetbrains.kotlin:kotlin-test-annotations-common:${Version.kotlin}"
             val testJvm = "org.jetbrains.kotlin:kotlin-test:${Version.kotlin}"
             val testJvmJunit = "org.jetbrains.kotlin:kotlin-test-junit:${Version.kotlin}"
         }
@@ -81,6 +82,18 @@ object Dependency {
             val commonSerialization = "io.ktor:ktor-client-serialization:${Version.ktor}"
             val androidSerialization = "io.ktor:ktor-client-serialization-jvm:${Version.ktor}"
             val iosSerialization = "io.ktor:ktor-client-serialization-native:${Version.ktor}"
+
+            object Logger {
+                const val common = "io.ktor:ktor-client-logging:${Version.ktor}"
+                const val jvm = "io.ktor:ktor-client-logging-jvm:${Version.ktor}"
+                const val native = "io.ktor:ktor-client-logging-native:${Version.ktor}"
+            }
+
+            object Test {
+                const val common = "io.ktor:ktor-client-mock:${Version.ktor}"
+                const val jvm = "io.ktor:ktor-client-mock-jvm:${Version.ktor}"
+                const val native = "io.ktor:ktor-client-mock-native:${Version.ktor}"
+            }
         }
 
         val serialization = Serialization
@@ -129,11 +142,16 @@ object Dependency {
             "com.russhwolf:multiplatform-settings:${Version.multiplatformSettings}"
 
         val protobuff = Protobuff
+
         object Protobuff {
-            const val native = "org.jetbrains.kotlinx:kotlinx-serialization-protobuf-native:${Version.protobuff}"
-            const val common = "org.jetbrains.kotlinx:kotlinx-serialization-protobuf-common:${Version.protobuff}"
-            const val android = "org.jetbrains.kotlinx:kotlinx-serialization-protobuf:${Version.protobuff}"
-            const val common_runtime = "org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:${Version.protobuff}"
+            const val native =
+                "org.jetbrains.kotlinx:kotlinx-serialization-protobuf-native:${Version.protobuff}"
+            const val common =
+                "org.jetbrains.kotlinx:kotlinx-serialization-protobuf-common:${Version.protobuff}"
+            const val android =
+                "org.jetbrains.kotlinx:kotlinx-serialization-protobuf:${Version.protobuff}"
+            const val common_runtime =
+                "org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:${Version.protobuff}"
         }
 
         val mockk = Mockk

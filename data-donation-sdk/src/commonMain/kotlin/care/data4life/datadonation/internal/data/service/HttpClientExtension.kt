@@ -30,14 +30,37 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.data.model
+package care.data4life.datadonation.internal.data.service
 
-import kotlinx.serialization.Serializable
+import io.ktor.client.HttpClient
+import io.ktor.client.request.HttpRequestBuilder
+import io.ktor.client.request.get
+import io.ktor.client.request.header
+import io.ktor.client.request.post
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
 
-@Serializable
-data class ConsentCreationPayload(
-    val consentDocumentKey: String,
-    val consentDocumentVersion: String,
-    val consentDate: String,
-    val notificationLanguage: String
-)
+suspend inline fun <reified T> HttpClient.getWithQuery(
+    accessToken: String,
+    baseUrl: String,
+    path: String,
+    block: HttpRequestBuilder.() -> Unit = {}
+): T =
+    get(scheme = "https", host = baseUrl, path = path) {
+        header("Authorization", "Bearer $accessToken")
+        contentType(ContentType.Application.Json)
+        apply(block)
+    }
+
+suspend inline fun <reified T> HttpClient.postWithBody(
+    accessToken: String,
+    baseUrl: String,
+    path: String,
+    body: Any,
+    block: HttpRequestBuilder.() -> Unit = {}
+): T = post(scheme = "https", host = baseUrl, path = path) {
+    header("Authorization", "Bearer $accessToken")
+    contentType(ContentType.Application.Json)
+    this.body = body
+    apply(block)
+}

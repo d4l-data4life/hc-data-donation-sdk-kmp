@@ -30,14 +30,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.data.model
+package care.data4life.datadonation.core.model
 
-import kotlinx.serialization.Serializable
-
-@Serializable
-data class ConsentCreationPayload(
-    val consentDocumentKey: String,
-    val consentDocumentVersion: String,
-    val consentDate: String,
-    val notificationLanguage: String
-)
+enum class Environment(val url: String) {
+    LOCAL("api.data4life.local"),
+    DEV("api-phdp-dev.hpsgc.de"),
+    SANDBOX("api-phdp-sandbox.hpsgc.de"),
+    STAGING("api-staging.data4life.care"),
+    PRODUCTION("api.data4life.care")
+}
