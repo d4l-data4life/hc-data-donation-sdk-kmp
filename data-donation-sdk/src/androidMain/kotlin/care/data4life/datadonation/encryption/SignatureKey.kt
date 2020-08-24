@@ -38,6 +38,7 @@ import com.google.crypto.tink.proto.HashType
 import com.google.crypto.tink.proto.RsaSsaPssKeyFormat
 import com.google.crypto.tink.proto.RsaSsaPssParams
 import care.data4life.datadonation.encryption.protos.RsaSsaPrivateKey
+import care.data4life.datadonation.encryption.protos.RsaSsaPssPublicKey
 import com.google.crypto.tink.shaded.protobuf.ByteString
 import java.security.spec.RSAKeyGenParameterSpec
 
@@ -101,7 +102,7 @@ actual fun SignatureKeyPublic(
 ): SignatureKeyPublic {
     CleartextKeysetHandle.read(BinaryKeysetReader.withBytes(serialized))
     val serializer = when(algorithm) {
-        is Algorithm.RsaPSS -> RsaSsaPrivateKey.serializer()
+        is Algorithm.RsaPSS -> RsaSsaPssPublicKey.serializer()
     }
     TODO()
 }

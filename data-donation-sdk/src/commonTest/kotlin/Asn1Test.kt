@@ -1,9 +1,8 @@
-import care.data4life.datadonation.encryption.Algorithm
-import care.data4life.datadonation.encryption.HashSize
-import care.data4life.datadonation.encryption.SignatureKeyPrivate
-import care.data4life.datadonation.encryption.initEncryption
-import kotlin.test.BeforeTest
+import care.data4life.datadonation.encryption.Asn1
+import care.data4life.datadonation.encryption.INTEGER
+import care.data4life.datadonation.encryption.sequence
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 /*
@@ -38,26 +37,47 @@ import kotlin.test.assertTrue
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-class SignatureKeyCommonTest {
+/**
+ * Testing compliance with:
+ * http://luca.ntop.org/Teaching/Appunti/asn1.html
+ */
 
-    @BeforeTest
-    fun setup() {
-        initEncryption()
+class Asn1Test {
+    val testData = UByteArray(10) { 1u }
+
+    @Test
+    fun integer() {
+        val asn1 = "test" sequence {
+            "test" integer testData
+        }
+
+        //Type
+        assertEquals(asn1.encoded[2],2u)
+        //Length
+        assertEquals(asn1.encoded[3],testData.size.toUByte())
+        //Value
+        assertTrue(asn1.encoded.sliceArray(4..asn1.encoded.lastIndex).contentEquals(testData))
     }
 
     @Test
-    fun `Generate, sign and verify`() {
-        val testData = byteArrayOf(1)
-        val key = SignatureKeyPrivate(2048,Algorithm.RsaPSS(HashSize.Hash256))
-        key.verify(testData,key.sign(testData))
-    }
+    fun `octet string`() {
+        val asn1 = "test" sequence {
+            "test" octet_string {
+                "test" sequence {
+                    "test" integer testData
+                }
+            }
+        }
 
-
-    @Test//TODO: add proper vaidation after parsing ASN1 is added
-    fun `Key is exported to valid ASN1 DER encoded value`() {
-        val key = SignatureKeyPrivate(2048,Algorithm.RsaPSS(HashSize.Hash256))
-        assertTrue(key.pkcs8Private.startsWith("MII"))
-        assertTrue(key.pkcs8Public.startsWith("MII"))
+        //Type
+        assertEquals(asn1.encoded[2],4u)
+        //Length (size of data plus 1 for each Type and Length of nested structures)
+        assertEquals(asn1.encoded[3],(4 + testData.size).toUByte())
+        //Value
+        assertTrue(
+            asn1.encoded.sliceArray(4..asn1.encoded.lastIndex)
+                .contentEquals(ubyteArrayOf(48u, (testData.size+2).toUByte(), 2u, testData.size.toUByte()) + testData)
+        )
     }
 
 }
