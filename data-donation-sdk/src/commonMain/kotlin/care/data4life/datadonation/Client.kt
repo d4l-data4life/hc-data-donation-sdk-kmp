@@ -62,10 +62,10 @@ class Client(configuration: Contract.Configuration) : Contract.DataDonation {
     override fun createUserConsent(
         consentDocumentVersion: String,
         language: String?,
-        callback: ResultListener<Pair<UserConsent, KeyPair>>
+        listener: ResultListener<Pair<UserConsent, KeyPair>>
     ) {
         createUserContent.withParams(CreateUserConsent.Parameters(consentDocumentVersion, language))
-            .runForListener(callback)
+            .runForListener(listener)
     }
 
     override fun fetchUserConsents(listener: ResultListener<List<UserConsent>>) {

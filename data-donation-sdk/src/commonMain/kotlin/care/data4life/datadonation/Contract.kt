@@ -57,7 +57,7 @@ interface Contract {
         fun createUserConsent(
             consentDocumentVersion: String,
             language: String?,
-            callback: ResultListener<Pair<UserConsent, KeyPair>>)
+            listener: ResultListener<Pair<UserConsent, KeyPair>>)
 
         fun fetchUserConsents(listener: ResultListener<List<UserConsent>>)
 

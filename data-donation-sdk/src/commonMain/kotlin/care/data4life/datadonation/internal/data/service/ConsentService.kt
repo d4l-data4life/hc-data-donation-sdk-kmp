@@ -62,18 +62,18 @@ class ConsentService(private val client: HttpClient, environment: Environment) {
         }
     }
 
-    suspend fun createUserConsent(version: String, language: String?): TokenVerificationResult {
+    suspend fun createUserConsent(accessToken: String, version: String, language: String?): TokenVerificationResult {
         return client.postWithBody(
-            "",//TODO
+            accessToken,
             baseUrl,
             Endpoints.userConsents,
             ConsentCreationPayload(dataDonationKey, version, "", language ?: "")
         )
     }
 
-    suspend fun requestSignature(message: String): ConsentSignature {
+    suspend fun requestSignature(accessToken: String, message: String): ConsentSignature {
         return client.postWithBody(
-            "",//TODO
+            accessToken,
             baseUrl,
             "${Endpoints.userConsents}/$dataDonationKey/signatures",
             ConsentSigningRequest(

@@ -89,7 +89,6 @@ private val coreModule = module {
     single { RegistrationRepository(get()) }
 
     //Usecases
-    single { CreateUserConsent(get()) }
 }
 
 expect val platformModule: Module

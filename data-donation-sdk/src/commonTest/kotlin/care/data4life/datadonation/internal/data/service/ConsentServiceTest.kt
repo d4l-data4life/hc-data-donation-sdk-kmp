@@ -71,7 +71,7 @@ abstract class ConsentServiceTest {
         )
 
         //When
-        val result = service.createUserConsent("1", null)
+        val result = service.createUserConsent("T", "1", null)
 
         //Then
         assertEquals(result, tokenVerificationResult)
