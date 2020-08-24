@@ -39,6 +39,7 @@ import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.di.initKoin
 import care.data4life.datadonation.internal.domain.usecases.CreateUserConsent
+import care.data4life.datadonation.internal.domain.usecases.GetConsentDocuments
 import care.data4life.datadonation.internal.domain.usecases.Usecase
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -47,15 +48,18 @@ class Client(configuration: Contract.Configuration) : Contract.DataDonation {
 
     private val koinApplication = initKoin(configuration)
     private val createUserContent: CreateUserConsent by koinApplication.koin.inject()
+    private val getConsentDocuments: GetConsentDocuments by koinApplication.koin.inject()
     private val context = GlobalScope //TODO use proper CoroutineScope
 
     override fun fetchConsentDocument(
-        consentDocumentVersion: String?,
-        language: String?,
+        consentDocumentVersion: String,
+        language: String,
         listener: ResultListener<List<ConsentDocument>>
     ) {
-        TODO("Not yet implemented")
+        getConsentDocuments.withParams(GetConsentDocuments.Parameters(consentDocumentVersion, language))
+            .runForListener(listener)
     }
+
 
     override fun createUserConsent(
         consentDocumentVersion: String,
