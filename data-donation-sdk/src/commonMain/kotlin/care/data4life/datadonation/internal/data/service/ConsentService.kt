@@ -34,9 +34,11 @@ package care.data4life.datadonation.internal.data.service
 
 import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.Environment
+import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.model.*
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
+import io.ktor.client.request.parameter
 import io.ktor.client.request.url
 
 class ConsentService(private val client: HttpClient, environment: Environment) {
@@ -50,6 +52,13 @@ class ConsentService(private val client: HttpClient, environment: Environment) {
     ): List<ConsentDocument> {
         return client.get {
             url("$baseUrl/admin/consentDocuments.json")
+        }
+    }
+
+    suspend fun fetchUserConsents(accessToken: String, latest: Boolean?): List<UserConsent> {
+        return client.getWithQuery(accessToken, baseUrl, Endpoints.userConsents) {
+            parameter(Parameters.consentDocumentKey, dataDonationKey)
+            parameter(Parameters.latest, latest)
         }
     }
 
