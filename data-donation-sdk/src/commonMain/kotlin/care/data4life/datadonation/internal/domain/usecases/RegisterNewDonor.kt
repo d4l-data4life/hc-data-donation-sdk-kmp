@@ -33,32 +33,34 @@
 package care.data4life.datadonation.internal.domain.usecases
 
 import care.data4life.datadonation.core.model.KeyPair
-import care.data4life.datadonation.core.model.UserConsent
-import care.data4life.datadonation.encryption.RsaPss
-import care.data4life.datadonation.encryption.SignatureKey
-import care.data4life.datadonation.encryption.protos.RsaSsaPrivateKey
+import care.data4life.datadonation.internal.domain.repositories.RegistrationRepository
 import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
+import care.data4life.datadonation.internal.domain.usecases.RegisterNewDonor.*
 
-internal class CreateUserConsent(
-    private val consentRepository: UserConsentRepository,
-    private val registerNewDonor: RegisterNewDonor
+internal class RegisterNewDonor(
+    private val registrationRepository: RegistrationRepository,
+    private val consentRepository: UserConsentRepository
 ) :
-    ParameterizedUsecase<CreateUserConsent.Parameters, Pair<UserConsent, KeyPair>>() {
+    ParameterizedUsecase<Parameters, Unit>() {
 
-    override suspend fun execute(): Pair<UserConsent, KeyPair> {
-        consentRepository.createUserConsent(parameter.version, parameter.language)
-        // Not sure if we really need to return the UserConsent here since it is not returned by `createUserConsent`
-        val userConsent = consentRepository.fetchUserConsents().first()
-        return if (parameter.keyPair == null) {
-            // TODO Check if this is the correct way to create a new KeyPair
-            val newKeyPair = KeyPair(RsaPss().serialized())
-            // TODO How the app can retrieve the Data Donation Service Public Key ???
-            registerNewDonor.withParams(RegisterNewDonor.Parameters(newKeyPair, "")).execute()
-            Pair(userConsent, newKeyPair)
-        } else {
-            Pair(userConsent, parameter.keyPair!!)
-        }
+    override suspend fun execute() {
+        val token = registrationRepository.requestRegistrationToken()
+        val message = parameter.donationPublicKey.buildSigningMessage(parameter.keyPair, token)
+        val signedMessage = consentRepository.signUserConsent(message)
+        val payload = parameter.donationPublicKey.buildRegistrationPayload(message, signedMessage)
+        registrationRepository.registerNewDonor(payload)
     }
 
-    data class Parameters(val keyPair: KeyPair?, val version: String, val language: String?)
+    data class Parameters(val keyPair: KeyPair, val donationPublicKey: String)
+
+}
+
+// String receiving the function intends to be the Data Donation Service Public key here
+private fun String.buildSigningMessage(keyPair: KeyPair, token: String): String {
+    return ""
+}
+
+// String receiving the function intends to be the Data Donation Service Public key her
+private fun String.buildRegistrationPayload(message: String, signedMessage: String): ByteArray {
+    return ByteArray(0)
 }

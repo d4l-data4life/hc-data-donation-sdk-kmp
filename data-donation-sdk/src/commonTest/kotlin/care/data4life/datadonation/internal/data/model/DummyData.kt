@@ -44,6 +44,6 @@ object DummyData {
         "2020-07-06T10:18:12.601Z"
     )
 
-    val keyPair = KeyPair(ByteArray(0), ByteArray(0))
+    val keyPair = KeyPair(ByteArray(0))
 }
 

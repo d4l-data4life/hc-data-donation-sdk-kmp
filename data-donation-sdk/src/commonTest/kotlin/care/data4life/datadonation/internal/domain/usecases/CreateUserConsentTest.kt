@@ -36,6 +36,7 @@ import care.data4life.datadonation.core.listener.ResultListener
 import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.model.DummyData
+import care.data4life.datadonation.internal.domain.repositories.RegistrationRepository
 import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
 import io.mockk.*
 import runTest
@@ -44,26 +45,28 @@ import kotlin.test.Test
 
 abstract class CreateUserConsentTest {
 
-    private val repository = mockk<UserConsentRepository>()
-    private val usecase = CreateUserConsent(repository)
+    private val userConsentRepository = mockk<UserConsentRepository>()
+    private val registrationRepository = mockk<RegistrationRepository>()
+    private val registerNewDonor = RegisterNewDonor(registrationRepository, userConsentRepository)
+    private val creteUser = CreateUserConsent(userConsentRepository, registerNewDonor)
     private val listener = spyk<CreateUserContentListener>()
 
     @Test
     fun createUserContentFullParams() = runTest {
         //Given
-        coEvery { repository.createUserConsent(any(), any()) } just Runs
-        coEvery { repository.fetchUserConsents() } returns listOf(DummyData.userConsent)
+        coEvery { userConsentRepository.createUserConsent(any(), any()) } just Runs
+        coEvery { userConsentRepository.fetchUserConsents() } returns listOf(DummyData.userConsent)
 
         //When
-        usecase.runWithParams(
-            CreateUserConsent.Parameters("version", "language"),
+        creteUser.runWithParams(
+            CreateUserConsent.Parameters(DummyData.keyPair, "version", "language"),
             listener
         )
 
         //Then
         coVerify(ordering = Ordering.SEQUENCE){
-            repository.createUserConsent(any(), any())
-            repository.fetchUserConsents()
+            userConsentRepository.createUserConsent(any(), any())
+            userConsentRepository.fetchUserConsents()
             listener.onSuccess(any())
         }
     }

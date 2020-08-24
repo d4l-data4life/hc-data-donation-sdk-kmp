@@ -41,6 +41,7 @@ import care.data4life.datadonation.internal.data.store.UserSessionTokenDataStore
 import care.data4life.datadonation.internal.domain.repositories.RegistrationRepository
 import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
 import care.data4life.datadonation.internal.domain.usecases.CreateUserConsent
+import care.data4life.datadonation.internal.domain.usecases.RegisterNewDonor
 import io.ktor.client.HttpClient
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.json.serializer.KotlinxSerializer
@@ -89,6 +90,7 @@ private val coreModule = module {
     single { RegistrationRepository(get()) }
 
     //Usecases
+    single { RegisterNewDonor(get(), get()) }
 }
 
 expect val platformModule: Module
