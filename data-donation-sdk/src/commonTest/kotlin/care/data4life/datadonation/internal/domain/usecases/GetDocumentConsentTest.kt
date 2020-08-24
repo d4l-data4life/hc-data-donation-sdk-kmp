@@ -68,13 +68,41 @@ abstract class GetDocumentConsentTest {
     @Ignore
     @Test
     fun getConsentDocumentMissingLanguage() = runTest {
+        //Given
+        var consentDocLDummy = ConsentDocument("", 1, "","","","","",true,"","")
+        coEvery { consentDocumentRepository.getConsentDocument(any(), any(), any()) } returns listOf(consentDocDummy)
 
+        //When
+        consentDocument.runWithParams(
+            GetConsentDocuments.Parameters("version", "en"),
+            listener
+        )
+
+        //Then
+        coVerify(ordering = Ordering.SEQUENCE){
+            consentDocumentRepository.getConsentDocument(any(), any(), any())
+            listener.onSuccess(any())
+        }
     }
 
     @Ignore
     @Test
     fun getConsentDocumentWrongVersion() = runTest {
+        //Given
+        var consentDocVDummy = ConsentDocument("", 0, "","","","en","",true,"","")
+        coEvery { consentDocumentRepository.getConsentDocument(any(), any(), any()) } returns listOf(consentDocVDummy)
 
+        //When
+        consentDocument.runWithParams(
+            GetConsentDocuments.Parameters("version", "en"),
+            listener
+        )
+
+        //Then
+        coVerify(ordering = Ordering.SEQUENCE){
+            consentDocumentRepository.getConsentDocument(any(), any(), any())
+            listener.onSuccess(any())
+        }
     }
 
     class DocumentContentListener : ResultListener<List<ConsentDocument>> {
@@ -87,4 +115,3 @@ abstract class GetDocumentConsentTest {
 }
 
 
-}
