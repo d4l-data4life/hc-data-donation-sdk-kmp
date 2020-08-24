@@ -170,6 +170,7 @@ class INTEGER(override val value: UByteArray) : TLV<UByteArray>() {
     override fun type(): UByte = 2u
 }
 
+@Asn1Dsl
 class OCTET_STRING() : TLV<TLV<*>>() {
     override fun type(): UByte = 4u
 
@@ -187,6 +188,7 @@ class OCTET_STRING() : TLV<TLV<*>>() {
         private set
 }
 
+@Asn1Dsl
 class BIT_STRING() : TLV<TLV<*>>() {
     override fun type(): UByte = 3u
 
@@ -204,6 +206,7 @@ class BIT_STRING() : TLV<TLV<*>>() {
         private set
 }
 
+@Asn1Dsl
 class SEQUENCE() : TLV<List<TLV<out Any>>>() {
     override val value: List<TLV<out Any>> = mutableListOf()
 
