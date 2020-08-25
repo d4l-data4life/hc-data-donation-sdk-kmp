@@ -42,8 +42,7 @@ class UserConsentDataStore(private val service: ConsentService): UserConsentRepo
         service.createUserConsent(version, language)
     }
 
-    override suspend fun fetchUserConsents(): List<UserConsent> {
-        TODO()
-    }
+    override suspend fun fetchUserConsents(accessToken: String): List<UserConsent> =
+        service.fetchUserConsents(accessToken, false)
 
 }

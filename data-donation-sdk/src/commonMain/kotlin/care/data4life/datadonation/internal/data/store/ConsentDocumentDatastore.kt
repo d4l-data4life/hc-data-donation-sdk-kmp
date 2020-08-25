@@ -39,10 +39,11 @@ import care.data4life.datadonation.internal.domain.repositories.ConsentDocumentR
 class ConsentDocumentDatastore(private val service: ConsentService) : ConsentDocumentRepository.Remote {
 
     override suspend fun getConsentDocument(
+        accessToken: String,
         dataDonationKey: String,
         version: String,
         language: String
-    ): List<ConsentDocument> = service.fetchConsentDocument(dataDonationKey, version, language)
+    ): List<ConsentDocument> = service.fetchConsentDocument(accessToken, dataDonationKey, version, language)
 
 
 }
