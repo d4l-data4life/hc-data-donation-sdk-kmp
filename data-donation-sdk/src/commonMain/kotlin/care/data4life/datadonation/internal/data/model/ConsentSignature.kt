@@ -32,6 +32,9 @@
 
 package care.data4life.datadonation.internal.data.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class ConsentSignature(val signature: String)
 
 enum class ConsentSignatureType(val apiValue: String) {

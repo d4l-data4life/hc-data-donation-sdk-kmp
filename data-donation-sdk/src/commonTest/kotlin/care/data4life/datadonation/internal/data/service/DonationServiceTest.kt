@@ -30,13 +30,57 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.data.model
+package care.data4life.datadonation.internal.data.service
 
-import kotlinx.serialization.Serializable
+import care.data4life.datadonation.core.model.Environment
+import care.data4life.datadonation.internal.data.model.DummyData
+import io.ktor.client.HttpClient
+import io.ktor.http.ContentType
+import io.ktor.http.HttpMethod
+import kotlinx.serialization.builtins.serializer
+import runTest
+import kotlin.test.Ignore
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
-@Serializable
-data class ConsentSigningRequest(
-    val consentDocumentKey: String,
-    val payload: String,
-    val signatureType: String = ConsentSignatureType.NormalUse.apiValue // ConsentSignatureType enum -> apiValue
-)
+abstract class DonationServiceTest : BaseServiceTest<DonationService>() {
+
+    private val token = "random_nonce"
+
+    override fun getService(httpClient: HttpClient, environment: Environment): DonationService =
+        DonationService(httpClient, environment)
+
+    @Ignore
+    @Test
+    fun requestRegistrationTokenTest() = runTest {
+        //Given
+        givenServiceResponseWith(
+            String.serializer(),
+            token
+        )
+
+        //When
+        val result = service.requestRegistrationToken()
+
+        //Then
+        assertEquals(result, token)
+        assertEquals(HttpMethod.Get, lastRequest.method)
+    }
+
+    @Ignore
+    @Test
+    fun registerNewDonorTest() = runTest {
+        //Given
+        givenServiceNoResponse()
+
+        //When
+        service.registerNewDonor(DummyData.rawData)
+
+        //Then
+        assertEquals(HttpMethod.Put, lastRequest.method)
+        assertEquals(
+            ContentType.Application.OctetStream.contentType,
+            lastRequest.headers["Content-Type"]
+        )
+    }
+}

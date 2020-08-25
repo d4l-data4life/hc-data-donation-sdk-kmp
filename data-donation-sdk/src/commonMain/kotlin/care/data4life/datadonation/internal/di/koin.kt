@@ -72,7 +72,7 @@ private val coreModule = module {
         HttpClient {
             install(JsonFeature) {
                 serializer =
-                    KotlinxSerializer() // Custom serializers can be added here if necessary
+                    KotlinxSerializer()
             }
         }
     }
