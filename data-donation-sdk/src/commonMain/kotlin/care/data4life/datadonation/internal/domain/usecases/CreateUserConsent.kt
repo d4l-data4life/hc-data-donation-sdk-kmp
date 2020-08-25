@@ -53,6 +53,7 @@ internal class CreateUserConsent(
             // TODO Check if this is the correct way to create a new KeyPair
             val newKeyPair = KeyPair(RsaPss().serialized())
             // TODO How the app can retrieve the Data Donation Service Public Key ???
+            //val donationPublicKey = loadKeyFromFile()
             registerNewDonor.withParams(RegisterNewDonor.Parameters(newKeyPair, "")).execute()
             Pair(userConsent, newKeyPair)
         } else {

@@ -55,6 +55,7 @@ interface Contract {
         )
 
         fun createUserConsent(
+            keyPair: KeyPair?,
             consentDocumentVersion: String,
             language: String?,
             listener: ResultListener<Pair<UserConsent, KeyPair>>)

@@ -33,9 +33,14 @@
 package care.data4life.datadonation.internal.domain.usecases
 
 import care.data4life.datadonation.core.model.KeyPair
+import care.data4life.datadonation.core.model.publicAsBase64
+import care.data4life.datadonation.internal.data.model.RegistrationRequest
+import care.data4life.datadonation.internal.data.model.SignedConsentMessage
 import care.data4life.datadonation.internal.domain.repositories.RegistrationRepository
 import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
 import care.data4life.datadonation.internal.domain.usecases.RegisterNewDonor.*
+import kotlinx.serialization.UnstableDefault
+import kotlinx.serialization.json.Json.Default.stringify
 
 internal class RegisterNewDonor(
     private val registrationRepository: RegistrationRepository,
@@ -43,11 +48,14 @@ internal class RegisterNewDonor(
 ) :
     ParameterizedUsecase<Parameters, Unit>() {
 
+    @UnstableDefault
     override suspend fun execute() {
         val token = registrationRepository.requestRegistrationToken()
-        val message = parameter.donationPublicKey.buildSigningMessage(parameter.keyPair, token)
-        val signedMessage = consentRepository.signUserConsent(message)
-        val payload = parameter.donationPublicKey.buildRegistrationPayload(message, signedMessage)
+        val request = RegistrationRequest(parameter.keyPair.publicAsBase64(), token)
+        val message = request.encrypt(parameter.donationPublicKey).toBase64()
+        val signature = consentRepository.signUserConsent(message)
+        val signedMessage = SignedConsentMessage(message, signature)
+        val payload = signedMessage.encrypt(parameter.donationPublicKey)
         registrationRepository.registerNewDonor(payload)
     }
 
@@ -55,12 +63,29 @@ internal class RegisterNewDonor(
 
 }
 
-// String receiving the function intends to be the Data Donation Service Public key here
-private fun String.buildSigningMessage(keyPair: KeyPair, token: String): String {
-    return ""
+
+
+@UnstableDefault
+private fun RegistrationRequest.encrypt(dataDonationKey: String): ByteArray {
+    return stringify(RegistrationRequest.serializer(), this).encrypt(dataDonationKey)
 }
 
-// String receiving the function intends to be the Data Donation Service Public key her
-private fun String.buildRegistrationPayload(message: String, signedMessage: String): ByteArray {
+@UnstableDefault
+private fun SignedConsentMessage.encrypt(dataDonationKey: String): ByteArray {
+    return stringify(SignedConsentMessage.serializer(), this).encrypt(dataDonationKey)
+}
+
+// TODO implement these methods and move to utility classes
+private fun String.encrypt(dataDonationKet: String): ByteArray {
+    // String is an RSA public key in PEM / SPKI format
+    // apply RSA_OAEP algorithm to data
     return ByteArray(0)
+}
+
+private fun String.toByteArray(): ByteArray {
+    return ByteArray(0)
+}
+
+private fun ByteArray.toBase64(): String {
+    return ""
 }

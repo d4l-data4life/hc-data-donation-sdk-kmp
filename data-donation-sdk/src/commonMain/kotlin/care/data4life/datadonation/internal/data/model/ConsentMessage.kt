@@ -30,25 +30,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.core.model
+package care.data4life.datadonation.internal.data.model
 
-data class KeyPair(val serializedKeyset : ByteArray) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || this::class != other::class) return false
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-        other as KeyPair
+@Serializable
+data class ConsentMessage(
+    val consentDocumentKey: String,
+    val signatureType: String = ConsentSignatureType.NormalUse.apiValue
+)
 
-        if (!this.serializedKeyset.contentEquals(other.serializedKeyset)) return false
-
-        return true
-    }
-
-    override fun hashCode() = serializedKeyset.contentHashCode()
-
-}
-
-// TODO
-fun KeyPair.publicAsBase64(): String {
-    return ""
-}
+@Serializable
+data class SignedConsentMessage(
+    @SerialName("consentMessageJSON") val consentMessageJson: String,
+    val signature: String
+)
