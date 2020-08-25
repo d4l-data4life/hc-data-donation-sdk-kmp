@@ -35,7 +35,7 @@ package care.data4life.datadonation.internal.domain.usecases
 import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.internal.domain.repositories.ConsentDocumentRepository
 
-open class GetConsentDocuments(private val consentDocumentRepository: ConsentDocumentRepository) :
+internal class GetConsentDocuments(private val consentDocumentRepository: ConsentDocumentRepository) :
     ParameterizedUsecase<GetConsentDocuments.Parameters, List<ConsentDocument>>() {
 
     companion object {

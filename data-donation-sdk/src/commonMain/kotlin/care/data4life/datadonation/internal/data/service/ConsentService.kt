@@ -34,22 +34,31 @@ package care.data4life.datadonation.internal.data.service
 
 import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.Environment
+import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.model.*
 import io.ktor.client.HttpClient
-import io.ktor.client.request.get
-import io.ktor.client.request.url
+import io.ktor.client.request.parameter
 
 class ConsentService(private val client: HttpClient, environment: Environment) {
 
     private val baseUrl = "${environment.url}/consent/api/v1"
 
     suspend fun fetchConsentDocument(
-        dataDonationKey: String,
+        accessToken: String, dataDonationKey: String,
         version: String,
         language: String
     ): List<ConsentDocument> {
-        return client.get {
-            url("$baseUrl/admin/consentDocuments.json")
+        return client.getWithQuery(accessToken, baseUrl, Endpoints.consentDocuments) {
+            parameter(Parameters.consentDocumentKey, dataDonationKey)
+            parameter(Parameters.version, version)
+            parameter(Parameters.language, language)
+        }
+    }
+
+    suspend fun fetchUserConsents(accessToken: String, latest: Boolean?): List<UserConsent> {
+        return client.getWithQuery(accessToken, baseUrl, Endpoints.userConsents) {
+            parameter(Parameters.consentDocumentKey, dataDonationKey)
+            parameter(Parameters.latest, latest)
         }
     }
 
@@ -80,11 +89,14 @@ class ConsentService(private val client: HttpClient, environment: Environment) {
 
         object Endpoints {
             const val userConsents = "userConsents"
+            const val consentDocuments = "consentDocuments"
         }
 
         object Parameters {
             const val consentDocumentKey = "consentDocumentKey"
             const val latest = "latest"
+            const val language = "language"
+            const val version = "version"
         }
     }
 
