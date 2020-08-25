@@ -1,4 +1,5 @@
 import org.gradle.api.artifacts.ExternalModuleDependency
+import org.gradle.internal.impldep.org.joda.time.DateTime
 import org.gradle.kotlin.dsl.exclude
 
 object Dependency {
@@ -153,6 +154,8 @@ object Dependency {
             const val common_runtime =
                 "org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:${Version.protobuff}"
         }
+
+        val dateTime = "org.jetbrains.kotlinx:kotlinx-datetime:${Version.dateTime}"
 
         val mockk = Mockk
 

@@ -56,6 +56,8 @@ kotlin {
 
                 implementation(Dependency.Multiplatform.protobuff.common)
                 implementation(Dependency.Multiplatform.protobuff.common_runtime)
+
+                implementation(Dependency.Multiplatform.dateTime)
             }
         }
         commonTest {

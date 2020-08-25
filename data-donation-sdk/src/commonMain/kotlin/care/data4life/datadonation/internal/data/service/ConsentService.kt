@@ -40,6 +40,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.client.request.url
+import kotlinx.datetime.Clock
 
 class ConsentService(private val client: HttpClient, environment: Environment) {
 
@@ -67,7 +68,12 @@ class ConsentService(private val client: HttpClient, environment: Environment) {
             accessToken,
             baseUrl,
             Endpoints.userConsents,
-            ConsentCreationPayload(dataDonationKey, version, "", language ?: "")
+            ConsentCreationPayload(
+                dataDonationKey,
+                version,
+                Clock.System.now().toString(),
+                language ?: ""
+            )
         )
     }
 
