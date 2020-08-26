@@ -39,6 +39,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.put
 import io.ktor.http.ContentType
+import io.ktor.http.content.ByteArrayContent
 import io.ktor.http.contentType
 
 class DonationService(private val client: HttpClient, environment: Environment) {
@@ -49,10 +50,9 @@ class DonationService(private val client: HttpClient, environment: Environment) 
         return client.get(scheme = "https", host = baseUrl, path = token)
     }
 
-    suspend fun registerNewDonor(body: ByteArray) {
+    suspend fun registerNewDonor(payload: ByteArray) {
         return client.put(scheme = "https", host = baseUrl, path = register) {
-            contentType(ContentType.Application.OctetStream)
-            this.body = body
+            body = ByteArrayContent(payload, contentType = ContentType.Application.OctetStream)
         }
     }
 

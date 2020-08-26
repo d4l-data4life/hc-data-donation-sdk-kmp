@@ -35,9 +35,17 @@ package care.data4life.datadonation.internal.data.service
 import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.internal.data.model.DummyData
 import io.ktor.client.HttpClient
+import io.ktor.client.engine.config
+import io.ktor.client.engine.mock.MockEngine
+import io.ktor.client.engine.mock.respondOk
+import io.ktor.client.features.json.JsonFeature
+import io.ktor.client.features.json.serializer.KotlinxSerializer
 import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import kotlinx.serialization.builtins.serializer
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonConfiguration
 import runTest
 import kotlin.test.Ignore
 import kotlin.test.Test
@@ -50,14 +58,10 @@ abstract class DonationServiceTest : BaseServiceTest<DonationService>() {
     override fun getService(httpClient: HttpClient, environment: Environment): DonationService =
         DonationService(httpClient, environment)
 
-    @Ignore
     @Test
     fun requestRegistrationTokenTest() = runTest {
         //Given
-        givenServiceResponseWith(
-            String.serializer(),
-            token
-        )
+        givenTextServiceResponseWith(token)
 
         //When
         val result = service.requestRegistrationToken()
@@ -67,7 +71,6 @@ abstract class DonationServiceTest : BaseServiceTest<DonationService>() {
         assertEquals(HttpMethod.Get, lastRequest.method)
     }
 
-    @Ignore
     @Test
     fun registerNewDonorTest() = runTest {
         //Given
@@ -78,9 +81,6 @@ abstract class DonationServiceTest : BaseServiceTest<DonationService>() {
 
         //Then
         assertEquals(HttpMethod.Put, lastRequest.method)
-        assertEquals(
-            ContentType.Application.OctetStream.contentType,
-            lastRequest.headers["Content-Type"]
-        )
     }
+
 }

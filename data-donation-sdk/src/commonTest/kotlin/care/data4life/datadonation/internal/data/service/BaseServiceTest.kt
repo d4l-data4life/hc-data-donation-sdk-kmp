@@ -34,8 +34,10 @@ package care.data4life.datadonation.internal.data.service
 
 import care.data4life.datadonation.core.model.Environment
 import io.ktor.client.HttpClient
+import io.ktor.client.engine.HttpClientEngineFactory
 import io.ktor.client.engine.config
 import io.ktor.client.engine.mock.MockEngine
+import io.ktor.client.engine.mock.MockEngineConfig
 import io.ktor.client.engine.mock.respond
 import io.ktor.client.engine.mock.respondOk
 import io.ktor.client.features.json.JsonFeature
@@ -67,12 +69,20 @@ abstract class BaseServiceTest<R: Any> {
                 )
             }
         }
-        service = getService(HttpClient(engine) {
-            install(JsonFeature) {
-                serializer = KotlinxSerializer(Json(JsonConfiguration.Stable))
-                accept(ContentType.Application.Json)
+        service = buildMockService(engine)
+    }
+
+    protected fun givenTextServiceResponseWith(response: String) {
+        val engine = MockEngine.config {
+            addHandler { request ->
+                lastRequest = request
+                respond(
+                    response,
+                    headers = headersOf("Content-Type", ContentType.Text.Plain.toString())
+                )
             }
-        }, Environment.LOCAL)
+        }
+        service = buildMockService(engine)
     }
 
     protected fun givenServiceNoResponse() {
@@ -82,13 +92,17 @@ abstract class BaseServiceTest<R: Any> {
                 respondOk()
             }
         }
-        service = getService(HttpClient(engine) {
+        service = buildMockService(engine, ContentType.Application.OctetStream)
+    }
+
+    private fun buildMockService(
+        engine: HttpClientEngineFactory<MockEngineConfig>,
+        vararg contentType: ContentType
+    )  = getService(HttpClient(engine) {
             install(JsonFeature) {
                 serializer = KotlinxSerializer(Json(JsonConfiguration.Stable))
-                accept(ContentType.Application.Json)
+                accept(ContentType.Application.Json, *contentType)
             }
         }, Environment.LOCAL)
-
-    }
 
 }
