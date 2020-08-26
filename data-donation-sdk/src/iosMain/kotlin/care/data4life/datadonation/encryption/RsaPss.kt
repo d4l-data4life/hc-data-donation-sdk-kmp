@@ -33,11 +33,6 @@
 package care.data4life.datadonation.encryption
 
 import google.tink.*
-import kotlinx.cinterop.addressOf
-import kotlinx.cinterop.usePinned
-import platform.Foundation.NSData
-import platform.Foundation.dataWithBytesNoCopy
-import platform.posix.memcpy
 
 actual class RsaPss : SignatureKey by SignatureKeyHandle(TINKRsaSsaPss3072Sha256Sha256F4)
 
