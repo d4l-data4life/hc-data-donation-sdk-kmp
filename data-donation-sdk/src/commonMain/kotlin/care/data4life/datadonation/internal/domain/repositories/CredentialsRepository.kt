@@ -30,22 +30,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.data.model
+package care.data4life.datadonation.internal.domain.repositories
 
-import care.data4life.datadonation.core.model.KeyPair
-import care.data4life.datadonation.core.model.UserConsent
+import care.data4life.datadonation.core.model.Environment
 
-object DummyData {
-    val userConsent = UserConsent(
-        "key",
-        "1.0.0",
-        "a486a4db-a850-4b1d-9c84-99aa027f1000",
-        "consent",
-        "2020-07-06T10:18:12.601Z"
-    )
+class CredentialsRepository(private val dataStore: Local) {
 
-    val rawData = byteArrayOf(10, 2, 5, 11, 8)
+    fun getDataDonationPublicKey(environment: Environment) =
+        dataStore.getDataDonationPublicKey(environment)
 
-    val keyPair = KeyPair(rawData, rawData)
+    interface Local {
+        fun getDataDonationPublicKey(environment: Environment): String
+    }
 }
-

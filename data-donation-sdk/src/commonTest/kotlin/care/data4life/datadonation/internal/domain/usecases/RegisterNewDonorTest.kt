@@ -30,22 +30,42 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.data.model
+package care.data4life.datadonation.internal.domain.usecases
 
-import care.data4life.datadonation.core.model.KeyPair
-import care.data4life.datadonation.core.model.UserConsent
+import care.data4life.datadonation.internal.data.model.DummyData
+import care.data4life.datadonation.internal.domain.repositories.RegistrationRepository
+import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
+import io.mockk.*
+import runTest
+import kotlin.test.Test
 
-object DummyData {
-    val userConsent = UserConsent(
-        "key",
-        "1.0.0",
-        "a486a4db-a850-4b1d-9c84-99aa027f1000",
-        "consent",
-        "2020-07-06T10:18:12.601Z"
-    )
+abstract class RegisterNewDonorTest {
 
-    val rawData = byteArrayOf(10, 2, 5, 11, 8)
+    private val userConsentRepository = mockk<UserConsentRepository>()
+    private val registrationRepository = mockk<RegistrationRepository>()
+    private val registerNewDonor = RegisterNewDonor(registrationRepository, userConsentRepository)
 
-    val keyPair = KeyPair(rawData, rawData)
+    @Test
+    fun registerNewDonorTest() = runTest {
+        //Given
+        coEvery { registrationRepository.requestRegistrationToken() } returns "random_nonce"
+        coEvery { userConsentRepository.signUserConsent(any()) } returns "signature"
+        coEvery { registrationRepository.registerNewDonor(any()) } just runs
+
+        //When
+        registerNewDonor.withParams(
+            RegisterNewDonor.Parameters(
+               DummyData.keyPair,
+                "dummyPublicKey"
+            )
+        ).execute()
+
+        //Then
+        coVerify(ordering = Ordering.SEQUENCE){
+            registrationRepository.requestRegistrationToken()
+            userConsentRepository.signUserConsent(any())
+            registrationRepository.registerNewDonor(any())
+        }
+    }
+
 }
-

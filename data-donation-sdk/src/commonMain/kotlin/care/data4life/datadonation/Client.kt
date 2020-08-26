@@ -66,6 +66,7 @@ class Client(private val configuration: Contract.Configuration) : Contract.DataD
     ) {
         createUserContent.withParams(
             CreateUserConsent.Parameters(
+                configuration.getEnvironment(),
                 configuration.getDonorKeyPair(),
                 consentDocumentVersion,
                 language

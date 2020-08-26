@@ -32,15 +32,18 @@
 
 package care.data4life.datadonation.internal.domain.usecases
 
+import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.encryption.RsaPss
 import care.data4life.datadonation.encryption.SignatureKey
 import care.data4life.datadonation.encryption.protos.RsaSsaPrivateKey
+import care.data4life.datadonation.internal.domain.repositories.CredentialsRepository
 import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
 
 internal class CreateUserConsent(
     private val consentRepository: UserConsentRepository,
+    private val credentialsRepository: CredentialsRepository,
     private val registerNewDonor: RegisterNewDonor
 ) :
     ParameterizedUsecase<CreateUserConsent.Parameters, Pair<UserConsent, KeyPair>>() {
@@ -50,16 +53,21 @@ internal class CreateUserConsent(
         // Not sure if we really need to return the UserConsent here since it is not returned by `createUserConsent`
         val userConsent = consentRepository.fetchUserConsents().first()
         return if (parameter.keyPair == null) {
-            // TODO Check if this is the correct way to create a new KeyPair
-            val newKeyPair = KeyPair(RsaPss().serialized())
-            // TODO How the app can retrieve the Data Donation Service Public Key ???
-            //val donationPublicKey = loadKeyFromFile()
-            registerNewDonor.withParams(RegisterNewDonor.Parameters(newKeyPair, "")).execute()
+            // TODO when rsapss-mpp-encryption branch is merged
+            // val newKeyPair = SignatureKeyPrivate(2048, Algorithm.RsaPSS).let { KeyPair(it.serializedPublic(), it.serializedPrivate()) }
+            val newKeyPair = KeyPair(ByteArray(0), ByteArray(0))
+            val donationPublicKey = credentialsRepository.getDataDonationPublicKey(parameter.environment)
+            registerNewDonor.withParams(RegisterNewDonor.Parameters(newKeyPair, donationPublicKey)).execute()
             Pair(userConsent, newKeyPair)
         } else {
             Pair(userConsent, parameter.keyPair!!)
         }
     }
 
-    data class Parameters(val keyPair: KeyPair?, val version: String, val language: String?)
+    data class Parameters(
+        val environment: Environment,
+        val keyPair: KeyPair?,
+        val version: String,
+        val language: String?
+    )
 }

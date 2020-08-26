@@ -35,9 +35,11 @@ package care.data4life.datadonation.internal.di
 import care.data4life.datadonation.Contract
 import care.data4life.datadonation.internal.data.service.ConsentService
 import care.data4life.datadonation.internal.data.service.DonationService
+import care.data4life.datadonation.internal.data.store.CredentialsLocalDataStore
 import care.data4life.datadonation.internal.data.store.RegistrationDataStore
 import care.data4life.datadonation.internal.data.store.UserConsentDataStore
 import care.data4life.datadonation.internal.data.store.UserSessionTokenDataStore
+import care.data4life.datadonation.internal.domain.repositories.CredentialsRepository
 import care.data4life.datadonation.internal.domain.repositories.RegistrationRepository
 import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
 import care.data4life.datadonation.internal.domain.usecases.CreateUserConsent
@@ -84,10 +86,13 @@ private val coreModule = module {
     //DataStores
     single<UserConsentRepository.Remote> { UserConsentDataStore(get()) }
     single<RegistrationRepository.Remote> { RegistrationDataStore(get()) }
+    single<CredentialsRepository.Local> { CredentialsLocalDataStore() }
+
 
     //Repositories
     single { UserConsentRepository(get(), get()) }
     single { RegistrationRepository(get()) }
+    single { CredentialsRepository(get()) }
 
     //Usecases
     single { RegisterNewDonor(get(), get()) }

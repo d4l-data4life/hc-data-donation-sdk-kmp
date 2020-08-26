@@ -32,20 +32,24 @@
 
 package care.data4life.datadonation.core.model
 
-data class KeyPair(val serializedKeyset : ByteArray) {
+data class KeyPair(val public : ByteArray,val private:ByteArray) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false
 
         other as KeyPair
 
-        if (!this.serializedKeyset.contentEquals(other.serializedKeyset)) return false
+        if (!public.contentEquals(other.public)) return false
+        if (!private.contentEquals(other.private)) return false
 
         return true
     }
 
-    override fun hashCode() = serializedKeyset.contentHashCode()
-
+    override fun hashCode(): Int {
+        var result = public.contentHashCode()
+        result = 31 * result + private.contentHashCode()
+        return result
+    }
 }
 
 // TODO
