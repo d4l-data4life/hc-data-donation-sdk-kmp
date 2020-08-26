@@ -35,8 +35,10 @@ package care.data4life.datadonation.internal.data.service
 import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.model.ConsentSignature
+import care.data4life.datadonation.internal.data.model.DummyData
 import care.data4life.datadonation.internal.data.model.TokenVerificationResult
 import care.data4life.datadonation.internal.data.service.ConsentService.Companion.dataDonationKey
+import care.data4life.datadonation.internal.utils.DateTimeNow
 import io.ktor.client.HttpClient
 import io.ktor.http.HttpMethod
 import kotlinx.serialization.builtins.list
@@ -45,14 +47,14 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-abstract class ConsentServiceTest : BaseServiceTest<ConsentService>() {
+internal abstract class ConsentServiceTest : BaseServiceTest<ConsentService>() {
 
     private val tokenVerificationResult = TokenVerificationResult("StudyId", "externalId", "")
     private val userConsent = UserConsent("key", "version", "accountId", "event", "0")
     private val consentSignature = ConsentSignature("signature")
 
     override fun getService(httpClient: HttpClient, environment: Environment) =
-        ConsentService(httpClient, environment)
+        ConsentService(httpClient, environment, MockDateTimeNow())
 
     @Test
     fun createUserConsentTest() = runTest {
@@ -104,4 +106,9 @@ abstract class ConsentServiceTest : BaseServiceTest<ConsentService>() {
         assertEquals(HttpMethod.Post, lastRequest.method)
     }
 
+    class MockDateTimeNow : DateTimeNow {
+        override fun timestamp(): String {
+            return DummyData.timestamp
+        }
+    }
 }

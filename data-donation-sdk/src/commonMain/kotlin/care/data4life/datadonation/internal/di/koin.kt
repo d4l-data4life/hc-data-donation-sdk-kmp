@@ -44,6 +44,7 @@ import care.data4life.datadonation.internal.domain.repositories.RegistrationRepo
 import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
 import care.data4life.datadonation.internal.domain.usecases.CreateUserConsent
 import care.data4life.datadonation.internal.domain.usecases.RegisterNewDonor
+import care.data4life.datadonation.internal.utils.DateTimeNow
 import io.ktor.client.HttpClient
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.json.serializer.KotlinxSerializer
@@ -61,6 +62,12 @@ internal fun initKoin(configuration: Contract.Configuration) = startKoin {
                 }
             }
             single { configuration.getEnvironment() }
+            single<DateTimeNow> {
+                object : DateTimeNow {
+                    override fun timestamp(): String =
+                        configuration.getTimetamp()
+                }
+            }
         },
         platformModule,
         coreModule
@@ -80,13 +87,13 @@ private val coreModule = module {
     }
 
     //Services
-    single { ConsentService(get(), get()) }
+    single { ConsentService(get(), get(), get()) }
     single { DonationService(get(), get()) }
 
     //DataStores
     single<UserConsentRepository.Remote> { UserConsentDataStore(get()) }
     single<RegistrationRepository.Remote> { RegistrationDataStore(get()) }
-    single<CredentialsRepository.Local> { CredentialsLocalDataStore() }
+    single<CredentialsRepository.Local> { CredentialsLocalDataStore(get()) }
 
 
     //Repositories

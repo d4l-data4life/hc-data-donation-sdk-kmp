@@ -42,7 +42,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.content.ByteArrayContent
 import io.ktor.http.contentType
 
-class DonationService(private val client: HttpClient, environment: Environment) {
+internal class DonationService(private val client: HttpClient, environment: Environment) {
 
     private val baseUrl = "https://${environment.url}/donation/api/v1"
 

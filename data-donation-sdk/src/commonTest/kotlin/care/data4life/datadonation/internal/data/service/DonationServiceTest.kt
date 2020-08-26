@@ -51,7 +51,7 @@ import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-abstract class DonationServiceTest : BaseServiceTest<DonationService>() {
+internal abstract class DonationServiceTest : BaseServiceTest<DonationService>() {
 
     private val token = "random_nonce"
 

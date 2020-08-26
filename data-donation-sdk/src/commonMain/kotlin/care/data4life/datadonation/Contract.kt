@@ -45,6 +45,7 @@ interface Contract {
         fun getDonorKeyPair(): KeyPair?
         fun getUserSessionToken(): String?
         fun getEnvironment(): Environment
+        fun getTimetamp(): String
     }
 
     interface DataDonation {

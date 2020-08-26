@@ -56,7 +56,7 @@ internal class CreateUserConsent(
             // TODO when rsapss-mpp-encryption branch is merged
             // val newKeyPair = SignatureKeyPrivate(2048, Algorithm.RsaPSS).let { KeyPair(it.serializedPublic(), it.serializedPrivate()) }
             val newKeyPair = KeyPair(ByteArray(0), ByteArray(0))
-            val donationPublicKey = credentialsRepository.getDataDonationPublicKey(parameter.environment)
+            val donationPublicKey = credentialsRepository.getDataDonationPublicKey()
             registerNewDonor.withParams(RegisterNewDonor.Parameters(newKeyPair, donationPublicKey)).execute()
             Pair(userConsent, newKeyPair)
         } else {
@@ -64,10 +64,5 @@ internal class CreateUserConsent(
         }
     }
 
-    data class Parameters(
-        val environment: Environment,
-        val keyPair: KeyPair?,
-        val version: String,
-        val language: String?
-    )
+    data class Parameters(val keyPair: KeyPair?, val version: String, val language: String?)
 }
