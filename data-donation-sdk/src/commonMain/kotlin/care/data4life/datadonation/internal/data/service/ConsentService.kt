@@ -48,7 +48,7 @@ internal class ConsentService(
 
     private val baseUrl = "${environment.url}/consent/api/v1"
 
-    suspend fun fetchConsentDocument(
+    suspend fun fetchConsentDocuments(
         accessToken: String, dataDonationKey: String,
         version: String?,
         language: String?

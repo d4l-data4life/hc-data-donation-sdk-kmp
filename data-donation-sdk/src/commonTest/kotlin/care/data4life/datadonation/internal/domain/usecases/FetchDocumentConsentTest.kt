@@ -39,23 +39,23 @@ import runTest
 import kotlin.test.Ignore
 import kotlin.test.Test
 
-abstract class GetDocumentConsentTest {
+abstract class FetchDocumentConsentTest {
 
     private val consentDocumentRepository = mockk<ConsentDocumentRepository>()
-    private val consentDocument = GetConsentDocuments(consentDocumentRepository)
+    private val consentDocument = FetchConsentDocuments(consentDocumentRepository)
     private var consentDocDummy = ConsentDocument("", 1, "","","","en","",true,"","")
 
     @Test
     fun createUserContentFullParams() = runTest {
         //Given
-        coEvery { consentDocumentRepository.getConsentDocument(any(), any(), any()) } returns listOf(consentDocDummy)
+        coEvery { consentDocumentRepository.fetchConsentDocuments(any(), any(), any()) } returns listOf(consentDocDummy)
 
         //When
-        consentDocument.withParams(GetConsentDocuments.Parameters("version", "en")).execute()
+        consentDocument.withParams(FetchConsentDocuments.Parameters("version", "en")).execute()
 
         //Then
         coVerify(ordering = Ordering.SEQUENCE){
-            consentDocumentRepository.getConsentDocument(any(), any(), any())
+            consentDocumentRepository.fetchConsentDocuments(any(), any(), any())
         }
     }
 
@@ -64,14 +64,14 @@ abstract class GetDocumentConsentTest {
     fun getConsentDocumentMissingLanguage() = runTest {
         //Given
         val consentDocLDummy = ConsentDocument("", 1, "","","","","",true,"","")
-        coEvery { consentDocumentRepository.getConsentDocument(any(), any(), any()) } returns listOf(consentDocLDummy)
+        coEvery { consentDocumentRepository.fetchConsentDocuments(any(), any(), any()) } returns listOf(consentDocLDummy)
 
         //When
-        consentDocument.withParams(GetConsentDocuments.Parameters("version", "en")).execute()
+        consentDocument.withParams(FetchConsentDocuments.Parameters("version", "en")).execute()
 
         //Then
         coVerify(ordering = Ordering.SEQUENCE){
-            consentDocumentRepository.getConsentDocument(any(), any(), any())
+            consentDocumentRepository.fetchConsentDocuments(any(), any(), any())
         }
     }
 
@@ -80,14 +80,14 @@ abstract class GetDocumentConsentTest {
     fun getConsentDocumentWrongVersion() = runTest {
         //Given
         val consentDocVDummy = ConsentDocument("", 0, "","","","en","",true,"","")
-        coEvery { consentDocumentRepository.getConsentDocument(any(), any(), any()) } returns listOf(consentDocVDummy)
+        coEvery { consentDocumentRepository.fetchConsentDocuments(any(), any(), any()) } returns listOf(consentDocVDummy)
 
         //When
-        consentDocument.withParams(GetConsentDocuments.Parameters("version", "en")).execute()
+        consentDocument.withParams(FetchConsentDocuments.Parameters("version", "en")).execute()
 
         //Then
         coVerify(ordering = Ordering.SEQUENCE){
-            consentDocumentRepository.getConsentDocument(any(), any(), any())
+            consentDocumentRepository.fetchConsentDocuments(any(), any(), any())
         }
     }
 

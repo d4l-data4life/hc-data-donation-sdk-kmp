@@ -40,7 +40,7 @@ import care.data4life.datadonation.internal.domain.repositories.ConsentDocumentR
 import care.data4life.datadonation.internal.domain.repositories.CredentialsRepository
 import care.data4life.datadonation.internal.domain.repositories.RegistrationRepository
 import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
-import care.data4life.datadonation.internal.domain.usecases.GetConsentDocuments
+import care.data4life.datadonation.internal.domain.usecases.FetchConsentDocuments
 import care.data4life.datadonation.internal.domain.usecases.RegisterNewDonor
 import care.data4life.datadonation.internal.utils.DateTimeNow
 import io.ktor.client.HttpClient
@@ -74,7 +74,6 @@ internal fun initKoin(configuration: Contract.Configuration) = startKoin {
 
 private val coreModule = module {
 
-    //
     single {
         HttpClient {
             install(JsonFeature) {
@@ -92,7 +91,7 @@ private val coreModule = module {
     //DataStores
     single<UserConsentRepository.Remote> { UserConsentDataStore(get()) }
     single<RegistrationRepository.Remote> { RegistrationDataStore(get()) }
-    single<ConsentDocumentRepository.Remote> { ConsentDocumentDatastore(get()) }
+    single<ConsentDocumentRepository.Remote> { ConsentDocumentDataStore(get()) }
     single<CredentialsRepository.Local> { CredentialsLocalDataStore(get()) }
 
 
@@ -104,7 +103,7 @@ private val coreModule = module {
 
     //Usecases
     single { RegisterNewDonor(get(), get()) }
-    single { GetConsentDocuments(get()) }
+
 }
 
 expect val platformModule: Module

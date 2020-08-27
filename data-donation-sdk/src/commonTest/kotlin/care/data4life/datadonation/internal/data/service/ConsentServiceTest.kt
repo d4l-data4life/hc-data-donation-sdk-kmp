@@ -98,7 +98,7 @@ internal abstract class ConsentServiceTest : BaseServiceTest<ConsentService>() {
         givenServiceResponseWith(ConsentDocument.serializer().list, listOf(consentDocDummy))
 
         //When
-        val result = service.fetchConsentDocument("T", "data donation", "1", "DE")
+        val result = service.fetchConsentDocuments("T", "data donation", "1", "DE")
 
         //Then
         assertEquals(listOf(consentDocDummy), result)

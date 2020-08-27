@@ -39,7 +39,7 @@ import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.di.initKoin
 import care.data4life.datadonation.internal.domain.usecases.CreateUserConsent
-import care.data4life.datadonation.internal.domain.usecases.GetConsentDocuments
+import care.data4life.datadonation.internal.domain.usecases.FetchConsentDocuments
 import care.data4life.datadonation.internal.domain.usecases.FetchUserConsents
 import care.data4life.datadonation.internal.domain.usecases.Usecase
 import kotlinx.coroutines.GlobalScope
@@ -49,7 +49,7 @@ class Client(private val configuration: Contract.Configuration) : Contract.DataD
 
     private val koinApplication = initKoin(configuration)
     private val createUserContent: CreateUserConsent by koinApplication.koin.inject()
-    private val getConsentDocuments: GetConsentDocuments by koinApplication.koin.inject()
+    private val fetchConsentDocuments: FetchConsentDocuments by koinApplication.koin.inject()
     private val fetchUserConsents: FetchUserConsents by koinApplication.koin.inject()
 
     private val context = GlobalScope //TODO use proper CoroutineScope
@@ -59,7 +59,7 @@ class Client(private val configuration: Contract.Configuration) : Contract.DataD
         language: String?,
         listener: ResultListener<List<ConsentDocument>>
     ) {
-        getConsentDocuments.withParams(GetConsentDocuments.Parameters(consentDocumentVersion, language))
+        fetchConsentDocuments.withParams(FetchConsentDocuments.Parameters(consentDocumentVersion, language))
             .runForListener(listener)
     }
 
