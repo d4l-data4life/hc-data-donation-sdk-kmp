@@ -37,6 +37,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ConsentSignature(val signature: String)
 
+@Serializable
 enum class ConsentSignatureType(val apiValue: String) {
     ConsentOnce("consentOnce"), NormalUse("normalUse"), RevokeOnce("revokeOnce")
 }

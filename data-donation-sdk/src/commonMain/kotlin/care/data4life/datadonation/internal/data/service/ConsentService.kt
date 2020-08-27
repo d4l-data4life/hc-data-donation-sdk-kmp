@@ -38,9 +38,7 @@ import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.model.*
 import care.data4life.datadonation.internal.utils.DateTimeNow
 import io.ktor.client.HttpClient
-import io.ktor.client.request.get
 import io.ktor.client.request.parameter
-import io.ktor.client.request.url
 
 internal class ConsentService(
     private val client: HttpClient,
@@ -51,12 +49,14 @@ internal class ConsentService(
     private val baseUrl = "${environment.url}/consent/api/v1"
 
     suspend fun fetchConsentDocument(
-        dataDonationKey: String,
-        version: String,
-        language: String
+        accessToken: String, dataDonationKey: String,
+        version: String?,
+        language: String?
     ): List<ConsentDocument> {
-        return client.get {
-            url("$baseUrl/admin/consentDocuments.json")
+        return client.getWithQuery(accessToken, baseUrl, Endpoints.consentDocuments) {
+            parameter(Parameters.consentDocumentKey, dataDonationKey)
+            parameter(Parameters.version, version)
+            parameter(Parameters.language, language)
         }
     }
 
@@ -94,11 +94,14 @@ internal class ConsentService(
 
         object Endpoints {
             const val userConsents = "userConsents"
+            const val consentDocuments = "consentDocuments"
         }
 
         object Parameters {
             const val consentDocumentKey = "consentDocumentKey"
             const val latest = "latest"
+            const val language = "language"
+            const val version = "version"
         }
     }
 

@@ -58,11 +58,12 @@ interface Contract {
         fun createUserConsent(
             consentDocumentVersion: String,
             language: String?,
-            listener: ResultListener<Pair<UserConsent, KeyPair>>)
+            listener: ResultListener<Pair<UserConsent, KeyPair>>
+        )
 
         fun fetchUserConsents(listener: ResultListener<List<UserConsent>>)
 
-        fun revokeUserConsent(language: String?,callback: Callback)
+        fun revokeUserConsent(language: String?, callback: Callback)
 
         /** TODO Donation with FHIR models
          * fun <T : DomainResource> donateResource(

@@ -39,5 +39,8 @@ import org.junit.runners.JUnit4
 class CreateUserConsentAndroidTest : CreateUserConsentTest()
 
 @RunWith(JUnit4::class)
+class GetDocumentConsentAndroidTest : GetDocumentConsentTest()
+
+@RunWith(JUnit4::class)
 class RegisterNewDonorAndroidTest : RegisterNewDonorTest()
 

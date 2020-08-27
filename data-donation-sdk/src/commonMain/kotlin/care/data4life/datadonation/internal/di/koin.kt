@@ -35,14 +35,12 @@ package care.data4life.datadonation.internal.di
 import care.data4life.datadonation.Contract
 import care.data4life.datadonation.internal.data.service.ConsentService
 import care.data4life.datadonation.internal.data.service.DonationService
-import care.data4life.datadonation.internal.data.store.CredentialsLocalDataStore
-import care.data4life.datadonation.internal.data.store.RegistrationDataStore
-import care.data4life.datadonation.internal.data.store.UserConsentDataStore
-import care.data4life.datadonation.internal.data.store.UserSessionTokenDataStore
+import care.data4life.datadonation.internal.data.store.*
+import care.data4life.datadonation.internal.domain.repositories.ConsentDocumentRepository
 import care.data4life.datadonation.internal.domain.repositories.CredentialsRepository
 import care.data4life.datadonation.internal.domain.repositories.RegistrationRepository
 import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
-import care.data4life.datadonation.internal.domain.usecases.CreateUserConsent
+import care.data4life.datadonation.internal.domain.usecases.GetConsentDocuments
 import care.data4life.datadonation.internal.domain.usecases.RegisterNewDonor
 import care.data4life.datadonation.internal.utils.DateTimeNow
 import io.ktor.client.HttpClient
@@ -90,19 +88,23 @@ private val coreModule = module {
     single { ConsentService(get(), get(), get()) }
     single { DonationService(get(), get()) }
 
+
     //DataStores
     single<UserConsentRepository.Remote> { UserConsentDataStore(get()) }
     single<RegistrationRepository.Remote> { RegistrationDataStore(get()) }
+    single<ConsentDocumentRepository.Remote> { ConsentDocumentDatastore(get()) }
     single<CredentialsRepository.Local> { CredentialsLocalDataStore(get()) }
 
 
     //Repositories
     single { UserConsentRepository(get(), get()) }
     single { RegistrationRepository(get()) }
+    single { ConsentDocumentRepository(get(), get()) }
     single { CredentialsRepository(get()) }
 
     //Usecases
     single { RegisterNewDonor(get(), get()) }
+    single { GetConsentDocuments(get()) }
 }
 
 expect val platformModule: Module

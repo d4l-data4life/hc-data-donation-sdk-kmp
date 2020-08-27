@@ -33,7 +33,6 @@
 package care.data4life.datadonation.internal.domain.usecases
 
 import care.data4life.datadonation.core.model.KeyPair
-import care.data4life.datadonation.core.model.publicAsBase64
 import care.data4life.datadonation.internal.data.model.RegistrationRequest
 import care.data4life.datadonation.internal.data.model.SignedConsentMessage
 import care.data4life.datadonation.internal.domain.repositories.RegistrationRepository
@@ -51,7 +50,7 @@ internal class RegisterNewDonor(
     @UnstableDefault
     override suspend fun execute() {
         val token = registrationRepository.requestRegistrationToken()
-        val request = RegistrationRequest(parameter.keyPair.publicAsBase64(), token)
+        val request = RegistrationRequest(parameter.keyPair.public.toBase64(), token)
         val message = request.encrypt(parameter.donationPublicKey).toBase64()
         val signature = consentRepository.signUserConsent(message)
         val signedMessage = SignedConsentMessage(message, signature)
@@ -79,10 +78,6 @@ private fun SignedConsentMessage.encrypt(dataDonationKey: String): ByteArray {
 private fun String.encrypt(dataDonationKet: String): ByteArray {
     // String is an RSA public key in PEM / SPKI format
     // apply RSA_OAEP algorithm to data
-    return ByteArray(0)
-}
-
-private fun String.toByteArray(): ByteArray {
     return ByteArray(0)
 }
 
