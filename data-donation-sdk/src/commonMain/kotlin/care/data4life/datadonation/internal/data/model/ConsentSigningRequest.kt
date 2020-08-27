@@ -32,6 +32,9 @@
 
 package care.data4life.datadonation.internal.data.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class ConsentSigningRequest(
     val consentDocumentKey: String,
     val payload: String,
