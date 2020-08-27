@@ -35,12 +35,15 @@ package care.data4life.datadonation.internal.di
 import care.data4life.datadonation.Contract
 import care.data4life.datadonation.internal.data.service.ConsentService
 import care.data4life.datadonation.internal.data.service.DonationService
+import care.data4life.datadonation.internal.data.store.ConsentDocumentDatastore
 import care.data4life.datadonation.internal.data.store.RegistrationDataStore
 import care.data4life.datadonation.internal.data.store.UserConsentDataStore
 import care.data4life.datadonation.internal.data.store.UserSessionTokenDataStore
+import care.data4life.datadonation.internal.domain.repositories.ConsentDocumentRepository
 import care.data4life.datadonation.internal.domain.repositories.RegistrationRepository
 import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
 import care.data4life.datadonation.internal.domain.usecases.CreateUserConsent
+import care.data4life.datadonation.internal.domain.usecases.GetConsentDocuments
 import io.ktor.client.HttpClient
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.json.serializer.KotlinxSerializer
@@ -80,16 +83,20 @@ private val coreModule = module {
     single { ConsentService(get(), get()) }
     single { DonationService(get(), get()) }
 
+
     //DataStores
     single<UserConsentRepository.Remote> { UserConsentDataStore(get()) }
     single<RegistrationRepository.Remote> { RegistrationDataStore(get()) }
+    single<ConsentDocumentRepository.Remote> { ConsentDocumentDatastore(get()) }
 
     //Repositories
     single { UserConsentRepository(get(), get()) }
     single { RegistrationRepository(get()) }
+    single { ConsentDocumentRepository(get(), get()) }
 
     //Usecases
     single { CreateUserConsent(get()) }
+    single { GetConsentDocuments(get()) }
 }
 
 expect val platformModule: Module

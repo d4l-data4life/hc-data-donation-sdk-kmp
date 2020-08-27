@@ -37,7 +37,7 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-data class ConsentDocument (
+data class ConsentDocument(
     val key: String,
     val version: Int,
     val processor: String,
@@ -45,7 +45,7 @@ data class ConsentDocument (
     val recipient: String,
     val language: String,
     val text: String,
-    val requiresToken: Boolean=false,
-    @SerialName("studyID") val studyId: String="",
+    val requiresToken: Boolean = false,
+    @SerialName("studyID") val studyId: String = "",
     val programName: String
 )
