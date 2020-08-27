@@ -42,6 +42,7 @@ import io.ktor.client.HttpClient
 import io.ktor.http.HttpMethod
 import kotlinx.serialization.builtins.list
 import runTest
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -85,8 +86,8 @@ abstract class ConsentServiceTest : BaseServiceTest<ConsentService>() {
         assertEquals(ConsentService.Companion.Endpoints.userConsents, lastRequest.url.encodedPath)
         assertTrue(lastRequest.url.parameters.contains("consentDocumentKey"))
         assertEquals(lastRequest.url.parameters["consentDocumentKey"], dataDonationKey)
-        assertTrue(lastRequest.url.parameters.contains("version"))
-        assertEquals(lastRequest.url.parameters["version"], "1")
+        assertTrue(lastRequest.url.parameters.contains("latest"))
+        assertEquals(lastRequest.url.parameters["latest"], false.toString())
     }
 
     @Test
@@ -103,16 +104,18 @@ abstract class ConsentServiceTest : BaseServiceTest<ConsentService>() {
         assertEquals(ConsentService.Companion.Endpoints.consentDocuments, lastRequest.url.encodedPath)
         assertTrue(lastRequest.url.parameters.contains("consentDocumentKey"))
         assertEquals(lastRequest.url.parameters["consentDocumentKey"], dataDonationKey)
-        assertTrue(lastRequest.url.parameters.contains("latest"))
-        assertEquals(lastRequest.url.parameters["latest"], false.toString())
+        assertTrue(lastRequest.url.parameters.contains("version"))
+        assertEquals(lastRequest.url.parameters["version"], "1")
+
     }
+
     @Test
     fun requestSignatureTest() = runTest {
         //Given
-//        givenServiceResponseWith(
-//            ConsentSignature.serializer(),
-//            consentSignature
-//        )
+        givenServiceResponseWith(
+            ConsentSignature.serializer(),
+            consentSignature
+        )
 
         //When
         val result = service.requestSignature("T")
