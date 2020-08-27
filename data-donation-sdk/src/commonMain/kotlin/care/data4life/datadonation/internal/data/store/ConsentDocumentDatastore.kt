@@ -41,8 +41,8 @@ class ConsentDocumentDatastore(private val service: ConsentService) : ConsentDoc
     override suspend fun getConsentDocument(
         accessToken: String,
         dataDonationKey: String,
-        version: String,
-        language: String
+        version: String?,
+        language: String?
     ): List<ConsentDocument> = service.fetchConsentDocument(accessToken, dataDonationKey, version, language)
 
 

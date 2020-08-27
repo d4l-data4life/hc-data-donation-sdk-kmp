@@ -46,5 +46,5 @@ internal class GetConsentDocuments(private val consentDocumentRepository: Consen
     override suspend fun execute(): List<ConsentDocument> =
         consentDocumentRepository.getConsentDocument(DOCUMENT_KEYWORD, parameter.version, parameter.language)
 
-    data class Parameters(val version: String, val language: String)
+    data class Parameters(val version: String?, val language: String?)
 }

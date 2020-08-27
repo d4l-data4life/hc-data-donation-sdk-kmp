@@ -45,8 +45,8 @@ class ConsentService(private val client: HttpClient, environment: Environment) {
 
     suspend fun fetchConsentDocument(
         accessToken: String, dataDonationKey: String,
-        version: String,
-        language: String
+        version: String?,
+        language: String?
     ): List<ConsentDocument> {
         return client.getWithQuery(accessToken, baseUrl, Endpoints.consentDocuments) {
             parameter(Parameters.consentDocumentKey, dataDonationKey)

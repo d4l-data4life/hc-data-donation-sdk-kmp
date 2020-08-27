@@ -40,8 +40,8 @@ internal class ConsentDocumentRepository(private val remoteDS: Remote,  private 
 
     suspend fun getConsentDocument(
         key: String,
-        language: String,
-        version: String
+        language: String?,
+        version: String?
     ): List<ConsentDocument> {
         return remoteDS.getConsentDocument(sessionToken.getUserSessionToken()!!, key, language, version)
     }
@@ -51,8 +51,8 @@ internal class ConsentDocumentRepository(private val remoteDS: Remote,  private 
         suspend fun getConsentDocument(
             accessToken: String,
             dataDonationKey: String,
-            version: String,
-            language: String
+            version: String?,
+            language: String?
         ): List<ConsentDocument>
 
     }

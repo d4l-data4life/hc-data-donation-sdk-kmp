@@ -55,8 +55,8 @@ class Client(configuration: Contract.Configuration) : Contract.DataDonation {
     private val context = GlobalScope //TODO use proper CoroutineScope
 
     override fun fetchConsentDocument(
-        consentDocumentVersion: String,
-        language: String,
+        consentDocumentVersion: String?,
+        language: String?,
         listener: ResultListener<List<ConsentDocument>>
     ) {
         getConsentDocuments.withParams(GetConsentDocuments.Parameters(consentDocumentVersion, language))
