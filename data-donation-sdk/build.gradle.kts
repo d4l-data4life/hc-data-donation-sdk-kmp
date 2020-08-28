@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
-
 plugins {
     kotlin("multiplatform")
     id("kotlinx-serialization")
@@ -21,19 +19,10 @@ kotlin {
         publishLibraryVariants("release")
     }
 
-    // Revert to just ios() when gradle plugin can properly resolve it
-    val onPhone = System.getenv("SDK_NAME")?.startsWith("iphoneos") ?: false
-    if (onPhone) {
-        iosArm64("ios")
-    } else {
-        iosX64("ios")
-    }   
-
-    targets.getByName<KotlinNativeTarget>("ios").compilations["main"].kotlinOptions.freeCompilerArgs +=
-        listOf("-Xobjc-generics", "-Xg0")
-
-    targets.withType<KotlinNativeTarget> {
-        binaries.framework(listOf(RELEASE))
+    ios {
+        binaries {
+            framework()
+        }
     }
 
     sourceSets {
@@ -112,7 +101,8 @@ kotlin {
             }
         }
 
-        configure(listOf(targets["ios"])) {
+
+        configure(listOf(targets["iosArm64"], targets["iosX64"])) {
             compilations["main"].kotlinOptions.freeCompilerArgs = mutableListOf(
                 "-include-binary", "$projectDir/Pods/Tink/Frameworks/Tink.framework/Tink.a"
             )
@@ -174,14 +164,15 @@ publishing {
             name = "GithubPackages"
             url = uri("https://maven.pkg.github.com/gesundheitscloud/data-donation-sdk-native")
             credentials {
-                username = (project.findProperty("gpr.user") ?: System.getenv("USERNAME")).toString()
+                username =
+                    (project.findProperty("gpr.user") ?: System.getenv("USERNAME")).toString()
                 password = (project.findProperty("gpr.key") ?: System.getenv("TOKEN")).toString()
             }
         }
 
         publications {
             all {
-                if( this is MavenPublication){
+                if (this is MavenPublication) {
                     groupId = LibraryConfig.githubGroup
                     artifactId = LibraryConfig.artifactId
                     version = LibraryConfig.version
@@ -196,8 +187,11 @@ publishing {
                         "jvm" -> {
                             artifactId = "${project.name}-jvm"
                         }
-                        "ios" -> {
-                            artifactId = "${project.name}-ios"
+                        "iosArm64" -> {
+                            artifactId = "${project.name}-iosArm64"
+                        }
+                        "iosX64" -> {
+                            artifactId = "${project.name}-iosX64"
                         }
                         else -> {
                             artifactId = "${project.name}-common"
