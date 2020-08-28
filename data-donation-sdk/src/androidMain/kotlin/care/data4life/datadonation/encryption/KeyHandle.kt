@@ -34,43 +34,51 @@ package care.data4life.datadonation.encryption
 
 import care.data4life.datadonation.encryption.protos.Keyset
 import care.data4life.datadonation.encryption.protos.PublicHandle
-import care.data4life.datadonation.encryption.protos.RsaSsaPrivateKey
-import com.google.crypto.tink.*
+import com.google.crypto.tink.BinaryKeysetReader
+import com.google.crypto.tink.CleartextKeysetHandle
+import com.google.crypto.tink.KeyTemplate
+import com.google.crypto.tink.KeysetHandle
 import com.google.crypto.tink.subtle.Base64
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.protobuf.ProtoBuf
 
-class SignatureKeyHandle<Proto> : KeyHandle<Proto>, SignatureKeyPrivate
-    where Proto: Asn1Exportable,
-          Proto: PublicHandle {
+abstract class KeyHandle<Proto> where Proto: Asn1Exportable, Proto: PublicHandle {
 
-    constructor(keyTemplate: KeyTemplate, deserializer: DeserializationStrategy<Proto>)
-            : super(keyTemplate, deserializer)
+    protected val handle: KeysetHandle
+    protected val deserializer: DeserializationStrategy<Proto>
 
-    constructor(handle: KeysetHandle, deserializer: DeserializationStrategy<Proto>)
-            : super(handle, deserializer)
-
-    constructor(serializedKeyset: ByteArray, deserializer: DeserializationStrategy<Proto>)
-            : super(serializedKeyset, deserializer)
-
-    override fun sign(data: ByteArray): ByteArray {
-        return handle.getPrimitive(PublicKeySign::class.java).sign(data)
+    constructor(keyTemplate: KeyTemplate, deserializer: DeserializationStrategy<Proto>) {
+        handle = KeysetHandle.generateNew(keyTemplate)
+        this.deserializer = deserializer
     }
 
-    override val pkcs8Private: String
-        get() = deserializePrivate()
-
-    override val pkcs8Public: String
-        get() = deserializePublic()
-
-    override fun verify(data: ByteArray, signature: ByteArray): Boolean {
-        val verifier = handle.publicKeysetHandle.getPrimitive(PublicKeyVerify::class.java)
-        return runCatching { verifier.verify(signature, data) }.isSuccess
+    constructor(handle: KeysetHandle, deserializer: DeserializationStrategy<Proto>) {
+        this.handle = handle
+        this.deserializer = deserializer
     }
 
-    override fun serializedPublic(): ByteArray = serializePublic()
+    constructor(serializedKeyset: ByteArray, deserializer: DeserializationStrategy<Proto>) {
+        handle = CleartextKeysetHandle.read(BinaryKeysetReader.withBytes(serializedKeyset))
+        this.deserializer = deserializer
+    }
 
-    override fun serializedPrivate() :ByteArray = serializePrivate()
+    private fun getProto() = ProtoBuf.load(
+        Keyset.serializer(),
+        CleartextKeysetHandle
+            .getKeyset(handle)
+            .toByteArray())
+        .key.first()
+        .key_data.value
+        .let { ProtoBuf.load(deserializer, it) }
 
+    protected fun deserializePrivate(): String
+            = getProto().toAsn1().encoded.asByteArray().let(Base64::encode)
+    protected fun deserializePublic(): String
+        = getProto().publicKey.toAsn1().encoded.asByteArray().let(Base64::encode)
+
+    protected fun serializePublic():ByteArray =
+        CleartextKeysetHandle.getKeyset(handle.publicKeysetHandle).toByteArray()
+
+    protected fun serializePrivate() =
+        CleartextKeysetHandle.getKeyset(handle).toByteArray()
 }
-

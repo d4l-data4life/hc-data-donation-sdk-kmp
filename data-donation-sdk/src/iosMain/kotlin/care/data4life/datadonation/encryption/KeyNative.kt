@@ -35,51 +35,49 @@ package care.data4life.datadonation.encryption
 import care.data4life.datadonation.toNSData
 import platform.CoreFoundation.CFDataRef
 import platform.CoreFoundation.CFDictionaryCreateMutable
-import platform.CoreFoundation.CFStringRef
 import platform.CoreFoundation.kCFAllocatorSystemDefault
 import platform.Foundation.CFBridgingRetain
 import platform.Foundation.NSNumber
 import platform.Security.*
 
+abstract class KeyNative {
+    protected val privateKey: SecKeyRef
+    protected val publicKey: SecKeyRef
+    protected val algoType: SecKeyAlgorithm
 
-actual fun SignatureKeyPrivate(size: Int, algorithm: Signature.Algorithm): SignatureKeyPrivate {
-    val params: Pair<CFStringRef, SecKeyAlgorithm> = algorithm.toAttributes()
-    return SignatureKeyNative(params.first, params.second, size)
-}
+    constructor(keyType: SecKeyAlgorithm, algoType: SecKeyAlgorithm, size: Int) {
+        val (private, public) = generateKey(keyType, size)
+        privateKey = private
+        publicKey = public
+        this.algoType = algoType
+    }
 
-private fun Signature.Algorithm.toAttributes(): Pair<CFStringRef, SecKeyAlgorithm> {
-    return when (this) {
-        is Signature.Algorithm.RsaPSS -> {
-            kSecAttrKeyTypeRSA!! to when (hashSize) {
-                HashSize.Hash256 -> kSecKeyAlgorithmRSASignatureDigestPSSSHA256!!
+    constructor(private: SecKeyRef, public: SecKeyRef, algoType: SecKeyAlgorithm) {
+        privateKey = private
+        publicKey = public
+        this.algoType = algoType
+    }
+
+    companion object {
+        fun buildSecKeyRef(serialized: ByteArray, algorithm: Algorithm, private: Boolean): SecKeyRef {
+            val data = CFBridgingRetain(serialized.toNSData()) as CFDataRef
+            val pubAttr = CFDictionaryCreateMutable(kCFAllocatorSystemDefault, 3, null, null)!!
+            when (algorithm) {
+                is Algorithm.RSA -> {
+                    pubAttr += kSecAttrKeyType to kSecAttrKeyTypeRSA
+                    pubAttr += kSecAttrKeyClass to if (private) kSecAttrKeyClassPrivate else kSecAttrKeyClassPublic
+                    pubAttr += kSecAttrKeySizeInBits to CFBridgingRetain(NSNumber(int = algorithm.hashSize.bits))
+                }
+                else -> {
+                    // No action
+                }
             }
+            return SecKeyCreateWithData(data, pubAttr, null)!!
         }
     }
-}
 
-actual fun SignatureKeyPrivate(
-    serializedPrivate: ByteArray,
-    serializedPublic: ByteArray,
-    size: Int,
-    algorithm: Signature.Algorithm
-): SignatureKeyPrivate {
-
-
-    return SignatureKeyNative(
-        KeyNative.buildSecKeyRef(serializedPrivate, algorithm.toKeyNativeAlgorithm(), true),
-        KeyNative.buildSecKeyRef(serializedPublic, algorithm.toKeyNativeAlgorithm(), false),
-        algorithm.toAttributes().first
-    )
-}
-
-actual fun SignatureKeyPublic(
-    serialized: ByteArray,
-    size: Int,
-    algorithm: Signature.Algorithm
-): SignatureKeyPublic {
-    TODO()
-}
-
-private fun Signature.Algorithm.toKeyNativeAlgorithm() = when(this) {
-    is Signature.Algorithm.RsaPSS -> KeyNative.Algorithm.RSA(hashSize)
+    sealed class Algorithm {
+        class RSA(val hashSize: HashSize): Algorithm()
+        object AES: Algorithm()
+    }
 }

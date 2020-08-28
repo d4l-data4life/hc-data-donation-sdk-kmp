@@ -32,25 +32,37 @@
 
 package care.data4life.datadonation.encryption
 
-expect fun SignatureKeyPrivate(serializedPrivate: ByteArray, serializedPublic: ByteArray, size: Int, algorithm: Signature.Algorithm):SignatureKeyPrivate
+import platform.Security.SecKeyAlgorithm
+import platform.Security.SecKeyRef
 
-expect fun SignatureKeyPublic(serialized: ByteArray, size: Int, algorithm: Signature.Algorithm):SignatureKeyPublic
+class EncryptionKeyNative : KeyNative, EncryptionKeyPrivate {
 
-expect fun SignatureKeyPrivate(size: Int, algorithm: Signature.Algorithm):SignatureKeyPrivate
+    constructor(keyType: SecKeyAlgorithm, algoType: SecKeyAlgorithm, size: Int)
+            : super(keyType, algoType, size)
 
-//TODO: expect fun SignatureKeyPublic(pkcs1: String):SignatureKeyPublic
+    constructor(private: SecKeyRef, public: SecKeyRef, algoType: SecKeyAlgorithm)
+            : super(private, public, algoType)
 
-//TODO: expect fun SignatureKeyPrivate(pkcs1: String):SignatureKeyPrivate
+    override fun decrypt(data: ByteArray): ByteArray {
+        TODO("Not yet implemented")
+    }
 
+    override fun serializedPrivate(): ByteArray {
+        TODO("Not yet implemented")
+    }
 
-interface SignatureKeyPrivate:SignatureKeyPublic {
-    fun sign(data:ByteArray):ByteArray
-    fun serializedPrivate():ByteArray
-    val pkcs8Private:String
-}
+    override val pkcs8Private: String
+        get() = TODO("Not yet implemented")
 
-interface SignatureKeyPublic {
-    fun verify(data:ByteArray,signature:ByteArray):Boolean
-    fun serializedPublic():ByteArray
-    val pkcs8Public:String
+    override fun encrypt(data: ByteArray, signature: ByteArray): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override fun serializedPublic(): ByteArray {
+        TODO("Not yet implemented")
+    }
+
+    override val pkcs8Public: String
+        get() = TODO("Not yet implemented")
+
 }

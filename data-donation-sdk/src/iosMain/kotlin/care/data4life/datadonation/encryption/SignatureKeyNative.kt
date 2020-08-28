@@ -41,28 +41,18 @@ import platform.Foundation.*
 import platform.Security.*
 import platform.darwin.noErr
 
-class SignatureKeyNative : SignatureKeyPrivate {
-    constructor(keyType: SecKeyAlgorithm, algoType: SecKeyAlgorithm, size: Int) {
-        val (private, public) = generateKey(keyType, size)
-        privateKey = private
-        publicKey = public
-        this.algoType = algoType
-    }
+class SignatureKeyNative : KeyNative, SignatureKeyPrivate {
 
-    constructor(private: SecKeyRef, public: SecKeyRef, algoType: SecKeyAlgorithm) {
-        privateKey = private
-        publicKey = public
-        this.algoType = algoType
-    }
+    constructor(keyType: SecKeyAlgorithm, algoType: SecKeyAlgorithm, size: Int)
+            : super(keyType, algoType, size)
 
-    private val privateKey: SecKeyRef
-    private val publicKey: SecKeyRef
-    private val algoType: SecKeyAlgorithm
+    constructor(private: SecKeyRef, public: SecKeyRef, algoType: SecKeyAlgorithm)
+            : super(private, public, algoType)
 
     override fun sign(data: ByteArray): ByteArray {
-        val data = CFBridgingRetain(data.toNSData()) as CFDataRef
-        val k = SecKeyCreateSignature(privateKey, algoType, data, null)!!
-        CFBridgingRelease(data)
+        val inputCfDataRef = CFBridgingRetain(data.toNSData()) as CFDataRef
+        val k = SecKeyCreateSignature(privateKey, algoType, inputCfDataRef, null)!!
+        CFBridgingRelease(inputCfDataRef)
         return (CFBridgingRelease(k) as NSData).toByteArray()
     }
 
@@ -83,9 +73,9 @@ class SignatureKeyNative : SignatureKeyPrivate {
 
 
     override fun verify(data: ByteArray, signature: ByteArray): Boolean {
-        val data = CFBridgingRetain(data.toNSData()) as CFDataRef
-        val signature = CFBridgingRetain(signature.toNSData()) as CFDataRef
-        return SecKeyVerifySignature(publicKey, algoType, data, signature, null)
+        val inputCfDataRef = CFBridgingRetain(data.toNSData()) as CFDataRef
+        val signatureCfDataRef = CFBridgingRetain(signature.toNSData()) as CFDataRef
+        return SecKeyVerifySignature(publicKey, algoType, inputCfDataRef, signatureCfDataRef, null)
     }
 
     override fun serializedPublic(): ByteArray =

@@ -32,25 +32,25 @@
 
 package care.data4life.datadonation.encryption
 
-expect fun SignatureKeyPrivate(serializedPrivate: ByteArray, serializedPublic: ByteArray, size: Int, algorithm: Signature.Algorithm):SignatureKeyPrivate
+expect fun EncryptionKeyPrivate(serializedPrivate: ByteArray, serializedPublic: ByteArray, size: Int, algorithm: Encryption.Algorithm):EncryptionKeyPrivate
 
-expect fun SignatureKeyPublic(serialized: ByteArray, size: Int, algorithm: Signature.Algorithm):SignatureKeyPublic
+expect fun EncryptionKeyPublic(serialized: ByteArray, size: Int, algorithm: Encryption.Algorithm):EncryptionKeyPublic
 
-expect fun SignatureKeyPrivate(size: Int, algorithm: Signature.Algorithm):SignatureKeyPrivate
+expect fun EncryptionKeyPrivate(size: Int, algorithm: Encryption.Algorithm):EncryptionKeyPrivate
 
-//TODO: expect fun SignatureKeyPublic(pkcs1: String):SignatureKeyPublic
+//TODO: expect fun EncryptionKeyPublic(pkcs1: String):EncryptionKeyPublic
 
-//TODO: expect fun SignatureKeyPrivate(pkcs1: String):SignatureKeyPrivate
+//TODO: expect fun EncryptionKeyPrivate(pkcs1: String):EncryptionKeyPrivate
 
 
-interface SignatureKeyPrivate:SignatureKeyPublic {
-    fun sign(data:ByteArray):ByteArray
+interface EncryptionKeyPrivate:EncryptionKeyPublic {
+    fun decrypt(data:ByteArray):ByteArray
     fun serializedPrivate():ByteArray
     val pkcs8Private:String
 }
 
-interface SignatureKeyPublic {
-    fun verify(data:ByteArray,signature:ByteArray):Boolean
+interface EncryptionKeyPublic {
+    fun encrypt(data:ByteArray,signature:ByteArray):Boolean
     fun serializedPublic():ByteArray
     val pkcs8Public:String
 }

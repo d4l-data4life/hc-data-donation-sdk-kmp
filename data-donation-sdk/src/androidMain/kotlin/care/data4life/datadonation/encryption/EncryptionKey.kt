@@ -32,36 +32,38 @@
 
 package care.data4life.datadonation.encryption
 
-
-import com.google.crypto.tink.*
+import care.data4life.datadonation.encryption.protos.RsaSsaPrivateKey
+import com.google.crypto.tink.BinaryKeysetReader
+import com.google.crypto.tink.CleartextKeysetHandle
+import com.google.crypto.tink.KeyTemplate
+import com.google.crypto.tink.KeysetHandle
 import com.google.crypto.tink.proto.HashType
 import com.google.crypto.tink.proto.RsaSsaPssKeyFormat
 import com.google.crypto.tink.proto.RsaSsaPssParams
-import care.data4life.datadonation.encryption.protos.RsaSsaPrivateKey
-import care.data4life.datadonation.encryption.protos.RsaSsaPssPublicKey
 import com.google.crypto.tink.shaded.protobuf.ByteString
 import java.security.spec.RSAKeyGenParameterSpec
 
 
-actual fun SignatureKeyPrivate(size: Int,algorithm: Signature.Algorithm): SignatureKeyPrivate {
+actual fun EncryptionKeyPrivate(size: Int, algorithm: Encryption.Algorithm): EncryptionKeyPrivate {
     return when(algorithm) {
-        is Signature.Algorithm.RsaPSS -> SignatureKeyHandle(KeysetHandle(size, algorithm),RsaSsaPrivateKey.serializer())
+        is Encryption.Algorithm.RsaOAEP -> EncryptionKeyHandle(KeysetHandle(size, algorithm),
+            RsaSsaPrivateKey.serializer()) // TODO update or generalize
     }
 }
 
-private fun KeysetHandle(size: Int,algorithm: Signature.Algorithm): KeysetHandle {
+private fun KeysetHandle(size: Int,algorithm: Encryption.Algorithm): KeysetHandle {
     return when(algorithm) {
-        is Signature.Algorithm.RsaPSS -> {
+        is Encryption.Algorithm.RsaOAEP -> {
             val hash = when(algorithm.hashSize) {
                 HashSize.Hash256 -> HashType.SHA256
             }
-            RsaSsaPssParams.newBuilder()
+            RsaSsaPssParams.newBuilder() // TODO update or generalize
                 .setSigHash(hash)
                 .setMgf1Hash(HashType.SHA256)
                 .setSaltLength(32)
                 .build()
                 .let { params ->
-                    RsaSsaPssKeyFormat.newBuilder()
+                    RsaSsaPssKeyFormat.newBuilder() // TODO update or generalize
                         .setParams(params)
                         .setModulusSizeInBits(size)
                         .setPublicExponent(ByteString.copyFrom(RSAKeyGenParameterSpec.F4.toByteArray()))
@@ -69,7 +71,7 @@ private fun KeysetHandle(size: Int,algorithm: Signature.Algorithm): KeysetHandle
                 }
                 .let { format ->
                     KeyTemplate.create(
-                        "type.googleapis.com/google.crypto.tink.RsaSsaPssPrivateKey",
+                        "type.googleapis.com/google.crypto.tink.RsaSsaOaepPrivateKey",
                         format.toByteArray(),
                         KeyTemplate.OutputPrefixType.RAW
                     )
@@ -81,28 +83,23 @@ private fun KeysetHandle(size: Int,algorithm: Signature.Algorithm): KeysetHandle
     }
 }
 
-actual fun SignatureKeyPrivate(
+actual fun EncryptionKeyPrivate(
     serializedPrivate: ByteArray,
-    //this one isn't actually used because public is calculated from private
     serializedPublic: ByteArray,
     size: Int,
-    algorithm: Signature.Algorithm
-): SignatureKeyPrivate {
+    algorithm: Encryption.Algorithm
+): EncryptionKeyPrivate {
     CleartextKeysetHandle.read(BinaryKeysetReader.withBytes(serializedPrivate))
     val serializer = when(algorithm) {
-        is Signature.Algorithm.RsaPSS -> RsaSsaPrivateKey.serializer()
+        is Encryption.Algorithm.RsaOAEP -> RsaSsaPrivateKey.serializer()
     }
-    return SignatureKeyHandle(serializedPrivate,serializer)
+    return EncryptionKeyHandle(serializedPrivate,serializer)
 }
 
-actual fun SignatureKeyPublic(
+actual fun EncryptionKeyPublic(
     serialized: ByteArray,
     size: Int,
-    algorithm: Signature.Algorithm
-): SignatureKeyPublic {
-    CleartextKeysetHandle.read(BinaryKeysetReader.withBytes(serialized))
-    val serializer = when(algorithm) {
-        is Signature.Algorithm.RsaPSS -> RsaSsaPssPublicKey.serializer()
-    }
+    algorithm: Encryption.Algorithm
+): EncryptionKeyPublic {
     TODO()
 }

@@ -32,25 +32,18 @@
 
 package care.data4life.datadonation.encryption
 
-expect fun SignatureKeyPrivate(serializedPrivate: ByteArray, serializedPublic: ByteArray, size: Int, algorithm: Signature.Algorithm):SignatureKeyPrivate
-
-expect fun SignatureKeyPublic(serialized: ByteArray, size: Int, algorithm: Signature.Algorithm):SignatureKeyPublic
-
-expect fun SignatureKeyPrivate(size: Int, algorithm: Signature.Algorithm):SignatureKeyPrivate
-
-//TODO: expect fun SignatureKeyPublic(pkcs1: String):SignatureKeyPublic
-
-//TODO: expect fun SignatureKeyPrivate(pkcs1: String):SignatureKeyPrivate
-
-
-interface SignatureKeyPrivate:SignatureKeyPublic {
-    fun sign(data:ByteArray):ByteArray
-    fun serializedPrivate():ByteArray
-    val pkcs8Private:String
+object Encryption {
+    sealed class Algorithm {
+        class RsaOAEP(val hashSize: HashSize) : Algorithm()
+    }
 }
 
-interface SignatureKeyPublic {
-    fun verify(data:ByteArray,signature:ByteArray):Boolean
-    fun serializedPublic():ByteArray
-    val pkcs8Public:String
+object Signature {
+    sealed class Algorithm {
+        class RsaPSS(val hashSize: HashSize) : Algorithm()
+    }
+}
+
+enum class HashSize(val bits: Int) {
+    Hash256(256)
 }

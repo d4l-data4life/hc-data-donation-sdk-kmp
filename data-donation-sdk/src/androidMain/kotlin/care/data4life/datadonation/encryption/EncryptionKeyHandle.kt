@@ -32,25 +32,40 @@
 
 package care.data4life.datadonation.encryption
 
-expect fun SignatureKeyPrivate(serializedPrivate: ByteArray, serializedPublic: ByteArray, size: Int, algorithm: Signature.Algorithm):SignatureKeyPrivate
+import care.data4life.datadonation.encryption.protos.PublicHandle
+import com.google.crypto.tink.KeyTemplate
+import com.google.crypto.tink.KeysetHandle
+import kotlinx.serialization.DeserializationStrategy
 
-expect fun SignatureKeyPublic(serialized: ByteArray, size: Int, algorithm: Signature.Algorithm):SignatureKeyPublic
+class EncryptionKeyHandle<Proto> : KeyHandle<Proto>, EncryptionKeyPrivate
+        where Proto: Asn1Exportable,
+              Proto: PublicHandle {
 
-expect fun SignatureKeyPrivate(size: Int, algorithm: Signature.Algorithm):SignatureKeyPrivate
+    constructor(keyTemplate: KeyTemplate, deserializer: DeserializationStrategy<Proto>)
+            : super(keyTemplate, deserializer)
 
-//TODO: expect fun SignatureKeyPublic(pkcs1: String):SignatureKeyPublic
+    constructor(handle: KeysetHandle, deserializer: DeserializationStrategy<Proto>)
+            : super(handle, deserializer)
 
-//TODO: expect fun SignatureKeyPrivate(pkcs1: String):SignatureKeyPrivate
+    constructor(serializedKeyset: ByteArray, deserializer: DeserializationStrategy<Proto>)
+            : super(serializedKeyset, deserializer)
 
+    override fun decrypt(data: ByteArray): ByteArray {
+        TODO("Not yet implemented")
+    }
 
-interface SignatureKeyPrivate:SignatureKeyPublic {
-    fun sign(data:ByteArray):ByteArray
-    fun serializedPrivate():ByteArray
-    val pkcs8Private:String
-}
+    override val pkcs8Private: String
+        get() = deserializePrivate()
 
-interface SignatureKeyPublic {
-    fun verify(data:ByteArray,signature:ByteArray):Boolean
-    fun serializedPublic():ByteArray
-    val pkcs8Public:String
+    override val pkcs8Public: String
+        get() = deserializePublic()
+
+    override fun encrypt(data: ByteArray, signature: ByteArray): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override fun serializedPublic(): ByteArray = serializePublic()
+
+    override fun serializedPrivate() :ByteArray = serializePrivate()
+
 }

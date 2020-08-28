@@ -32,25 +32,49 @@
 
 package care.data4life.datadonation.encryption
 
-expect fun SignatureKeyPrivate(serializedPrivate: ByteArray, serializedPublic: ByteArray, size: Int, algorithm: Signature.Algorithm):SignatureKeyPrivate
-
-expect fun SignatureKeyPublic(serialized: ByteArray, size: Int, algorithm: Signature.Algorithm):SignatureKeyPublic
-
-expect fun SignatureKeyPrivate(size: Int, algorithm: Signature.Algorithm):SignatureKeyPrivate
-
-//TODO: expect fun SignatureKeyPublic(pkcs1: String):SignatureKeyPublic
-
-//TODO: expect fun SignatureKeyPrivate(pkcs1: String):SignatureKeyPrivate
+import platform.CoreFoundation.CFStringRef
+import platform.Security.SecKeyAlgorithm
+import platform.Security.kSecAttrKeyTypeRSA
+import platform.Security.kSecKeyAlgorithmRSAEncryptionOAEPSHA256
 
 
-interface SignatureKeyPrivate:SignatureKeyPublic {
-    fun sign(data:ByteArray):ByteArray
-    fun serializedPrivate():ByteArray
-    val pkcs8Private:String
+actual fun EncryptionKeyPrivate(size: Int, algorithm: Encryption.Algorithm): EncryptionKeyPrivate {
+    val params: Pair<CFStringRef, SecKeyAlgorithm> = algorithm.toAttributes()
+    return EncryptionKeyNative(params.first, params.second, size)
 }
 
-interface SignatureKeyPublic {
-    fun verify(data:ByteArray,signature:ByteArray):Boolean
-    fun serializedPublic():ByteArray
-    val pkcs8Public:String
+private fun Encryption.Algorithm.toAttributes(): Pair<CFStringRef, SecKeyAlgorithm> {
+    return when (this) {
+        is Encryption.Algorithm.RsaOAEP -> {
+            kSecAttrKeyTypeRSA!! to when (hashSize) {
+                HashSize.Hash256 -> kSecKeyAlgorithmRSAEncryptionOAEPSHA256!! // TODO double check these are the proper parameters
+            }
+        }
+    }
+}
+
+actual fun EncryptionKeyPrivate(
+    serializedPrivate: ByteArray,
+    serializedPublic: ByteArray,
+    size: Int,
+    algorithm: Encryption.Algorithm
+): EncryptionKeyPrivate {
+
+    return EncryptionKeyNative(
+        KeyNative.buildSecKeyRef(serializedPrivate, algorithm.toKeyNativeAlgorithm(), true),
+        KeyNative.buildSecKeyRef(serializedPublic, algorithm.toKeyNativeAlgorithm(), false),
+        algorithm.toAttributes().first
+    )
+}
+
+actual fun EncryptionKeyPublic(
+    serialized: ByteArray,
+    size: Int,
+    algorithm: Encryption.Algorithm
+): EncryptionKeyPublic {
+    TODO()
+}
+
+private fun Encryption.Algorithm.toKeyNativeAlgorithm() = when(this) {
+    is Encryption.Algorithm.RsaOAEP -> KeyNative.Algorithm.RSA(hashSize)
 }
