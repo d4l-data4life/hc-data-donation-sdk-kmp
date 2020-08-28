@@ -32,11 +32,10 @@
 
 package care.data4life.datadonation.internal.domain.repositories
 
-internal class CredentialsRepository(private val dataStore: Local) {
+import care.data4life.datadonation.internal.data.store.CredentialsDataStore
+
+internal class CredentialsRepository(private val dataStore: CredentialsDataStore) {
 
     fun getDataDonationPublicKey() = dataStore.getDataDonationPublicKey()
 
-    interface Local {
-        fun getDataDonationPublicKey(): String
-    }
 }

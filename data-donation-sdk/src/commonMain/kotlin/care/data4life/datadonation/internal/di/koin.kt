@@ -40,7 +40,6 @@ import care.data4life.datadonation.internal.domain.repositories.ConsentDocumentR
 import care.data4life.datadonation.internal.domain.repositories.CredentialsRepository
 import care.data4life.datadonation.internal.domain.repositories.RegistrationRepository
 import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
-import care.data4life.datadonation.internal.domain.usecases.FetchConsentDocuments
 import care.data4life.datadonation.internal.domain.usecases.RegisterNewDonor
 import care.data4life.datadonation.internal.utils.DateTimeNow
 import io.ktor.client.HttpClient
@@ -53,6 +52,12 @@ import org.koin.dsl.module
 internal fun initKoin(configuration: Contract.Configuration) = startKoin {
     modules(
         module {
+            single<CredentialsDataStore> {
+                object : CredentialsDataStore {
+                    override fun getDataDonationPublicKey(): String =
+                        configuration.getServicePublicKey()
+                }
+            }
             single<UserSessionTokenDataStore> {
                 object : UserSessionTokenDataStore {
                     override fun getUserSessionToken(): String? =
@@ -63,7 +68,7 @@ internal fun initKoin(configuration: Contract.Configuration) = startKoin {
             single<DateTimeNow> {
                 object : DateTimeNow {
                     override fun timestamp(): String =
-                        configuration.getTimetamp()
+                        configuration.getTimestamp()
                 }
             }
         },
@@ -92,7 +97,6 @@ private val coreModule = module {
     single<UserConsentRepository.Remote> { UserConsentDataStore(get()) }
     single<RegistrationRepository.Remote> { RegistrationDataStore(get()) }
     single<ConsentDocumentRepository.Remote> { ConsentDocumentDataStore(get()) }
-    single<CredentialsRepository.Local> { CredentialsLocalDataStore(get()) }
 
 
     //Repositories

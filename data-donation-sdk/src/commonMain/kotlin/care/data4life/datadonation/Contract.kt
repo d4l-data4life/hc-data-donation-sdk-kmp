@@ -42,10 +42,11 @@ import care.data4life.datadonation.core.model.UserConsent
 interface Contract {
 
     interface Configuration {
+        fun getServicePublicKey(): String
         fun getDonorKeyPair(): KeyPair?
         fun getUserSessionToken(): String?
         fun getEnvironment(): Environment
-        fun getTimetamp(): String
+        fun getTimestamp(): String
     }
 
     interface DataDonation {

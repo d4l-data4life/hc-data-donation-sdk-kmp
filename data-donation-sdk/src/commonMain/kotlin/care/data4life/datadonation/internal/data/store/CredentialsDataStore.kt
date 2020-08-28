@@ -32,19 +32,8 @@
 
 package care.data4life.datadonation.internal.data.store
 
-import care.data4life.datadonation.core.model.Environment
-import care.data4life.datadonation.core.model.Environment.*
-import care.data4life.datadonation.internal.domain.repositories.CredentialsRepository
+internal interface CredentialsDataStore {
 
-class CredentialsLocalDataStore(private val environment: Environment) : CredentialsRepository.Local {
+    fun getDataDonationPublicKey(): String
 
-    override fun getDataDonationPublicKey(): String {
-        return when (environment) {
-            LOCAL -> ""
-            SANDBOX ->  ""
-            DEV -> ""
-            STAGING -> ""
-            PRODUCTION -> ""
-        }
-    }
 }
