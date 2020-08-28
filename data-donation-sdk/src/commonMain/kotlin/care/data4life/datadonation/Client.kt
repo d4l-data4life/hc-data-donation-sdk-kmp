@@ -59,8 +59,12 @@ class Client(private val configuration: Contract.Configuration) : Contract.DataD
         language: String?,
         listener: ResultListener<List<ConsentDocument>>
     ) {
-        fetchConsentDocuments.withParams(FetchConsentDocuments.Parameters(consentDocumentVersion, language))
-            .runForListener(listener)
+        fetchConsentDocuments.withParams(
+            FetchConsentDocuments.Parameters(
+                consentDocumentVersion,
+                language
+            )
+        ).runForListener(listener)
     }
 
 

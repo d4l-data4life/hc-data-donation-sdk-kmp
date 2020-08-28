@@ -42,13 +42,11 @@ internal class ConsentDocumentRepository(
 ) {
 
     suspend fun fetchConsentDocuments(
-        key: String,
         language: String?,
         version: String?
     ): List<ConsentDocument> {
         return remote.fetchConsentDocuments(
             sessionToken.getUserSessionToken()!!,
-            key,
             language,
             version
         )
@@ -58,7 +56,6 @@ internal class ConsentDocumentRepository(
 
         suspend fun fetchConsentDocuments(
             accessToken: String,
-            dataDonationKey: String,
             version: String?,
             language: String?
         ): List<ConsentDocument>

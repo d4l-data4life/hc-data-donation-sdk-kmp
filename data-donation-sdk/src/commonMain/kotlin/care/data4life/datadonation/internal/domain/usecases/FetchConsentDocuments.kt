@@ -38,13 +38,8 @@ import care.data4life.datadonation.internal.domain.repositories.ConsentDocumentR
 internal class FetchConsentDocuments(private val consentDocumentRepository: ConsentDocumentRepository) :
     ParameterizedUsecase<FetchConsentDocuments.Parameters, List<ConsentDocument>>() {
 
-    companion object {
-        const val DOCUMENT_KEYWORD= "data donation"
-    }
-
-
     override suspend fun execute(): List<ConsentDocument> =
-        consentDocumentRepository.fetchConsentDocuments(DOCUMENT_KEYWORD, parameter.version, parameter.language)
+        consentDocumentRepository.fetchConsentDocuments(parameter.version, parameter.language)
 
     data class Parameters(val version: String?, val language: String?)
 }

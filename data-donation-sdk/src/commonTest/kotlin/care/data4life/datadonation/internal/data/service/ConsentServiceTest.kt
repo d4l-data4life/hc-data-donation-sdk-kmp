@@ -38,7 +38,7 @@ import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.model.ConsentSignature
 import care.data4life.datadonation.internal.data.model.DummyData
 import care.data4life.datadonation.internal.data.model.TokenVerificationResult
-import care.data4life.datadonation.internal.data.service.ConsentService.Companion.dataDonationKey
+import care.data4life.datadonation.internal.data.service.ConsentService.Companion.defaultDonationConsentKey
 import care.data4life.datadonation.internal.utils.DateTimeNow
 import io.ktor.client.HttpClient
 import io.ktor.http.HttpMethod
@@ -87,7 +87,7 @@ internal abstract class ConsentServiceTest : BaseServiceTest<ConsentService>() {
         assertEquals(HttpMethod.Get, lastRequest.method)
         assertEquals(ConsentService.Companion.Endpoints.userConsents, lastRequest.url.encodedPath)
         assertTrue(lastRequest.url.parameters.contains("consentDocumentKey"))
-        assertEquals(lastRequest.url.parameters["consentDocumentKey"], dataDonationKey)
+        assertEquals(lastRequest.url.parameters["consentDocumentKey"], defaultDonationConsentKey)
         assertTrue(lastRequest.url.parameters.contains("latest"))
         assertEquals(lastRequest.url.parameters["latest"], false.toString())
     }
@@ -98,14 +98,14 @@ internal abstract class ConsentServiceTest : BaseServiceTest<ConsentService>() {
         givenServiceResponseWith(ConsentDocument.serializer().list, listOf(consentDocDummy))
 
         //When
-        val result = service.fetchConsentDocuments("T", "data donation", "1", "DE")
+        val result = service.fetchConsentDocuments("T",  "1", "DE")
 
         //Then
         assertEquals(listOf(consentDocDummy), result)
         assertEquals(HttpMethod.Get, lastRequest.method)
         assertEquals(ConsentService.Companion.Endpoints.consentDocuments, lastRequest.url.encodedPath)
         assertTrue(lastRequest.url.parameters.contains("consentDocumentKey"))
-        assertEquals(lastRequest.url.parameters["consentDocumentKey"], dataDonationKey)
+        assertEquals(lastRequest.url.parameters["consentDocumentKey"], defaultDonationConsentKey)
         assertTrue(lastRequest.url.parameters.contains("version"))
         assertEquals(lastRequest.url.parameters["version"], "1")
 

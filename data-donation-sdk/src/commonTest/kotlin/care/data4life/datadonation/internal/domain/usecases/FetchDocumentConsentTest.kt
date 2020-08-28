@@ -48,14 +48,14 @@ abstract class FetchDocumentConsentTest {
     @Test
     fun createUserContentFullParams() = runTest {
         //Given
-        coEvery { consentDocumentRepository.fetchConsentDocuments(any(), any(), any()) } returns listOf(consentDocDummy)
+        coEvery { consentDocumentRepository.fetchConsentDocuments(any(), any()) } returns listOf(consentDocDummy)
 
         //When
         consentDocument.withParams(FetchConsentDocuments.Parameters("version", "en")).execute()
 
         //Then
         coVerify(ordering = Ordering.SEQUENCE){
-            consentDocumentRepository.fetchConsentDocuments(any(), any(), any())
+            consentDocumentRepository.fetchConsentDocuments(any(), any())
         }
     }
 
@@ -64,14 +64,14 @@ abstract class FetchDocumentConsentTest {
     fun getConsentDocumentMissingLanguage() = runTest {
         //Given
         val consentDocLDummy = ConsentDocument("", 1, "","","","","",true,"","")
-        coEvery { consentDocumentRepository.fetchConsentDocuments(any(), any(), any()) } returns listOf(consentDocLDummy)
+        coEvery { consentDocumentRepository.fetchConsentDocuments(any(), any()) } returns listOf(consentDocLDummy)
 
         //When
         consentDocument.withParams(FetchConsentDocuments.Parameters("version", "en")).execute()
 
         //Then
         coVerify(ordering = Ordering.SEQUENCE){
-            consentDocumentRepository.fetchConsentDocuments(any(), any(), any())
+            consentDocumentRepository.fetchConsentDocuments(any(), any())
         }
     }
 
@@ -80,14 +80,14 @@ abstract class FetchDocumentConsentTest {
     fun getConsentDocumentWrongVersion() = runTest {
         //Given
         val consentDocVDummy = ConsentDocument("", 0, "","","","en","",true,"","")
-        coEvery { consentDocumentRepository.fetchConsentDocuments(any(), any(), any()) } returns listOf(consentDocVDummy)
+        coEvery { consentDocumentRepository.fetchConsentDocuments(any(), any()) } returns listOf(consentDocVDummy)
 
         //When
         consentDocument.withParams(FetchConsentDocuments.Parameters("version", "en")).execute()
 
         //Then
         coVerify(ordering = Ordering.SEQUENCE){
-            consentDocumentRepository.fetchConsentDocuments(any(), any(), any())
+            consentDocumentRepository.fetchConsentDocuments(any(), any())
         }
     }
 

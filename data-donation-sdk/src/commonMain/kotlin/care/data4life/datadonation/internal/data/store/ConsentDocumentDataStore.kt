@@ -41,10 +41,9 @@ internal class ConsentDocumentDataStore(private val service: ConsentService) :
 
     override suspend fun fetchConsentDocuments(
         accessToken: String,
-        dataDonationKey: String,
         version: String?,
         language: String?
     ): List<ConsentDocument> =
-        service.fetchConsentDocuments(accessToken, dataDonationKey, version, language)
+        service.fetchConsentDocuments(accessToken, version, language)
 
 }

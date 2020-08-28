@@ -49,12 +49,12 @@ internal class ConsentService(
     private val baseUrl = "${environment.url}/consent/api/v1"
 
     suspend fun fetchConsentDocuments(
-        accessToken: String, dataDonationKey: String,
+        accessToken: String,
         version: String?,
         language: String?
     ): List<ConsentDocument> {
         return client.getWithQuery(accessToken, baseUrl, Endpoints.consentDocuments) {
-            parameter(Parameters.consentDocumentKey, dataDonationKey)
+            parameter(Parameters.consentDocumentKey, defaultDonationConsentKey)
             parameter(Parameters.version, version)
             parameter(Parameters.language, language)
         }
@@ -62,7 +62,7 @@ internal class ConsentService(
 
     suspend fun fetchUserConsents(accessToken: String, latest: Boolean?): List<UserConsent> {
         return client.getWithQuery(accessToken, baseUrl, Endpoints.userConsents) {
-            parameter(Parameters.consentDocumentKey, dataDonationKey)
+            parameter(Parameters.consentDocumentKey, defaultDonationConsentKey)
             parameter(Parameters.latest, latest)
         }
     }
@@ -72,7 +72,7 @@ internal class ConsentService(
             accessToken,
             baseUrl,
             Endpoints.userConsents,
-            ConsentCreationPayload(dataDonationKey, version, dateTimeNow.timestamp(), language ?: "")
+            ConsentCreationPayload(defaultDonationConsentKey, version, dateTimeNow.timestamp(), language ?: "")
         )
     }
 
@@ -80,9 +80,9 @@ internal class ConsentService(
         return client.postWithBody(
             accessToken,
             baseUrl,
-            "${Endpoints.userConsents}/$dataDonationKey/signatures",
+            "${Endpoints.userConsents}/$defaultDonationConsentKey/signatures",
             ConsentSigningRequest(
-                dataDonationKey,
+                defaultDonationConsentKey,
                 message,
                 ConsentSignatureType.ConsentOnce.apiValue
             )
@@ -90,7 +90,7 @@ internal class ConsentService(
     }
 
     companion object {
-        const val dataDonationKey = "data donation"
+        const val defaultDonationConsentKey = "data donation"
 
         object Endpoints {
             const val userConsents = "userConsents"
