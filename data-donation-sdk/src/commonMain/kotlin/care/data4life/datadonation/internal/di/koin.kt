@@ -38,8 +38,9 @@ import org.koin.core.KoinApplication
 import org.koin.core.module.Module
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
+import kotlin.native.concurrent.ThreadLocal
 
-
+@ThreadLocal
 internal object DataDonationKoinContext {
     lateinit var koinApp: KoinApplication
 }
