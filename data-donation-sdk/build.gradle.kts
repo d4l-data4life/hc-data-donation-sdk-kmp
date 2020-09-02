@@ -1,6 +1,6 @@
 plugins {
     kotlin("multiplatform")
-    id("kotlinx-serialization")
+    kotlin("plugin.serialization")
 
     // Android
     id("com.android.library")
@@ -38,7 +38,6 @@ kotlin {
             dependencies {
                 implementation(Dependency.Multiplatform.kotlin.stdlibCommon)
                 implementation(Dependency.Multiplatform.stately)
-                implementation(Dependency.Multiplatform.multiplatformSettings)
 
                 implementation(Dependency.Multiplatform.koin.core)
 
@@ -48,8 +47,8 @@ kotlin {
                 implementation(Dependency.Multiplatform.ktor.commonJson)
                 implementation(Dependency.Multiplatform.ktor.commonSerialization)
 
-                implementation(Dependency.Multiplatform.protobuff.common)
-                implementation(Dependency.Multiplatform.protobuff.common_runtime)
+                implementation(Dependency.Multiplatform.serialization.common)
+                implementation(Dependency.Multiplatform.serialization.protobuf)
             }
         }
         commonTest {
@@ -65,16 +64,15 @@ kotlin {
                 implementation(Dependency.Multiplatform.kotlin.stdlibAndroid)
                 implementation(Dependency.Multiplatform.coroutines.android)
 
-
                 //DI
                 implementation(Dependency.Multiplatform.koin.android_ext)
 
                 //
                 implementation(Dependency.android.threeTenABP)
                 implementation(Dependency.Multiplatform.ktor.androidSerialization)
-                implementation (Dependency.android.tink)
-
-                implementation(Dependency.Multiplatform.protobuff.android)
+                implementation(Dependency.android.tink)
+                implementation(Dependency.Multiplatform.serialization.android)
+                implementation(Dependency.Multiplatform.serialization.protobuf)
             }
         }
         val androidTest by getting {
@@ -86,13 +84,13 @@ kotlin {
 
         val iosMain by getting {
             dependencies {
-                implementation(Dependency.Multiplatform.coroutines.native) {
+                implementation(Dependency.Multiplatform.coroutines.common) {
                     version {
-                        strictly("1.3.5-native-mt")
+                        strictly(Version.kotlinCoroutines)
                     }
                 }
-                implementation(Dependency.Multiplatform.ktor.iosSerialization)
-                implementation(Dependency.Multiplatform.protobuff.native)
+                implementation(Dependency.Multiplatform.serialization.common)
+                implementation(Dependency.Multiplatform.serialization.protobuf)
             }
         }
         val iosTest by getting {
@@ -100,7 +98,6 @@ kotlin {
 
             }
         }
-
 
         configure(listOf(targets["iosArm64"], targets["iosX64"])) {
             compilations["main"].kotlinOptions.freeCompilerArgs = mutableListOf(
