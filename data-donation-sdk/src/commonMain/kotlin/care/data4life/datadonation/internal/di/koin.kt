@@ -40,6 +40,7 @@ import care.data4life.datadonation.internal.data.store.RegistrationDataStore
 import care.data4life.datadonation.internal.data.store.UserConsentDataStore
 import care.data4life.datadonation.internal.data.store.UserSessionTokenDataStore
 import care.data4life.datadonation.internal.domain.repositories.ConsentDocumentRepository
+import org.koin.core.KoinApplication
 import care.data4life.datadonation.internal.domain.repositories.RegistrationRepository
 import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
 import care.data4life.datadonation.internal.domain.usecases.CreateUserConsent
@@ -47,24 +48,33 @@ import care.data4life.datadonation.internal.domain.usecases.GetConsentDocuments
 import io.ktor.client.HttpClient
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.json.serializer.KotlinxSerializer
-import org.koin.core.context.startKoin
 import org.koin.core.module.Module
+import org.koin.dsl.koinApplication
 import org.koin.dsl.module
+import kotlin.native.concurrent.ThreadLocal
 
-internal fun initKoin(configuration: Contract.Configuration) = startKoin {
-    modules(
-        module {
-            single<UserSessionTokenDataStore> {
-                object : UserSessionTokenDataStore {
-                    override fun getUserSessionToken(): String? =
-                        configuration.getUserSessionToken()
+@ThreadLocal
+internal object DataDonationKoinContext {
+    lateinit var koinApp: KoinApplication
+}
+
+internal fun initKoin(configuration: Contract.Configuration): KoinApplication {
+    DataDonationKoinContext.koinApp = koinApplication {
+        modules(
+            module {
+                single<UserSessionTokenDataStore> {
+                    object : UserSessionTokenDataStore {
+                        override fun getUserSessionToken(): String? =
+                            configuration.getUserSessionToken()
+                    }
                 }
-            }
-            single { configuration.getEnvironment() }
-        },
-        platformModule,
-        coreModule
-    )
+                single { configuration.getEnvironment() }
+            },
+            platformModule,
+            coreModule
+        )
+    }
+    return DataDonationKoinContext.koinApp
 }
 
 private val coreModule = module {

@@ -37,8 +37,9 @@ import care.data4life.datadonation.encryption.protos.RsaSsaPrivateKey
 import kotlinx.serialization.protobuf.ProtoBuf
 
 
-expect class RsaPss:SignatureKey
+expect class RsaPss : SignatureKey
 
 fun RsaPss.export(): RsaSsaPrivateKey =
-    ProtoBuf.load(Keyset.serializer(), serialized()).key.first().key_data.value
-        .let { ProtoBuf.load(RsaSsaPrivateKey.serializer(), it) }
+    ProtoBuf.decodeFromByteArray(Keyset.serializer(), serialized()).key.first().key_data.value
+        .let { ProtoBuf.decodeFromByteArray(RsaSsaPrivateKey.serializer(), it) }
+

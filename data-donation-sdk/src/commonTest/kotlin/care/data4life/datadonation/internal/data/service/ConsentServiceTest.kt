@@ -38,11 +38,10 @@ import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.model.ConsentSignature
 import care.data4life.datadonation.internal.data.model.TokenVerificationResult
 import care.data4life.datadonation.internal.data.service.ConsentService.Companion.dataDonationKey
-import io.ktor.client.HttpClient
-import io.ktor.http.HttpMethod
-import kotlinx.serialization.builtins.list
+import io.ktor.client.*
+import io.ktor.http.*
+import kotlinx.serialization.builtins.ListSerializer
 import runTest
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -75,7 +74,7 @@ abstract class ConsentServiceTest : BaseServiceTest<ConsentService>() {
     @Test
     fun fetchUserConsentsTest() = runTest {
         //Given
-        givenServiceResponseWith(UserConsent.serializer().list, listOf(userConsent))
+        givenServiceResponseWith(ListSerializer(UserConsent.serializer()), listOf(userConsent))
 
         //When
         val result = service.fetchUserConsents("T", false)
@@ -93,7 +92,7 @@ abstract class ConsentServiceTest : BaseServiceTest<ConsentService>() {
     @Test
     fun fetchDocumentConsentsTest() = runTest {
         //Given
-        givenServiceResponseWith(ConsentDocument.serializer().list, listOf(consentDocDummy))
+        givenServiceResponseWith(ListSerializer(ConsentDocument.serializer()), listOf(consentDocDummy))
 
         //When
         val result = service.fetchConsentDocument("T", "data donation", "1", "DE")

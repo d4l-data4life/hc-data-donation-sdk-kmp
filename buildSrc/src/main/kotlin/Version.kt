@@ -4,22 +4,22 @@ object Version {
 
     // IOS
     // https://github.com/touchlab/KotlinCocoapods/
-    const val cocoapodsext = "0.9"
+    const val cocoapodsext = "0.11"
 
     // Kotlin
     // https://github.com/JetBrains/kotlin
-    const val kotlin = "1.3.72"
+    const val kotlin = "1.4.0"
     const val kotlinGradlePlugin = kotlin
 
     // https://github.com/Kotlin/kotlinx.coroutines
-    const val kotlinCoroutines = "1.3.5-native-mt"
+    const val kotlinCoroutines = "1.3.9-native-mt"
     const val kotlinCoroutinesIO = "0.1.16"
 
     // https://github.com/Kotlin/kotlinx.serialization
-    const val kotlinSerialization = "0.20.0"
+    const val kotlinSerialization = "1.0.0-RC"
 
     // https://github.com/touchlab/Stately
-    const val stately = "1.0.2"
+    const val stately = "1.1.0"
 
     // https://github.com/russhwolf/multiplatform-settings
     const val multiplatformSettings = "0.5.1"
@@ -59,21 +59,19 @@ object Version {
 
     // Injection
     // https://github.com/InsertKoinIO/koin
-    const val koin = "3.0.0-alpha-9"
+    const val koin = "3.0.1-alpha-2"
 
     // Network
     // https://ktor.io/
-    const val ktor = "1.3.2"
+    const val ktor = "1.4.0"
 
 
     // Database
     // https://github.com/cashapp/sqldelight
-    const val sqlDelight = "1.3.0"
+    const val sqlDelight = "1.4.1"
 
     //Encryption
     const val tinkAndroid = "1.4.0"
-
-    const val protobuff = "0.20.0"
 
     // Junit Test
     const val testJUnit = "4.13"

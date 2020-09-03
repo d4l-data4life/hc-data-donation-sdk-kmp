@@ -45,7 +45,6 @@ import io.ktor.http.ContentType
 import io.ktor.http.headersOf
 import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
 
 abstract class BaseServiceTest<R: Any> {
 
@@ -62,14 +61,14 @@ abstract class BaseServiceTest<R: Any> {
             addHandler { request ->
                 lastRequest = request
                 respond(
-                    Json(JsonConfiguration.Stable).stringify(strategy, response),
+                    Json.encodeToString(strategy, response),
                     headers = headersOf("Content-Type", ContentType.Application.Json.toString())
                 )
             }
         }
         service = getService(HttpClient(engine) {
             install(JsonFeature) {
-                serializer = KotlinxSerializer(Json(JsonConfiguration.Stable))
+                serializer = KotlinxSerializer()
                 accept(ContentType.Application.Json)
             }
         }, Environment.LOCAL)
@@ -84,7 +83,7 @@ abstract class BaseServiceTest<R: Any> {
         }
         service = getService(HttpClient(engine) {
             install(JsonFeature) {
-                serializer = KotlinxSerializer(Json(JsonConfiguration.Stable))
+                serializer = KotlinxSerializer()
                 accept(ContentType.Application.Json)
             }
         }, Environment.LOCAL)

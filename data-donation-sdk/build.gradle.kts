@@ -1,8 +1,6 @@
-import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
-
 plugins {
     kotlin("multiplatform")
-    id("kotlinx-serialization")
+    kotlin("plugin.serialization")
 
     // Android
     id("com.android.library")
@@ -21,19 +19,10 @@ kotlin {
         publishLibraryVariants("release")
     }
 
-    // Revert to just ios() when gradle plugin can properly resolve it
-    val onPhone = System.getenv("SDK_NAME")?.startsWith("iphoneos") ?: false
-    if (onPhone) {
-        iosArm64("ios")
-    } else {
-        iosX64("ios")
-    }   
-
-    targets.getByName<KotlinNativeTarget>("ios").compilations["main"].kotlinOptions.freeCompilerArgs +=
-        listOf("-Xobjc-generics", "-Xg0")
-
-    targets.withType<KotlinNativeTarget> {
-        binaries.framework(listOf(RELEASE))
+    ios {
+        binaries {
+            framework()
+        }
     }
 
     sourceSets {
@@ -49,7 +38,6 @@ kotlin {
             dependencies {
                 implementation(Dependency.Multiplatform.kotlin.stdlibCommon)
                 implementation(Dependency.Multiplatform.stately)
-                implementation(Dependency.Multiplatform.multiplatformSettings)
 
                 implementation(Dependency.Multiplatform.koin.core)
 
@@ -59,8 +47,8 @@ kotlin {
                 implementation(Dependency.Multiplatform.ktor.commonJson)
                 implementation(Dependency.Multiplatform.ktor.commonSerialization)
 
-                implementation(Dependency.Multiplatform.protobuff.common)
-                implementation(Dependency.Multiplatform.protobuff.common_runtime)
+                implementation(Dependency.Multiplatform.serialization.common)
+                implementation(Dependency.Multiplatform.serialization.protobuf)
             }
         }
         commonTest {
@@ -69,7 +57,7 @@ kotlin {
                 implementation(Dependency.Multiplatform.kotlin.testCommonAnnotations)
                 implementation(Dependency.Multiplatform.mockk.common)
                 implementation(Dependency.Multiplatform.koin.test)
-                implementation(Dependency.Multiplatform.Ktor.Test.common)
+                implementation(Dependency.Multiplatform.ktor.mock)
             }
         }
 
@@ -79,49 +67,43 @@ kotlin {
                 implementation(Dependency.Multiplatform.kotlin.stdlibAndroid)
                 implementation(Dependency.Multiplatform.coroutines.android)
 
-
                 //DI
                 implementation(Dependency.Multiplatform.koin.android_ext)
 
                 //
                 implementation(Dependency.android.threeTenABP)
-                implementation(Dependency.Multiplatform.ktor.androidCore)
                 implementation(Dependency.Multiplatform.ktor.androidSerialization)
-
-                implementation (Dependency.android.tink)
-
-                implementation(Dependency.Multiplatform.protobuff.android)
+                implementation(Dependency.android.tink)
+                implementation(Dependency.Multiplatform.serialization.android)
+                implementation(Dependency.Multiplatform.serialization.protobuf)
             }
         }
         val androidTest by getting {
             dependencies {
                 implementation(Dependency.Multiplatform.kotlin.testJvm)
                 implementation(Dependency.Multiplatform.kotlin.testJvmJunit)
-                implementation(Dependency.Multiplatform.coroutines.test)
                 implementation(Dependency.Multiplatform.mockk.android)
-                implementation(Dependency.Multiplatform.Ktor.Test.jvm)
             }
         }
 
         val iosMain by getting {
             dependencies {
-                implementation(Dependency.Multiplatform.coroutines.native) {
+                implementation(Dependency.Multiplatform.coroutines.common) {
                     version {
-                        strictly("1.3.5-native-mt")
+                        strictly(Version.kotlinCoroutines)
                     }
                 }
-                implementation(Dependency.Multiplatform.ktor.iosCore)
-                implementation(Dependency.Multiplatform.ktor.iosSerialization)
-                implementation(Dependency.Multiplatform.protobuff.native)
+                implementation(Dependency.Multiplatform.serialization.common)
+                implementation(Dependency.Multiplatform.serialization.protobuf)
             }
         }
         val iosTest by getting {
             dependencies {
-                implementation(Dependency.Multiplatform.Ktor.Test.native)
+
             }
         }
 
-        configure(listOf(targets["ios"])) {
+        configure(listOf(targets["iosArm64"], targets["iosX64"])) {
             compilations["main"].kotlinOptions.freeCompilerArgs = mutableListOf(
                 "-include-binary", "$projectDir/Pods/Tink/Frameworks/Tink.framework/Tink.a"
             )
@@ -183,14 +165,15 @@ publishing {
             name = "GithubPackages"
             url = uri("https://maven.pkg.github.com/gesundheitscloud/data-donation-sdk-native")
             credentials {
-                username = (project.findProperty("gpr.user") ?: System.getenv("USERNAME")).toString()
+                username =
+                    (project.findProperty("gpr.user") ?: System.getenv("USERNAME")).toString()
                 password = (project.findProperty("gpr.key") ?: System.getenv("TOKEN")).toString()
             }
         }
 
         publications {
             all {
-                if( this is MavenPublication){
+                if (this is MavenPublication) {
                     groupId = LibraryConfig.githubGroup
                     artifactId = LibraryConfig.artifactId
                     version = LibraryConfig.version
@@ -205,8 +188,11 @@ publishing {
                         "jvm" -> {
                             artifactId = "${project.name}-jvm"
                         }
-                        "ios" -> {
-                            artifactId = "${project.name}-ios"
+                        "iosArm64" -> {
+                            artifactId = "${project.name}-iosArm64"
+                        }
+                        "iosX64" -> {
+                            artifactId = "${project.name}-iosX64"
                         }
                         else -> {
                             artifactId = "${project.name}-common"
