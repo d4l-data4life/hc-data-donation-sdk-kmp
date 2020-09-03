@@ -38,8 +38,7 @@ import care.data4life.datadonation.internal.data.model.SignedConsentMessage
 import care.data4life.datadonation.internal.domain.repositories.RegistrationRepository
 import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
 import care.data4life.datadonation.internal.domain.usecases.RegisterNewDonor.*
-import kotlinx.serialization.UnstableDefault
-import kotlinx.serialization.json.Json.Default.stringify
+import kotlinx.serialization.json.Json
 
 internal class RegisterNewDonor(
     private val registrationRepository: RegistrationRepository,
@@ -47,7 +46,6 @@ internal class RegisterNewDonor(
 ) :
     ParameterizedUsecase<Parameters, Unit>() {
 
-    @UnstableDefault
     override suspend fun execute() {
         val token = registrationRepository.requestRegistrationToken()
         val request = RegistrationRequest(parameter.keyPair.public.toBase64(), token)
@@ -63,21 +61,18 @@ internal class RegisterNewDonor(
 }
 
 
-
-@UnstableDefault
 private fun RegistrationRequest.encrypt(dataDonationKey: String): ByteArray {
-    return stringify(RegistrationRequest.serializer(), this).encrypt(dataDonationKey)
+    return Json.encodeToString(RegistrationRequest.serializer(), this).encrypt(dataDonationKey)
 }
 
-@UnstableDefault
 private fun SignedConsentMessage.encrypt(dataDonationKey: String): ByteArray {
-    return stringify(SignedConsentMessage.serializer(), this).encrypt(dataDonationKey)
+    return Json.encodeToString(SignedConsentMessage.serializer(), this).encrypt(dataDonationKey)
 }
 
 // TODO implement these methods and move to utility classes
-private fun String.encrypt(dataDonationKet: String): ByteArray {
+private fun String.encrypt(dataDonationKey: String): ByteArray {
     // String is an RSA public key in PEM / SPKI format
-    // apply RSA_OAEP algorithm to data
+    // apply Hybrid encryption algorithm (AES/RSA) to data
     return ByteArray(0)
 }
 

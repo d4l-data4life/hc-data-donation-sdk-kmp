@@ -45,11 +45,7 @@ object Dependency {
         object Coroutines {
             // https://github.com/Kotlin/kotlinx.coroutines
             val common =
-                "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:${Version.kotlinCoroutines}"
-            val jdk = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Version.kotlinCoroutines}"
-            val js = "org.jetbrains.kotlinx:kotlinx-coroutines-core-js:${Version.kotlinCoroutines}"
-            val native =
-                "org.jetbrains.kotlinx:kotlinx-coroutines-core-native:${Version.kotlinCoroutines}"
+                "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Version.kotlinCoroutines}"
             val android =
                 "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Version.kotlinCoroutines}"
             val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Version.kotlinCoroutines}"
@@ -82,18 +78,9 @@ object Dependency {
             val commonSerialization = "io.ktor:ktor-client-serialization:${Version.ktor}"
             val androidSerialization = "io.ktor:ktor-client-serialization-jvm:${Version.ktor}"
             val iosSerialization = "io.ktor:ktor-client-serialization-native:${Version.ktor}"
-
-            object Logger {
-                const val common = "io.ktor:ktor-client-logging:${Version.ktor}"
-                const val jvm = "io.ktor:ktor-client-logging-jvm:${Version.ktor}"
-                const val native = "io.ktor:ktor-client-logging-native:${Version.ktor}"
-            }
-
-            object Test {
-                const val common = "io.ktor:ktor-client-mock:${Version.ktor}"
-                const val jvm = "io.ktor:ktor-client-mock-jvm:${Version.ktor}"
-                const val native = "io.ktor:ktor-client-mock-native:${Version.ktor}"
-            }
+            val mock = "io.ktor:ktor-client-mock:${Version.ktor}"
+            val jvmMock = "io.ktor:ktor-client-mock-jvm:${Version.ktor}"
+            val nativeMock = "io.ktor:ktor-client-mock-native:${Version.ktor}"
         }
 
         val serialization = Serialization
@@ -101,15 +88,11 @@ object Dependency {
         object Serialization {
             // https://github.com/Kotlin/kotlinx.serialization
             const val common =
-                "org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:${Version.kotlinSerialization}"
-            const val jdk =
-                "org.jetbrains.kotlinx:kotlinx-serialization-runtime:${Version.kotlinSerialization}"
-            const val js =
-                "org.jetbrains.kotlinx:kotlinx-serialization-runtime-js:${Version.kotlinSerialization}"
-            const val native =
-                "org.jetbrains.kotlinx:kotlinx-serialization-runtime-native:${Version.kotlinSerialization}"
+                "org.jetbrains.kotlinx:kotlinx-serialization-core:${Version.kotlinSerialization}"
             const val android =
-                "org.jetbrains.kotlinx:kotlinx-serialization-runtime:${Version.kotlinSerialization}"
+                "org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:${Version.kotlinSerialization}"
+            const val protobuf =
+                "org.jetbrains.kotlinx:kotlinx-serialization-protobuf:${Version.kotlinSerialization}"
         }
 
         val sqlDelight = SqlDelight
@@ -141,27 +124,12 @@ object Dependency {
         val multiplatformSettings =
             "com.russhwolf:multiplatform-settings:${Version.multiplatformSettings}"
 
-        val protobuff = Protobuff
-
-        object Protobuff {
-            const val native =
-                "org.jetbrains.kotlinx:kotlinx-serialization-protobuf-native:${Version.protobuff}"
-            const val common =
-                "org.jetbrains.kotlinx:kotlinx-serialization-protobuf-common:${Version.protobuff}"
-            const val android =
-                "org.jetbrains.kotlinx:kotlinx-serialization-protobuf:${Version.protobuff}"
-            const val common_runtime =
-                "org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:${Version.protobuff}"
-        }
-
         val mockk = Mockk
 
         object Mockk {
             const val common = "io.mockk:mockk-common:${Version.testMockk}"
             const val android = "io.mockk:mockk:${Version.testMockk}"
         }
-
-
     }
 
     val test = Test

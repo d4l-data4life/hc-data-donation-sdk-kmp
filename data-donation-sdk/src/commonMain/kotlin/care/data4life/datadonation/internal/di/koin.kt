@@ -45,36 +45,46 @@ import care.data4life.datadonation.internal.utils.DateTimeNow
 import io.ktor.client.HttpClient
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.json.serializer.KotlinxSerializer
-import org.koin.core.context.startKoin
+import org.koin.core.KoinApplication
 import org.koin.core.module.Module
+import org.koin.dsl.koinApplication
 import org.koin.dsl.module
+import kotlin.native.concurrent.ThreadLocal
 
-internal fun initKoin(configuration: Contract.Configuration) = startKoin {
-    modules(
-        module {
-            single<CredentialsDataStore> {
-                object : CredentialsDataStore {
-                    override fun getDataDonationPublicKey(): String =
-                        configuration.getServicePublicKey()
+@ThreadLocal
+internal object DataDonationKoinContext {
+    lateinit var koinApp: KoinApplication
+}
+
+internal fun initKoin(configuration: Contract.Configuration): KoinApplication {
+    DataDonationKoinContext.koinApp = koinApplication {
+        modules(
+            module {
+                single<CredentialsDataStore> {
+                    object : CredentialsDataStore {
+                        override fun getDataDonationPublicKey(): String =
+                            configuration.getServicePublicKey()
+                    }
                 }
-            }
-            single<UserSessionTokenDataStore> {
-                object : UserSessionTokenDataStore {
-                    override fun getUserSessionToken(): String? =
-                        configuration.getUserSessionToken()
+                single<UserSessionTokenDataStore> {
+                    object : UserSessionTokenDataStore {
+                        override fun getUserSessionToken(): String? =
+                            configuration.getUserSessionToken()
+                    }
                 }
-            }
-            single { configuration.getEnvironment() }
-            single<DateTimeNow> {
-                object : DateTimeNow {
-                    override fun timestamp(): String =
-                        configuration.getTimestamp()
+                single { configuration.getEnvironment() }
+                single<DateTimeNow> {
+                    object : DateTimeNow {
+                        override fun timestamp(): String =
+                            configuration.getTimestamp()
+                    }
                 }
-            }
-        },
-        platformModule,
-        coreModule
-    )
+            },
+            platformModule,
+            coreModule
+        )
+    }
+    return DataDonationKoinContext.koinApp
 }
 
 private val coreModule = module {
