@@ -30,24 +30,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.data.store
+package care.data4life.datadonation.internal.domain.usecases
 
-import care.data4life.datadonation.core.model.UserConsent
-import care.data4life.datadonation.internal.data.service.ConsentService
 import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
 
-internal class UserConsentDataStore(private val service: ConsentService): UserConsentRepository.Remote {
+internal class RevokeUserConsent(
+    private val consentRepository: UserConsentRepository,
+) : ParameterizedUsecase<RevokeUserConsent.Parameters, Unit>() {
 
-    override suspend fun createUserConsent(accessToken: String, version: String, language: String?) {
-        service.createUserConsent(accessToken, version, language)
+    override suspend fun execute() {
+        consentRepository.revokeUserConsent(parameter.language)
     }
 
-    override suspend fun fetchUserConsents(accessToken: String): List<UserConsent> =
-        service.fetchUserConsents(accessToken, false)
-
-    override suspend fun signUserConsent(accessToken: String, message: String): String =
-        service.requestSignature(accessToken, message).signature
-
-    override suspend fun revokeUserConsent(accessToken: String, language: String?) =
-        service.revokeUserConsent(accessToken, language)
+    data class Parameters(val language: String?)
 }

@@ -36,10 +36,8 @@ import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.model.ConsentSignature
-import care.data4life.datadonation.internal.data.model.DummyData
 import care.data4life.datadonation.internal.data.model.TokenVerificationResult
 import care.data4life.datadonation.internal.data.service.ConsentService.Companion.defaultDonationConsentKey
-import care.data4life.datadonation.internal.utils.DateTimeNow
 import io.ktor.client.*
 import io.ktor.http.*
 import kotlinx.serialization.builtins.ListSerializer
@@ -127,4 +125,15 @@ internal abstract class ConsentServiceTest : BaseServiceTest<ConsentService>() {
         assertEquals(HttpMethod.Post, lastRequest.method)
     }
 
+    @Test
+    fun revokeConsentTest() = runTest {
+        //Given
+        givenServiceNoResponse()
+
+        //When
+        service.revokeUserConsent("T", "DE")
+
+        //Then
+        assertEquals(HttpMethod.Delete, lastRequest.method)
+    }
 }
