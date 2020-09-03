@@ -73,12 +73,6 @@ internal fun initKoin(configuration: Contract.Configuration): KoinApplication {
                     }
                 }
                 single { configuration.getEnvironment() }
-                single<DateTimeNow> {
-                    object : DateTimeNow {
-                        override fun timestamp(): String =
-                            configuration.getTimestamp()
-                    }
-                }
             },
             platformModule,
             coreModule
@@ -99,7 +93,7 @@ private val coreModule = module {
     }
 
     //Services
-    single { ConsentService(get(), get(), get()) }
+    single { ConsentService(get(), get()) }
     single { DonationService(get(), get()) }
 
 

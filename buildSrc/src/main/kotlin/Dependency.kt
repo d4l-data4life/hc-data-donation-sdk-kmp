@@ -124,6 +124,9 @@ object Dependency {
         val multiplatformSettings =
             "com.russhwolf:multiplatform-settings:${Version.multiplatformSettings}"
 
+
+        val dateTime = "org.jetbrains.kotlinx:kotlinx-datetime:${Version.dateTime}"
+
         val mockk = Mockk
 
         object Mockk {

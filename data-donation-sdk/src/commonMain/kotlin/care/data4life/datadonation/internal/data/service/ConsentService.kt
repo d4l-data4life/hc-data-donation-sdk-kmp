@@ -39,11 +39,12 @@ import care.data4life.datadonation.internal.data.model.*
 import care.data4life.datadonation.internal.utils.DateTimeNow
 import io.ktor.client.HttpClient
 import io.ktor.client.request.parameter
+import kotlinx.datetime.Clock
+
 
 internal class ConsentService(
     private val client: HttpClient,
-    environment: Environment,
-    private val dateTimeNow: DateTimeNow
+    environment: Environment
 ) {
 
     private val baseUrl = "${environment.url}/consent/api/v1"
@@ -72,7 +73,12 @@ internal class ConsentService(
             accessToken,
             baseUrl,
             Endpoints.userConsents,
-            ConsentCreationPayload(defaultDonationConsentKey, version, dateTimeNow.timestamp(), language ?: "")
+            ConsentCreationPayload(
+                defaultDonationConsentKey,
+                version,
+                Clock.System.now().toString(),
+                language ?: ""
+            )
         )
     }
 

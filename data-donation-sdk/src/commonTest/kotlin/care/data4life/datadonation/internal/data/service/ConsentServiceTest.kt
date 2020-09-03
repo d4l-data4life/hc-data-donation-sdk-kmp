@@ -56,7 +56,7 @@ internal abstract class ConsentServiceTest : BaseServiceTest<ConsentService>() {
     private var consentDocDummy = ConsentDocument("", 1, "", "", "", "en", "", true, "", "")
 
     override fun getService(httpClient: HttpClient, environment: Environment) =
-        ConsentService(httpClient, environment, MockDateTimeNow())
+        ConsentService(httpClient, environment)
 
     @Test
     fun createUserConsentTest() = runTest {
@@ -127,9 +127,4 @@ internal abstract class ConsentServiceTest : BaseServiceTest<ConsentService>() {
         assertEquals(HttpMethod.Post, lastRequest.method)
     }
 
-    class MockDateTimeNow : DateTimeNow {
-        override fun timestamp(): String {
-            return DummyData.timestamp
-        }
-    }
 }
