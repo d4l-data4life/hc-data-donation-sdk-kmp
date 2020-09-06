@@ -36,9 +36,8 @@ import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.model.*
-import care.data4life.datadonation.internal.utils.DateTimeNow
-import io.ktor.client.HttpClient
-import io.ktor.client.request.parameter
+import io.ktor.client.*
+import io.ktor.client.request.*
 import kotlinx.datetime.Clock
 
 
@@ -92,6 +91,15 @@ internal class ConsentService(
                 message,
                 ConsentSignatureType.ConsentOnce.apiValue
             )
+        )
+    }
+
+    suspend fun revokeUserConsent(accessToken: String, language: String?) {
+        return client.deleteWithBody(
+            accessToken,
+            baseUrl,
+            Endpoints.userConsents,
+            ConsentRevocationPayload(defaultDonationConsentKey, language ?: "")
         )
     }
 

@@ -38,10 +38,11 @@ import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.di.initKoin
+import care.data4life.datadonation.internal.domain.usecases.*
 import care.data4life.datadonation.internal.domain.usecases.CreateUserConsent
 import care.data4life.datadonation.internal.domain.usecases.FetchConsentDocuments
 import care.data4life.datadonation.internal.domain.usecases.FetchUserConsents
-import care.data4life.datadonation.internal.domain.usecases.Usecase
+import care.data4life.datadonation.internal.domain.usecases.RevokeUserConsent
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
@@ -51,6 +52,7 @@ class Client(private val configuration: Contract.Configuration) : Contract.DataD
     private val createUserContent: CreateUserConsent by koinApplication.koin.inject()
     private val fetchConsentDocuments: FetchConsentDocuments by koinApplication.koin.inject()
     private val fetchUserConsents: FetchUserConsents by koinApplication.koin.inject()
+    private val revokeUserContent: RevokeUserConsent by koinApplication.koin.inject()
 
     private val context = GlobalScope //TODO use proper CoroutineScope
 
@@ -87,7 +89,8 @@ class Client(private val configuration: Contract.Configuration) : Contract.DataD
     }
 
     override fun revokeUserConsent(language: String?, callback: Callback) {
-        TODO("Not yet implemented")
+        revokeUserContent.withParams(RevokeUserConsent.Parameters(language))
+            .runForListener(callback.toListener())
     }
 
     private fun <ReturnType : Any> Usecase<ReturnType>.runForListener(
@@ -99,6 +102,16 @@ class Client(private val configuration: Contract.Configuration) : Contract.DataD
             }catch (ex: Exception){
                 listener.onError(ex)
             }
+        }
+    }
+
+    private fun Callback.toListener() = object : ResultListener<Unit> {
+        override fun onSuccess(t: Unit) {
+            onSuccess()
+        }
+
+        override fun onError(exception: Exception) {
+            onError(exception)
         }
     }
 }
