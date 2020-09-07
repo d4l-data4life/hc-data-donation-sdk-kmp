@@ -19,11 +19,20 @@ kotlin {
         publishLibraryVariants("release")
     }
 
-    ios {
-        binaries {
-            framework()
+    val onPhone = System.getenv("SDK_NAME")?.startsWith("iphoneos") ?: false
+    if (onPhone) {
+        iosArm64("ios")
+    } else {
+        iosX64("ios")
+    }
+
+
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinNativeCompile> {
+        kotlinOptions {
+            freeCompilerArgs += listOf("-Xallow-result-return-type")
         }
     }
+
 
     sourceSets {
         all {
@@ -100,7 +109,7 @@ kotlin {
             }
         }
 
-        configure(listOf(targets["iosArm64"], targets["iosX64"])) {
+         configure(listOfNotNull(targets.asMap["iosArm64"], targets.asMap["iosX64"])) {
             compilations["main"].kotlinOptions.freeCompilerArgs = mutableListOf(
                 "-include-binary", "$projectDir/Pods/Tink/Frameworks/Tink.framework/Tink.a"
             )
@@ -163,8 +172,8 @@ publishing {
             url = uri("https://maven.pkg.github.com/gesundheitscloud/data-donation-sdk-native")
             credentials {
                 username =
-                    (project.findProperty("gpr.user") ?: System.getenv("USERNAME")).toString()
-                password = (project.findProperty("gpr.key") ?: System.getenv("TOKEN")).toString()
+                    (project.findProperty("gpr.user") ?: System.getenv("USERNAME"))?.toString()
+                password = (project.findProperty("gpr.key") ?: System.getenv("TOKEN"))?.toString()
             }
         }
 

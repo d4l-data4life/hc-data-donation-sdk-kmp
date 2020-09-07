@@ -32,37 +32,9 @@
 
 package care.data4life.datadonation.encryption
 
-import platform.Security.SecKeyAlgorithm
-import platform.Security.SecKeyRef
+import care.data4life.datadonation.encryption.protos.PublicHandle
+import javax.crypto.Cipher
 
-class EncryptionKeyNative : KeyNative, EncryptionKeyPrivate {
-
-    constructor(keyType: SecKeyAlgorithm, algoType: SecKeyAlgorithm, size: Int)
-            : super(keyType, algoType, size)
-
-    constructor(private: SecKeyRef, public: SecKeyRef, algoType: SecKeyAlgorithm)
-            : super(private, public, algoType)
-
-    override fun decrypt(data: ByteArray): ByteArray {
-        TODO("Not yet implemented")
-    }
-
-    override fun serializedPrivate(): ByteArray {
-        TODO("Not yet implemented")
-    }
-
-    override val pkcs8Private: String
-        get() = TODO("Not yet implemented")
-
-    override fun encrypt(data: ByteArray, signature: ByteArray): Boolean {
-        TODO("Not yet implemented")
-    }
-
-    override fun serializedPublic(): ByteArray {
-        TODO("Not yet implemented")
-    }
-
-    override val pkcs8Public: String
-        get() = TODO("Not yet implemented")
+open class KeyHandleNative(private val cipher: Cipher) {
 
 }

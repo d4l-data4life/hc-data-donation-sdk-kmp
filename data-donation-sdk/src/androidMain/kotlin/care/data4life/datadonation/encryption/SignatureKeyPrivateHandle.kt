@@ -32,15 +32,13 @@
 
 package care.data4life.datadonation.encryption
 
-import care.data4life.datadonation.encryption.protos.Keyset
 import care.data4life.datadonation.encryption.protos.PublicHandle
-import care.data4life.datadonation.encryption.protos.RsaSsaPrivateKey
 import com.google.crypto.tink.*
-import com.google.crypto.tink.subtle.Base64
 import kotlinx.serialization.DeserializationStrategy
-import kotlinx.serialization.protobuf.ProtoBuf
 
-class SignatureKeyHandle<Proto> : KeyHandle<Proto>, SignatureKeyPrivate
+
+
+class SignatureKeyPrivateHandle<Proto> : KeyHandleTink<Proto>, SignatureKeyPrivate
     where Proto: Asn1Exportable,
           Proto: PublicHandle {
 
@@ -60,17 +58,43 @@ class SignatureKeyHandle<Proto> : KeyHandle<Proto>, SignatureKeyPrivate
     override val pkcs8Private: String
         get() = deserializePrivate()
 
-    override val pkcs8Public: String
-        get() = deserializePublic()
-
-    override fun verify(data: ByteArray, signature: ByteArray): Boolean {
-        val verifier = handle.publicKeysetHandle.getPrimitive(PublicKeyVerify::class.java)
-        return runCatching { verifier.verify(signature, data) }.isSuccess
-    }
+    override fun verify(data: ByteArray, signature: ByteArray): Boolean
+        = verify(handle,signature, data)
 
     override fun serializedPublic(): ByteArray = serializePublic()
+
+    override val pkcs8Public: String
+        get() = deserializePublic()
 
     override fun serializedPrivate() :ByteArray = serializePrivate()
 
 }
 
+class SignatureKeyPublicHandle<Proto> : KeyHandleTink<Proto>, SignatureKeyPublic
+        where Proto: Asn1Exportable,
+              Proto: PublicHandle {
+
+    constructor(keyTemplate: KeyTemplate, deserializer: DeserializationStrategy<Proto>)
+            : super(keyTemplate, deserializer)
+
+    constructor(handle: KeysetHandle, deserializer: DeserializationStrategy<Proto>)
+            : super(handle, deserializer)
+
+    constructor(serializedKeyset: ByteArray, deserializer: DeserializationStrategy<Proto>)
+            : super(serializedKeyset, deserializer)
+
+    override val pkcs8Public: String
+        get() = deserializePublic()
+
+    override fun verify(data: ByteArray, signature: ByteArray): Boolean =
+        verify(handle,signature, data)
+
+
+
+    override fun serializedPublic(): ByteArray = serializePublic()
+}
+
+private fun verify(handle: KeysetHandle,signature: ByteArray, data: ByteArray): Boolean {
+    val verifier = handle.publicKeysetHandle.getPrimitive(PublicKeyVerify::class.java)
+    return runCatching { verifier.verify(signature, data) }.isSuccess
+}

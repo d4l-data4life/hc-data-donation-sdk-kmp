@@ -32,11 +32,11 @@
 
 package care.data4life.datadonation.encryption
 
-expect fun SignatureKeyPrivate(serializedPrivate: ByteArray, serializedPublic: ByteArray, size: Int, algorithm: Signature.Algorithm):SignatureKeyPrivate
+expect fun SignatureKeyPrivate(serializedPrivate: ByteArray, serializedPublic: ByteArray, size: Int, algorithm: Algorithm.Signature):SignatureKeyPrivate
 
-expect fun SignatureKeyPublic(serialized: ByteArray, size: Int, algorithm: Signature.Algorithm):SignatureKeyPublic
+expect fun SignatureKeyPublic(serialized: ByteArray, size: Int, algorithm: Algorithm.Signature):SignatureKeyPublic
 
-expect fun SignatureKeyPrivate(size: Int, algorithm: Signature.Algorithm):SignatureKeyPrivate
+expect fun SignatureKeyPrivate(size: Int, algorithm: Algorithm.Signature):SignatureKeyPrivate
 
 //TODO: expect fun SignatureKeyPublic(pkcs1: String):SignatureKeyPublic
 

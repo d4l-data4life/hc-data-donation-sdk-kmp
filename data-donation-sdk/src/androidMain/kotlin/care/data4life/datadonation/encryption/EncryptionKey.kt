@@ -32,74 +32,32 @@
 
 package care.data4life.datadonation.encryption
 
+import care.data4life.datadonation.encryption.protos.Aes
 import care.data4life.datadonation.encryption.protos.RsaSsaPrivateKey
 import com.google.crypto.tink.BinaryKeysetReader
 import com.google.crypto.tink.CleartextKeysetHandle
-import com.google.crypto.tink.KeyTemplate
-import com.google.crypto.tink.KeysetHandle
 import com.google.crypto.tink.proto.HashType
-import com.google.crypto.tink.proto.RsaSsaPssKeyFormat
-import com.google.crypto.tink.proto.RsaSsaPssParams
-import com.google.crypto.tink.shaded.protobuf.ByteString
-import java.security.spec.RSAKeyGenParameterSpec
+import kotlinx.serialization.Serializable
+import java.security.Key
+import javax.crypto.Cipher
+import javax.crypto.KeyGenerator
 
 
-actual fun EncryptionKeyPrivate(size: Int, algorithm: Encryption.Algorithm): EncryptionKeyPrivate {
-    return when(algorithm) {
-        is Encryption.Algorithm.RsaOAEP -> EncryptionKeyHandle(KeysetHandle(size, algorithm),
-            RsaSsaPrivateKey.serializer()) // TODO update or generalize
+actual fun EncryptionSymmetricKey(size: Int, algorithm: Algorithm.Symmetric): EncryptionSymmetricKey {
+    return when (algorithm) {
+        is Algorithm.Symmetric.AES -> TODO()
     }
 }
 
-private fun KeysetHandle(size: Int,algorithm: Encryption.Algorithm): KeysetHandle {
-    return when(algorithm) {
-        is Encryption.Algorithm.RsaOAEP -> {
-            val hash = when(algorithm.hashSize) {
-                HashSize.Hash256 -> HashType.SHA256
-            }
-            RsaSsaPssParams.newBuilder() // TODO update or generalize
-                .setSigHash(hash)
-                .setMgf1Hash(HashType.SHA256)
-                .setSaltLength(32)
-                .build()
-                .let { params ->
-                    RsaSsaPssKeyFormat.newBuilder() // TODO update or generalize
-                        .setParams(params)
-                        .setModulusSizeInBits(size)
-                        .setPublicExponent(ByteString.copyFrom(RSAKeyGenParameterSpec.F4.toByteArray()))
-                        .build()
-                }
-                .let { format ->
-                    KeyTemplate.create(
-                        "type.googleapis.com/google.crypto.tink.RsaSsaOaepPrivateKey",
-                        format.toByteArray(),
-                        KeyTemplate.OutputPrefixType.RAW
-                    )
-                }
 
-        }
-    }.let { template ->
-        KeysetHandle.generateNew(template)
-    }
-}
-
-actual fun EncryptionKeyPrivate(
-    serializedPrivate: ByteArray,
-    serializedPublic: ByteArray,
+actual fun EncryptionSymmetricKey(
+    serializedKey: ByteArray,
     size: Int,
-    algorithm: Encryption.Algorithm
-): EncryptionKeyPrivate {
-    CleartextKeysetHandle.read(BinaryKeysetReader.withBytes(serializedPrivate))
-    val serializer = when(algorithm) {
-        is Encryption.Algorithm.RsaOAEP -> RsaSsaPrivateKey.serializer()
+    algorithm: Algorithm.Symmetric
+): EncryptionSymmetricKey {
+    CleartextKeysetHandle.read(BinaryKeysetReader.withBytes(serializedKey))
+    val serializer = when (algorithm) {
+        is Algorithm.Symmetric.AES -> Aes.serializer()
     }
-    return EncryptionKeyHandle(serializedPrivate,serializer)
-}
-
-actual fun EncryptionKeyPublic(
-    serialized: ByteArray,
-    size: Int,
-    algorithm: Encryption.Algorithm
-): EncryptionKeyPublic {
-    TODO()
+    return EncryptionKeySymmetricHandle(serializedKey, serializer)
 }

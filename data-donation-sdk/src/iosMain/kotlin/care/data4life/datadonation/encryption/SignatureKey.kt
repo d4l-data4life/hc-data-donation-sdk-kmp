@@ -42,14 +42,14 @@ import platform.Foundation.NSNumber
 import platform.Security.*
 
 
-actual fun SignatureKeyPrivate(size: Int, algorithm: Signature.Algorithm): SignatureKeyPrivate {
+actual fun SignatureKeyPrivate(size: Int, algorithm: Algorithm.Signature): SignatureKeyPrivate {
     val params: Pair<CFStringRef, SecKeyAlgorithm> = algorithm.toAttributes()
     return SignatureKeyNative(params.first, params.second, size)
 }
 
-private fun Signature.Algorithm.toAttributes(): Pair<CFStringRef, SecKeyAlgorithm> {
+private fun Algorithm.Signature.toAttributes(): Pair<CFStringRef, SecKeyAlgorithm> {
     return when (this) {
-        is Signature.Algorithm.RsaPSS -> {
+        is Algorithm.Signature.RsaPSS -> {
             kSecAttrKeyTypeRSA!! to when (hashSize) {
                 HashSize.Hash256 -> kSecKeyAlgorithmRSASignatureDigestPSSSHA256!!
             }
@@ -61,13 +61,13 @@ actual fun SignatureKeyPrivate(
     serializedPrivate: ByteArray,
     serializedPublic: ByteArray,
     size: Int,
-    algorithm: Signature.Algorithm
+    algorithm: Algorithm.Signature
 ): SignatureKeyPrivate {
 
 
     return SignatureKeyNative(
-        KeyNative.buildSecKeyRef(serializedPrivate, algorithm.toKeyNativeAlgorithm(), true),
-        KeyNative.buildSecKeyRef(serializedPublic, algorithm.toKeyNativeAlgorithm(), false),
+        KeyNative.buildSecKeyRef(serializedPrivate, algorithm, KeyNative.KeyType.Public),
+        KeyNative.buildSecKeyRef(serializedPublic, algorithm, KeyNative.KeyType.Private),
         algorithm.toAttributes().first
     )
 }
@@ -75,11 +75,8 @@ actual fun SignatureKeyPrivate(
 actual fun SignatureKeyPublic(
     serialized: ByteArray,
     size: Int,
-    algorithm: Signature.Algorithm
+    algorithm: Algorithm.Signature
 ): SignatureKeyPublic {
     TODO()
 }
 
-private fun Signature.Algorithm.toKeyNativeAlgorithm() = when(this) {
-    is Signature.Algorithm.RsaPSS -> KeyNative.Algorithm.RSA(hashSize)
-}

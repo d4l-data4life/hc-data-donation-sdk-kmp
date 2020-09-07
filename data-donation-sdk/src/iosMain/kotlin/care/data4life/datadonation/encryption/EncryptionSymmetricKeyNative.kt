@@ -32,16 +32,31 @@
 
 package care.data4life.datadonation.encryption
 
-expect fun EncryptionSymmetricKey(serializedKey: ByteArray, size: Int, algorithm: Algorithm.Symmetric):EncryptionSymmetricKey
+import platform.Security.SecKeyAlgorithm
+import platform.Security.SecKeyRef
 
-expect fun EncryptionSymmetricKey(size: Int, algorithm: Algorithm.Symmetric):EncryptionSymmetricKey
+class EncryptionSymmetricKeyNative : KeyNative, EncryptionSymmetricKey {
 
-//TODO: expect fun EncryptionKeyPublic(pkcs1: String):EncryptionKeyPublic
+    constructor(keyType: SecKeyAlgorithm, algoType: SecKeyAlgorithm, size: Int)
+            : super(keyType, algoType, size)
 
-interface EncryptionSymmetricKey {
-    fun decrypt(encrypted:ByteArray,associatedData: ByteArray):Result<ByteArray>
-    fun encrypt(plainText:ByteArray,associatedData: ByteArray):ByteArray
-    fun serialized():ByteArray
-    val pkcs8:String
+    constructor(private: SecKeyRef, algoType: SecKeyAlgorithm)
+            : super(private, private, algoType)
+
+    override fun decrypt(encrypted: ByteArray, associatedData: ByteArray): Result<ByteArray> {
+        return TODO("Not yet implemented")
+    }
+
+
+    override fun serialized(): ByteArray {
+        return TODO()
+    }
+
+    override val pkcs8: String
+        get() = TODO("Not yet implemented")
+
+    override fun encrypt(plainText: ByteArray, associatedData: ByteArray): ByteArray {
+        return TODO("Not yet implemented")
+    }
+
 }
-

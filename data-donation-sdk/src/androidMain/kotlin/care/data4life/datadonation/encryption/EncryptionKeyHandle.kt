@@ -33,13 +33,21 @@
 package care.data4life.datadonation.encryption
 
 import care.data4life.datadonation.encryption.protos.PublicHandle
+import com.google.crypto.tink.Aead
 import com.google.crypto.tink.KeyTemplate
 import com.google.crypto.tink.KeysetHandle
 import kotlinx.serialization.DeserializationStrategy
+import java.security.Key
+import javax.crypto.Cipher
+import com.google.crypto.tink.subtle.Base64
+import java.security.KeyFactory
+import java.security.interfaces.RSAPrivateCrtKey
+import java.security.spec.RSAPublicKeySpec
 
-class EncryptionKeyHandle<Proto> : KeyHandle<Proto>, EncryptionKeyPrivate
-        where Proto: Asn1Exportable,
-              Proto: PublicHandle {
+class EncryptionKeySymmetricHandle<Proto> :
+    KeyHandleTink<Proto>, EncryptionSymmetricKey
+        where Proto : Asn1Exportable,
+              Proto : PublicHandle {
 
     constructor(keyTemplate: KeyTemplate, deserializer: DeserializationStrategy<Proto>)
             : super(keyTemplate, deserializer)
@@ -50,22 +58,27 @@ class EncryptionKeyHandle<Proto> : KeyHandle<Proto>, EncryptionKeyPrivate
     constructor(serializedKeyset: ByteArray, deserializer: DeserializationStrategy<Proto>)
             : super(serializedKeyset, deserializer)
 
-    override fun decrypt(data: ByteArray): ByteArray {
-        TODO("Not yet implemented")
-    }
 
-    override val pkcs8Private: String
+    override val pkcs8: String
         get() = deserializePrivate()
 
-    override val pkcs8Public: String
-        get() = deserializePublic()
+    override fun serialized(): ByteArray = serializePrivate()
 
-    override fun encrypt(data: ByteArray, signature: ByteArray): Boolean {
-        TODO("Not yet implemented")
+    override fun encrypt(plainText: ByteArray, associatedData: ByteArray): ByteArray {
+        return handle.getPrimitive(Aead::class.java)
+            .encrypt(plainText,associatedData)
     }
 
-    override fun serializedPublic(): ByteArray = serializePublic()
+    override fun decrypt(encrypted: ByteArray, associatedData: ByteArray):Result<ByteArray> {
+         return kotlin.runCatching { handle.getPrimitive(Aead::class.java)
+            .decrypt(encrypted,associatedData) }
+    }
 
-    override fun serializedPrivate() :ByteArray = serializePrivate()
 
 }
+
+
+
+
+
+

@@ -42,41 +42,31 @@ import com.google.crypto.tink.subtle.Base64
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.protobuf.ProtoBuf
 
-abstract class KeyHandle<Proto> where Proto: Asn1Exportable, Proto: PublicHandle {
+abstract class KeyHandleTink<Proto> constructor(
+    protected val handle: KeysetHandle, protected val deserializer: DeserializationStrategy<Proto>
+) where Proto : Asn1Exportable, Proto : PublicHandle {
 
-    protected val handle: KeysetHandle
-    protected val deserializer: DeserializationStrategy<Proto>
+    constructor(keyTemplate: KeyTemplate, deserializer: DeserializationStrategy<Proto>) :
+            this(KeysetHandle.generateNew(keyTemplate), deserializer)
 
-    constructor(keyTemplate: KeyTemplate, deserializer: DeserializationStrategy<Proto>) {
-        handle = KeysetHandle.generateNew(keyTemplate)
-        this.deserializer = deserializer
-    }
-
-    constructor(handle: KeysetHandle, deserializer: DeserializationStrategy<Proto>) {
-        this.handle = handle
-        this.deserializer = deserializer
-    }
-
-    constructor(serializedKeyset: ByteArray, deserializer: DeserializationStrategy<Proto>) {
-        handle = CleartextKeysetHandle.read(BinaryKeysetReader.withBytes(serializedKeyset))
-        this.deserializer = deserializer
-    }
+    constructor(serializedKeyset: ByteArray, deserializer: DeserializationStrategy<Proto>) :
+            this(CleartextKeysetHandle.read(BinaryKeysetReader.withBytes(serializedKeyset)), deserializer)
 
     private fun getProto() = ProtoBuf.load(
         Keyset.serializer(),
         CleartextKeysetHandle
             .getKeyset(handle)
-            .toByteArray())
-        .key.first()
+            .toByteArray()
+    ).key.first()
         .key_data.value
         .let { ProtoBuf.load(deserializer, it) }
 
-    protected fun deserializePrivate(): String
-            = getProto().toAsn1().encoded.asByteArray().let(Base64::encode)
-    protected fun deserializePublic(): String
-        = getProto().publicKey.toAsn1().encoded.asByteArray().let(Base64::encode)
+    protected fun deserializePrivate(): String = getProto().toAsn1().encoded.asByteArray().let(Base64::encode)
 
-    protected fun serializePublic():ByteArray =
+
+    protected fun deserializePublic(): String = getProto().publicKey.toAsn1().encoded.asByteArray().let(Base64::encode)
+
+    protected fun serializePublic(): ByteArray =
         CleartextKeysetHandle.getKeyset(handle.publicKeysetHandle).toByteArray()
 
     protected fun serializePrivate() =

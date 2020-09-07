@@ -32,6 +32,7 @@
 
 package care.data4life.datadonation.encryption.protos
 
+import care.data4life.datadonation.encryption.Asn1
 import care.data4life.datadonation.encryption.Asn1Exportable
 import care.data4life.datadonation.encryption.sequence
 import kotlinx.serialization.Serializable
@@ -73,7 +74,7 @@ class RsaSsaPssPublicKey(
     // Unsigned big integer in bigendian representation.
     @ProtoNumber(4)
     val e: ByteArray
-):Asn1Exportable {
+):Asn1Exportable,PublicHandle {
     override fun toAsn1() =
         "PublicKeyInfo" sequence {
             "algorithm" sequence {
@@ -86,6 +87,8 @@ class RsaSsaPssPublicKey(
                 }
             }
         }
+
+    override val publicKey: Asn1Exportable = this
 }
 
 @Serializable
@@ -168,6 +171,13 @@ enum class HashType {
 
     @ProtoNumber(4)
     SHA512
+}
+
+
+@Serializable
+data class Aes(val todo: String):Asn1Exportable,PublicHandle {
+    override val publicKey: Asn1Exportable = TODO()
+    override fun toAsn1(): Asn1 = TODO()
 }
 
 interface PublicHandle {

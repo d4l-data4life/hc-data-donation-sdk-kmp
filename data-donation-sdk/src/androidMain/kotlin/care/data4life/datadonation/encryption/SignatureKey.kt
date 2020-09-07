@@ -43,15 +43,15 @@ import com.google.crypto.tink.shaded.protobuf.ByteString
 import java.security.spec.RSAKeyGenParameterSpec
 
 
-actual fun SignatureKeyPrivate(size: Int,algorithm: Signature.Algorithm): SignatureKeyPrivate {
+actual fun SignatureKeyPrivate(size: Int,algorithm: Algorithm.Signature): SignatureKeyPrivate {
     return when(algorithm) {
-        is Signature.Algorithm.RsaPSS -> SignatureKeyHandle(KeysetHandle(size, algorithm),RsaSsaPrivateKey.serializer())
+        is Algorithm.Signature.RsaPSS -> SignatureKeyPrivateHandle(KeysetHandle(size, algorithm),RsaSsaPrivateKey.serializer())
     }
 }
 
-private fun KeysetHandle(size: Int,algorithm: Signature.Algorithm): KeysetHandle {
+private fun KeysetHandle(size: Int,algorithm: Algorithm.Signature): KeysetHandle {
     return when(algorithm) {
-        is Signature.Algorithm.RsaPSS -> {
+        is Algorithm.Signature.RsaPSS -> {
             val hash = when(algorithm.hashSize) {
                 HashSize.Hash256 -> HashType.SHA256
             }
@@ -86,23 +86,23 @@ actual fun SignatureKeyPrivate(
     //this one isn't actually used because public is calculated from private
     serializedPublic: ByteArray,
     size: Int,
-    algorithm: Signature.Algorithm
+    algorithm: Algorithm.Signature
 ): SignatureKeyPrivate {
     CleartextKeysetHandle.read(BinaryKeysetReader.withBytes(serializedPrivate))
     val serializer = when(algorithm) {
-        is Signature.Algorithm.RsaPSS -> RsaSsaPrivateKey.serializer()
+        is Algorithm.Signature.RsaPSS -> RsaSsaPrivateKey.serializer()
     }
-    return SignatureKeyHandle(serializedPrivate,serializer)
+    return SignatureKeyPrivateHandle(serializedPrivate,serializer)
 }
 
 actual fun SignatureKeyPublic(
     serialized: ByteArray,
     size: Int,
-    algorithm: Signature.Algorithm
+    algorithm: Algorithm.Signature
 ): SignatureKeyPublic {
     CleartextKeysetHandle.read(BinaryKeysetReader.withBytes(serialized))
-    val serializer = when(algorithm) {
-        is Signature.Algorithm.RsaPSS -> RsaSsaPssPublicKey.serializer()
+    val deserializer = when(algorithm) {
+        is Algorithm.Signature.RsaPSS -> RsaSsaPssPublicKey.serializer()
     }
-    TODO()
+    return SignatureKeyPublicHandle(serialized,deserializer)
 }

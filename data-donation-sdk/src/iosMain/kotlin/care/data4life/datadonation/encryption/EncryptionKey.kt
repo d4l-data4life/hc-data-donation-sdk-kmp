@@ -36,45 +36,30 @@ import platform.CoreFoundation.CFStringRef
 import platform.Security.SecKeyAlgorithm
 import platform.Security.kSecAttrKeyTypeRSA
 import platform.Security.kSecKeyAlgorithmRSAEncryptionOAEPSHA256
+import platform.Security.kSecKeyAlgorithmRSASignatureDigestPSSSHA256
 
 
-actual fun EncryptionKeyPrivate(size: Int, algorithm: Encryption.Algorithm): EncryptionKeyPrivate {
+actual fun EncryptionSymmetricKey(size: Int, algorithm: Algorithm.Symmetric): EncryptionSymmetricKey {
     val params: Pair<CFStringRef, SecKeyAlgorithm> = algorithm.toAttributes()
-    return EncryptionKeyNative(params.first, params.second, size)
+    return EncryptionSymmetricKeyNative(params.first, params.second, size)
 }
 
-private fun Encryption.Algorithm.toAttributes(): Pair<CFStringRef, SecKeyAlgorithm> {
+private fun Algorithm.Symmetric.toAttributes(): Pair<CFStringRef, SecKeyAlgorithm> {
     return when (this) {
-        is Encryption.Algorithm.RsaOAEP -> {
-            kSecAttrKeyTypeRSA!! to when (hashSize) {
-                HashSize.Hash256 -> kSecKeyAlgorithmRSAEncryptionOAEPSHA256!! // TODO double check these are the proper parameters
-            }
-        }
+        is Algorithm.Symmetric.AES -> TODO()
     }
 }
 
-actual fun EncryptionKeyPrivate(
-    serializedPrivate: ByteArray,
-    serializedPublic: ByteArray,
-    size: Int,
-    algorithm: Encryption.Algorithm
-): EncryptionKeyPrivate {
 
-    return EncryptionKeyNative(
-        KeyNative.buildSecKeyRef(serializedPrivate, algorithm.toKeyNativeAlgorithm(), true),
-        KeyNative.buildSecKeyRef(serializedPublic, algorithm.toKeyNativeAlgorithm(), false),
+actual fun EncryptionSymmetricKey(
+    serializedKey: ByteArray,
+    size: Int,
+    algorithm: Algorithm.Symmetric
+): EncryptionSymmetricKey {
+
+    return EncryptionSymmetricKeyNative(
+        KeyNative.buildSecKeyRef(serializedKey, algorithm, KeyNative.KeyType.Symmetric),
         algorithm.toAttributes().first
     )
 }
 
-actual fun EncryptionKeyPublic(
-    serialized: ByteArray,
-    size: Int,
-    algorithm: Encryption.Algorithm
-): EncryptionKeyPublic {
-    TODO()
-}
-
-private fun Encryption.Algorithm.toKeyNativeAlgorithm() = when(this) {
-    is Encryption.Algorithm.RsaOAEP -> KeyNative.Algorithm.RSA(hashSize)
-}

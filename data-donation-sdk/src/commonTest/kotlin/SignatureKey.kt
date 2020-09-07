@@ -45,14 +45,14 @@ class SignatureKeyCommonTest {
     @Test
     fun `Generate, sign and verify`() {
         val testData = byteArrayOf(1)
-        val key = SignatureKeyPrivate(2048, Signature.Algorithm.RsaPSS(HashSize.Hash256))
+        val key = SignatureKeyPrivate(2048, Algorithm.Signature.RsaPSS(HashSize.Hash256))
         key.verify(testData,key.sign(testData))
     }
 
 
     @Test//TODO: add proper vaidation after parsing ASN1 is added
     fun `Key is exported to valid ASN1 DER encoded value`() {
-        val key = SignatureKeyPrivate(2048, Signature.Algorithm.RsaPSS(HashSize.Hash256))
+        val key = SignatureKeyPrivate(2048, Algorithm.Signature.RsaPSS(HashSize.Hash256))
         assertTrue(key.pkcs8Private.startsWith("MII"))
         assertTrue(key.pkcs8Public.startsWith("MII"))
     }

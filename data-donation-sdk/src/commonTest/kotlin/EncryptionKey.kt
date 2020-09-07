@@ -1,3 +1,8 @@
+import care.data4life.datadonation.encryption.*
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertTrue
+
 /*
  * BSD 3-Clause License
  *
@@ -30,18 +35,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.encryption
+class EncryptionKeyCommonTest {
 
-expect fun EncryptionSymmetricKey(serializedKey: ByteArray, size: Int, algorithm: Algorithm.Symmetric):EncryptionSymmetricKey
+    @BeforeTest
+    fun setup() {
+        initEncryption()
+    }
 
-expect fun EncryptionSymmetricKey(size: Int, algorithm: Algorithm.Symmetric):EncryptionSymmetricKey
+    @Test
+    fun `Generate, encrypt and decrypt`() {
+        val testData = byteArrayOf(1,2,3,4,5)
+        val testAuth = byteArrayOf(1)
+        val key = EncryptionSymmetricKey(2048, Algorithm.Symmetric.AES(HashSize.Hash256))
+        val encrypted = key.encrypt(testData,testAuth)
+        val decrypted = key.decrypt(encrypted,testAuth)
+        assertTrue(decrypted.isSuccess)
+    }
 
-//TODO: expect fun EncryptionKeyPublic(pkcs1: String):EncryptionKeyPublic
 
-interface EncryptionSymmetricKey {
-    fun decrypt(encrypted:ByteArray,associatedData: ByteArray):Result<ByteArray>
-    fun encrypt(plainText:ByteArray,associatedData: ByteArray):ByteArray
-    fun serialized():ByteArray
-    val pkcs8:String
+    @Test//TODO: add proper vaidation after parsing ASN1 is added
+    fun `Key is exported to valid ASN1 DER encoded value`() {
+        val key = EncryptionSymmetricKey(2048, Algorithm.Symmetric.AES(HashSize.Hash256))
+        assertTrue(key.pkcs8.startsWith("MII"))
+    }
+
 }
-

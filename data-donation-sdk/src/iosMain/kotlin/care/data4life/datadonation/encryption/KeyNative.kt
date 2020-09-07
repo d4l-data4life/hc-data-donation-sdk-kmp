@@ -35,6 +35,7 @@ package care.data4life.datadonation.encryption
 import care.data4life.datadonation.toNSData
 import platform.CoreFoundation.CFDataRef
 import platform.CoreFoundation.CFDictionaryCreateMutable
+import platform.CoreFoundation.CFStringRef
 import platform.CoreFoundation.kCFAllocatorSystemDefault
 import platform.Foundation.CFBridgingRetain
 import platform.Foundation.NSNumber
@@ -59,25 +60,27 @@ abstract class KeyNative {
     }
 
     companion object {
-        fun buildSecKeyRef(serialized: ByteArray, algorithm: Algorithm, private: Boolean): SecKeyRef {
+        fun buildSecKeyRef(serialized: ByteArray, algorithm: Algorithm, type: KeyType): SecKeyRef {
             val data = CFBridgingRetain(serialized.toNSData()) as CFDataRef
             val pubAttr = CFDictionaryCreateMutable(kCFAllocatorSystemDefault, 3, null, null)!!
-            when (algorithm) {
-                is Algorithm.RSA -> {
+            val exhaustive = when (algorithm) {
+                is Algorithm.Signature.RsaPSS -> {
                     pubAttr += kSecAttrKeyType to kSecAttrKeyTypeRSA
-                    pubAttr += kSecAttrKeyClass to if (private) kSecAttrKeyClassPrivate else kSecAttrKeyClassPublic
+                    pubAttr += kSecAttrKeyClass to type.nativeType
                     pubAttr += kSecAttrKeySizeInBits to CFBridgingRetain(NSNumber(int = algorithm.hashSize.bits))
                 }
-                else -> {
-                    // No action
+                is Algorithm.Encryption.RsaOAEP -> {
+                    pubAttr += kSecAttrKeyType to kSecAttrKeyTypeRSA!!
+                    //TODO:Other parameters
                 }
+                is Algorithm.Symmetric.AES -> TODO()
             }
             return SecKeyCreateWithData(data, pubAttr, null)!!
         }
     }
 
-    sealed class Algorithm {
-        class RSA(val hashSize: HashSize): Algorithm()
-        object AES: Algorithm()
+    enum class KeyType(val nativeType: CFStringRef) {
+        Private(kSecAttrKeyClassPrivate!!),Public(kSecAttrKeyClassPublic!!),Symmetric(kSecAttrKeyClassSymmetric!!)
     }
+
 }
