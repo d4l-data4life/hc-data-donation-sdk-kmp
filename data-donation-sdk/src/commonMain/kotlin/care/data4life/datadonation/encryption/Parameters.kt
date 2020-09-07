@@ -32,18 +32,14 @@
 
 package care.data4life.datadonation.encryption
 
-object Encryption {
-    sealed class Algorithm {
-        class RsaOAEP(val hashSize: HashSize) : Algorithm()
-    }
-}
+import care.data4life.datadonation.encryption.protos.Keyset
+import care.data4life.datadonation.encryption.protos.RsaSsaPrivateKey
+import kotlinx.serialization.protobuf.ProtoBuf
 
-object Signature {
-    sealed class Algorithm {
-        class RsaPSS(val hashSize: HashSize) : Algorithm()
-    }
-}
 
-enum class HashSize(val bits: Int) {
-    Hash256(256)
-}
+expect class RsaPss : SignatureKey
+
+fun RsaPss.export(): RsaSsaPrivateKey =
+    ProtoBuf.decodeFromByteArray(Keyset.serializer(), serialized()).key.first().key_data.value
+        .let { ProtoBuf.decodeFromByteArray(RsaSsaPrivateKey.serializer(), it) }
+

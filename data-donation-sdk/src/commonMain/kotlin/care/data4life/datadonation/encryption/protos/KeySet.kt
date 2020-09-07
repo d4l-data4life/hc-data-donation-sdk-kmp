@@ -33,7 +33,7 @@
 package care.data4life.datadonation.encryption.protos
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.protobuf.ProtoId
+import kotlinx.serialization.protobuf.ProtoNumber
 
 /**
  * Proto models are defined here:
@@ -41,18 +41,18 @@ import kotlinx.serialization.protobuf.ProtoId
  */
 @Serializable
 class Keyset(
-    @ProtoId(2)
+    @ProtoNumber(2)
     val key: List<Key>
 )
 
 @Serializable
 class Key(
-    @ProtoId(1)
+    @ProtoNumber(1)
     val key_data: KeyData
 )
 
 @Serializable
 class KeyData(
-    @ProtoId(2)
+    @ProtoNumber(2)
     val value: ByteArray
 )

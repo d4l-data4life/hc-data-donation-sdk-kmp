@@ -35,7 +35,7 @@ package care.data4life.datadonation.encryption.protos
 import care.data4life.datadonation.encryption.Asn1Exportable
 import care.data4life.datadonation.encryption.sequence
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.protobuf.ProtoId
+import kotlinx.serialization.protobuf.ProtoNumber
 
 internal val rsaPkcsIDENTIFIER = listOf(42,34376,8845069,1,1,1)
 
@@ -44,34 +44,34 @@ class RsaSsaPssParams(
     // Hash function used in computing hash of the signing message
     // (see https://tools.ietf.org/html/rfc8017#section-9.1.1).
     // Required.
-    @ProtoId(1)
+    @ProtoNumber(1)
     val sigHash: HashType,
     // Hash function used in MGF1 (a mask generation function based on a
     // hash function) (see https://tools.ietf.org/html/rfc8017#appendix-B.2.1).
     // Required.
-    @ProtoId(2)
+    @ProtoNumber(2)
     val mgf1Hash: HashType,
     // Salt length (see https://tools.ietf.org/html/rfc8017#section-9.1.1)
     // Required.
-    @ProtoId(3)
+    @ProtoNumber(3)
     val saltLength: Int
 )
 
 @Serializable
 class RsaSsaPssPublicKey(
     // Required.
-    @ProtoId(1)
+    @ProtoNumber(1)
     val version: Int = 0,
     // Required.
-    @ProtoId(2)
+    @ProtoNumber(2)
     val params: RsaSsaPssParams,
     // Modulus.
     // Unsigned big integer in bigendian representation.
-    @ProtoId(3)
+    @ProtoNumber(3)
     val n: ByteArray,
     // Public exponent.
     // Unsigned big integer in bigendian representation.
-    @ProtoId(4)
+    @ProtoNumber(4)
     val e: ByteArray
 ):Asn1Exportable {
     override fun toAsn1() =
@@ -91,41 +91,41 @@ class RsaSsaPssPublicKey(
 @Serializable
 class RsaSsaPrivateKey(
     // Required.
-    @ProtoId(1)
+    @ProtoNumber(1)
     val version: Int = 0,
     // Required.
-    @ProtoId(2)
+    @ProtoNumber(2)
     override val publicKey: RsaSsaPssPublicKey,
     // Private exponent.
     // Unsigned big integer in bigendian representation.
     // Required.
-    @ProtoId(3)
+    @ProtoNumber(3)
     val d: ByteArray,
     // The following parameters are used to optimize RSA signature computation.
     // The prime factor p of n.
     // Unsigned big integer in bigendian representation.
     // Required.
-    @ProtoId(4)
+    @ProtoNumber(4)
     val p: ByteArray,
     // The prime factor q of n.
     // Unsigned big integer in bigendian representation.
     // Required.
-    @ProtoId(5)
+    @ProtoNumber(5)
     val q: ByteArray,
     // d mod (p - 1).
     // Unsigned big integer in bigendian representation.
     // Required.
-    @ProtoId(6)
+    @ProtoNumber(6)
     val dp: ByteArray,
     // d mod (q - 1).
     // Unsigned big integer in bigendian representation.
     // Required.
-    @ProtoId(7)
+    @ProtoNumber(7)
     val dq: ByteArray,
     // Chinese Remainder Theorem coefficient q^(-1) mod p.
     // Unsigned big integer in bigendian representation.
     // Required.
-    @ProtoId(8)
+    @ProtoNumber(8)
     val crt: ByteArray
 ):Asn1Exportable,PublicHandle {
     override fun toAsn1() =
@@ -152,21 +152,21 @@ class RsaSsaPrivateKey(
 
 
 @Serializable
-enum class HashType() {
-    @ProtoId(0)
+enum class HashType {
+    @ProtoNumber(0)
     UNKNOWN_HASH,
 
-    @ProtoId(1)
+    @ProtoNumber(1)
     SHA1,  // Using SHA1 for digital signature is deprecated but HMAC-SHA1 is
 
     // fine.
-    @ProtoId(2)
+    @ProtoNumber(2)
     SHA384,
 
-    @ProtoId(3)
+    @ProtoNumber(3)
     SHA256,
 
-    @ProtoId(4)
+    @ProtoNumber(4)
     SHA512
 }
 

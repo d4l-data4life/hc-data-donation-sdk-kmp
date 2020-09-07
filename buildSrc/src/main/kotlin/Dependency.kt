@@ -44,11 +44,7 @@ object Dependency {
         object Coroutines {
             // https://github.com/Kotlin/kotlinx.coroutines
             val common =
-                "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:${Version.kotlinCoroutines}"
-            val jdk = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Version.kotlinCoroutines}"
-            val js = "org.jetbrains.kotlinx:kotlinx-coroutines-core-js:${Version.kotlinCoroutines}"
-            val native =
-                "org.jetbrains.kotlinx:kotlinx-coroutines-core-native:${Version.kotlinCoroutines}"
+                "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Version.kotlinCoroutines}"
             val android =
                 "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Version.kotlinCoroutines}"
             val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Version.kotlinCoroutines}"
@@ -80,7 +76,6 @@ object Dependency {
             val iosJson = "io.ktor:ktor-client-json-native:${Version.ktor}"
             val commonSerialization = "io.ktor:ktor-client-serialization:${Version.ktor}"
             val androidSerialization = "io.ktor:ktor-client-serialization-jvm:${Version.ktor}"
-            val iosSerialization = "io.ktor:ktor-client-serialization-native:${Version.ktor}"
         }
 
         val serialization = Serialization
@@ -88,15 +83,11 @@ object Dependency {
         object Serialization {
             // https://github.com/Kotlin/kotlinx.serialization
             const val common =
-                "org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:${Version.kotlinSerialization}"
-            const val jdk =
-                "org.jetbrains.kotlinx:kotlinx-serialization-runtime:${Version.kotlinSerialization}"
-            const val js =
-                "org.jetbrains.kotlinx:kotlinx-serialization-runtime-js:${Version.kotlinSerialization}"
-            const val native =
-                "org.jetbrains.kotlinx:kotlinx-serialization-runtime-native:${Version.kotlinSerialization}"
+                "org.jetbrains.kotlinx:kotlinx-serialization-core:${Version.kotlinSerialization}"
             const val android =
-                "org.jetbrains.kotlinx:kotlinx-serialization-runtime:${Version.kotlinSerialization}"
+                "org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:${Version.kotlinSerialization}"
+            const val protobuf =
+                "org.jetbrains.kotlinx:kotlinx-serialization-protobuf:${Version.kotlinSerialization}"
         }
 
         val sqlDelight = SqlDelight
@@ -128,17 +119,7 @@ object Dependency {
         val multiplatformSettings =
             "com.russhwolf:multiplatform-settings:${Version.multiplatformSettings}"
 
-        val protobuff = Protobuff
-        object Protobuff {
-            const val native = "org.jetbrains.kotlinx:kotlinx-serialization-protobuf-native:${Version.protobuff}"
-            const val common = "org.jetbrains.kotlinx:kotlinx-serialization-protobuf-common:${Version.protobuff}"
-            const val android = "org.jetbrains.kotlinx:kotlinx-serialization-protobuf:${Version.protobuff}"
-            const val common_runtime = "org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:${Version.protobuff}"
-        }
-
-
     }
-
 
     val test = Test
 
