@@ -30,42 +30,42 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-object LibraryConfig {
-    const val version = "0.0.2"
-    const val group = "care.data4life.datadonation.common"
-    const val githubGroup = "com.github.gesundheitscloud"
-    const val artifactId = "data-donation-sdk-native"
-    const val versionCode = 1
-    const val name = "gesundheitscloud/$artifactId"
-    const val host = "github.com"
-    const val url = "https://$host/$name"
-    const val inceptionYear = "2020"
+package care.data4life.datadonation
 
-    // DEVELOPER
-    const val developerId = "gesundheitscloud"
-    const val developerName = "D4L data4life gGmbH"
-    const val developerEmail = "mobile@data4life.care"
+import care.data4life.datadonation.core.listener.Callback
+import care.data4life.datadonation.core.listener.ResultListener
+import care.data4life.datadonation.core.model.ConsentDocument
+import care.data4life.datadonation.core.model.KeyPair
+import care.data4life.datadonation.core.model.UserConsent
+import care.data4life.datadonation.internal.di.initKoin
 
-    // LICENSE
-    const val licenseName = ""
-    const val licenseUrl = "$url/blob/main/LICENSE"
-    const val licenseDistribution = "repo"
+class Client(donationKeyPair: KeyPair?, getUserSessionToken: () -> String?) : Contract.DataDonation {
 
-    // SCM
-    const val scmUrl = "git://$host/$name.git"
-    const val scmConnection = "scm:$scmUrl"
-    const val scmDeveloperConnection = "$scmConnection"
+    init {
+        initKoin(donationKeyPair,getUserSessionToken)
+    }
 
-    val android = AndroidLibraryConfig
+    override fun fetchConsentDocument(
+        consentDocumentVersion: String?,
+        language: String?,
+        listener: ResultListener<List<ConsentDocument>>
+    ) {
+        TODO("Not yet implemented")
+    }
 
-    object AndroidLibraryConfig {
-        const val minSdkVersion = 23
-        const val compileSdkVersion = 29
-        const val targetSdkVersion = 29
+    override fun createUserConsent(
+        consentDocumentVersion: String,
+        language: String?,
+        callback: ResultListener<Pair<UserConsent, KeyPair>>
+    ) {
+        TODO("Not yet implemented")
+    }
 
-        const val versionCode = LibraryConfig.versionCode
-        const val versionName = LibraryConfig.version
+    override fun fetchUserConsents(listener: ResultListener<List<UserConsent>>) {
+        TODO("Not yet implemented")
+    }
 
-        const val resourcePrefix = "d4l_data_donation_"
+    override fun revokeUserConsent(language: String?, callback: Callback) {
+        TODO("Not yet implemented")
     }
 }

@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
-
 plugins {
     kotlin("multiplatform")
     id("kotlinx-serialization")
@@ -7,7 +5,8 @@ plugins {
     // Android
     id("com.android.library")
 
-    // DB
+    // Publish
+    id("maven-publish")
 }
 
 version = LibraryConfig.version
@@ -15,31 +14,26 @@ group = LibraryConfig.group
 
 
 kotlin {
+
     android("android") {
         publishLibraryVariants("release")
     }
 
-    // Revert to just ios() when gradle plugin can properly resolve it
-    val onPhone = System.getenv("SDK_NAME")?.startsWith("iphoneos") ?: false
-    if (onPhone) {
-        iosArm64("ios")
-    } else {
-        iosX64("ios")
+    ios {
+        binaries {
+            framework()
+        }
     }
-
-    targets.getByName<KotlinNativeTarget>("ios").compilations["main"].kotlinOptions.freeCompilerArgs +=
-        listOf("-Xobjc-generics", "-Xg0")
 
     sourceSets {
         all {
             languageSettings.apply {
                 useExperimentalAnnotation("kotlinx.coroutines.ExperimentalCoroutinesApi")
                 useExperimentalAnnotation("kotlinx.serialization.InternalSerializationApi")
+                useExperimentalAnnotation("kotlin.ExperimentalStdlibApi")
+                useExperimentalAnnotation("kotlin.ExperimentalUnsignedTypes")
             }
         }
-    }
-
-    sourceSets {
         commonMain {
             dependencies {
                 implementation(Dependency.Multiplatform.kotlin.stdlibCommon)
@@ -108,6 +102,21 @@ kotlin {
             }
         }
 
+
+        configure(listOf(targets["iosArm64"], targets["iosX64"])) {
+            compilations["main"].kotlinOptions.freeCompilerArgs = mutableListOf(
+                "-include-binary", "$projectDir/Pods/Tink/Frameworks/Tink.framework/Tink.a"
+            )
+            compilations.getByName("main") {
+                this as org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeCompilation
+
+                val tink by cinterops.creating {
+                    packageName("google.tink")
+                    defFile = file("$projectDir/src/iosMain/cinterop/Tink.def")
+                    header("$projectDir/Pods/Tink/Frameworks/Tink.framework/Headers/Tink.h")
+                }
+            }
+        }
     }
 }
 
@@ -150,3 +159,73 @@ android {
     }
 }
 
+publishing {
+    repositories {
+        maven {
+            name = "GithubPackages"
+            url = uri("https://maven.pkg.github.com/gesundheitscloud/data-donation-sdk-native")
+            credentials {
+                username =
+                    (project.findProperty("gpr.user") ?: System.getenv("USERNAME")).toString()
+                password = (project.findProperty("gpr.key") ?: System.getenv("TOKEN")).toString()
+            }
+        }
+
+        publications {
+            all {
+                if (this is MavenPublication) {
+                    groupId = LibraryConfig.githubGroup
+                    artifactId = LibraryConfig.artifactId
+                    version = LibraryConfig.version
+
+                    when (name) {
+                        "androidRelease" -> {
+                            artifactId = "${project.name}-android"
+                        }
+                        "metadata" -> {
+                            artifactId = "${project.name}-metadata"
+                        }
+                        "jvm" -> {
+                            artifactId = "${project.name}-jvm"
+                        }
+                        "iosArm64" -> {
+                            artifactId = "${project.name}-iosArm64"
+                        }
+                        "iosX64" -> {
+                            artifactId = "${project.name}-iosX64"
+                        }
+                        else -> {
+                            artifactId = "${project.name}-common"
+                        }
+                    }
+
+                    pom {
+                        name.set(LibraryConfig.name)
+                        url.set(LibraryConfig.url)
+                        inceptionYear.set(LibraryConfig.inceptionYear)
+                        licenses {
+                            license {
+                                name.set(LibraryConfig.licenseName)
+                                url.set(LibraryConfig.licenseUrl)
+                                distribution.set(LibraryConfig.licenseDistribution)
+                            }
+                        }
+                        developers {
+                            developer {
+                                id.set(LibraryConfig.developerId)
+                                name.set(LibraryConfig.developerName)
+                                email.set(LibraryConfig.developerEmail)
+                            }
+                        }
+
+                        scm {
+                            connection.set(LibraryConfig.scmConnection)
+                            developerConnection.set(LibraryConfig.scmDeveloperConnection)
+                            url.set(LibraryConfig.scmUrl)
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

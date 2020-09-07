@@ -30,42 +30,36 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-object LibraryConfig {
-    const val version = "0.0.2"
-    const val group = "care.data4life.datadonation.common"
-    const val githubGroup = "com.github.gesundheitscloud"
-    const val artifactId = "data-donation-sdk-native"
-    const val versionCode = 1
-    const val name = "gesundheitscloud/$artifactId"
-    const val host = "github.com"
-    const val url = "https://$host/$name"
-    const val inceptionYear = "2020"
+package care.data4life.datadonation.internal.di
 
-    // DEVELOPER
-    const val developerId = "gesundheitscloud"
-    const val developerName = "D4L data4life gGmbH"
-    const val developerEmail = "mobile@data4life.care"
+import care.data4life.datadonation.core.model.KeyPair
+import care.data4life.datadonation.internal.data.store.UserSessionTokenDataStore
+import org.koin.core.context.startKoin
+import org.koin.core.module.Module
+import org.koin.dsl.module
 
-    // LICENSE
-    const val licenseName = ""
-    const val licenseUrl = "$url/blob/main/LICENSE"
-    const val licenseDistribution = "repo"
-
-    // SCM
-    const val scmUrl = "git://$host/$name.git"
-    const val scmConnection = "scm:$scmUrl"
-    const val scmDeveloperConnection = "$scmConnection"
-
-    val android = AndroidLibraryConfig
-
-    object AndroidLibraryConfig {
-        const val minSdkVersion = 23
-        const val compileSdkVersion = 29
-        const val targetSdkVersion = 29
-
-        const val versionCode = LibraryConfig.versionCode
-        const val versionName = LibraryConfig.version
-
-        const val resourcePrefix = "d4l_data_donation_"
-    }
+internal fun initKoin(donationKeyPair: KeyPair?, getUserSessionToken: () -> String?) = startKoin {
+    modules(
+        module {
+            single<UserSessionTokenDataStore> { object : UserSessionTokenDataStore{
+                override fun getUserSessionToken(): String? = getUserSessionToken()
+            } }
+        },
+        platformModule,
+        coreModule
+    )
 }
+
+private val coreModule = module {
+
+    //DataStores
+
+
+    //Repositories
+
+
+    //Usecases
+
+}
+
+expect val platformModule: Module
