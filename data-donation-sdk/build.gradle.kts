@@ -32,6 +32,16 @@ kotlin {
             freeCompilerArgs += listOf("-Xallow-result-return-type")
         }
     }
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompileCommon> {
+        kotlinOptions {
+            freeCompilerArgs += listOf("-Xallow-result-return-type")
+        }
+    }
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+        kotlinOptions {
+            freeCompilerArgs += listOf("-Xallow-result-return-type")
+        }
+    }
 
 
     sourceSets {

@@ -52,14 +52,14 @@ abstract class KeyHandleTink<Proto> constructor(
     constructor(serializedKeyset: ByteArray, deserializer: DeserializationStrategy<Proto>) :
             this(CleartextKeysetHandle.read(BinaryKeysetReader.withBytes(serializedKeyset)), deserializer)
 
-    private fun getProto() = ProtoBuf.load(
+    private fun getProto() = ProtoBuf.decodeFromByteArray(
         Keyset.serializer(),
         CleartextKeysetHandle
             .getKeyset(handle)
             .toByteArray()
     ).key.first()
         .key_data.value
-        .let { ProtoBuf.load(deserializer, it) }
+        .let { ProtoBuf.decodeFromByteArray(deserializer, it) }
 
     protected fun deserializePrivate(): String = getProto().toAsn1().encoded.asByteArray().let(Base64::encode)
 
