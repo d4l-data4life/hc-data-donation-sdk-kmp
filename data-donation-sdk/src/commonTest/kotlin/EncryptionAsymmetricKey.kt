@@ -1,3 +1,12 @@
+import care.data4life.datadonation.encryption.Algorithm
+import care.data4life.datadonation.encryption.HashSize
+import care.data4life.datadonation.encryption.assymetric.EncryptionPrivateKey
+import care.data4life.datadonation.encryption.initEncryption
+import care.data4life.datadonation.encryption.symmetric.EncryptionSymmetricKey
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertTrue
+
 /*
  * BSD 3-Clause License
  *
@@ -30,24 +39,36 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.encryption
+class EncryptionKeyCommonTest {
 
-
-sealed class Algorithm {
-    sealed class Asymmetric : Algorithm() {
-        class RsaOAEP(val hashSize: HashSize) : Asymmetric()
+    @BeforeTest
+    fun setup() {
+        initEncryption()
     }
 
-    sealed class Symmetric : Algorithm() {
-        class AES(val hashSize: HashSize) : Symmetric()
+    @Test
+    fun `Generate, encrypt and decrypt`() {
+        val testData = byteArrayOf(1, 2, 3, 4, 5)
+
+        val key = EncryptionPrivateKey(2048, Algorithm.Asymmetric.RsaOAEP(HashSize.Hash256))
+        val encrypted = key.encrypt(testData)
+        val decrypted = key.decrypt(encrypted)
+        assertTrue(decrypted.isSuccess)
+        assertTrue(decrypted.getOrThrow().contentEquals(testData))
     }
 
-    sealed class Signature : Algorithm() {
-        class RsaPSS(val hashSize: HashSize) : Signature()
+    @Test
+    fun `Generate, serialize and deserialize`() {
+        val key = EncryptionPrivateKey(2048, Algorithm.Asymmetric.RsaOAEP(HashSize.Hash256))
+
+        val private = key.serializedPrivate()
+        val public = key.serializedPublic()
+
+        with(EncryptionPrivateKey(private,public,2048,Algorithm.Asymmetric.RsaOAEP(HashSize.Hash256))) {
+            assertTrue(private.contentEquals(serializedPrivate()))
+            assertTrue(public.contentEquals(serializedPublic()))
+        }
+
     }
-}
 
-
-enum class HashSize(val bits: Int) {
-    Hash256(256)
 }

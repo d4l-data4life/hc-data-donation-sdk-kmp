@@ -30,27 +30,39 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.encryption
+package care.data4life.datadonation.encryption.symmetric
 
-expect fun SignatureKeyPrivate(serializedPrivate: ByteArray, serializedPublic: ByteArray, size: Int, algorithm: Algorithm.Signature):SignatureKeyPrivate
+import care.data4life.datadonation.encryption.Algorithm
+import care.data4life.datadonation.encryption.protos.Aes
+import com.google.crypto.tink.BinaryKeysetReader
+import com.google.crypto.tink.CleartextKeysetHandle
+import com.google.crypto.tink.KeyTemplate
+import com.google.crypto.tink.aead.AesGcmKeyManager
+import com.google.crypto.tink.proto.AesGcmKey
+import com.google.crypto.tink.proto.AesGcmKeyFormat
 
-expect fun SignatureKeyPublic(serialized: ByteArray, size: Int, algorithm: Algorithm.Signature):SignatureKeyPublic
 
-expect fun SignatureKeyPrivate(size: Int, algorithm: Algorithm.Signature):SignatureKeyPrivate
-
-//TODO: expect fun SignatureKeyPublic(pkcs1: String):SignatureKeyPublic
-
-//TODO: expect fun SignatureKeyPrivate(pkcs1: String):SignatureKeyPrivate
-
-
-interface SignatureKeyPrivate:SignatureKeyPublic {
-    fun sign(data:ByteArray):ByteArray
-    fun serializedPrivate():ByteArray
-    val pkcs8Private:String
+actual fun EncryptionSymmetricKey(size: Int, algorithm: Algorithm.Symmetric): EncryptionSymmetricKey {
+    val format = AesGcmKeyFormat.newBuilder().setKeySize(size).build()
+    val tmpl = KeyTemplate.create(
+        "type.googleapis.com/google.crypto.tink.AesGcmKey",
+        format.toByteArray(),
+        KeyTemplate.OutputPrefixType.RAW
+    )
+    return when (algorithm) {
+        is Algorithm.Symmetric.AES -> EncryptionKeySymmetricHandle(tmpl,Aes.serializer())
+    }
 }
 
-interface SignatureKeyPublic {
-    fun verify(data:ByteArray,signature:ByteArray):Boolean
-    fun serializedPublic():ByteArray
-    val pkcs8Public:String
+
+actual fun EncryptionSymmetricKey(
+    serializedKey: ByteArray,
+    size: Int,
+    algorithm: Algorithm.Symmetric
+): EncryptionSymmetricKey {
+    CleartextKeysetHandle.read(BinaryKeysetReader.withBytes(serializedKey))
+    val serializer = when (algorithm) {
+        is Algorithm.Symmetric.AES -> Aes.serializer()
+    }
+    return EncryptionKeySymmetricHandle(serializedKey, serializer)
 }

@@ -32,53 +32,7 @@
 
 package care.data4life.datadonation.encryption
 
-import care.data4life.datadonation.encryption.protos.PublicHandle
-import com.google.crypto.tink.Aead
-import com.google.crypto.tink.KeyTemplate
-import com.google.crypto.tink.KeysetHandle
-import kotlinx.serialization.DeserializationStrategy
-import java.security.Key
-import javax.crypto.Cipher
-import com.google.crypto.tink.subtle.Base64
-import java.security.KeyFactory
-import java.security.interfaces.RSAPrivateCrtKey
-import java.security.spec.RSAPublicKeySpec
-
-class EncryptionKeySymmetricHandle<Proto> :
-    KeyHandleTink<Proto>, EncryptionSymmetricKey
-        where Proto : Asn1Exportable,
-              Proto : PublicHandle {
-
-    constructor(keyTemplate: KeyTemplate, deserializer: DeserializationStrategy<Proto>)
-            : super(keyTemplate, deserializer)
-
-    constructor(handle: KeysetHandle, deserializer: DeserializationStrategy<Proto>)
-            : super(handle, deserializer)
-
-    constructor(serializedKeyset: ByteArray, deserializer: DeserializationStrategy<Proto>)
-            : super(serializedKeyset, deserializer)
-
-
-    override val pkcs8: String
-        get() = deserializePrivate()
-
-    override fun serialized(): ByteArray = serializePrivate()
-
-    override fun encrypt(plainText: ByteArray, associatedData: ByteArray): ByteArray {
-        return handle.getPrimitive(Aead::class.java)
-            .encrypt(plainText,associatedData)
-    }
-
-    override fun decrypt(encrypted: ByteArray, associatedData: ByteArray):Result<ByteArray> {
-         return kotlin.runCatching { handle.getPrimitive(Aead::class.java)
-            .decrypt(encrypted,associatedData) }
-    }
-
-
-}
-
-
-
-
+import crypto.swift.CryptoAES
+import kotlin.test.Test
 
 

@@ -1,8 +1,3 @@
-import care.data4life.datadonation.encryption.*
-import kotlin.test.BeforeTest
-import kotlin.test.Test
-import kotlin.test.assertTrue
-
 /*
  * BSD 3-Clause License
  *
@@ -35,28 +30,33 @@ import kotlin.test.assertTrue
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-class EncryptionKeyCommonTest {
+package care.data4life.datadonation.encryption.symmetric
 
-    @BeforeTest
-    fun setup() {
-        initEncryption()
-    }
+import care.data4life.datadonation.encryption.Algorithm
+import care.data4life.datadonation.encryption.KeyNative
+import platform.CoreFoundation.CFStringRef
+import platform.Security.SecKeyAlgorithm
 
-    @Test
-    fun `Generate, encrypt and decrypt`() {
-        val testData = byteArrayOf(1,2,3,4,5)
-        val testAuth = byteArrayOf(1)
-        val key = EncryptionSymmetricKey(2048, Algorithm.Symmetric.AES(HashSize.Hash256))
-        val encrypted = key.encrypt(testData,testAuth)
-        val decrypted = key.decrypt(encrypted,testAuth)
-        assertTrue(decrypted.isSuccess)
-    }
-
-
-    @Test//TODO: add proper vaidation after parsing ASN1 is added
-    fun `Key is exported to valid ASN1 DER encoded value`() {
-        val key = EncryptionSymmetricKey(2048, Algorithm.Symmetric.AES(HashSize.Hash256))
-        assertTrue(key.pkcs8.startsWith("MII"))
-    }
-
+actual fun EncryptionSymmetricKey(size: Int, algorithm: Algorithm.Symmetric): EncryptionSymmetricKey {
+    val params: Pair<CFStringRef, SecKeyAlgorithm> = algorithm.toAttributes()
+    return EncryptionSymmetricKeyNative(size)
 }
+
+private fun Algorithm.Symmetric.toAttributes(): Pair<CFStringRef, SecKeyAlgorithm> {
+    return when (this) {
+        is Algorithm.Symmetric.AES -> throw NotImplementedError("No native AES support is available")
+    }
+}
+
+
+actual fun EncryptionSymmetricKey(
+    serializedKey: ByteArray,
+    size: Int,
+    algorithm: Algorithm.Symmetric
+): EncryptionSymmetricKey {
+
+    return EncryptionSymmetricKeyNative(
+        serializedKey
+    )
+}
+

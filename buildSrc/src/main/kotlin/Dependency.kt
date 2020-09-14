@@ -173,6 +173,7 @@ object Dependency {
         const val threeTenABP = "com.jakewharton.threetenabp:threetenabp:${Version.threeTenABP}"
 
         const val tink = "com.google.crypto.tink:tink-android:${Version.tinkAndroid}"
+        const val bouncyCastle = "org.bouncycastle:bcprov-jdk15on:${Version.bouncyCastle}"
 
     }
 

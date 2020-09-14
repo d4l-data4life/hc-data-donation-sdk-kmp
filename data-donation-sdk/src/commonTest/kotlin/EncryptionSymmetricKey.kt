@@ -1,3 +1,10 @@
+import care.data4life.datadonation.encryption.*
+import care.data4life.datadonation.encryption.assymetric.EncryptionPrivateKey
+import care.data4life.datadonation.encryption.symmetric.EncryptionSymmetricKey
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertTrue
+
 /*
  * BSD 3-Clause License
  *
@@ -30,53 +37,40 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.encryption
+class EncryptionAsymmetricKeyCommonTest {
 
-import care.data4life.datadonation.toNSData
-import platform.CoreFoundation.CFDataRef
-import platform.CoreFoundation.CFDictionaryCreateMutable
-import platform.CoreFoundation.CFStringRef
-import platform.CoreFoundation.kCFAllocatorSystemDefault
-import platform.Foundation.CFBridgingRetain
-import platform.Foundation.NSNumber
-import platform.Security.*
+    @BeforeTest
+    fun setup() {
+        initEncryption()
+    }
+
+    @Test
+    fun `Generate, encrypt and decrypt`() {
+        val testData = byteArrayOf(1,2,3,4,5)
+        val testAuth = byteArrayOf(1)
+        val key = EncryptionSymmetricKey(32, Algorithm.Symmetric.AES(HashSize.Hash256))
+        val encrypted = key.encrypt(testData,testAuth)
+        val decrypted = key.decrypt(encrypted,testAuth)
+        assertTrue(decrypted.isSuccess)
+    }
 
 
-actual fun SignatureKeyPrivate(size: Int, algorithm: Algorithm.Signature): SignatureKeyPrivate {
-    val params: Pair<CFStringRef, SecKeyAlgorithm> = algorithm.toAttributes()
-    return SignatureKeyNative(params.first, params.second, size)
-}
+    @Test//TODO: add proper vaidation after parsing ASN1 is added
+    fun `Key is exported to valid ASN1 DER encoded value`() {
+        val key = EncryptionSymmetricKey(2048, Algorithm.Symmetric.AES(HashSize.Hash256))
+        assertTrue(key.pkcs8.startsWith("MII"))
+    }
 
-private fun Algorithm.Signature.toAttributes(): Pair<CFStringRef, SecKeyAlgorithm> {
-    return when (this) {
-        is Algorithm.Signature.RsaPSS -> {
-            kSecAttrKeyTypeRSA!! to when (hashSize) {
-                HashSize.Hash256 -> kSecKeyAlgorithmRSASignatureDigestPSSSHA256!!
-            }
+
+    @Test
+    fun `Generate, serialize and deserialize`() {
+        val key = EncryptionSymmetricKey(2048, Algorithm.Symmetric.AES(HashSize.Hash256))
+
+        val serializedKey = key.serialized()
+
+        with(EncryptionSymmetricKey(serializedKey,2048, Algorithm.Symmetric.AES(HashSize.Hash256))) {
+            assertTrue(serializedKey.contentEquals(serialized()))
         }
     }
+
 }
-
-actual fun SignatureKeyPrivate(
-    serializedPrivate: ByteArray,
-    serializedPublic: ByteArray,
-    size: Int,
-    algorithm: Algorithm.Signature
-): SignatureKeyPrivate {
-
-
-    return SignatureKeyNative(
-        KeyNative.buildSecKeyRef(serializedPrivate, algorithm, KeyNative.KeyType.Public),
-        KeyNative.buildSecKeyRef(serializedPublic, algorithm, KeyNative.KeyType.Private),
-        algorithm.toAttributes().first
-    )
-}
-
-actual fun SignatureKeyPublic(
-    serialized: ByteArray,
-    size: Int,
-    algorithm: Algorithm.Signature
-): SignatureKeyPublic {
-    TODO()
-}
-

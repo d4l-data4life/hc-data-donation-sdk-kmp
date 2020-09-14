@@ -30,9 +30,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.encryption
+package care.data4life.datadonation.encryption.signature
 
 
+import care.data4life.datadonation.encryption.Algorithm
+import care.data4life.datadonation.encryption.HashSize
 import com.google.crypto.tink.*
 import com.google.crypto.tink.proto.HashType
 import com.google.crypto.tink.proto.RsaSsaPssKeyFormat

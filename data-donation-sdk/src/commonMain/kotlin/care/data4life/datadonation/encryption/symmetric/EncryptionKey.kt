@@ -30,34 +30,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.encryption
+package care.data4life.datadonation.encryption.symmetric
 
-import care.data4life.datadonation.encryption.protos.Aes
-import care.data4life.datadonation.encryption.protos.RsaSsaPrivateKey
-import com.google.crypto.tink.BinaryKeysetReader
-import com.google.crypto.tink.CleartextKeysetHandle
-import com.google.crypto.tink.proto.HashType
-import kotlinx.serialization.Serializable
-import java.security.Key
-import javax.crypto.Cipher
-import javax.crypto.KeyGenerator
+import care.data4life.datadonation.encryption.Algorithm
 
+expect fun EncryptionSymmetricKey(serializedKey: ByteArray, size: Int, algorithm: Algorithm.Symmetric): EncryptionSymmetricKey
 
-actual fun EncryptionSymmetricKey(size: Int, algorithm: Algorithm.Symmetric): EncryptionSymmetricKey {
-    return when (algorithm) {
-        is Algorithm.Symmetric.AES -> TODO()
-    }
+expect fun EncryptionSymmetricKey(size: Int, algorithm: Algorithm.Symmetric): EncryptionSymmetricKey
+
+//TODO: expect fun EncryptionKeyPublic(pkcs1: String):EncryptionKeyPublic
+
+interface EncryptionSymmetricKey {
+    fun decrypt(encrypted:ByteArray,associatedData: ByteArray):Result<ByteArray>
+    fun encrypt(plainText:ByteArray,associatedData: ByteArray):ByteArray
+    fun serialized():ByteArray
+    val pkcs8:String
 }
 
-
-actual fun EncryptionSymmetricKey(
-    serializedKey: ByteArray,
-    size: Int,
-    algorithm: Algorithm.Symmetric
-): EncryptionSymmetricKey {
-    CleartextKeysetHandle.read(BinaryKeysetReader.withBytes(serializedKey))
-    val serializer = when (algorithm) {
-        is Algorithm.Symmetric.AES -> Aes.serializer()
-    }
-    return EncryptionKeySymmetricHandle(serializedKey, serializer)
-}

@@ -90,6 +90,7 @@ kotlin {
                 implementation(Dependency.android.threeTenABP)
                 implementation(Dependency.Multiplatform.ktor.androidSerialization)
                 implementation(Dependency.android.tink)
+                implementation(Dependency.android.bouncyCastle)
                 implementation(Dependency.Multiplatform.serialization.android)
                 implementation(Dependency.Multiplatform.serialization.protobuf)
             }
@@ -119,17 +120,28 @@ kotlin {
             }
         }
 
-         configure(listOfNotNull(targets.asMap["iosArm64"], targets.asMap["iosX64"])) {
-            compilations["main"].kotlinOptions.freeCompilerArgs = mutableListOf(
+
+         configure(listOf(targets.asMap["ios"]!!)) {
+
+            compilations["main"].kotlinOptions.freeCompilerArgs += mutableListOf(
                 "-include-binary", "$projectDir/Pods/Tink/Frameworks/Tink.framework/Tink.a"
             )
             compilations.getByName("main") {
+
                 this as org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeCompilation
 
                 val tink by cinterops.creating {
                     packageName("google.tink")
                     defFile = file("$projectDir/src/iosMain/cinterop/Tink.def")
                     header("$projectDir/Pods/Tink/Frameworks/Tink.framework/Headers/Tink.h")
+                }
+
+                val cryptoSwift by cinterops.creating {
+                    packageName("crypto.swift")
+                    defFile = file("$projectDir/src/iosMain/cinterop/CryptoSwiftWrapper.def")
+                    headers("$projectDir/native/iOSCryptoDD.framework/Headers/iOSCryptoDD.h",
+                        "$projectDir/native/iOSCryptoDD.framework/Headers/iOSCryptoDD-Swift.h")
+                    includeDirs("$projectDir/native/iOSCryptoDD.framework/","$projectDir/native/cryptoSwift/")
                 }
             }
         }

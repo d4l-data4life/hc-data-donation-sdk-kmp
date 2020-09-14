@@ -30,24 +30,52 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.encryption
+package care.data4life.datadonation.encryption.symmetric
+
+import care.data4life.datadonation.encryption.KeyNative
+import care.data4life.datadonation.toByteArray
+import care.data4life.datadonation.toNSData
+
+import crypto.swift.CryptoAES
+import kotlinx.cinterop.addressOf
+import kotlinx.cinterop.usePinned
+import platform.Foundation.NSError
+import platform.Security.*
 
 
-sealed class Algorithm {
-    sealed class Asymmetric : Algorithm() {
-        class RsaOAEP(val hashSize: HashSize) : Asymmetric()
+class EncryptionSymmetricKeyNative : EncryptionSymmetricKey {
+
+    private val key: ByteArray
+    private val cryptoWrapper: CryptoAES
+
+    //TODO: Support for different padding
+    constructor(size: Int) {
+        val randomByteArray = ByteArray(size).usePinned {
+            val r = SecRandomCopyBytes(kSecRandomDefault, size.toULong(), it.addressOf(0))
+            if (r != errSecSuccess)
+                throw Throwable("Could not generate secure ByteArray")
+            it.get()
+        }
+        this.key = randomByteArray
+        this.cryptoWrapper = CryptoAES(randomByteArray.toNSData())
     }
 
-    sealed class Symmetric : Algorithm() {
-        class AES(val hashSize: HashSize) : Symmetric()
+    constructor(key:ByteArray) {
+        this.key = key
+        this.cryptoWrapper = CryptoAES(key.toNSData())
     }
 
-    sealed class Signature : Algorithm() {
-        class RsaPSS(val hashSize: HashSize) : Signature()
+
+    override fun decrypt(encrypted: ByteArray, associatedData: ByteArray): Result<ByteArray> = runCatching {
+        cryptoWrapper.decryptWithEncrypted(encrypted.toNSData(), associatedData.toNSData()).toByteArray()
     }
-}
 
+    override fun serialized(): ByteArray = key
 
-enum class HashSize(val bits: Int) {
-    Hash256(256)
+    override val pkcs8: String
+        get() = TODO("Not yet implemented")
+
+    override fun encrypt(plainText: ByteArray, associatedData: ByteArray): ByteArray =
+        cryptoWrapper.encryptWithPlainText(plainText.toNSData(),associatedData.toNSData()).toByteArray()
+
 }

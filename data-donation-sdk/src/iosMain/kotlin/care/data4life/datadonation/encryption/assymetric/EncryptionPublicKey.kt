@@ -30,36 +30,59 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.encryption
+package care.data4life.datadonation.encryption.assymetric
 
+import care.data4life.datadonation.encryption.Algorithm
+import care.data4life.datadonation.encryption.HashSize
+import care.data4life.datadonation.encryption.KeyNative
 import platform.CoreFoundation.CFStringRef
 import platform.Security.SecKeyAlgorithm
 import platform.Security.kSecAttrKeyTypeRSA
 import platform.Security.kSecKeyAlgorithmRSAEncryptionOAEPSHA256
-import platform.Security.kSecKeyAlgorithmRSASignatureDigestPSSSHA256
 
 
-actual fun EncryptionSymmetricKey(size: Int, algorithm: Algorithm.Symmetric): EncryptionSymmetricKey {
-    val params: Pair<CFStringRef, SecKeyAlgorithm> = algorithm.toAttributes()
-    return EncryptionSymmetricKeyNative(params.first, params.second, size)
+
+actual fun EncryptionPublicKey(
+    serializedKey: ByteArray,
+    size: Int,
+    algorithm: Algorithm.Asymmetric
+): EncryptionPublicKey {
+    return EncryptionAsymmetricKeyNative(
+        KeyNative.buildSecKeyRef(serializedKey, algorithm, KeyNative.KeyType.Public),
+        KeyNative.buildSecKeyRef(serializedKey, algorithm, KeyNative.KeyType.Public),
+        algorithm.toAttributes().second
+    )
 }
 
-private fun Algorithm.Symmetric.toAttributes(): Pair<CFStringRef, SecKeyAlgorithm> {
+
+actual fun EncryptionPrivateKey(
+    serializedPrivate: ByteArray,
+    serializedPublic: ByteArray,
+    size: Int,
+    algorithm: Algorithm.Asymmetric
+): EncryptionPrivateKey {
+    return EncryptionAsymmetricKeyNative(
+        KeyNative.buildSecKeyRef(serializedPrivate, algorithm, KeyNative.KeyType.Private),
+        KeyNative.buildSecKeyRef(serializedPublic, algorithm, KeyNative.KeyType.Public),
+        algorithm.toAttributes().second
+    )
+}
+
+private fun Algorithm.Asymmetric.toAttributes(): Pair<CFStringRef, SecKeyAlgorithm> {
     return when (this) {
-        is Algorithm.Symmetric.AES -> TODO()
+        is Algorithm.Asymmetric.RsaOAEP -> {
+            kSecAttrKeyTypeRSA!! to when (hashSize) {
+                HashSize.Hash256 -> kSecKeyAlgorithmRSAEncryptionOAEPSHA256!!
+            }
+        }
     }
 }
 
 
-actual fun EncryptionSymmetricKey(
-    serializedKey: ByteArray,
+actual fun EncryptionPrivateKey(
     size: Int,
-    algorithm: Algorithm.Symmetric
-): EncryptionSymmetricKey {
-
-    return EncryptionSymmetricKeyNative(
-        KeyNative.buildSecKeyRef(serializedKey, algorithm, KeyNative.KeyType.Symmetric),
-        algorithm.toAttributes().first
-    )
+    algorithm: Algorithm.Asymmetric
+): EncryptionPrivateKey {
+    val params: Pair<CFStringRef, SecKeyAlgorithm> = algorithm.toAttributes()
+    return EncryptionAsymmetricKeyNative(params.first, params.second, size)
 }
-

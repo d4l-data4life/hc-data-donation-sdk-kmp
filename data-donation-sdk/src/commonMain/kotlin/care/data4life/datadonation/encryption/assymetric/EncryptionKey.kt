@@ -30,24 +30,27 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.encryption
+package care.data4life.datadonation.encryption.assymetric
+
+import care.data4life.datadonation.encryption.Algorithm
+
+expect fun EncryptionPrivateKey(serializedPrivate: ByteArray, serializedPublic: ByteArray, size: Int, algorithm: Algorithm.Asymmetric): EncryptionPrivateKey
+
+expect fun EncryptionPublicKey(serializedKey: ByteArray, size: Int, algorithm: Algorithm.Asymmetric): EncryptionPublicKey
+
+expect fun EncryptionPrivateKey(size: Int, algorithm: Algorithm.Asymmetric): EncryptionPrivateKey
+
+//TODO: expect fun EncryptionKeyPublic(pkcs1: String):EncryptionKeyPublic
 
 
-sealed class Algorithm {
-    sealed class Asymmetric : Algorithm() {
-        class RsaOAEP(val hashSize: HashSize) : Asymmetric()
-    }
-
-    sealed class Symmetric : Algorithm() {
-        class AES(val hashSize: HashSize) : Symmetric()
-    }
-
-    sealed class Signature : Algorithm() {
-        class RsaPSS(val hashSize: HashSize) : Signature()
-    }
+interface EncryptionPrivateKey: EncryptionPublicKey {
+    fun decrypt(data:ByteArray):Result<ByteArray>
+    fun serializedPrivate():ByteArray
+    val pkcs8Private:String
 }
 
-
-enum class HashSize(val bits: Int) {
-    Hash256(256)
+interface EncryptionPublicKey {
+    fun encrypt(data:ByteArray):ByteArray
+    fun serializedPublic():ByteArray
+    val pkcs8Public:String
 }

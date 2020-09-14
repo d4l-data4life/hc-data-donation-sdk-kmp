@@ -30,18 +30,43 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.encryption
+package care.data4life.datadonation.encryption.assymetric
 
-expect fun EncryptionSymmetricKey(serializedKey: ByteArray, size: Int, algorithm: Algorithm.Symmetric):EncryptionSymmetricKey
+import java.security.PrivateKey
+import java.security.PublicKey
+import java.security.SecureRandom
+import javax.crypto.Cipher
 
-expect fun EncryptionSymmetricKey(size: Int, algorithm: Algorithm.Symmetric):EncryptionSymmetricKey
 
-//TODO: expect fun EncryptionKeyPublic(pkcs1: String):EncryptionKeyPublic
+class EncryptionKeyPrivateHandleBouncy(
+    private val cipher: Cipher, private val privateKey: PrivateKey, private val publicKey: PublicKey
+) : EncryptionPrivateKey,
+    EncryptionPublicKey by EncryptionKeyPublicHandleBouncy(cipher, publicKey) {
 
-interface EncryptionSymmetricKey {
-    fun decrypt(encrypted:ByteArray,associatedData: ByteArray):Result<ByteArray>
-    fun encrypt(plainText:ByteArray,associatedData: ByteArray):ByteArray
-    fun serialized():ByteArray
-    val pkcs8:String
+    override fun serializedPrivate(): ByteArray = privateKey.encoded
+
+    override val pkcs8Private: String
+        get() = privateKey.encoded.toString()
+
+    override fun decrypt(data: ByteArray): Result<ByteArray> {
+        cipher.init(Cipher.DECRYPT_MODE, privateKey)
+        return runCatching { cipher.doFinal(data) }
+    }
+
 }
 
+class EncryptionKeyPublicHandleBouncy(
+    private val cipher: Cipher, private val publicKey: PublicKey
+) : EncryptionPublicKey {
+    private val random = SecureRandom()
+    override fun encrypt(data: ByteArray): ByteArray {
+        cipher.init(Cipher.ENCRYPT_MODE, publicKey, random)
+        return cipher.doFinal(data)
+    }
+
+    override fun serializedPublic(): ByteArray = publicKey.encoded
+
+    override val pkcs8Public: String
+        get() = publicKey.encoded.toString()
+
+}

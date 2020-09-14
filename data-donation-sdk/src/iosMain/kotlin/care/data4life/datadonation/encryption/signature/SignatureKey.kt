@@ -30,33 +30,53 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.encryption
+package care.data4life.datadonation.encryption.signature
 
-import platform.Security.SecKeyAlgorithm
-import platform.Security.SecKeyRef
+import care.data4life.datadonation.encryption.*
+import platform.CoreFoundation.CFStringRef
+import platform.Security.*
+import crypto.swift.CryptoAES
 
-class EncryptionSymmetricKeyNative : KeyNative, EncryptionSymmetricKey {
-
-    constructor(keyType: SecKeyAlgorithm, algoType: SecKeyAlgorithm, size: Int)
-            : super(keyType, algoType, size)
-
-    constructor(private: SecKeyRef, algoType: SecKeyAlgorithm)
-            : super(private, private, algoType)
-
-    override fun decrypt(encrypted: ByteArray, associatedData: ByteArray): Result<ByteArray> {
-        return TODO("Not yet implemented")
-    }
-
-
-    override fun serialized(): ByteArray {
-        return TODO()
-    }
-
-    override val pkcs8: String
-        get() = TODO("Not yet implemented")
-
-    override fun encrypt(plainText: ByteArray, associatedData: ByteArray): ByteArray {
-        return TODO("Not yet implemented")
-    }
-
+actual fun SignatureKeyPrivate(size: Int, algorithm: Algorithm.Signature): SignatureKeyPrivate {
+    val params: Pair<CFStringRef, SecKeyAlgorithm> = algorithm.toAttributes()
+    return SignatureKeyNative(params.first, params.second, size)
 }
+
+
+private fun Algorithm.Signature.toAttributes(): Pair<CFStringRef, SecKeyAlgorithm> {
+    return when (this) {
+        is Algorithm.Signature.RsaPSS -> {
+            kSecAttrKeyTypeRSA!! to when (hashSize) {
+                HashSize.Hash256 -> kSecKeyAlgorithmRSASignatureDigestPSSSHA256!!
+            }
+        }
+    }
+}
+
+actual fun SignatureKeyPrivate(
+    serializedPrivate: ByteArray,
+    serializedPublic: ByteArray,
+    size: Int,
+    algorithm: Algorithm.Signature
+): SignatureKeyPrivate {
+
+
+    return SignatureKeyNative(
+        KeyNative.buildSecKeyRef(serializedPrivate, algorithm, KeyNative.KeyType.Public),
+        KeyNative.buildSecKeyRef(serializedPublic, algorithm, KeyNative.KeyType.Private),
+        algorithm.toAttributes().first
+    )
+}
+
+actual fun SignatureKeyPublic(
+    serialized: ByteArray,
+    size: Int,
+    algorithm: Algorithm.Signature
+): SignatureKeyPublic {
+    return SignatureKeyNative(
+    KeyNative.buildSecKeyRef(serialized, algorithm, KeyNative.KeyType.Public),
+    KeyNative.buildSecKeyRef(serialized, algorithm, KeyNative.KeyType.Private),
+    algorithm.toAttributes().first
+    )
+}
+

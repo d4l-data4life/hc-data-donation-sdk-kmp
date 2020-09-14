@@ -72,6 +72,7 @@ object Version {
 
     //Encryption
     const val tinkAndroid = "1.4.0"
+    const val bouncyCastle = "1.66"
 
     // Junit Test
     const val testJUnit = "4.13"

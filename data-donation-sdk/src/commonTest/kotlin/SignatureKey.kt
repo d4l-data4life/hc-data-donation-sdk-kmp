@@ -1,4 +1,5 @@
 import care.data4life.datadonation.encryption.*
+import care.data4life.datadonation.encryption.signature.SignatureKeyPrivate
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertTrue

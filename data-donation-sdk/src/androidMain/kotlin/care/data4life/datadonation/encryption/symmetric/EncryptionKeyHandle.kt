@@ -30,17 +30,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.encryption
+package care.data4life.datadonation.encryption.symmetric
 
+import care.data4life.datadonation.encryption.Asn1Exportable
+import care.data4life.datadonation.encryption.KeyHandleTink
 import care.data4life.datadonation.encryption.protos.PublicHandle
-import com.google.crypto.tink.*
+import com.google.crypto.tink.Aead
+import com.google.crypto.tink.KeyTemplate
+import com.google.crypto.tink.KeysetHandle
 import kotlinx.serialization.DeserializationStrategy
 
-
-
-class SignatureKeyPrivateHandle<Proto> : KeyHandleTink<Proto>, SignatureKeyPrivate
-    where Proto: Asn1Exportable,
-          Proto: PublicHandle {
+class EncryptionKeySymmetricHandle<Proto> :
+    KeyHandleTink<Proto>, EncryptionSymmetricKey
+        where Proto : Asn1Exportable,
+              Proto : PublicHandle {
 
     constructor(keyTemplate: KeyTemplate, deserializer: DeserializationStrategy<Proto>)
             : super(keyTemplate, deserializer)
@@ -51,50 +54,27 @@ class SignatureKeyPrivateHandle<Proto> : KeyHandleTink<Proto>, SignatureKeyPriva
     constructor(serializedKeyset: ByteArray, deserializer: DeserializationStrategy<Proto>)
             : super(serializedKeyset, deserializer)
 
-    override fun sign(data: ByteArray): ByteArray {
-        return handle.getPrimitive(PublicKeySign::class.java).sign(data)
-    }
 
-    override val pkcs8Private: String
+    override val pkcs8: String
         get() = deserializePrivate()
 
-    override fun verify(data: ByteArray, signature: ByteArray): Boolean
-        = verify(handle,signature, data)
+    override fun serialized(): ByteArray = serializePrivate()
 
-    override fun serializedPublic(): ByteArray = serializePublic()
+    override fun encrypt(plainText: ByteArray, associatedData: ByteArray): ByteArray {
+        return handle.getPrimitive(Aead::class.java)
+            .encrypt(plainText,associatedData)
+    }
 
-    override val pkcs8Public: String
-        get() = deserializePublic()
+    override fun decrypt(encrypted: ByteArray, associatedData: ByteArray):Result<ByteArray> {
+         return kotlin.runCatching { handle.getPrimitive(Aead::class.java)
+            .decrypt(encrypted,associatedData) }
+    }
 
-    override fun serializedPrivate() :ByteArray = serializePrivate()
 
 }
 
-class SignatureKeyPublicHandle<Proto> : KeyHandleTink<Proto>, SignatureKeyPublic
-        where Proto: Asn1Exportable,
-              Proto: PublicHandle {
-
-    constructor(keyTemplate: KeyTemplate, deserializer: DeserializationStrategy<Proto>)
-            : super(keyTemplate, deserializer)
-
-    constructor(handle: KeysetHandle, deserializer: DeserializationStrategy<Proto>)
-            : super(handle, deserializer)
-
-    constructor(serializedKeyset: ByteArray, deserializer: DeserializationStrategy<Proto>)
-            : super(serializedKeyset, deserializer)
-
-    override val pkcs8Public: String
-        get() = deserializePublic()
-
-    override fun verify(data: ByteArray, signature: ByteArray): Boolean =
-        verify(handle,signature, data)
 
 
 
-    override fun serializedPublic(): ByteArray = serializePublic()
-}
 
-private fun verify(handle: KeysetHandle,signature: ByteArray, data: ByteArray): Boolean {
-    val verifier = handle.publicKeysetHandle.getPrimitive(PublicKeyVerify::class.java)
-    return runCatching { verifier.verify(signature, data) }.isSuccess
-}
+

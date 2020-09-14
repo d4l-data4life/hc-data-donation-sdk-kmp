@@ -32,6 +32,8 @@
 
 package care.data4life.datadonation.encryption
 
+import care.data4life.datadonation.encryption.signature.generateKey
+import care.data4life.datadonation.encryption.signature.plusAssign
 import care.data4life.datadonation.toNSData
 import platform.CoreFoundation.CFDataRef
 import platform.CoreFoundation.CFDictionaryCreateMutable
@@ -69,11 +71,12 @@ abstract class KeyNative {
                     pubAttr += kSecAttrKeyClass to type.nativeType
                     pubAttr += kSecAttrKeySizeInBits to CFBridgingRetain(NSNumber(int = algorithm.hashSize.bits))
                 }
-                is Algorithm.Encryption.RsaOAEP -> {
+                is Algorithm.Asymmetric.RsaOAEP -> {
                     pubAttr += kSecAttrKeyType to kSecAttrKeyTypeRSA!!
-                    //TODO:Other parameters
+                    pubAttr += kSecAttrKeyClass to type.nativeType
+                    pubAttr += kSecAttrKeySizeInBits to CFBridgingRetain(NSNumber(int = algorithm.hashSize.bits))
                 }
-                is Algorithm.Symmetric.AES -> TODO()
+                is Algorithm.Symmetric.AES -> throw NotImplementedError("No native AES support is available")
             }
             return SecKeyCreateWithData(data, pubAttr, null)!!
         }
