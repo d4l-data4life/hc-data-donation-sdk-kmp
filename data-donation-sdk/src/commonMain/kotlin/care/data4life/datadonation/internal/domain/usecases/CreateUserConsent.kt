@@ -43,7 +43,6 @@ import care.data4life.datadonation.internal.domain.repositories.UserConsentRepos
 
 internal class CreateUserConsent(
     private val consentRepository: UserConsentRepository,
-    private val credentialsRepository: CredentialsRepository,
     private val registerNewDonor: RegisterNewDonor
 ) :
     ParameterizedUsecase<CreateUserConsent.Parameters, Pair<UserConsent, KeyPair>>() {
@@ -56,8 +55,7 @@ internal class CreateUserConsent(
             // TODO when rsapss-mpp-encryption branch is merged
             // val newKeyPair = SignatureKeyPrivate(2048, Algorithm.RsaPSS).let { KeyPair(it.serializedPublic(), it.serializedPrivate()) }
             val newKeyPair = KeyPair(ByteArray(0), ByteArray(0))
-            val donationPublicKey = credentialsRepository.getDataDonationPublicKey()
-            registerNewDonor.withParams(RegisterNewDonor.Parameters(newKeyPair, donationPublicKey)).execute()
+            registerNewDonor.withParams(newKeyPair).execute()
             Pair(userConsent, newKeyPair)
         } else {
             Pair(userConsent, parameter.keyPair!!)

@@ -32,6 +32,13 @@
 
 package care.data4life.datadonation.internal.utils
 
-internal interface DateTimeNow {
-    fun timestamp(): String
-}
+import care.data4life.datadonation.internal.data.model.RegistrationRequest
+import care.data4life.datadonation.internal.data.model.SignedConsentMessage
+import kotlinx.serialization.json.Json
+
+internal fun RegistrationRequest.toJsonString() =
+    Json.encodeToString(RegistrationRequest.serializer(), this)
+
+
+internal fun SignedConsentMessage.toJsonString() =
+    Json.encodeToString(SignedConsentMessage.serializer(), this)

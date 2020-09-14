@@ -33,6 +33,8 @@
 package care.data4life.datadonation.internal.di
 
 import care.data4life.datadonation.Contract
+import care.data4life.datadonation.encryption.hybrid.HybridEncryptor
+import care.data4life.datadonation.encryption.hybrid.HybridEncryptorFactory
 import care.data4life.datadonation.internal.data.service.ConsentService
 import care.data4life.datadonation.internal.data.service.DonationService
 import care.data4life.datadonation.internal.data.store.*
@@ -41,7 +43,7 @@ import care.data4life.datadonation.internal.domain.repositories.CredentialsRepos
 import care.data4life.datadonation.internal.domain.repositories.RegistrationRepository
 import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
 import care.data4life.datadonation.internal.domain.usecases.RegisterNewDonor
-import care.data4life.datadonation.internal.utils.DateTimeNow
+import care.data4life.datadonation.internal.utils.Base64Factory
 import io.ktor.client.HttpClient
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.json.serializer.KotlinxSerializer
@@ -92,6 +94,8 @@ private val coreModule = module {
         }
     }
 
+    single<HybridEncryptor> { HybridEncryptorFactory(get()).createEncryptor() }
+
     //Services
     single { ConsentService(get(), get()) }
     single { DonationService(get(), get()) }
@@ -110,7 +114,7 @@ private val coreModule = module {
     single { CredentialsRepository(get()) }
 
     //Usecases
-    single { RegisterNewDonor(get(), get()) }
+    single { RegisterNewDonor(get(), get(), get(), Base64Factory.createEncoder() ) }
 
 }
 

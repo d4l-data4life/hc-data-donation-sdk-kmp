@@ -44,10 +44,8 @@ abstract class CreateUserConsentTest {
 
     private val userConsentRepository = mockk<UserConsentRepository>()
     private val registrationRepository = mockk<RegistrationRepository>()
-    private val credentialsRepository = mockk<CredentialsRepository>()
     private val registerNewDonor = mockk<RegisterNewDonor>()
-    private val creteUser =
-        CreateUserConsent(userConsentRepository, credentialsRepository, registerNewDonor)
+    private val creteUser = CreateUserConsent(userConsentRepository, registerNewDonor)
 
     @Test
     fun createUserContentWithDonorKey() = runTest {
@@ -76,7 +74,6 @@ abstract class CreateUserConsentTest {
         //Given
         coEvery { userConsentRepository.createUserConsent(any(), any()) } just Runs
         coEvery { userConsentRepository.fetchUserConsents() } returns listOf(DummyData.userConsent)
-        coEvery { credentialsRepository.getDataDonationPublicKey() } returns "dummyPublicKey"
         coEvery { registerNewDonor.withParams(any()) } returns registerNewDonor
         coEvery { registerNewDonor.execute() } just runs
 
@@ -93,7 +90,6 @@ abstract class CreateUserConsentTest {
         coVerify(ordering = Ordering.SEQUENCE){
             userConsentRepository.createUserConsent(any(), any())
             userConsentRepository.fetchUserConsents()
-            credentialsRepository.getDataDonationPublicKey()
             registerNewDonor.withParams(any())
             registerNewDonor.execute()
         }
