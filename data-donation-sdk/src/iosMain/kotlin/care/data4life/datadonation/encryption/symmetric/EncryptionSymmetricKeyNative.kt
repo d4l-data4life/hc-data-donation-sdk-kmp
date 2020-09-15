@@ -57,17 +57,17 @@ class EncryptionSymmetricKeyNative : EncryptionSymmetricKey {
             it.get()
         }
         this.key = randomByteArray
-        this.cryptoWrapper = CryptoAES(randomByteArray.toNSData())
+        this.cryptoWrapper = CryptoAES()
     }
 
     constructor(key:ByteArray) {
         this.key = key
-        this.cryptoWrapper = CryptoAES(key.toNSData())
+        this.cryptoWrapper = CryptoAES()
     }
 
 
     override fun decrypt(encrypted: ByteArray, associatedData: ByteArray): Result<ByteArray> = runCatching {
-        cryptoWrapper.decryptWithEncrypted(encrypted.toNSData(), associatedData.toNSData()).toByteArray()
+        cryptoWrapper.decryptWithEncrypted(key.toNSData(), encrypted.toNSData(), associatedData.toNSData()).toByteArray()
     }
 
     override fun serialized(): ByteArray = key
@@ -76,6 +76,6 @@ class EncryptionSymmetricKeyNative : EncryptionSymmetricKey {
         get() = TODO("Not yet implemented")
 
     override fun encrypt(plainText: ByteArray, associatedData: ByteArray): ByteArray =
-        cryptoWrapper.encryptWithPlainText(plainText.toNSData(),associatedData.toNSData()).toByteArray()
+        cryptoWrapper.encryptWithPlainText(key.toNSData(), plainText.toNSData(),associatedData.toNSData()).toByteArray()
 
 }
