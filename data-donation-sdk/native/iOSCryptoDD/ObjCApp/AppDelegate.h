@@ -27,44 +27,11 @@
 //  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 //  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 //  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-import Foundation
-import CryptoSwift
 
-@objc public class CryptoAES: NSObject {
-    private var key: Data
-    private var padding: Padding
-    
-    @objc public init(key: Data) {
-        //TODO: Add padding as a param
-        self.key = key
-        self.padding = .noPadding
-    }
-    
-    @objc public func encrypt(plainText: Data, associatedData: Data) -> Data {
-        do {
-            let blockMode = GCM(iv: associatedData.bytes, mode: .combined)
-            let aes = try AES(key: key.bytes, blockMode: blockMode, padding: padding)
-            let ciphertext = try aes.encrypt(plainText.bytes)
-            
-            return Data(ciphertext)
-        } catch let error {
-            //TODO: Manage exceptions with Kotlin / Obj-C
-            print(error)
-            return Data()
-        }
-    }
-    
-    @objc public func decrypt(encrypted: Data, associatedData: Data) -> Data {
-        do {
-            let block = GCM(iv: associatedData.bytes, additionalAuthenticatedData: nil, mode: .combined)
-            let aes = try AES(key: key.bytes, blockMode: block, padding: padding)
-            let ciphertext = try aes.decrypt(encrypted.bytes)
-            
-            return Data(ciphertext)
-        } catch let error {
-            //TODO: Manage exceptions with Kotlin / Obj-C
-            print(error)
-            return Data()
-        }
-    }
-}
+#import <UIKit/UIKit.h>
+
+@interface AppDelegate : UIResponder <UIApplicationDelegate>
+
+
+@end
+

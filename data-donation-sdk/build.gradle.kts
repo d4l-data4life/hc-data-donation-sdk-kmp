@@ -141,7 +141,7 @@ kotlin {
                     defFile = file("$projectDir/src/iosMain/cinterop/CryptoSwiftWrapper.def")
                     headers("$projectDir/native/iOSCryptoDD.framework/Headers/iOSCryptoDD.h",
                         "$projectDir/native/iOSCryptoDD.framework/Headers/iOSCryptoDD-Swift.h")
-                    includeDirs("$projectDir/native/iOSCryptoDD.framework/","$projectDir/native/cryptoSwift/")
+                    includeDirs("$projectDir/native/iOSCryptoDD.framework/","$projectDir/native/iOSCryptoDD/")
                 }
             }
         }
