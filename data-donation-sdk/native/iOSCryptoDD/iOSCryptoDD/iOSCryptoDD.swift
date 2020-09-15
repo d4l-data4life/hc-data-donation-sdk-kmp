@@ -39,31 +39,19 @@ import CryptoSwift
         super.init()
     }
     
-    @objc public func encrypt(key: Data, plainText: Data, associatedData: Data) -> Data {
-        do {
+    @objc public func encrypt(key: Data, plainText: Data, associatedData: Data) throws -> Data {
             let blockMode = GCM(iv: associatedData.bytes, mode: .combined)
             let aes = try AES(key: key.bytes, blockMode: blockMode, padding: padding)
             let ciphertext = try aes.encrypt(plainText.bytes)
             
             return Data(ciphertext)
-        } catch let error {
-            //TODO: Manage exceptions with Kotlin / Obj-C
-            print(error)
-            return Data()
-        }
     }
     
-    @objc public func decrypt(key: Data, encrypted: Data, associatedData: Data) -> Data {
-        do {
+    @objc public func decrypt(key: Data, encrypted: Data, associatedData: Data) throws -> Data {
             let block = GCM(iv: associatedData.bytes, additionalAuthenticatedData: nil, mode: .combined)
             let aes = try AES(key: key.bytes, blockMode: block, padding: padding)
             let ciphertext = try aes.decrypt(encrypted.bytes)
             
             return Data(ciphertext)
-        } catch let error {
-            //TODO: Manage exceptions with Kotlin / Obj-C
-            print(error)
-            return Data()
-        }
     }
 }

@@ -38,7 +38,7 @@ class iOSCryptoDDTests: XCTestCase {
         let plainText = Data(base64Encoded: "SGVsbG8gV29ybGQ=")!
         let associatedData = Data(base64Encoded: "uy2BwDTY4vUeBrp+")!
         
-        let encryptedData = cryptoClient.encrypt(key: key, plainText: plainText, associatedData: associatedData)
+        let encryptedData = try! cryptoClient.encrypt(key: key, plainText: plainText, associatedData: associatedData)
         
         XCTAssertEqual(Data(base64Encoded: "t7V3l3jyjXv6DWP0e9KlEiTOHXGPxBsqBCTl"), encryptedData)
     }
@@ -49,7 +49,7 @@ class iOSCryptoDDTests: XCTestCase {
         let input = Data(base64Encoded: "t7V3l3jyjXv6DWP0e9KlEiTOHXGPxBsqBCTl")!
         let associatedData = Data(base64Encoded: "uy2BwDTY4vUeBrp+")!
         
-        let decryptedData = cryptoClient.decrypt(key: key, encrypted: input, associatedData: associatedData)
+        let decryptedData = try! cryptoClient.decrypt(key: key, encrypted: input, associatedData: associatedData)
         
         XCTAssertEqual(Data(base64Encoded: "SGVsbG8gV29ybGQ="), decryptedData)
     }
