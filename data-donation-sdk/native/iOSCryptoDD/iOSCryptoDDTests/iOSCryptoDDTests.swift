@@ -33,21 +33,23 @@ import XCTest
 class iOSCryptoDDTests: XCTestCase {
     
     func testCryptoDDEncryptNoPadding() {
-        let cryptoClient = CryptoAES(key: Data(base64Encoded: "LL85V5L0n5024C6XLGe+/mmg9F/VkUbRQycnN28S5L4=")!)
+        let key = Data(base64Encoded: "LL85V5L0n5024C6XLGe+/mmg9F/VkUbRQycnN28S5L4=")!
+        let cryptoClient = CryptoAES()
         let plainText = Data(base64Encoded: "SGVsbG8gV29ybGQ=")!
         let associatedData = Data(base64Encoded: "uy2BwDTY4vUeBrp+")!
         
-        let encryptedData = cryptoClient.encrypt(plainText: plainText, associatedData: associatedData)
+        let encryptedData = cryptoClient.encrypt(key: key, plainText: plainText, associatedData: associatedData)
         
         XCTAssertEqual(Data(base64Encoded: "t7V3l3jyjXv6DWP0e9KlEiTOHXGPxBsqBCTl"), encryptedData)
     }
     
     func testCryptoDDDecryptNoPadding() {
-        let cryptoClient = CryptoAES(key: Data(base64Encoded: "LL85V5L0n5024C6XLGe+/mmg9F/VkUbRQycnN28S5L4=")!)
+        let key = Data(base64Encoded: "LL85V5L0n5024C6XLGe+/mmg9F/VkUbRQycnN28S5L4=")!
+        let cryptoClient = CryptoAES()
         let input = Data(base64Encoded: "t7V3l3jyjXv6DWP0e9KlEiTOHXGPxBsqBCTl")!
         let associatedData = Data(base64Encoded: "uy2BwDTY4vUeBrp+")!
         
-        let decryptedData = cryptoClient.decrypt(encrypted: input, associatedData: associatedData)
+        let decryptedData = cryptoClient.decrypt(key: key, encrypted: input, associatedData: associatedData)
         
         XCTAssertEqual(Data(base64Encoded: "SGVsbG8gV29ybGQ="), decryptedData)
     }

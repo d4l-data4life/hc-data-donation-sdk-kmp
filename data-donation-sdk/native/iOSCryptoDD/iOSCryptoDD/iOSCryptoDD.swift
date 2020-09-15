@@ -31,17 +31,15 @@ import Foundation
 import CryptoSwift
 
 @objc public class CryptoAES: NSObject {
-    private var key: Data
     private var padding: Padding
     
-    @objc public init(key: Data) {
+    @objc public override init() {
         //TODO: Add padding as a param
-        self.key = key
         self.padding = .noPadding
         super.init()
     }
     
-    @objc public func encrypt(plainText: Data, associatedData: Data) -> Data {
+    @objc public func encrypt(key: Data, plainText: Data, associatedData: Data) -> Data {
         do {
             let blockMode = GCM(iv: associatedData.bytes, mode: .combined)
             let aes = try AES(key: key.bytes, blockMode: blockMode, padding: padding)
@@ -55,7 +53,7 @@ import CryptoSwift
         }
     }
     
-    @objc public func decrypt(encrypted: Data, associatedData: Data) -> Data {
+    @objc public func decrypt(key: Data, encrypted: Data, associatedData: Data) -> Data {
         do {
             let block = GCM(iv: associatedData.bytes, additionalAuthenticatedData: nil, mode: .combined)
             let aes = try AES(key: key.bytes, blockMode: block, padding: padding)
