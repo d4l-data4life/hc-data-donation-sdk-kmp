@@ -139,9 +139,9 @@ kotlin {
                 val cryptoSwift by cinterops.creating {
                     packageName("crypto.swift")
                     defFile = file("$projectDir/src/iosMain/cinterop/CryptoSwiftWrapper.def")
-                    headers("$projectDir/native/iOSCryptoDD/iOSCryptoDD.framework/Headers/iOSCryptoDD.h",
-                        "$projectDir/native/iOSCryptoDD/iOSCryptoDD.framework/Headers/iOSCryptoDD-Swift.h")
-                    includeDirs("$projectDir/native/iOSCryptoDD/iOSCryptoDD.framework/","$projectDir/native/iOSCryptoDD/")
+                    headers("$projectDir/native/iOSCryptoDD/build/iOSCryptoDD.framework/Headers/iOSCryptoDD.h",
+                        "$projectDir/native/iOSCryptoDD/build/iOSCryptoDD.framework/Headers/iOSCryptoDD-Swift.h")
+                    includeDirs("$projectDir/native/iOSCryptoDD/build/iOSCryptoDD.framework/","$projectDir/native/iOSCryptoDD/")
                 }
             }
         }

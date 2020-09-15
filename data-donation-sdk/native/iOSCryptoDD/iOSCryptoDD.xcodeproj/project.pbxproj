@@ -6,6 +6,20 @@
 	objectVersion = 52;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		0A3452C6251111530015D3AD /* iOSCryptoDD-Universal */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 0A3452C9251111530015D3AD /* Build configuration list for PBXAggregateTarget "iOSCryptoDD-Universal" */;
+			buildPhases = (
+				0A3452CA251111720015D3AD /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = "iOSCryptoDD-Universal";
+			productName = "iOSCryptoDD-Universal";
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		0AD8CDCB2508E3220099DFDE /* iOSCryptoDD.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AD8CDC12508E3220099DFDE /* iOSCryptoDD.framework */; };
 		0AD8CDD02508E3220099DFDE /* iOSCryptoDDTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AD8CDCF2508E3220099DFDE /* iOSCryptoDDTests.swift */; };
@@ -298,6 +312,9 @@
 				LastUpgradeCheck = 1160;
 				ORGANIZATIONNAME = Data4Life;
 				TargetAttributes = {
+					0A3452C6251111530015D3AD = {
+						CreatedOnToolsVersion = 11.6;
+					};
 					0AD8CDC02508E3220099DFDE = {
 						CreatedOnToolsVersion = 11.6;
 					};
@@ -333,6 +350,7 @@
 				0AD8CDC92508E3220099DFDE /* iOSCryptoDDTests */,
 				0AD8CED4250A615E0099DFDE /* ObjCApp */,
 				0AD8CEEE250A615F0099DFDE /* ObjCAppTests */,
+				0A3452C6251111530015D3AD /* iOSCryptoDD-Universal */,
 			);
 		};
 /* End PBXProject section */
@@ -370,6 +388,26 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		0A3452CA251111720015D3AD /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#!/bin/sh   \nUNIVERSAL\\_OUTPUTFOLDER=${BUILD\\_DIR}/${CONFIGURATION}-universal\n\nmkdir -p \"${UNIVERSAL_OUTPUTFOLDER}\"  \n\nxcodebuild -target \"${PROJECT\\_NAME}\" ONLY\\_ACTIVE\\_ARCH=NO -configuration ${CONFIGURATION} -sdk iphoneos  BUILD\\_DIR=\"${BUILD\\_DIR}\" BUILD\\_ROOT=\"${BUILD_ROOT}\" clean build  \nxcodebuild -target \"${PROJECT\\_NAME}\" -configuration ${CONFIGURATION} -sdk iphonesimulator ONLY\\_ACTIVE\\_ARCH=NO BUILD\\_DIR=\"${BUILD\\_DIR}\" BUILD\\_ROOT=\"${BUILD_ROOT}\" clean build\n\ncp -R \"${BUILD\\_DIR}/${CONFIGURATION}-iphoneos/${PROJECT\\_NAME}.framework\" \"${UNIVERSAL_OUTPUTFOLDER}/\"  \n\nSIMULATOR\\_SWIFT\\_MODULES\\_DIR=\"${BUILD\\_DIR}/${CONFIGURATION}-iphonesimulator/${PROJECT\\_NAME}.framework/Modules/${PROJECT\\_NAME}.swiftmodule/.\"  \nif [ -d \"${SIMULATOR\\_SWIFT\\_MODULES_DIR}\" ]; then  \ncp -R \"${SIMULATOR\\_SWIFT\\_MODULES\\_DIR}\" \"${UNIVERSAL\\_OUTPUTFOLDER}/${PROJECT\\_NAME}.framework/Modules/${PROJECT\\_NAME}.swiftmodule\"  \nfi  \n\nlipo -create -output \"${UNIVERSAL\\_OUTPUTFOLDER}/${PROJECT\\_NAME}.framework/${PROJECT\\_NAME}\" \"${BUILD\\_DIR}/${CONFIGURATION}-iphonesimulator/${PROJECT\\_NAME}.framework/${PROJECT\\_NAME}\" \"${BUILD\\_DIR}/${CONFIGURATION}-iphoneos/${PROJECT\\_NAME}.framework/${PROJECT_NAME}\"  \n\nopen \"${UNIVERSAL_OUTPUTFOLDER}\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		0AD8CDBD2508E3220099DFDE /* Sources */ = {
@@ -447,6 +485,24 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		0A3452C7251111530015D3AD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = D2QJWMP9SU;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		0A3452C8251111530015D3AD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = D2QJWMP9SU;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		0AD8CDD32508E3220099DFDE /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -501,7 +557,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -558,6 +614,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
@@ -732,6 +789,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		0A3452C9251111530015D3AD /* Build configuration list for PBXAggregateTarget "iOSCryptoDD-Universal" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0A3452C7251111530015D3AD /* Debug */,
+				0A3452C8251111530015D3AD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		0AD8CDBB2508E3220099DFDE /* Build configuration list for PBXProject "iOSCryptoDD" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
