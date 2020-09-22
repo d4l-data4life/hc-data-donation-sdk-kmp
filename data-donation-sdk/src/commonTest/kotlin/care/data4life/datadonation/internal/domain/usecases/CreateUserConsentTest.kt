@@ -32,71 +32,68 @@
 
 package care.data4life.datadonation.internal.domain.usecases
 
-import care.data4life.datadonation.core.listener.ResultListener
-import care.data4life.datadonation.core.model.KeyPair
-import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.model.DummyData
+import care.data4life.datadonation.internal.domain.repositories.CredentialsRepository
+import care.data4life.datadonation.internal.domain.repositories.RegistrationRepository
 import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
 import io.mockk.*
 import runTest
-import kotlin.test.Ignore
 import kotlin.test.Test
 
 abstract class CreateUserConsentTest {
 
-    private val repository = mockk<UserConsentRepository>()
-    private val usecase = CreateUserConsent(repository)
-    private val listener = spyk<CreateUserContentListener>()
+    private val userConsentRepository = mockk<UserConsentRepository>()
+    private val registrationRepository = mockk<RegistrationRepository>()
+    private val registerNewDonor = mockk<RegisterNewDonor>()
+    private val creteUser = CreateUserConsent(userConsentRepository, registerNewDonor)
 
     @Test
-    fun createUserContentFullParams() = runTest {
+    fun createUserContentWithDonorKey() = runTest {
         //Given
-        coEvery { repository.createUserConsent(any(), any()) } just Runs
-        coEvery { repository.fetchUserConsents() } returns listOf(DummyData.userConsent)
+        coEvery { userConsentRepository.createUserConsent(any(), any()) } just Runs
+        coEvery { userConsentRepository.fetchUserConsents() } returns listOf(DummyData.userConsent)
 
         //When
-        usecase.runWithParams(
-            CreateUserConsent.Parameters("version", "language"),
-            listener
-        )
+        creteUser.withParams(
+            CreateUserConsent.Parameters(
+                DummyData.keyPair,
+                "version",
+                "language"
+            )
+        ).execute()
 
         //Then
         coVerify(ordering = Ordering.SEQUENCE){
-            repository.createUserConsent(any(), any())
-            repository.fetchUserConsents()
-            listener.onSuccess(any())
+            userConsentRepository.createUserConsent(any(), any())
+            userConsentRepository.fetchUserConsents()
         }
     }
 
-    @Ignore
     @Test
-    fun createUserContentMissingLanguage() = runTest {
+    fun createUserContentNoDonorKey() = runTest {
+        //Given
+        coEvery { userConsentRepository.createUserConsent(any(), any()) } just Runs
+        coEvery { userConsentRepository.fetchUserConsents() } returns listOf(DummyData.userConsent)
+        coEvery { registerNewDonor.withParams(any()) } returns registerNewDonor
+        coEvery { registerNewDonor.execute() } just runs
 
-    }
+        //When
+        creteUser.withParams(
+            CreateUserConsent.Parameters(
+                null,
+                "version",
+                "language"
+            )
+        ).execute()
 
-    @Ignore
-    @Test
-    fun createUserContentWrongVersion() = runTest {
-
-    }
-
-    class CreateUserContentListener : ResultListener<Pair<UserConsent, KeyPair>> {
-        override fun onSuccess(t: Pair<UserConsent, KeyPair>) {
+        //Then
+        coVerify(ordering = Ordering.SEQUENCE){
+            userConsentRepository.createUserConsent(any(), any())
+            userConsentRepository.fetchUserConsents()
+            registerNewDonor.withParams(any())
+            registerNewDonor.execute()
         }
-
-        override fun onError(exception: Exception) {
-        }
     }
-}
 
-suspend fun <T : Any, R : Any> ParameterizedUsecase<T, R>.runWithParams(
-    parameters: T,
-    listener: ResultListener<R>
-) {
-    try {
-        listener.onSuccess(withParams(parameters).execute())
-    } catch (e: Exception) {
-        listener.onError(e)
-    }
 }
 

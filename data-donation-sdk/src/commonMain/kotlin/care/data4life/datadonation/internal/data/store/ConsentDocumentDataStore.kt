@@ -30,21 +30,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.domain.usecases
+package care.data4life.datadonation.internal.data.store
 
+import care.data4life.datadonation.internal.data.service.ConsentService
 import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.internal.domain.repositories.ConsentDocumentRepository
 
-internal class GetConsentDocuments(private val consentDocumentRepository: ConsentDocumentRepository) :
-    ParameterizedUsecase<GetConsentDocuments.Parameters, List<ConsentDocument>>() {
+internal class ConsentDocumentDataStore(private val service: ConsentService) :
+    ConsentDocumentRepository.Remote {
 
-    companion object {
-        const val DOCUMENT_KEYWORD= "data donation"
-    }
+    override suspend fun fetchConsentDocuments(
+        accessToken: String,
+        version: String?,
+        language: String?
+    ): List<ConsentDocument> =
+        service.fetchConsentDocuments(accessToken, version, language)
 
-
-    override suspend fun execute(): List<ConsentDocument> =
-        consentDocumentRepository.getConsentDocument(DOCUMENT_KEYWORD, parameter.version, parameter.language)
-
-    data class Parameters(val version: String?, val language: String?)
 }

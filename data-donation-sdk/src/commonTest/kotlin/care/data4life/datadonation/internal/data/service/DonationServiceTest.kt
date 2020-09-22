@@ -30,16 +30,46 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.domain.repositories
+package care.data4life.datadonation.internal.data.service
 
-internal class RegistrationRepository(private val remote: Remote) {
+import care.data4life.datadonation.core.model.Environment
+import care.data4life.datadonation.internal.data.model.DummyData
+import io.ktor.client.*
+import io.ktor.http.*
+import runTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
-    suspend fun requestRegistrationToken() = remote.requestRegistrationToken()
+internal abstract class DonationServiceTest : BaseServiceTest<DonationService>() {
 
-    suspend fun registerNewDonor(data: ByteArray) = remote.registerNewDonor(data)
+    private val token = "random_nonce"
 
-    interface Remote {
-        suspend fun requestRegistrationToken(): String
-        suspend fun registerNewDonor(data: ByteArray)
+    override fun getService(httpClient: HttpClient, environment: Environment): DonationService =
+        DonationService(httpClient, environment)
+
+    @Test
+    fun requestRegistrationTokenTest() = runTest {
+        //Given
+        givenTextServiceResponseWith(token)
+
+        //When
+        val result = service.requestRegistrationToken()
+
+        //Then
+        assertEquals(result, token)
+        assertEquals(HttpMethod.Get, lastRequest.method)
     }
+
+    @Test
+    fun registerNewDonorTest() = runTest {
+        //Given
+        givenServiceNoResponse()
+
+        //When
+        service.registerNewDonor(DummyData.rawData)
+
+        //Then
+        assertEquals(HttpMethod.Put, lastRequest.method)
+    }
+
 }

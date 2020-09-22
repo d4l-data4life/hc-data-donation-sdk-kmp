@@ -32,7 +32,6 @@
 
 package care.data4life.datadonation.internal.domain.usecases
 
-import care.data4life.datadonation.core.listener.ResultListener
 import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.internal.domain.repositories.ConsentDocumentRepository
 import io.mockk.*
@@ -40,28 +39,23 @@ import runTest
 import kotlin.test.Ignore
 import kotlin.test.Test
 
-abstract class GetDocumentConsentTest {
+abstract class FetchDocumentConsentTest {
 
     private val consentDocumentRepository = mockk<ConsentDocumentRepository>()
-    private val consentDocument = GetConsentDocuments(consentDocumentRepository)
-    private val listener = spyk<DocumentContentListener>()
+    private val consentDocument = FetchConsentDocuments(consentDocumentRepository)
     private var consentDocDummy = ConsentDocument("", 1, "","","","en","",true,"","")
 
     @Test
     fun createUserContentFullParams() = runTest {
         //Given
-        coEvery { consentDocumentRepository.getConsentDocument(any(), any(), any()) } returns listOf(consentDocDummy)
+        coEvery { consentDocumentRepository.fetchConsentDocuments(any(), any()) } returns listOf(consentDocDummy)
 
         //When
-        consentDocument.runWithParams(
-            GetConsentDocuments.Parameters("version", "en"),
-            listener
-        )
+        consentDocument.withParams(FetchConsentDocuments.Parameters("version", "en")).execute()
 
         //Then
         coVerify(ordering = Ordering.SEQUENCE){
-            consentDocumentRepository.getConsentDocument(any(), any(), any())
-            listener.onSuccess(any())
+            consentDocumentRepository.fetchConsentDocuments(any(), any())
         }
     }
 
@@ -69,19 +63,15 @@ abstract class GetDocumentConsentTest {
     @Test
     fun getConsentDocumentMissingLanguage() = runTest {
         //Given
-        var consentDocLDummy = ConsentDocument("", 1, "","","","","",true,"","")
-        coEvery { consentDocumentRepository.getConsentDocument(any(), any(), any()) } returns listOf(consentDocDummy)
+        val consentDocLDummy = ConsentDocument("", 1, "","","","","",true,"","")
+        coEvery { consentDocumentRepository.fetchConsentDocuments(any(), any()) } returns listOf(consentDocLDummy)
 
         //When
-        consentDocument.runWithParams(
-            GetConsentDocuments.Parameters("version", "en"),
-            listener
-        )
+        consentDocument.withParams(FetchConsentDocuments.Parameters("version", "en")).execute()
 
         //Then
         coVerify(ordering = Ordering.SEQUENCE){
-            consentDocumentRepository.getConsentDocument(any(), any(), any())
-            listener.onSuccess(any())
+            consentDocumentRepository.fetchConsentDocuments(any(), any())
         }
     }
 
@@ -89,29 +79,18 @@ abstract class GetDocumentConsentTest {
     @Test
     fun getConsentDocumentWrongVersion() = runTest {
         //Given
-        var consentDocVDummy = ConsentDocument("", 0, "","","","en","",true,"","")
-        coEvery { consentDocumentRepository.getConsentDocument(any(), any(), any()) } returns listOf(consentDocVDummy)
+        val consentDocVDummy = ConsentDocument("", 0, "","","","en","",true,"","")
+        coEvery { consentDocumentRepository.fetchConsentDocuments(any(), any()) } returns listOf(consentDocVDummy)
 
         //When
-        consentDocument.runWithParams(
-            GetConsentDocuments.Parameters("version", "en"),
-            listener
-        )
+        consentDocument.withParams(FetchConsentDocuments.Parameters("version", "en")).execute()
 
         //Then
         coVerify(ordering = Ordering.SEQUENCE){
-            consentDocumentRepository.getConsentDocument(any(), any(), any())
-            listener.onSuccess(any())
+            consentDocumentRepository.fetchConsentDocuments(any(), any())
         }
     }
 
-    class DocumentContentListener : ResultListener<List<ConsentDocument>> {
-        override fun onSuccess(t: List<ConsentDocument>) {
-        }
-
-        override fun onError(exception: Exception) {
-        }
-    }
 }
 
 

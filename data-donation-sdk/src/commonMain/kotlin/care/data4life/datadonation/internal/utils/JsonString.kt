@@ -30,20 +30,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.data.store
+package care.data4life.datadonation.internal.utils
 
-import care.data4life.datadonation.internal.data.service.ConsentService
-import care.data4life.datadonation.core.model.ConsentDocument
-import care.data4life.datadonation.internal.domain.repositories.ConsentDocumentRepository
+import care.data4life.datadonation.internal.data.model.RegistrationRequest
+import care.data4life.datadonation.internal.data.model.SignedConsentMessage
+import kotlinx.serialization.json.Json
 
-class ConsentDocumentDatastore(private val service: ConsentService) : ConsentDocumentRepository.Remote {
-
-    override suspend fun getConsentDocument(
-        accessToken: String,
-        dataDonationKey: String,
-        version: String?,
-        language: String?
-    ): List<ConsentDocument> = service.fetchConsentDocument(accessToken, dataDonationKey, version, language)
+internal fun RegistrationRequest.toJsonString() =
+    Json.encodeToString(RegistrationRequest.serializer(), this)
 
 
-}
+internal fun SignedConsentMessage.toJsonString() =
+    Json.encodeToString(SignedConsentMessage.serializer(), this)

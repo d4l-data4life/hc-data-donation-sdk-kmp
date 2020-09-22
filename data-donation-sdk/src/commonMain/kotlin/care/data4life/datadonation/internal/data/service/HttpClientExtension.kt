@@ -33,9 +33,7 @@
 package care.data4life.datadonation.internal.data.service
 
 import io.ktor.client.HttpClient
-import io.ktor.client.request.HttpRequestBuilder
-import io.ktor.client.request.get
-import io.ktor.client.request.header
+import io.ktor.client.request.*
 import io.ktor.client.request.post
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
@@ -59,6 +57,19 @@ suspend inline fun <reified T> HttpClient.postWithBody(
     body: Any,
     block: HttpRequestBuilder.() -> Unit = {}
 ): T = post(scheme = "https", host = baseUrl, path = path) {
+    header("Authorization", "Bearer $accessToken")
+    contentType(ContentType.Application.Json)
+    this.body = body
+    apply(block)
+}
+
+suspend inline fun <reified T> HttpClient.deleteWithBody(
+    accessToken: String,
+    baseUrl: String,
+    path: String,
+    body: Any,
+    block: HttpRequestBuilder.() -> Unit = {}
+): T = delete(scheme = "https", host = baseUrl, path = path) {
     header("Authorization", "Bearer $accessToken")
     contentType(ContentType.Application.Json)
     this.body = body

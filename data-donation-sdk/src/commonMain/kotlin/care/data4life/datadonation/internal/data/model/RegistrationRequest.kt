@@ -30,16 +30,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.domain.repositories
+package care.data4life.datadonation.internal.data.model
 
-internal class RegistrationRepository(private val remote: Remote) {
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-    suspend fun requestRegistrationToken() = remote.requestRegistrationToken()
-
-    suspend fun registerNewDonor(data: ByteArray) = remote.registerNewDonor(data)
-
-    interface Remote {
-        suspend fun requestRegistrationToken(): String
-        suspend fun registerNewDonor(data: ByteArray)
-    }
-}
+@Serializable
+data class RegistrationRequest(@SerialName("donorID") val donorId: String, val token: String)

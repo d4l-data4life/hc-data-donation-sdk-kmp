@@ -30,16 +30,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.domain.repositories
+package care.data4life.datadonation.encryption.hybrid
 
-internal class RegistrationRepository(private val remote: Remote) {
-
-    suspend fun requestRegistrationToken() = remote.requestRegistrationToken()
-
-    suspend fun registerNewDonor(data: ByteArray) = remote.registerNewDonor(data)
-
-    interface Remote {
-        suspend fun requestRegistrationToken(): String
-        suspend fun registerNewDonor(data: ByteArray)
-    }
+interface HybridEncryptor {
+    fun encrypt(plaintext: String): ByteArray
 }
+

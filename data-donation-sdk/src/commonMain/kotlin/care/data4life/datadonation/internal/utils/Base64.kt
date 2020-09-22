@@ -30,16 +30,26 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.domain.repositories
+package care.data4life.datadonation.internal.utils
 
-internal class RegistrationRepository(private val remote: Remote) {
+import io.ktor.utils.io.charsets.*
 
-    suspend fun requestRegistrationToken() = remote.requestRegistrationToken()
+interface Base64Encoder {
+    fun encode(src: ByteArray): String
+    fun decode(src: ByteArray, charset: Charset): String
+}
 
-    suspend fun registerNewDonor(data: ByteArray) = remote.registerNewDonor(data)
+object Base64Factory {
+    fun createEncoder(): Base64Encoder = CommonBase64Encoder
+}
 
-    interface Remote {
-        suspend fun requestRegistrationToken(): String
-        suspend fun registerNewDonor(data: ByteArray)
+object CommonBase64Encoder : Base64Encoder {
+
+    override fun encode(src: ByteArray): String {
+        TODO("Not yet implemented")
+    }
+
+    override fun decode(src: ByteArray, charset: Charset): String {
+        TODO("Not yet implemented")
     }
 }

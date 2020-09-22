@@ -36,20 +36,25 @@ import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.model.*
-import io.ktor.client.HttpClient
-import io.ktor.client.request.parameter
+import io.ktor.client.*
+import io.ktor.client.request.*
+import kotlinx.datetime.Clock
 
-class ConsentService(private val client: HttpClient, environment: Environment) {
+
+internal class ConsentService(
+    private val client: HttpClient,
+    environment: Environment
+) {
 
     private val baseUrl = "${environment.url}/consent/api/v1"
 
-    suspend fun fetchConsentDocument(
-        accessToken: String, dataDonationKey: String,
+    suspend fun fetchConsentDocuments(
+        accessToken: String,
         version: String?,
         language: String?
     ): List<ConsentDocument> {
         return client.getWithQuery(accessToken, baseUrl, Endpoints.consentDocuments) {
-            parameter(Parameters.consentDocumentKey, dataDonationKey)
+            parameter(Parameters.consentDocumentKey, defaultDonationConsentKey)
             parameter(Parameters.version, version)
             parameter(Parameters.language, language)
         }
@@ -57,35 +62,49 @@ class ConsentService(private val client: HttpClient, environment: Environment) {
 
     suspend fun fetchUserConsents(accessToken: String, latest: Boolean?): List<UserConsent> {
         return client.getWithQuery(accessToken, baseUrl, Endpoints.userConsents) {
-            parameter(Parameters.consentDocumentKey, dataDonationKey)
+            parameter(Parameters.consentDocumentKey, defaultDonationConsentKey)
             parameter(Parameters.latest, latest)
         }
     }
 
-    suspend fun createUserConsent(version: String, language: String?): TokenVerificationResult {
+    suspend fun createUserConsent(accessToken: String, version: String, language: String?): TokenVerificationResult {
         return client.postWithBody(
-            "",//TODO
+            accessToken,
             baseUrl,
             Endpoints.userConsents,
-            ConsentCreationPayload(dataDonationKey, version, "", language ?: "")
+            ConsentCreationPayload(
+                defaultDonationConsentKey,
+                version,
+                Clock.System.now().toString(),
+                language ?: ""
+            )
         )
     }
 
-    suspend fun requestSignature(message: String): ConsentSignature {
+    suspend fun requestSignature(accessToken: String, message: String): ConsentSignature {
         return client.postWithBody(
-            "",//TODO
+            accessToken,
             baseUrl,
-            "${Endpoints.userConsents}/$dataDonationKey/signatures",
+            "${Endpoints.userConsents}/$defaultDonationConsentKey/signatures",
             ConsentSigningRequest(
-                dataDonationKey,
+                defaultDonationConsentKey,
                 message,
                 ConsentSignatureType.ConsentOnce.apiValue
             )
         )
     }
 
+    suspend fun revokeUserConsent(accessToken: String, language: String?) {
+        return client.deleteWithBody(
+            accessToken,
+            baseUrl,
+            Endpoints.userConsents,
+            ConsentRevocationPayload(defaultDonationConsentKey, language ?: "")
+        )
+    }
+
     companion object {
-        const val dataDonationKey = "data donation"
+        const val defaultDonationConsentKey = "data donation"
 
         object Endpoints {
             const val userConsents = "userConsents"

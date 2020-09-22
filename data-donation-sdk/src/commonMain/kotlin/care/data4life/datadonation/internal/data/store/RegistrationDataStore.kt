@@ -35,7 +35,7 @@ package care.data4life.datadonation.internal.data.store
 import care.data4life.datadonation.internal.data.service.DonationService
 import care.data4life.datadonation.internal.domain.repositories.RegistrationRepository
 
-class RegistrationDataStore(val donationService: DonationService): RegistrationRepository.Remote {
+internal class RegistrationDataStore(val donationService: DonationService): RegistrationRepository.Remote {
 
     override suspend fun requestRegistrationToken() = donationService.requestRegistrationToken()
 

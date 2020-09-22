@@ -37,7 +37,7 @@ import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.model.ConsentSignature
 import care.data4life.datadonation.internal.data.model.TokenVerificationResult
-import care.data4life.datadonation.internal.data.service.ConsentService.Companion.dataDonationKey
+import care.data4life.datadonation.internal.data.service.ConsentService.Companion.defaultDonationConsentKey
 import io.ktor.client.*
 import io.ktor.http.*
 import kotlinx.serialization.builtins.ListSerializer
@@ -46,11 +46,12 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-abstract class ConsentServiceTest : BaseServiceTest<ConsentService>() {
+internal abstract class ConsentServiceTest : BaseServiceTest<ConsentService>() {
+
     private val tokenVerificationResult = TokenVerificationResult("StudyId", "externalId", "")
     private val userConsent = UserConsent("key", "version", "accountId", "event", "0")
     private val consentSignature = ConsentSignature("signature")
-    private var consentDocDummy = ConsentDocument("", 1, "","","","en","",true,"","")
+    private var consentDocDummy = ConsentDocument("", 1, "", "", "", "en", "", true, "", "")
 
     override fun getService(httpClient: HttpClient, environment: Environment) =
         ConsentService(httpClient, environment)
@@ -64,7 +65,7 @@ abstract class ConsentServiceTest : BaseServiceTest<ConsentService>() {
         )
 
         //When
-        val result = service.createUserConsent("T", "1")
+        val result = service.createUserConsent("T", "1", null)
 
         //Then
         assertEquals(result, tokenVerificationResult)
@@ -84,7 +85,7 @@ abstract class ConsentServiceTest : BaseServiceTest<ConsentService>() {
         assertEquals(HttpMethod.Get, lastRequest.method)
         assertEquals(ConsentService.Companion.Endpoints.userConsents, lastRequest.url.encodedPath)
         assertTrue(lastRequest.url.parameters.contains("consentDocumentKey"))
-        assertEquals(lastRequest.url.parameters["consentDocumentKey"], dataDonationKey)
+        assertEquals(lastRequest.url.parameters["consentDocumentKey"], defaultDonationConsentKey)
         assertTrue(lastRequest.url.parameters.contains("latest"))
         assertEquals(lastRequest.url.parameters["latest"], false.toString())
     }
@@ -95,14 +96,14 @@ abstract class ConsentServiceTest : BaseServiceTest<ConsentService>() {
         givenServiceResponseWith(ListSerializer(ConsentDocument.serializer()), listOf(consentDocDummy))
 
         //When
-        val result = service.fetchConsentDocument("T", "data donation", "1", "DE")
+        val result = service.fetchConsentDocuments("T",  "1", "DE")
 
         //Then
         assertEquals(listOf(consentDocDummy), result)
         assertEquals(HttpMethod.Get, lastRequest.method)
         assertEquals(ConsentService.Companion.Endpoints.consentDocuments, lastRequest.url.encodedPath)
         assertTrue(lastRequest.url.parameters.contains("consentDocumentKey"))
-        assertEquals(lastRequest.url.parameters["consentDocumentKey"], dataDonationKey)
+        assertEquals(lastRequest.url.parameters["consentDocumentKey"], defaultDonationConsentKey)
         assertTrue(lastRequest.url.parameters.contains("version"))
         assertEquals(lastRequest.url.parameters["version"], "1")
 
@@ -117,11 +118,22 @@ abstract class ConsentServiceTest : BaseServiceTest<ConsentService>() {
         )
 
         //When
-        val result = service.requestSignature("T")
+        val result = service.requestSignature("T", "message")
 
         //Then
         assertEquals(result, consentSignature)
         assertEquals(HttpMethod.Post, lastRequest.method)
     }
 
+    @Test
+    fun revokeConsentTest() = runTest {
+        //Given
+        givenServiceNoResponse()
+
+        //When
+        service.revokeUserConsent("T", "DE")
+
+        //Then
+        assertEquals(HttpMethod.Delete, lastRequest.method)
+    }
 }

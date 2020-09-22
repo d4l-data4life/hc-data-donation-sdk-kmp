@@ -42,7 +42,8 @@ import care.data4life.datadonation.core.model.UserConsent
 interface Contract {
 
     interface Configuration {
-        fun getDonationKeyPair(): KeyPair?
+        fun getServicePublicKey(): String
+        fun getDonorKeyPair(): KeyPair?
         fun getUserSessionToken(): String?
         fun getEnvironment(): Environment
     }
@@ -57,7 +58,7 @@ interface Contract {
         fun createUserConsent(
             consentDocumentVersion: String,
             language: String?,
-            callback: ResultListener<Pair<UserConsent, KeyPair>>
+            listener: ResultListener<Pair<UserConsent, KeyPair>>
         )
 
         fun fetchUserConsents(listener: ResultListener<List<UserConsent>>)

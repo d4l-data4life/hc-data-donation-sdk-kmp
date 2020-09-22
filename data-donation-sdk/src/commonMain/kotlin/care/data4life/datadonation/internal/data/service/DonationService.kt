@@ -33,28 +33,31 @@
 package care.data4life.datadonation.internal.data.service
 
 import care.data4life.datadonation.core.model.Environment
+import care.data4life.datadonation.internal.data.service.DonationService.Endpoints.register
+import care.data4life.datadonation.internal.data.service.DonationService.Endpoints.token
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.put
-import io.ktor.client.request.url
 import io.ktor.http.ContentType
+import io.ktor.http.content.ByteArrayContent
 import io.ktor.http.contentType
 
-class DonationService(private val client: HttpClient, environment: Environment) {
+internal class DonationService(private val client: HttpClient, environment: Environment) {
 
     private val baseUrl = "https://${environment.url}/donation/api/v1"
 
     suspend fun requestRegistrationToken(): String {
-        return client.get {
-            url("$baseUrl/token")
+        return client.get(scheme = "https", host = baseUrl, path = token)
+    }
+
+    suspend fun registerNewDonor(payload: ByteArray) {
+        return client.put(scheme = "https", host = baseUrl, path = register) {
+            body = ByteArrayContent(payload, contentType = ContentType.Application.OctetStream)
         }
     }
 
-    suspend fun registerNewDonor(data: ByteArray) {
-        return client.put {
-            url("$baseUrl/userConsents")
-            contentType(ContentType.Application.OctetStream)
-            // TODO create body from data
-        }
+    object Endpoints {
+        const val token = "token"
+        const val register = "register"
     }
 }

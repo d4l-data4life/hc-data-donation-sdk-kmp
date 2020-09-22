@@ -30,16 +30,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.domain.repositories
+package care.data4life.datadonation.internal.domain.usecases
 
-internal class RegistrationRepository(private val remote: Remote) {
+import care.data4life.datadonation.core.model.ConsentDocument
+import care.data4life.datadonation.internal.domain.repositories.ConsentDocumentRepository
 
-    suspend fun requestRegistrationToken() = remote.requestRegistrationToken()
+internal class FetchConsentDocuments(private val consentDocumentRepository: ConsentDocumentRepository) :
+    ParameterizedUsecase<FetchConsentDocuments.Parameters, List<ConsentDocument>>() {
 
-    suspend fun registerNewDonor(data: ByteArray) = remote.registerNewDonor(data)
+    override suspend fun execute(): List<ConsentDocument> =
+        consentDocumentRepository.fetchConsentDocuments(parameter.version, parameter.language)
 
-    interface Remote {
-        suspend fun requestRegistrationToken(): String
-        suspend fun registerNewDonor(data: ByteArray)
-    }
+    data class Parameters(val version: String?, val language: String?)
 }

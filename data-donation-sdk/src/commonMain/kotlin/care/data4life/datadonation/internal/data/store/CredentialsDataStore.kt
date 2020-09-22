@@ -30,16 +30,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.domain.repositories
+package care.data4life.datadonation.internal.data.store
 
-internal class RegistrationRepository(private val remote: Remote) {
+internal interface CredentialsDataStore {
 
-    suspend fun requestRegistrationToken() = remote.requestRegistrationToken()
+    fun getDataDonationPublicKey(): String
 
-    suspend fun registerNewDonor(data: ByteArray) = remote.registerNewDonor(data)
-
-    interface Remote {
-        suspend fun requestRegistrationToken(): String
-        suspend fun registerNewDonor(data: ByteArray)
-    }
 }

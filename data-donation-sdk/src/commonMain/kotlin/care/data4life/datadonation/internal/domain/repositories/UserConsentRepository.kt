@@ -41,13 +41,21 @@ internal class UserConsentRepository(
 ) {
 
     suspend fun createUserConsent(version: String, language: String?) =
-        remote.createUserConsent(version, language)
+        remote.createUserConsent(sessionToken.getUserSessionToken()!!, version, language)
 
     suspend fun fetchUserConsents(): List<UserConsent> =
         remote.fetchUserConsents(sessionToken.getUserSessionToken()!!)
 
+    suspend fun signUserConsent(message: String): String =
+        remote.signUserConsent(sessionToken.getUserSessionToken()!!, message)
+
+    suspend fun revokeUserConsent(language: String?) =
+        remote.revokeUserConsent(sessionToken.getUserSessionToken()!!, language)
+
     interface Remote {
-        suspend fun createUserConsent(version: String, language: String?)
+        suspend fun createUserConsent(accessToken: String, version: String, language: String?)
         suspend fun fetchUserConsents(accessToken: String): List<UserConsent>
+        suspend fun signUserConsent(accessToken: String, message: String): String
+        suspend fun revokeUserConsent(accessToken: String, language: String?)
     }
 }

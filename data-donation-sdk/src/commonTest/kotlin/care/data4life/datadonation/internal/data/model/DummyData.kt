@@ -36,14 +36,18 @@ import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.UserConsent
 
 object DummyData {
+    val timestamp = "2020-07-06T10:18:12.601Z"
+
     val userConsent = UserConsent(
         "key",
         "1.0.0",
         "a486a4db-a850-4b1d-9c84-99aa027f1000",
         "consent",
-        "2020-07-06T10:18:12.601Z"
+        timestamp
     )
 
-    val keyPair = KeyPair(ByteArray(0), ByteArray(0))
+    val rawData = byteArrayOf(10, 2, 5, 11, 8)
+
+    val keyPair = KeyPair(rawData, rawData)
 }
 
