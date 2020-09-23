@@ -1,3 +1,5 @@
+import kotlinx.coroutines.runBlocking
+
 /*
  * BSD 3-Clause License
  *
@@ -30,22 +32,4 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.core.model
-
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
-
-
-@Serializable
-data class ConsentDocument(
-    val key: String,
-    val version: Int,
-    val processor: String,
-    val description: String,
-    val recipient: String,
-    val language: String,
-    val text: String,
-    val requiresToken: Boolean = false,
-    @SerialName("studyID") val studyId: String = "",
-    val programName: String
-)
+internal actual fun <T> runTest(block: suspend () -> T) { runBlocking { block() } }

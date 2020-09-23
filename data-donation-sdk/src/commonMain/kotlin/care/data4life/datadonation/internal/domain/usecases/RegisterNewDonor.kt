@@ -30,47 +30,37 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation
+package care.data4life.datadonation.internal.domain.usecases
 
-import care.data4life.datadonation.core.listener.Callback
-import care.data4life.datadonation.core.listener.ResultListener
-import care.data4life.datadonation.core.model.ConsentDocument
-import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.KeyPair
-import care.data4life.datadonation.core.model.UserConsent
+import care.data4life.datadonation.encryption.hybrid.HybridEncryptor
+import care.data4life.datadonation.internal.data.model.RegistrationRequest
+import care.data4life.datadonation.internal.data.model.SignedConsentMessage
+import care.data4life.datadonation.internal.domain.repositories.RegistrationRepository
+import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
+import care.data4life.datadonation.internal.domain.usecases.RegisterNewDonor.*
+import care.data4life.datadonation.internal.utils.Base64Encoder
+import care.data4life.datadonation.internal.utils.toJsonString
+import kotlinx.serialization.json.Json
 
-interface Contract {
+internal class RegisterNewDonor(
+    private val registrationRepository: RegistrationRepository,
+    private val consentRepository: UserConsentRepository,
+    private val encryptor: HybridEncryptor,
+    private val base64encoder: Base64Encoder
+) :
+    ParameterizedUsecase<KeyPair, Unit>() {
 
-    interface Configuration {
-        fun getServicePublicKey(): String
-        fun getDonorKeyPair(): KeyPair?
-        fun getUserSessionToken(): String?
-        fun getEnvironment(): Environment
+    override suspend fun execute() {
+        val token = registrationRepository.requestRegistrationToken()
+        val request = RegistrationRequest(base64encoder.encode(parameter.public), token)
+        val message = base64encoder.encode(encryptor.encrypt(request.toJsonString()))
+        val signature = consentRepository.signUserConsent(message)
+        val signedMessage = SignedConsentMessage(message, signature)
+        val payload = encryptor.encrypt(signedMessage.toJsonString())
+        registrationRepository.registerNewDonor(payload)
     }
 
-    interface DataDonation {
-        fun fetchConsentDocument(
-            consentDocumentVersion: String?,
-            language: String?,
-            listener: ResultListener<List<ConsentDocument>>
-        )
-
-        fun createUserConsent(
-            consentDocumentVersion: String,
-            language: String?,
-            listener: ResultListener<Pair<UserConsent, KeyPair>>
-        )
-
-        fun fetchUserConsents(listener: ResultListener<List<UserConsent>>)
-
-        fun revokeUserConsent(language: String?, callback: Callback)
-
-        /** TODO Donation with FHIR models
-         * fun <T : DomainResource> donateResource(
-         * resource: T,
-         * callback: Callback)
-         * */
-    }
 }
 
 

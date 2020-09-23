@@ -32,20 +32,10 @@
 
 package care.data4life.datadonation.core.model
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
-
-
-@Serializable
-data class ConsentDocument(
-    val key: String,
-    val version: Int,
-    val processor: String,
-    val description: String,
-    val recipient: String,
-    val language: String,
-    val text: String,
-    val requiresToken: Boolean = false,
-    @SerialName("studyID") val studyId: String = "",
-    val programName: String
-)
+enum class Environment(val url: String) {
+    LOCAL("api.data4life.local"),
+    DEV("api-phdp-dev.hpsgc.de"),
+    SANDBOX("api-phdp-sandbox.hpsgc.de"),
+    STAGING("api-staging.data4life.care"),
+    PRODUCTION("api.data4life.care")
+}

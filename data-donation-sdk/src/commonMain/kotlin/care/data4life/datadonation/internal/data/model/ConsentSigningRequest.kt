@@ -30,24 +30,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.presentation.common
+package care.data4life.datadonation.internal.data.model
 
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Runnable
-import platform.darwin.dispatch_async
-import platform.darwin.dispatch_get_main_queue
-import kotlin.coroutines.CoroutineContext
+import kotlinx.serialization.Serializable
 
-actual val defaultDispatcher: CoroutineDispatcher
-    get() = IosMainDispatcher
-
-private object IosMainDispatcher : CoroutineDispatcher() {
-
-    override fun dispatch(context: CoroutineContext, block: Runnable) {
-        dispatch_async(dispatch_get_main_queue()) { block.run() }
-    }
-}
-
-internal actual fun printThrowable(t: Throwable) {
-    t.printStackTrace()
-}
+@Serializable
+data class ConsentSigningRequest(
+    val consentDocumentKey: String,
+    val payload: String,
+    val signatureType: String = ConsentSignatureType.NormalUse.apiValue // ConsentSignatureType enum -> apiValue
+)
