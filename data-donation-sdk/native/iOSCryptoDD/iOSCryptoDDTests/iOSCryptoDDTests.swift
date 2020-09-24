@@ -27,6 +27,7 @@
 //  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 //  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 //  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 import XCTest
 @testable import iOSCryptoDD
 
@@ -58,20 +59,20 @@ class iOSCryptoDDTests: XCTestCase {
 //        let cryptoClient = CryptoAES(key: Data(base64Encoded: "LL85V5L0n5024C6XLGe+/mmg9F/VkUbRQycnN28S5L4=")!, padding: .zeroPadding)
 //        let plainText = Data(base64Encoded: "SGVsbG8gV29ybGQ=")!
 //        let associatedData = Data(base64Encoded: "uy2BwDTY4vUeBrp+")!
-//        
+//
 //        let encryptedData = cryptoClient.encrypt(plainText: plainText, associatedData: associatedData)
-//        
+//
 //        let decryptedData = cryptoClient.decrypt(encrypted: encryptedData, associatedData: associatedData)
 //        XCTAssertEqual(plainText, decryptedData)
 //    }
-//    
+//
 //    func testCryptoDDPKCS7Padding() {
 //        let cryptoClient = CryptoAES(key: Data(base64Encoded: "LL85V5L0n5024C6XLGe+/mmg9F/VkUbRQycnN28S5L4=")!, padding: .pkcs7)
 //        let plainText = Data(base64Encoded: "SGVsbG8gV29ybGQ=")!
 //        let associatedData = Data(base64Encoded: "uy2BwDTY4vUeBrp+")!
-//        
+//
 //        let encryptedData = cryptoClient.encrypt(plainText: plainText, associatedData: associatedData)
-//        
+//
 //        let decryptedData = cryptoClient.decrypt(encrypted: encryptedData, associatedData: associatedData)
 //        XCTAssertEqual(plainText, decryptedData)
 //    }

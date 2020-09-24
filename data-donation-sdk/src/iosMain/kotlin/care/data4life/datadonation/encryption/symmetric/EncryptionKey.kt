@@ -38,7 +38,6 @@ import platform.CoreFoundation.CFStringRef
 import platform.Security.SecKeyAlgorithm
 
 actual fun EncryptionSymmetricKey(size: Int, algorithm: Algorithm.Symmetric): EncryptionSymmetricKey {
-    val params: Pair<CFStringRef, SecKeyAlgorithm> = algorithm.toAttributes()
     return EncryptionSymmetricKeyNative(size)
 }
 

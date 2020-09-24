@@ -69,7 +69,7 @@ class RsaSsaPssPublicKey(
     // Modulus.
     // Unsigned big integer in bigendian representation.
     @ProtoNumber(3)
-    val n: ByteArray,
+    var n: ByteArray,
     // Public exponent.
     // Unsigned big integer in bigendian representation.
     @ProtoNumber(4)

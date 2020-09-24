@@ -1,5 +1,6 @@
 plugins {
     kotlin("multiplatform")
+    kotlin("native.cocoapods")
     kotlin("plugin.serialization")
 
     // Android
@@ -120,11 +121,11 @@ kotlin {
             }
         }
 
-
          configure(listOf(targets.asMap["ios"]!!)) {
 
             compilations["main"].kotlinOptions.freeCompilerArgs += mutableListOf(
-                "-include-binary", "$projectDir/Pods/Tink/Frameworks/Tink.framework/Tink.a"
+                //"-include-binary", "$projectDir/native/iOSCryptoDD/libiOSCryptoDD.a",
+                "-include-binary", "$projectDir/native/iOSCryptoDD/libiOSCryptoStatic.a"
             )
             compilations.getByName("main") {
 
@@ -136,15 +137,24 @@ kotlin {
                     header("$projectDir/Pods/Tink/Frameworks/Tink.framework/Headers/Tink.h")
                 }
 
-                val cryptoSwift by cinterops.creating {
+                val cryptoDD by cinterops.creating {
                     packageName("crypto.swift")
                     defFile = file("$projectDir/src/iosMain/cinterop/CryptoSwiftWrapper.def")
-                    headers("$projectDir/native/iOSCryptoDD/build/iOSCryptoDD.framework/Headers/iOSCryptoDD.h",
-                        "$projectDir/native/iOSCryptoDD/build/iOSCryptoDD.framework/Headers/iOSCryptoDD-Swift.h")
-                    includeDirs("$projectDir/native/iOSCryptoDD/build/iOSCryptoDD.framework/","$projectDir/native/iOSCryptoDD/")
+                    headers("$projectDir/native/iOSCryptoDD/iOSCryptoStatic-Swift.h")
                 }
             }
         }
+    }
+    cocoapods {
+        // Configure fields required by CocoaPods.
+        summary = "TODO"
+        homepage = "TODO"
+
+        ios.deploymentTarget = "13.5"
+        //pod("CryptoSwift","1.3.1")
+        //pod("CryptoSwift","1.3.2", project.file("/Users/alexandertizik/IdeaProjects/CryptoSwift/CryptoSwift.podspec"))
+        //pod("CryptoSwift","1.3.2", project.file("../data-donation-sdk/native/CryptoSwift/CryptoSwift.podspec"))
+        //pod("iOSCryptoDD","1.0.1", project.file("../data-donation-sdk/native/iOSCryptoDD/iOSCryptoDD.podspec"))
     }
 }
 

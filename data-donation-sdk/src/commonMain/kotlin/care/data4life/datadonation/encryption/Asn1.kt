@@ -121,6 +121,8 @@ class Asn1 constructor(private val root: List<SEQUENCE>){
         }
     }
 
+
+
     /**
      * ASN1 "Length octets" - http://luca.ntop.org/Teaching/Appunti/asn1.html
      */
