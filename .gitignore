@@ -49,3 +49,4 @@ DerivedData/
 *.dSYM.zip
 *.dSYM
 Pods/
+/data-donation-sdk/native/iOSCryptoDD/iOSCryptoDD.xcodeproj/project.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings

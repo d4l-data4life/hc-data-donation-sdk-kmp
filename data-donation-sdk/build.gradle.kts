@@ -122,6 +122,7 @@ kotlin {
         }
 
          configure(listOf(targets.asMap["ios"]!!)) {
+             this as org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
             compilations["main"].kotlinOptions.freeCompilerArgs += mutableListOf(
                 //"-include-binary", "$projectDir/native/iOSCryptoDD/libiOSCryptoDD.a",
@@ -138,14 +139,20 @@ kotlin {
                 }
 
                 val iOSDCryptoDD by cinterops.creating {
+                    packageName("crypto.dd")
                     // Path to .def file
                     defFile("src/iosMain/cinterop/iOSCryptoDD.def")
 
                     // Directories for header search (an analogue of the -I<path> compiler option)
-                    //includeDirs("native/iOSCryptoDD/DerivedData/iOSCryptoDD/Build/Products/Debug-iphoneos/iOSCryptoDD.framework/Headers")
-                    compilerOpts("-framework", "iOSCryptoDD", "native/iOSCryptoDD/DerivedData/iOSCryptoDD/Build/Products/Debug-iphoneos")
+                    includeDirs("$projectDir/native/iOSCryptoDD/iOSCryptoDD.framework/Headers")
+                    compilerOpts("-framework", "iOSCryptoDD", "-F$projectDir/native/iOSCryptoDD")
                 }
             }
+
+             binaries.all {
+                 // Tell the linker where the framework is located.
+                 linkerOpts("-framework", "iOSCryptoDD", "-F$projectDir/native/iOSCryptoDD/")
+             }
         }
     }
     cocoapods {

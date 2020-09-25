@@ -1,4 +1,6 @@
 language = Objective-C
-headers = iOSCryptoDD.h
+headers = iOSCryptoDD.h iOSCryptoDD-Swift.h
 package = iOSCryptoDD
+
+
 
