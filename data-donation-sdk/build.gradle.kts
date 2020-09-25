@@ -125,7 +125,7 @@ kotlin {
 
             compilations["main"].kotlinOptions.freeCompilerArgs += mutableListOf(
                 //"-include-binary", "$projectDir/native/iOSCryptoDD/libiOSCryptoDD.a",
-                "-include-binary", "$projectDir/native/iOSCryptoDD/libiOSCryptoStatic.a"
+                //"-include-binary", "$projectDir/native/iOSCryptoDD/libiOSCryptoStatic.a"
             )
             compilations.getByName("main") {
 
@@ -137,10 +137,13 @@ kotlin {
                     header("$projectDir/Pods/Tink/Frameworks/Tink.framework/Headers/Tink.h")
                 }
 
-                val cryptoDD by cinterops.creating {
-                    packageName("crypto.swift")
-                    defFile = file("$projectDir/src/iosMain/cinterop/CryptoSwiftWrapper.def")
-                    headers("$projectDir/native/iOSCryptoDD/iOSCryptoStatic-Swift.h")
+                val iOSDCryptoDD by cinterops.creating {
+                    // Path to .def file
+                    defFile("src/iosMain/cinterop/iOSCryptoDD.def")
+
+                    // Directories for header search (an analogue of the -I<path> compiler option)
+                    //includeDirs("native/iOSCryptoDD/DerivedData/iOSCryptoDD/Build/Products/Debug-iphoneos/iOSCryptoDD.framework/Headers")
+                    compilerOpts("-framework", "iOSCryptoDD", "native/iOSCryptoDD/DerivedData/iOSCryptoDD/Build/Products/Debug-iphoneos")
                 }
             }
         }
