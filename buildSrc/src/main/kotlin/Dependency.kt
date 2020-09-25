@@ -70,7 +70,7 @@ object Dependency {
             val commonCore = "io.ktor:ktor-client-core:${Version.ktor}"
             val commonJson = "io.ktor:ktor-client-json:${Version.ktor}"
             val jvmCore = "io.ktor:ktor-client-core-jvm:${Version.ktor}"
-            val androidCore = "io.ktor:ktor-client-okhttp:${Version.ktor}"
+            val androidCore = "io.ktor:ktor-client-android:${Version.ktor}"
             val jvmJson = "io.ktor:ktor-client-json-jvm:${Version.ktor}"
             val ios = "io.ktor:ktor-client-ios:${Version.ktor}"
             val iosCore = "io.ktor:ktor-client-core-native:${Version.ktor}"
@@ -78,6 +78,11 @@ object Dependency {
             val commonSerialization = "io.ktor:ktor-client-serialization:${Version.ktor}"
             val androidSerialization = "io.ktor:ktor-client-serialization-jvm:${Version.ktor}"
             val iosSerialization = "io.ktor:ktor-client-serialization-native:${Version.ktor}"
+
+            //Logger
+            val logger = "io.ktor:ktor-client-logging:${Version.ktor}"
+
+            //Testing
             val mock = "io.ktor:ktor-client-mock:${Version.ktor}"
             val jvmMock = "io.ktor:ktor-client-mock-jvm:${Version.ktor}"
             val nativeMock = "io.ktor:ktor-client-mock-native:${Version.ktor}"

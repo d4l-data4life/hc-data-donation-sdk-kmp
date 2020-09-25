@@ -39,7 +39,7 @@ internal class FetchConsentDocuments(private val consentDocumentRepository: Cons
     ParameterizedUsecase<FetchConsentDocuments.Parameters, List<ConsentDocument>>() {
 
     override suspend fun execute(): List<ConsentDocument> =
-        consentDocumentRepository.fetchConsentDocuments(parameter.version, parameter.language)
+        consentDocumentRepository.fetchConsentDocuments(parameter.language, parameter.version)
 
-    data class Parameters(val version: String?, val language: String?)
+    data class Parameters(val version: Int?, val language: String?)
 }

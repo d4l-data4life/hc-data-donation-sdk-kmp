@@ -51,6 +51,8 @@ kotlin {
                 useExperimentalAnnotation("kotlinx.serialization.InternalSerializationApi")
                 useExperimentalAnnotation("kotlin.ExperimentalStdlibApi")
                 useExperimentalAnnotation("kotlin.ExperimentalUnsignedTypes")
+                useExperimentalAnnotation("kotlin.time.ExperimentalTime")
+
             }
         }
         commonMain {
@@ -63,6 +65,7 @@ kotlin {
                 implementation(Dependency.Multiplatform.coroutines.common)
 
                 implementation(Dependency.Multiplatform.ktor.commonCore)
+                implementation(Dependency.Multiplatform.ktor.logger)
                 implementation(Dependency.Multiplatform.ktor.commonJson)
                 implementation(Dependency.Multiplatform.ktor.commonSerialization)
 
@@ -93,6 +96,7 @@ kotlin {
 
                 //
                 implementation(Dependency.android.threeTenABP)
+                implementation(Dependency.Multiplatform.ktor.androidCore)
                 implementation(Dependency.Multiplatform.ktor.androidSerialization)
                 implementation(Dependency.android.tink)
                 implementation(Dependency.android.bouncyCastle)

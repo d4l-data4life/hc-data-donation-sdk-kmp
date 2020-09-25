@@ -33,6 +33,7 @@
 package care.data4life.datadonation.internal.data.service
 
 import care.data4life.datadonation.core.model.ConsentDocument
+import care.data4life.datadonation.core.model.ConsentEvent
 import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.model.ConsentSignature
@@ -49,7 +50,7 @@ import kotlin.test.assertTrue
 internal abstract class ConsentServiceTest : BaseServiceTest<ConsentService>() {
 
     private val tokenVerificationResult = TokenVerificationResult("StudyId", "externalId", "")
-    private val userConsent = UserConsent("key", "version", "accountId", "event", "0")
+    private val userConsent = UserConsent("key", "version", "accountId", ConsentEvent.Consent, "0")
     private val consentSignature = ConsentSignature("signature")
     private var consentDocDummy = ConsentDocument("", 1, "", "", "", "en", "", true, "", "")
 
@@ -65,7 +66,7 @@ internal abstract class ConsentServiceTest : BaseServiceTest<ConsentService>() {
         )
 
         //When
-        val result = service.createUserConsent("T", "1", null)
+        val result = service.createUserConsent("T", 1, null)
 
         //Then
         assertEquals(result, tokenVerificationResult)
@@ -96,7 +97,7 @@ internal abstract class ConsentServiceTest : BaseServiceTest<ConsentService>() {
         givenServiceResponseWith(ListSerializer(ConsentDocument.serializer()), listOf(consentDocDummy))
 
         //When
-        val result = service.fetchConsentDocuments("T",  "1", "DE")
+        val result = service.fetchConsentDocuments("T", 1, "DE")
 
         //Then
         assertEquals(listOf(consentDocDummy), result)

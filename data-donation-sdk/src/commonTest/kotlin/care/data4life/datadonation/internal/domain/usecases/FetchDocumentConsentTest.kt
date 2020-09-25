@@ -34,7 +34,10 @@ package care.data4life.datadonation.internal.domain.usecases
 
 import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.internal.domain.repositories.ConsentDocumentRepository
-import io.mockk.*
+import io.mockk.Ordering
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.mockk
 import runTest
 import kotlin.test.Ignore
 import kotlin.test.Test
@@ -51,7 +54,7 @@ abstract class FetchDocumentConsentTest {
         coEvery { consentDocumentRepository.fetchConsentDocuments(any(), any()) } returns listOf(consentDocDummy)
 
         //When
-        consentDocument.withParams(FetchConsentDocuments.Parameters("version", "en")).execute()
+        consentDocument.withParams(FetchConsentDocuments.Parameters(1, "en")).execute()
 
         //Then
         coVerify(ordering = Ordering.SEQUENCE){
@@ -67,7 +70,7 @@ abstract class FetchDocumentConsentTest {
         coEvery { consentDocumentRepository.fetchConsentDocuments(any(), any()) } returns listOf(consentDocLDummy)
 
         //When
-        consentDocument.withParams(FetchConsentDocuments.Parameters("version", "en")).execute()
+        consentDocument.withParams(FetchConsentDocuments.Parameters(1, "en")).execute()
 
         //Then
         coVerify(ordering = Ordering.SEQUENCE){
@@ -83,7 +86,7 @@ abstract class FetchDocumentConsentTest {
         coEvery { consentDocumentRepository.fetchConsentDocuments(any(), any()) } returns listOf(consentDocVDummy)
 
         //When
-        consentDocument.withParams(FetchConsentDocuments.Parameters("version", "en")).execute()
+        consentDocument.withParams(FetchConsentDocuments.Parameters(1, "en")).execute()
 
         //Then
         coVerify(ordering = Ordering.SEQUENCE){
