@@ -30,36 +30,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.domain.repositories
+package care.data4life.datadonation.integration
 
-import care.data4life.datadonation.core.model.ConsentDocument
-import care.data4life.datadonation.internal.data.store.UserSessionTokenDataStore
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
-
-internal class ConsentDocumentRepository(
-    private val remote: Remote,
-    private val sessionToken: UserSessionTokenDataStore
-) {
-
-    suspend fun fetchConsentDocuments(
-        language: String?,
-        version: Int?
-    ): List<ConsentDocument> {
-        return remote.fetchConsentDocuments(
-            sessionToken.getUserSessionToken()!!,
-            version,
-            language
-        )
-    }
-
-    interface Remote {
-
-        suspend fun fetchConsentDocuments(
-            accessToken: String,
-            version: Int?,
-            language: String?
-        ): List<ConsentDocument>
-
-    }
-
-}
+@RunWith(JUnit4::class)
+class CreateConsentAndroidTest : CreateConsentTest()

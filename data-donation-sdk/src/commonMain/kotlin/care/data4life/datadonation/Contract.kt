@@ -50,13 +50,13 @@ interface Contract {
 
     interface DataDonation {
         fun fetchConsentDocument(
-            consentDocumentVersion: String?,
+            consentDocumentVersion: Int?,
             language: String?,
             listener: ResultListener<List<ConsentDocument>>
         )
 
         fun createUserConsent(
-            consentDocumentVersion: String,
+            consentDocumentVersion: Int,
             language: String?,
             listener: ResultListener<Pair<UserConsent, KeyPair>>
         )

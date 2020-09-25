@@ -32,11 +32,9 @@
 
 package care.data4life.datadonation.internal.data.service
 
-import io.ktor.client.HttpClient
+import io.ktor.client.*
 import io.ktor.client.request.*
-import io.ktor.client.request.post
-import io.ktor.http.ContentType
-import io.ktor.http.contentType
+import io.ktor.http.*
 
 suspend inline fun <reified T> HttpClient.getWithQuery(
     accessToken: String,
@@ -52,6 +50,7 @@ suspend inline fun <reified T> HttpClient.getWithQuery(
 
 suspend inline fun <reified T> HttpClient.postWithBody(
     accessToken: String,
+
     baseUrl: String,
     path: String,
     body: Any,

@@ -39,10 +39,6 @@ import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.di.initKoin
 import care.data4life.datadonation.internal.domain.usecases.*
-import care.data4life.datadonation.internal.domain.usecases.CreateUserConsent
-import care.data4life.datadonation.internal.domain.usecases.FetchConsentDocuments
-import care.data4life.datadonation.internal.domain.usecases.FetchUserConsents
-import care.data4life.datadonation.internal.domain.usecases.RevokeUserConsent
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
@@ -57,7 +53,7 @@ class Client(private val configuration: Contract.Configuration) : Contract.DataD
     private val context = GlobalScope //TODO use proper CoroutineScope
 
     override fun fetchConsentDocument(
-        consentDocumentVersion: String?,
+        consentDocumentVersion: Int?,
         language: String?,
         listener: ResultListener<List<ConsentDocument>>
     ) {
@@ -71,7 +67,7 @@ class Client(private val configuration: Contract.Configuration) : Contract.DataD
 
 
     override fun createUserConsent(
-        consentDocumentVersion: String,
+        consentDocumentVersion: Int,
         language: String?,
         listener: ResultListener<Pair<UserConsent, KeyPair>>
     ) {
@@ -111,7 +107,7 @@ class Client(private val configuration: Contract.Configuration) : Contract.DataD
         }
 
         override fun onError(exception: Exception) {
-            onError(exception)
+            this@toListener.onError(exception)
         }
     }
 }

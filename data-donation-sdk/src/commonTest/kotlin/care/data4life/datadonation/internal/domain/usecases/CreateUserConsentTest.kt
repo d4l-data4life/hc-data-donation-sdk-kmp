@@ -33,7 +33,6 @@
 package care.data4life.datadonation.internal.domain.usecases
 
 import care.data4life.datadonation.internal.data.model.DummyData
-import care.data4life.datadonation.internal.domain.repositories.CredentialsRepository
 import care.data4life.datadonation.internal.domain.repositories.RegistrationRepository
 import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
 import io.mockk.*
@@ -57,7 +56,7 @@ abstract class CreateUserConsentTest {
         creteUser.withParams(
             CreateUserConsent.Parameters(
                 DummyData.keyPair,
-                "version",
+                1,
                 "language"
             )
         ).execute()
@@ -81,7 +80,7 @@ abstract class CreateUserConsentTest {
         creteUser.withParams(
             CreateUserConsent.Parameters(
                 null,
-                "version",
+                1,
                 "language"
             )
         ).execute()
@@ -96,4 +95,3 @@ abstract class CreateUserConsentTest {
     }
 
 }
-
