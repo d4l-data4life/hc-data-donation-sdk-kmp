@@ -49,3 +49,6 @@ DerivedData/
 *.dSYM.zip
 *.dSYM
 Pods/
+
+#HELPER
+*.LOG

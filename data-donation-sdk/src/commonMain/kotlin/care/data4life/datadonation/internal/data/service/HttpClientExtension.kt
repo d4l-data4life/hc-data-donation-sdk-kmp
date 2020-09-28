@@ -32,30 +32,63 @@
 
 package care.data4life.datadonation.internal.data.service
 
+import care.data4life.datadonation.core.model.Environment
 import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 
 suspend inline fun <reified T> HttpClient.getWithQuery(
-    accessToken: String,
+    environment: Environment,
+    accessToken: String? = null,
     baseUrl: String,
     path: String,
     block: HttpRequestBuilder.() -> Unit = {}
 ): T =
-    get(scheme = "https", host = baseUrl, path = path) {
-        header("Authorization", "Bearer $accessToken")
+    get(
+        scheme = if (environment == Environment.LOCAL) "http" else "https",
+        host = baseUrl, path = path
+    ) {
+        if (accessToken != null) {
+            header(
+                "Authorization", "Bearer $accessToken"
+            )
+        }
         contentType(ContentType.Application.Json)
         apply(block)
     }
 
-suspend inline fun <reified T> HttpClient.postWithBody(
-    accessToken: String,
-
+suspend inline fun <reified T> HttpClient.putWithBody(
+    environment: Environment,
+    accessToken: String? = null,
     baseUrl: String,
     path: String,
     body: Any,
     block: HttpRequestBuilder.() -> Unit = {}
-): T = post(scheme = "https", host = baseUrl, path = path) {
+): T = put(
+    scheme = if (environment == Environment.LOCAL) "http" else "https",
+    host = baseUrl, path = path
+) {
+    if (accessToken != null) {
+        header(
+            "Authorization", "Bearer $accessToken"
+        )
+    }
+    contentType(ContentType.Application.Json)
+    this.body = body
+    apply(block)
+}
+
+suspend inline fun <reified T> HttpClient.postWithBody(
+    environment: Environment,
+    accessToken: String,
+    baseUrl: String,
+    path: String,
+    body: Any,
+    block: HttpRequestBuilder.() -> Unit = {}
+): T = post(
+    scheme = if (environment == Environment.LOCAL) "http" else "https",
+    host = baseUrl, path = path
+) {
     header("Authorization", "Bearer $accessToken")
     contentType(ContentType.Application.Json)
     this.body = body
@@ -63,12 +96,16 @@ suspend inline fun <reified T> HttpClient.postWithBody(
 }
 
 suspend inline fun <reified T> HttpClient.deleteWithBody(
+    environment: Environment,
     accessToken: String,
     baseUrl: String,
     path: String,
     body: Any,
     block: HttpRequestBuilder.() -> Unit = {}
-): T = delete(scheme = "https", host = baseUrl, path = path) {
+): T = delete(
+    scheme = if (environment == Environment.LOCAL) "http" else "https",
+    host = baseUrl, path = path
+) {
     header("Authorization", "Bearer $accessToken")
     contentType(ContentType.Application.Json)
     this.body = body

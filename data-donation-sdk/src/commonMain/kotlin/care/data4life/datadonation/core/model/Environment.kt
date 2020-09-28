@@ -33,7 +33,7 @@
 package care.data4life.datadonation.core.model
 
 enum class Environment(val url: String) {
-    LOCAL("api.data4life.local"),
+    LOCAL("localhost"),
     DEV("api-phdp-dev.hpsgc.de"),
     SANDBOX("api-phdp-sandbox.hpsgc.de"),
     STAGING("api-staging.data4life.care"),
