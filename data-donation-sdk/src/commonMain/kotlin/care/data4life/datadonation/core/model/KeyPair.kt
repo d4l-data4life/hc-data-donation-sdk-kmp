@@ -49,5 +49,6 @@ data class KeyPair(val public : ByteArray,val private:ByteArray) {
         var result = public.contentHashCode()
         result = 31 * result + private.contentHashCode()
         return result
+
     }
 }

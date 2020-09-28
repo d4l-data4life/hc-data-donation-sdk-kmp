@@ -30,16 +30,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.encryption
+package care.data4life.datadonation.internal.domain.repositories
 
-import care.data4life.datadonation.encryption.protos.Keyset
-import care.data4life.datadonation.encryption.protos.RsaSsaPrivateKey
-import kotlinx.serialization.protobuf.ProtoBuf
+import care.data4life.datadonation.core.model.UserConsent
+import care.data4life.datadonation.internal.data.store.UserSessionTokenDataStore
 
+internal class UserConsentRepository(
+    private val remote: Remote,
+    private val sessionToken: UserSessionTokenDataStore
+) {
 
-expect class RsaPss() : SignatureKey
+    suspend fun createUserConsent(version: String, language: String?) =
+        remote.createUserConsent(sessionToken.getUserSessionToken()!!, version, language)
 
-fun RsaPss.export(): RsaSsaPrivateKey =
-    ProtoBuf.decodeFromByteArray(Keyset.serializer(), serialized()).key.first().key_data.value
-        .let { ProtoBuf.decodeFromByteArray(RsaSsaPrivateKey.serializer(), it) }
+    suspend fun fetchUserConsents(): List<UserConsent> =
+        remote.fetchUserConsents(sessionToken.getUserSessionToken()!!)
 
+    suspend fun signUserConsent(message: String): String =
+        remote.signUserConsent(sessionToken.getUserSessionToken()!!, message)
+
+    suspend fun revokeUserConsent(language: String?) =
+        remote.revokeUserConsent(sessionToken.getUserSessionToken()!!, language)
+
+    interface Remote {
+        suspend fun createUserConsent(accessToken: String, version: String, language: String?)
+        suspend fun fetchUserConsents(accessToken: String): List<UserConsent>
+        suspend fun signUserConsent(accessToken: String, message: String): String
+        suspend fun revokeUserConsent(accessToken: String, language: String?)
+    }
+}

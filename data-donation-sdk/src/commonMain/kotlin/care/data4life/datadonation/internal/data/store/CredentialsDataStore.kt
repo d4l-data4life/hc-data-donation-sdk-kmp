@@ -30,16 +30,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.encryption
+package care.data4life.datadonation.internal.data.store
 
-import care.data4life.datadonation.encryption.protos.Keyset
-import care.data4life.datadonation.encryption.protos.RsaSsaPrivateKey
-import kotlinx.serialization.protobuf.ProtoBuf
+internal interface CredentialsDataStore {
 
+    fun getDataDonationPublicKey(): String
 
-expect class RsaPss() : SignatureKey
-
-fun RsaPss.export(): RsaSsaPrivateKey =
-    ProtoBuf.decodeFromByteArray(Keyset.serializer(), serialized()).key.first().key_data.value
-        .let { ProtoBuf.decodeFromByteArray(RsaSsaPrivateKey.serializer(), it) }
-
+}

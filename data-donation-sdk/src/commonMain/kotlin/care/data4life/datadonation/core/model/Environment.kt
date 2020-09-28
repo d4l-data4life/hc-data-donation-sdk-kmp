@@ -30,16 +30,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.encryption
+package care.data4life.datadonation.core.model
 
-import care.data4life.datadonation.encryption.protos.Keyset
-import care.data4life.datadonation.encryption.protos.RsaSsaPrivateKey
-import kotlinx.serialization.protobuf.ProtoBuf
-
-
-expect class RsaPss() : SignatureKey
-
-fun RsaPss.export(): RsaSsaPrivateKey =
-    ProtoBuf.decodeFromByteArray(Keyset.serializer(), serialized()).key.first().key_data.value
-        .let { ProtoBuf.decodeFromByteArray(RsaSsaPrivateKey.serializer(), it) }
-
+enum class Environment(val url: String) {
+    LOCAL("api.data4life.local"),
+    DEV("api-phdp-dev.hpsgc.de"),
+    SANDBOX("api-phdp-sandbox.hpsgc.de"),
+    STAGING("api-staging.data4life.care"),
+    PRODUCTION("api.data4life.care")
+}

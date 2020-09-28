@@ -30,41 +30,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.presentation.common
+package care.data4life.datadonation.internal.domain.repositories
 
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
-import org.koin.core.KoinComponent
-import kotlin.coroutines.CoroutineContext
+internal class RegistrationRepository(private val remote: Remote) {
 
-expect val defaultDispatcher: CoroutineDispatcher
+    suspend fun requestRegistrationToken() = remote.requestRegistrationToken()
 
-internal expect fun printThrowable(t: Throwable)
+    suspend fun registerNewDonor(data: ByteArray) = remote.registerNewDonor(data)
 
-open class CommonViewModel : KoinComponent {
-    internal val clientScope =
-        MainScope(
-            defaultDispatcher
-        )
-
-    protected open fun onCleared() {
-        clientScope.job.cancel()
-    }
-}
-
-internal class MainScope(private val mainContext: CoroutineContext) : CoroutineScope {
-    override val coroutineContext: CoroutineContext
-        get() = mainContext + job + exceptionHandler
-
-    internal val job = SupervisorJob()
-    private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        showError(throwable)
-    }
-
-    //TODO: Some way of exposing this to the caller without trapping a reference and freezing it.
-    private fun showError(t: Throwable) {
-        printThrowable(t)
+    interface Remote {
+        suspend fun requestRegistrationToken(): String
+        suspend fun registerNewDonor(data: ByteArray)
     }
 }

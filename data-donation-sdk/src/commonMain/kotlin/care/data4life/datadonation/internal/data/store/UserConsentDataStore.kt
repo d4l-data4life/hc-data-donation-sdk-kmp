@@ -30,16 +30,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.encryption
+package care.data4life.datadonation.internal.data.store
 
-import care.data4life.datadonation.encryption.protos.Keyset
-import care.data4life.datadonation.encryption.protos.RsaSsaPrivateKey
-import kotlinx.serialization.protobuf.ProtoBuf
+import care.data4life.datadonation.core.model.UserConsent
+import care.data4life.datadonation.internal.data.service.ConsentService
+import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
 
+internal class UserConsentDataStore(private val service: ConsentService): UserConsentRepository.Remote {
 
-expect class RsaPss() : SignatureKey
+    override suspend fun createUserConsent(accessToken: String, version: String, language: String?) {
+        service.createUserConsent(accessToken, version, language)
+    }
 
-fun RsaPss.export(): RsaSsaPrivateKey =
-    ProtoBuf.decodeFromByteArray(Keyset.serializer(), serialized()).key.first().key_data.value
-        .let { ProtoBuf.decodeFromByteArray(RsaSsaPrivateKey.serializer(), it) }
+    override suspend fun fetchUserConsents(accessToken: String): List<UserConsent> =
+        service.fetchUserConsents(accessToken, false)
 
+    override suspend fun signUserConsent(accessToken: String, message: String): String =
+        service.requestSignature(accessToken, message).signature
+
+    override suspend fun revokeUserConsent(accessToken: String, language: String?) =
+        service.revokeUserConsent(accessToken, language)
+}

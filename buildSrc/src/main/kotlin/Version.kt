@@ -73,9 +73,11 @@ object Version {
     //Encryption
     const val tinkAndroid = "1.4.0"
 
+    const val dateTime = "0.1.0"
+
     // Junit Test
     const val testJUnit = "4.13"
 
     // http://mockk.io
-    const val testMockk = "1.8.12"
+    const val testMockk = "1.10.0"
 }

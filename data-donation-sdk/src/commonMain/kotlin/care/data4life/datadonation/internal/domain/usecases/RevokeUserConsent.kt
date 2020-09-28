@@ -30,16 +30,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.encryption
+package care.data4life.datadonation.internal.domain.usecases
 
-import care.data4life.datadonation.encryption.protos.Keyset
-import care.data4life.datadonation.encryption.protos.RsaSsaPrivateKey
-import kotlinx.serialization.protobuf.ProtoBuf
+import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
 
+internal class RevokeUserConsent(
+    private val consentRepository: UserConsentRepository,
+) : ParameterizedUsecase<RevokeUserConsent.Parameters, Unit>() {
 
-expect class RsaPss() : SignatureKey
+    override suspend fun execute() {
+        consentRepository.revokeUserConsent(parameter.language)
+    }
 
-fun RsaPss.export(): RsaSsaPrivateKey =
-    ProtoBuf.decodeFromByteArray(Keyset.serializer(), serialized()).key.first().key_data.value
-        .let { ProtoBuf.decodeFromByteArray(RsaSsaPrivateKey.serializer(), it) }
-
+    data class Parameters(val language: String?)
+}

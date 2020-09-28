@@ -30,16 +30,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.encryption
+package care.data4life.datadonation.internal.data.store
 
-import care.data4life.datadonation.encryption.protos.Keyset
-import care.data4life.datadonation.encryption.protos.RsaSsaPrivateKey
-import kotlinx.serialization.protobuf.ProtoBuf
+import care.data4life.datadonation.internal.data.service.ConsentService
+import care.data4life.datadonation.core.model.ConsentDocument
+import care.data4life.datadonation.internal.domain.repositories.ConsentDocumentRepository
 
+internal class ConsentDocumentDataStore(private val service: ConsentService) :
+    ConsentDocumentRepository.Remote {
 
-expect class RsaPss() : SignatureKey
+    override suspend fun fetchConsentDocuments(
+        accessToken: String,
+        version: String?,
+        language: String?
+    ): List<ConsentDocument> =
+        service.fetchConsentDocuments(accessToken, version, language)
 
-fun RsaPss.export(): RsaSsaPrivateKey =
-    ProtoBuf.decodeFromByteArray(Keyset.serializer(), serialized()).key.first().key_data.value
-        .let { ProtoBuf.decodeFromByteArray(RsaSsaPrivateKey.serializer(), it) }
-
+}

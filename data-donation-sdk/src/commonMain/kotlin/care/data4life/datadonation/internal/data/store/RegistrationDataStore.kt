@@ -30,16 +30,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.encryption
+package care.data4life.datadonation.internal.data.store
 
-import care.data4life.datadonation.encryption.protos.Keyset
-import care.data4life.datadonation.encryption.protos.RsaSsaPrivateKey
-import kotlinx.serialization.protobuf.ProtoBuf
+import care.data4life.datadonation.internal.data.service.DonationService
+import care.data4life.datadonation.internal.domain.repositories.RegistrationRepository
 
+internal class RegistrationDataStore(val donationService: DonationService): RegistrationRepository.Remote {
 
-expect class RsaPss() : SignatureKey
+    override suspend fun requestRegistrationToken() = donationService.requestRegistrationToken()
 
-fun RsaPss.export(): RsaSsaPrivateKey =
-    ProtoBuf.decodeFromByteArray(Keyset.serializer(), serialized()).key.first().key_data.value
-        .let { ProtoBuf.decodeFromByteArray(RsaSsaPrivateKey.serializer(), it) }
+    override suspend fun registerNewDonor(data: ByteArray) = donationService.registerNewDonor(data)
 
+}

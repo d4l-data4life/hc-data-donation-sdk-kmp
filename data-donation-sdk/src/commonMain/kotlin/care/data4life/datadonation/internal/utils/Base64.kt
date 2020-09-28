@@ -30,16 +30,26 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.encryption
+package care.data4life.datadonation.internal.utils
 
-import care.data4life.datadonation.encryption.protos.Keyset
-import care.data4life.datadonation.encryption.protos.RsaSsaPrivateKey
-import kotlinx.serialization.protobuf.ProtoBuf
+import io.ktor.utils.io.charsets.*
 
+interface Base64Encoder {
+    fun encode(src: ByteArray): String
+    fun decode(src: ByteArray, charset: Charset): String
+}
 
-expect class RsaPss() : SignatureKey
+object Base64Factory {
+    fun createEncoder(): Base64Encoder = CommonBase64Encoder
+}
 
-fun RsaPss.export(): RsaSsaPrivateKey =
-    ProtoBuf.decodeFromByteArray(Keyset.serializer(), serialized()).key.first().key_data.value
-        .let { ProtoBuf.decodeFromByteArray(RsaSsaPrivateKey.serializer(), it) }
+object CommonBase64Encoder : Base64Encoder {
 
+    override fun encode(src: ByteArray): String {
+        TODO("Not yet implemented")
+    }
+
+    override fun decode(src: ByteArray, charset: Charset): String {
+        TODO("Not yet implemented")
+    }
+}

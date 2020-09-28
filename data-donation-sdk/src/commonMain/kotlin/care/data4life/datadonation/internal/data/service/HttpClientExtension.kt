@@ -30,16 +30,48 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.encryption
+package care.data4life.datadonation.internal.data.service
 
-import care.data4life.datadonation.encryption.protos.Keyset
-import care.data4life.datadonation.encryption.protos.RsaSsaPrivateKey
-import kotlinx.serialization.protobuf.ProtoBuf
+import io.ktor.client.HttpClient
+import io.ktor.client.request.*
+import io.ktor.client.request.post
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
 
+suspend inline fun <reified T> HttpClient.getWithQuery(
+    accessToken: String,
+    baseUrl: String,
+    path: String,
+    block: HttpRequestBuilder.() -> Unit = {}
+): T =
+    get(scheme = "https", host = baseUrl, path = path) {
+        header("Authorization", "Bearer $accessToken")
+        contentType(ContentType.Application.Json)
+        apply(block)
+    }
 
-expect class RsaPss() : SignatureKey
+suspend inline fun <reified T> HttpClient.postWithBody(
+    accessToken: String,
+    baseUrl: String,
+    path: String,
+    body: Any,
+    block: HttpRequestBuilder.() -> Unit = {}
+): T = post(scheme = "https", host = baseUrl, path = path) {
+    header("Authorization", "Bearer $accessToken")
+    contentType(ContentType.Application.Json)
+    this.body = body
+    apply(block)
+}
 
-fun RsaPss.export(): RsaSsaPrivateKey =
-    ProtoBuf.decodeFromByteArray(Keyset.serializer(), serialized()).key.first().key_data.value
-        .let { ProtoBuf.decodeFromByteArray(RsaSsaPrivateKey.serializer(), it) }
-
+suspend inline fun <reified T> HttpClient.deleteWithBody(
+    accessToken: String,
+    baseUrl: String,
+    path: String,
+    body: Any,
+    block: HttpRequestBuilder.() -> Unit = {}
+): T = delete(scheme = "https", host = baseUrl, path = path) {
+    header("Authorization", "Bearer $accessToken")
+    contentType(ContentType.Application.Json)
+    this.body = body
+    apply(block)
+}

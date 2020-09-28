@@ -30,16 +30,46 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.encryption
+package care.data4life.datadonation.internal.data.service
 
-import care.data4life.datadonation.encryption.protos.Keyset
-import care.data4life.datadonation.encryption.protos.RsaSsaPrivateKey
-import kotlinx.serialization.protobuf.ProtoBuf
+import care.data4life.datadonation.core.model.Environment
+import care.data4life.datadonation.internal.data.model.DummyData
+import io.ktor.client.*
+import io.ktor.http.*
+import runTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
+internal abstract class DonationServiceTest : BaseServiceTest<DonationService>() {
 
-expect class RsaPss() : SignatureKey
+    private val token = "random_nonce"
 
-fun RsaPss.export(): RsaSsaPrivateKey =
-    ProtoBuf.decodeFromByteArray(Keyset.serializer(), serialized()).key.first().key_data.value
-        .let { ProtoBuf.decodeFromByteArray(RsaSsaPrivateKey.serializer(), it) }
+    override fun getService(httpClient: HttpClient, environment: Environment): DonationService =
+        DonationService(httpClient, environment)
 
+    @Test
+    fun requestRegistrationTokenTest() = runTest {
+        //Given
+        givenTextServiceResponseWith(token)
+
+        //When
+        val result = service.requestRegistrationToken()
+
+        //Then
+        assertEquals(result, token)
+        assertEquals(HttpMethod.Get, lastRequest.method)
+    }
+
+    @Test
+    fun registerNewDonorTest() = runTest {
+        //Given
+        givenServiceNoResponse()
+
+        //When
+        service.registerNewDonor(DummyData.rawData)
+
+        //Then
+        assertEquals(HttpMethod.Put, lastRequest.method)
+    }
+
+}

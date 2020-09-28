@@ -30,16 +30,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.encryption
+package care.data4life.datadonation.internal.domain.usecases
 
-import care.data4life.datadonation.encryption.protos.Keyset
-import care.data4life.datadonation.encryption.protos.RsaSsaPrivateKey
-import kotlinx.serialization.protobuf.ProtoBuf
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
+@RunWith(JUnit4::class)
+class CreateUserConsentAndroidTest : CreateUserConsentTest()
 
-expect class RsaPss() : SignatureKey
+@RunWith(JUnit4::class)
+class FetchDocumentConsentAndroidTest : FetchDocumentConsentTest()
 
-fun RsaPss.export(): RsaSsaPrivateKey =
-    ProtoBuf.decodeFromByteArray(Keyset.serializer(), serialized()).key.first().key_data.value
-        .let { ProtoBuf.decodeFromByteArray(RsaSsaPrivateKey.serializer(), it) }
+@RunWith(JUnit4::class)
+class RegisterNewDonorAndroidTest : RegisterNewDonorTest()
 

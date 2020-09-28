@@ -30,16 +30,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.encryption
+package care.data4life.datadonation.internal.domain.usecases
 
-import care.data4life.datadonation.encryption.protos.Keyset
-import care.data4life.datadonation.encryption.protos.RsaSsaPrivateKey
-import kotlinx.serialization.protobuf.ProtoBuf
+import care.data4life.datadonation.core.listener.ResultListener
 
+interface Usecase<ReturnType> {
 
-expect class RsaPss() : SignatureKey
+    suspend fun execute(): ReturnType
+}
 
-fun RsaPss.export(): RsaSsaPrivateKey =
-    ProtoBuf.decodeFromByteArray(Keyset.serializer(), serialized()).key.first().key_data.value
-        .let { ProtoBuf.decodeFromByteArray(RsaSsaPrivateKey.serializer(), it) }
+abstract class ParameterizedUsecase<Parameter : Any, ReturnType> : Usecase<ReturnType> {
 
+    protected lateinit var parameter: Parameter
+
+    fun withParams(parameter: Parameter): ParameterizedUsecase<Parameter, ReturnType> {
+        this.parameter = parameter
+        return this
+    }
+
+}
