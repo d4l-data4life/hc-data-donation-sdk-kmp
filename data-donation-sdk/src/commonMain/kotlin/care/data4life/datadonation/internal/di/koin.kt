@@ -32,8 +32,21 @@
 
 package care.data4life.datadonation.internal.di
 
-import care.data4life.datadonation.core.model.KeyPair
-import care.data4life.datadonation.internal.data.store.UserSessionTokenDataStore
+import care.data4life.datadonation.Contract
+import care.data4life.datadonation.encryption.hybrid.HybridEncryptor
+import care.data4life.datadonation.encryption.hybrid.HybridEncryptorFactory
+import care.data4life.datadonation.internal.data.service.ConsentService
+import care.data4life.datadonation.internal.data.service.DonationService
+import care.data4life.datadonation.internal.data.store.*
+import care.data4life.datadonation.internal.domain.repositories.ConsentDocumentRepository
+import care.data4life.datadonation.internal.domain.repositories.CredentialsRepository
+import care.data4life.datadonation.internal.domain.repositories.RegistrationRepository
+import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
+import care.data4life.datadonation.internal.domain.usecases.RegisterNewDonor
+import care.data4life.datadonation.internal.utils.Base64Factory
+import io.ktor.client.HttpClient
+import io.ktor.client.features.json.JsonFeature
+import io.ktor.client.features.json.serializer.KotlinxSerializer
 import org.koin.core.KoinApplication
 import org.koin.core.module.Module
 import org.koin.dsl.koinApplication
@@ -45,31 +58,63 @@ internal object DataDonationKoinContext {
     lateinit var koinApp: KoinApplication
 }
 
-internal fun initKoin(donationKeyPair: KeyPair?, getUserSessionToken: () -> String?) {
+internal fun initKoin(configuration: Contract.Configuration): KoinApplication {
     DataDonationKoinContext.koinApp = koinApplication {
         modules(
             module {
-                single<UserSessionTokenDataStore> {
-                    object : UserSessionTokenDataStore {
-                        override fun getUserSessionToken(): String? = getUserSessionToken()
+                single<CredentialsDataStore> {
+                    object : CredentialsDataStore {
+                        override fun getDataDonationPublicKey(): String =
+                            configuration.getServicePublicKey()
                     }
                 }
+                single<UserSessionTokenDataStore> {
+                    object : UserSessionTokenDataStore {
+                        override fun getUserSessionToken(): String? =
+                            configuration.getUserSessionToken()
+                    }
+                }
+                single { configuration.getEnvironment() }
             },
             platformModule,
             coreModule
         )
     }
+    return DataDonationKoinContext.koinApp
 }
 
 private val coreModule = module {
 
+    single {
+        HttpClient {
+            install(JsonFeature) {
+                serializer =
+                    KotlinxSerializer()
+            }
+        }
+    }
+
+    single<HybridEncryptor> { HybridEncryptorFactory(get()).createEncryptor() }
+
+    //Services
+    single { ConsentService(get(), get()) }
+    single { DonationService(get(), get()) }
+
+
     //DataStores
+    single<UserConsentRepository.Remote> { UserConsentDataStore(get()) }
+    single<RegistrationRepository.Remote> { RegistrationDataStore(get()) }
+    single<ConsentDocumentRepository.Remote> { ConsentDocumentDataStore(get()) }
 
 
     //Repositories
-
+    single { UserConsentRepository(get(), get()) }
+    single { RegistrationRepository(get()) }
+    single { ConsentDocumentRepository(get(), get()) }
+    single { CredentialsRepository(get()) }
 
     //Usecases
+    single { RegisterNewDonor(get(), get(), get(), Base64Factory.createEncoder() ) }
 
 }
 

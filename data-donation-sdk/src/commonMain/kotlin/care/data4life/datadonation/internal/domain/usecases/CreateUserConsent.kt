@@ -30,47 +30,37 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation
+package care.data4life.datadonation.internal.domain.usecases
 
-import care.data4life.datadonation.core.listener.Callback
-import care.data4life.datadonation.core.listener.ResultListener
-import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.UserConsent
+import care.data4life.datadonation.encryption.RsaPss
+import care.data4life.datadonation.encryption.SignatureKey
+import care.data4life.datadonation.encryption.protos.RsaSsaPrivateKey
+import care.data4life.datadonation.internal.domain.repositories.CredentialsRepository
+import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
 
-interface Contract {
+internal class CreateUserConsent(
+    private val consentRepository: UserConsentRepository,
+    private val registerNewDonor: RegisterNewDonor
+) :
+    ParameterizedUsecase<CreateUserConsent.Parameters, Pair<UserConsent, KeyPair>>() {
 
-    interface Configuration {
-        fun getServicePublicKey(): String
-        fun getDonorKeyPair(): KeyPair?
-        fun getUserSessionToken(): String?
-        fun getEnvironment(): Environment
+    override suspend fun execute(): Pair<UserConsent, KeyPair> {
+        consentRepository.createUserConsent(parameter.version, parameter.language)
+        // Not sure if we really need to return the UserConsent here since it is not returned by `createUserConsent`
+        val userConsent = consentRepository.fetchUserConsents().first()
+        return if (parameter.keyPair == null) {
+            // TODO when rsapss-mpp-encryption branch is merged
+            // val newKeyPair = SignatureKeyPrivate(2048, Algorithm.RsaPSS).let { KeyPair(it.serializedPublic(), it.serializedPrivate()) }
+            val newKeyPair = KeyPair(ByteArray(0), ByteArray(0))
+            registerNewDonor.withParams(newKeyPair).execute()
+            Pair(userConsent, newKeyPair)
+        } else {
+            Pair(userConsent, parameter.keyPair!!)
+        }
     }
 
-    interface DataDonation {
-        fun fetchConsentDocument(
-            consentDocumentVersion: String?,
-            language: String?,
-            listener: ResultListener<List<ConsentDocument>>
-        )
-
-        fun createUserConsent(
-            consentDocumentVersion: String,
-            language: String?,
-            listener: ResultListener<Pair<UserConsent, KeyPair>>
-        )
-
-        fun fetchUserConsents(listener: ResultListener<List<UserConsent>>)
-
-        fun revokeUserConsent(language: String?, callback: Callback)
-
-        /** TODO Donation with FHIR models
-         * fun <T : DomainResource> donateResource(
-         * resource: T,
-         * callback: Callback)
-         * */
-    }
+    data class Parameters(val keyPair: KeyPair?, val version: String, val language: String?)
 }
-
-

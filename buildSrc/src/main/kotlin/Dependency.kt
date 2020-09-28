@@ -34,7 +34,8 @@ object Dependency {
             val stdlibAndroid = "org.jetbrains.kotlin:kotlin-stdlib:${Version.kotlin}"
 
             val testCommon = "org.jetbrains.kotlin:kotlin-test-common:${Version.kotlin}"
-            val testCommonAnnotations = "org.jetbrains.kotlin:kotlin-test-annotations-common:${Version.kotlin}"
+            val testCommonAnnotations =
+                "org.jetbrains.kotlin:kotlin-test-annotations-common:${Version.kotlin}"
             val testJvm = "org.jetbrains.kotlin:kotlin-test:${Version.kotlin}"
             val testJvmJunit = "org.jetbrains.kotlin:kotlin-test-junit:${Version.kotlin}"
         }
@@ -76,6 +77,10 @@ object Dependency {
             val iosJson = "io.ktor:ktor-client-json-native:${Version.ktor}"
             val commonSerialization = "io.ktor:ktor-client-serialization:${Version.ktor}"
             val androidSerialization = "io.ktor:ktor-client-serialization-jvm:${Version.ktor}"
+            val iosSerialization = "io.ktor:ktor-client-serialization-native:${Version.ktor}"
+            val mock = "io.ktor:ktor-client-mock:${Version.ktor}"
+            val jvmMock = "io.ktor:ktor-client-mock-jvm:${Version.ktor}"
+            val nativeMock = "io.ktor:ktor-client-mock-native:${Version.ktor}"
         }
 
         val serialization = Serialization
@@ -119,6 +124,15 @@ object Dependency {
         val multiplatformSettings =
             "com.russhwolf:multiplatform-settings:${Version.multiplatformSettings}"
 
+
+        val dateTime = "org.jetbrains.kotlinx:kotlinx-datetime:${Version.dateTime}"
+
+        val mockk = Mockk
+
+        object Mockk {
+            const val common = "io.mockk:mockk-common:${Version.testMockk}"
+            const val android = "io.mockk:mockk:${Version.testMockk}"
+        }
     }
 
     val test = Test
