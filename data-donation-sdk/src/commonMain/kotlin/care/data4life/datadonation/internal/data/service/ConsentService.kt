@@ -49,10 +49,15 @@ import kotlin.time.hours
 
 internal class ConsentService(
     private val client: HttpClient,
-    environment: Environment
+    private val environment: Environment
 ) {
 
-    private val baseUrl = "${environment.url}/consent/api/v1"
+    private val baseUrl = if (environment == Environment.LOCAL) {
+        "${environment.url}:8080/api/v1"
+    } else {
+        "${environment.url}/consent/api/v1"
+    }
+
 
     private lateinit var XSRFToken: String
     private var tokenFetched = LocalDateTime(1, 1, 1, 1, 1).toInstant(TimeZone.UTC)
@@ -61,7 +66,12 @@ internal class ConsentService(
     suspend fun getToken(accessToken: String): String {
         if (tokenFetched > Clock.System.now().minus(XSRF_VALIDITY.hours)) {
             tokenFetched = Clock.System.now()
-            val response = client.getWithQuery<HttpResponse>(accessToken, baseUrl, Endpoints.token)
+            val response = client.getWithQuery<HttpResponse>(
+                environment,
+                accessToken,
+                baseUrl,
+                Endpoints.token
+            )
             XSRFToken = response.headers[Headers.XSRFToken]!!
         }
         return XSRFToken
@@ -73,7 +83,7 @@ internal class ConsentService(
         version: Int?,
         language: String?
     ): List<ConsentDocument> {
-        return client.getWithQuery(accessToken, baseUrl, Endpoints.consentDocuments) {
+        return client.getWithQuery(environment, accessToken, baseUrl, Endpoints.consentDocuments) {
             parameter(Parameters.consentDocumentKey, defaultDonationConsentKey)
             parameter(Parameters.version, version)
             parameter(Parameters.language, language)
@@ -81,7 +91,7 @@ internal class ConsentService(
     }
 
     suspend fun fetchUserConsents(accessToken: String, latest: Boolean?): List<UserConsent> {
-        return client.getWithQuery(accessToken, baseUrl, Endpoints.userConsents) {
+        return client.getWithQuery(environment, accessToken, baseUrl, Endpoints.userConsents) {
             parameter(Parameters.userConsentDocumentKey, defaultDonationConsentKey)
             parameter(Parameters.latest, latest)
         }
@@ -91,8 +101,9 @@ internal class ConsentService(
         accessToken: String,
         version: Int,
         language: String?
-    ): TokenVerificationResult {
+    ) {
         return client.postWithBody(
+            environment,
             accessToken,
             baseUrl,
             Endpoints.userConsents,
@@ -109,6 +120,7 @@ internal class ConsentService(
 
     suspend fun requestSignature(accessToken: String, message: String): ConsentSignature {
         return client.postWithBody(
+            environment,
             accessToken,
             baseUrl,
             "${Endpoints.userConsents}/$defaultDonationConsentKey/signatures",
@@ -117,11 +129,14 @@ internal class ConsentService(
                 message,
                 ConsentSignatureType.ConsentOnce.apiValue
             )
-        )
+        ) {
+            header(Headers.XSRFToken, getToken(accessToken))
+        }
     }
 
     suspend fun revokeUserConsent(accessToken: String, language: String?) {
         return client.deleteWithBody(
+            environment,
             accessToken,
             baseUrl,
             Endpoints.userConsents,
