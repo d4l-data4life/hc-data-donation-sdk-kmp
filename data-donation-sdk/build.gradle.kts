@@ -69,12 +69,17 @@ kotlin {
 
                 implementation(Dependency.Multiplatform.serialization.common)
                 implementation(Dependency.Multiplatform.serialization.protobuf)
+
+                implementation(Dependency.Multiplatform.dateTime)
             }
         }
         commonTest {
             dependencies {
                 implementation(Dependency.Multiplatform.kotlin.testCommon)
                 implementation(Dependency.Multiplatform.kotlin.testCommonAnnotations)
+                implementation(Dependency.Multiplatform.mockk.common)
+                implementation(Dependency.Multiplatform.koin.test)
+                implementation(Dependency.Multiplatform.ktor.mock)
             }
         }
 
@@ -100,6 +105,7 @@ kotlin {
             dependencies {
                 implementation(Dependency.Multiplatform.kotlin.testJvm)
                 implementation(Dependency.Multiplatform.kotlin.testJvmJunit)
+                implementation(Dependency.Multiplatform.mockk.android)
                 dependsOn(commonTest.get())
             }
         }

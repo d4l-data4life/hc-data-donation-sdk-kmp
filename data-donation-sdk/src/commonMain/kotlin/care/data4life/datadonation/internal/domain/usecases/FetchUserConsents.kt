@@ -30,22 +30,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.core.model
+package care.data4life.datadonation.internal.domain.usecases
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import care.data4life.datadonation.core.model.UserConsent
+import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
 
+internal class FetchUserConsents(private val consentRepository: UserConsentRepository) :
+    Usecase<List<UserConsent>> {
+    override suspend fun execute(): List<UserConsent> = consentRepository.fetchUserConsents()
 
-@Serializable
-data class ConsentDocument(
-    val key: String,
-    val version: Int,
-    val processor: String,
-    val description: String,
-    val recipient: String,
-    val language: String,
-    val text: String,
-    val requiresToken: Boolean = false,
-    @SerialName("studyID") val studyId: String = "",
-    val programName: String
-)
+}

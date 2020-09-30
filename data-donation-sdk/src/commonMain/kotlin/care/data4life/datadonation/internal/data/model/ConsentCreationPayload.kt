@@ -30,10 +30,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.domain.usecases
+package care.data4life.datadonation.internal.data.model
 
-interface Usecase<ReturnType> {
+import kotlinx.serialization.Serializable
 
-    suspend fun execute(): ReturnType
-
-}
+@Serializable
+data class ConsentCreationPayload(
+    val consentDocumentKey: String,
+    val consentDocumentVersion: String,
+    val consentDate: String,
+    val notificationLanguage: String
+)

@@ -30,14 +30,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.presentation.common
+package care.data4life.datadonation.internal.utils
 
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
+import care.data4life.datadonation.internal.data.model.RegistrationRequest
+import care.data4life.datadonation.internal.data.model.SignedConsentMessage
+import kotlinx.serialization.json.Json
 
-actual val defaultDispatcher: CoroutineDispatcher
-    get() = Dispatchers.Main
+internal fun RegistrationRequest.toJsonString() =
+    Json.encodeToString(RegistrationRequest.serializer(), this)
 
-internal actual fun printThrowable(t: Throwable) {
-    t.printStackTrace()
-}
+
+internal fun SignedConsentMessage.toJsonString() =
+    Json.encodeToString(SignedConsentMessage.serializer(), this)

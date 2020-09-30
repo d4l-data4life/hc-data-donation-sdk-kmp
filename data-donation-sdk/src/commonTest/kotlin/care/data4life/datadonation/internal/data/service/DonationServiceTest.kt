@@ -30,22 +30,46 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.core.model
+package care.data4life.datadonation.internal.data.service
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import care.data4life.datadonation.core.model.Environment
+import care.data4life.datadonation.internal.data.model.DummyData
+import io.ktor.client.*
+import io.ktor.http.*
+import runTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
+internal abstract class DonationServiceTest : BaseServiceTest<DonationService>() {
 
-@Serializable
-data class ConsentDocument(
-    val key: String,
-    val version: Int,
-    val processor: String,
-    val description: String,
-    val recipient: String,
-    val language: String,
-    val text: String,
-    val requiresToken: Boolean = false,
-    @SerialName("studyID") val studyId: String = "",
-    val programName: String
-)
+    private val token = "random_nonce"
+
+    override fun getService(httpClient: HttpClient, environment: Environment): DonationService =
+        DonationService(httpClient, environment)
+
+    @Test
+    fun requestRegistrationTokenTest() = runTest {
+        //Given
+        givenTextServiceResponseWith(token)
+
+        //When
+        val result = service.requestRegistrationToken()
+
+        //Then
+        assertEquals(result, token)
+        assertEquals(HttpMethod.Get, lastRequest.method)
+    }
+
+    @Test
+    fun registerNewDonorTest() = runTest {
+        //Given
+        givenServiceNoResponse()
+
+        //When
+        service.registerNewDonor(DummyData.rawData)
+
+        //Then
+        assertEquals(HttpMethod.Put, lastRequest.method)
+    }
+
+}

@@ -38,34 +38,80 @@ import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.di.initKoin
+import care.data4life.datadonation.internal.domain.usecases.*
+import care.data4life.datadonation.internal.domain.usecases.CreateUserConsent
+import care.data4life.datadonation.internal.domain.usecases.FetchConsentDocuments
+import care.data4life.datadonation.internal.domain.usecases.FetchUserConsents
+import care.data4life.datadonation.internal.domain.usecases.RevokeUserConsent
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
-class Client(donationKeyPair: KeyPair?, getUserSessionToken: () -> String?) : Contract.DataDonation {
+class Client(private val configuration: Contract.Configuration) : Contract.DataDonation {
 
-    init {
-        initKoin(donationKeyPair,getUserSessionToken)
-    }
+    private val koinApplication = initKoin(configuration)
+    private val createUserContent: CreateUserConsent by koinApplication.koin.inject()
+    private val fetchConsentDocuments: FetchConsentDocuments by koinApplication.koin.inject()
+    private val fetchUserConsents: FetchUserConsents by koinApplication.koin.inject()
+    private val revokeUserContent: RevokeUserConsent by koinApplication.koin.inject()
+
+    private val context = GlobalScope //TODO use proper CoroutineScope
 
     override fun fetchConsentDocument(
         consentDocumentVersion: String?,
         language: String?,
         listener: ResultListener<List<ConsentDocument>>
     ) {
-        TODO("Not yet implemented")
+        fetchConsentDocuments.withParams(
+            FetchConsentDocuments.Parameters(
+                consentDocumentVersion,
+                language
+            )
+        ).runForListener(listener)
     }
+
 
     override fun createUserConsent(
         consentDocumentVersion: String,
         language: String?,
-        callback: ResultListener<Pair<UserConsent, KeyPair>>
+        listener: ResultListener<Pair<UserConsent, KeyPair>>
     ) {
-        TODO("Not yet implemented")
+        createUserContent.withParams(
+            CreateUserConsent.Parameters(
+                configuration.getDonorKeyPair(),
+                consentDocumentVersion,
+                language
+            )
+        ).runForListener(listener)
     }
 
     override fun fetchUserConsents(listener: ResultListener<List<UserConsent>>) {
-        TODO("Not yet implemented")
+        fetchUserConsents.runForListener(listener)
     }
 
     override fun revokeUserConsent(language: String?, callback: Callback) {
-        TODO("Not yet implemented")
+        revokeUserContent.withParams(RevokeUserConsent.Parameters(language))
+            .runForListener(callback.toListener())
+    }
+
+    private fun <ReturnType : Any> Usecase<ReturnType>.runForListener(
+        listener: ResultListener<ReturnType>
+    ) {
+        context.launch {
+            try {
+                listener.onSuccess(this@runForListener.execute())
+            }catch (ex: Exception){
+                listener.onError(ex)
+            }
+        }
+    }
+
+    private fun Callback.toListener() = object : ResultListener<Unit> {
+        override fun onSuccess(t: Unit) {
+            onSuccess()
+        }
+
+        override fun onError(exception: Exception) {
+            onError(exception)
+        }
     }
 }
