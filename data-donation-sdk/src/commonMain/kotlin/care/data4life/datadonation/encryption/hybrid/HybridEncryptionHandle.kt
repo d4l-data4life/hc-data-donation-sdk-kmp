@@ -32,11 +32,7 @@
 
 package care.data4life.datadonation.encryption.hybrid
 
-internal class HybridEncryptionHandle(private val dataDonationPublicKey: String) :
-    HybridEncryptor {
 
-    override fun encrypt(plaintext: String): ByteArray {
-        TODO("Not yet implemented")
-    }
-
+internal expect class HybridEncryptionHandle : HybridEncryptor {
+    override fun encrypt(plaintext: ByteArray): ByteArray
 }

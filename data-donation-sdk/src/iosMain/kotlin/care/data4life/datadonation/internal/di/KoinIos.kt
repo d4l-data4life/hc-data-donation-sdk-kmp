@@ -32,8 +32,10 @@
 
 package care.data4life.datadonation.internal.di
 
+import care.data4life.datadonation.encryption.hybrid.HybridEncryptionHandle
+import care.data4life.datadonation.encryption.hybrid.HybridEncryptor
 import org.koin.dsl.module
 
 actual val platformModule = module {
-
+    single<HybridEncryptor> { HybridEncryptionHandle(get()) }
 }

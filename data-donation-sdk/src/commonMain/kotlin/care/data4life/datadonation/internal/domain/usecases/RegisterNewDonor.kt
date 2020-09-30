@@ -38,10 +38,9 @@ import care.data4life.datadonation.internal.data.model.RegistrationRequest
 import care.data4life.datadonation.internal.data.model.SignedConsentMessage
 import care.data4life.datadonation.internal.domain.repositories.RegistrationRepository
 import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
-import care.data4life.datadonation.internal.domain.usecases.RegisterNewDonor.*
 import care.data4life.datadonation.internal.utils.Base64Encoder
 import care.data4life.datadonation.internal.utils.toJsonString
-import kotlinx.serialization.json.Json
+import io.ktor.utils.io.core.*
 
 internal class RegisterNewDonor(
     private val registrationRepository: RegistrationRepository,
@@ -54,13 +53,14 @@ internal class RegisterNewDonor(
     override suspend fun execute() {
         val token = registrationRepository.requestRegistrationToken()
         val request = RegistrationRequest(base64encoder.encode(parameter.public), token)
-        val message = base64encoder.encode(encryptor.encrypt(request.toJsonString()))
+        // TODO Double check if String needs to be UTF-16 encode instead of UTF-8
+        val message = base64encoder.encode(encryptor.encrypt(request.toJsonString().toByteArray()))
         val signature = consentRepository.signUserConsent(message)
         val signedMessage = SignedConsentMessage(message, signature)
-        val payload = encryptor.encrypt(signedMessage.toJsonString())
+        // TODO Double check if String needs to be UTF-16 encode instead of UTF-8
+        val payload = encryptor.encrypt(signedMessage.toJsonString().toByteArray())
         registrationRepository.registerNewDonor(payload)
     }
 
 }
-
 

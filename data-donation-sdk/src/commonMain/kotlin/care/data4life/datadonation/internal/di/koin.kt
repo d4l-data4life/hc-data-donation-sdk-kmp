@@ -33,8 +33,6 @@
 package care.data4life.datadonation.internal.di
 
 import care.data4life.datadonation.Contract
-import care.data4life.datadonation.encryption.hybrid.HybridEncryptor
-import care.data4life.datadonation.encryption.hybrid.HybridEncryptorFactory
 import care.data4life.datadonation.internal.data.service.ConsentService
 import care.data4life.datadonation.internal.data.service.DonationService
 import care.data4life.datadonation.internal.data.store.*
@@ -104,7 +102,7 @@ private val coreModule = module {
         }
     }
 
-    single<HybridEncryptor> { HybridEncryptorFactory(get()).createEncryptor() }
+    //single<HybridEncryptor> { HybridEncryptorFactory(get()).createEncryptor() }
 
     //Services
     single { ConsentService(get(), get()) }

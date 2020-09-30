@@ -40,6 +40,7 @@ import care.data4life.datadonation.internal.domain.repositories.RegistrationRepo
 import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
 import care.data4life.datadonation.internal.utils.Base64Encoder
 import care.data4life.datadonation.internal.utils.toJsonString
+import io.ktor.utils.io.core.*
 import io.mockk.*
 import runTest
 import kotlin.test.Test
@@ -81,10 +82,10 @@ abstract class RegisterNewDonorTest {
         coVerify(ordering = Ordering.SEQUENCE){
             registrationRepository.requestRegistrationToken()
             base64Encoder.encode(DummyData.keyPair.public)
-            encryptor.encrypt(requestJsonString)
+            encryptor.encrypt(requestJsonString.toByteArray())
             base64Encoder.encode(dummyEncryptedRequest)
             userConsentRepository.signUserConsent(dummyEncryptedRequest64Encoded)
-            encryptor.encrypt(signedConsentJsonString)
+            encryptor.encrypt(signedConsentJsonString.toByteArray())
             registrationRepository.registerNewDonor(dummyEncryptedSignedMessage)
         }
     }
