@@ -63,7 +63,6 @@ class EncryptionSymmetricKeyNative : EncryptionSymmetricKey {
     constructor(key:ByteArray) {
         this.key = key
         this.cryptoWrapper = CryptoAES(key.toNSData())
-        //CryptoTest()
     }
 
 

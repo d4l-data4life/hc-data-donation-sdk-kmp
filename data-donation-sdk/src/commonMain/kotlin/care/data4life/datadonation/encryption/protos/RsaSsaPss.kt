@@ -174,12 +174,4 @@ enum class HashType {
 }
 
 
-@Serializable
-data class Aes(val todo: String):Asn1Exportable,PublicHandle {
-    override val publicKey: Asn1Exportable = TODO()
-    override fun toAsn1(): Asn1 = TODO()
-}
 
-interface PublicHandle {
-    val publicKey: Asn1Exportable
-}
