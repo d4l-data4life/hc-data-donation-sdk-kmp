@@ -41,17 +41,23 @@ import care.data4life.datadonation.encryption.hybrid.HybridEncryptor.Companion.R
 import care.data4life.datadonation.encryption.symmetric.EncryptionSymmetricKey
 import care.data4life.datadonation.internal.domain.repositories.CredentialsRepository
 import care.data4life.datadonation.internal.utils.CommonBase64Encoder
+import io.ktor.utils.io.bits.*
+import io.ktor.utils.io.core.*
 import io.ktor.utils.io.core.internal.*
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import org.junit.Before
 import org.junit.Test
+import java.nio.ByteBuffer
 import kotlin.test.assertEquals
 
 class HybridEncryptionTest {
 
     private val repository = mockk<CredentialsRepository>()
+    private val rsaKey =
+        EncryptionPrivateKey(RSA_KEY_SIZE_BITS, Algorithm.Asymmetric.RsaOAEP(HashSize.Hash256))
+    private val publicKeyBase64 = CommonBase64Encoder.encode(rsaKey.serializedPublic())
 
     @Before
     fun setup() {
@@ -62,34 +68,39 @@ class HybridEncryptionTest {
     @DangerousInternalIoApi
     fun `Generate, encrypt and decrypt`() {
         val plaintext = byteArrayOf(1, 2, 3, 4, 5)
-
-        val rsaKey =
-            EncryptionPrivateKey(RSA_KEY_SIZE_BITS, Algorithm.Asymmetric.RsaOAEP(HashSize.Hash256))
-        val publicKeyBase64 = CommonBase64Encoder.encode(rsaKey.serializedPublic())
-
         coEvery { repository.getDataDonationPublicKey() } returns publicKeyBase64
 
         val hybridEncryptedResult = HybridEncryptionHandle(repository).encrypt(plaintext)
+        // ciphertext same length as plaintext
+        // expected output size: 1 + 2 + encryptedKey.size (16) + iv.size (12) + 8 + ciphertext.size
         val expectedLength =
-            1 + 2 + AES_KEY_LENGTH + AES_IV_LENGTH + plaintext.size + AES_AUTH_TAG_LENGTH
+            1 + 2 + AES_KEY_LENGTH + AES_IV_LENGTH + 8 + plaintext.size + AES_AUTH_TAG_LENGTH
         assertEquals(hybridEncryptedResult.size, expectedLength)
 
-        // ciphertext same length as plaintext
-        // Output ByteArray size: 1 + 2 + encryptedKey.size (16) + iv.size (12) + 8 + ciphertext.size
-        val ciphertext = ByteArray(plaintext.size + AES_AUTH_TAG_LENGTH)
-        hybridEncryptedResult.copyInto(ciphertext, 0, 1 + 2 + AES_KEY_LENGTH + AES_IV_LENGTH)
+        val result = hybridEncryptionDecrypt(hybridEncryptedResult)
+        assertEquals(result.toString(), plaintext.toString())
+
+        coVerify { repository.getDataDonationPublicKey() }
+    }
+
+    @DangerousInternalIoApi
+    private fun hybridEncryptionDecrypt(hybridCiphertext: ByteArray): ByteArray {
+        val ciphertextSizeBytes = ByteArray(8)
+        hybridCiphertext.copyInto(ciphertextSizeBytes, 0, 1 + 2 + AES_KEY_LENGTH + AES_IV_LENGTH)
+        val ciphertextSize =
+            Buffer(Memory(ByteBuffer.wrap(ciphertextSizeBytes))).readULong().toInt()
+        hybridCiphertext.copyInto(ciphertextSizeBytes, 0, 1 + 2 + AES_KEY_LENGTH + AES_IV_LENGTH)
+        val ciphertext = ByteArray(ciphertextSize)
+        hybridCiphertext.copyInto(ciphertext, 0, 1 + 2 + AES_KEY_LENGTH + AES_IV_LENGTH + 8)
         val aesEncryptedKey = ByteArray(AES_KEY_LENGTH)
-        hybridEncryptedResult.copyInto(aesEncryptedKey, 0, 1 + 2)
+        hybridCiphertext.copyInto(aesEncryptedKey, 0, 1 + 2)
         val aesKeyResult = rsaKey.decrypt(aesEncryptedKey)
         val aesKey = EncryptionSymmetricKey(
             aesKeyResult.getOrThrow(),
             AES_KEY_LENGTH,
             Algorithm.Symmetric.AES(HashSize.Hash256)
         )
-
         val result = aesKey.decrypt(ciphertext, ByteArray(0))
-        assertEquals(result.getOrThrow().toString(), plaintext.toString())
-
-        coVerify { repository.getDataDonationPublicKey() }
+        return result.getOrThrow()
     }
 }
