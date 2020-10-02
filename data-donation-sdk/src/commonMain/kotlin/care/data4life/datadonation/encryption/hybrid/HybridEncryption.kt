@@ -38,7 +38,7 @@ interface HybridEncryption {
         const val HYBRID_ENCRYPTION_VERSION_AES_WITH_GCM = 2
         const val AES_IV_LENGTH = 12
         const val AES_AUTH_TAG_LENGTH = 16
-        const val AES_KEY_LENGTH = 32
+        const val AES_KEY_LENGTH = 256
         const val RSA_KEY_SIZE_BITS = 2048
     }
 

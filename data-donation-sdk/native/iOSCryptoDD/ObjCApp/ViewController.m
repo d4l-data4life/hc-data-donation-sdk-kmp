@@ -1,4 +1,5 @@
-//  BSD 3-Clause License
+//
+//  ViewController.m//  BSD 3-Clause License
 //
 //  Copyright (c) 2019, HPS Gesundheitscloud gGmbH
 //  All rights reserved.
@@ -27,12 +28,23 @@
 //  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 //  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 //  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-#import <Foundation/Foundation.h>
 
-//! Project version number for iOSCryptoDD.
-FOUNDATION_EXPORT double iOSCryptoDDVersionNumber;
+#import "ViewController.h"
+@import iOSCryptoDD;
 
-// In this header, you should import all the public headers of your framework using statements like #import <iOSCryptoDD/PublicHeader.h>
-@interface CryptoAES: NSObject;
+@interface ViewController ()
+
+@end
+
+@implementation ViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    // Do any additional setup after loading the view.
+
+    CryptoAES* cryptoAES = [[CryptoAES alloc] initWithKey:[@"string" dataUsingEncoding:NSUTF8StringEncoding]];
+    [cryptoAES encryptWithPlainText:[@"string" dataUsingEncoding:NSUTF8StringEncoding] associatedData:[@"string" dataUsingEncoding:NSUTF8StringEncoding]];
+    NSLog(@"Something To Print");
+}
 
 @end

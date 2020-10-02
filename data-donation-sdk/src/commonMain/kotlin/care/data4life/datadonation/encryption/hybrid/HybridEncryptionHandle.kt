@@ -58,7 +58,7 @@ internal class HybridEncryptionHandle(
             Algorithm.Asymmetric.RsaOAEP(HashSize.Hash256)
         )
         val encryptedAesPrivateKey = rsaPublicKey.encrypt(aesPrivateKey.serialized())
-        if (encryptedAesPrivateKey.size != HybridEncryption.AES_KEY_LENGTH) {
+        if (encryptedAesPrivateKey.size != (HybridEncryption.AES_KEY_LENGTH)) {
             throw IllegalStateException("Encrypted key size different than expected")
         }
 
@@ -68,9 +68,14 @@ internal class HybridEncryptionHandle(
 
         // AES encryption returns: iv + ciphertext (ciphertext includes authentication tag)
         val iv = ByteArray(HybridEncryption.AES_IV_LENGTH)
-        ivAndCiphertext.copyInto(iv, 0, 0)
+        ivAndCiphertext.copyInto(iv, 0, 0, HybridEncryption.AES_IV_LENGTH)
         val ciphertext = ByteArray(ivAndCiphertext.size - HybridEncryption.AES_IV_LENGTH)
-        ivAndCiphertext.copyInto(ciphertext, 0, HybridEncryption.AES_IV_LENGTH)
+        ivAndCiphertext.copyInto(
+            ciphertext,
+            0,
+            HybridEncryption.AES_IV_LENGTH,
+            ivAndCiphertext.size - HybridEncryption.AES_IV_LENGTH
+        )
 
         // Build output
         val payload = HybridEncryptionPayload(encryptedAesPrivateKey, iv, ciphertext)

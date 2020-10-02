@@ -32,6 +32,7 @@
 
 package care.data4life.datadonation.encryption.protos
 
+import care.data4life.datadonation.encryption.Asn1Exportable
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.protobuf.ProtoNumber
 
@@ -56,3 +57,7 @@ class KeyData(
     @ProtoNumber(2)
     val value: ByteArray
 )
+
+interface PublicHandle {
+    val publicKey: Asn1Exportable
+}

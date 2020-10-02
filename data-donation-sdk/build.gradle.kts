@@ -1,5 +1,6 @@
 plugins {
     kotlin("multiplatform")
+    kotlin("native.cocoapods")
     kotlin("plugin.serialization")
 
     // Android
@@ -130,11 +131,12 @@ kotlin {
             }
         }
 
-
          configure(listOf(targets.asMap["ios"]!!)) {
+             this as org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
             compilations["main"].kotlinOptions.freeCompilerArgs += mutableListOf(
-                "-include-binary", "$projectDir/Pods/Tink/Frameworks/Tink.framework/Tink.a"
+                //"-include-binary", "$projectDir/native/iOSCryptoDD/libiOSCryptoDD.a",
+                //"-include-binary", "$projectDir/native/iOSCryptoDD/libiOSCryptoStatic.a"
             )
             compilations.getByName("main") {
 
@@ -146,15 +148,33 @@ kotlin {
                     header("$projectDir/Pods/Tink/Frameworks/Tink.framework/Headers/Tink.h")
                 }
 
-                val cryptoSwift by cinterops.creating {
-                    packageName("crypto.swift")
-                    defFile = file("$projectDir/src/iosMain/cinterop/CryptoSwiftWrapper.def")
-                    headers("$projectDir/native/iOSCryptoDD.framework/Headers/iOSCryptoDD.h",
-                        "$projectDir/native/iOSCryptoDD.framework/Headers/iOSCryptoDD-Swift.h")
-                    includeDirs("$projectDir/native/iOSCryptoDD.framework/","$projectDir/native/cryptoSwift/")
+                val iOSDCryptoDD by cinterops.creating {
+                    packageName("crypto.dd")
+                    // Path to .def file
+                    defFile("src/iosMain/cinterop/iOSCryptoDD.def")
+
+                    // Directories for header search (an analogue of the -I<path> compiler option)
+                    includeDirs("$projectDir/native/iOSCryptoDD/iOSCryptoDD.framework/Headers")
+                    compilerOpts("-framework", "iOSCryptoDD", "-F$projectDir/native/iOSCryptoDD")
                 }
             }
+
+             binaries.all {
+                 // Tell the linker where the framework is located.
+                 linkerOpts("-framework", "iOSCryptoDD", "-F$projectDir/native/iOSCryptoDD/")
+             }
         }
+    }
+    cocoapods {
+        // Configure fields required by CocoaPods.
+        summary = "TODO"
+        homepage = "TODO"
+
+        ios.deploymentTarget = "13.5"
+        //pod("CryptoSwift","1.3.1")
+        //pod("CryptoSwift","1.3.2", project.file("/Users/alexandertizik/IdeaProjects/CryptoSwift/CryptoSwift.podspec"))
+        //pod("CryptoSwift","1.3.2", project.file("../data-donation-sdk/native/CryptoSwift/CryptoSwift.podspec"))
+        //pod("iOSCryptoDD","1.0.1", project.file("../data-donation-sdk/native/iOSCryptoDD/iOSCryptoDD.podspec"))
     }
 }
 
@@ -193,6 +213,35 @@ android {
         getByName("test") {
             java.setSrcDirs(setOf("src/androidTest/kotlin"))
             res.setSrcDirs(setOf("src/androidTest/res"))
+        }
+    }
+}
+
+with(tasks.create("iosWithLinkerTest")) {
+    this as org.gradle.api.DefaultTask
+    val linkTask = tasks.getByName("linkDebugTestIos") as org.jetbrains.kotlin.gradle.tasks.KotlinNativeLink
+    dependsOn(linkTask)
+    group = JavaBasePlugin.VERIFICATION_GROUP
+    description = "Runs tests for target 'ios' on an iOS simulator"
+    doLast {
+        val binary = linkTask.binary.outputFile
+        val device = "iPhone 8"
+        exec {
+            commandLine = listOf("xcrun", "simctl", "boot", device)
+            isIgnoreExitValue = true
+        }
+        exec {
+            environment("SIMCTL_CHILD_DYLD_FRAMEWORK_PATH", "$projectDir/native/iOSCryptoDD/")
+            commandLine = listOf(
+                "xcrun",
+                "simctl",
+                "spawn",
+                device,
+                binary.absolutePath
+            )
+        }
+        exec {
+            commandLine = listOf("xcrun", "simctl", "shutdown", device)
         }
     }
 }

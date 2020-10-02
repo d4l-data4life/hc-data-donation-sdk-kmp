@@ -35,7 +35,6 @@ package care.data4life.datadonation.encryption.signature
 import care.data4life.datadonation.encryption.*
 import platform.CoreFoundation.CFStringRef
 import platform.Security.*
-import crypto.swift.CryptoAES
 
 actual fun SignatureKeyPrivate(size: Int, algorithm: Algorithm.Signature): SignatureKeyPrivate {
     val params: Pair<CFStringRef, SecKeyAlgorithm> = algorithm.toAttributes()

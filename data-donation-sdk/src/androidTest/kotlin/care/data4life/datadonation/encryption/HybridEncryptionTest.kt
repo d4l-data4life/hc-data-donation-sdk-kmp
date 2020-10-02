@@ -80,16 +80,19 @@ class HybridEncryptionTest {
     @DangerousInternalIoApi
     private fun ByteArray.hybridDecrypt(): ByteArray {
         val ciphertextSizeBytes = ByteArray(8)
-        copyInto(ciphertextSizeBytes, 0, 1 + 2 + AES_KEY_LENGTH + AES_IV_LENGTH)
-        val ciphertextSize =
-            Buffer(Memory(ByteBuffer.wrap(ciphertextSizeBytes))).readULong().toInt()
-        copyInto(ciphertextSizeBytes, 0, 1 + 2 + AES_KEY_LENGTH + AES_IV_LENGTH)
+        val cipherTextPos = 1 + 2 + AES_KEY_LENGTH + AES_IV_LENGTH + 8
+        copyInto(ciphertextSizeBytes, 0, cipherTextPos - 8 , cipherTextPos)
+        val buffer = Buffer(Memory(ByteBuffer.wrap(ciphertextSizeBytes)))
+        buffer.resetForRead()
+        val ciphertextSize = buffer.readULong().toInt()
         // ciphertext decryption requires iv + ciphertext as input (ciphertext includes authentication tag)
         val ivAndCiphertext = ByteArray(AES_IV_LENGTH + ciphertextSize)
-        copyInto(ivAndCiphertext, 0, 1 + 2 + AES_KEY_LENGTH, AES_IV_LENGTH)
-        copyInto(ivAndCiphertext, 0, 1 + 2 + AES_KEY_LENGTH + AES_IV_LENGTH + 8)
+        val keyPos = 1 + 2
+        val ivPos = keyPos + AES_KEY_LENGTH
+        copyInto(ivAndCiphertext, 0, ivPos, ivPos + AES_IV_LENGTH)
+        copyInto(ivAndCiphertext, AES_IV_LENGTH, cipherTextPos, cipherTextPos + ciphertextSize)
         val aesEncryptedKey = ByteArray(AES_KEY_LENGTH)
-        copyInto(aesEncryptedKey, 0, 1 + 2)
+        copyInto(aesEncryptedKey, 0, keyPos, keyPos + AES_KEY_LENGTH)
         val aesKeyResult = rsaKey.decrypt(aesEncryptedKey)
         val aesKey = EncryptionSymmetricKey(
             aesKeyResult.getOrThrow(),

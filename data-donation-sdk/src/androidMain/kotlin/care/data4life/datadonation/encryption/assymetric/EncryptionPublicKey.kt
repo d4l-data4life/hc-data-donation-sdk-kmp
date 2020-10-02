@@ -36,6 +36,7 @@ import care.data4life.datadonation.encryption.Algorithm
 import org.bouncycastle.jce.provider.BouncyCastleProvider
 import java.security.*
 import java.security.spec.PKCS8EncodedKeySpec
+import java.security.spec.X509EncodedKeySpec
 import javax.crypto.Cipher
 
 
@@ -53,7 +54,7 @@ private fun publicKey(
     serializedKey: ByteArray
 ): Triple<KeyFactory, PublicKey, Cipher> {
     val keyAttributes = attributes(algorithm)
-    val spec = PKCS8EncodedKeySpec(serializedKey)
+    val spec = X509EncodedKeySpec(serializedKey)
     val factory = KeyFactory.getInstance(keyAttributes.second, bouncyCastleProvider)
     val key = factory.generatePublic(spec)
     val cipher = Cipher.getInstance(keyAttributes.first, bouncyCastleProvider)

@@ -36,7 +36,7 @@ import care.data4life.datadonation.encryption.KeyNative
 import care.data4life.datadonation.toByteArray
 import care.data4life.datadonation.toNSData
 
-import crypto.swift.CryptoAES
+import crypto.dd.CryptoAES
 import kotlinx.cinterop.addressOf
 import kotlinx.cinterop.usePinned
 import platform.Foundation.NSError
@@ -67,7 +67,7 @@ class EncryptionSymmetricKeyNative : EncryptionSymmetricKey {
 
 
     override fun decrypt(encrypted: ByteArray, associatedData: ByteArray): Result<ByteArray> = runCatching {
-        cryptoWrapper.decryptWithEncrypted(encrypted.toNSData(), associatedData.toNSData()).toByteArray()
+        cryptoWrapper.decryptWithEncrypted( encrypted.toNSData(), associatedData.toNSData())!!.toByteArray()
     }
 
     override fun serialized(): ByteArray = key
@@ -76,6 +76,6 @@ class EncryptionSymmetricKeyNative : EncryptionSymmetricKey {
         get() = TODO("Not yet implemented")
 
     override fun encrypt(plainText: ByteArray, associatedData: ByteArray): ByteArray =
-        cryptoWrapper.encryptWithPlainText(plainText.toNSData(),associatedData.toNSData()).toByteArray()
+        cryptoWrapper.encryptWithPlainText(plainText.toNSData(),associatedData.toNSData())!!.toByteArray()
 
 }

@@ -39,7 +39,7 @@ import kotlin.test.assertTrue
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-class EncryptionKeyCommonTest {
+class EncryptionAsymmetricKeyCommonTest {
 
     @BeforeTest
     fun setup() {
@@ -69,6 +69,12 @@ class EncryptionKeyCommonTest {
             assertTrue(public.contentEquals(serializedPublic()))
         }
 
+    }
+
+    @Test//TODO: add proper vaidation after parsing ASN1 is added
+    fun `Key is exported to valid ASN1 DER encoded value`() {
+        val key = EncryptionPrivateKey(2048, Algorithm.Asymmetric.RsaOAEP(HashSize.Hash256))
+        assertTrue(key.pkcs8Private.startsWith("MII"))
     }
 
 }
