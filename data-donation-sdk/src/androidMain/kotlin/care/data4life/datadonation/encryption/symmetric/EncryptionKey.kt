@@ -43,7 +43,7 @@ import com.google.crypto.tink.proto.AesGcmKeyFormat
 
 
 actual fun EncryptionSymmetricKey(size: Int, algorithm: Algorithm.Symmetric): EncryptionSymmetricKey {
-    val format = AesGcmKeyFormat.newBuilder().setKeySize(size).build()
+    val format = AesGcmKeyFormat.newBuilder().setKeySize(size/8).build()
     val tmpl = KeyTemplate.create(
         "type.googleapis.com/google.crypto.tink.AesGcmKey",
         format.toByteArray(),

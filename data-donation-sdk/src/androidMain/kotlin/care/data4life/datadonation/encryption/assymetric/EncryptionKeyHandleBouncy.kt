@@ -32,6 +32,7 @@
 
 package care.data4life.datadonation.encryption.assymetric
 
+import io.ktor.util.*
 import java.security.PrivateKey
 import java.security.PublicKey
 import java.security.SecureRandom
@@ -45,8 +46,9 @@ class EncryptionKeyPrivateHandleBouncy(
 
     override fun serializedPrivate(): ByteArray = privateKey.encoded
 
+    @OptIn(InternalAPI::class)
     override val pkcs8Private: String
-        get() = privateKey.encoded.toString()
+        get() = privateKey.encoded.encodeBase64()
 
     override fun decrypt(data: ByteArray): Result<ByteArray> {
         cipher.init(Cipher.DECRYPT_MODE, privateKey)
@@ -66,7 +68,8 @@ class EncryptionKeyPublicHandleBouncy(
 
     override fun serializedPublic(): ByteArray = publicKey.encoded
 
+    @OptIn(InternalAPI::class)
     override val pkcs8Public: String
-        get() = publicKey.encoded.toString()
+        get() = publicKey.encoded.encodeBase64()
 
 }
