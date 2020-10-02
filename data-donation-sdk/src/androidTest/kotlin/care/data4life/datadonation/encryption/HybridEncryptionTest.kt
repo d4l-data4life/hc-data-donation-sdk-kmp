@@ -64,7 +64,7 @@ class HybridEncryptionTest {
     @Test
     @DangerousInternalIoApi
     fun `Generate, encrypt and decrypt`() {
-        val plaintext = byteArrayOf(1, 2, 3, 4, 5)
+        val plaintext = byteArrayOf(1, 2, 3, 4, 5) // TODO make this data random one the test works properly
 
         val hybridEncryptedResult = handle.encrypt(plaintext)
         // ciphertext same length as plaintext
@@ -84,8 +84,10 @@ class HybridEncryptionTest {
         val ciphertextSize =
             Buffer(Memory(ByteBuffer.wrap(ciphertextSizeBytes))).readULong().toInt()
         copyInto(ciphertextSizeBytes, 0, 1 + 2 + AES_KEY_LENGTH + AES_IV_LENGTH)
-        val ciphertext = ByteArray(ciphertextSize)
-        copyInto(ciphertext, 0, 1 + 2 + AES_KEY_LENGTH + AES_IV_LENGTH + 8)
+        // ciphertext decryption requires iv + ciphertext as input (ciphertext includes authentication tag)
+        val ivAndCiphertext = ByteArray(AES_IV_LENGTH + ciphertextSize)
+        copyInto(ivAndCiphertext, 0, 1 + 2 + AES_KEY_LENGTH, AES_IV_LENGTH)
+        copyInto(ivAndCiphertext, 0, 1 + 2 + AES_KEY_LENGTH + AES_IV_LENGTH + 8)
         val aesEncryptedKey = ByteArray(AES_KEY_LENGTH)
         copyInto(aesEncryptedKey, 0, 1 + 2)
         val aesKeyResult = rsaKey.decrypt(aesEncryptedKey)
@@ -94,7 +96,7 @@ class HybridEncryptionTest {
             AES_KEY_LENGTH,
             Algorithm.Symmetric.AES(HashSize.Hash256)
         )
-        val result = aesKey.decrypt(ciphertext, ByteArray(0))
+        val result = aesKey.decrypt(ivAndCiphertext, ByteArray(0))
         return result.getOrThrow()
     }
 }
