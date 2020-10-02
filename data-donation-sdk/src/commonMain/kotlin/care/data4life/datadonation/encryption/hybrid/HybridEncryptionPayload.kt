@@ -30,9 +30,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.di
+package care.data4life.datadonation.encryption.hybrid
 
-import org.koin.dsl.module
+class HybridEncryptionPayload(
+    val encryptedAesPrivateKey: ByteArray,
+    val iv: ByteArray,
+    val ciphertext: ByteArray,
+    val version: Int = HybridEncryption.HYBRID_ENCRYPTION_VERSION_AES_WITH_GCM
+) {
 
-actual val platformModule = module {
+    interface Serializer {
+        fun serialize(payload: HybridEncryptionPayload): ByteArray
+    }
 }

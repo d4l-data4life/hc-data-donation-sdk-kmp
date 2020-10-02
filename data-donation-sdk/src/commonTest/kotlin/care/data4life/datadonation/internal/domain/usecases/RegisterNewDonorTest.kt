@@ -32,7 +32,7 @@
 
 package care.data4life.datadonation.internal.domain.usecases
 
-import care.data4life.datadonation.encryption.hybrid.HybridEncryptor
+import care.data4life.datadonation.encryption.hybrid.HybridEncryption
 import care.data4life.datadonation.internal.data.model.DummyData
 import care.data4life.datadonation.internal.data.model.RegistrationRequest
 import care.data4life.datadonation.internal.data.model.SignedConsentMessage
@@ -49,7 +49,7 @@ abstract class RegisterNewDonorTest {
 
     private val userConsentRepository = mockk<UserConsentRepository>()
     private val registrationRepository = mockk<RegistrationRepository>()
-    private val encryptor = mockk<HybridEncryptor>()
+    private val encryptor = mockk<HybridEncryption>()
     private val base64Encoder = mockk<Base64Encoder>()
     private val registerNewDonor =
         RegisterNewDonor(registrationRepository, userConsentRepository, encryptor, base64Encoder)

@@ -32,7 +32,48 @@
 
 package care.data4life.datadonation.encryption.hybrid
 
+import care.data4life.datadonation.encryption.Algorithm
+import care.data4life.datadonation.encryption.HashSize
+import care.data4life.datadonation.encryption.assymetric.EncryptionPublicKey
+import care.data4life.datadonation.encryption.symmetric.EncryptionSymmetricKey
+import care.data4life.datadonation.internal.utils.decodeBase64Bytes
 
-internal expect class HybridEncryptionHandle : HybridEncryptor {
-    override fun encrypt(plaintext: ByteArray): ByteArray
+
+internal class HybridEncryptionHandle(
+    private val dataDonationPublicKey: String,
+    private val serializer: HybridEncryptionPayload.Serializer
+) : HybridEncryption {
+
+    override fun encrypt(plaintext: ByteArray): ByteArray {
+        // generate new symmetric key (AES GCM)
+        val aesPrivateKey = EncryptionSymmetricKey(
+            HybridEncryption.AES_KEY_LENGTH,
+            Algorithm.Symmetric.AES(HashSize.Hash256)
+        )
+
+        // encrypt symmetric key with asymmetric algorithm (RSA OAEP) using dataDonationPublicKey
+        val rsaPublicKey = EncryptionPublicKey(
+            dataDonationPublicKey.decodeBase64Bytes(),
+            HybridEncryption.RSA_KEY_SIZE_BITS,
+            Algorithm.Asymmetric.RsaOAEP(HashSize.Hash256)
+        )
+        val encryptedAesPrivateKey = rsaPublicKey.encrypt(aesPrivateKey.serialized())
+        if (encryptedAesPrivateKey.size != HybridEncryption.AES_KEY_LENGTH) {
+            throw IllegalStateException("Encrypted key size different than expected")
+        }
+
+        // encrypt plaintext with symmetric key
+        // TODO double check if it is fine to have empty 'associatedData'
+        val ivAndCiphertext = aesPrivateKey.encrypt(plaintext, ByteArray(0))
+
+        // AES encryption returns: iv + ciphertext (ciphertext includes authentication tag)
+        val iv = ByteArray(HybridEncryption.AES_IV_LENGTH)
+        ivAndCiphertext.copyInto(iv, 0, 0)
+        val ciphertext = ByteArray(ivAndCiphertext.size - HybridEncryption.AES_IV_LENGTH)
+        ivAndCiphertext.copyInto(ciphertext, 0, HybridEncryption.AES_IV_LENGTH)
+
+        // Build output
+        val payload = HybridEncryptionPayload(encryptedAesPrivateKey, iv, ciphertext)
+        return serializer.serialize(payload)
+    }
 }

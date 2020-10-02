@@ -32,16 +32,39 @@
 
 package care.data4life.datadonation.encryption.hybrid
 
-interface HybridEncryptor {
+import io.ktor.utils.io.bits.*
+import io.ktor.utils.io.core.*
+import io.ktor.utils.io.core.internal.*
+import java.nio.ByteBuffer
 
-    companion object {
-        const val HYBRID_ENCRYPTION_VERSION_AES_WITH_GCM = 2
-        const val AES_IV_LENGTH = 12
-        const val AES_AUTH_TAG_LENGTH = 16
-        const val AES_KEY_LENGTH = 32
-        const val RSA_KEY_SIZE_BITS = 2048
+internal actual val hybridEncryptionSerializer: HybridEncryptionPayload.Serializer
+    get() = HybridEncryptionAndroidSerializer
+
+internal object HybridEncryptionAndroidSerializer : HybridEncryptionPayload.Serializer {
+
+    @DangerousInternalIoApi
+    override fun serialize(payload: HybridEncryptionPayload): ByteArray {
+        val outputLength =
+            UByte.SIZE_BYTES + UShort.SIZE_BYTES + HybridEncryption.AES_KEY_LENGTH + HybridEncryption.AES_IV_LENGTH + ULong.SIZE_BYTES + payload.ciphertext.size
+
+        val output = ByteArray(outputLength)
+        val outputByteBuffer = ByteBuffer.wrap(output)
+        val wBuffer = Buffer(Memory(outputByteBuffer))
+
+        payload.apply {
+            wBuffer.writeUByte(version.toUByte())
+            wBuffer.writeUShort(encryptedAesPrivateKey.size.toUShort())
+            wBuffer.writeFully(encryptedAesPrivateKey)
+            wBuffer.writeFully(iv)
+            wBuffer.writeULong(ciphertext.size.toULong()) // TODO check if it needs to be written as little endian
+            wBuffer.writeFully(ciphertext)
+        }
+
+        if (wBuffer.writePosition != outputLength) {
+            throw IllegalStateException("Output size different than expected")
+        }
+
+        return output
     }
 
-    fun encrypt(plaintext: ByteArray): ByteArray
 }
-

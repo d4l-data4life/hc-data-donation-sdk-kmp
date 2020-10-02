@@ -34,13 +34,9 @@ package care.data4life.datadonation.encryption.hybrid
 
 import care.data4life.datadonation.internal.domain.repositories.CredentialsRepository
 
-internal actual class HybridEncryptionHandle(repository: CredentialsRepository) :
-    HybridEncryptor {
+internal expect val hybridEncryptionSerializer: HybridEncryptionPayload.Serializer
 
-    private val dataDonationPublicKey = repository.getDataDonationPublicKey()
-
-    actual override fun encrypt(plaintext: ByteArray): ByteArray {
-        TODO()
-    }
-
+internal class HybridEncryptionFactory(private val repository: CredentialsRepository) {
+    fun createEncryption() =
+        HybridEncryptionHandle(repository.getDataDonationPublicKey(), hybridEncryptionSerializer)
 }

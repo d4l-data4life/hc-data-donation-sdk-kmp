@@ -33,20 +33,17 @@
 package care.data4life.datadonation.encryption
 
 import care.data4life.datadonation.encryption.assymetric.EncryptionPrivateKey
+import care.data4life.datadonation.encryption.hybrid.HybridEncryption.Companion.AES_AUTH_TAG_LENGTH
+import care.data4life.datadonation.encryption.hybrid.HybridEncryption.Companion.AES_IV_LENGTH
+import care.data4life.datadonation.encryption.hybrid.HybridEncryption.Companion.AES_KEY_LENGTH
+import care.data4life.datadonation.encryption.hybrid.HybridEncryption.Companion.RSA_KEY_SIZE_BITS
 import care.data4life.datadonation.encryption.hybrid.HybridEncryptionHandle
-import care.data4life.datadonation.encryption.hybrid.HybridEncryptor.Companion.AES_AUTH_TAG_LENGTH
-import care.data4life.datadonation.encryption.hybrid.HybridEncryptor.Companion.AES_IV_LENGTH
-import care.data4life.datadonation.encryption.hybrid.HybridEncryptor.Companion.AES_KEY_LENGTH
-import care.data4life.datadonation.encryption.hybrid.HybridEncryptor.Companion.RSA_KEY_SIZE_BITS
+import care.data4life.datadonation.encryption.hybrid.hybridEncryptionSerializer
 import care.data4life.datadonation.encryption.symmetric.EncryptionSymmetricKey
-import care.data4life.datadonation.internal.domain.repositories.CredentialsRepository
 import care.data4life.datadonation.internal.utils.CommonBase64Encoder
 import io.ktor.utils.io.bits.*
 import io.ktor.utils.io.core.*
 import io.ktor.utils.io.core.internal.*
-import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.mockk
 import org.junit.Before
 import org.junit.Test
 import java.nio.ByteBuffer
@@ -54,10 +51,10 @@ import kotlin.test.assertEquals
 
 class HybridEncryptionTest {
 
-    private val repository = mockk<CredentialsRepository>()
     private val rsaKey =
         EncryptionPrivateKey(RSA_KEY_SIZE_BITS, Algorithm.Asymmetric.RsaOAEP(HashSize.Hash256))
     private val publicKeyBase64 = CommonBase64Encoder.encode(rsaKey.serializedPublic())
+    private val handle = HybridEncryptionHandle(publicKeyBase64, hybridEncryptionSerializer)
 
     @Before
     fun setup() {
@@ -68,32 +65,29 @@ class HybridEncryptionTest {
     @DangerousInternalIoApi
     fun `Generate, encrypt and decrypt`() {
         val plaintext = byteArrayOf(1, 2, 3, 4, 5)
-        coEvery { repository.getDataDonationPublicKey() } returns publicKeyBase64
 
-        val hybridEncryptedResult = HybridEncryptionHandle(repository).encrypt(plaintext)
+        val hybridEncryptedResult = handle.encrypt(plaintext)
         // ciphertext same length as plaintext
         // expected output size: 1 + 2 + encryptedKey.size (16) + iv.size (12) + 8 + ciphertext.size
         val expectedLength =
             1 + 2 + AES_KEY_LENGTH + AES_IV_LENGTH + 8 + plaintext.size + AES_AUTH_TAG_LENGTH
         assertEquals(hybridEncryptedResult.size, expectedLength)
 
-        val result = hybridEncryptionDecrypt(hybridEncryptedResult)
+        val result = hybridEncryptedResult.hybridDecrypt()
         assertEquals(result.toString(), plaintext.toString())
-
-        coVerify { repository.getDataDonationPublicKey() }
     }
 
     @DangerousInternalIoApi
-    private fun hybridEncryptionDecrypt(hybridCiphertext: ByteArray): ByteArray {
+    private fun ByteArray.hybridDecrypt(): ByteArray {
         val ciphertextSizeBytes = ByteArray(8)
-        hybridCiphertext.copyInto(ciphertextSizeBytes, 0, 1 + 2 + AES_KEY_LENGTH + AES_IV_LENGTH)
+        copyInto(ciphertextSizeBytes, 0, 1 + 2 + AES_KEY_LENGTH + AES_IV_LENGTH)
         val ciphertextSize =
             Buffer(Memory(ByteBuffer.wrap(ciphertextSizeBytes))).readULong().toInt()
-        hybridCiphertext.copyInto(ciphertextSizeBytes, 0, 1 + 2 + AES_KEY_LENGTH + AES_IV_LENGTH)
+        copyInto(ciphertextSizeBytes, 0, 1 + 2 + AES_KEY_LENGTH + AES_IV_LENGTH)
         val ciphertext = ByteArray(ciphertextSize)
-        hybridCiphertext.copyInto(ciphertext, 0, 1 + 2 + AES_KEY_LENGTH + AES_IV_LENGTH + 8)
+        copyInto(ciphertext, 0, 1 + 2 + AES_KEY_LENGTH + AES_IV_LENGTH + 8)
         val aesEncryptedKey = ByteArray(AES_KEY_LENGTH)
-        hybridCiphertext.copyInto(aesEncryptedKey, 0, 1 + 2)
+        copyInto(aesEncryptedKey, 0, 1 + 2)
         val aesKeyResult = rsaKey.decrypt(aesEncryptedKey)
         val aesKey = EncryptionSymmetricKey(
             aesKeyResult.getOrThrow(),

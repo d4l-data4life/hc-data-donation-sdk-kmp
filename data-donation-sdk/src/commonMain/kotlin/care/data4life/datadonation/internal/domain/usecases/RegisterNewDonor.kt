@@ -33,7 +33,7 @@
 package care.data4life.datadonation.internal.domain.usecases
 
 import care.data4life.datadonation.core.model.KeyPair
-import care.data4life.datadonation.encryption.hybrid.HybridEncryptor
+import care.data4life.datadonation.encryption.hybrid.HybridEncryption
 import care.data4life.datadonation.internal.data.model.RegistrationRequest
 import care.data4life.datadonation.internal.data.model.SignedConsentMessage
 import care.data4life.datadonation.internal.domain.repositories.RegistrationRepository
@@ -45,7 +45,7 @@ import io.ktor.utils.io.core.*
 internal class RegisterNewDonor(
     private val registrationRepository: RegistrationRepository,
     private val consentRepository: UserConsentRepository,
-    private val encryptor: HybridEncryptor,
+    private val encryption: HybridEncryption,
     private val base64encoder: Base64Encoder
 ) :
     ParameterizedUsecase<KeyPair, Unit>() {
@@ -54,11 +54,11 @@ internal class RegisterNewDonor(
         val token = registrationRepository.requestRegistrationToken()
         val request = RegistrationRequest(base64encoder.encode(parameter.public), token)
         // TODO Double check if String needs to be UTF-16 encode instead of UTF-8
-        val message = base64encoder.encode(encryptor.encrypt(request.toJsonString().toByteArray()))
+        val message = base64encoder.encode(encryption.encrypt(request.toJsonString().toByteArray()))
         val signature = consentRepository.signUserConsent(message)
         val signedMessage = SignedConsentMessage(message, signature)
         // TODO Double check if String needs to be UTF-16 encode instead of UTF-8
-        val payload = encryptor.encrypt(signedMessage.toJsonString().toByteArray())
+        val payload = encryption.encrypt(signedMessage.toJsonString().toByteArray())
         registrationRepository.registerNewDonor(payload)
     }
 
