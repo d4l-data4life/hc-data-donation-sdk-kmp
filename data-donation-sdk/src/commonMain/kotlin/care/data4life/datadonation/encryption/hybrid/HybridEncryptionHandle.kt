@@ -64,7 +64,7 @@ internal class HybridEncryptionHandle(
 
         // encrypt plaintext with symmetric key
         // TODO double check if it is fine to have empty 'associatedData'
-        val ivAndCiphertext = aesPrivateKey.encrypt(plaintext, ByteArray(0))
+        val ivAndCiphertext = aesPrivateKey.encrypt(plaintext, byteArrayOf(0))
 
         // AES encryption returns: iv + ciphertext (ciphertext includes authentication tag)
         val iv = ByteArray(HybridEncryption.AES_IV_LENGTH)
@@ -74,7 +74,7 @@ internal class HybridEncryptionHandle(
             ciphertext,
             0,
             HybridEncryption.AES_IV_LENGTH,
-            ivAndCiphertext.size - HybridEncryption.AES_IV_LENGTH
+            ivAndCiphertext.size
         )
 
         // Build output

@@ -45,9 +45,11 @@ import io.ktor.utils.io.bits.*
 import io.ktor.utils.io.core.*
 import io.ktor.utils.io.core.internal.*
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 import java.nio.ByteBuffer
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class HybridEncryptionTest {
 
@@ -74,17 +76,21 @@ class HybridEncryptionTest {
         assertEquals(hybridEncryptedResult.size, expectedLength)
 
         val result = hybridEncryptedResult.hybridDecrypt()
-        assertEquals(result.toString(), plaintext.toString())
+        assertTrue(result.isSuccess)
+
+        val encoder = CommonBase64Encoder
+        assertEquals(encoder.encode(result.getOrThrow()), encoder.encode(plaintext))
     }
 
     @DangerousInternalIoApi
-    private fun ByteArray.hybridDecrypt(): ByteArray {
+    private fun ByteArray.hybridDecrypt(): Result<ByteArray> {
         val ciphertextSizeBytes = ByteArray(8)
         val cipherTextPos = 1 + 2 + AES_KEY_LENGTH + AES_IV_LENGTH + 8
         copyInto(ciphertextSizeBytes, 0, cipherTextPos - 8 , cipherTextPos)
         val buffer = Buffer(Memory(ByteBuffer.wrap(ciphertextSizeBytes)))
         buffer.resetForRead()
         val ciphertextSize = buffer.readULong().toInt()
+
         // ciphertext decryption requires iv + ciphertext as input (ciphertext includes authentication tag)
         val ivAndCiphertext = ByteArray(AES_IV_LENGTH + ciphertextSize)
         val keyPos = 1 + 2
@@ -93,13 +99,13 @@ class HybridEncryptionTest {
         copyInto(ivAndCiphertext, AES_IV_LENGTH, cipherTextPos, cipherTextPos + ciphertextSize)
         val aesEncryptedKey = ByteArray(AES_KEY_LENGTH)
         copyInto(aesEncryptedKey, 0, keyPos, keyPos + AES_KEY_LENGTH)
+
         val aesKeyResult = rsaKey.decrypt(aesEncryptedKey)
         val aesKey = EncryptionSymmetricKey(
             aesKeyResult.getOrThrow(),
             AES_KEY_LENGTH,
             Algorithm.Symmetric.AES(HashSize.Hash256)
         )
-        val result = aesKey.decrypt(ivAndCiphertext, ByteArray(0))
-        return result.getOrThrow()
+        return aesKey.decrypt(ivAndCiphertext, byteArrayOf(0))
     }
 }
