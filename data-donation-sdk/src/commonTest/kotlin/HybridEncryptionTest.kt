@@ -30,8 +30,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.encryption
-
+import care.data4life.datadonation.encryption.Algorithm
+import care.data4life.datadonation.encryption.HashSize
 import care.data4life.datadonation.encryption.assymetric.EncryptionPrivateKey
 import care.data4life.datadonation.encryption.hybrid.HybridEncryption
 import care.data4life.datadonation.encryption.hybrid.HybridEncryption.Companion.AES_AUTH_TAG_LENGTH
@@ -44,9 +44,10 @@ import care.data4life.datadonation.encryption.hybrid.HybridEncryptionPayload.Com
 import care.data4life.datadonation.encryption.hybrid.HybridEncryptionPayload.Companion.VERSION_LENGTH
 import care.data4life.datadonation.encryption.hybrid.HybridEncryptionSymmetricKeyProvider
 import care.data4life.datadonation.encryption.hybrid.hybridEncryptionSerializer
+import care.data4life.datadonation.encryption.initEncryption
 import care.data4life.datadonation.internal.utils.CommonBase64Encoder
-import org.junit.Before
-import org.junit.Test
+import kotlin.test.BeforeTest
+import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -61,7 +62,7 @@ class HybridEncryptionTest {
         },
         hybridEncryptionSerializer)
 
-    @Before
+    @BeforeTest
     fun setup() {
         initEncryption()
     }
