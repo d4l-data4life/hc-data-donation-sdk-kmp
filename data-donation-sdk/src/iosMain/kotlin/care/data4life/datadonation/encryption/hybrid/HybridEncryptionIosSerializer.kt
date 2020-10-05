@@ -41,5 +41,9 @@ internal object HybridEncryptionIosSerializer : HybridEncryptionPayload.Serializ
         TODO("Not yet implemented")
     }
 
+    override fun deserialize(data: ByteArray): HybridEncryptionPayload {
+        TODO("Not yet implemented")
+    }
+
 
 }

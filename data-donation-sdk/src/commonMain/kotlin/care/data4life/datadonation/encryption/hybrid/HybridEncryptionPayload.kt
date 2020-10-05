@@ -41,5 +41,6 @@ class HybridEncryptionPayload(
 
     interface Serializer {
         fun serialize(payload: HybridEncryptionPayload): ByteArray
+        fun deserialize(data: ByteArray): HybridEncryptionPayload
     }
 }

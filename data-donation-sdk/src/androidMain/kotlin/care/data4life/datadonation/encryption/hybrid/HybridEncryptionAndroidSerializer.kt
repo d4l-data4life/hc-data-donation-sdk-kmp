@@ -42,10 +42,12 @@ internal actual val hybridEncryptionSerializer: HybridEncryptionPayload.Serializ
 
 internal object HybridEncryptionAndroidSerializer : HybridEncryptionPayload.Serializer {
 
+    private const val FIXED_OUTPUT_LENGTH =
+        UByte.SIZE_BYTES + UShort.SIZE_BYTES + HybridEncryption.AES_KEY_LENGTH + HybridEncryption.AES_IV_LENGTH + ULong.SIZE_BYTES
+
     @DangerousInternalIoApi
     override fun serialize(payload: HybridEncryptionPayload): ByteArray {
-        val outputLength =
-            UByte.SIZE_BYTES + UShort.SIZE_BYTES + HybridEncryption.AES_KEY_LENGTH + HybridEncryption.AES_IV_LENGTH + ULong.SIZE_BYTES + payload.ciphertext.size
+        val outputLength = FIXED_OUTPUT_LENGTH + payload.ciphertext.size
 
         val output = ByteArray(outputLength)
         val outputByteBuffer = ByteBuffer.wrap(output)
@@ -65,6 +67,35 @@ internal object HybridEncryptionAndroidSerializer : HybridEncryptionPayload.Seri
         }
 
         return output
+    }
+
+    @DangerousInternalIoApi
+    override fun deserialize(data: ByteArray): HybridEncryptionPayload {
+        if (data.size <= FIXED_OUTPUT_LENGTH) {
+            throw IllegalArgumentException("Input data too short")
+        }
+        val versionBytes =  ByteArray(1)
+        val versionBuffer = Buffer(Memory(ByteBuffer.wrap(versionBytes)))
+        versionBuffer.resetForRead()
+        val version = versionBuffer.readUByte().toInt()
+
+        val ciphertextSizeBytes = ByteArray(8)
+        val cipherTextPos = 1 + 2 + HybridEncryption.AES_KEY_LENGTH + HybridEncryption.AES_IV_LENGTH + 8
+        data.copyInto(ciphertextSizeBytes, 0, cipherTextPos - 8 , cipherTextPos)
+        val sizeBuffer = Buffer(Memory(ByteBuffer.wrap(ciphertextSizeBytes)))
+        sizeBuffer.resetForRead()
+        val ciphertextSize = sizeBuffer.readULong().toInt()
+
+        val iv = ByteArray(HybridEncryption.AES_IV_LENGTH)
+        val ciphertext = ByteArray(ciphertextSize)
+        val keyPos = 1 + 2
+        val ivPos = keyPos + HybridEncryption.AES_KEY_LENGTH
+        data.copyInto(iv, 0, ivPos, ivPos + HybridEncryption.AES_IV_LENGTH)
+        data.copyInto(ciphertext, 0, cipherTextPos, cipherTextPos + ciphertextSize)
+        val aesEncryptedKey = ByteArray(HybridEncryption.AES_KEY_LENGTH)
+        data.copyInto(aesEncryptedKey, 0, keyPos, keyPos + HybridEncryption.AES_KEY_LENGTH)
+
+        return HybridEncryptionPayload(aesEncryptedKey, iv, ciphertext, version)
     }
 
 }
