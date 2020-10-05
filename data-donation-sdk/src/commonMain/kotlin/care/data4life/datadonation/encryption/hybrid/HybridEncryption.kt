@@ -32,6 +32,10 @@
 
 package care.data4life.datadonation.encryption.hybrid
 
+import care.data4life.datadonation.encryption.assymetric.EncryptionPrivateKey
+import care.data4life.datadonation.encryption.assymetric.EncryptionPublicKey
+import care.data4life.datadonation.encryption.symmetric.EncryptionSymmetricKey
+
 interface HybridEncryption {
 
     companion object {
@@ -43,5 +47,16 @@ interface HybridEncryption {
     }
 
     fun encrypt(plaintext: ByteArray): ByteArray
+    fun decrypt(ciphertext: ByteArray): Result<ByteArray>
+
+    interface SymmetricKeyProvider {
+        fun getNewKey(): EncryptionSymmetricKey
+        fun getKey(keyData: ByteArray): EncryptionSymmetricKey
+    }
+
+    interface AsymmetricKeyProvider {
+        fun getPublicKey(): EncryptionPublicKey
+        fun getPrivateKey(): EncryptionPrivateKey
+    }
 
 }

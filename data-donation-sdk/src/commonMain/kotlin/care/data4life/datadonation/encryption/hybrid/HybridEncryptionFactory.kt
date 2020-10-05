@@ -32,11 +32,53 @@
 
 package care.data4life.datadonation.encryption.hybrid
 
+import care.data4life.datadonation.encryption.Algorithm
+import care.data4life.datadonation.encryption.HashSize
+import care.data4life.datadonation.encryption.assymetric.EncryptionPrivateKey
+import care.data4life.datadonation.encryption.assymetric.EncryptionPublicKey
+import care.data4life.datadonation.encryption.symmetric.EncryptionSymmetricKey
 import care.data4life.datadonation.internal.domain.repositories.CredentialsRepository
+import care.data4life.datadonation.internal.utils.decodeBase64Bytes
 
 internal expect val hybridEncryptionSerializer: HybridEncryptionPayload.Serializer
 
 internal class HybridEncryptionFactory(private val repository: CredentialsRepository) {
     fun createEncryption() =
-        HybridEncryptionHandle(repository.getDataDonationPublicKey(), hybridEncryptionSerializer)
+        HybridEncryptionHandle(
+            HybridEncryptionSymmetricKeyProvider,
+            HybridAsymmetricSymmetricKeyProvider(repository.getDataDonationPublicKey()),
+            hybridEncryptionSerializer)
+}
+
+
+internal object HybridEncryptionSymmetricKeyProvider: HybridEncryption.SymmetricKeyProvider {
+    override fun getNewKey(): EncryptionSymmetricKey {
+        return EncryptionSymmetricKey(
+            HybridEncryption.AES_KEY_LENGTH,
+            Algorithm.Symmetric.AES(HashSize.Hash256))
+    }
+
+    override fun getKey(keyData: ByteArray): EncryptionSymmetricKey {
+        return EncryptionSymmetricKey(
+            keyData,
+            HybridEncryption.AES_KEY_LENGTH,
+            Algorithm.Symmetric.AES(HashSize.Hash256))
+    }
+
+}
+
+internal class HybridAsymmetricSymmetricKeyProvider(dataDonationPublicKey: String) :
+    HybridEncryption.AsymmetricKeyProvider {
+
+    private val publicKey = EncryptionPublicKey(
+        dataDonationPublicKey.decodeBase64Bytes(),
+        HybridEncryption.RSA_KEY_SIZE_BITS,
+        Algorithm.Asymmetric.RsaOAEP(HashSize.Hash256))
+
+    override fun getPublicKey(): EncryptionPublicKey = publicKey
+
+    override fun getPrivateKey(): EncryptionPrivateKey {
+        throw NotImplementedError("Interface method only available for testing purposes")
+    }
+
 }

@@ -33,6 +33,7 @@
 package care.data4life.datadonation.encryption
 
 import care.data4life.datadonation.encryption.assymetric.EncryptionPrivateKey
+import care.data4life.datadonation.encryption.hybrid.HybridEncryption
 import care.data4life.datadonation.encryption.hybrid.HybridEncryption.Companion.AES_AUTH_TAG_LENGTH
 import care.data4life.datadonation.encryption.hybrid.HybridEncryption.Companion.AES_IV_LENGTH
 import care.data4life.datadonation.encryption.hybrid.HybridEncryption.Companion.AES_KEY_LENGTH
@@ -41,10 +42,9 @@ import care.data4life.datadonation.encryption.hybrid.HybridEncryptionHandle
 import care.data4life.datadonation.encryption.hybrid.HybridEncryptionPayload.Companion.AES_IV_SIZE_LENGTH
 import care.data4life.datadonation.encryption.hybrid.HybridEncryptionPayload.Companion.CIPHERTEXT_SIZE_LENGTH
 import care.data4life.datadonation.encryption.hybrid.HybridEncryptionPayload.Companion.VERSION_LENGTH
+import care.data4life.datadonation.encryption.hybrid.HybridEncryptionSymmetricKeyProvider
 import care.data4life.datadonation.encryption.hybrid.hybridEncryptionSerializer
-import care.data4life.datadonation.encryption.symmetric.EncryptionSymmetricKey
 import care.data4life.datadonation.internal.utils.CommonBase64Encoder
-import io.ktor.utils.io.core.internal.*
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -54,8 +54,12 @@ class HybridEncryptionTest {
 
     private val rsaKey =
         EncryptionPrivateKey(RSA_KEY_SIZE_BITS, Algorithm.Asymmetric.RsaOAEP(HashSize.Hash256))
-    private val publicKeyBase64 = CommonBase64Encoder.encode(rsaKey.serializedPublic())
-    private val handle = HybridEncryptionHandle(publicKeyBase64, hybridEncryptionSerializer)
+    private val handle = HybridEncryptionHandle(HybridEncryptionSymmetricKeyProvider,
+        object: HybridEncryption.AsymmetricKeyProvider {
+            override fun getPublicKey() = rsaKey
+            override fun getPrivateKey() = rsaKey
+        },
+        hybridEncryptionSerializer)
 
     @Before
     fun setup() {
@@ -63,7 +67,6 @@ class HybridEncryptionTest {
     }
 
     @Test
-    @DangerousInternalIoApi
     fun `Generate, encrypt and decrypt`() {
         val plaintext = byteArrayOf(1, 2, 3, 4, 5) // TODO make this data random one the test works properly
 
@@ -74,30 +77,11 @@ class HybridEncryptionTest {
             VERSION_LENGTH + AES_IV_SIZE_LENGTH + AES_KEY_LENGTH + AES_IV_LENGTH + CIPHERTEXT_SIZE_LENGTH + plaintext.size + AES_AUTH_TAG_LENGTH
         assertEquals(hybridEncryptedResult.size, expectedLength)
 
-        val result = hybridEncryptedResult.hybridDecrypt()
+        val result = handle.decrypt(hybridEncryptedResult)
         assertTrue(result.isSuccess)
 
         val encoder = CommonBase64Encoder
         assertEquals(encoder.encode(result.getOrThrow()), encoder.encode(plaintext))
     }
 
-    @DangerousInternalIoApi
-    private fun ByteArray.hybridDecrypt(): Result<ByteArray> {
-        val payload = hybridEncryptionSerializer.deserialize(this)
-
-        // ciphertext decryption requires iv + ciphertext as input (ciphertext includes authentication tag)
-        val ciphertextSize = payload.ciphertext.size
-        val ivAndCiphertext = ByteArray(AES_IV_LENGTH + ciphertextSize)
-
-        payload.iv.copyInto(ivAndCiphertext, 0, 0, AES_IV_LENGTH)
-        payload.ciphertext.copyInto(ivAndCiphertext, AES_IV_LENGTH, 0, payload.ciphertext.size)
-
-        val aesKeyResult = rsaKey.decrypt(payload.encryptedAesPrivateKey)
-        val aesKey = EncryptionSymmetricKey(
-            aesKeyResult.getOrThrow(),
-            AES_KEY_LENGTH,
-            Algorithm.Symmetric.AES(HashSize.Hash256)
-        )
-        return aesKey.decrypt(ivAndCiphertext, byteArrayOf(0))
-    }
 }
