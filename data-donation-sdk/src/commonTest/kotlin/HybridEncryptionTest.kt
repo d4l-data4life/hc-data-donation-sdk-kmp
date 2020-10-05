@@ -46,6 +46,7 @@ import care.data4life.datadonation.encryption.hybrid.HybridEncryptionSymmetricKe
 import care.data4life.datadonation.encryption.hybrid.hybridEncryptionSerializer
 import care.data4life.datadonation.encryption.initEncryption
 import care.data4life.datadonation.internal.utils.CommonBase64Encoder
+import kotlin.random.Random
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -69,7 +70,9 @@ class HybridEncryptionTest {
 
     @Test
     fun `Generate, encrypt and decrypt`() {
-        val plaintext = byteArrayOf(1, 2, 3, 4, 5) // TODO make this data random one the test works properly
+        val randomSize = Random.nextInt(5, 25)
+        val plaintext = ByteArray(randomSize)
+        Random.nextBytes(plaintext)
 
         val hybridEncryptedResult = handle.encrypt(plaintext)
         // ciphertext same length as plaintext
