@@ -60,8 +60,8 @@ internal object HybridEncryptionAndroidSerializer : HybridEncryptionPayload.Seri
 
         payload.apply {
             wBuffer.writeUByte(version.toUByte())
-            wBuffer.writeUShort(encryptedAesPrivateKey.size.toUShort())
-            wBuffer.writeFully(encryptedAesPrivateKey)
+            wBuffer.writeUShort(encryptedSymmetricPrivateKey.size.toUShort())
+            wBuffer.writeFully(encryptedSymmetricPrivateKey)
             wBuffer.writeFully(iv)
             wBuffer.writeULong(ciphertext.size.toULong()) // TODO check if it needs to be written as little endian
             wBuffer.writeFully(ciphertext)

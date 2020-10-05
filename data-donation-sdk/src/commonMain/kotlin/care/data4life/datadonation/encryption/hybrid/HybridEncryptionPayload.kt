@@ -33,11 +33,24 @@
 package care.data4life.datadonation.encryption.hybrid
 
 class HybridEncryptionPayload(
-    val encryptedAesPrivateKey: ByteArray,
+    val encryptedSymmetricPrivateKey: ByteArray,
     val iv: ByteArray,
     val ciphertext: ByteArray,
     val version: Int = HYBRID_ENCRYPTION_VERSION_AES_WITH_GCM
 ) {
+
+    constructor(encryptedAesPrivateKey: ByteArray, ivAndCiphertext: ByteArray, version: Int) : this(
+        encryptedAesPrivateKey,
+        extractIv(ivAndCiphertext),
+        extractCiphertext(ivAndCiphertext),
+        version
+    )
+
+    constructor(encryptedAesPrivateKey: ByteArray, ivAndCiphertext: ByteArray) : this(
+        encryptedAesPrivateKey,
+        extractIv(ivAndCiphertext),
+        extractCiphertext(ivAndCiphertext)
+    )
 
     companion object {
         const val HYBRID_ENCRYPTION_VERSION_AES_WITH_GCM = HybridEncryption.HYBRID_ENCRYPTION_VERSION_AES_WITH_GCM
@@ -48,7 +61,27 @@ class HybridEncryptionPayload(
         const val AES_AUTH_TAG_LENGTH = HybridEncryption.AES_AUTH_TAG_LENGTH
         const val AES_KEY_LENGTH = HybridEncryption.AES_KEY_LENGTH
         const val RSA_KEY_SIZE_BITS = HybridEncryption.RSA_KEY_SIZE_BITS
+
+        private fun extractIv(source: ByteArray): ByteArray {
+            val data = ByteArray(AES_IV_LENGTH)
+            source.copyInto(data, 0, 0, AES_IV_LENGTH)
+            return data
+        }
+
+        private fun extractCiphertext(source: ByteArray): ByteArray {
+            val data = ByteArray(source.size - AES_IV_LENGTH)
+            source.copyInto(data, 0, AES_IV_LENGTH, source.size)
+            return data
+        }
     }
+
+    val ivAndCiphertext: ByteArray
+        get() {
+            val data = ByteArray(AES_IV_LENGTH + ciphertext.size)
+            iv.copyInto(data, 0, 0, AES_IV_LENGTH)
+            ciphertext.copyInto(data, AES_IV_LENGTH, 0, ciphertext.size)
+            return data
+        }
 
     interface Serializer {
         fun serialize(payload: HybridEncryptionPayload): ByteArray

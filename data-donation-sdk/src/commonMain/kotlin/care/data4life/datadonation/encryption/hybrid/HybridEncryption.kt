@@ -52,6 +52,7 @@ interface HybridEncryption {
     interface SymmetricKeyProvider {
         fun getNewKey(): EncryptionSymmetricKey
         fun getKey(keyData: ByteArray): EncryptionSymmetricKey
+        fun getAuthenticationData(): ByteArray
     }
 
     interface AsymmetricKeyProvider {

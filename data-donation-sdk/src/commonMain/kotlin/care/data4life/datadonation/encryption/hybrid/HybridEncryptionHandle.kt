@@ -32,12 +32,6 @@
 
 package care.data4life.datadonation.encryption.hybrid
 
-import care.data4life.datadonation.encryption.Algorithm
-import care.data4life.datadonation.encryption.HashSize
-import care.data4life.datadonation.encryption.assymetric.EncryptionPublicKey
-import care.data4life.datadonation.encryption.symmetric.EncryptionSymmetricKey
-import care.data4life.datadonation.internal.utils.decodeBase64Bytes
-
 
 internal class HybridEncryptionHandle(
     private val symmetricKeyProvider: HybridEncryption.SymmetricKeyProvider,
@@ -46,53 +40,30 @@ internal class HybridEncryptionHandle(
 ) : HybridEncryption {
 
     override fun encrypt(plaintext: ByteArray): ByteArray {
-        val aesPrivateKey = symmetricKeyProvider.getNewKey()
+        val symPrivateKey = symmetricKeyProvider.getNewKey()
 
-        val rsaPublicKey = asymmetricKeyProvider.getPublicKey()
-        val encryptedAesPrivateKey = rsaPublicKey.encrypt(aesPrivateKey.serialized())
-        if (encryptedAesPrivateKey.size != (HybridEncryption.AES_KEY_LENGTH)) {
-            throw IllegalStateException("Encrypted key size different than expected")
-        }
+        val asymPublicKey = asymmetricKeyProvider.getPublicKey()
+        val encryptedSymPrivateKey = asymPublicKey.encrypt(symPrivateKey.serialized())
 
         // encrypt plaintext with symmetric key
-        // TODO double check if it is fine to have empty 'associatedData'
-        val ivAndCiphertext = aesPrivateKey.encrypt(plaintext, byteArrayOf(0))
-
-        // AES encryption returns: iv + ciphertext (ciphertext includes authentication tag)
-        val iv = ByteArray(HybridEncryption.AES_IV_LENGTH)
-        ivAndCiphertext.copyInto(iv, 0, 0, HybridEncryption.AES_IV_LENGTH)
-        val ciphertext = ByteArray(ivAndCiphertext.size - HybridEncryption.AES_IV_LENGTH)
-        ivAndCiphertext.copyInto(
-            ciphertext,
-            0,
-            HybridEncryption.AES_IV_LENGTH,
-            ivAndCiphertext.size
-        )
+        val ivAndCiphertext =
+            symPrivateKey.encrypt(plaintext, symmetricKeyProvider.getAuthenticationData())
 
         // Build output
-        val payload = HybridEncryptionPayload(encryptedAesPrivateKey, iv, ciphertext)
+        // encryption returns: iv + ciphertext (ciphertext includes authentication tag)
+        val payload = HybridEncryptionPayload(encryptedSymPrivateKey, ivAndCiphertext)
         return serializer.serialize(payload)
     }
 
     override fun decrypt(ciphertext: ByteArray): Result<ByteArray> {
-        val payload = hybridEncryptionSerializer.deserialize(ciphertext)
-
-        // ciphertext decryption requires iv + ciphertext as input (ciphertext includes authentication tag)
-        val ciphertextSize = payload.ciphertext.size
-        val ivAndCiphertext = ByteArray(HybridEncryption.AES_IV_LENGTH + ciphertextSize)
-
-        payload.iv.copyInto(ivAndCiphertext, 0, 0, HybridEncryption.AES_IV_LENGTH)
-        payload.ciphertext.copyInto(
-            ivAndCiphertext,
-            HybridEncryption.AES_IV_LENGTH,
-            0,
-            ciphertextSize
-        )
+        val payload = serializer.deserialize(ciphertext)
 
         val aesKeyResult =
-            asymmetricKeyProvider.getPrivateKey().decrypt(payload.encryptedAesPrivateKey)
+            asymmetricKeyProvider.getPrivateKey().decrypt(payload.encryptedSymmetricPrivateKey)
 
         val aesKey = symmetricKeyProvider.getKey(aesKeyResult.getOrThrow())
-        return aesKey.decrypt(ivAndCiphertext, byteArrayOf(0))
+
+        // ciphertext decryption requires iv + ciphertext as input (ciphertext includes authentication tag)
+        return aesKey.decrypt(payload.ivAndCiphertext, symmetricKeyProvider.getAuthenticationData())
     }
 }

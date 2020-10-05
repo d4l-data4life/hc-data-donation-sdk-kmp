@@ -65,6 +65,10 @@ internal object HybridEncryptionSymmetricKeyProvider: HybridEncryption.Symmetric
             Algorithm.Symmetric.AES(HashSize.Hash256))
     }
 
+    // TODO double check if it is fine to have empty 'associatedData'
+    override fun getAuthenticationData() = byteArrayOf(0)
+
+
 }
 
 internal class HybridAsymmetricSymmetricKeyProvider(dataDonationPublicKey: String) :
