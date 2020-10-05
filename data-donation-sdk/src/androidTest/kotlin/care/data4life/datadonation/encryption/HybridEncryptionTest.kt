@@ -38,16 +38,15 @@ import care.data4life.datadonation.encryption.hybrid.HybridEncryption.Companion.
 import care.data4life.datadonation.encryption.hybrid.HybridEncryption.Companion.AES_KEY_LENGTH
 import care.data4life.datadonation.encryption.hybrid.HybridEncryption.Companion.RSA_KEY_SIZE_BITS
 import care.data4life.datadonation.encryption.hybrid.HybridEncryptionHandle
+import care.data4life.datadonation.encryption.hybrid.HybridEncryptionPayload.Companion.AES_IV_SIZE_LENGTH
+import care.data4life.datadonation.encryption.hybrid.HybridEncryptionPayload.Companion.CIPHERTEXT_SIZE_LENGTH
+import care.data4life.datadonation.encryption.hybrid.HybridEncryptionPayload.Companion.VERSION_LENGTH
 import care.data4life.datadonation.encryption.hybrid.hybridEncryptionSerializer
 import care.data4life.datadonation.encryption.symmetric.EncryptionSymmetricKey
 import care.data4life.datadonation.internal.utils.CommonBase64Encoder
-import io.ktor.utils.io.bits.*
-import io.ktor.utils.io.core.*
 import io.ktor.utils.io.core.internal.*
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
-import java.nio.ByteBuffer
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -70,9 +69,9 @@ class HybridEncryptionTest {
 
         val hybridEncryptedResult = handle.encrypt(plaintext)
         // ciphertext same length as plaintext
-        // expected output size: 1 + 2 + encryptedKey.size (16) + iv.size (12) + 8 + ciphertext.size
+        // expected output size: version (1) + iv size value (2) + encryptedKey.size (16) + iv.size (12) + ciphertext size value (8) + ciphertext.size
         val expectedLength =
-            1 + 2 + AES_KEY_LENGTH + AES_IV_LENGTH + 8 + plaintext.size + AES_AUTH_TAG_LENGTH
+            VERSION_LENGTH + AES_IV_SIZE_LENGTH + AES_KEY_LENGTH + AES_IV_LENGTH + CIPHERTEXT_SIZE_LENGTH + plaintext.size + AES_AUTH_TAG_LENGTH
         assertEquals(hybridEncryptedResult.size, expectedLength)
 
         val result = hybridEncryptedResult.hybridDecrypt()

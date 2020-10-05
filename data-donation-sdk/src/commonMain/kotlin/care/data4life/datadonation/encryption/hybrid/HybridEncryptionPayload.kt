@@ -36,8 +36,19 @@ class HybridEncryptionPayload(
     val encryptedAesPrivateKey: ByteArray,
     val iv: ByteArray,
     val ciphertext: ByteArray,
-    val version: Int = HybridEncryption.HYBRID_ENCRYPTION_VERSION_AES_WITH_GCM
+    val version: Int = HYBRID_ENCRYPTION_VERSION_AES_WITH_GCM
 ) {
+
+    companion object {
+        const val HYBRID_ENCRYPTION_VERSION_AES_WITH_GCM = HybridEncryption.HYBRID_ENCRYPTION_VERSION_AES_WITH_GCM
+        const val VERSION_LENGTH = UByte.SIZE_BYTES
+        const val AES_IV_SIZE_LENGTH = UShort.SIZE_BYTES // The IV size must be encoded in the payload even if its value is always 12 bytes for AES GCM
+        const val CIPHERTEXT_SIZE_LENGTH = ULong.SIZE_BYTES
+        const val AES_IV_LENGTH = HybridEncryption.AES_IV_LENGTH
+        const val AES_AUTH_TAG_LENGTH = HybridEncryption.AES_AUTH_TAG_LENGTH
+        const val AES_KEY_LENGTH = HybridEncryption.AES_KEY_LENGTH
+        const val RSA_KEY_SIZE_BITS = HybridEncryption.RSA_KEY_SIZE_BITS
+    }
 
     interface Serializer {
         fun serialize(payload: HybridEncryptionPayload): ByteArray
