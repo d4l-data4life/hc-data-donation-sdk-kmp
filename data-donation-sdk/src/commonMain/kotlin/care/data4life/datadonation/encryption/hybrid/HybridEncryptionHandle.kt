@@ -32,11 +32,38 @@
 
 package care.data4life.datadonation.encryption.hybrid
 
-internal class HybridEncryptionHandle(private val dataDonationPublicKey: String) :
-    HybridEncryptor {
 
-    override fun encrypt(plaintext: String): ByteArray {
-        TODO("Not yet implemented")
+internal class HybridEncryptionHandle(
+    private val symmetricKeyProvider: HybridEncryption.SymmetricKeyProvider,
+    private val asymmetricKeyProvider: HybridEncryption.AsymmetricKeyProvider,
+    private val serializer: HybridEncryptionPayload.Serializer
+) : HybridEncryption {
+
+    override fun encrypt(plaintext: ByteArray): ByteArray {
+        val symPrivateKey = symmetricKeyProvider.getNewKey()
+
+        val asymPublicKey = asymmetricKeyProvider.getPublicKey()
+        val encryptedSymPrivateKey = asymPublicKey.encrypt(symPrivateKey.serialized())
+
+        // encrypt plaintext with symmetric key
+        val ivAndCiphertext =
+            symPrivateKey.encrypt(plaintext, symmetricKeyProvider.getAuthenticationData())
+
+        // Build output
+        // encryption returns: iv + ciphertext (ciphertext includes authentication tag)
+        val payload = HybridEncryptionPayload(encryptedSymPrivateKey, ivAndCiphertext)
+        return serializer.serialize(payload)
     }
 
+    override fun decrypt(ciphertext: ByteArray): Result<ByteArray> {
+        val payload = serializer.deserialize(ciphertext)
+
+        val aesKeyResult =
+            asymmetricKeyProvider.getPrivateKey().decrypt(payload.encryptedSymmetricPrivateKey)
+
+        val aesKey = symmetricKeyProvider.getKey(aesKeyResult.getOrThrow())
+
+        // ciphertext decryption requires iv + ciphertext as input (ciphertext includes authentication tag)
+        return aesKey.decrypt(payload.ivAndCiphertext, symmetricKeyProvider.getAuthenticationData())
+    }
 }

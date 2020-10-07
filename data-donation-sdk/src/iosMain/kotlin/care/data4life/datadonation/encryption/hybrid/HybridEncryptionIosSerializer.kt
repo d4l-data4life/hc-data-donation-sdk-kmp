@@ -32,8 +32,18 @@
 
 package care.data4life.datadonation.encryption.hybrid
 
-import care.data4life.datadonation.internal.data.store.CredentialsDataStore
+internal actual val hybridEncryptionSerializer: HybridEncryptionPayload.Serializer
+    get() = HybridEncryptionIosSerializer
 
-internal class HybridEncryptorFactory(private val credentialsDataStore: CredentialsDataStore) {
-    fun createEncryptor() = HybridEncryptionHandle(credentialsDataStore.getDataDonationPublicKey())
+internal object HybridEncryptionIosSerializer : HybridEncryptionPayload.Serializer {
+
+    override fun serialize(payload: HybridEncryptionPayload): ByteArray {
+        TODO("Not yet implemented")
+    }
+
+    override fun deserialize(data: ByteArray): HybridEncryptionPayload {
+        TODO("Not yet implemented")
+    }
+
+
 }
