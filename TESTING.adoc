@@ -10,6 +10,10 @@
 
 == Run the services locally
 
+=== Pre requirements
+
+    Install and run local docker service.
+
 === Survey service
 
 - cov-survey: `make build`

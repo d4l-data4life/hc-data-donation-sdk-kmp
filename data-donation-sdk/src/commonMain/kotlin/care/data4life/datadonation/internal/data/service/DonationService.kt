@@ -34,9 +34,17 @@ package care.data4life.datadonation.internal.data.service
 
 import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.internal.data.service.DonationService.Endpoints.register
+import care.data4life.datadonation.internal.utils.CommonBase64Encoder
 import io.ktor.client.*
 import io.ktor.http.*
 import io.ktor.http.content.*
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.Serializer
+import kotlinx.serialization.builtins.ByteArraySerializer
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.descriptors.*
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 
 internal class DonationService(
     private val client: HttpClient,
@@ -54,14 +62,12 @@ internal class DonationService(
     }
 
     suspend fun registerNewDonor(payload: ByteArray) {
-        return client.putWithBody(
+        println("BODY: ${payload.size} ${CommonBase64Encoder.encode(payload)}")
+        return client.putWithoutHeader(
             environment,
             baseUrl = baseUrl,
             path = register,
-            body = ByteArrayContent(
-                payload,
-                contentType = ContentType.Application.OctetStream
-            )//TODO ByteArrayContent serializer
+            body = ByteArrayContent(payload)
         )
     }
 
