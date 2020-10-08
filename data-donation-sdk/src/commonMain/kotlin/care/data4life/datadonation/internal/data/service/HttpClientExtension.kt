@@ -63,6 +63,7 @@ suspend inline fun <reified T> HttpClient.putWithBody(
     baseUrl: String,
     path: String,
     body: Any,
+    contentType: ContentType = ContentType.Application.Json,
     block: HttpRequestBuilder.() -> Unit = {}
 ): T = put(
     scheme = if (environment == Environment.LOCAL) "http" else "https",
@@ -73,7 +74,27 @@ suspend inline fun <reified T> HttpClient.putWithBody(
             "Authorization", "Bearer $accessToken"
         )
     }
-    contentType(ContentType.Application.Json)
+    contentType(contentType)
+    this.body = body
+    apply(block)
+}
+
+suspend inline fun <reified T> HttpClient.putWithoutHeader(
+    environment: Environment,
+    accessToken: String? = null,
+    baseUrl: String,
+    path: String,
+    body: Any,
+    block: HttpRequestBuilder.() -> Unit = {}
+): T = put(
+    scheme = if (environment == Environment.LOCAL) "http" else "https",
+    host = baseUrl, path = path
+) {
+    if (accessToken != null) {
+        header(
+            "Authorization", "Bearer $accessToken"
+        )
+    }
     this.body = body
     apply(block)
 }

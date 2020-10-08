@@ -54,12 +54,12 @@ open class ClientTest {
 
     val client = Client(object : Contract.Configuration {
         override fun getServicePublicKey(): String =
-            "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqwTD2GY3SClkbmDVtgIE\n" +
-                    "it7RGK1MqK8G1n6f7N7qixBTzTbtHCG0Z/gS7fGhZ3PlOJJZdrQakNvtNAk91i05\n" +
-                    "IffIo1Uw3501R3wvv7KJ8NtT5EIvHL8/7nZBTl+M4+FwFS60VGS3C0ZRWuuNe8SP\n" +
-                    "yuVrf/0ZYfI+jXVzhdUJ3qkm11GPQ4jSVKivDRISkPBgEXk36lm9+IsqC6Fk3dsv\n" +
-                    "eON0/CEMpxvpTBWu5vc3t6qNAWO0qWVVc0XcJt9nKsTi1D75TC5JuvujpgLOKnJj\n" +
-                    "Wt1u6JeH+bnf828NsURM/HJjU8iYksFkEateoX59qbqadWyaTmBU7gb406l2CdwF\n" +
+            "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqwTD2GY3SClkbmDVtgIE" +
+                    "it7RGK1MqK8G1n6f7N7qixBTzTbtHCG0Z/gS7fGhZ3PlOJJZdrQakNvtNAk91i05" +
+                    "IffIo1Uw3501R3wvv7KJ8NtT5EIvHL8/7nZBTl+M4+FwFS60VGS3C0ZRWuuNe8SP" +
+                    "yuVrf/0ZYfI+jXVzhdUJ3qkm11GPQ4jSVKivDRISkPBgEXk36lm9+IsqC6Fk3dsv" +
+                    "eON0/CEMpxvpTBWu5vc3t6qNAWO0qWVVc0XcJt9nKsTi1D75TC5JuvujpgLOKnJj" +
+                    "Wt1u6JeH+bnf828NsURM/HJjU8iYksFkEateoX59qbqadWyaTmBU7gb406l2CdwF" +
                     "JQIDAQAB"
 
         override fun getDonorKeyPair(): KeyPair? = null
