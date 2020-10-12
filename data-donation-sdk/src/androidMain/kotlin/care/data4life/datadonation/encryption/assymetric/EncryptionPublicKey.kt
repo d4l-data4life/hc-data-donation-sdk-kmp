@@ -108,4 +108,4 @@ private fun attributes(algo: Algorithm.Asymmetric): Pair<String, String> {
     }
 }
 
-private val bouncyCastleProvider by lazy { BouncyCastleProvider() }
+internal val bouncyCastleProvider by lazy { BouncyCastleProvider() }
