@@ -33,6 +33,7 @@
 package care.data4life.datadonation.encryption.symmetric
 
 import care.data4life.datadonation.encryption.Algorithm
+import care.data4life.datadonation.encryption.assymetric.bouncyCastleProvider
 import care.data4life.datadonation.encryption.protos.Aes
 import com.google.crypto.tink.BinaryKeysetReader
 import com.google.crypto.tink.CleartextKeysetHandle
@@ -40,17 +41,21 @@ import com.google.crypto.tink.KeyTemplate
 import com.google.crypto.tink.aead.AesGcmKeyManager
 import com.google.crypto.tink.proto.AesGcmKey
 import com.google.crypto.tink.proto.AesGcmKeyFormat
+import org.bouncycastle.jcajce.provider.symmetric.AES
+import java.security.*
+import java.security.spec.KeySpec
+import java.security.spec.X509EncodedKeySpec
+import javax.crypto.Cipher
+import javax.crypto.KeyGenerator
+import javax.crypto.SecretKeyFactory
+import javax.crypto.spec.GCMParameterSpec
+import javax.crypto.spec.SecretKeySpec
 
 
 actual fun EncryptionSymmetricKey(size: Int, algorithm: Algorithm.Symmetric): EncryptionSymmetricKey {
-    val format = AesGcmKeyFormat.newBuilder().setKeySize(size/8).build()
-    val tmpl = KeyTemplate.create(
-        "type.googleapis.com/google.crypto.tink.AesGcmKey",
-        format.toByteArray(),
-        KeyTemplate.OutputPrefixType.RAW
-    )
+    val (cipher,key) = cipherGen(size,algorithm)
     return when (algorithm) {
-        is Algorithm.Symmetric.AES -> EncryptionKeySymmetricHandle(tmpl,Aes.serializer())
+        is Algorithm.Symmetric.AES -> EncryptionSymmetricKeyHandleBouncy(cipher,key)
     }
 }
 
@@ -60,9 +65,34 @@ actual fun EncryptionSymmetricKey(
     size: Int,
     algorithm: Algorithm.Symmetric
 ): EncryptionSymmetricKey {
-    CleartextKeysetHandle.read(BinaryKeysetReader.withBytes(serializedKey))
-    val serializer = when (algorithm) {
-        is Algorithm.Symmetric.AES -> Aes.serializer()
+
+    val keyAttributes = attributes(algorithm)
+    val spec = SecretKeySpec(serializedKey,keyAttributes.second)
+
+    val factory = SecretKeyFactory.getInstance(keyAttributes.second, bouncyCastleProvider)
+    val key = factory.generateSecret(spec)
+    val cipher = Cipher.getInstance(keyAttributes.first, bouncyCastleProvider)
+
+    return EncryptionSymmetricKeyHandleBouncy(cipher, key)
+}
+
+private fun cipherGen(size: Int, algo: Algorithm.Symmetric): Pair<Cipher, Key> {
+    val cipherKeyPair = attributes(algo)
+    val cipher: Cipher = Cipher.getInstance(cipherKeyPair.first, bouncyCastleProvider)
+    val random = SecureRandom()
+    val generator = KeyGenerator.getInstance(cipherKeyPair.second, bouncyCastleProvider)
+
+    generator.init(size, random)
+
+    val key: Key = generator.generateKey()
+    return cipher to key
+}
+
+private fun attributes(algo: Algorithm.Symmetric): Pair<String, String> {
+    return when (algo) {
+        is Algorithm.Symmetric.AES -> {
+            val hash = algo.hashSize
+            "AES/GCM/NoPadding" to "AES"
+        }
     }
-    return EncryptionKeySymmetricHandle(serializedKey, serializer)
 }
