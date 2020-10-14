@@ -66,7 +66,7 @@ internal object HybridEncryptionSymmetricKeyProvider: HybridEncryption.Symmetric
     }
 
     // TODO double check if it is fine to have empty 'associatedData'
-    override fun getAuthenticationData() = byteArrayOf(0)
+    override fun getAuthenticationData() = byteArrayOf()
 
 
 }
