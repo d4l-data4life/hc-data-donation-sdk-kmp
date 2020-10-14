@@ -87,9 +87,15 @@ internal object HybridEncryptionAndroidSerializer : HybridEncryptionPayload.Seri
         val ciphertextSizeBytes = ByteArray(CIPHERTEXT_SIZE_LENGTH)
         val cipherTextPos = FIXED_OUTPUT_LENGTH
         data.copyInto(ciphertextSizeBytes, 0, cipherTextPos - CIPHERTEXT_SIZE_LENGTH, cipherTextPos)
+
         val sizeBuffer = Buffer(Memory(ByteBuffer.wrap(ciphertextSizeBytes)))
         sizeBuffer.resetForRead()
-        val ciphertextSize = sizeBuffer.readULong().toInt()
+        val  b=  ByteArray(8)
+        sizeBuffer.readAvailable(b)
+        b.reverse()
+        val k = Buffer(Memory(ByteBuffer.wrap(b)))
+        k.resetForRead()
+        val ciphertextSize = k.readULong().toInt()
 
         val iv = ByteArray(AES_IV_LENGTH)
         val ciphertext = ByteArray(ciphertextSize)
