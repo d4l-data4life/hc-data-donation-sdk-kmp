@@ -62,13 +62,15 @@ internal object HybridEncryptionAndroidSerializer : HybridEncryptionPayload.Seri
             //version
             wBuffer.writeUByte(version.toUByte())
             //encKeyLen
-            wBuffer.writeUShort(encryptedSymmetricPrivateKey.size.toUShort())
+            wBuffer.writeUShort(
+                encryptedSymmetricPrivateKey.size.toUShort().reverseByteOrder()
+            ) // little endian
             //encKey
             wBuffer.writeFully(encryptedSymmetricPrivateKey)
             //iv
             wBuffer.writeFully(iv)
             //ciphertextLen
-            wBuffer.writeULong(ciphertext.size.toULong()) // TODO check if it needs to be written as little endian
+            wBuffer.writeULong(ciphertext.size.toULong().reverseByteOrder()) // little endian
             //ciphertext
             wBuffer.writeFully(ciphertext)
         }
@@ -90,6 +92,7 @@ internal object HybridEncryptionAndroidSerializer : HybridEncryptionPayload.Seri
         val versionBuffer = Buffer(Memory(ByteBuffer.wrap(versionBytes)))
         versionBuffer.resetForRead()
         val version = versionBuffer.readUByte().toInt()
+        println("version here is $version")
 
         //encKey
         val keyPos = VERSION_LENGTH + AES_IV_SIZE_LENGTH
@@ -108,12 +111,12 @@ internal object HybridEncryptionAndroidSerializer : HybridEncryptionPayload.Seri
 
         val sizeBuffer = Buffer(Memory(ByteBuffer.wrap(ciphertextSizeBytes)))
         sizeBuffer.resetForRead()
-        val b = ByteArray(CIPHERTEXT_SIZE_LENGTH)
-        sizeBuffer.readAvailable(b)
-        b.reverse()
-        val k = Buffer(Memory(ByteBuffer.wrap(b)))
-        k.resetForRead()
-        val ciphertextSize = k.readULong().toInt()
+        val ciphertextSizeBytesReverse = ByteArray(CIPHERTEXT_SIZE_LENGTH)
+        sizeBuffer.readAvailable(ciphertextSizeBytesReverse)
+        ciphertextSizeBytesReverse.reverse()
+        val sizeBufferReverse = Buffer(Memory(ByteBuffer.wrap(ciphertextSizeBytesReverse)))
+        sizeBufferReverse.resetForRead()
+        val ciphertextSize = sizeBufferReverse.readULong().toInt()
 
         //ciphertext
         val ciphertext = ByteArray(ciphertextSize)
