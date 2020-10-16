@@ -174,12 +174,9 @@ open class HybridEncryptionTest {
             hybridEncryptionSerializer
         )
         val decrypted = hybrid.decrypt(encodedMessageV2.decodeHexBytes())
-        println(decrypted)
         if (decrypted.isFailure) {
             decrypted.exceptionOrNull()?.printStackTrace()
         }
-        val encrypted = hybrid.encrypt(decodedMessageExpected.encodeToByteArray())
-        println(encrypted.encodeToHexString())
         //Then
         assertTrue(decrypted.isSuccess)
         assertEquals(decodedMessageExpected, decrypted.getOrNull()?.decodeToString())

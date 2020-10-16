@@ -92,7 +92,6 @@ internal object HybridEncryptionAndroidSerializer : HybridEncryptionPayload.Seri
         val versionBuffer = Buffer(Memory(ByteBuffer.wrap(versionBytes)))
         versionBuffer.resetForRead()
         val version = versionBuffer.readUByte().toInt()
-        println("version here is $version")
 
         //encKey
         val keyPos = VERSION_LENGTH + AES_IV_SIZE_LENGTH
