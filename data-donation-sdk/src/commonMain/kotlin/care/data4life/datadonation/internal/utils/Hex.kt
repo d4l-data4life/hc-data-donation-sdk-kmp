@@ -30,34 +30,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.encryption.hybrid
+package care.data4life.datadonation.internal.utils
 
-import care.data4life.datadonation.encryption.assymetric.EncryptionPrivateKey
-import care.data4life.datadonation.encryption.assymetric.EncryptionPublicKey
-import care.data4life.datadonation.encryption.symmetric.EncryptionSymmetricKey
+private val hexArray = "0123456789ABCDEF".toCharArray()
 
-interface HybridEncryption {
+fun ByteArray.encodeToHexString(): String =
+    joinToString("") { (0xFF and it.toInt()).toString(16).padStart(2, '0') }
 
-    companion object {
-        const val HYBRID_ENCRYPTION_VERSION_AES_WITH_GCM = 2
-        const val AES_IV_LENGTH = 16
-        const val AES_AUTH_TAG_LENGTH = 16
-        const val AES_KEY_LENGTH = 256
-        const val RSA_KEY_SIZE_BITS = 2048
-    }
-
-    fun encrypt(plaintext: ByteArray): ByteArray
-    fun decrypt(ciphertext: ByteArray): Result<ByteArray>
-
-    interface SymmetricKeyProvider {
-        fun getNewKey(): EncryptionSymmetricKey
-        fun getKey(keyData: ByteArray): EncryptionSymmetricKey
-        fun getAuthenticationData(): ByteArray
-    }
-
-    interface AsymmetricKeyProvider {
-        fun getPublicKey(): EncryptionPublicKey
-        fun getPrivateKey(): EncryptionPrivateKey
-    }
-
-}
+fun String.decodeHexBytes(): ByteArray =
+    ByteArray(this.length / 2) { this.substring(it * 2, it * 2 + 2).toInt(16).toByte() }

@@ -29,11 +29,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-@file:OptIn(ExperimentalStdlibApi::class,ExperimentalUnsignedTypes::class)
 package care.data4life.datadonation.encryption
-
-import io.ktor.utils.io.core.toByteArray
-import kotlin.contracts.contract
 
 /**
  * Asn1 DSL builder and encoder.
@@ -173,7 +169,7 @@ class INTEGER(override val value: UByteArray) : TLV<UByteArray>() {
 }
 
 @Asn1Dsl
-class OCTET_STRING() : TLV<TLV<*>>() {
+class OCTET_STRING : TLV<TLV<*>>() {
     override fun type(): UByte = 4u
 
     @Asn1Dsl
@@ -182,7 +178,7 @@ class OCTET_STRING() : TLV<TLV<*>>() {
     }
 
     @Asn1Dsl
-    fun raw(bytes:ByteArray) {
+    fun raw(bytes: ByteArray) {
         value = RAW_TLV(bytes)
     }
 
@@ -191,7 +187,7 @@ class OCTET_STRING() : TLV<TLV<*>>() {
 }
 
 @Asn1Dsl
-class BIT_STRING() : TLV<TLV<*>>() {
+class BIT_STRING : TLV<TLV<*>>() {
     override fun type(): UByte = 3u
 
     @Asn1Dsl
@@ -200,7 +196,7 @@ class BIT_STRING() : TLV<TLV<*>>() {
     }
 
     @Asn1Dsl
-    fun raw(bytes:ByteArray) {
+    fun raw(bytes: ByteArray) {
         value = RAW_TLV(bytes)
     }
 
@@ -209,7 +205,7 @@ class BIT_STRING() : TLV<TLV<*>>() {
 }
 
 @Asn1Dsl
-class SEQUENCE() : TLV<List<TLV<out Any>>>() {
+class SEQUENCE : TLV<List<TLV<out Any>>>() {
     override val value: List<TLV<out Any>> = mutableListOf()
 
 
