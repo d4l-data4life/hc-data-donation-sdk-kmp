@@ -55,10 +55,9 @@ class HybridEncryptionPayload(
     companion object {
         const val HYBRID_ENCRYPTION_VERSION_AES_WITH_GCM = HybridEncryption.HYBRID_ENCRYPTION_VERSION_AES_WITH_GCM
         const val VERSION_LENGTH = UByte.SIZE_BYTES
-        const val AES_IV_SIZE_LENGTH = UShort.SIZE_BYTES // The IV size must be encoded in the payload even if its value is always 12 bytes for AES GCM
+        const val AES_KEY_SIZE_LENGTH = UShort.SIZE_BYTES
         const val CIPHERTEXT_SIZE_LENGTH = ULong.SIZE_BYTES
         const val AES_IV_LENGTH = HybridEncryption.AES_IV_LENGTH
-        const val AES_KEY_LENGTH = HybridEncryption.AES_KEY_LENGTH
 
         private fun extractIv(source: ByteArray): ByteArray {
             val data = ByteArray(AES_IV_LENGTH)

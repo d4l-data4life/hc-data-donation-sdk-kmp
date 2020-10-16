@@ -39,7 +39,7 @@ import care.data4life.datadonation.encryption.hybrid.HybridEncryption.Companion.
 import care.data4life.datadonation.encryption.hybrid.HybridEncryption.Companion.AES_KEY_LENGTH
 import care.data4life.datadonation.encryption.hybrid.HybridEncryption.Companion.RSA_KEY_SIZE_BITS
 import care.data4life.datadonation.encryption.hybrid.HybridEncryptionHandle
-import care.data4life.datadonation.encryption.hybrid.HybridEncryptionPayload.Companion.AES_IV_SIZE_LENGTH
+import care.data4life.datadonation.encryption.hybrid.HybridEncryptionPayload.Companion.AES_KEY_SIZE_LENGTH
 import care.data4life.datadonation.encryption.hybrid.HybridEncryptionPayload.Companion.CIPHERTEXT_SIZE_LENGTH
 import care.data4life.datadonation.encryption.hybrid.HybridEncryptionPayload.Companion.VERSION_LENGTH
 import care.data4life.datadonation.encryption.hybrid.HybridEncryptionSymmetricKeyProvider
@@ -75,9 +75,9 @@ open class HybridEncryptionTest {
 
         val hybridEncryptedResult = handle.encrypt(plaintext)
         // ciphertext same length as plaintext
-        // expected output size: version (1) + iv size value (2) + encryptedKey.size (256) + iv.size (12) + ciphertext size value (8) + ciphertext.size
+        // expected output size: version (1) + key size value (2) + encryptedKey.size (256) + iv.size (12) + ciphertext size value (8) + ciphertext.size
         val expectedLength =
-            VERSION_LENGTH + AES_IV_SIZE_LENGTH + AES_KEY_LENGTH + AES_IV_LENGTH + CIPHERTEXT_SIZE_LENGTH + plaintext.size + AES_AUTH_TAG_LENGTH
+            VERSION_LENGTH + AES_KEY_SIZE_LENGTH + AES_KEY_LENGTH + AES_IV_LENGTH + CIPHERTEXT_SIZE_LENGTH + plaintext.size + AES_AUTH_TAG_LENGTH
         assertEquals(expectedLength, hybridEncryptedResult.size)
 
         val result = handle.decrypt(hybridEncryptedResult)
@@ -95,9 +95,9 @@ open class HybridEncryptionTest {
         val plaintext = "Az újszülött kiscicák szervezetébe antitestek jutnak az anyatejen keresztül"
         val hybridEncryptedResult = handle.encrypt(plaintext.encodeToByteArray())
         // ciphertext same length as plaintext
-        // expected output size: version (1) + iv size value (2) + encryptedKey.size (256) + iv.size (12) + ciphertext size value (8) + ciphertext.size
+        // expected output size: version (1) + key size value (2) + encryptedKey.size (256) + iv.size (12) + ciphertext size value (8) + ciphertext.size
         val expectedLength =
-            VERSION_LENGTH + AES_IV_SIZE_LENGTH + AES_KEY_LENGTH + AES_IV_LENGTH + CIPHERTEXT_SIZE_LENGTH + plaintext.encodeToByteArray().size + AES_AUTH_TAG_LENGTH
+            VERSION_LENGTH + AES_KEY_SIZE_LENGTH + AES_KEY_LENGTH + AES_IV_LENGTH + CIPHERTEXT_SIZE_LENGTH + plaintext.encodeToByteArray().size + AES_AUTH_TAG_LENGTH
         assertEquals(expectedLength, hybridEncryptedResult.size)
         val result = handle.decrypt(hybridEncryptedResult)
         if (result.isFailure) {
