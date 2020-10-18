@@ -51,7 +51,13 @@ internal class DonationService(
     }
 
     suspend fun requestRegistrationToken(): String {
-        return client.getWithQuery(environment, baseUrl = baseUrl, path = Endpoints.token)
+        return client.getWithQuery<String>(environment, baseUrl = baseUrl, path = Endpoints.token)
+            .let {
+                it.substring(
+                    1,
+                    it.length - 2
+                ) //The token arrives between quotes we have to remove them.
+            }
     }
 
     suspend fun registerNewDonor(payload: ByteArray) {

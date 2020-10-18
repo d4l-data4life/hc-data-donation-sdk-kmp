@@ -43,7 +43,6 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
-import kotlin.time.ExperimentalTime
 import kotlin.time.hours
 
 
@@ -62,7 +61,6 @@ internal class ConsentService(
     private lateinit var XSRFToken: String
     private var tokenFetched = LocalDateTime(1, 1, 1, 1, 1).toInstant(TimeZone.UTC)
 
-    @OptIn(ExperimentalTime::class)
     suspend fun getToken(accessToken: String): String {
         if (tokenFetched > Clock.System.now().minus(XSRF_VALIDITY.hours)) {
             tokenFetched = Clock.System.now()

@@ -52,9 +52,11 @@ internal class CreateUserConsent(
             val newKeyPair = SignatureKeyPrivate(
                 2048,
                 Algorithm.Signature.RsaPSS(HashSize.Hash256)
-            ).let { KeyPair(it.serializedPublic(), it.serializedPrivate()) }
-            registerNewDonor.withParams(newKeyPair).execute()
-            Pair(userConsent, newKeyPair)
+            )
+            registerNewDonor.withParams(newKeyPair.pkcs8Public).execute()
+            Pair(
+                userConsent,
+                newKeyPair.let { KeyPair(it.serializedPublic(), it.serializedPrivate()) })
         } else {
             Pair(userConsent, parameter.keyPair!!)
         }

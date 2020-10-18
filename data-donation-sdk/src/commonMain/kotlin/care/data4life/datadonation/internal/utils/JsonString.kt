@@ -32,9 +32,14 @@
 
 package care.data4life.datadonation.internal.utils
 
+import care.data4life.datadonation.internal.data.model.ConsentMessage
 import care.data4life.datadonation.internal.data.model.RegistrationRequest
 import care.data4life.datadonation.internal.data.model.SignedConsentMessage
 import kotlinx.serialization.json.Json
+
+
+internal fun ConsentMessage.toJsonString() =
+    Json.encodeToString(ConsentMessage.serializer(), this)
 
 internal fun RegistrationRequest.toJsonString() =
     Json.encodeToString(RegistrationRequest.serializer(), this)
