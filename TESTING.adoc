@@ -13,6 +13,7 @@
 === Pre requirements
 
     Install and run local docker service.
+    Install golang.
     If you have problem with the `make build` command try adding the following lines to the `.gitconfig` file:
     Enforce SSH
     [url “ssh://git@github.com/“]
@@ -70,3 +71,11 @@ If you want to quickly start and stop everything feel free to use it.
 - `DD-start` - will stop and populate every service
 - `DD-stop` - will stop and destroy every service and database
 - `DD-restart` - Will stop clean and restart every service
+
+    Side note:
+    To write debug messages in the go crypto lib you have to check out the project, modify it and push to the go-crypto repo
+    After that, do the following:
+    git config --global --add url."https://${GITHUB_USER_TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
+    export GOPRIVATE="github.com/gesundheitscloud/*"
+    go get github.com/gesundheitscloud/go-crypto@branch-name
+    make build
