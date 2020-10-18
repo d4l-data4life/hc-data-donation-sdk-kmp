@@ -30,9 +30,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.di
+package care.data4life.datadonation.encryption.hybrid
 
-import org.koin.dsl.module
+internal actual val hybridEncryptionSerializer: HybridEncryptionPayload.Serializer
+    get() = HybridEncryptionIosSerializer
 
-actual val platformModule = module {
+internal object HybridEncryptionIosSerializer : HybridEncryptionPayload.Serializer {
+
+    override fun serialize(payload: HybridEncryptionPayload): ByteArray {
+        TODO("Not yet implemented")
+    }
+
+    override fun deserialize(data: ByteArray): HybridEncryptionPayload {
+        TODO("Not yet implemented")
+    }
+
+
 }

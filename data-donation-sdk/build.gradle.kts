@@ -50,10 +50,10 @@ kotlin {
             languageSettings.apply {
                 useExperimentalAnnotation("kotlinx.coroutines.ExperimentalCoroutinesApi")
                 useExperimentalAnnotation("kotlinx.serialization.InternalSerializationApi")
+                useExperimentalAnnotation("kotlinx.serialization.ExperimentalSerializationApi")
                 useExperimentalAnnotation("kotlin.ExperimentalStdlibApi")
                 useExperimentalAnnotation("kotlin.ExperimentalUnsignedTypes")
                 useExperimentalAnnotation("kotlin.time.ExperimentalTime")
-
             }
         }
         commonMain {
@@ -131,8 +131,8 @@ kotlin {
             }
         }
 
-         configure(listOf(targets.asMap["ios"]!!)) {
-             this as org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+        configure(listOf(targets.asMap["ios"]!!)) {
+            this as org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
             compilations["main"].kotlinOptions.freeCompilerArgs += mutableListOf(
                 //"-include-binary", "$projectDir/native/iOSCryptoDD/libiOSCryptoDD.a",
@@ -159,10 +159,10 @@ kotlin {
                 }
             }
 
-             binaries.all {
-                 // Tell the linker where the framework is located.
-                 linkerOpts("-framework", "iOSCryptoDD", "-F$projectDir/native/iOSCryptoDD/")
-             }
+            binaries.all {
+                // Tell the linker where the framework is located.
+                linkerOpts("-framework", "iOSCryptoDD", "-F$projectDir/native/iOSCryptoDD/")
+            }
         }
     }
     cocoapods {
@@ -219,7 +219,8 @@ android {
 
 with(tasks.create("iosWithLinkerTest")) {
     this as org.gradle.api.DefaultTask
-    val linkTask = tasks.getByName("linkDebugTestIos") as org.jetbrains.kotlin.gradle.tasks.KotlinNativeLink
+    val linkTask =
+        tasks.getByName("linkDebugTestIos") as org.jetbrains.kotlin.gradle.tasks.KotlinNativeLink
     dependsOn(linkTask)
     group = JavaBasePlugin.VERIFICATION_GROUP
     description = "Runs tests for target 'ios' on an iOS simulator"

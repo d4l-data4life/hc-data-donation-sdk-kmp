@@ -30,9 +30,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.di
+package care.data4life.datadonation.encryption
 
-import org.koin.dsl.module
+import HybridEncryptionTest
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
-actual val platformModule = module {
-}
+@RunWith(JUnit4::class)
+class HybridEncryptionAndroidTest : HybridEncryptionTest()
