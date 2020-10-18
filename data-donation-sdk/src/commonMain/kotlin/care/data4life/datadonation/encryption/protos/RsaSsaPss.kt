@@ -32,7 +32,6 @@
 
 package care.data4life.datadonation.encryption.protos
 
-import care.data4life.datadonation.encryption.Asn1
 import care.data4life.datadonation.encryption.Asn1Exportable
 import care.data4life.datadonation.encryption.sequence
 import kotlinx.serialization.Serializable
@@ -79,6 +78,7 @@ class RsaSsaPssPublicKey(
         "PublicKeyInfo" sequence {
             "algorithm" sequence {
                 "algorithm" object_identifier rsaPkcsIDENTIFIER
+                "null".null_()
             }
             "PublicKey" bit_string  {
                 "RSAPublicKey" sequence {

@@ -107,13 +107,16 @@ class Asn1 constructor(private val root: List<SEQUENCE>){
             val encoded = tlv.value.encode()
             ubyteArrayOf(
                 tlv.type(),
-                *(encoded.size+1).toDerSize(),
+                *(encoded.size + 1).toDerSize(),
                 0u,
                 *encoded
             )
         }
         is RAW_TLV -> {
             tlv.value.asUByteArray()
+        }
+        is NULL -> {
+            ubyteArrayOf(tlv.type(), 0u)
         }
     }
 
@@ -156,11 +159,19 @@ sealed class TLV<T : Any> {
 /**
  * Already encoded TLV value
  */
-class RAW_TLV(override val value: ByteArray):TLV<ByteArray>() {
+class RAW_TLV(override val value: ByteArray) : TLV<ByteArray>() {
     override fun type(): UByte = throw NotImplementedError()
 }
 
-class OBJECT_IDENTIFIER(override val  value: List<Int>) : TLV<List<Int>>() {
+class NULL : TLV<ByteArray>() {
+    override val value: ByteArray
+        get() = byteArrayOf()
+
+    override fun type(): UByte = 5u
+
+}
+
+class OBJECT_IDENTIFIER(override val value: List<Int>) : TLV<List<Int>>() {
     override fun type(): UByte = 6u
 }
 
@@ -207,6 +218,12 @@ class BIT_STRING : TLV<TLV<*>>() {
 @Asn1Dsl
 class SEQUENCE : TLV<List<TLV<out Any>>>() {
     override val value: List<TLV<out Any>> = mutableListOf()
+
+
+    @Asn1Dsl
+    fun String.null_() {
+        (value as MutableList) += NULL()
+    }
 
 
     @Asn1Dsl
