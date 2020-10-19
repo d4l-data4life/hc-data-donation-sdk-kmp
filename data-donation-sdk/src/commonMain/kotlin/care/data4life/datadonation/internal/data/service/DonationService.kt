@@ -34,7 +34,6 @@ package care.data4life.datadonation.internal.data.service
 
 import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.internal.data.service.DonationService.Endpoints.register
-import care.data4life.datadonation.internal.utils.CommonBase64Encoder
 import io.ktor.client.*
 import io.ktor.http.*
 import io.ktor.http.content.*
@@ -61,7 +60,6 @@ internal class DonationService(
     }
 
     suspend fun registerNewDonor(payload: ByteArray) {
-        println("BODY: ${payload.size} ${CommonBase64Encoder.encode(payload)}")
         return client.putWithoutHeader(
             environment,
             baseUrl = baseUrl,

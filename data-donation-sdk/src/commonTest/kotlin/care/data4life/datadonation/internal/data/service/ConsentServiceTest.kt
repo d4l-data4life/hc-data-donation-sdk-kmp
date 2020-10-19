@@ -40,6 +40,7 @@ import care.data4life.datadonation.internal.data.model.ConsentSignature
 import care.data4life.datadonation.internal.data.model.TokenVerificationResult
 import care.data4life.datadonation.internal.data.service.ConsentService.Companion.defaultDonationConsentKey
 import io.ktor.client.*
+import io.ktor.client.engine.mock.*
 import io.ktor.http.*
 import kotlinx.serialization.builtins.ListSerializer
 import runTest
@@ -60,17 +61,25 @@ internal abstract class ConsentServiceTest : BaseServiceTest<ConsentService>() {
     @Test
     fun createUserConsentTest() = runTest {
         //Given
-        givenServiceResponseWith(
-            TokenVerificationResult.serializer(),
-            tokenVerificationResult
+        givenServiceToResponse(
+            Pair("xsrf",
+                { respond("", headers = headersOf("X-Csrf-Token", "anyThing")) }),
+            Pair("userConsents", {
+                responseWith(
+                    TokenVerificationResult.serializer(),
+                    tokenVerificationResult
+                )
+            })
         )
 
         //When
-        val result = service.createUserConsent("T", 1, null)
+        service.createUserConsent("T", 1, null)
 
         //Then
-        assertEquals(result, tokenVerificationResult)
         assertEquals(HttpMethod.Post, lastRequest.method)
+        assertEquals(ConsentService.Companion.Endpoints.userConsents, lastRequest.url.encodedPath)
+        println(lastRequest.body)
+        assertEquals(ContentType.Application.Json, lastRequest.body.contentType)
     }
 
     @Test
@@ -94,7 +103,10 @@ internal abstract class ConsentServiceTest : BaseServiceTest<ConsentService>() {
     @Test
     fun fetchDocumentConsentsTest() = runTest {
         //Given
-        givenServiceResponseWith(ListSerializer(ConsentDocument.serializer()), listOf(consentDocDummy))
+        givenServiceResponseWith(
+            ListSerializer(ConsentDocument.serializer()),
+            listOf(consentDocDummy)
+        )
 
         //When
         val result = service.fetchConsentDocuments("T", 1, "DE")
@@ -102,9 +114,12 @@ internal abstract class ConsentServiceTest : BaseServiceTest<ConsentService>() {
         //Then
         assertEquals(listOf(consentDocDummy), result)
         assertEquals(HttpMethod.Get, lastRequest.method)
-        assertEquals(ConsentService.Companion.Endpoints.consentDocuments, lastRequest.url.encodedPath)
-        assertTrue(lastRequest.url.parameters.contains("consentDocumentKey"))
-        assertEquals(lastRequest.url.parameters["consentDocumentKey"], defaultDonationConsentKey)
+        assertEquals(
+            ConsentService.Companion.Endpoints.consentDocuments,
+            lastRequest.url.encodedPath
+        )
+        assertTrue(lastRequest.url.parameters.contains("key"))
+        assertEquals(lastRequest.url.parameters["key"], defaultDonationConsentKey)
         assertTrue(lastRequest.url.parameters.contains("version"))
         assertEquals(lastRequest.url.parameters["version"], "1")
 
@@ -113,10 +128,17 @@ internal abstract class ConsentServiceTest : BaseServiceTest<ConsentService>() {
     @Test
     fun requestSignatureTest() = runTest {
         //Given
-        givenServiceResponseWith(
-            ConsentSignature.serializer(),
-            consentSignature
+        givenServiceToResponse(
+            Pair("xsrf",
+                { respond("", headers = headersOf("X-Csrf-Token", "anyThing")) }),
+            Pair("userConsents", {
+                responseWith(
+                    ConsentSignature.serializer(),
+                    consentSignature
+                )
+            })
         )
+
 
         //When
         val result = service.requestSignature("T", "message")
@@ -129,7 +151,10 @@ internal abstract class ConsentServiceTest : BaseServiceTest<ConsentService>() {
     @Test
     fun revokeConsentTest() = runTest {
         //Given
-        givenServiceNoResponse()
+        givenServiceToResponse(
+            Pair("xsrf",
+                { respond("", headers = headersOf("X-Csrf-Token", "anyThing")) })
+        )
 
         //When
         service.revokeUserConsent("T", "DE")
