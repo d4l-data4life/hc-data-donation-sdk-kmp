@@ -1,6 +1,6 @@
 plugins {
     kotlin("multiplatform")
-    kotlin("native.cocoapods")
+
     kotlin("plugin.serialization")
 
     // Android
@@ -20,11 +20,10 @@ kotlin {
         publishLibraryVariants("release")
     }
 
-    val onPhone = System.getenv("SDK_NAME")?.startsWith("iphoneos") ?: false
-    if (onPhone) {
-        iosArm64("ios")
-    } else {
-        iosX64("ios")
+    ios {
+        binaries {
+            framework()
+        }
     }
 
 
@@ -131,7 +130,7 @@ kotlin {
             }
         }
 
-        configure(listOf(targets.asMap["ios"]!!)) {
+        configure(listOf(targets["iosArm64"], targets["iosX64"])) {
             this as org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
             compilations["main"].kotlinOptions.freeCompilerArgs += mutableListOf(
@@ -165,17 +164,7 @@ kotlin {
             }
         }
     }
-    cocoapods {
-        // Configure fields required by CocoaPods.
-        summary = "TODO"
-        homepage = "TODO"
 
-        ios.deploymentTarget = "13.5"
-        //pod("CryptoSwift","1.3.1")
-        //pod("CryptoSwift","1.3.2", project.file("/Users/alexandertizik/IdeaProjects/CryptoSwift/CryptoSwift.podspec"))
-        //pod("CryptoSwift","1.3.2", project.file("../data-donation-sdk/native/CryptoSwift/CryptoSwift.podspec"))
-        //pod("iOSCryptoDD","1.0.1", project.file("../data-donation-sdk/native/iOSCryptoDD/iOSCryptoDD.podspec"))
-    }
 }
 
 android {
@@ -220,7 +209,7 @@ android {
 with(tasks.create("iosWithLinkerTest")) {
     this as org.gradle.api.DefaultTask
     val linkTask =
-        tasks.getByName("linkDebugTestIos") as org.jetbrains.kotlin.gradle.tasks.KotlinNativeLink
+        tasks.getByName("linkDebugTestIosX64") as org.jetbrains.kotlin.gradle.tasks.KotlinNativeLink
     dependsOn(linkTask)
     group = JavaBasePlugin.VERIFICATION_GROUP
     description = "Runs tests for target 'ios' on an iOS simulator"
@@ -283,6 +272,7 @@ publishing {
                             artifactId = "${project.name}-iosX64"
                         }
                         else -> {
+                            println("Name" + name)
                             artifactId = "${project.name}-common"
                         }
                     }
