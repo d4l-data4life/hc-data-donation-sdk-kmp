@@ -266,10 +266,10 @@ publishing {
                             artifactId = "${project.name}-jvm"
                         }
                         "iosArm64" -> {
-                            artifactId = "${project.name}-iosArm64"
+                            artifactId = "${project.name}-iosarm64"
                         }
                         "iosX64" -> {
-                            artifactId = "${project.name}-iosX64"
+                            artifactId = "${project.name}-iosx64"
                         }
                         else -> {
                             println("Name" + name)
