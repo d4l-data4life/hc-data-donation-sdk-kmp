@@ -272,7 +272,6 @@ publishing {
                             artifactId = "${project.name}-iosx64"
                         }
                         else -> {
-                            println("Name" + name)
                             artifactId = "${project.name}-common"
                         }
                     }

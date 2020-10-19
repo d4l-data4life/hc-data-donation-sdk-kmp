@@ -72,7 +72,7 @@ object Version {
 
     //Encryption
     const val tinkAndroid = "1.4.0"
-    const val bouncyCastle = "1.66"
+    const val bouncyCastle = "1.64"
 
     const val dateTime = "0.1.0"
 
