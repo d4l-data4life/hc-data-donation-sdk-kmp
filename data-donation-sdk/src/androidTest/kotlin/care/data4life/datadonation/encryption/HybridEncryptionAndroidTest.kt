@@ -32,9 +32,13 @@
 
 package care.data4life.datadonation.encryption
 
+import HybridEncryptionSerializationTest
 import HybridEncryptionTest
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 class HybridEncryptionAndroidTest : HybridEncryptionTest()
+
+@RunWith(JUnit4::class)
+class HybridEncryptionSerializationAndroidTest : HybridEncryptionSerializationTest()
