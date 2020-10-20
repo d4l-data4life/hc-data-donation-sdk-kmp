@@ -126,7 +126,7 @@ private val coreModule = module {
     //Usecases
     single { RegisterNewDonor(get(), get(), get(), Base64Factory.createEncoder()) }
     single { FetchConsentDocuments(get()) }
-    single { CreateUserConsent(get(), get()) }
+    single { CreateUserConsent(get()) }
     single { FetchUserConsents(get()) }
     single { RevokeUserConsent(get()) }
 }

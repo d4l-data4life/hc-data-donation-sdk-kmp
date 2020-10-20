@@ -65,7 +65,7 @@ open class ClientTest {
         override fun getDonorKeyPair(): KeyPair? = null
 
         override fun getUserSessionToken(): String? =
-            "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJvd25lcjoyYmVkNjZmZC1hMjkwLTRiNWUtODRlMC0zMmFiNTNmNjJkNDYiLCJpc3MiOiJ1cm46Z2hjIiwiZXhwIjoxNjAzMDkwMDMyLCJuYmYiOjE2MDMwODk2MTIsImlhdCI6MTYwMzA4OTY3MiwianRpIjoiOGY4MGEyNWMtZWQzNy00NGQ2LTg5NmYtMjI2YmI2YjA1N2NhIiwiZ2hjOmFpZCI6ImJjOTg2ZDEzLTg1Y2EtNGZhYy04ZTQyLTNlMWY2MjI4NDdiNSIsImdoYzpjaWQiOiI4OWRiYzg3Ni1hYzdjLTQzYjctODc0MS0yNWIxNDA2NWZiOTEjYW5kcm9pZF9odWIiLCJnaGM6dWlkIjoiMmJlZDY2ZmQtYTI5MC00YjVlLTg0ZTAtMzJhYjUzZjYyZDQ2IiwiZ2hjOnNjb3BlIjoicGVybTpyIHJlYzpyIHJlYzp3IGF0dGFjaG1lbnQ6ciBhdHRhY2htZW50OncgdXNlcjpyIHVzZXI6cSJ9.pceV8eu8YCyVK_oLLJhkiq7j1Y1Uby8IF3yjQcOEYmGZrtGI5n4ePPPDGmhPHdVw8mBgxYtXPXImkzgKRx3XXGL5v_YZKyIYgP5hTE9YJXeebzSkz9UWp6OyXtfqNO9AOoGy5CW6p--xJ_EDkgV5WUxTGTjOTMItwqcKcjgkfowVxb7rcSTo0NHbkeZi-YewL4-TEz1a0x4OI3q-7csXw70f47YuDgbWmtyAFlSBAnolaRxjitopstcJU9yGBkexf51guk3s1mszNaNIbtOT7xDHj3KVOxgL23wQE3s0SMGiE9-s6I7OITY5zEHiPh1eAn9pNj3Czg7Fe3UkEyecnKlo6O5OQ_a7bOfzT64L1MmI8mCgPS1a4jREnnjMlhGXDxMz5H5Y2YPP0zCmlpT_wvFf4GY_zFDm-3NKPiG_40HEhSpzvmoaLEd691pVQ4X_3zbazL7v-4n2WqQnQHZgEXnRdYU1Re8AIx59Xve211Z4cTRCrJ9GPCkeuVj-t80fUPV-ddUQPuUBXhZ7D6OVBbp2t_Q0qZtLxme_Zq5-ZcLVb0SJ08mimcFvxMdbmXKB585tF_ilRVfF61xF97noxpW2AkE_ES1sjsHINyCEiRC0MmDErxMhyQ2rYSHL7UIJ32ue8C1OIXJPnxsDc3bI6RBKCCM4LIggftRcjPR9Vxk"
+            "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJvd25lcjoyYmVkNjZmZC1hMjkwLTRiNWUtODRlMC0zMmFiNTNmNjJkNDYiLCJpc3MiOiJ1cm46Z2hjIiwiZXhwIjoxNjAzMjAyODc1LCJuYmYiOjE2MDMyMDI0NTUsImlhdCI6MTYwMzIwMjUxNSwianRpIjoiYWRjYzI2Y2EtMzdlMS00Y2NkLTlhMjUtMmI4NzFlODFmZWRjIiwiZ2hjOmFpZCI6ImJjOTg2ZDEzLTg1Y2EtNGZhYy04ZTQyLTNlMWY2MjI4NDdiNSIsImdoYzpjaWQiOiI4OWRiYzg3Ni1hYzdjLTQzYjctODc0MS0yNWIxNDA2NWZiOTEjYW5kcm9pZF9odWIiLCJnaGM6dWlkIjoiMmJlZDY2ZmQtYTI5MC00YjVlLTg0ZTAtMzJhYjUzZjYyZDQ2IiwiZ2hjOnNjb3BlIjoicGVybTpyIHJlYzpyIHJlYzp3IGF0dGFjaG1lbnQ6ciBhdHRhY2htZW50OncgdXNlcjpyIHVzZXI6cSJ9.MaVF4l6Xasg1f4wFT-ometDj6z7FKTRFOvdvsalmSTVPcEgXvIK84HZX8dF8Z3knACMaEFdcz7vmTF_BGkrjro3yU0Xod0HHtoqPkEexLs-DC-2vgThHYLgZlaajgvpins-Ei_qCHK71dCrZ2osVPp0XLVnt-X3zdbj84fr1mywyvQ7wwEcwyectBb50FGzaR39LOUvAam-sbsfMVGmflrNYRf2oHnOTIJ4HgAnN-zLk4j5JxK1AZqy1XMEtsacKKDBLdzi3WgU7SZhHXZA-9LN3k21PaxegeyU1-NpLGOELZ9CC0ezrBDy9saZUc8GlFjP-E2mP4ZqvWy2jOp4HUVRrppbHwN9z2a2QTvJf6X-2bx_I2jxzg0LsqzvQ8nk_TUZkIo071ls1MHi7Kn7MeLowWUBHZ4rsR-6puhtnHEKJoPZazguK-p_FrpFgOOHbZuksFrtUhcw64FTma6FzMpNtlQc6gvi_VQoZx8fqcPBfIpZ9r_sWLEDhjXtTkfPUNKjY6J0CiRu0_wlmErmBdAKwlk8oyoXiNz69VFm4y4qc3a02MPEtwoAnB0LD3D-lmVTr79uFC4vY-NtF5fjjk8zjygP4pznb-V3UC7l8s2BpyXKil8ckvx9FgmRI0WoKPeFqYh3NvS8U5C-P0T0Ca23x4_oUgTwEPlMDzMpXw1U"
 
         override fun getEnvironment() = Environment.LOCAL
 
@@ -92,9 +92,21 @@ open class ClientTest {
         //When
         val result = createUserConsent(consentDocument.version, consentDocument.language)
         //Then
-        println("UserConsent ${result.first}")
-        println("KeyPair ${result.second}")
+        println("UserConsent $result")
     }
+
+    @Ignore
+    @Test
+    fun registerNewDonorTest() = runTest {
+        //Given
+        createUserConsentTest()
+
+        //When
+        val result = register()
+        //Then
+        println("Keypair $result")
+    }
+
 
     @Test
     @Ignore
@@ -139,13 +151,13 @@ open class ClientTest {
     private suspend fun createUserConsent(
         consentDocumentVersion: Int,
         language: String?
-    ): Pair<UserConsent, KeyPair> =
+    ): UserConsent =
         suspendCoroutine { continuation ->
             client.createUserConsent(
                 consentDocumentVersion,
                 language,
-                object : ResultListener<Pair<UserConsent, KeyPair>> {
-                    override fun onSuccess(t: Pair<UserConsent, KeyPair>) {
+                object : ResultListener<UserConsent> {
+                    override fun onSuccess(t: UserConsent) {
                         continuation.resume(t)
                     }
 
@@ -155,6 +167,19 @@ open class ClientTest {
                 })
         }
 
+    private suspend fun register(): KeyPair =
+        suspendCoroutine { continuation ->
+            client.registerDonor(
+                object : ResultListener<KeyPair> {
+                    override fun onSuccess(t: KeyPair) {
+                        continuation.resume(t)
+                    }
+
+                    override fun onError(exception: Exception) {
+                        continuation.resumeWithException(exception)
+                    }
+                })
+        }
 
     private suspend fun fetchUserConsent(): List<UserConsent> =
         suspendCoroutine { continuation ->
