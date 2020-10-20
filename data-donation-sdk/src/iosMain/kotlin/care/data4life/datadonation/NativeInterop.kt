@@ -30,10 +30,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.encryption
+package care.data4life.datadonation
 
-import com.google.crypto.tink.*
-import com.google.crypto.tink.signature.RsaSsaPssSignKeyManager
+import kotlinx.cinterop.addressOf
+import kotlinx.cinterop.usePinned
+import platform.Foundation.NSData
+import platform.Foundation.dataWithBytesNoCopy
+import platform.posix.memcpy
 
-actual class RsaPss : SignatureKey by SignatureKeyHandle(RsaSsaPssSignKeyManager.rawRsa3072PssSha256F4Template())
 
+fun UByteArray.toNSData() = asByteArray().toNSData()
+
+fun ByteArray.toNSData() = asUByteArray().usePinned {
+    NSData.dataWithBytesNoCopy(it.addressOf(0), it.get().size.toULong())
+}
+
+fun NSData.toByteArray() = ByteArray(length.toInt()).usePinned {
+    memcpy(it.addressOf(0), bytes, length)
+    it.get()
+}

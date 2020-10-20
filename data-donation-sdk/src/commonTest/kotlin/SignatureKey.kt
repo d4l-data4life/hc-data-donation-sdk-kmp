@@ -1,3 +1,9 @@
+import care.data4life.datadonation.encryption.*
+import care.data4life.datadonation.encryption.signature.SignatureKeyPrivate
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertTrue
+
 /*
  * BSD 3-Clause License
  *
@@ -30,18 +36,26 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.encryption
+class SignatureKeyCommonTest {
 
-import care.data4life.datadonation.encryption.protos.Keyset
-import care.data4life.datadonation.encryption.protos.RsaSsaPrivateKey
-import kotlinx.serialization.protobuf.ProtoBuf
+    @BeforeTest
+    fun setup() {
+        initEncryption()
+    }
 
-internal interface SignatureKey {
+    @Test
+    fun `Generate, sign and verify`() {
+        val testData = byteArrayOf(1)
+        val key = SignatureKeyPrivate(2048, Algorithm.Signature.RsaPSS(HashSize.Hash256))
+        key.verify(testData,key.sign(testData))
+    }
 
-    fun sign(data:ByteArray):ByteArray
 
-    fun verify(data:ByteArray,signature:ByteArray):Boolean
-
-    fun serialized():ByteArray
+    @Test//TODO: add proper vaidation after parsing ASN1 is added
+    fun `Key is exported to valid ASN1 DER encoded value`() {
+        val key = SignatureKeyPrivate(2048, Algorithm.Signature.RsaPSS(HashSize.Hash256))
+        assertTrue(key.pkcs8Private.startsWith("MII"))
+        assertTrue(key.pkcs8Public.startsWith("MII"))
+    }
 
 }

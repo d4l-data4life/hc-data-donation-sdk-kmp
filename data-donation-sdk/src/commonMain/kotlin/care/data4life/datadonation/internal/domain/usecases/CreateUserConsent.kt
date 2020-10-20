@@ -35,8 +35,6 @@ package care.data4life.datadonation.internal.domain.usecases
 import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.UserConsent
-import care.data4life.datadonation.encryption.RsaPss
-import care.data4life.datadonation.encryption.SignatureKey
 import care.data4life.datadonation.encryption.protos.RsaSsaPrivateKey
 import care.data4life.datadonation.internal.domain.repositories.CredentialsRepository
 import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository

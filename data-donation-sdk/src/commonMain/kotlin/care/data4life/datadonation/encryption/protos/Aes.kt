@@ -30,16 +30,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.encryption
+package care.data4life.datadonation.encryption.protos
 
-import care.data4life.datadonation.encryption.protos.Keyset
-import care.data4life.datadonation.encryption.protos.RsaSsaPrivateKey
-import kotlinx.serialization.protobuf.ProtoBuf
+import care.data4life.datadonation.encryption.Asn1
+import care.data4life.datadonation.encryption.Asn1Exportable
+import kotlinx.serialization.Serializable
 
-
-expect class RsaPss() : SignatureKey
-
-fun RsaPss.export(): RsaSsaPrivateKey =
-    ProtoBuf.decodeFromByteArray(Keyset.serializer(), serialized()).key.first().key_data.value
-        .let { ProtoBuf.decodeFromByteArray(RsaSsaPrivateKey.serializer(), it) }
-
+//TODO: Implement Aes proto as following: https://github.com/google/tink/blob/master/proto/aes_gcm.proto
+@Serializable
+data class Aes(val todo: String): Asn1Exportable,PublicHandle {
+    override val publicKey: Asn1Exportable = this
+    override fun toAsn1(): Asn1 = TODO()
+}

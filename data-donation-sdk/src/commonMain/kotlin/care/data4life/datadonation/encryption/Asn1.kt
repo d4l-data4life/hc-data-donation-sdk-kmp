@@ -32,6 +32,9 @@
 @file:OptIn(ExperimentalStdlibApi::class,ExperimentalUnsignedTypes::class)
 package care.data4life.datadonation.encryption
 
+import io.ktor.utils.io.core.toByteArray
+import kotlin.contracts.contract
+
 /**
  * Asn1 DSL builder and encoder.
  * Most types are not supported yet.
@@ -88,7 +91,37 @@ class Asn1 constructor(private val root: List<SEQUENCE>){
                 *encoded.size.toDerSize(),
                 *encoded)
         }
+        is OCTET_STRING -> {
+            val encoded = tlv.value.encode()
+            ubyteArrayOf(
+                tlv.type(),
+                *encoded.size.toDerSize(),
+                *encoded
+            )
+        }
+        is OBJECT_IDENTIFIER -> {
+            val ident = tlv.value.map { intToUInt32ByteArray(it) }.reduce { a, b ->  a + b }
+            ubyteArrayOf(
+                tlv.type(),
+                *ident.size.toDerSize(),
+                *ident.asUByteArray()
+            )
+        }
+        is BIT_STRING -> {
+            val encoded = tlv.value.encode()
+            ubyteArrayOf(
+                tlv.type(),
+                *(encoded.size+1).toDerSize(),
+                0u,
+                *encoded
+            )
+        }
+        is RAW_TLV -> {
+            tlv.value.asUByteArray()
+        }
     }
+
+
 
     /**
      * ASN1 "Length octets" - http://luca.ntop.org/Teaching/Appunti/asn1.html
@@ -104,7 +137,7 @@ class Asn1 constructor(private val root: List<SEQUENCE>){
         }
     }
 
-    fun intToUInt32ByteArray(value: Int): ByteArray {
+    private fun intToUInt32ByteArray(value: Int): ByteArray {
         val bytes = ByteArray(4)
         bytes[3] = (value and 0xFFFF).toByte()
         bytes[2] = ((value ushr 8) and 0xFFFF).toByte()
@@ -116,23 +149,74 @@ class Asn1 constructor(private val root: List<SEQUENCE>){
 }
 
 
-@Asn1Dsl
-infix fun String.sequence(builder: SEQUENCE.() -> Unit) =
-    Asn1(listOf(SEQUENCE().apply(builder)))
-
+@DslMarker
+annotation class Asn1Dsl
 
 sealed class TLV<T : Any> {
     abstract val value: T
     abstract fun type(): UByte
 }
 
+/**
+ * Already encoded TLV value
+ */
+class RAW_TLV(override val value: ByteArray):TLV<ByteArray>() {
+    override fun type(): UByte = throw NotImplementedError()
+}
+
+class OBJECT_IDENTIFIER(override val  value: List<Int>) : TLV<List<Int>>() {
+    override fun type(): UByte = 6u
+}
+
 class INTEGER(override val value: UByteArray) : TLV<UByteArray>() {
     override fun type(): UByte = 2u
 }
 
+@Asn1Dsl
+class OCTET_STRING() : TLV<TLV<*>>() {
+    override fun type(): UByte = 4u
+
+    @Asn1Dsl
+    infix fun String.sequence(builder: SEQUENCE.() -> Unit) {
+        value = SEQUENCE().apply(builder)
+    }
+
+    @Asn1Dsl
+    fun raw(bytes:ByteArray) {
+        value = RAW_TLV(bytes)
+    }
+
+    override lateinit var value: TLV<*>
+        private set
+}
+
+@Asn1Dsl
+class BIT_STRING() : TLV<TLV<*>>() {
+    override fun type(): UByte = 3u
+
+    @Asn1Dsl
+    infix fun String.sequence(builder: SEQUENCE.() -> Unit) {
+        value = SEQUENCE().apply(builder)
+    }
+
+    @Asn1Dsl
+    fun raw(bytes:ByteArray) {
+        value = RAW_TLV(bytes)
+    }
+
+    override lateinit var value: TLV<*>
+        private set
+}
+
+@Asn1Dsl
 class SEQUENCE() : TLV<List<TLV<out Any>>>() {
     override val value: List<TLV<out Any>> = mutableListOf()
 
+
+    @Asn1Dsl
+    infix fun String.sequence(builder: SEQUENCE.() -> Unit) {
+        (value as MutableList) += SEQUENCE().apply(builder)
+    }
 
     @Asn1Dsl
     infix fun String.integer(unsigned: UByteArray) {
@@ -141,14 +225,34 @@ class SEQUENCE() : TLV<List<TLV<out Any>>>() {
 
     @Asn1Dsl
     infix fun String.integer(unsigned: ByteArray) {
-        (value as MutableList) += INTEGER(unsigned.asUByteArray())
+        integer(unsigned.asUByteArray())
+    }
+
+    @Asn1Dsl
+    infix fun String.octet_string(octetBuilder: OCTET_STRING.()->Unit) {
+        (value as MutableList) += OCTET_STRING().apply(octetBuilder)
+    }
+
+
+    @Asn1Dsl
+    infix fun String.bit_string(octetBuilder: BIT_STRING.()->Unit) {
+        (value as MutableList) += BIT_STRING().apply(octetBuilder)
+    }
+
+    @Asn1Dsl
+    infix fun String.object_identifier(identifier: List<Int>) {
+        (value as MutableList) += OBJECT_IDENTIFIER(identifier)
     }
 
     override fun type(): UByte = 48u
 }
 
+@Asn1Dsl
+infix fun String.sequence(builder: SEQUENCE.() -> Unit) =
+    Asn1(listOf(SEQUENCE().apply(builder)))
 
-@DslMarker
-annotation class Asn1Dsl
 
 
+interface Asn1Exportable {
+    fun toAsn1():Asn1
+}

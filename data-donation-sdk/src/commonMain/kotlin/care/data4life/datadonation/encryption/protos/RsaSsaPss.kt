@@ -32,9 +32,13 @@
 
 package care.data4life.datadonation.encryption.protos
 
+import care.data4life.datadonation.encryption.Asn1
+import care.data4life.datadonation.encryption.Asn1Exportable
 import care.data4life.datadonation.encryption.sequence
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.protobuf.ProtoNumber
+
+internal val rsaPkcsIDENTIFIER = listOf(42,34376,8845069,1,1,1)
 
 @Serializable
 class RsaSsaPssParams(
@@ -65,16 +69,26 @@ class RsaSsaPssPublicKey(
     // Modulus.
     // Unsigned big integer in bigendian representation.
     @ProtoNumber(3)
-    val n: ByteArray,
+    var n: ByteArray,
     // Public exponent.
     // Unsigned big integer in bigendian representation.
     @ProtoNumber(4)
     val e: ByteArray
-) {
-    fun toAsn1() = "RSAPublicKey" sequence {
-        "modulus" integer n
-        "publicExponent" integer e
-    }
+):Asn1Exportable,PublicHandle {
+    override fun toAsn1() =
+        "PublicKeyInfo" sequence {
+            "algorithm" sequence {
+                "algorithm" object_identifier rsaPkcsIDENTIFIER
+            }
+            "PublicKey" bit_string  {
+                "RSAPublicKey" sequence {
+                    "modulus" integer n
+                    "publicExponent" integer e
+                }
+            }
+        }
+
+    override val publicKey: Asn1Exportable = this
 }
 
 @Serializable
@@ -84,7 +98,7 @@ class RsaSsaPrivateKey(
     val version: Int = 0,
     // Required.
     @ProtoNumber(2)
-    val publicKey: RsaSsaPssPublicKey,
+    override val publicKey: RsaSsaPssPublicKey,
     // Private exponent.
     // Unsigned big integer in bigendian representation.
     // Required.
@@ -116,20 +130,29 @@ class RsaSsaPrivateKey(
     // Required.
     @ProtoNumber(8)
     val crt: ByteArray
-) {
-    fun toAsn1() =
-        "RSAPrivateKey" sequence {
+):Asn1Exportable,PublicHandle {
+    override fun toAsn1() =
+        "PrivateKeyInfo" sequence {
             "version" integer byteArrayOf(0)
-            "modulus" integer publicKey.n
-            "publicExponent" integer publicKey.e
-            "privateExponent" integer d
-            "prime1" integer p
-            "prime2" integer q
-            "exponent1" integer dp
-            "exponent2" integer dq
-            "crtCoefficient" integer crt
+            "algorithm" sequence {
+                "algorithm" object_identifier rsaPkcsIDENTIFIER
+            }
+            "PrivateKey" octet_string {
+               "" sequence {
+                    "version" integer byteArrayOf(0)
+                    "modulus" integer publicKey.n
+                    "publicExponent" integer publicKey.e
+                    "privateExponent" integer d
+                    "prime1" integer p
+                    "prime2" integer q
+                    "exponent1" integer dp
+                    "exponent2" integer dq
+                    "crtCoefficient" integer crt
+                }
+            }
         }
 }
+
 
 @Serializable
 enum class HashType {
@@ -149,3 +172,6 @@ enum class HashType {
     @ProtoNumber(4)
     SHA512
 }
+
+
+

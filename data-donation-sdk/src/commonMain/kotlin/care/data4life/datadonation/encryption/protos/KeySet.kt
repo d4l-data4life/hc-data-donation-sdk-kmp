@@ -32,10 +32,14 @@
 
 package care.data4life.datadonation.encryption.protos
 
+import care.data4life.datadonation.encryption.Asn1Exportable
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.protobuf.ProtoNumber
 
-
+/**
+ * Proto models are defined here:
+ * https://github.com/google/tink/blob/master/proto/tink.proto
+ */
 @Serializable
 class Keyset(
     @ProtoNumber(2)
@@ -53,3 +57,7 @@ class KeyData(
     @ProtoNumber(2)
     val value: ByteArray
 )
+
+interface PublicHandle {
+    val publicKey: Asn1Exportable
+}

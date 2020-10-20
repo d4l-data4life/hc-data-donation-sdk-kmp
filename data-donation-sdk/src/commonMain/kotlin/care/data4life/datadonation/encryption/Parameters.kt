@@ -32,48 +32,22 @@
 
 package care.data4life.datadonation.encryption
 
-import google.tink.*
-import kotlinx.cinterop.addressOf
-import kotlinx.cinterop.usePinned
-import platform.Foundation.NSData
-import platform.Foundation.dataWithBytesNoCopy
-import platform.posix.memcpy
 
-class SignatureKeyHandle:SignatureKey {
-    constructor(keyTemplate: TINKSignatureKeyTemplates) {
-        handle = TINKKeysetHandle(TINKSignatureKeyTemplate(keyTemplate, null), null)
-    }
-    constructor(handle: TINKKeysetHandle) {
-        this.handle = handle
-    }
-    constructor(serializedKeyset: ByteArray) {
-        val reader = TINKBinaryKeysetReader(serializedKeyset.toNSData(), null)
-        handle = TINKKeysetHandle.create(reader, null)!!
+sealed class Algorithm {
+    sealed class Asymmetric : Algorithm() {
+        class RsaOAEP(val hashSize: HashSize) : Asymmetric()
     }
 
-    private val handle: TINKKeysetHandle
-
-    override fun sign(data: ByteArray): ByteArray {
-        val signer = TINKPublicKeySignFactory.primitiveWithKeysetHandle(handle, null)
-        return signer!!.signatureForData(data.toNSData(), null)!!.toByteArray()
+    sealed class Symmetric : Algorithm() {
+        class AES(val hashSize: HashSize) : Symmetric()
     }
 
-    override fun verify(data: ByteArray, signature: ByteArray): Boolean {
-        val verifier = TINKPublicKeyVerifyFactory.primitiveWithKeysetHandle(handle, null)
-        return verifier!!.verifySignature(signature.toNSData(), data.toNSData(), null)
+    sealed class Signature : Algorithm() {
+        class RsaPSS(val hashSize: HashSize) : Signature()
     }
-
-    override fun serialized(): ByteArray = handle.serializedKeyset().toByteArray()
-
 }
 
 
-
-fun ByteArray.toNSData() = asUByteArray().usePinned {
-    NSData.dataWithBytesNoCopy(it.addressOf(0), it.get().size.toULong())
-}
-
-fun NSData.toByteArray() = ByteArray(length.toInt()).usePinned {
-    memcpy(it.addressOf(0), bytes, length)
-    it.get()
+enum class HashSize(val bits: Int) {
+    Hash256(256)
 }

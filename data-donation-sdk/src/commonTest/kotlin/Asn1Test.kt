@@ -1,3 +1,10 @@
+import care.data4life.datadonation.encryption.Asn1
+import care.data4life.datadonation.encryption.INTEGER
+import care.data4life.datadonation.encryption.sequence
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
+
 /*
  * BSD 3-Clause License
  *
@@ -30,32 +37,47 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.encryption
+/**
+ * Testing compliance with:
+ * http://luca.ntop.org/Teaching/Appunti/asn1.html
+ */
 
-import com.google.crypto.tink.*
+class Asn1Test {
+    val testData = UByteArray(10) { 1u }
 
-class SignatureKeyHandle:SignatureKey {
-    constructor(keyTemplate: KeyTemplate) {
-        handle = KeysetHandle.generateNew(keyTemplate)
-    }
-    constructor(handle: KeysetHandle) {
-        this.handle = handle
-    }
-    constructor(serializedKeyset: ByteArray) {
-        handle = CleartextKeysetHandle.read(BinaryKeysetReader.withBytes(serializedKeyset))
-    }
+    @Test
+    fun integer() {
+        val asn1 = "test" sequence {
+            "test" integer testData
+        }
 
-    private val handle: KeysetHandle
-
-    override fun sign(data: ByteArray): ByteArray {
-        return handle.getPrimitive(PublicKeySign::class.java).sign(data)
-    }
-
-    override fun verify(data: ByteArray, signature: ByteArray):Boolean {
-        val verifier = handle.publicKeysetHandle.getPrimitive(PublicKeyVerify::class.java)
-        return runCatching { verifier.verify(signature,data) }.isSuccess
+        //Type
+        assertEquals(asn1.encoded[2],2u)
+        //Length
+        assertEquals(asn1.encoded[3],testData.size.toUByte())
+        //Value
+        assertTrue(asn1.encoded.sliceArray(4..asn1.encoded.lastIndex).contentEquals(testData))
     }
 
-    override fun serialized(): ByteArray = CleartextKeysetHandle.getKeyset(handle).toByteArray()
+    @Test
+    fun `octet string`() {
+        val asn1 = "test" sequence {
+            "test" octet_string {
+                "test" sequence {
+                    "test" integer testData
+                }
+            }
+        }
+
+        //Type
+        assertEquals(asn1.encoded[2],4u)
+        //Length (size of data plus 1 for each Type and Length of nested structures)
+        assertEquals(asn1.encoded[3],(4 + testData.size).toUByte())
+        //Value
+        assertTrue(
+            asn1.encoded.sliceArray(4..asn1.encoded.lastIndex)
+                .contentEquals(ubyteArrayOf(48u, (testData.size+2).toUByte(), 2u, testData.size.toUByte()) + testData)
+        )
+    }
 
 }
