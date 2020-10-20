@@ -1,6 +1,6 @@
 plugins {
     kotlin("multiplatform")
-    kotlin("native.cocoapods")
+
     kotlin("plugin.serialization")
 
     // Android
@@ -20,11 +20,10 @@ kotlin {
         publishLibraryVariants("release")
     }
 
-    val onPhone = System.getenv("SDK_NAME")?.startsWith("iphoneos") ?: false
-    if (onPhone) {
-        iosArm64("ios")
-    } else {
-        iosX64("ios")
+    ios {
+        binaries {
+            framework()
+        }
     }
 
 
@@ -50,8 +49,10 @@ kotlin {
             languageSettings.apply {
                 useExperimentalAnnotation("kotlinx.coroutines.ExperimentalCoroutinesApi")
                 useExperimentalAnnotation("kotlinx.serialization.InternalSerializationApi")
+                useExperimentalAnnotation("kotlinx.serialization.ExperimentalSerializationApi")
                 useExperimentalAnnotation("kotlin.ExperimentalStdlibApi")
                 useExperimentalAnnotation("kotlin.ExperimentalUnsignedTypes")
+                useExperimentalAnnotation("kotlin.time.ExperimentalTime")
             }
         }
         commonMain {
@@ -64,6 +65,7 @@ kotlin {
                 implementation(Dependency.Multiplatform.coroutines.common)
 
                 implementation(Dependency.Multiplatform.ktor.commonCore)
+                implementation(Dependency.Multiplatform.ktor.logger)
                 implementation(Dependency.Multiplatform.ktor.commonJson)
                 implementation(Dependency.Multiplatform.ktor.commonSerialization)
 
@@ -94,6 +96,7 @@ kotlin {
 
                 //
                 implementation(Dependency.android.threeTenABP)
+                implementation(Dependency.Multiplatform.ktor.androidCore)
                 implementation(Dependency.Multiplatform.ktor.androidSerialization)
                 implementation(Dependency.android.tink)
                 implementation(Dependency.android.bouncyCastle)
@@ -127,8 +130,8 @@ kotlin {
             }
         }
 
-         configure(listOf(targets.asMap["ios"]!!)) {
-             this as org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+        configure(listOf(targets["iosArm64"], targets["iosX64"])) {
+            this as org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
             compilations["main"].kotlinOptions.freeCompilerArgs += mutableListOf(
                 //"-include-binary", "$projectDir/native/iOSCryptoDD/libiOSCryptoDD.a",
@@ -155,23 +158,13 @@ kotlin {
                 }
             }
 
-             binaries.all {
-                 // Tell the linker where the framework is located.
-                 linkerOpts("-framework", "iOSCryptoDD", "-F$projectDir/native/iOSCryptoDD/")
-             }
+            binaries.all {
+                // Tell the linker where the framework is located.
+                linkerOpts("-framework", "iOSCryptoDD", "-F$projectDir/native/iOSCryptoDD/")
+            }
         }
     }
-    cocoapods {
-        // Configure fields required by CocoaPods.
-        summary = "TODO"
-        homepage = "TODO"
 
-        ios.deploymentTarget = "13.5"
-        //pod("CryptoSwift","1.3.1")
-        //pod("CryptoSwift","1.3.2", project.file("/Users/alexandertizik/IdeaProjects/CryptoSwift/CryptoSwift.podspec"))
-        //pod("CryptoSwift","1.3.2", project.file("../data-donation-sdk/native/CryptoSwift/CryptoSwift.podspec"))
-        //pod("iOSCryptoDD","1.0.1", project.file("../data-donation-sdk/native/iOSCryptoDD/iOSCryptoDD.podspec"))
-    }
 }
 
 android {
@@ -215,7 +208,8 @@ android {
 
 with(tasks.create("iosWithLinkerTest")) {
     this as org.gradle.api.DefaultTask
-    val linkTask = tasks.getByName("linkDebugTestIos") as org.jetbrains.kotlin.gradle.tasks.KotlinNativeLink
+    val linkTask =
+        tasks.getByName("linkDebugTestIosX64") as org.jetbrains.kotlin.gradle.tasks.KotlinNativeLink
     dependsOn(linkTask)
     group = JavaBasePlugin.VERIFICATION_GROUP
     description = "Runs tests for target 'ios' on an iOS simulator"
@@ -272,10 +266,10 @@ publishing {
                             artifactId = "${project.name}-jvm"
                         }
                         "iosArm64" -> {
-                            artifactId = "${project.name}-iosArm64"
+                            artifactId = "${project.name}-iosarm64"
                         }
                         "iosX64" -> {
-                            artifactId = "${project.name}-iosX64"
+                            artifactId = "${project.name}-iosx64"
                         }
                         else -> {
                             artifactId = "${project.name}-common"

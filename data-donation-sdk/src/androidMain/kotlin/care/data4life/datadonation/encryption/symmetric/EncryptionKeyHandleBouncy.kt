@@ -32,23 +32,11 @@
 
 package care.data4life.datadonation.encryption.symmetric
 
-import care.data4life.datadonation.encryption.Asn1Exportable
-import care.data4life.datadonation.encryption.KeyHandleTink
-import care.data4life.datadonation.encryption.assymetric.EncryptionPrivateKey
-import care.data4life.datadonation.encryption.assymetric.EncryptionPublicKey
-import care.data4life.datadonation.encryption.protos.PublicHandle
-import com.google.crypto.tink.Aead
-import com.google.crypto.tink.KeyTemplate
-import com.google.crypto.tink.KeysetHandle
 import io.ktor.util.*
-import kotlinx.serialization.DeserializationStrategy
-import org.bouncycastle.asn1.cms.GCMParameters
-import org.bouncycastle.crypto.params.AEADParameters
-import org.bouncycastle.crypto.params.ParametersWithIV
-import java.security.*
+import java.security.Key
+import java.security.SecureRandom
 import javax.crypto.Cipher
 import javax.crypto.spec.GCMParameterSpec
-import javax.crypto.spec.IvParameterSpec
 
 class EncryptionSymmetricKeyHandleBouncy(
     private val cipher: Cipher, private val key: Key

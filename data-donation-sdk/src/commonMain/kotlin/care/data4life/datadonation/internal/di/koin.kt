@@ -33,8 +33,8 @@
 package care.data4life.datadonation.internal.di
 
 import care.data4life.datadonation.Contract
-import care.data4life.datadonation.encryption.hybrid.HybridEncryptor
-import care.data4life.datadonation.encryption.hybrid.HybridEncryptorFactory
+import care.data4life.datadonation.encryption.hybrid.HybridEncryption
+import care.data4life.datadonation.encryption.hybrid.HybridEncryptionFactory
 import care.data4life.datadonation.internal.data.service.ConsentService
 import care.data4life.datadonation.internal.data.service.DonationService
 import care.data4life.datadonation.internal.data.store.*
@@ -42,11 +42,12 @@ import care.data4life.datadonation.internal.domain.repositories.ConsentDocumentR
 import care.data4life.datadonation.internal.domain.repositories.CredentialsRepository
 import care.data4life.datadonation.internal.domain.repositories.RegistrationRepository
 import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
-import care.data4life.datadonation.internal.domain.usecases.RegisterNewDonor
+import care.data4life.datadonation.internal.domain.usecases.*
 import care.data4life.datadonation.internal.utils.Base64Factory
-import io.ktor.client.HttpClient
-import io.ktor.client.features.json.JsonFeature
-import io.ktor.client.features.json.serializer.KotlinxSerializer
+import io.ktor.client.*
+import io.ktor.client.features.json.*
+import io.ktor.client.features.json.serializer.*
+import io.ktor.client.features.logging.*
 import org.koin.core.KoinApplication
 import org.koin.core.module.Module
 import org.koin.dsl.koinApplication
@@ -89,12 +90,21 @@ private val coreModule = module {
         HttpClient {
             install(JsonFeature) {
                 serializer =
-                    KotlinxSerializer()
+                    KotlinxSerializer(kotlinx.serialization.json.Json {
+                        isLenient = true
+                        ignoreUnknownKeys = true
+                        allowSpecialFloatingPointValues = true
+                        useArrayPolymorphism = false
+                    })
+            }
+            install(Logging) {
+                logger = SimpleLogger()
+                level = LogLevel.ALL
             }
         }
     }
 
-    single<HybridEncryptor> { HybridEncryptorFactory(get()).createEncryptor() }
+    single<HybridEncryption> { HybridEncryptionFactory(get()).createEncryption() }
 
     //Services
     single { ConsentService(get(), get()) }
@@ -114,8 +124,17 @@ private val coreModule = module {
     single { CredentialsRepository(get()) }
 
     //Usecases
-    single { RegisterNewDonor(get(), get(), get(), Base64Factory.createEncoder() ) }
-
+    single { RegisterNewDonor(get(), get(), get(), Base64Factory.createEncoder()) }
+    single { FetchConsentDocuments(get()) }
+    single { CreateUserConsent(get(), get()) }
+    single { FetchUserConsents(get()) }
+    single { RevokeUserConsent(get()) }
 }
 
 expect val platformModule: Module
+
+private class SimpleLogger : Logger {
+    override fun log(message: String) {
+        println("HttpClient: $message")
+    }
+}

@@ -38,7 +38,7 @@ import care.data4life.datadonation.internal.domain.repositories.UserConsentRepos
 
 internal class UserConsentDataStore(private val service: ConsentService): UserConsentRepository.Remote {
 
-    override suspend fun createUserConsent(accessToken: String, version: String, language: String?) {
+    override suspend fun createUserConsent(accessToken: String, version: Int, language: String?) {
         service.createUserConsent(accessToken, version, language)
     }
 

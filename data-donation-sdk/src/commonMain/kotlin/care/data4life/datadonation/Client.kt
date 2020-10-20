@@ -37,12 +37,9 @@ import care.data4life.datadonation.core.listener.ResultListener
 import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.UserConsent
+import care.data4life.datadonation.encryption.initEncryption
 import care.data4life.datadonation.internal.di.initKoin
 import care.data4life.datadonation.internal.domain.usecases.*
-import care.data4life.datadonation.internal.domain.usecases.CreateUserConsent
-import care.data4life.datadonation.internal.domain.usecases.FetchConsentDocuments
-import care.data4life.datadonation.internal.domain.usecases.FetchUserConsents
-import care.data4life.datadonation.internal.domain.usecases.RevokeUserConsent
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
@@ -56,8 +53,12 @@ class Client(private val configuration: Contract.Configuration) : Contract.DataD
 
     private val context = GlobalScope //TODO use proper CoroutineScope
 
+    init {
+        initEncryption()
+    }
+
     override fun fetchConsentDocument(
-        consentDocumentVersion: String?,
+        consentDocumentVersion: Int?,
         language: String?,
         listener: ResultListener<List<ConsentDocument>>
     ) {
@@ -71,7 +72,7 @@ class Client(private val configuration: Contract.Configuration) : Contract.DataD
 
 
     override fun createUserConsent(
-        consentDocumentVersion: String,
+        consentDocumentVersion: Int,
         language: String?,
         listener: ResultListener<Pair<UserConsent, KeyPair>>
     ) {
@@ -90,7 +91,7 @@ class Client(private val configuration: Contract.Configuration) : Contract.DataD
 
     override fun revokeUserConsent(language: String?, callback: Callback) {
         revokeUserContent.withParams(RevokeUserConsent.Parameters(language))
-            .runForListener(callback.toListener())
+            .runForListener(callback)
     }
 
     private fun <ReturnType : Any> Usecase<ReturnType>.runForListener(
@@ -99,19 +100,22 @@ class Client(private val configuration: Contract.Configuration) : Contract.DataD
         context.launch {
             try {
                 listener.onSuccess(this@runForListener.execute())
-            }catch (ex: Exception){
+            } catch (ex: Exception) {
                 listener.onError(ex)
             }
         }
     }
 
-    private fun Callback.toListener() = object : ResultListener<Unit> {
-        override fun onSuccess(t: Unit) {
-            onSuccess()
-        }
-
-        override fun onError(exception: Exception) {
-            onError(exception)
+    private fun <ReturnType : Any> Usecase<ReturnType>.runForListener(
+        listener: Callback
+    ) {
+        context.launch {
+            try {
+                execute()
+                listener.onSuccess()
+            } catch (ex: Exception) {
+                listener.onError(ex)
+            }
         }
     }
 }

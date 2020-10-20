@@ -42,6 +42,7 @@ import kotlin.test.assertEquals
 
 internal abstract class DonationServiceTest : BaseServiceTest<DonationService>() {
 
+    private val tokenFromService = "\"random_nonce\n\""
     private val token = "random_nonce"
 
     override fun getService(httpClient: HttpClient, environment: Environment): DonationService =
@@ -50,7 +51,7 @@ internal abstract class DonationServiceTest : BaseServiceTest<DonationService>()
     @Test
     fun requestRegistrationTokenTest() = runTest {
         //Given
-        givenTextServiceResponseWith(token)
+        givenTextServiceResponseWith(tokenFromService)
 
         //When
         val result = service.requestRegistrationToken()

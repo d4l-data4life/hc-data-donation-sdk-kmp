@@ -38,22 +38,50 @@ import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.model.*
 import io.ktor.client.*
 import io.ktor.client.request.*
+import io.ktor.client.statement.*
 import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toInstant
+import kotlin.time.hours
 
 
 internal class ConsentService(
     private val client: HttpClient,
-    environment: Environment
+    private val environment: Environment
 ) {
 
-    private val baseUrl = "${environment.url}/consent/api/v1"
+    private val baseUrl = if (environment == Environment.LOCAL) {
+        "${environment.url}:8080/api/v1"
+    } else {
+        "${environment.url}/consent/api/v1"
+    }
+
+
+    private lateinit var XSRFToken: String
+    private var tokenFetched = LocalDateTime(1, 1, 1, 1, 1).toInstant(TimeZone.UTC)
+
+    suspend fun getToken(accessToken: String): String {
+        if (tokenFetched > Clock.System.now().minus(XSRF_VALIDITY.hours)) {
+            tokenFetched = Clock.System.now()
+            val response = client.getWithQuery<HttpResponse>(
+                environment,
+                accessToken,
+                baseUrl,
+                Endpoints.token
+            )
+            XSRFToken = response.headers[Headers.XSRFToken]!!
+        }
+        return XSRFToken
+    }
+
 
     suspend fun fetchConsentDocuments(
         accessToken: String,
-        version: String?,
+        version: Int?,
         language: String?
     ): List<ConsentDocument> {
-        return client.getWithQuery(accessToken, baseUrl, Endpoints.consentDocuments) {
+        return client.getWithQuery(environment, accessToken, baseUrl, Endpoints.consentDocuments) {
             parameter(Parameters.consentDocumentKey, defaultDonationConsentKey)
             parameter(Parameters.version, version)
             parameter(Parameters.language, language)
@@ -61,14 +89,19 @@ internal class ConsentService(
     }
 
     suspend fun fetchUserConsents(accessToken: String, latest: Boolean?): List<UserConsent> {
-        return client.getWithQuery(accessToken, baseUrl, Endpoints.userConsents) {
-            parameter(Parameters.consentDocumentKey, defaultDonationConsentKey)
+        return client.getWithQuery(environment, accessToken, baseUrl, Endpoints.userConsents) {
+            parameter(Parameters.userConsentDocumentKey, defaultDonationConsentKey)
             parameter(Parameters.latest, latest)
         }
     }
 
-    suspend fun createUserConsent(accessToken: String, version: String, language: String?): TokenVerificationResult {
+    suspend fun createUserConsent(
+        accessToken: String,
+        version: Int,
+        language: String?
+    ) {
         return client.postWithBody(
+            environment,
             accessToken,
             baseUrl,
             Endpoints.userConsents,
@@ -78,11 +111,14 @@ internal class ConsentService(
                 Clock.System.now().toString(),
                 language ?: ""
             )
-        )
+        ) {
+            header(Headers.XSRFToken, getToken(accessToken))
+        }
     }
 
     suspend fun requestSignature(accessToken: String, message: String): ConsentSignature {
         return client.postWithBody(
+            environment,
             accessToken,
             baseUrl,
             "${Endpoints.userConsents}/$defaultDonationConsentKey/signatures",
@@ -91,31 +127,44 @@ internal class ConsentService(
                 message,
                 ConsentSignatureType.ConsentOnce.apiValue
             )
-        )
+        ) {
+            header(Headers.XSRFToken, getToken(accessToken))
+        }
     }
 
     suspend fun revokeUserConsent(accessToken: String, language: String?) {
         return client.deleteWithBody(
+            environment,
             accessToken,
             baseUrl,
             Endpoints.userConsents,
             ConsentRevocationPayload(defaultDonationConsentKey, language ?: "")
-        )
+        ) {
+            header(Headers.XSRFToken, getToken(accessToken))
+        }
     }
 
     companion object {
-        const val defaultDonationConsentKey = "data donation"
+        const val defaultDonationConsentKey = "d4l.data-donation.broad"
+
+        const val XSRF_VALIDITY = 23 * 60 * 60 * 1000
 
         object Endpoints {
             const val userConsents = "userConsents"
             const val consentDocuments = "consentDocuments"
+            const val token = "xsrf"
         }
 
         object Parameters {
-            const val consentDocumentKey = "consentDocumentKey"
+            const val consentDocumentKey = "key"
+            const val userConsentDocumentKey = "consentDocumentKey"
             const val latest = "latest"
             const val language = "language"
             const val version = "version"
+        }
+
+        object Headers {
+            const val XSRFToken = "X-Csrf-Token"
         }
     }
 

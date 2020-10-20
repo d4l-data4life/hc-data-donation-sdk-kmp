@@ -34,26 +34,38 @@ package care.data4life.datadonation.internal.data.service
 
 import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.internal.data.service.DonationService.Endpoints.register
-import care.data4life.datadonation.internal.data.service.DonationService.Endpoints.token
-import io.ktor.client.HttpClient
-import io.ktor.client.request.get
-import io.ktor.client.request.put
-import io.ktor.http.ContentType
-import io.ktor.http.content.ByteArrayContent
-import io.ktor.http.contentType
+import io.ktor.client.*
+import io.ktor.http.*
+import io.ktor.http.content.*
 
-internal class DonationService(private val client: HttpClient, environment: Environment) {
+internal class DonationService(
+    private val client: HttpClient,
+    private val environment: Environment
+) {
 
-    private val baseUrl = "https://${environment.url}/donation/api/v1"
+    private val baseUrl = if (environment == Environment.LOCAL) {
+        "${environment.url}:9090/api/v1"
+    } else {
+        "${environment.url}/donation/api/v1"
+    }
 
     suspend fun requestRegistrationToken(): String {
-        return client.get(scheme = "https", host = baseUrl, path = token)
+        return client.getWithQuery<String>(environment, baseUrl = baseUrl, path = Endpoints.token)
+            .let {
+                it.substring(
+                    1,
+                    it.length - 2
+                ) //The token arrives between quotes we have to remove them.
+            }
     }
 
     suspend fun registerNewDonor(payload: ByteArray) {
-        return client.put(scheme = "https", host = baseUrl, path = register) {
-            body = ByteArrayContent(payload, contentType = ContentType.Application.OctetStream)
-        }
+        return client.putWithoutHeader(
+            environment,
+            baseUrl = baseUrl,
+            path = register,
+            body = ByteArrayContent(payload, ContentType.Application.OctetStream)
+        )
     }
 
     object Endpoints {
