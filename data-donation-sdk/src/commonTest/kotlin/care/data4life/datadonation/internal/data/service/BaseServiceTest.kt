@@ -99,7 +99,6 @@ abstract class BaseServiceTest<R : Any> {
             addHandler { request ->
                 lastRequest = request
                 pathResponse.forEach {
-                    println("For : ${it.first} in ${request.url.encodedPath}")
                     if (request.url.encodedPath.contains(it.first)) {
                         return@addHandler it.second(this)
                     }

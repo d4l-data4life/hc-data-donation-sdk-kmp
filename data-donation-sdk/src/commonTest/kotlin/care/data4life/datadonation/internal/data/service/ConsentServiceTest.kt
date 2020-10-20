@@ -78,7 +78,6 @@ internal abstract class ConsentServiceTest : BaseServiceTest<ConsentService>() {
         //Then
         assertEquals(HttpMethod.Post, lastRequest.method)
         assertEquals(ConsentService.Companion.Endpoints.userConsents, lastRequest.url.encodedPath)
-        println(lastRequest.body)
         assertEquals(ContentType.Application.Json, lastRequest.body.contentType)
     }
 
