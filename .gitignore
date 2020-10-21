@@ -50,3 +50,7 @@ DerivedData/
 *.dSYM
 Pods/
 /data-donation-sdk/native/iOSCryptoDD/iOSCryptoDD.xcodeproj/project.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings
+
+#HELPER
+*.LOG
+

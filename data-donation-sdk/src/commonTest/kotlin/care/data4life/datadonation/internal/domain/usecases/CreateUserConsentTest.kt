@@ -33,7 +33,6 @@
 package care.data4life.datadonation.internal.domain.usecases
 
 import care.data4life.datadonation.internal.data.model.DummyData
-import care.data4life.datadonation.internal.domain.repositories.CredentialsRepository
 import care.data4life.datadonation.internal.domain.repositories.RegistrationRepository
 import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
 import io.mockk.*
@@ -44,44 +43,20 @@ abstract class CreateUserConsentTest {
 
     private val userConsentRepository = mockk<UserConsentRepository>()
     private val registrationRepository = mockk<RegistrationRepository>()
-    private val registerNewDonor = mockk<RegisterNewDonor>()
-    private val creteUser = CreateUserConsent(userConsentRepository, registerNewDonor)
+    private val creteUser = CreateUserConsent(userConsentRepository)
 
     @Test
-    fun createUserContentWithDonorKey() = runTest {
+    fun createUserContent() = runTest {
         //Given
         coEvery { userConsentRepository.createUserConsent(any(), any()) } just Runs
         coEvery { userConsentRepository.fetchUserConsents() } returns listOf(DummyData.userConsent)
 
-        //When
-        creteUser.withParams(
-            CreateUserConsent.Parameters(
-                DummyData.keyPair,
-                "version",
-                "language"
-            )
-        ).execute()
-
-        //Then
-        coVerify(ordering = Ordering.SEQUENCE){
-            userConsentRepository.createUserConsent(any(), any())
-            userConsentRepository.fetchUserConsents()
-        }
-    }
-
-    @Test
-    fun createUserContentNoDonorKey() = runTest {
-        //Given
-        coEvery { userConsentRepository.createUserConsent(any(), any()) } just Runs
-        coEvery { userConsentRepository.fetchUserConsents() } returns listOf(DummyData.userConsent)
-        coEvery { registerNewDonor.withParams(any()) } returns registerNewDonor
-        coEvery { registerNewDonor.execute() } just runs
 
         //When
         creteUser.withParams(
             CreateUserConsent.Parameters(
                 null,
-                "version",
+                1,
                 "language"
             )
         ).execute()
@@ -90,10 +65,7 @@ abstract class CreateUserConsentTest {
         coVerify(ordering = Ordering.SEQUENCE){
             userConsentRepository.createUserConsent(any(), any())
             userConsentRepository.fetchUserConsents()
-            registerNewDonor.withParams(any())
-            registerNewDonor.execute()
         }
     }
 
 }
-

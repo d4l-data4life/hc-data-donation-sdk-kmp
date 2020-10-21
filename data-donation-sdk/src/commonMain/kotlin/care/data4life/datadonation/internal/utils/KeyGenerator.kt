@@ -30,10 +30,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.encryption.hybrid
+package care.data4life.datadonation.internal.utils
 
-import care.data4life.datadonation.internal.data.store.CredentialsDataStore
+import care.data4life.datadonation.encryption.Algorithm
+import care.data4life.datadonation.encryption.signature.SignatureKeyPrivate
 
-internal class HybridEncryptorFactory(private val credentialsDataStore: CredentialsDataStore) {
-    fun createEncryptor() = HybridEncryptionHandle(credentialsDataStore.getDataDonationPublicKey())
+internal interface KeyGenerator {
+    fun newSignatureKeyPrivate(size: Int, algorithm: Algorithm.Signature): SignatureKeyPrivate
+}
+
+internal object DefaultKeyGenerator : KeyGenerator {
+    override fun newSignatureKeyPrivate(
+        size: Int,
+        algorithm: Algorithm.Signature
+    ): SignatureKeyPrivate =
+        SignatureKeyPrivate(size, algorithm)
 }

@@ -32,8 +32,8 @@
 
 package care.data4life.datadonation.internal.data.store
 
-import care.data4life.datadonation.internal.data.service.ConsentService
 import care.data4life.datadonation.core.model.ConsentDocument
+import care.data4life.datadonation.internal.data.service.ConsentService
 import care.data4life.datadonation.internal.domain.repositories.ConsentDocumentRepository
 
 internal class ConsentDocumentDataStore(private val service: ConsentService) :
@@ -41,7 +41,7 @@ internal class ConsentDocumentDataStore(private val service: ConsentService) :
 
     override suspend fun fetchConsentDocuments(
         accessToken: String,
-        version: String?,
+        version: Int?,
         language: String?
     ): List<ConsentDocument> =
         service.fetchConsentDocuments(accessToken, version, language)

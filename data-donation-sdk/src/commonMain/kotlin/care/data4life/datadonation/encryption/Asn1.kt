@@ -29,11 +29,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-@file:OptIn(ExperimentalStdlibApi::class,ExperimentalUnsignedTypes::class)
 package care.data4life.datadonation.encryption
-
-import io.ktor.utils.io.core.toByteArray
-import kotlin.contracts.contract
 
 /**
  * Asn1 DSL builder and encoder.
@@ -111,13 +107,16 @@ class Asn1 constructor(private val root: List<SEQUENCE>){
             val encoded = tlv.value.encode()
             ubyteArrayOf(
                 tlv.type(),
-                *(encoded.size+1).toDerSize(),
+                *(encoded.size + 1).toDerSize(),
                 0u,
                 *encoded
             )
         }
         is RAW_TLV -> {
             tlv.value.asUByteArray()
+        }
+        is NULL -> {
+            ubyteArrayOf(tlv.type(), 0u)
         }
     }
 
@@ -160,11 +159,19 @@ sealed class TLV<T : Any> {
 /**
  * Already encoded TLV value
  */
-class RAW_TLV(override val value: ByteArray):TLV<ByteArray>() {
+class RAW_TLV(override val value: ByteArray) : TLV<ByteArray>() {
     override fun type(): UByte = throw NotImplementedError()
 }
 
-class OBJECT_IDENTIFIER(override val  value: List<Int>) : TLV<List<Int>>() {
+class NULL : TLV<ByteArray>() {
+    override val value: ByteArray
+        get() = byteArrayOf()
+
+    override fun type(): UByte = 5u
+
+}
+
+class OBJECT_IDENTIFIER(override val value: List<Int>) : TLV<List<Int>>() {
     override fun type(): UByte = 6u
 }
 
@@ -173,7 +180,7 @@ class INTEGER(override val value: UByteArray) : TLV<UByteArray>() {
 }
 
 @Asn1Dsl
-class OCTET_STRING() : TLV<TLV<*>>() {
+class OCTET_STRING : TLV<TLV<*>>() {
     override fun type(): UByte = 4u
 
     @Asn1Dsl
@@ -182,7 +189,7 @@ class OCTET_STRING() : TLV<TLV<*>>() {
     }
 
     @Asn1Dsl
-    fun raw(bytes:ByteArray) {
+    fun raw(bytes: ByteArray) {
         value = RAW_TLV(bytes)
     }
 
@@ -191,7 +198,7 @@ class OCTET_STRING() : TLV<TLV<*>>() {
 }
 
 @Asn1Dsl
-class BIT_STRING() : TLV<TLV<*>>() {
+class BIT_STRING : TLV<TLV<*>>() {
     override fun type(): UByte = 3u
 
     @Asn1Dsl
@@ -200,7 +207,7 @@ class BIT_STRING() : TLV<TLV<*>>() {
     }
 
     @Asn1Dsl
-    fun raw(bytes:ByteArray) {
+    fun raw(bytes: ByteArray) {
         value = RAW_TLV(bytes)
     }
 
@@ -209,8 +216,14 @@ class BIT_STRING() : TLV<TLV<*>>() {
 }
 
 @Asn1Dsl
-class SEQUENCE() : TLV<List<TLV<out Any>>>() {
+class SEQUENCE : TLV<List<TLV<out Any>>>() {
     override val value: List<TLV<out Any>> = mutableListOf()
+
+
+    @Asn1Dsl
+    fun String.null_() {
+        (value as MutableList) += NULL()
+    }
 
 
     @Asn1Dsl

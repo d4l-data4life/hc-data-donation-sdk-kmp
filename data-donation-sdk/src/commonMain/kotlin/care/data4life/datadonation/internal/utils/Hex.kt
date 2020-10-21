@@ -30,36 +30,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.domain.repositories
+package care.data4life.datadonation.internal.utils
 
-import care.data4life.datadonation.core.model.ConsentDocument
-import care.data4life.datadonation.internal.data.store.UserSessionTokenDataStore
+private val hexArray = "0123456789ABCDEF".toCharArray()
 
+fun ByteArray.encodeToHexString(): String =
+    joinToString("") { (0xFF and it.toInt()).toString(16).padStart(2, '0') }
 
-internal class ConsentDocumentRepository(
-    private val remote: Remote,
-    private val sessionToken: UserSessionTokenDataStore
-) {
-
-    suspend fun fetchConsentDocuments(
-        language: String?,
-        version: Int?
-    ): List<ConsentDocument> {
-        return remote.fetchConsentDocuments(
-            sessionToken.getUserSessionToken()!!,
-            version,
-            language
-        )
-    }
-
-    interface Remote {
-
-        suspend fun fetchConsentDocuments(
-            accessToken: String,
-            version: Int?,
-            language: String?
-        ): List<ConsentDocument>
-
-    }
-
-}
+fun String.decodeHexBytes(): ByteArray =
+    ByteArray(this.length / 2) { this.substring(it * 2, it * 2 + 2).toInt(16).toByte() }

@@ -32,14 +32,19 @@
 
 package care.data4life.datadonation.internal.domain.usecases
 
-import care.data4life.datadonation.encryption.hybrid.HybridEncryptor
-import care.data4life.datadonation.internal.data.model.DummyData
-import care.data4life.datadonation.internal.data.model.RegistrationRequest
-import care.data4life.datadonation.internal.data.model.SignedConsentMessage
+import care.data4life.datadonation.encryption.Algorithm
+import care.data4life.datadonation.encryption.HashSize
+import care.data4life.datadonation.encryption.hybrid.HybridEncryption
+import care.data4life.datadonation.encryption.signature.SignatureKeyPrivate
+import care.data4life.datadonation.internal.data.model.*
+import care.data4life.datadonation.internal.data.service.ConsentService
 import care.data4life.datadonation.internal.domain.repositories.RegistrationRepository
 import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
 import care.data4life.datadonation.internal.utils.Base64Encoder
+import care.data4life.datadonation.internal.utils.KeyGenerator
+import care.data4life.datadonation.internal.utils.decodeHexBytes
 import care.data4life.datadonation.internal.utils.toJsonString
+import io.ktor.utils.io.core.*
 import io.mockk.*
 import runTest
 import kotlin.test.Test
@@ -48,10 +53,17 @@ abstract class RegisterNewDonorTest {
 
     private val userConsentRepository = mockk<UserConsentRepository>()
     private val registrationRepository = mockk<RegistrationRepository>()
-    private val encryptor = mockk<HybridEncryptor>()
+    private val encryptor = mockk<HybridEncryption>()
     private val base64Encoder = mockk<Base64Encoder>()
+    private val mockKeyGenerator = mockk<KeyGenerator>()
     private val registerNewDonor =
-        RegisterNewDonor(registrationRepository, userConsentRepository, encryptor, base64Encoder)
+        RegisterNewDonor(
+            registrationRepository,
+            userConsentRepository,
+            encryptor,
+            base64Encoder,
+            mockKeyGenerator
+        )
 
     private val dummyNonce = "random_nonce"
     private val dummyPublicKey64Encoded = "publicKey64Encoded"
@@ -61,32 +73,60 @@ abstract class RegisterNewDonorTest {
     private val dummyEncryptedSignedMessage = byteArrayOf(4, 5)
 
     @Test
-    fun registerNewDonorTest() = runTest {
+    fun registerNewDonorTestWithoutKey() = runTest {
         //Given
-        val requestJsonString =
-            RegistrationRequest(dummyPublicKey64Encoded, dummyNonce).toJsonString()
-        val signedConsentJsonString =
-            SignedConsentMessage(dummyEncryptedRequest64Encoded, dummySignature).toJsonString()
+        val signatureKey = SignatureKeyPrivate(
+            DummyData.hexPrivate.decodeHexBytes(), DummyData.hexPublic.decodeHexBytes(), 2048,
+            Algorithm.Signature.RsaPSS(HashSize.Hash256)
+        )
 
+        val requestJsonString =
+            RegistrationRequest(signatureKey.pkcs8Public, dummyNonce).toJsonString()
+
+        val consentMessage = ConsentMessage(
+            ConsentService.defaultDonationConsentKey,
+            ConsentSignatureType.ConsentOnce.apiValue,
+            dummyEncryptedRequest64Encoded
+        )
+        val signedConsentJsonString =
+            SignedConsentMessage(consentMessage.toJsonString(), dummySignature).toJsonString()
+
+        coEvery {
+            mockKeyGenerator.newSignatureKeyPrivate(
+                any(),
+                any()
+            )
+        } returns signatureKey
         coEvery { registrationRepository.requestRegistrationToken() } returns dummyNonce
         coEvery { userConsentRepository.signUserConsent(any()) } returns dummySignature
-        coEvery { base64Encoder.encode(any()) } returns dummyPublicKey64Encoded andThen dummyEncryptedRequest64Encoded
-        coEvery { encryptor.encrypt(any()) } returns dummyEncryptedRequest andThen dummyEncryptedSignedMessage
+        coEvery { base64Encoder.encode(any()) } returns dummyEncryptedRequest64Encoded
+        coEvery { encryptor.encrypt(eq(requestJsonString.toByteArray())) } returns dummyEncryptedRequest
+        coEvery { encryptor.encrypt(eq(signedConsentJsonString.toByteArray())) } returns dummyEncryptedSignedMessage
         coEvery { registrationRepository.registerNewDonor(any()) } just runs
 
         //When
-        registerNewDonor.withParams(DummyData.keyPair).execute()
+        registerNewDonor.withParams(RegisterNewDonor.Parameters(null)).execute()
 
         //Then
-        coVerify(ordering = Ordering.SEQUENCE){
+        coVerify(ordering = Ordering.SEQUENCE) {
             registrationRepository.requestRegistrationToken()
-            base64Encoder.encode(DummyData.keyPair.public)
-            encryptor.encrypt(requestJsonString)
+            encryptor.encrypt(requestJsonString.toByteArray())
             base64Encoder.encode(dummyEncryptedRequest)
             userConsentRepository.signUserConsent(dummyEncryptedRequest64Encoded)
-            encryptor.encrypt(signedConsentJsonString)
+            encryptor.encrypt(signedConsentJsonString.toByteArray())
             registrationRepository.registerNewDonor(dummyEncryptedSignedMessage)
         }
+    }
+
+    @Test
+    fun registerNewDonorTestWithKey() = runTest {
+        //Given
+
+        //When
+        registerNewDonor.withParams(RegisterNewDonor.Parameters(DummyData.keyPair)).execute()
+
+        //Then
+        confirmVerified(registrationRepository, encryptor, base64Encoder, userConsentRepository)
     }
 
 }

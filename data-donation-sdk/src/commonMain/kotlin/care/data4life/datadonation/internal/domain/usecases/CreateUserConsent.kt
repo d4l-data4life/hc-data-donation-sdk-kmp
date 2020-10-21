@@ -32,33 +32,19 @@
 
 package care.data4life.datadonation.internal.domain.usecases
 
-import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.UserConsent
-import care.data4life.datadonation.encryption.protos.RsaSsaPrivateKey
-import care.data4life.datadonation.internal.domain.repositories.CredentialsRepository
 import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
 
 internal class CreateUserConsent(
-    private val consentRepository: UserConsentRepository,
-    private val registerNewDonor: RegisterNewDonor
+    private val consentRepository: UserConsentRepository
 ) :
-    ParameterizedUsecase<CreateUserConsent.Parameters, Pair<UserConsent, KeyPair>>() {
+    ParameterizedUsecase<CreateUserConsent.Parameters, UserConsent>() {
 
-    override suspend fun execute(): Pair<UserConsent, KeyPair> {
+    override suspend fun execute(): UserConsent {
         consentRepository.createUserConsent(parameter.version, parameter.language)
-        // Not sure if we really need to return the UserConsent here since it is not returned by `createUserConsent`
-        val userConsent = consentRepository.fetchUserConsents().first()
-        return if (parameter.keyPair == null) {
-            // TODO when rsapss-mpp-encryption branch is merged
-            // val newKeyPair = SignatureKeyPrivate(2048, Algorithm.RsaPSS).let { KeyPair(it.serializedPublic(), it.serializedPrivate()) }
-            val newKeyPair = KeyPair(ByteArray(0), ByteArray(0))
-            registerNewDonor.withParams(newKeyPair).execute()
-            Pair(userConsent, newKeyPair)
-        } else {
-            Pair(userConsent, parameter.keyPair!!)
-        }
+        return consentRepository.fetchUserConsents().first()
     }
 
-    data class Parameters(val keyPair: KeyPair?, val version: String, val language: String?)
+    data class Parameters(val keyPair: KeyPair?, val version: Int, val language: String?)
 }
