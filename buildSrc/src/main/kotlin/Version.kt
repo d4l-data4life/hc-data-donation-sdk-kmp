@@ -16,7 +16,7 @@ object Version {
     const val kotlinCoroutinesIO = "0.1.16"
 
     // https://github.com/Kotlin/kotlinx.serialization
-    const val kotlinSerialization = "1.0.0"
+    const val kotlinSerialization = "1.0.0-RC"
 
     // https://github.com/touchlab/Stately
     const val stately = "1.1.0"
