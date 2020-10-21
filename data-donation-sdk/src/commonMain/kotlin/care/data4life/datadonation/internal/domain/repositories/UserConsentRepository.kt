@@ -40,7 +40,7 @@ internal class UserConsentRepository(
     private val sessionToken: UserSessionTokenDataStore
 ) {
 
-    suspend fun createUserConsent(version: String, language: String?) =
+    suspend fun createUserConsent(version: Int, language: String?) =
         remote.createUserConsent(sessionToken.getUserSessionToken()!!, version, language)
 
     suspend fun fetchUserConsents(): List<UserConsent> =
@@ -53,7 +53,7 @@ internal class UserConsentRepository(
         remote.revokeUserConsent(sessionToken.getUserSessionToken()!!, language)
 
     interface Remote {
-        suspend fun createUserConsent(accessToken: String, version: String, language: String?)
+        suspend fun createUserConsent(accessToken: String, version: Int, language: String?)
         suspend fun fetchUserConsents(accessToken: String): List<UserConsent>
         suspend fun signUserConsent(accessToken: String, message: String): String
         suspend fun revokeUserConsent(accessToken: String, language: String?)

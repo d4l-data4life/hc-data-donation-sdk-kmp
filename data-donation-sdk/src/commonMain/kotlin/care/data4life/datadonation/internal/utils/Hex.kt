@@ -30,10 +30,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.encryption.hybrid
+package care.data4life.datadonation.internal.utils
 
-import care.data4life.datadonation.internal.data.store.CredentialsDataStore
+private val hexArray = "0123456789ABCDEF".toCharArray()
 
-internal class HybridEncryptorFactory(private val credentialsDataStore: CredentialsDataStore) {
-    fun createEncryptor() = HybridEncryptionHandle(credentialsDataStore.getDataDonationPublicKey())
-}
+fun ByteArray.encodeToHexString(): String =
+    joinToString("") { (0xFF and it.toInt()).toString(16).padStart(2, '0') }
+
+fun String.decodeHexBytes(): ByteArray =
+    ByteArray(this.length / 2) { this.substring(it * 2, it * 2 + 2).toInt(16).toByte() }

@@ -30,36 +30,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.domain.repositories
+package care.data4life.datadonation.encryption.hybrid
 
-import care.data4life.datadonation.core.model.ConsentDocument
-import care.data4life.datadonation.internal.data.store.UserSessionTokenDataStore
+internal actual val hybridEncryptionSerializer: HybridEncryptionPayload.Serializer
+    get() = HybridEncryptionIosSerializer
 
+internal object HybridEncryptionIosSerializer : HybridEncryptionPayload.Serializer {
 
-internal class ConsentDocumentRepository(
-    private val remote: Remote,
-    private val sessionToken: UserSessionTokenDataStore
-) {
-
-    suspend fun fetchConsentDocuments(
-        language: String?,
-        version: Int?
-    ): List<ConsentDocument> {
-        return remote.fetchConsentDocuments(
-            sessionToken.getUserSessionToken()!!,
-            version,
-            language
-        )
+    override fun serialize(payload: HybridEncryptionPayload): ByteArray {
+        TODO("Not yet implemented")
     }
 
-    interface Remote {
-
-        suspend fun fetchConsentDocuments(
-            accessToken: String,
-            version: Int?,
-            language: String?
-        ): List<ConsentDocument>
-
+    override fun deserialize(data: ByteArray): HybridEncryptionPayload {
+        TODO("Not yet implemented")
     }
+
 
 }

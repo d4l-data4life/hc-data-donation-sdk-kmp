@@ -32,7 +32,32 @@
 
 package care.data4life.datadonation.encryption.hybrid
 
-interface HybridEncryptor {
-    fun encrypt(plaintext: String): ByteArray
-}
+import care.data4life.datadonation.encryption.assymetric.EncryptionPrivateKey
+import care.data4life.datadonation.encryption.assymetric.EncryptionPublicKey
+import care.data4life.datadonation.encryption.symmetric.EncryptionSymmetricKey
 
+interface HybridEncryption {
+
+    companion object {
+        const val HYBRID_ENCRYPTION_VERSION_AES_WITH_GCM = 2
+        const val AES_IV_LENGTH = 16
+        const val AES_AUTH_TAG_LENGTH = 16
+        const val AES_KEY_LENGTH = 256
+        const val RSA_KEY_SIZE_BITS = 2048
+    }
+
+    fun encrypt(plaintext: ByteArray): ByteArray
+    fun decrypt(ciphertext: ByteArray): Result<ByteArray>
+
+    interface SymmetricKeyProvider {
+        fun getNewKey(): EncryptionSymmetricKey
+        fun getKey(keyData: ByteArray): EncryptionSymmetricKey
+        fun getAuthenticationData(): ByteArray
+    }
+
+    interface AsymmetricKeyProvider {
+        fun getPublicKey(): EncryptionPublicKey
+        fun getPrivateKey(): EncryptionPrivateKey
+    }
+
+}

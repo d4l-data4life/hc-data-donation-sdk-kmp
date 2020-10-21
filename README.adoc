@@ -8,3 +8,9 @@ Kotlin multi platform library for implementing Data Donation using Data4life eco
 * Java 8
 
 == Setup
+
+== Release
+
+We are using the maven publish plugin to distribute the library using the Github Package repo.
+To release a new version we have to increase the LibraryConfig.version number and +
+run the `publish` gradle task

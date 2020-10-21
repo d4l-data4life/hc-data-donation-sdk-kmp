@@ -36,6 +36,8 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class TokenVerificationResult(@SerialName("studyID") val studyId: String,
-                                   @SerialName("externalID") val externalId: String,
-                                   val errors: String)
+data class TokenVerificationResult(
+    @SerialName("studyID") val studyId: String?,
+    @SerialName("externalID") val externalId: String?,
+    val errors: String?
+)

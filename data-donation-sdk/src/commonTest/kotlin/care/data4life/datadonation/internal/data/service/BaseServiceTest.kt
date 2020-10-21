@@ -33,25 +33,20 @@
 package care.data4life.datadonation.internal.data.service
 
 import care.data4life.datadonation.core.model.Environment
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.HttpClientEngineFactory
-import io.ktor.client.engine.config
-import io.ktor.client.engine.mock.MockEngine
-import io.ktor.client.engine.mock.MockEngineConfig
-import io.ktor.client.engine.mock.respond
-import io.ktor.client.engine.mock.respondOk
-import io.ktor.client.features.json.JsonFeature
-import io.ktor.client.features.json.serializer.KotlinxSerializer
-import io.ktor.client.request.HttpRequestData
-import io.ktor.http.ContentType
-import io.ktor.http.headersOf
+import io.ktor.client.*
+import io.ktor.client.engine.*
+import io.ktor.client.engine.mock.*
+import io.ktor.client.features.json.*
+import io.ktor.client.features.json.serializer.*
+import io.ktor.client.request.*
+import io.ktor.http.*
 import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.json.Json
 
-abstract class BaseServiceTest<R: Any> {
+abstract class BaseServiceTest<R : Any> {
 
     protected lateinit var service: R
-    protected lateinit var lastRequest : HttpRequestData
+    protected lateinit var lastRequest: HttpRequestData
 
     abstract fun getService(httpClient: HttpClient, environment: Environment): R
 
@@ -62,14 +57,19 @@ abstract class BaseServiceTest<R: Any> {
         val engine = MockEngine.config {
             addHandler { request ->
                 lastRequest = request
-                respond(
-                    Json.encodeToString(strategy, response),
-                    headers = headersOf("Content-Type", ContentType.Application.Json.toString())
-                )
+                responseWith(strategy, response)
             }
         }
         service = buildMockService(engine)
     }
+
+    protected fun <T> MockRequestHandleScope.responseWith(
+        strategy: SerializationStrategy<T>,
+        response: T
+    ): HttpResponseData = respond(
+        Json.encodeToString(strategy, response),
+        headers = headersOf("Content-Type", ContentType.Application.Json.toString())
+    )
 
     protected fun givenTextServiceResponseWith(response: String) {
         val engine = MockEngine.config {
@@ -94,14 +94,29 @@ abstract class BaseServiceTest<R: Any> {
         service = buildMockService(engine, ContentType.Application.OctetStream)
     }
 
+    protected fun givenServiceToResponse(vararg pathResponse: Pair<String, MockRequestHandleScope.() -> HttpResponseData>) {
+        val engine = MockEngine.config {
+            addHandler { request ->
+                lastRequest = request
+                pathResponse.forEach {
+                    if (request.url.encodedPath.contains(it.first)) {
+                        return@addHandler it.second(this)
+                    }
+                }
+                respondOk()
+            }
+        }
+        service = buildMockService(engine, ContentType.Application.OctetStream)
+    }
+
     private fun buildMockService(
         engine: HttpClientEngineFactory<MockEngineConfig>,
         vararg contentType: ContentType
-    )  = getService(HttpClient(engine) {
-            install(JsonFeature) {
-                serializer = KotlinxSerializer()
-                accept(ContentType.Application.Json, *contentType)
-            }
-        }, Environment.LOCAL)
+    ) = getService(HttpClient(engine) {
+        install(JsonFeature) {
+            serializer = KotlinxSerializer()
+            accept(ContentType.Application.Json, *contentType)
+        }
+    }, Environment.LOCAL)
 
 }

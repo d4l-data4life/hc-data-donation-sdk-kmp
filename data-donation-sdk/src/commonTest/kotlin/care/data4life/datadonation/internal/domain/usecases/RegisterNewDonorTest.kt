@@ -32,14 +32,14 @@
 
 package care.data4life.datadonation.internal.domain.usecases
 
-import care.data4life.datadonation.encryption.hybrid.HybridEncryptor
-import care.data4life.datadonation.internal.data.model.DummyData
-import care.data4life.datadonation.internal.data.model.RegistrationRequest
-import care.data4life.datadonation.internal.data.model.SignedConsentMessage
+import care.data4life.datadonation.encryption.hybrid.HybridEncryption
+import care.data4life.datadonation.internal.data.model.*
+import care.data4life.datadonation.internal.data.service.ConsentService
 import care.data4life.datadonation.internal.domain.repositories.RegistrationRepository
 import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
 import care.data4life.datadonation.internal.utils.Base64Encoder
 import care.data4life.datadonation.internal.utils.toJsonString
+import io.ktor.utils.io.core.*
 import io.mockk.*
 import runTest
 import kotlin.test.Test
@@ -48,7 +48,7 @@ abstract class RegisterNewDonorTest {
 
     private val userConsentRepository = mockk<UserConsentRepository>()
     private val registrationRepository = mockk<RegistrationRepository>()
-    private val encryptor = mockk<HybridEncryptor>()
+    private val encryptor = mockk<HybridEncryption>()
     private val base64Encoder = mockk<Base64Encoder>()
     private val registerNewDonor =
         RegisterNewDonor(registrationRepository, userConsentRepository, encryptor, base64Encoder)
@@ -64,27 +64,34 @@ abstract class RegisterNewDonorTest {
     fun registerNewDonorTest() = runTest {
         //Given
         val requestJsonString =
-            RegistrationRequest(dummyPublicKey64Encoded, dummyNonce).toJsonString()
+            RegistrationRequest(DummyData.keyPair.toString(), dummyNonce).toJsonString()
+
+        val consentMessage = ConsentMessage(
+            ConsentService.defaultDonationConsentKey,
+            ConsentSignatureType.ConsentOnce.apiValue,
+            dummyEncryptedRequest64Encoded
+        )
         val signedConsentJsonString =
-            SignedConsentMessage(dummyEncryptedRequest64Encoded, dummySignature).toJsonString()
+            SignedConsentMessage(consentMessage.toJsonString(), dummySignature).toJsonString()
+
 
         coEvery { registrationRepository.requestRegistrationToken() } returns dummyNonce
         coEvery { userConsentRepository.signUserConsent(any()) } returns dummySignature
-        coEvery { base64Encoder.encode(any()) } returns dummyPublicKey64Encoded andThen dummyEncryptedRequest64Encoded
-        coEvery { encryptor.encrypt(any()) } returns dummyEncryptedRequest andThen dummyEncryptedSignedMessage
+        coEvery { base64Encoder.encode(any()) } returns dummyEncryptedRequest64Encoded
+        coEvery { encryptor.encrypt(eq(requestJsonString.toByteArray())) } returns dummyEncryptedRequest
+        coEvery { encryptor.encrypt(eq(signedConsentJsonString.toByteArray())) } returns dummyEncryptedSignedMessage
         coEvery { registrationRepository.registerNewDonor(any()) } just runs
 
         //When
-        registerNewDonor.withParams(DummyData.keyPair).execute()
+        registerNewDonor.withParams(DummyData.keyPair.toString()).execute()
 
         //Then
-        coVerify(ordering = Ordering.SEQUENCE){
+        coVerify(ordering = Ordering.SEQUENCE) {
             registrationRepository.requestRegistrationToken()
-            base64Encoder.encode(DummyData.keyPair.public)
-            encryptor.encrypt(requestJsonString)
+            encryptor.encrypt(requestJsonString.toByteArray())
             base64Encoder.encode(dummyEncryptedRequest)
             userConsentRepository.signUserConsent(dummyEncryptedRequest64Encoded)
-            encryptor.encrypt(signedConsentJsonString)
+            encryptor.encrypt(signedConsentJsonString.toByteArray())
             registrationRepository.registerNewDonor(dummyEncryptedSignedMessage)
         }
     }

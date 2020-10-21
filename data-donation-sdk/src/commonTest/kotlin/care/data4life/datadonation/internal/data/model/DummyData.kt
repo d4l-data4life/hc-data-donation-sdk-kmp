@@ -32,6 +32,7 @@
 
 package care.data4life.datadonation.internal.data.model
 
+import care.data4life.datadonation.core.model.ConsentEvent
 import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.UserConsent
 
@@ -42,7 +43,7 @@ object DummyData {
         "key",
         "1.0.0",
         "a486a4db-a850-4b1d-9c84-99aa027f1000",
-        "consent",
+        ConsentEvent.Consent,
         timestamp
     )
 
