@@ -130,19 +130,10 @@ kotlin {
          configure(listOf(targets.asMap["ios"]!!)) {
              this as org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
-            compilations["main"].kotlinOptions.freeCompilerArgs += mutableListOf(
-                //"-include-binary", "$projectDir/native/iOSCryptoDD/libiOSCryptoDD.a",
-                //"-include-binary", "$projectDir/native/iOSCryptoDD/libiOSCryptoStatic.a"
-            )
             compilations.getByName("main") {
 
                 this as org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeCompilation
 
-                val tink by cinterops.creating {
-                    packageName("google.tink")
-                    defFile = file("$projectDir/src/iosMain/cinterop/Tink.def")
-                    header("$projectDir/Pods/Tink/Frameworks/Tink.framework/Headers/Tink.h")
-                }
 
                 val iOSDCryptoDD by cinterops.creating {
                     packageName("crypto.dd")
