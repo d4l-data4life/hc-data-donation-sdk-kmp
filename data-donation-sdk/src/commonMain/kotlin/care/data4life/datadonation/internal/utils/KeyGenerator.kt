@@ -30,51 +30,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation
+package care.data4life.datadonation.internal.utils
 
-import care.data4life.datadonation.core.listener.Callback
-import care.data4life.datadonation.core.listener.ResultListener
-import care.data4life.datadonation.core.model.ConsentDocument
-import care.data4life.datadonation.core.model.Environment
-import care.data4life.datadonation.core.model.KeyPair
-import care.data4life.datadonation.core.model.UserConsent
+import care.data4life.datadonation.encryption.Algorithm
+import care.data4life.datadonation.encryption.signature.SignatureKeyPrivate
 
-interface Contract {
-
-    interface Configuration {
-        fun getServicePublicKey(): String
-        fun getDonorKeyPair(): KeyPair?
-        fun getUserSessionToken(): String?
-        fun getEnvironment(): Environment
-    }
-
-    interface DataDonation {
-        fun fetchConsentDocument(
-            consentDocumentVersion: Int?,
-            language: String?,
-            listener: ResultListener<List<ConsentDocument>>
-        )
-
-        fun createUserConsent(
-            consentDocumentVersion: Int,
-            language: String?,
-            listener: ResultListener<UserConsent>
-        )
-
-        fun registerDonor(
-            listener: ResultListener<KeyPair>
-        )
-
-        fun fetchUserConsents(listener: ResultListener<List<UserConsent>>)
-
-        fun revokeUserConsent(language: String?, callback: Callback)
-
-        /** TODO Donation with FHIR models
-         * fun <T : DomainResource> donateResource(
-         * resource: T,
-         * callback: Callback)
-         * */
-    }
+internal interface KeyGenerator {
+    fun newSignatureKeyPrivate(size: Int, algorithm: Algorithm.Signature): SignatureKeyPrivate
 }
 
-
+internal object DefaultKeyGenerator : KeyGenerator {
+    override fun newSignatureKeyPrivate(
+        size: Int,
+        algorithm: Algorithm.Signature
+    ): SignatureKeyPrivate =
+        SignatureKeyPrivate(size, algorithm)
+}

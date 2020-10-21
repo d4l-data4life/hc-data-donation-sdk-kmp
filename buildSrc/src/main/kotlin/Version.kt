@@ -4,7 +4,7 @@ object Version {
 
     // IOS
     // https://github.com/touchlab/KotlinCocoapods/
-    const val cocoapodsext = "0.11"
+    const val cocoapodsext = "0.12"
 
     // Kotlin
     // https://github.com/JetBrains/kotlin
@@ -12,7 +12,7 @@ object Version {
     const val kotlinGradlePlugin = kotlin
 
     // https://github.com/Kotlin/kotlinx.coroutines
-    const val kotlinCoroutines = "1.3.9-native-mt"
+    const val kotlinCoroutines = "1.3.9-native-mt-2"
     const val kotlinCoroutinesIO = "0.1.16"
 
     // https://github.com/Kotlin/kotlinx.serialization
@@ -27,7 +27,7 @@ object Version {
 
     // Android
     // https://developer.android.com/studio
-    const val androidGradlePlugin = "4.0.0"
+    const val androidGradlePlugin = "4.1.0"
 
     // https://developer.android.com/studio/write/java8-support
     const val androidDesugar = "1.0.4"
@@ -68,7 +68,7 @@ object Version {
 
     // Database
     // https://github.com/cashapp/sqldelight
-    const val sqlDelight = "1.4.1"
+    const val sqlDelight = "1.4.4"
 
     //Encryption
     const val tinkAndroid = "1.4.0"

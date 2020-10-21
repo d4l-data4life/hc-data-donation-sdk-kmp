@@ -34,32 +34,16 @@ package care.data4life.datadonation.internal.domain.usecases
 
 import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.UserConsent
-import care.data4life.datadonation.encryption.Algorithm
-import care.data4life.datadonation.encryption.HashSize
-import care.data4life.datadonation.encryption.signature.SignatureKeyPrivate
 import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
 
 internal class CreateUserConsent(
-    private val consentRepository: UserConsentRepository,
-    private val registerNewDonor: RegisterNewDonor
+    private val consentRepository: UserConsentRepository
 ) :
-    ParameterizedUsecase<CreateUserConsent.Parameters, Pair<UserConsent, KeyPair>>() {
+    ParameterizedUsecase<CreateUserConsent.Parameters, UserConsent>() {
 
-    override suspend fun execute(): Pair<UserConsent, KeyPair> {
+    override suspend fun execute(): UserConsent {
         consentRepository.createUserConsent(parameter.version, parameter.language)
-        val userConsent = consentRepository.fetchUserConsents().first()
-        return if (parameter.keyPair == null) {
-            val newKeyPair = SignatureKeyPrivate(
-                2048,
-                Algorithm.Signature.RsaPSS(HashSize.Hash256)
-            )
-            registerNewDonor.withParams(newKeyPair.pkcs8Public).execute()
-            Pair(
-                userConsent,
-                newKeyPair.let { KeyPair(it.serializedPublic(), it.serializedPrivate()) })
-        } else {
-            Pair(userConsent, parameter.keyPair!!)
-        }
+        return consentRepository.fetchUserConsents().first()
     }
 
     data class Parameters(val keyPair: KeyPair?, val version: Int, val language: String?)
