@@ -38,6 +38,7 @@ import care.data4life.datadonation.toNSData
 
 import crypto.dd.CryptoAES
 import kotlinx.cinterop.addressOf
+import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.usePinned
 import platform.Foundation.NSError
 import platform.Security.*
@@ -50,12 +51,7 @@ class EncryptionSymmetricKeyNative : EncryptionSymmetricKey {
 
     //TODO: Support for different padding
     constructor(size: Int) {
-        val randomByteArray = ByteArray(size).usePinned {
-            val r = SecRandomCopyBytes(kSecRandomDefault, size.toULong(), it.addressOf(0))
-            if (r != errSecSuccess)
-                throw Throwable("Could not generate secure ByteArray")
-            it.get()
-        }
+        val randomByteArray = secureRandomByteArray(size/8)
         this.key = randomByteArray
         this.cryptoWrapper = CryptoAES(randomByteArray.toNSData())
     }
@@ -67,7 +63,9 @@ class EncryptionSymmetricKeyNative : EncryptionSymmetricKey {
 
 
     override fun decrypt(encrypted: ByteArray, associatedData: ByteArray): Result<ByteArray> = runCatching {
-        cryptoWrapper.decryptWithEncrypted( encrypted.toNSData(), associatedData.toNSData())!!.toByteArray()
+        val iv = encrypted.sliceArray(0..15)
+        val encrypted = encrypted.sliceArray(16..encrypted.lastIndex)
+        cryptoWrapper.decryptWithEncrypted(encrypted.toNSData(), iv.toNSData(), associatedData.toNSData())!!.toByteArray()
     }
 
     override fun serialized(): ByteArray = key
@@ -75,7 +73,20 @@ class EncryptionSymmetricKeyNative : EncryptionSymmetricKey {
     override val pkcs8: String
         get() = TODO("Not yet implemented")
 
-    override fun encrypt(plainText: ByteArray, associatedData: ByteArray): ByteArray =
-        cryptoWrapper.encryptWithPlainText(plainText.toNSData(),associatedData.toNSData())!!.toByteArray()
+    override fun encrypt(plainText: ByteArray, associatedData: ByteArray): ByteArray = memScoped {
+        val iv = secureRandomByteArray(16)
+        val encrypted = cryptoWrapper.encryptWithPlainText(plainText.toNSData(), iv.toNSData(), associatedData.toNSData())!!.toByteArray()
+        if(encrypted.isEmpty()) {
+            throw Throwable("Unknown encryption error")
+        }
+        return iv + encrypted
+    }
 
+}
+
+internal fun secureRandomByteArray(size: Int) = ByteArray(size).usePinned {
+    val r = SecRandomCopyBytes(kSecRandomDefault, size.toULong(), it.addressOf(0))
+    if (r != errSecSuccess)
+        throw Throwable("Could not generate secure ByteArray")
+    it.get()
 }

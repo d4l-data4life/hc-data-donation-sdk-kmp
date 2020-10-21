@@ -6,6 +6,20 @@
 	objectVersion = 52;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		4B74734D253F1C0000F6F2DA /* universal-crypto */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 4B747350253F1C0000F6F2DA /* Build configuration list for PBXAggregateTarget "universal-crypto" */;
+			buildPhases = (
+				4BB13D25253F1C6500DE3B7C /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = "universal-crypto";
+			productName = "universal-crypto";
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		0AD8CDCB2508E3220099DFDE /* iOSCryptoDD.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AD8CDC12508E3220099DFDE /* iOSCryptoDD.framework */; };
 		0AD8CDD02508E3220099DFDE /* iOSCryptoDDTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AD8CDCF2508E3220099DFDE /* iOSCryptoDDTests.swift */; };
@@ -85,6 +99,7 @@
 		0AD8CEEF250A615F0099DFDE /* ObjCAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ObjCAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0AD8CEF3250A61600099DFDE /* ObjCAppTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ObjCAppTests.m; sourceTree = "<group>"; };
 		0AD8CEF5250A61600099DFDE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4BB13D362540403600DE3B7C /* iOSCryptoDD copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "iOSCryptoDD copy-Info.plist"; path = "/Users/alexandertizik/IdeaProjects/data-donation-sdk-native/data-donation-sdk/native/iOSCryptoDD/iOSCryptoDD copy-Info.plist"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -131,6 +146,7 @@
 				0AD8CEF2250A61600099DFDE /* ObjCAppTests */,
 				0AD8CDC22508E3220099DFDE /* Products */,
 				0AD8CEFC250A61710099DFDE /* Frameworks */,
+				4BB13D362540403600DE3B7C /* iOSCryptoDD copy-Info.plist */,
 			);
 			sourceTree = "<group>";
 		};
@@ -220,6 +236,7 @@
 				0AD8CDBD2508E3220099DFDE /* Sources */,
 				0AD8CDBE2508E3220099DFDE /* Frameworks */,
 				0AD8CDBF2508E3220099DFDE /* Resources */,
+				4BB13D2625402EFB00DE3B7C /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -311,6 +328,9 @@
 						CreatedOnToolsVersion = 11.6;
 						TestTargetID = 0AD8CED4250A615E0099DFDE;
 					};
+					4B74734D253F1C0000F6F2DA = {
+						CreatedOnToolsVersion = 11.5;
+					};
 				};
 			};
 			buildConfigurationList = 0AD8CDBB2508E3220099DFDE /* Build configuration list for PBXProject "iOSCryptoDD" */;
@@ -333,6 +353,7 @@
 				0AD8CDC92508E3220099DFDE /* iOSCryptoDDTests */,
 				0AD8CED4250A615E0099DFDE /* ObjCApp */,
 				0AD8CEEE250A615F0099DFDE /* ObjCAppTests */,
+				4B74734D253F1C0000F6F2DA /* universal-crypto */,
 			);
 		};
 /* End PBXProject section */
@@ -370,6 +391,44 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		4BB13D25253F1C6500DE3B7C /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "UNIVERSAL_OUTPUTFOLDER=${BUILD_DIR}/${CONFIGURATION}-Universal\n# Make sure the output directory exists\nmkdir -p \"${UNIVERSAL_OUTPUTFOLDER}\"\n# Next, work out if we're in SIMULATOR or REAL DEVICE\nxcodebuild -target \"${PROJECT_NAME}\" -configuration ${CONFIGURATION} -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO BUILD_DIR=\"${BUILD_DIR}\" BUILD_ROOT=\"${BUILD_ROOT}\" clean build\nxcodebuild -target \"${PROJECT_NAME}\" ONLY_ACTIVE_ARCH=NO -configuration ${CONFIGURATION} -sdk iphoneos  BUILD_DIR=\"${BUILD_DIR}\" BUILD_ROOT=\"${BUILD_ROOT}\" clean build\n# Step 2. Copy the framework structure (from iphoneos build) to the universal folder\ncp -R \"${BUILD_DIR}/${CONFIGURATION}-iphoneos/${PROJECT_NAME}.framework\" \"${UNIVERSAL_OUTPUTFOLDER}/\"\n# Step 3. Copy Swift modules from iphonesimulator build (if it exists) to the copied framework directory\nBUILD_PRODUCTS=\"${SYMROOT}/../../../../Products\"\ncp -R \"${BUILD_PRODUCTS}/Debug-iphonesimulator/${PROJECT_NAME}.framework/Modules/${PROJECT_NAME}.swiftmodule/.\" \"${UNIVERSAL_OUTPUTFOLDER}/${PROJECT_NAME}.framework/Modules/${PROJECT_NAME}.swiftmodule\"\n# Step 4. Create universal binary file using lipo and place the combined executable in the copied framework directory\n\n# Step 5. Convenience step to copy the framework to the project's directory\ncp -R \"${UNIVERSAL_OUTPUTFOLDER}/${PROJECT_NAME}.framework\" \"${PROJECT_DIR}\"\n# Step 6. Convenience step to open the project's directory in Finder\nopen \"${PROJECT_DIR}\"\n\n# open \"${UNIVERSAL_OUTPUTFOLDER}/${PROJECT_NAME}.framework/${PROJECT_NAME}\"\n";
+		};
+		4BB13D2625402EFB00DE3B7C /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "
+";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		0AD8CDBD2508E3220099DFDE /* Sources */ = {
@@ -451,6 +510,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -514,6 +574,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -597,7 +658,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = D2QJWMP9SU;
+				DEVELOPMENT_TEAM = MQ27TQM2FD;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -731,6 +792,24 @@
 			};
 			name = Release;
 		};
+		4B74734E253F1C0000F6F2DA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = MQ27TQM2FD;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		4B74734F253F1C0000F6F2DA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = MQ27TQM2FD;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -775,6 +854,15 @@
 			buildConfigurations = (
 				0AD8CEFA250A61600099DFDE /* Debug */,
 				0AD8CEFB250A61600099DFDE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4B747350253F1C0000F6F2DA /* Build configuration list for PBXAggregateTarget "universal-crypto" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4B74734E253F1C0000F6F2DA /* Debug */,
+				4B74734F253F1C0000F6F2DA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
