@@ -46,21 +46,17 @@ class MockConsentDataStore : UserConsentRepository.Remote {
     var whenRevokeUserConsent: ((accessToken: String, language: String?) -> UserConsent)? = null
 
 
-    @Throws(IOException::class)
     override suspend fun createUserConsent(accessToken: String, version: Int, language: String?) {
         whenCreateUserConsent?.invoke(accessToken, version, language)
     }
 
-    @Throws(IOException::class)
     override suspend fun fetchUserConsents(accessToken: String): List<UserConsent> =
         whenFetchUserConsents?.invoke(accessToken) ?: throw MockException()
 
-    @Throws(IOException::class)
     override suspend fun signUserConsent(accessToken: String, message: String): String =
         whenSignUserConsent?.invoke(accessToken, message) ?: throw MockException()
 
 
-    @Throws(IOException::class)
     override suspend fun revokeUserConsent(accessToken: String, language: String?) {
         whenRevokeUserConsent?.invoke(accessToken, language)
     }

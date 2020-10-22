@@ -42,7 +42,6 @@ class MockConsentDocumentDataSore : ConsentDocumentRepository.Remote {
     var whenFetchConsentDocuments: ((accessToken: String, version: Int?, language: String?) -> List<ConsentDocument>)? =
         null
 
-    @Throws(IOException::class)
     override suspend fun fetchConsentDocuments(
         accessToken: String,
         version: Int?,
