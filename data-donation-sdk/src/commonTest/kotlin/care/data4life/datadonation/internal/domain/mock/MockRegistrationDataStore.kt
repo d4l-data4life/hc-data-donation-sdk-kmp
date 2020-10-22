@@ -30,33 +30,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.domain.usecases
+package care.data4life.datadonation.internal.domain.mock
 
-import care.data4life.datadonation.core.listener.ResultListener
+import care.data4life.datadonation.internal.domain.repositories.RegistrationRepository
+import care.data4life.datadonation.internal.mock.MockException
 
-interface Usecase<ReturnType> {
+class MockRegistrationDataStore : RegistrationRepository.Remote {
 
-    suspend fun execute(): ReturnType
-}
+    var whenRequestRegistrationToken: (() -> String)? = null
+    var whenRegisterNewDonor: ((data: ByteArray) -> Unit)? = null
 
-abstract class ParameterizedUsecase<Parameter : Any, ReturnType> : Usecase<ReturnType> {
+    override suspend fun requestRegistrationToken(): String =
+        whenRequestRegistrationToken?.invoke() ?: throw  MockException()
 
-    protected lateinit var parameter: Parameter
-
-    fun withParams(parameter: Parameter): ParameterizedUsecase<Parameter, ReturnType> {
-        this.parameter = parameter
-        return this
+    override suspend fun registerNewDonor(data: ByteArray) {
+        whenRegisterNewDonor?.invoke(data)
     }
 
-}
-
-suspend fun <T : Any, R : Any> ParameterizedUsecase<T, R>.runWithParams(
-    parameters: T,
-    listener: ResultListener<R>
-) {
-    try {
-        listener.onSuccess(withParams(parameters).execute())
-    } catch (e: Exception) {
-        listener.onError(e)
-    }
 }

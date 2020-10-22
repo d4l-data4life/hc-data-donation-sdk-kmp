@@ -32,68 +32,40 @@
 
 package care.data4life.datadonation.internal.domain.usecases
 
+import CapturingResultListener
 import care.data4life.datadonation.core.model.ConsentDocument
+import care.data4life.datadonation.internal.data.model.DummyData
+import care.data4life.datadonation.internal.domain.mock.MockConsentDocumentDataSore
+import care.data4life.datadonation.internal.domain.mock.MockUserSessionTokenDataStore
 import care.data4life.datadonation.internal.domain.repositories.ConsentDocumentRepository
-import io.mockk.Ordering
-import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.mockk
 import runTest
-import kotlin.test.Ignore
 import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
 abstract class FetchDocumentConsentTest {
 
-    private val consentDocumentRepository = mockk<ConsentDocumentRepository>()
-    private val consentDocument = FetchConsentDocuments(consentDocumentRepository)
-    private var consentDocDummy = ConsentDocument("", 1, "","","","en","",true,"","")
+    private val consentDocumentDataSore = MockConsentDocumentDataSore()
+    private val consentDocumentRepository = ConsentDocumentRepository(consentDocumentDataSore, MockUserSessionTokenDataStore())
+    private val fetchConsentDocument = FetchConsentDocuments(consentDocumentRepository)
+
+    private val capturingListener = FetchConsentDocumentListener()
 
     @Test
     fun createUserContentFullParams() = runTest {
         //Given
-        coEvery { consentDocumentRepository.fetchConsentDocuments(any(), any()) } returns listOf(consentDocDummy)
+        val documentList = listOf(DummyData.consentDocument)
+        consentDocumentDataSore.whenFetchConsentDocuments = { _, _, _ ->  documentList }
 
         //When
-        consentDocument.withParams(FetchConsentDocuments.Parameters(1, "en")).execute()
+        fetchConsentDocument.runWithParams(FetchConsentDocuments.Parameters(1, "en"), capturingListener)
 
         //Then
-        coVerify(ordering = Ordering.SEQUENCE){
-            consentDocumentRepository.fetchConsentDocuments(any(), any())
-        }
+        assertEquals(capturingListener.captured, documentList)
+        assertNull(capturingListener.error)
     }
 
-    @Ignore
-    @Test
-    fun getConsentDocumentMissingLanguage() = runTest {
-        //Given
-        val consentDocLDummy = ConsentDocument("", 1, "","","","","",true,"","")
-        coEvery { consentDocumentRepository.fetchConsentDocuments(any(), any()) } returns listOf(consentDocLDummy)
-
-        //When
-        consentDocument.withParams(FetchConsentDocuments.Parameters(1, "en")).execute()
-
-        //Then
-        coVerify(ordering = Ordering.SEQUENCE){
-            consentDocumentRepository.fetchConsentDocuments(any(), any())
-        }
-    }
-
-    @Ignore
-    @Test
-    fun getConsentDocumentWrongVersion() = runTest {
-        //Given
-        val consentDocVDummy = ConsentDocument("", 0, "","","","en","",true,"","")
-        coEvery { consentDocumentRepository.fetchConsentDocuments(any(), any()) } returns listOf(consentDocVDummy)
-
-        //When
-        consentDocument.withParams(FetchConsentDocuments.Parameters(1, "en")).execute()
-
-        //Then
-        coVerify(ordering = Ordering.SEQUENCE){
-            consentDocumentRepository.fetchConsentDocuments(any(), any())
-        }
-    }
-
+    class FetchConsentDocumentListener: CapturingResultListener<List<ConsentDocument>>()
 }
 
 

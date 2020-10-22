@@ -30,33 +30,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.domain.usecases
+package care.data4life.datadonation.internal.domain.mock
 
-import care.data4life.datadonation.core.listener.ResultListener
+import care.data4life.datadonation.internal.data.store.UserSessionTokenDataStore
 
-interface Usecase<ReturnType> {
+class MockUserSessionTokenDataStore : UserSessionTokenDataStore {
 
-    suspend fun execute(): ReturnType
-}
+    var whenGetUserSessionToken: (() -> String)? = { "" }
 
-abstract class ParameterizedUsecase<Parameter : Any, ReturnType> : Usecase<ReturnType> {
+    override fun getUserSessionToken(): String? = whenGetUserSessionToken?.invoke()
 
-    protected lateinit var parameter: Parameter
-
-    fun withParams(parameter: Parameter): ParameterizedUsecase<Parameter, ReturnType> {
-        this.parameter = parameter
-        return this
-    }
-
-}
-
-suspend fun <T : Any, R : Any> ParameterizedUsecase<T, R>.runWithParams(
-    parameters: T,
-    listener: ResultListener<R>
-) {
-    try {
-        listener.onSuccess(withParams(parameters).execute())
-    } catch (e: Exception) {
-        listener.onError(e)
-    }
 }

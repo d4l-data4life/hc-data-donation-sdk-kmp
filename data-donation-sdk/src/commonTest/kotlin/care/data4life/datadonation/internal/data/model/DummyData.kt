@@ -32,6 +32,7 @@
 
 package care.data4life.datadonation.internal.data.model
 
+import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.ConsentEvent
 import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.UserConsent
@@ -46,6 +47,8 @@ object DummyData {
         ConsentEvent.Consent,
         timestamp
     )
+
+    val consentDocument = ConsentDocument("", 1, "", "", "", "en", "", true, "", "")
 
     val rawData = byteArrayOf(10, 2, 5, 11, 8)
 
