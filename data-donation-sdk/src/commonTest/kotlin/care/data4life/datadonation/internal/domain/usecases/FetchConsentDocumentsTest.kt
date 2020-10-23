@@ -43,7 +43,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
-abstract class FetchDocumentConsentTest {
+abstract class FetchConsentDocumentsTest {
 
     private val consentDocumentDataSore = MockConsentDocumentDataSore()
     private val consentDocumentRepository = ConsentDocumentRepository(consentDocumentDataSore, MockUserSessionTokenDataStore())

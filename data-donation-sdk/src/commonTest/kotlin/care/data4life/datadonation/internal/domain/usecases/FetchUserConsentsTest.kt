@@ -30,35 +30,36 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.domain.mock
+package care.data4life.datadonation.internal.domain.usecases
 
-import care.data4life.datadonation.core.model.UserConsent
+import care.data4life.datadonation.internal.data.model.DummyData
+import care.data4life.datadonation.internal.domain.mock.MockConsentDataStore
+import care.data4life.datadonation.internal.domain.mock.MockUserSessionTokenDataStore
 import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
-import care.data4life.datadonation.internal.mock.MockException
-import io.ktor.utils.io.errors.IOException
+import runTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
-class MockConsentDataStore : UserConsentRepository.Remote {
+abstract class FetchUserConsentsTest {
 
-    var whenCreateUserConsent: ((accessToken: String, version: Int, language: String?) -> UserConsent)? =
-        null
-    var whenFetchUserConsents: ((accessToken: String) -> List<UserConsent>)? = null
-    var whenSignUserConsent: ((accessToken: String, message: String) -> String)? = null
-    var whenRevokeUserConsent: ((accessToken: String, language: String?) -> Unit)? = null
+    private val mockConsentDataStore = MockConsentDataStore()
+    private val userConsentRepository =
+        UserConsentRepository(mockConsentDataStore, MockUserSessionTokenDataStore())
 
+    private val userConsents = FetchUserConsents(userConsentRepository)
 
-    override suspend fun createUserConsent(accessToken: String, version: Int, language: String?) {
-        whenCreateUserConsent?.invoke(accessToken, version, language)
-    }
-
-    override suspend fun fetchUserConsents(accessToken: String): List<UserConsent> =
-        whenFetchUserConsents?.invoke(accessToken) ?: throw MockException()
-
-    override suspend fun signUserConsent(accessToken: String, message: String): String =
-        whenSignUserConsent?.invoke(accessToken, message) ?: throw MockException()
+    @Test
+    fun fetchUserContents() = runTest {
+        //Given
+        val dummyConsentList = listOf(DummyData.userConsent)
+        mockConsentDataStore.whenFetchUserConsents = { _ ->  dummyConsentList }
 
 
-    override suspend fun revokeUserConsent(accessToken: String, language: String?) {
-        whenRevokeUserConsent?.invoke(accessToken, language)
+        //When
+        val result = userConsents.execute()
+
+        //Then
+        assertEquals(result, dummyConsentList)
     }
 
 }
