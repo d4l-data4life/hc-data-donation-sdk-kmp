@@ -44,7 +44,7 @@ interface Contract {
     interface Configuration {
         fun getServicePublicKey(): String
         fun getDonorKeyPair(): KeyPair?
-        fun getUserSessionToken(): String?
+        fun getUserSessionToken(tokenListener: ResultListener<String>)
         fun getEnvironment(): Environment
     }
 
