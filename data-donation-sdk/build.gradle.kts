@@ -133,10 +133,11 @@ kotlin {
         configure(listOf(targets["iosArm64"], targets["iosX64"])) {
             this as org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
+            compilations["main"].kotlinOptions.freeCompilerArgs += mutableListOf(
+                "-include-binary", "$projectDir/native/iOSCryptoDD/iOSCryptoDD.framework/libiOSCryptoDD.a"
+            )
             compilations.getByName("main") {
-
                 this as org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeCompilation
-
 
                 val iOSDCryptoDD by cinterops.creating {
                     packageName("crypto.dd")
@@ -145,13 +146,11 @@ kotlin {
 
                     // Directories for header search (an analogue of the -I<path> compiler option)
                     includeDirs("$projectDir/native/iOSCryptoDD/iOSCryptoDD.framework/Headers")
-                    compilerOpts("-framework", "iOSCryptoDD", "-F$projectDir/native/iOSCryptoDD")
                 }
             }
 
             binaries.all {
-                // Tell the linker where the framework is located.
-                linkerOpts("-framework", "iOSCryptoDD", "-F$projectDir/native/iOSCryptoDD/")
+                linkerOpts("-L$projectDir/native/iOSCryptoDD/iOSCryptoDD.framework/","-liOSCryptoDD")
             }
         }
     }
@@ -197,35 +196,6 @@ android {
     }
 }
 
-with(tasks.create("iosWithLinkerTest")) {
-    this as org.gradle.api.DefaultTask
-    val linkTask =
-        tasks.getByName("linkDebugTestIosX64") as org.jetbrains.kotlin.gradle.tasks.KotlinNativeLink
-    dependsOn(linkTask)
-    group = JavaBasePlugin.VERIFICATION_GROUP
-    description = "Runs tests for target 'ios' on an iOS simulator"
-    doLast {
-        val binary = linkTask.binary.outputFile
-        val device = "iPhone 8"
-        exec {
-            commandLine = listOf("xcrun", "simctl", "boot", device)
-            isIgnoreExitValue = true
-        }
-        exec {
-            environment("SIMCTL_CHILD_DYLD_FRAMEWORK_PATH", "$projectDir/native/iOSCryptoDD/")
-            commandLine = listOf(
-                "xcrun",
-                "simctl",
-                "spawn",
-                device,
-                binary.absolutePath
-            )
-        }
-        exec {
-            commandLine = listOf("xcrun", "simctl", "shutdown", device)
-        }
-    }
-}
 
 publishing {
     repositories {

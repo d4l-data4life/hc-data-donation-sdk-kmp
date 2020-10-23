@@ -1,5 +1,4 @@
 language = Objective-C
 headers = iOSCryptoDD.h iOSCryptoDD-Swift.h
-
-
-
+staticLibraries = libiOSCryptoDD.a
+libraryPaths = /Users/alexandertizik/IdeaProjects/data-donation-sdk-native/data-donation-sdk/native/iOSCryptoDD/iOSCryptoDD.framework
