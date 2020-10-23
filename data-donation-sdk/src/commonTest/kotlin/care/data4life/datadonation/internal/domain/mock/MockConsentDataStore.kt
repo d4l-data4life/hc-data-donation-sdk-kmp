@@ -30,33 +30,35 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.domain.usecases
+package care.data4life.datadonation.internal.domain.mock
 
-import care.data4life.datadonation.core.listener.ResultListener
+import care.data4life.datadonation.core.model.UserConsent
+import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
+import care.data4life.datadonation.internal.mock.MockException
+import io.ktor.utils.io.errors.IOException
 
-interface Usecase<ReturnType> {
+class MockConsentDataStore : UserConsentRepository.Remote {
 
-    suspend fun execute(): ReturnType
-}
+    var whenCreateUserConsent: ((accessToken: String, version: Int, language: String?) -> UserConsent)? =
+        null
+    var whenFetchUserConsents: ((accessToken: String) -> List<UserConsent>)? = null
+    var whenSignUserConsent: ((accessToken: String, message: String) -> String)? = null
+    var whenRevokeUserConsent: ((accessToken: String, language: String?) -> Unit)? = null
 
-abstract class ParameterizedUsecase<Parameter : Any, ReturnType> : Usecase<ReturnType> {
 
-    protected lateinit var parameter: Parameter
-
-    fun withParams(parameter: Parameter): ParameterizedUsecase<Parameter, ReturnType> {
-        this.parameter = parameter
-        return this
+    override suspend fun createUserConsent(accessToken: String, version: Int, language: String?) {
+        whenCreateUserConsent?.invoke(accessToken, version, language)
     }
 
-}
+    override suspend fun fetchUserConsents(accessToken: String): List<UserConsent> =
+        whenFetchUserConsents?.invoke(accessToken) ?: throw MockException()
 
-suspend fun <T : Any, R : Any> ParameterizedUsecase<T, R>.runWithParams(
-    parameters: T,
-    listener: ResultListener<R>
-) {
-    try {
-        listener.onSuccess(withParams(parameters).execute())
-    } catch (e: Exception) {
-        listener.onError(e)
+    override suspend fun signUserConsent(accessToken: String, message: String): String =
+        whenSignUserConsent?.invoke(accessToken, message) ?: throw MockException()
+
+
+    override suspend fun revokeUserConsent(accessToken: String, language: String?) {
+        whenRevokeUserConsent?.invoke(accessToken, language)
     }
+
 }
