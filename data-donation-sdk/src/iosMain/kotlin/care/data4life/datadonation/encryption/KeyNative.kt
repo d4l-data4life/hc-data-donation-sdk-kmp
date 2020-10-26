@@ -35,13 +35,13 @@ package care.data4life.datadonation.encryption
 import care.data4life.datadonation.encryption.signature.generateKey
 import care.data4life.datadonation.encryption.signature.plusAssign
 import care.data4life.datadonation.toNSData
-import platform.CoreFoundation.CFDataRef
-import platform.CoreFoundation.CFDictionaryCreateMutable
-import platform.CoreFoundation.CFStringRef
-import platform.CoreFoundation.kCFAllocatorSystemDefault
+import kotlinx.cinterop.*
 import platform.Foundation.CFBridgingRetain
 import platform.Foundation.NSNumber
 import platform.Security.*
+import platform.CoreFoundation.*
+import platform.Foundation.CFBridgingRelease
+import platform.Foundation.NSError
 
 abstract class KeyNative {
     protected val privateKey: SecKeyRef
@@ -62,28 +62,41 @@ abstract class KeyNative {
     }
 
     companion object {
-        fun buildSecKeyRef(serialized: ByteArray, algorithm: Algorithm, type: KeyType): SecKeyRef {
-            val data = CFBridgingRetain(serialized.toNSData()) as CFDataRef
-            val pubAttr = CFDictionaryCreateMutable(kCFAllocatorSystemDefault, 3, null, null)!!
-            val exhaustive = when (algorithm) {
-                is Algorithm.Signature.RsaPSS -> {
-                    pubAttr += kSecAttrKeyType to kSecAttrKeyTypeRSA
-                    pubAttr += kSecAttrKeyClass to type.nativeType
-                    pubAttr += kSecAttrKeySizeInBits to CFBridgingRetain(NSNumber(int = algorithm.hashSize.bits))
+        fun buildSecKeyRef(serialized: ByteArray, algorithm: Algorithm, type: KeyType): SecKeyRef =
+            memScoped {
+                val data = CFBridgingRetain(serialized.toNSData()) as CFDataRef
+                val pubAttr = CFDictionaryCreateMutable(kCFAllocatorSystemDefault, 3, null, null)!!
+                val exhaustive = when (algorithm) {
+                    is Algorithm.Signature.RsaPSS -> {
+                        pubAttr += kSecAttrKeyType to kSecAttrKeyTypeRSA
+                        pubAttr += kSecAttrKeyClass to type.nativeType
+                        pubAttr += kSecAttrKeySizeInBits to CFBridgingRetain(NSNumber(int = algorithm.hashSize.bits))
+                    }
+                    is Algorithm.Asymmetric.RsaOAEP -> {
+                        pubAttr += kSecAttrKeyType to kSecAttrKeyTypeRSA!!
+                        pubAttr += kSecAttrKeyClass to type.nativeType
+                        pubAttr += kSecAttrKeySizeInBits to CFBridgingRetain(NSNumber(int = algorithm.hashSize.bits))
+                    }
+                    is Algorithm.Symmetric.AES -> throw NotImplementedError("No native AES support is available")
                 }
-                is Algorithm.Asymmetric.RsaOAEP -> {
-                    pubAttr += kSecAttrKeyType to kSecAttrKeyTypeRSA!!
-                    pubAttr += kSecAttrKeyClass to type.nativeType
-                    pubAttr += kSecAttrKeySizeInBits to CFBridgingRetain(NSNumber(int = algorithm.hashSize.bits))
-                }
-                is Algorithm.Symmetric.AES -> throw NotImplementedError("No native AES support is available")
+                println(type.name)
+
+                val error = alloc<CFErrorRefVar>()
+                val key = SecKeyCreateWithData(data, pubAttr, error.ptr)
+                println(error.value)
+                val k: CFErrorRef = error.value!!
+                val err = CFBridgingRelease(k) as NSError
+
+                if (error.value != null)
+                    throw Throwable(err.localizedDescription)
+                return@memScoped key!!
             }
-            return SecKeyCreateWithData(data, pubAttr, null)!!
-        }
     }
 
+
     enum class KeyType(val nativeType: CFStringRef) {
-        Private(kSecAttrKeyClassPrivate!!),Public(kSecAttrKeyClassPublic!!),Symmetric(kSecAttrKeyClassSymmetric!!)
+        Private(kSecAttrKeyClassPrivate!!), Public(kSecAttrKeyClassPublic!!), Symmetric(kSecAttrKeyClassSymmetric!!)
     }
 
 }
+

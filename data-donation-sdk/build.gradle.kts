@@ -134,7 +134,10 @@ kotlin {
             this as org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
             compilations["main"].kotlinOptions.freeCompilerArgs += mutableListOf(
-                "-include-binary", "$projectDir/native/iOSCryptoDD/iOSCryptoDD.framework/libiOSCryptoDD.a"
+                "-include-binary",
+                "$projectDir/native/crypto/libcrypto.a",
+                "-include-binary",
+                "/Library/Developer/Toolchains/swift-5.3-RELEASE.xctoolchain/usr/lib/swift/iphonesimulator/libswiftCore.dylib"
             )
             compilations.getByName("main") {
                 this as org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeCompilation
@@ -145,17 +148,28 @@ kotlin {
                     defFile("src/iosMain/cinterop/iOSCryptoDD.def")
 
                     // Directories for header search (an analogue of the -I<path> compiler option)
-                    includeDirs("$projectDir/native/iOSCryptoDD/iOSCryptoDD.framework/Headers")
+                    includeDirs("$projectDir/native/crypto/")
+
+                    //compilerOpts("-framework","iOSCryptoDD","-F$projectDir/native/iOSCryptoDD/")
+                    //compilerOpts("-framework","iOSCryptoDD","-F$projectDir/native/iOSCryptoDD/")
                 }
             }
 
             binaries.all {
-                linkerOpts("-L$projectDir/native/iOSCryptoDD/iOSCryptoDD.framework/","-liOSCryptoDD")
+                linkerOpts(
+                    "-L$projectDir/native/crypto",
+                    "-lcrypto",
+                    "-L/Library/Developer/Toolchains/swift-5.3-RELEASE.xctoolchain/usr/lib/swift/iphonesimulator",
+                    "-rpath",
+                    "/Library/Developer/Toolchains/swift-5.3-RELEASE.xctoolchain/usr/lib/swift/iphonesimulator"
+                )
             }
         }
     }
 
 }
+
+
 
 android {
     compileSdkVersion(LibraryConfig.android.compileSdkVersion)
@@ -204,8 +218,9 @@ publishing {
             url = uri("https://maven.pkg.github.com/gesundheitscloud/data-donation-sdk-native")
             credentials {
                 username =
-                    (project.findProperty("gpr.user") ?: System.getenv("USERNAME"))?.toString()
-                password = (project.findProperty("gpr.key") ?: System.getenv("TOKEN"))?.toString()
+                    "ATizik"//(project.findProperty("gpr.user") ?: System.getenv("USERNAME"))?.toString()
+                password =
+                    "19ea7e62cccb0173ee281d42ad30338b1f174769"//(project.findProperty("gpr.key") ?: System.getenv("TOKEN"))?.toString()
             }
         }
 

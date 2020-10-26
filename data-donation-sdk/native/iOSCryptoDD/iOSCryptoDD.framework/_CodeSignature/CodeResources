@@ -4,9 +4,37 @@
 <dict>
 	<key>files</key>
 	<dict>
-		<key>.DS_Store</key>
+		<key>Frameworks/libswiftCore.dylib</key>
 		<data>
-		19/J0uDkHRMF8ttRaWoAL8VEkVc=
+		rrAp64iPhUL40XQR7JlGMDIZaMA=
+		</data>
+		<key>Frameworks/libswiftCoreFoundation.dylib</key>
+		<data>
+		P4IT9OqWCWZ8FyecMxQHhM6h4G8=
+		</data>
+		<key>Frameworks/libswiftCoreGraphics.dylib</key>
+		<data>
+		JoDjsNQXE3z2hogOouALtjw8m/g=
+		</data>
+		<key>Frameworks/libswiftDarwin.dylib</key>
+		<data>
+		XJGVexKAsC220QzBQHwL6VS/whc=
+		</data>
+		<key>Frameworks/libswiftDispatch.dylib</key>
+		<data>
+		xYRhwsR1eeXatGDr8WNyVj93krw=
+		</data>
+		<key>Frameworks/libswiftFoundation.dylib</key>
+		<data>
+		WclOTQyDfPDOGEjZboBz+yfxGVQ=
+		</data>
+		<key>Frameworks/libswiftObjectiveC.dylib</key>
+		<data>
+		W4v+YlroD8+v27M4zKa/3r9eqdA=
+		</data>
+		<key>Headers/iOSCryptoDD-Bridging-Header.h</key>
+		<data>
+		BbYvL5d1LeufLRTyq0yUA4f8QiU=
 		</data>
 		<key>Headers/iOSCryptoDD-Swift.h</key>
 		<data>
@@ -18,47 +46,39 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		e/JNRqDMF//dWCJ+dR8FjeqJLOE=
+		F9kGL0+73XntGM5NFIvSIajiChU=
 		</data>
-		<key>Modules/.DS_Store</key>
+		<key>Modules/iOSCryptoDD.swiftmodule/Project/x86_64-apple-ios-simulator.swiftsourceinfo</key>
 		<data>
-		yUc7ICWNUX85TL+tgbPDhjzIPmk=
+		79YB3b65NEr09hYRqR72CPW4YbM=
 		</data>
-		<key>Modules/iOSCryptoDD.swiftmodule/.DS_Store</key>
+		<key>Modules/iOSCryptoDD.swiftmodule/Project/x86_64.swiftsourceinfo</key>
 		<data>
-		qCzJ3k73B+AORW5lUmqGVa2SZuw=
+		79YB3b65NEr09hYRqR72CPW4YbM=
 		</data>
-		<key>Modules/iOSCryptoDD.swiftmodule/Project/arm64-apple-ios.swiftsourceinfo</key>
+		<key>Modules/iOSCryptoDD.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
 		<data>
-		AdcJ/LusFHtqrcwya13eb8icE6Y=
+		KZ7UxKqXj4rFLu5cxXfWGBbU010=
 		</data>
-		<key>Modules/iOSCryptoDD.swiftmodule/Project/arm64.swiftsourceinfo</key>
+		<key>Modules/iOSCryptoDD.swiftmodule/x86_64-apple-ios-simulator.swiftinterface</key>
 		<data>
-		AdcJ/LusFHtqrcwya13eb8icE6Y=
+		MUiVvAaP50PMurZ1eD0c2qGljzo=
 		</data>
-		<key>Modules/iOSCryptoDD.swiftmodule/arm64-apple-ios.swiftdoc</key>
+		<key>Modules/iOSCryptoDD.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		5X6QzE/FszKTj2AimD8DsCSaZgc=
+		XSH4xV6Qzfu/YAmFHU3OBe2O1GQ=
 		</data>
-		<key>Modules/iOSCryptoDD.swiftmodule/arm64-apple-ios.swiftinterface</key>
+		<key>Modules/iOSCryptoDD.swiftmodule/x86_64.swiftdoc</key>
 		<data>
-		f3ltQbcVfAns+wXUEskz2xJWIYM=
+		KZ7UxKqXj4rFLu5cxXfWGBbU010=
 		</data>
-		<key>Modules/iOSCryptoDD.swiftmodule/arm64-apple-ios.swiftmodule</key>
+		<key>Modules/iOSCryptoDD.swiftmodule/x86_64.swiftinterface</key>
 		<data>
-		OG014q/kI5ISzloITVSBCVFoCD0=
+		MUiVvAaP50PMurZ1eD0c2qGljzo=
 		</data>
-		<key>Modules/iOSCryptoDD.swiftmodule/arm64.swiftdoc</key>
+		<key>Modules/iOSCryptoDD.swiftmodule/x86_64.swiftmodule</key>
 		<data>
-		5X6QzE/FszKTj2AimD8DsCSaZgc=
-		</data>
-		<key>Modules/iOSCryptoDD.swiftmodule/arm64.swiftinterface</key>
-		<data>
-		f3ltQbcVfAns+wXUEskz2xJWIYM=
-		</data>
-		<key>Modules/iOSCryptoDD.swiftmodule/arm64.swiftmodule</key>
-		<data>
-		OG014q/kI5ISzloITVSBCVFoCD0=
+		XSH4xV6Qzfu/YAmFHU3OBe2O1GQ=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -67,6 +87,62 @@
 	</dict>
 	<key>files2</key>
 	<dict>
+		<key>Frameworks/libswiftCore.dylib</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			SVCZK2UG9ihtWggcfIn/i94g//jyC4cI73gURFdHavA=
+			</data>
+		</dict>
+		<key>Frameworks/libswiftCoreFoundation.dylib</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			/wz85l+DKAaQ7/BS+77vK5X998iA4Lwz+DGJ95g4kZw=
+			</data>
+		</dict>
+		<key>Frameworks/libswiftCoreGraphics.dylib</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			6UmJ5TyRJe3XQ2ANvUh7wapWfH50HDaC5DE8brYBB5U=
+			</data>
+		</dict>
+		<key>Frameworks/libswiftDarwin.dylib</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			Fy3X7nPk7IgG+lCSWKHuMHgGz6Yi56UOKe6XajzinhU=
+			</data>
+		</dict>
+		<key>Frameworks/libswiftDispatch.dylib</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			ZSH1H7EN5E4TGGB63N2+7rR7N+rDR1LBmkhABOf9RVQ=
+			</data>
+		</dict>
+		<key>Frameworks/libswiftFoundation.dylib</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			6SyHvvl3dAOzLH6bFEeF41TPcUHS3iYOdFK7I0FEU6M=
+			</data>
+		</dict>
+		<key>Frameworks/libswiftObjectiveC.dylib</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			zLWBGbdbTQk6chVChX0c8CFwhq8ogd9K00QEU5AufEY=
+			</data>
+		</dict>
+		<key>Headers/iOSCryptoDD-Bridging-Header.h</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			3dAM3TQEenMRiMO4mUU9y0NBuCGawot3ZHym2c6uTNI=
+			</data>
+		</dict>
 		<key>Headers/iOSCryptoDD-Swift.h</key>
 		<dict>
 			<key>hash2</key>
@@ -81,60 +157,60 @@
 			gpkly1KopnlIHSTiTBEOkeMDdv1vzr9rJUIk+FGlw5E=
 			</data>
 		</dict>
-		<key>Modules/iOSCryptoDD.swiftmodule/Project/arm64-apple-ios.swiftsourceinfo</key>
+		<key>Modules/iOSCryptoDD.swiftmodule/Project/x86_64-apple-ios-simulator.swiftsourceinfo</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			3FraJ+5AnHWi+ljk3UkzbMXEbnstVr5jn1MFoVYgsfo=
+			2+iOAWtl2JFw17HJ+K055nFO67BnJco9D3wCZ4qJUZc=
 			</data>
 		</dict>
-		<key>Modules/iOSCryptoDD.swiftmodule/Project/arm64.swiftsourceinfo</key>
+		<key>Modules/iOSCryptoDD.swiftmodule/Project/x86_64.swiftsourceinfo</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			3FraJ+5AnHWi+ljk3UkzbMXEbnstVr5jn1MFoVYgsfo=
+			2+iOAWtl2JFw17HJ+K055nFO67BnJco9D3wCZ4qJUZc=
 			</data>
 		</dict>
-		<key>Modules/iOSCryptoDD.swiftmodule/arm64-apple-ios.swiftdoc</key>
+		<key>Modules/iOSCryptoDD.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			f0WGgk1a0aYLU8sHe2EfO8vqiFgMUa8Z1O9T9NUJ2hs=
+			x48JrKHgTztUwiyjakW+yj9Zkaz0x27bEGC+/cAetiY=
 			</data>
 		</dict>
-		<key>Modules/iOSCryptoDD.swiftmodule/arm64-apple-ios.swiftinterface</key>
+		<key>Modules/iOSCryptoDD.swiftmodule/x86_64-apple-ios-simulator.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			7HFSDAPYv+dn8E9pvjYd65RBlUwSpK6BzvNzqu6YhIY=
+			u2cGFQbWzH6GzQeF8rHJRiTEF4vchBAPF8o8nl9gfys=
 			</data>
 		</dict>
-		<key>Modules/iOSCryptoDD.swiftmodule/arm64-apple-ios.swiftmodule</key>
+		<key>Modules/iOSCryptoDD.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			jlN9OWU4V34TQ5AUBdkfN2KGamoOJop7FWifz3BsmWg=
+			1158uoAKqOAtbwiZ8POAuKHsOrjCaCIUa9YjxGSmX8Q=
 			</data>
 		</dict>
-		<key>Modules/iOSCryptoDD.swiftmodule/arm64.swiftdoc</key>
+		<key>Modules/iOSCryptoDD.swiftmodule/x86_64.swiftdoc</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			f0WGgk1a0aYLU8sHe2EfO8vqiFgMUa8Z1O9T9NUJ2hs=
+			x48JrKHgTztUwiyjakW+yj9Zkaz0x27bEGC+/cAetiY=
 			</data>
 		</dict>
-		<key>Modules/iOSCryptoDD.swiftmodule/arm64.swiftinterface</key>
+		<key>Modules/iOSCryptoDD.swiftmodule/x86_64.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			7HFSDAPYv+dn8E9pvjYd65RBlUwSpK6BzvNzqu6YhIY=
+			u2cGFQbWzH6GzQeF8rHJRiTEF4vchBAPF8o8nl9gfys=
 			</data>
 		</dict>
-		<key>Modules/iOSCryptoDD.swiftmodule/arm64.swiftmodule</key>
+		<key>Modules/iOSCryptoDD.swiftmodule/x86_64.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			jlN9OWU4V34TQ5AUBdkfN2KGamoOJop7FWifz3BsmWg=
+			1158uoAKqOAtbwiZ8POAuKHsOrjCaCIUa9YjxGSmX8Q=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>

@@ -46,7 +46,7 @@ private fun Algorithm.Signature.toAttributes(): Pair<CFStringRef, SecKeyAlgorith
     return when (this) {
         is Algorithm.Signature.RsaPSS -> {
             kSecAttrKeyTypeRSA!! to when (hashSize) {
-                HashSize.Hash256 -> kSecKeyAlgorithmRSASignatureDigestPSSSHA256!!
+                HashSize.Hash256 -> kSecKeyAlgorithmRSASignatureMessagePSSSHA256!!
             }
         }
     }

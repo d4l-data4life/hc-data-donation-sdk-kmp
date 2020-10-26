@@ -7,6 +7,16 @@
 	objects = {
 
 /* Begin PBXAggregateTarget section */
+		4B266121254701E00068ED3D /* lib */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 4B266122254701E00068ED3D /* Build configuration list for PBXAggregateTarget "lib" */;
+			buildPhases = (
+			);
+			dependencies = (
+			);
+			name = lib;
+			productName = lib;
+		};
 		4B74734D253F1C0000F6F2DA /* universal-crypto */ = {
 			isa = PBXAggregateTarget;
 			buildConfigurationList = 4B747350253F1C0000F6F2DA /* Build configuration list for PBXAggregateTarget "universal-crypto" */;
@@ -37,10 +47,11 @@
 		0AD8CF02250A623B0099DFDE /* iOSCryptoDD.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AD8CDC12508E3220099DFDE /* iOSCryptoDD.framework */; };
 		0AD8CF03250A623B0099DFDE /* iOSCryptoDD.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 0AD8CDC12508E3220099DFDE /* iOSCryptoDD.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		4B73241925418B3000F76893 /* iOSCrypto.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B73241825418B3000F76893 /* iOSCrypto.m */; };
-		4B73241A25418B3000F76893 /* iOSCrypto.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4B73241725418B3000F76893 /* iOSCrypto.h */; };
+		4B73241A25418B3000F76893 /* iOSCrypto.h in Copy Files */ = {isa = PBXBuildFile; fileRef = 4B73241725418B3000F76893 /* iOSCrypto.h */; };
 		4B73241F25418B8D00F76893 /* CryptoSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 4B73241E25418B8D00F76893 /* CryptoSwift */; };
 		4B732420254197BA00F76893 /* iOSCryptoDD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AD8CE0B2508E3FD0099DFDE /* iOSCryptoDD.swift */; };
 		4B7324212541B52D00F76893 /* iOSCryptoDD.h in Sources */ = {isa = PBXBuildFile; fileRef = 0AD8CDC42508E3220099DFDE /* iOSCryptoDD.h */; };
+		4BE31494254330B1001EAB40 /* iOSCryptoDD-Bridging-Header.h in Headers */ = {isa = PBXBuildFile; fileRef = 4BE31493254330B1001EAB40 /* iOSCryptoDD-Bridging-Header.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -79,14 +90,15 @@
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		4B73241325418B3000F76893 /* CopyFiles */ = {
+		4B73241325418B3000F76893 /* Copy Files */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "include/$(PRODUCT_NAME)";
 			dstSubfolderSpec = 16;
 			files = (
-				4B73241A25418B3000F76893 /* iOSCrypto.h in CopyFiles */,
+				4B73241A25418B3000F76893 /* iOSCrypto.h in Copy Files */,
 			);
+			name = "Copy Files";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -114,10 +126,12 @@
 		0AD8CEEF250A615F0099DFDE /* ObjCAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ObjCAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0AD8CEF3250A61600099DFDE /* ObjCAppTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ObjCAppTests.m; sourceTree = "<group>"; };
 		0AD8CEF5250A61600099DFDE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		4B73241525418B3000F76893 /* libiOSCrypto.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libiOSCrypto.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		4B73241525418B3000F76893 /* libiOSCryptoDDD.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libiOSCryptoDDD.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		4B73241725418B3000F76893 /* iOSCrypto.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = iOSCrypto.h; sourceTree = "<group>"; };
 		4B73241825418B3000F76893 /* iOSCrypto.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = iOSCrypto.m; sourceTree = "<group>"; };
 		4BB13D362540403600DE3B7C /* iOSCryptoDD copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "iOSCryptoDD copy-Info.plist"; path = "/Users/alexandertizik/IdeaProjects/data-donation-sdk-native/data-donation-sdk/native/iOSCryptoDD/iOSCryptoDD copy-Info.plist"; sourceTree = "<absolute>"; };
+		4BE31493254330B1001EAB40 /* iOSCryptoDD-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "iOSCryptoDD-Bridging-Header.h"; sourceTree = "<group>"; };
+		4BE3149625433D8E001EAB40 /* libswiftCore.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libswiftCore.tbd; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/usr/lib/swift/libswiftCore.tbd; sourceTree = DEVELOPER_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -184,7 +198,7 @@
 				0AD8CDCA2508E3220099DFDE /* iOSCryptoDDTests.xctest */,
 				0AD8CED5250A615E0099DFDE /* ObjCApp.app */,
 				0AD8CEEF250A615F0099DFDE /* ObjCAppTests.xctest */,
-				4B73241525418B3000F76893 /* libiOSCrypto.a */,
+				4B73241525418B3000F76893 /* libiOSCryptoDDD.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -195,6 +209,7 @@
 				0AD8CDC52508E3220099DFDE /* Info.plist */,
 				0AD8CDC42508E3220099DFDE /* iOSCryptoDD.h */,
 				0AD8CE0B2508E3FD0099DFDE /* iOSCryptoDD.swift */,
+				4BE31493254330B1001EAB40 /* iOSCryptoDD-Bridging-Header.h */,
 			);
 			path = iOSCryptoDD;
 			sourceTree = "<group>";
@@ -238,6 +253,7 @@
 		0AD8CEFC250A61710099DFDE /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4BE3149625433D8E001EAB40 /* libswiftCore.tbd */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -258,6 +274,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4BE31494254330B1001EAB40 /* iOSCryptoDD-Bridging-Header.h in Headers */,
 				0AD8CDD22508E3220099DFDE /* iOSCryptoDD.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -342,24 +359,24 @@
 			productReference = 0AD8CEEF250A615F0099DFDE /* ObjCAppTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		4B73241425418B3000F76893 /* iOSCrypto */ = {
+		4B73241425418B3000F76893 /* iOSCryptoDDD */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 4B73241D25418B3000F76893 /* Build configuration list for PBXNativeTarget "iOSCrypto" */;
+			buildConfigurationList = 4B73241D25418B3000F76893 /* Build configuration list for PBXNativeTarget "iOSCryptoDDD" */;
 			buildPhases = (
 				4B73241125418B3000F76893 /* Sources */,
 				4B73241225418B3000F76893 /* Frameworks */,
-				4B73241325418B3000F76893 /* CopyFiles */,
+				4B73241325418B3000F76893 /* Copy Files */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = iOSCrypto;
+			name = iOSCryptoDDD;
 			packageProductDependencies = (
 				4B73241E25418B8D00F76893 /* CryptoSwift */,
 			);
 			productName = iOSCrypto;
-			productReference = 4B73241525418B3000F76893 /* libiOSCrypto.a */;
+			productReference = 4B73241525418B3000F76893 /* libiOSCryptoDDD.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 /* End PBXNativeTarget section */
@@ -384,6 +401,9 @@
 					0AD8CEEE250A615F0099DFDE = {
 						CreatedOnToolsVersion = 11.6;
 						TestTargetID = 0AD8CED4250A615E0099DFDE;
+					};
+					4B266121254701E00068ED3D = {
+						CreatedOnToolsVersion = 11.5;
 					};
 					4B73241425418B3000F76893 = {
 						CreatedOnToolsVersion = 11.5;
@@ -414,7 +434,8 @@
 				0AD8CED4250A615E0099DFDE /* ObjCApp */,
 				0AD8CEEE250A615F0099DFDE /* ObjCAppTests */,
 				4B74734D253F1C0000F6F2DA /* universal-crypto */,
-				4B73241425418B3000F76893 /* iOSCrypto */,
+				4B73241425418B3000F76893 /* iOSCryptoDDD */,
+				4B266121254701E00068ED3D /* lib */,
 			);
 		};
 /* End PBXProject section */
@@ -705,20 +726,23 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ARCHS = (
+					"$(ARCHS_STANDARD)",
+					Universal,
+				);
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = MQ27TQM2FD;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "";
 				INFOPLIST_FILE = iOSCryptoDD/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_DYLIB_INSTALL_NAME = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				MACH_O_TYPE = staticlib;
 				PRODUCT_BUNDLE_IDENTIFIER = care.data4life.cryptoDD.iOSCryptoDD;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -733,20 +757,23 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ARCHS = (
+					"$(ARCHS_STANDARD)",
+					Universal,
+				);
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = MQ27TQM2FD;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "";
 				INFOPLIST_FILE = iOSCryptoDD/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_DYLIB_INSTALL_NAME = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				MACH_O_TYPE = staticlib;
 				PRODUCT_BUNDLE_IDENTIFIER = care.data4life.cryptoDD.iOSCryptoDD;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -871,16 +898,41 @@
 			};
 			name = Release;
 		};
+		4B266123254701E00068ED3D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = MQ27TQM2FD;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		4B266124254701E00068ED3D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = MQ27TQM2FD;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		4B73241B25418B3000F76893 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ARCHS = (
 					Universal,
 					"$(ARCHS_STANDARD)",
 				);
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = MQ27TQM2FD;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "$(PROJECT_NAME)-Swift.h";
@@ -892,13 +944,20 @@
 		4B73241C25418B3000F76893 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ARCHS = (
 					Universal,
 					"$(ARCHS_STANDARD)",
 				);
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = MQ27TQM2FD;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "$(PROJECT_NAME)-Swift.h";
@@ -975,7 +1034,16 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		4B73241D25418B3000F76893 /* Build configuration list for PBXNativeTarget "iOSCrypto" */ = {
+		4B266122254701E00068ED3D /* Build configuration list for PBXAggregateTarget "lib" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4B266123254701E00068ED3D /* Debug */,
+				4B266124254701E00068ED3D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4B73241D25418B3000F76893 /* Build configuration list for PBXNativeTarget "iOSCryptoDDD" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				4B73241B25418B3000F76893 /* Debug */,
