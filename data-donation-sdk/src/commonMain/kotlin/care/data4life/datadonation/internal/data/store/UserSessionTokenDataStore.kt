@@ -33,5 +33,5 @@
 package care.data4life.datadonation.internal.data.store
 
 internal interface UserSessionTokenDataStore {
-    fun getUserSessionToken() : String?
+    suspend fun getUserSessionToken(): String?
 }

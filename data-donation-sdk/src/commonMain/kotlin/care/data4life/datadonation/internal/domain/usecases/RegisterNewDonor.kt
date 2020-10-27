@@ -32,7 +32,11 @@
 
 package care.data4life.datadonation.internal.domain.usecases
 
+import care.data4life.datadonation.core.model.KeyPair
+import care.data4life.datadonation.encryption.Algorithm
+import care.data4life.datadonation.encryption.HashSize
 import care.data4life.datadonation.encryption.hybrid.HybridEncryption
+import care.data4life.datadonation.encryption.signature.SignatureKeyPrivate
 import care.data4life.datadonation.internal.data.model.ConsentMessage
 import care.data4life.datadonation.internal.data.model.ConsentSignatureType
 import care.data4life.datadonation.internal.data.model.RegistrationRequest
@@ -41,6 +45,8 @@ import care.data4life.datadonation.internal.data.service.ConsentService.Companio
 import care.data4life.datadonation.internal.domain.repositories.RegistrationRepository
 import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
 import care.data4life.datadonation.internal.utils.Base64Encoder
+import care.data4life.datadonation.internal.utils.DefaultKeyGenerator
+import care.data4life.datadonation.internal.utils.KeyGenerator
 import care.data4life.datadonation.internal.utils.toJsonString
 import io.ktor.utils.io.core.*
 
@@ -48,14 +54,29 @@ internal class RegisterNewDonor(
     private val registrationRepository: RegistrationRepository,
     private val consentRepository: UserConsentRepository,
     private val encryption: HybridEncryption,
-    private val base64encoder: Base64Encoder
+    private val base64encoder: Base64Encoder,
+    private val keyGenerator: KeyGenerator = DefaultKeyGenerator
 ) :
-    ParameterizedUsecase<String, Unit>() {
+    ParameterizedUsecase<RegisterNewDonor.Parameters, KeyPair>() {
 
-    override suspend fun execute() {
+    override suspend fun execute(): KeyPair {
+        return if (parameter.keyPair == null) {
+            val newKeyPair = keyGenerator.newSignatureKeyPrivate(
+                2048,
+                Algorithm.Signature.RsaPSS(HashSize.Hash256)
+            )
+            registerNewDonor(newKeyPair)
+
+            KeyPair(newKeyPair.serializedPublic(), newKeyPair.serializedPrivate())
+        } else {
+            parameter.keyPair!!
+        }
+    }
+
+    private suspend fun registerNewDonor(newKeyPair: SignatureKeyPrivate) {
         val token = registrationRepository.requestRegistrationToken()
         val request = RegistrationRequest(
-            parameter,
+            newKeyPair.pkcs8Public,
             token
         )
         val encryptedMessage =
@@ -71,6 +92,9 @@ internal class RegisterNewDonor(
         val payload = encryption.encrypt(signedMessage.toJsonString().toByteArray())
         registrationRepository.registerNewDonor(payload)
     }
+
+    data class Parameters(val keyPair: KeyPair?)
+
 
 }
 

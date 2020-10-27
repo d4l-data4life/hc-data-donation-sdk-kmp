@@ -30,20 +30,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.encryption.hybrid
+package care.data4life.datadonation.internal.utils
 
-internal actual val hybridEncryptionSerializer: HybridEncryptionPayload.Serializer
-    get() = HybridEncryptionIosSerializer
+import care.data4life.datadonation.encryption.Algorithm
+import care.data4life.datadonation.encryption.signature.SignatureKeyPrivate
 
-internal object HybridEncryptionIosSerializer : HybridEncryptionPayload.Serializer {
+internal interface KeyGenerator {
+    fun newSignatureKeyPrivate(size: Int, algorithm: Algorithm.Signature): SignatureKeyPrivate
+}
 
-    override fun serialize(payload: HybridEncryptionPayload): ByteArray {
-        TODO("Not yet implemented")
-    }
-
-    override fun deserialize(data: ByteArray): HybridEncryptionPayload {
-        TODO("Not yet implemented")
-    }
-
-
+internal object DefaultKeyGenerator : KeyGenerator {
+    override fun newSignatureKeyPrivate(
+        size: Int,
+        algorithm: Algorithm.Signature
+    ): SignatureKeyPrivate =
+        SignatureKeyPrivate(size, algorithm)
 }
