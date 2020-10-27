@@ -31,7 +31,7 @@
  */
 
 object LibraryConfig {
-    const val version = "0.0.6-static-wo-swift-std"
+    const val version = "0.0.8"
     const val group = "care.data4life.datadonation.common"
     const val githubGroup = "com.github.gesundheitscloud"
     const val artifactId = "data-donation-sdk-native"

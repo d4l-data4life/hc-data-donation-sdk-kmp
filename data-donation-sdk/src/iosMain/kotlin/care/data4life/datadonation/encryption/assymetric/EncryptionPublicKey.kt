@@ -35,6 +35,7 @@ package care.data4life.datadonation.encryption.assymetric
 import care.data4life.datadonation.encryption.Algorithm
 import care.data4life.datadonation.encryption.HashSize
 import care.data4life.datadonation.encryption.KeyNative
+import care.data4life.datadonation.encryption.signature.GeneralEncryptionException
 import platform.CoreFoundation.CFStringRef
 import platform.Security.SecKeyAlgorithm
 import platform.Security.kSecAttrKeyTypeRSA
@@ -47,9 +48,15 @@ actual fun EncryptionPublicKey(
     size: Int,
     algorithm: Algorithm.Asymmetric
 ): EncryptionPublicKey {
+    val key = try {
+        KeyNative.buildSecKeyRef(serializedKey, algorithm, KeyNative.KeyType.Public)
+    } catch (t: GeneralEncryptionException) {
+        KeyNative.buildSecKeyRef(serializedKey.let { it.sliceArray(24..it.lastIndex) }, algorithm, KeyNative.KeyType.Public)
+    }
+
     return EncryptionAsymmetricKeyNative(
-        KeyNative.buildSecKeyRef(serializedKey, algorithm, KeyNative.KeyType.Public),
-        KeyNative.buildSecKeyRef(serializedKey, algorithm, KeyNative.KeyType.Public),
+        key,
+        key,
         algorithm.toAttributes().second
     )
 }
@@ -61,9 +68,16 @@ actual fun EncryptionPrivateKey(
     size: Int,
     algorithm: Algorithm.Asymmetric
 ): EncryptionPrivateKey {
+
+    val keys = try {
+        KeyNative.buildSecKeyRef(serializedPrivate, algorithm, KeyNative.KeyType.Private) to
+                KeyNative.buildSecKeyRef(serializedPublic, algorithm, KeyNative.KeyType.Public)
+    } catch (t: GeneralEncryptionException) {
+        KeyNative.buildSecKeyRef(serializedPrivate.let { it.sliceArray(26..it.lastIndex) }, algorithm, KeyNative.KeyType.Private) to
+                KeyNative.buildSecKeyRef(serializedPublic.let { it.sliceArray(24..it.lastIndex) }, algorithm, KeyNative.KeyType.Public)
+    }
     return EncryptionAsymmetricKeyNative(
-        KeyNative.buildSecKeyRef(serializedPrivate, algorithm, KeyNative.KeyType.Private),
-        KeyNative.buildSecKeyRef(serializedPublic, algorithm, KeyNative.KeyType.Public),
+        keys.first,keys.second,
         algorithm.toAttributes().second
     )
 }

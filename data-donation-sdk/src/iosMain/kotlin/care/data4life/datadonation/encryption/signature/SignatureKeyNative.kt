@@ -38,10 +38,15 @@ import care.data4life.datadonation.encryption.sequence
 import care.data4life.datadonation.toByteArray
 import care.data4life.datadonation.toNSData
 import kotlinx.cinterop.*
-import platform.CoreFoundation.*
-import platform.Foundation.*
+import platform.Foundation.CFBridgingRetain
+import platform.Foundation.NSNumber
 import platform.Security.*
+import platform.CoreFoundation.*
+import platform.Foundation.CFBridgingRelease
+import platform.Foundation.NSError
+import platform.Foundation.*
 import platform.darwin.noErr
+
 
 class SignatureKeyNative : KeyNative, SignatureKeyPrivate {
 
@@ -74,11 +79,19 @@ class SignatureKeyNative : KeyNative, SignatureKeyPrivate {
             .base64EncodedStringWithOptions(NSDataBase64EncodingEndLineWithLineFeed)
 
 
-    override fun verify(data: ByteArray, signature: ByteArray): Boolean {
-        val inputCfDataRef = CFBridgingRetain(data.toNSData()) as CFDataRef
-        val signatureCfDataRef = CFBridgingRetain(signature.toNSData()) as CFDataRef
-        return SecKeyVerifySignature(publicKey, algoType, inputCfDataRef, signatureCfDataRef, null)
-    }
+    override fun verify(data: ByteArray, signature: ByteArray): Boolean =
+        memScoped {
+            val error = alloc<CFErrorRefVar>()
+            val inputCfDataRef = CFBridgingRetain(data.toNSData()) as CFDataRef
+            val signatureCfDataRef = CFBridgingRetain(signature.toNSData()) as CFDataRef
+            val k = SecKeyVerifySignature(publicKey, algoType, inputCfDataRef, signatureCfDataRef, error.ptr)
+            if(error.value!= null) {
+                val err = CFBridgingRelease(error.value) as NSError
+                throw Throwable(err.localizedDescription)
+            }
+            return@memScoped k
+        }
+
 
     override fun serializedPublic(): ByteArray =
         (CFBridgingRelease(SecKeyCopyExternalRepresentation(publicKey, null)) as NSData)

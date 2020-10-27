@@ -47,11 +47,13 @@ class SignatureKeyCommonTest {
     fun `Generate, sign and verify`() {
         val testData = byteArrayOf(1)
         val key = SignatureKeyPrivate(2048, Algorithm.Signature.RsaPSS(HashSize.Hash256))
-        assertTrue(key.verify(testData,key.sign(testData)))
+        val signature = key.sign(testData)
+        assertTrue(key.verify(testData,signature))
         val prv = key.serializedPrivate()
         val pub = key.serializedPublic()
         val nkey = SignatureKeyPrivate(prv,pub,2048,Algorithm.Signature.RsaPSS(HashSize.Hash256))
-        assertTrue(nkey.verify(testData,key.sign(testData)))
+        assertTrue(nkey.verify(testData,signature))
+        assertTrue(nkey.verify(testData,nkey.sign(testData)))
     }
 
 

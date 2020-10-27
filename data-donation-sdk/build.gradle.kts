@@ -135,9 +135,7 @@ kotlin {
 
             compilations["main"].kotlinOptions.freeCompilerArgs += mutableListOf(
                 "-include-binary",
-                "$projectDir/native/crypto/libcrypto.a",
-                "-include-binary",
-                "/Library/Developer/Toolchains/swift-5.3-RELEASE.xctoolchain/usr/lib/swift/iphonesimulator/libswiftCore.dylib"
+                "$projectDir/native/crypto/libcrypto.a"
             )
             compilations.getByName("main") {
                 this as org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeCompilation
@@ -149,9 +147,6 @@ kotlin {
 
                     // Directories for header search (an analogue of the -I<path> compiler option)
                     includeDirs("$projectDir/native/crypto/")
-
-                    //compilerOpts("-framework","iOSCryptoDD","-F$projectDir/native/iOSCryptoDD/")
-                    //compilerOpts("-framework","iOSCryptoDD","-F$projectDir/native/iOSCryptoDD/")
                 }
             }
 
