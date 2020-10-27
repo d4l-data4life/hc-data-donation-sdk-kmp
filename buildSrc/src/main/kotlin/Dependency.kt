@@ -132,12 +132,6 @@ object Dependency {
 
         val dateTime = "org.jetbrains.kotlinx:kotlinx-datetime:${Version.dateTime}"
 
-        val mockk = Mockk
-
-        object Mockk {
-            const val common = "io.mockk:mockk-common:${Version.testMockk}"
-            const val android = "io.mockk:mockk:${Version.testMockk}"
-        }
     }
 
     val test = Test

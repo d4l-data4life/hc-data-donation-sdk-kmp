@@ -30,16 +30,42 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.data.store
+package care.data4life.datadonation.internal.domain.usecases
 
+import CapturingResultListener
+import care.data4life.datadonation.core.model.ConsentDocument
+import care.data4life.datadonation.internal.data.model.DummyData
+import care.data4life.datadonation.internal.domain.mock.MockConsentDocumentDataSore
+import care.data4life.datadonation.internal.domain.mock.MockUserSessionTokenDataStore
+import care.data4life.datadonation.internal.domain.repositories.ConsentDocumentRepository
+import runTest
 import kotlin.test.Test
-import kotlin.test.assertTrue
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
+abstract class FetchConsentDocumentsTest {
 
-class ConsentDataStoreTest {
+    private val consentDocumentDataSore = MockConsentDocumentDataSore()
+    private val consentDocumentRepository = ConsentDocumentRepository(consentDocumentDataSore, MockUserSessionTokenDataStore())
+    private val fetchConsentDocument = FetchConsentDocuments(consentDocumentRepository)
+
+    private val capturingListener = FetchConsentDocumentListener()
 
     @Test
-    fun dummyTest() {
-        assertTrue(true)
+    fun createUserContentFullParams() = runTest {
+        //Given
+        val documentList = listOf(DummyData.consentDocument)
+        consentDocumentDataSore.whenFetchConsentDocuments = { _, _, _ ->  documentList }
+
+        //When
+        fetchConsentDocument.runWithParams(FetchConsentDocuments.Parameters(1, "en"), capturingListener)
+
+        //Then
+        assertEquals(capturingListener.captured, documentList)
+        assertNull(capturingListener.error)
     }
+
+    class FetchConsentDocumentListener: CapturingResultListener<List<ConsentDocument>>()
 }
+
+

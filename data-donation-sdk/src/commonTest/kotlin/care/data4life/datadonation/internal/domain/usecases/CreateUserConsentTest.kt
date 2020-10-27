@@ -32,40 +32,45 @@
 
 package care.data4life.datadonation.internal.domain.usecases
 
+import CapturingResultListener
+import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.model.DummyData
-import care.data4life.datadonation.internal.domain.repositories.RegistrationRepository
+import care.data4life.datadonation.internal.domain.mock.MockConsentDataStore
+import care.data4life.datadonation.internal.domain.mock.MockUserSessionTokenDataStore
 import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
-import io.mockk.*
 import runTest
 import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
 abstract class CreateUserConsentTest {
 
-    private val userConsentRepository = mockk<UserConsentRepository>()
-    private val registrationRepository = mockk<RegistrationRepository>()
+    private val mockConsentDataStore = MockConsentDataStore()
+    private val userConsentRepository =
+        UserConsentRepository(mockConsentDataStore, MockUserSessionTokenDataStore())
     private val creteUser = CreateUserConsent(userConsentRepository)
+
+    private val capturingListener = CreateUserContentListener()
 
     @Test
     fun createUserContent() = runTest {
         //Given
-        coEvery { userConsentRepository.createUserConsent(any(), any()) } just Runs
-        coEvery { userConsentRepository.fetchUserConsents() } returns listOf(DummyData.userConsent)
+        mockConsentDataStore.whenFetchUserConsents = { _ -> listOf(DummyData.userConsent) }
 
 
         //When
-        creteUser.withParams(
+        creteUser.runWithParams(
             CreateUserConsent.Parameters(
                 null,
                 1,
                 "language"
-            )
-        ).execute()
+            ), capturingListener)
 
         //Then
-        coVerify(ordering = Ordering.SEQUENCE){
-            userConsentRepository.createUserConsent(any(), any())
-            userConsentRepository.fetchUserConsents()
-        }
+        assertEquals(capturingListener.captured, DummyData.userConsent)
+        assertNull(capturingListener.error)
     }
+
+    class CreateUserContentListener: CapturingResultListener<UserConsent>()
 
 }

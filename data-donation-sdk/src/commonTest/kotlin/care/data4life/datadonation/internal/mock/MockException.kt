@@ -30,33 +30,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.domain.usecases
+package care.data4life.datadonation.internal.mock
 
-import care.data4life.datadonation.core.listener.ResultListener
-
-interface Usecase<ReturnType> {
-
-    suspend fun execute(): ReturnType
-}
-
-abstract class ParameterizedUsecase<Parameter : Any, ReturnType> : Usecase<ReturnType> {
-
-    protected lateinit var parameter: Parameter
-
-    fun withParams(parameter: Parameter): ParameterizedUsecase<Parameter, ReturnType> {
-        this.parameter = parameter
-        return this
-    }
-
-}
-
-suspend fun <T : Any, R : Any> ParameterizedUsecase<T, R>.runWithParams(
-    parameters: T,
-    listener: ResultListener<R>
-) {
-    try {
-        listener.onSuccess(withParams(parameters).execute())
-    } catch (e: Exception) {
-        listener.onError(e)
-    }
-}
+class MockException : IllegalStateException()
