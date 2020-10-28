@@ -1,4 +1,4 @@
-name: DD-SDK Native CI Android
+name: DD-SDK CI Job
 
 on:
   push:
