@@ -154,9 +154,9 @@ kotlin {
                 linkerOpts(
                     "-L$projectDir/native/crypto",
                     "-lcrypto",
-                    "-L/Library/Developer/Toolchains/swift-5.3-RELEASE.xctoolchain/usr/lib/swift/iphonesimulator",
-                    "-rpath",
-                    "/Library/Developer/Toolchains/swift-5.3-RELEASE.xctoolchain/usr/lib/swift/iphonesimulator"
+                    "-L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator",
+                    "-L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift-5.0/iphonesimulator",
+                    "-rpath","/usr/lib/swift"
                 )
             }
         }
@@ -213,9 +213,9 @@ publishing {
             url = uri("https://maven.pkg.github.com/gesundheitscloud/data-donation-sdk-native")
             credentials {
                 username =
-                    "ATizik"//(project.findProperty("gpr.user") ?: System.getenv("USERNAME"))?.toString()
+                    (project.findProperty("gpr.user") ?: System.getenv("USERNAME"))?.toString()
                 password =
-                    "19ea7e62cccb0173ee281d42ad30338b1f174769"//(project.findProperty("gpr.key") ?: System.getenv("TOKEN"))?.toString()
+                    (project.findProperty("gpr.key") ?: System.getenv("TOKEN"))?.toString()
             }
         }
 
