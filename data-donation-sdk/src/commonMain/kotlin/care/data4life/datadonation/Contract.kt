@@ -44,7 +44,7 @@ interface Contract {
     interface Configuration {
         fun getServicePublicKey(): String
         fun getDonorKeyPair(): KeyPair?
-        fun getUserSessionToken(): String?
+        fun getUserSessionToken(tokenListener: ResultListener<String>)
         fun getEnvironment(): Environment
     }
 
@@ -58,7 +58,11 @@ interface Contract {
         fun createUserConsent(
             consentDocumentVersion: Int,
             language: String?,
-            listener: ResultListener<Pair<UserConsent, KeyPair>>
+            listener: ResultListener<UserConsent>
+        )
+
+        fun registerDonor(
+            listener: ResultListener<KeyPair>
         )
 
         fun fetchUserConsents(listener: ResultListener<List<UserConsent>>)

@@ -33,6 +33,7 @@
 package care.data4life.datadonation.internal.di
 
 import care.data4life.datadonation.Contract
+import care.data4life.datadonation.core.listener.ResultListener
 import care.data4life.datadonation.encryption.hybrid.HybridEncryption
 import care.data4life.datadonation.encryption.hybrid.HybridEncryptionFactory
 import care.data4life.datadonation.internal.data.service.ConsentService
@@ -52,6 +53,8 @@ import org.koin.core.KoinApplication
 import org.koin.core.module.Module
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 import kotlin.native.concurrent.ThreadLocal
 
 @ThreadLocal
@@ -71,8 +74,20 @@ internal fun initKoin(configuration: Contract.Configuration): KoinApplication {
                 }
                 single<UserSessionTokenDataStore> {
                     object : UserSessionTokenDataStore {
-                        override fun getUserSessionToken(): String? =
-                            configuration.getUserSessionToken()
+                        override suspend fun getUserSessionToken(): String? =
+                            suspendCoroutine { continuation ->
+                                configuration.getUserSessionToken(object : ResultListener<String> {
+                                    override fun onSuccess(value: String) {
+                                        continuation.resume(value)
+                                    }
+
+                                    override fun onError(exception: Exception) {
+                                        continuation.resume(null)
+                                    }
+
+                                })
+                            }
+
                     }
                 }
                 single { configuration.getEnvironment() }
@@ -126,7 +141,7 @@ private val coreModule = module {
     //Usecases
     single { RegisterNewDonor(get(), get(), get(), Base64Factory.createEncoder()) }
     single { FetchConsentDocuments(get()) }
-    single { CreateUserConsent(get(), get()) }
+    single { CreateUserConsent(get()) }
     single { FetchUserConsents(get()) }
     single { RevokeUserConsent(get()) }
 }

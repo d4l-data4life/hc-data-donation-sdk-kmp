@@ -43,38 +43,14 @@ abstract class CreateUserConsentTest {
 
     private val userConsentRepository = mockk<UserConsentRepository>()
     private val registrationRepository = mockk<RegistrationRepository>()
-    private val registerNewDonor = mockk<RegisterNewDonor>()
-    private val creteUser = CreateUserConsent(userConsentRepository, registerNewDonor)
+    private val creteUser = CreateUserConsent(userConsentRepository)
 
     @Test
-    fun createUserContentWithDonorKey() = runTest {
+    fun createUserContent() = runTest {
         //Given
         coEvery { userConsentRepository.createUserConsent(any(), any()) } just Runs
         coEvery { userConsentRepository.fetchUserConsents() } returns listOf(DummyData.userConsent)
 
-        //When
-        creteUser.withParams(
-            CreateUserConsent.Parameters(
-                DummyData.keyPair,
-                1,
-                "language"
-            )
-        ).execute()
-
-        //Then
-        coVerify(ordering = Ordering.SEQUENCE){
-            userConsentRepository.createUserConsent(any(), any())
-            userConsentRepository.fetchUserConsents()
-        }
-    }
-
-    @Test
-    fun createUserContentNoDonorKey() = runTest {
-        //Given
-        coEvery { userConsentRepository.createUserConsent(any(), any()) } just Runs
-        coEvery { userConsentRepository.fetchUserConsents() } returns listOf(DummyData.userConsent)
-        coEvery { registerNewDonor.withParams(any()) } returns registerNewDonor
-        coEvery { registerNewDonor.execute() } just runs
 
         //When
         creteUser.withParams(
@@ -89,8 +65,6 @@ abstract class CreateUserConsentTest {
         coVerify(ordering = Ordering.SEQUENCE){
             userConsentRepository.createUserConsent(any(), any())
             userConsentRepository.fetchUserConsents()
-            registerNewDonor.withParams(any())
-            registerNewDonor.execute()
         }
     }
 

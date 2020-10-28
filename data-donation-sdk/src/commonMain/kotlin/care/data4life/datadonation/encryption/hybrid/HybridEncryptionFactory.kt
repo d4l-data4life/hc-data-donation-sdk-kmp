@@ -40,14 +40,14 @@ import care.data4life.datadonation.encryption.symmetric.EncryptionSymmetricKey
 import care.data4life.datadonation.internal.domain.repositories.CredentialsRepository
 import care.data4life.datadonation.internal.utils.decodeBase64Bytes
 
-internal expect val hybridEncryptionSerializer: HybridEncryptionPayload.Serializer
+//internal expect val hybridEncryptionSerializer: HybridEncryptionPayload.Serializer
 
 internal class HybridEncryptionFactory(private val repository: CredentialsRepository) {
     fun createEncryption() =
         HybridEncryptionHandle(
             HybridEncryptionSymmetricKeyProvider,
             HybridAsymmetricSymmetricKeyProvider(repository.getDataDonationPublicKey()),
-            hybridEncryptionSerializer)
+            HybridEncryptionSerializer)
 }
 
 

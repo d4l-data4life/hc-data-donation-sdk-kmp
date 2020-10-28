@@ -33,17 +33,14 @@
 import care.data4life.datadonation.encryption.Algorithm
 import care.data4life.datadonation.encryption.HashSize
 import care.data4life.datadonation.encryption.assymetric.EncryptionPrivateKey
-import care.data4life.datadonation.encryption.hybrid.HybridEncryption
+import care.data4life.datadonation.encryption.hybrid.*
 import care.data4life.datadonation.encryption.hybrid.HybridEncryption.Companion.AES_AUTH_TAG_LENGTH
 import care.data4life.datadonation.encryption.hybrid.HybridEncryption.Companion.AES_IV_LENGTH
 import care.data4life.datadonation.encryption.hybrid.HybridEncryption.Companion.AES_KEY_LENGTH
 import care.data4life.datadonation.encryption.hybrid.HybridEncryption.Companion.RSA_KEY_SIZE_BITS
-import care.data4life.datadonation.encryption.hybrid.HybridEncryptionHandle
 import care.data4life.datadonation.encryption.hybrid.HybridEncryptionPayload.Companion.AES_KEY_SIZE_LENGTH
 import care.data4life.datadonation.encryption.hybrid.HybridEncryptionPayload.Companion.CIPHERTEXT_SIZE_LENGTH
 import care.data4life.datadonation.encryption.hybrid.HybridEncryptionPayload.Companion.VERSION_LENGTH
-import care.data4life.datadonation.encryption.hybrid.HybridEncryptionSymmetricKeyProvider
-import care.data4life.datadonation.encryption.hybrid.hybridEncryptionSerializer
 import care.data4life.datadonation.encryption.initEncryption
 import care.data4life.datadonation.internal.utils.*
 import kotlin.random.Random
@@ -59,7 +56,7 @@ open class HybridEncryptionTest {
             override fun getPublicKey() = rsaKey
             override fun getPrivateKey() = rsaKey
         },
-        hybridEncryptionSerializer
+        HybridEncryptionSerializer
     )
 
     @BeforeTest
@@ -171,7 +168,7 @@ open class HybridEncryptionTest {
                 override fun getPublicKey() = key
                 override fun getPrivateKey() = key
             },
-            hybridEncryptionSerializer
+            HybridEncryptionSerializer
         )
         val decrypted = hybrid.decrypt(encodedMessageV2.decodeHexBytes())
         if (decrypted.isFailure) {
