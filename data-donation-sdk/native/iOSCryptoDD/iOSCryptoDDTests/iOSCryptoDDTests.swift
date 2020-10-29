@@ -37,9 +37,10 @@ class iOSCryptoDDTests: XCTestCase {
         let plainText = Data(base64Encoded: "SGVsbG8gV29ybGQ=")!
         let associatedData = Data(base64Encoded: "uy2BwDTY4vUeBrp+")!
         
-        let encryptedData = cryptoClient.encrypt(plainText: plainText, associatedData: associatedData)
+        let encryptedData = cryptoClient.encrypt(plainText: plainText,iv:associatedData, associatedData: associatedData)
+        let decryptedData = cryptoClient.decrypt(encrypted: encryptedData,iv:associatedData, associatedData: associatedData)
         
-        XCTAssertEqual(Data(base64Encoded: "t7V3l3jyjXv6DWP0e9KlEiTOHXGPxBsqBCTl"), encryptedData)
+        XCTAssertEqual (plainText , decryptedData)
     }
     
     func testCryptoDDDecryptNoPadding() {
@@ -47,7 +48,7 @@ class iOSCryptoDDTests: XCTestCase {
         let input = Data(base64Encoded: "t7V3l3jyjXv6DWP0e9KlEiTOHXGPxBsqBCTl")!
         let associatedData = Data(base64Encoded: "uy2BwDTY4vUeBrp+")!
         
-        let decryptedData = cryptoClient.decrypt(encrypted: input, associatedData: associatedData)
+        let decryptedData = cryptoClient.decrypt(encrypted: input,iv:associatedData, associatedData: associatedData)
         
         XCTAssertEqual(Data(base64Encoded: "SGVsbG8gV29ybGQ="), decryptedData)
     }

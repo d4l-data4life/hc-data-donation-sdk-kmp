@@ -209,8 +209,8 @@ typedef unsigned int swift_uint4  __attribute__((__ext_vector_type__(4)));
 SWIFT_CLASS("_TtC11iOSCryptoDD9CryptoAES")
 @interface CryptoAES : NSObject
 - (nonnull instancetype)initWithKey:(NSData * _Nonnull)key OBJC_DESIGNATED_INITIALIZER;
-- (NSData * _Nonnull)encryptWithPlainText:(NSData * _Nonnull)plainText associatedData:(NSData * _Nonnull)associatedData SWIFT_WARN_UNUSED_RESULT;
-- (NSData * _Nonnull)decryptWithEncrypted:(NSData * _Nonnull)encrypted associatedData:(NSData * _Nonnull)associatedData SWIFT_WARN_UNUSED_RESULT;
+- (NSData * _Nonnull)encryptWithPlainText:(NSData * _Nonnull)plainText iv:(NSData * _Nonnull)iv associatedData:(NSData * _Nonnull)associatedData SWIFT_WARN_UNUSED_RESULT;
+- (NSData * _Nonnull)decryptWithEncrypted:(NSData * _Nonnull)encrypted iv:(NSData * _Nonnull)iv associatedData:(NSData * _Nonnull)associatedData SWIFT_WARN_UNUSED_RESULT;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
