@@ -51,7 +51,7 @@
 		4B73241F25418B8D00F76893 /* CryptoSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 4B73241E25418B8D00F76893 /* CryptoSwift */; };
 		4B732420254197BA00F76893 /* iOSCryptoDD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AD8CE0B2508E3FD0099DFDE /* iOSCryptoDD.swift */; };
 		4B7324212541B52D00F76893 /* iOSCryptoDD.h in Sources */ = {isa = PBXBuildFile; fileRef = 0AD8CDC42508E3220099DFDE /* iOSCryptoDD.h */; };
-		4BE31494254330B1001EAB40 /* iOSCryptoDD-Bridging-Header.h in Headers */ = {isa = PBXBuildFile; fileRef = 4BE31493254330B1001EAB40 /* iOSCryptoDD-Bridging-Header.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		4BF5A6162549D22900C79BFB /* libiOSCryptoDDD.a in Copy Files */ = {isa = PBXBuildFile; fileRef = 4B73241525418B3000F76893 /* libiOSCryptoDDD.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -96,6 +96,7 @@
 			dstPath = "include/$(PRODUCT_NAME)";
 			dstSubfolderSpec = 16;
 			files = (
+				4BF5A6162549D22900C79BFB /* libiOSCryptoDDD.a in Copy Files */,
 				4B73241A25418B3000F76893 /* iOSCrypto.h in Copy Files */,
 			);
 			name = "Copy Files";
@@ -130,7 +131,6 @@
 		4B73241725418B3000F76893 /* iOSCrypto.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = iOSCrypto.h; sourceTree = "<group>"; };
 		4B73241825418B3000F76893 /* iOSCrypto.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = iOSCrypto.m; sourceTree = "<group>"; };
 		4BB13D362540403600DE3B7C /* iOSCryptoDD copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "iOSCryptoDD copy-Info.plist"; path = "/Users/alexandertizik/IdeaProjects/data-donation-sdk-native/data-donation-sdk/native/iOSCryptoDD/iOSCryptoDD copy-Info.plist"; sourceTree = "<absolute>"; };
-		4BE31493254330B1001EAB40 /* iOSCryptoDD-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "iOSCryptoDD-Bridging-Header.h"; sourceTree = "<group>"; };
 		4BE3149625433D8E001EAB40 /* libswiftCore.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libswiftCore.tbd; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/usr/lib/swift/libswiftCore.tbd; sourceTree = DEVELOPER_DIR; };
 /* End PBXFileReference section */
 
@@ -209,7 +209,6 @@
 				0AD8CDC52508E3220099DFDE /* Info.plist */,
 				0AD8CDC42508E3220099DFDE /* iOSCryptoDD.h */,
 				0AD8CE0B2508E3FD0099DFDE /* iOSCryptoDD.swift */,
-				4BE31493254330B1001EAB40 /* iOSCryptoDD-Bridging-Header.h */,
 			);
 			path = iOSCryptoDD;
 			sourceTree = "<group>";
@@ -274,7 +273,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4BE31494254330B1001EAB40 /* iOSCryptoDD-Bridging-Header.h in Headers */,
 				0AD8CDD22508E3220099DFDE /* iOSCryptoDD.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -935,6 +933,7 @@
 				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = "-fembed-bitcode";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "$(PROJECT_NAME)-Swift.h";
@@ -962,6 +961,7 @@
 				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = "-fembed-bitcode";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "$(PROJECT_NAME)-Swift.h";
