@@ -38,6 +38,7 @@ import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.UserConsent
+import kotlinx.coroutines.CoroutineScope
 
 interface Contract {
 
@@ -46,6 +47,7 @@ interface Contract {
         fun getDonorKeyPair(): KeyPair?
         fun getUserSessionToken(tokenListener: ResultListener<String>)
         fun getEnvironment(): Environment
+        fun getCoroutineContext(): CoroutineScope
     }
 
     interface DataDonation {
