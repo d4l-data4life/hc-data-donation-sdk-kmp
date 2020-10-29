@@ -35,6 +35,5 @@ jobs:
           restore-keys: ${{ runner.os }}-gradle-
       - name: Run android tests 
         run: ./gradlew test
-      #- name: Run ios tests 
-        #run: ./gradlew iosWithLinkerTest
-        #run: ./gradlew iosX64test
+      - name: Run ios tests 
+        run: ./gradlew iosX64test
