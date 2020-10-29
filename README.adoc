@@ -9,6 +9,31 @@ Kotlin multi platform library for implementing Data Donation using Data4life eco
 
 == Setup
 
+== Building
+
+To build iOSCryptoDD and include it in the project:
+
+1. Compile the library once for simulator and once for arm64
+
+`xcodebuild BITCODE_GENERATION_MODE=bitcode OTHER_CFLAGS="-fembed-bitcode" -scheme iOSCryptoDDD -arch x86_64 -sdk iphonesimulator`
+
+`xcodebuild BITCODE_GENERATION_MODE=bitcode OTHER_CFLAGS="-fembed-bitcode" -scheme iOSCryptoDDD -arch arm64 -sdk iphoneos`
+
+2. Copy iOSCryptoDD-Swift.h header from the build folder, located under DerivedSources
+3. Run in terminal:  lipo -create libcrypto_arm64.a libcrypto_iosx64.a -output libcrypto.a
+4. Place header and resulting libcrypto.a into native/crypto
+5. Delete data-donation-sdk/build folder if it exists to recreate a klib with a new native lib
+
+P.S.
+The following config is needed right now in library consumer build.gradle because for some reason default toolchain path to swift stdlib is not taken into account
+```
+val os = if (buildForDevice) "iphoneos" else "iphonesimulator"
+linkerOpts(
+  "-L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/$os",
+  "-L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift-5.0/$os",
+  "-rpath","/usr/lib/swift")
+```
+
 == Release
 
 We are using the maven publish plugin to distribute the library using the Github Package repo.

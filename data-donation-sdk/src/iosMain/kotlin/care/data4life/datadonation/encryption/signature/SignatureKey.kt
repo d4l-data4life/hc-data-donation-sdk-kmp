@@ -46,7 +46,7 @@ private fun Algorithm.Signature.toAttributes(): Pair<CFStringRef, SecKeyAlgorith
     return when (this) {
         is Algorithm.Signature.RsaPSS -> {
             kSecAttrKeyTypeRSA!! to when (hashSize) {
-                HashSize.Hash256 -> kSecKeyAlgorithmRSASignatureDigestPSSSHA256!!
+                HashSize.Hash256 -> kSecKeyAlgorithmRSASignatureMessagePSSSHA256!!
             }
         }
     }
@@ -61,9 +61,9 @@ actual fun SignatureKeyPrivate(
 
 
     return SignatureKeyNative(
-        KeyNative.buildSecKeyRef(serializedPrivate, algorithm, KeyNative.KeyType.Public),
-        KeyNative.buildSecKeyRef(serializedPublic, algorithm, KeyNative.KeyType.Private),
-        algorithm.toAttributes().first
+        KeyNative.buildSecKeyRef(serializedPrivate, algorithm, KeyNative.KeyType.Private),
+        KeyNative.buildSecKeyRef(serializedPublic, algorithm, KeyNative.KeyType.Public),
+        algorithm.toAttributes().second
     )
 }
 
@@ -75,7 +75,7 @@ actual fun SignatureKeyPublic(
     return SignatureKeyNative(
     KeyNative.buildSecKeyRef(serialized, algorithm, KeyNative.KeyType.Public),
     KeyNative.buildSecKeyRef(serialized, algorithm, KeyNative.KeyType.Private),
-    algorithm.toAttributes().first
+    algorithm.toAttributes().second
     )
 }
 
