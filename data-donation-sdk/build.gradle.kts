@@ -132,18 +132,11 @@ kotlin {
             this as org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
             compilations["main"].kotlinOptions.freeCompilerArgs += mutableListOf(
-                //"-include-binary", "$projectDir/native/iOSCryptoDD/libiOSCryptoDD.a",
-                //"-include-binary", "$projectDir/native/iOSCryptoDD/libiOSCryptoStatic.a"
+                "-include-binary",
+                "$projectDir/native/crypto/libcrypto.a"
             )
             compilations.getByName("main") {
-
                 this as org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeCompilation
-
-                val tink by cinterops.creating {
-                    packageName("google.tink")
-                    defFile = file("$projectDir/src/iosMain/cinterop/Tink.def")
-                    header("$projectDir/Pods/Tink/Frameworks/Tink.framework/Headers/Tink.h")
-                }
 
                 val iOSDCryptoDD by cinterops.creating {
                     packageName("crypto.dd")
@@ -151,19 +144,25 @@ kotlin {
                     defFile("src/iosMain/cinterop/iOSCryptoDD.def")
 
                     // Directories for header search (an analogue of the -I<path> compiler option)
-                    includeDirs("$projectDir/native/iOSCryptoDD/iOSCryptoDD.framework/Headers")
-                    compilerOpts("-framework", "iOSCryptoDD", "-F$projectDir/native/iOSCryptoDD")
+                    includeDirs("$projectDir/native/crypto/")
                 }
             }
 
             binaries.all {
-                // Tell the linker where the framework is located.
-                linkerOpts("-framework", "iOSCryptoDD", "-F$projectDir/native/iOSCryptoDD/")
+                linkerOpts(
+                    "-L$projectDir/native/crypto",
+                    "-lcrypto",
+                    "-L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator",
+                    "-L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift-5.0/iphonesimulator",
+                    "-rpath","/usr/lib/swift"
+                )
             }
         }
     }
 
 }
+
+
 
 android {
     compileSdkVersion(LibraryConfig.android.compileSdkVersion)
@@ -204,35 +203,6 @@ android {
     }
 }
 
-with(tasks.create("iosWithLinkerTest")) {
-    this as org.gradle.api.DefaultTask
-    val linkTask =
-        tasks.getByName("linkDebugTestIosX64") as org.jetbrains.kotlin.gradle.tasks.KotlinNativeLink
-    dependsOn(linkTask)
-    group = JavaBasePlugin.VERIFICATION_GROUP
-    description = "Runs tests for target 'ios' on an iOS simulator"
-    doLast {
-        val binary = linkTask.binary.outputFile
-        val device = "iPhone 8"
-        exec {
-            commandLine = listOf("xcrun", "simctl", "boot", device)
-            isIgnoreExitValue = true
-        }
-        exec {
-            environment("SIMCTL_CHILD_DYLD_FRAMEWORK_PATH", "$projectDir/native/iOSCryptoDD/")
-            commandLine = listOf(
-                "xcrun",
-                "simctl",
-                "spawn",
-                device,
-                binary.absolutePath
-            )
-        }
-        exec {
-            commandLine = listOf("xcrun", "simctl", "shutdown", device)
-        }
-    }
-}
 
 publishing {
     repositories {
@@ -242,7 +212,8 @@ publishing {
             credentials {
                 username =
                     (project.findProperty("gpr.user") ?: System.getenv("USERNAME"))?.toString()
-                password = (project.findProperty("gpr.key") ?: System.getenv("TOKEN"))?.toString()
+                password =
+                    (project.findProperty("gpr.key") ?: System.getenv("TOKEN"))?.toString()
             }
         }
 

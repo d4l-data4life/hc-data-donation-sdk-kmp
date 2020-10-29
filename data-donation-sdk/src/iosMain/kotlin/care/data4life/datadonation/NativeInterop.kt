@@ -42,10 +42,14 @@ import platform.posix.memcpy
 fun UByteArray.toNSData() = asByteArray().toNSData()
 
 fun ByteArray.toNSData() = asUByteArray().usePinned {
-    NSData.dataWithBytesNoCopy(it.addressOf(0), it.get().size.toULong())
+    if(size>0)
+        NSData.dataWithBytesNoCopy(it.addressOf(0), it.get().size.toULong())
+    else
+        NSData()
 }
 
 fun NSData.toByteArray() = ByteArray(length.toInt()).usePinned {
-    memcpy(it.addressOf(0), bytes, length)
+    if(length>0u)
+        memcpy(it.addressOf(0), bytes, length)
     it.get()
 }
