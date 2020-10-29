@@ -79,7 +79,6 @@ kotlin {
             dependencies {
                 implementation(Dependency.Multiplatform.kotlin.testCommon)
                 implementation(Dependency.Multiplatform.kotlin.testCommonAnnotations)
-                implementation(Dependency.Multiplatform.mockk.common)
                 implementation(Dependency.Multiplatform.koin.test)
                 implementation(Dependency.Multiplatform.ktor.mock)
             }
@@ -108,7 +107,6 @@ kotlin {
             dependencies {
                 implementation(Dependency.Multiplatform.kotlin.testJvm)
                 implementation(Dependency.Multiplatform.kotlin.testJvmJunit)
-                implementation(Dependency.Multiplatform.mockk.android)
                 dependsOn(commonTest.get())
             }
         }

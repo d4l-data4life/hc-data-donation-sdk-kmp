@@ -36,11 +36,17 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
+class FetchUserConsentsAndroidTest : FetchUserConsentsTest()
+
+@RunWith(JUnit4::class)
 class CreateUserConsentAndroidTest : CreateUserConsentTest()
 
 @RunWith(JUnit4::class)
-class FetchDocumentConsentAndroidTest : FetchDocumentConsentTest()
+class FetchConsentAndroidDocumentsTest : FetchConsentDocumentsTest()
 
 @RunWith(JUnit4::class)
 class RegisterNewDonorAndroidTest : RegisterNewDonorTest()
+
+@RunWith(JUnit4::class)
+class RevokeUserConsentAndroidTest : RevokeUserConsentTest()
 

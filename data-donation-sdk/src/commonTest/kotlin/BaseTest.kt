@@ -1,3 +1,5 @@
+import care.data4life.datadonation.core.listener.ResultListener
+
 /*
  * BSD 3-Clause License
  *
@@ -31,3 +33,18 @@
  */
 
 internal expect fun <T> runTest(block: suspend () -> T)
+
+abstract class CapturingResultListener<R: Any> : ResultListener<R> {
+
+    var captured: R? = null
+    var error: Exception? = null
+
+    override fun onSuccess(t: R) {
+        captured = t
+    }
+
+    override fun onError(exception: Exception) {
+        error = exception
+    }
+
+}

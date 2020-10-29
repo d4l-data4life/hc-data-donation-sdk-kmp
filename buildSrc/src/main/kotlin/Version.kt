@@ -79,6 +79,4 @@ object Version {
     // Junit Test
     const val testJUnit = "4.13"
 
-    // http://mockk.io
-    const val testMockk = "1.10.0"
 }

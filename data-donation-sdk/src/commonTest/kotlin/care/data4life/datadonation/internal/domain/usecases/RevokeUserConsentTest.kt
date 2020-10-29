@@ -32,31 +32,36 @@
 
 package care.data4life.datadonation.internal.domain.usecases
 
-import care.data4life.datadonation.core.listener.ResultListener
+import CapturingResultListener
+import care.data4life.datadonation.internal.domain.mock.MockConsentDataStore
+import care.data4life.datadonation.internal.domain.mock.MockUserSessionTokenDataStore
+import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
+import runTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
-interface Usecase<ReturnType> {
+abstract class RevokeUserConsentTest {
 
-    suspend fun execute(): ReturnType
-}
+    private val mockConsentDataStore = MockConsentDataStore()
+    private val userConsentRepository =
+        UserConsentRepository(mockConsentDataStore, MockUserSessionTokenDataStore())
 
-abstract class ParameterizedUsecase<Parameter : Any, ReturnType> : Usecase<ReturnType> {
+    private val revokeConsent = RevokeUserConsent(userConsentRepository)
 
-    protected lateinit var parameter: Parameter
+    private val capturingListener = RevokeUserConsentListener()
 
-    fun withParams(parameter: Parameter): ParameterizedUsecase<Parameter, ReturnType> {
-        this.parameter = parameter
-        return this
+    @Test
+    fun revokeUserContent() = runTest {
+        //Given
+
+        //When
+        revokeConsent.runWithParams(RevokeUserConsent.Parameters("language"), capturingListener)
+
+        //Then
+        assertEquals(capturingListener.captured, Unit)
+        assertNull(capturingListener.error)
     }
 
-}
-
-suspend fun <T : Any, R : Any> ParameterizedUsecase<T, R>.runWithParams(
-    parameters: T,
-    listener: ResultListener<R>
-) {
-    try {
-        listener.onSuccess(withParams(parameters).execute())
-    } catch (e: Exception) {
-        listener.onError(e)
-    }
+    class RevokeUserConsentListener: CapturingResultListener<Unit>()
 }
