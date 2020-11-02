@@ -156,3 +156,4 @@ abstract class RegisterNewDonorTest {
     class RegisterNewDonorListener: CapturingResultListener<KeyPair>()
 
 }
+

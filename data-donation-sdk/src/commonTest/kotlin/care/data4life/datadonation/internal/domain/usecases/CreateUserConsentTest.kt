@@ -75,4 +75,3 @@ abstract class CreateUserConsentTest {
     class CreateUserContentListener: CapturingResultListener<UserConsent>()
 
 }
-

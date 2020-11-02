@@ -68,3 +68,4 @@ abstract class FetchConsentDocumentsTest {
 
     class FetchConsentDocumentListener: CapturingResultListener<List<ConsentDocument>>()
 }
+
