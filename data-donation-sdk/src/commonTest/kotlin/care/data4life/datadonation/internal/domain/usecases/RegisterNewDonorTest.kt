@@ -28,7 +28,7 @@
  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *//*
+ */
 
 
 package care.data4life.datadonation.internal.domain.usecases
@@ -156,4 +156,3 @@ abstract class RegisterNewDonorTest {
     class RegisterNewDonorListener: CapturingResultListener<KeyPair>()
 
 }
-*/
