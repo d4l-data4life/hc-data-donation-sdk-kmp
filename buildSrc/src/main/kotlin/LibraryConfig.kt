@@ -31,7 +31,7 @@
  */
 
 object LibraryConfig {
-    const val version = "0.0.14"
+    const val version = "0.0.15-RC1"
     const val group = "care.data4life.datadonation.common"
     const val githubGroup = "com.github.gesundheitscloud"
     const val artifactId = "data-donation-sdk-native"

@@ -40,6 +40,8 @@ import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.UserConsent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.GlobalScope
 import runTest
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -71,6 +73,7 @@ open class ClientTest {
         }
 
         override fun getEnvironment() = Environment.LOCAL
+        override fun getCoroutineContext(): CoroutineScope = GlobalScope
 
     })
 

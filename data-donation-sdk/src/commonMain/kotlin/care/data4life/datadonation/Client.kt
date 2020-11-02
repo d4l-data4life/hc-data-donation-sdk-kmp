@@ -40,7 +40,6 @@ import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.encryption.initEncryption
 import care.data4life.datadonation.internal.di.initKoin
 import care.data4life.datadonation.internal.domain.usecases.*
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class Client(private val configuration: Contract.Configuration) : Contract.DataDonation {
@@ -51,8 +50,6 @@ class Client(private val configuration: Contract.Configuration) : Contract.DataD
     private val fetchConsentDocuments: FetchConsentDocuments by koinApplication.koin.inject()
     private val fetchUserConsents: FetchUserConsents by koinApplication.koin.inject()
     private val revokeUserContent: RevokeUserConsent by koinApplication.koin.inject()
-
-    private val context = GlobalScope //TODO use proper CoroutineScope
 
     init {
         initEncryption()
@@ -105,7 +102,7 @@ class Client(private val configuration: Contract.Configuration) : Contract.DataD
     private fun <ReturnType : Any> Usecase<ReturnType>.runForListener(
         listener: ResultListener<ReturnType>
     ) {
-        context.launch {
+        configuration.getCoroutineContext().launch {
             try {
                 listener.onSuccess(this@runForListener.execute())
             } catch (ex: Exception) {
@@ -117,7 +114,7 @@ class Client(private val configuration: Contract.Configuration) : Contract.DataD
     private fun <ReturnType : Any> Usecase<ReturnType>.runForListener(
         listener: Callback
     ) {
-        context.launch {
+        configuration.getCoroutineContext().launch {
             try {
                 execute()
                 listener.onSuccess()
