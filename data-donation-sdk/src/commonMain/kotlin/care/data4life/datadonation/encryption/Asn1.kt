@@ -33,13 +33,12 @@ package care.data4life.datadonation.encryption
 
 /**
  * Asn1 DSL builder and encoder.
- * Most types are not supported yet.
  * References:
  * http://luca.ntop.org/Teaching/Appunti/asn1.html
  * https://tools.ietf.org/html/rfc5208
  *
  *
- * Sample usage(for RsaSsaPrivate key proto from Tink):
+ * Sample usage RSA PSS):
  *
  *  "RSAPublicKey" sequence {
  *               "version" integer byteArrayOf(0)

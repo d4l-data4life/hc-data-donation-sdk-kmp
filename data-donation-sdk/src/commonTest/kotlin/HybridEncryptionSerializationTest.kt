@@ -41,7 +41,6 @@ import care.data4life.datadonation.encryption.hybrid.HybridEncryption.Companion.
 import care.data4life.datadonation.encryption.hybrid.HybridEncryptionPayload.Companion.AES_KEY_SIZE_LENGTH
 import care.data4life.datadonation.encryption.hybrid.HybridEncryptionPayload.Companion.CIPHERTEXT_SIZE_LENGTH
 import care.data4life.datadonation.encryption.hybrid.HybridEncryptionPayload.Companion.VERSION_LENGTH
-import care.data4life.datadonation.encryption.initEncryption
 import care.data4life.datadonation.internal.utils.*
 import io.ktor.utils.io.core.internal.*
 import kotlin.random.Random

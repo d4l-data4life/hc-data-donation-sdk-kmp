@@ -97,7 +97,6 @@ kotlin {
                 implementation(Dependency.android.threeTenABP)
                 implementation(Dependency.Multiplatform.ktor.androidCore)
                 implementation(Dependency.Multiplatform.ktor.androidSerialization)
-                implementation(Dependency.android.tink)
                 implementation(Dependency.android.bouncyCastle)
                 implementation(Dependency.Multiplatform.serialization.android)
                 implementation(Dependency.Multiplatform.serialization.protobuf)

@@ -37,7 +37,6 @@ import care.data4life.datadonation.core.listener.ResultListener
 import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.UserConsent
-import care.data4life.datadonation.encryption.initEncryption
 import care.data4life.datadonation.internal.di.initKoin
 import care.data4life.datadonation.internal.domain.usecases.*
 import kotlinx.coroutines.launch
@@ -51,9 +50,6 @@ class Client(private val configuration: Contract.Configuration) : Contract.DataD
     private val fetchUserConsents: FetchUserConsents by koinApplication.koin.inject()
     private val revokeUserContent: RevokeUserConsent by koinApplication.koin.inject()
 
-    init {
-        initEncryption()
-    }
 
     override fun fetchConsentDocument(
         consentDocumentVersion: Int?,

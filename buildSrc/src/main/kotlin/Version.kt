@@ -71,7 +71,6 @@ object Version {
     const val sqlDelight = "1.4.4"
 
     //Encryption
-    const val tinkAndroid = "1.4.0"
     const val bouncyCastle = "1.64"
 
     const val dateTime = "0.1.0"

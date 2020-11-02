@@ -30,15 +30,47 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.encryption.protos
+package care.data4life.datadonation.encryption.signature
 
-import care.data4life.datadonation.encryption.Asn1
-import care.data4life.datadonation.encryption.Asn1Exportable
-import kotlinx.serialization.Serializable
+import care.data4life.datadonation.internal.utils.encodeBase64
+import io.ktor.util.*
+import java.security.Key
+import java.security.PrivateKey
+import java.security.PublicKey
+import java.security.Signature
+import javax.crypto.Cipher
 
-//TODO: Implement Aes proto as following: https://github.com/google/tink/blob/master/proto/aes_gcm.proto
-@Serializable
-data class Aes(val todo: String): Asn1Exportable,PublicHandle {
-    override val publicKey: Asn1Exportable = this
-    override fun toAsn1(): Asn1 = TODO()
+class SignatureKeyPrivateHandleBouncy(
+    private val signature: Signature, private val privateKey: PrivateKey, private val publicKey: PublicKey
+) : SignatureKeyPrivate, SignatureKeyPublic by SignatureKeyPublicHandleBouncy(signature,publicKey) {
+
+    override fun sign(data: ByteArray): ByteArray = with(signature) {
+        initSign(privateKey)
+        update(data)
+        sign()
+    }
+
+    override fun serializedPrivate(): ByteArray = privateKey.encoded
+
+    override val pkcs8Private: String
+        get() = serializedPrivate().encodeBase64()
+
+}
+
+class SignatureKeyPublicHandleBouncy(
+    private val verifier: Signature, private val publicKey: PublicKey
+) : SignatureKeyPublic {
+
+    override fun verify(data: ByteArray, signature: ByteArray): Boolean = with(verifier) {
+            initVerify(publicKey)
+            update(data)
+            verify(signature)
+        }
+
+
+    override fun serializedPublic(): ByteArray = publicKey.encoded
+
+    override val pkcs8Public: String
+        get() = serializedPublic().encodeBase64()
+
 }
