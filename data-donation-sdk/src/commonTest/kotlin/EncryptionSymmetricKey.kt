@@ -37,10 +37,7 @@ import kotlin.test.*
 
 class EncryptionSymmetricKeyCommonTest {
 
-    @BeforeTest
-    fun setup() {
-        initEncryption()
-    }
+
 
     @Test
     fun `Generate, encrypt and decrypt`() {

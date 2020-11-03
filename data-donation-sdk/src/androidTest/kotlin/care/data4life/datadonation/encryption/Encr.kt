@@ -32,9 +32,9 @@
 
 package care.data4life.datadonation.encryption
 
-import care.data4life.datadonation.encryption.protos.PublicHandle
-import javax.crypto.Cipher
+import SignatureKeyCommonTest
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
-open class KeyHandleNative(private val cipher: Cipher) {
-
-}
+@RunWith(JUnit4::class)
+class SignatureAndroidTest: SignatureKeyCommonTest()

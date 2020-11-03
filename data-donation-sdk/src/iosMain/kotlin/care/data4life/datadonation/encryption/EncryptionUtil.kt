@@ -32,6 +32,3 @@
 
 package care.data4life.datadonation.encryption
 
-actual fun initEncryption() {
-    //Nothing to init on iOS side
-}

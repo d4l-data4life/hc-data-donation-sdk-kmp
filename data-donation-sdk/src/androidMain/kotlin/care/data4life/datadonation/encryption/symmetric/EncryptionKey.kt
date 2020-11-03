@@ -34,21 +34,11 @@ package care.data4life.datadonation.encryption.symmetric
 
 import care.data4life.datadonation.encryption.Algorithm
 import care.data4life.datadonation.encryption.assymetric.bouncyCastleProvider
-import care.data4life.datadonation.encryption.protos.Aes
-import com.google.crypto.tink.BinaryKeysetReader
-import com.google.crypto.tink.CleartextKeysetHandle
-import com.google.crypto.tink.KeyTemplate
-import com.google.crypto.tink.aead.AesGcmKeyManager
-import com.google.crypto.tink.proto.AesGcmKey
-import com.google.crypto.tink.proto.AesGcmKeyFormat
-import org.bouncycastle.jcajce.provider.symmetric.AES
-import java.security.*
-import java.security.spec.KeySpec
-import java.security.spec.X509EncodedKeySpec
+import java.security.Key
+import java.security.SecureRandom
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKeyFactory
-import javax.crypto.spec.GCMParameterSpec
 import javax.crypto.spec.SecretKeySpec
 
 

@@ -72,10 +72,11 @@ actual fun SignatureKeyPublic(
     size: Int,
     algorithm: Algorithm.Signature
 ): SignatureKeyPublic {
+    val key = KeyNative.buildSecKeyRef(serialized, algorithm, KeyNative.KeyType.Public)
     return SignatureKeyNative(
-    KeyNative.buildSecKeyRef(serialized, algorithm, KeyNative.KeyType.Public),
-    KeyNative.buildSecKeyRef(serialized, algorithm, KeyNative.KeyType.Private),
-    algorithm.toAttributes().second
+        key,//unused
+        key,
+        algorithm.toAttributes().second
     )
 }
 

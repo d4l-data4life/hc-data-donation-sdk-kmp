@@ -34,6 +34,7 @@ package care.data4life.datadonation.encryption
 
 import HybridEncryptionSerializationTest
 import HybridEncryptionTest
+import SignatureKeyCommonTest
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 

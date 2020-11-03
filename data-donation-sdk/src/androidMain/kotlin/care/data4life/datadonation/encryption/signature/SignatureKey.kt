@@ -34,67 +34,32 @@ package care.data4life.datadonation.encryption.signature
 
 
 import care.data4life.datadonation.encryption.Algorithm
-import care.data4life.datadonation.encryption.HashSize
-import com.google.crypto.tink.*
-import com.google.crypto.tink.proto.HashType
-import com.google.crypto.tink.proto.RsaSsaPssKeyFormat
-import com.google.crypto.tink.proto.RsaSsaPssParams
-import care.data4life.datadonation.encryption.protos.RsaSsaPrivateKey
-import care.data4life.datadonation.encryption.protos.RsaSsaPssPublicKey
-import com.google.crypto.tink.shaded.protobuf.ByteString
-import java.security.spec.RSAKeyGenParameterSpec
+import care.data4life.datadonation.encryption.assymetric.bouncyCastleProvider
+import java.security.*
+import java.security.spec.*
 
 
 actual fun SignatureKeyPrivate(size: Int,algorithm: Algorithm.Signature): SignatureKeyPrivate {
     return when(algorithm) {
-        is Algorithm.Signature.RsaPSS -> SignatureKeyPrivateHandle(KeysetHandle(size, algorithm),RsaSsaPrivateKey.serializer())
-    }
-}
-
-private fun KeysetHandle(size: Int,algorithm: Algorithm.Signature): KeysetHandle {
-    return when(algorithm) {
         is Algorithm.Signature.RsaPSS -> {
-            val hash = when(algorithm.hashSize) {
-                HashSize.Hash256 -> HashType.SHA256
-            }
-            RsaSsaPssParams.newBuilder()
-                .setSigHash(hash)
-                .setMgf1Hash(HashType.SHA256)
-                .setSaltLength(32)
-                .build()
-                .let { params ->
-                    RsaSsaPssKeyFormat.newBuilder()
-                        .setParams(params)
-                        .setModulusSizeInBits(size)
-                        .setPublicExponent(ByteString.copyFrom(RSAKeyGenParameterSpec.F4.toByteArray()))
-                        .build()
-                }
-                .let { format ->
-                    KeyTemplate.create(
-                        "type.googleapis.com/google.crypto.tink.RsaSsaPssPrivateKey",
-                        format.toByteArray(),
-                        KeyTemplate.OutputPrefixType.RAW
-                    )
-                }
-
+            val (signature, key) = signatureGen(size,algorithm)
+            SignatureKeyPrivateHandleBouncy(signature,key.private,key.public)
         }
-    }.let { template ->
-        KeysetHandle.generateNew(template)
     }
 }
+
 
 actual fun SignatureKeyPrivate(
     serializedPrivate: ByteArray,
-    //this one isn't actually used because public is calculated from private
     serializedPublic: ByteArray,
     size: Int,
     algorithm: Algorithm.Signature
 ): SignatureKeyPrivate {
-    CleartextKeysetHandle.read(BinaryKeysetReader.withBytes(serializedPrivate))
-    val serializer = when(algorithm) {
-        is Algorithm.Signature.RsaPSS -> RsaSsaPrivateKey.serializer()
-    }
-    return SignatureKeyPrivateHandle(serializedPrivate,serializer)
+    val (factory, publicKey, signature) = publicKey(algorithm, serializedPublic)
+    val privateSpec = PKCS8EncodedKeySpec(serializedPrivate)
+    val privateKey = factory.generatePrivate(privateSpec)
+
+    return SignatureKeyPrivateHandleBouncy(signature,privateKey,publicKey)
 }
 
 actual fun SignatureKeyPublic(
@@ -102,9 +67,46 @@ actual fun SignatureKeyPublic(
     size: Int,
     algorithm: Algorithm.Signature
 ): SignatureKeyPublic {
-    CleartextKeysetHandle.read(BinaryKeysetReader.withBytes(serialized))
-    val deserializer = when(algorithm) {
-        is Algorithm.Signature.RsaPSS -> RsaSsaPssPublicKey.serializer()
+    val (_, publicKey, signature) = publicKey(algorithm, serialized)
+    return SignatureKeyPublicHandleBouncy(signature, publicKey)
+}
+
+private fun attributes(algo: Algorithm.Signature): Pair<String, String> {
+    return when (algo) {
+        is Algorithm.Signature.RsaPSS -> "SHA256withRSA/PSS" to "RSA"
     }
-    return SignatureKeyPublicHandle(serialized,deserializer)
+}
+
+private fun publicKey(
+    algorithm: Algorithm.Signature,
+    serializedKey: ByteArray
+): Triple<KeyFactory, PublicKey, Signature> {
+    val keyAttributes = attributes(algorithm)
+    val spec = X509EncodedKeySpec(serializedKey)
+    val factory = KeyFactory.getInstance(keyAttributes.second, bouncyCastleProvider)
+    val key = factory.generatePublic(spec)
+    val signature = Signature.getInstance(keyAttributes.first, bouncyCastleProvider)
+    signature.applyParams(algorithm)
+    return Triple(factory, key, signature)
+}
+
+private fun signatureGen(size: Int, algo: Algorithm.Signature): Pair<Signature, KeyPair> {
+    val signatureKeyPair = attributes(algo)
+    val signature: Signature = Signature.getInstance(signatureKeyPair.first, bouncyCastleProvider)
+    signature.applyParams(algo)
+    val random = SecureRandom()
+    val generator = KeyPairGenerator.getInstance(signatureKeyPair.second, bouncyCastleProvider)
+    generator.initialize(size, random)
+    val key = generator.genKeyPair()
+    return signature to key
+}
+
+private fun Signature.applyParams(algo: Algorithm.Signature) {
+    val params = when(algo) {
+        is Algorithm.Signature.RsaPSS -> {
+            val sha = "SHA-${algo.hashSize.bits}"
+            PSSParameterSpec(sha, "MGF1", MGF1ParameterSpec(sha), 32, 1)
+        }
+    }
+    setParameter(params)
 }

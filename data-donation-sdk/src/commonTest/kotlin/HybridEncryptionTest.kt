@@ -41,7 +41,6 @@ import care.data4life.datadonation.encryption.hybrid.HybridEncryption.Companion.
 import care.data4life.datadonation.encryption.hybrid.HybridEncryptionPayload.Companion.AES_KEY_SIZE_LENGTH
 import care.data4life.datadonation.encryption.hybrid.HybridEncryptionPayload.Companion.CIPHERTEXT_SIZE_LENGTH
 import care.data4life.datadonation.encryption.hybrid.HybridEncryptionPayload.Companion.VERSION_LENGTH
-import care.data4life.datadonation.encryption.initEncryption
 import care.data4life.datadonation.internal.utils.*
 import kotlin.random.Random
 import kotlin.test.*
@@ -60,10 +59,6 @@ open class HybridEncryptionTest {
         HybridEncryptionSerializer
     )
 
-    @BeforeTest
-    fun setup() {
-        initEncryption()
-    }
 
     @Test
     fun `Generate, encrypt and decrypt`() {

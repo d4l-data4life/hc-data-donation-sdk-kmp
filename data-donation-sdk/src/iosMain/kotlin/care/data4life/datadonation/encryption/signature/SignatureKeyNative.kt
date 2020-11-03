@@ -33,7 +33,7 @@
 package care.data4life.datadonation.encryption.signature
 
 import care.data4life.datadonation.encryption.KeyNative
-import care.data4life.datadonation.encryption.protos.rsaPkcsIDENTIFIER
+import care.data4life.datadonation.encryption.assymetric.rsaPkcsIDENTIFIER
 import care.data4life.datadonation.encryption.sequence
 import care.data4life.datadonation.toByteArray
 import care.data4life.datadonation.toNSData

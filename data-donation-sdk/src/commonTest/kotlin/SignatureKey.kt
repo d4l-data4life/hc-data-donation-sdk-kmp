@@ -1,5 +1,6 @@
 import care.data4life.datadonation.encryption.*
 import care.data4life.datadonation.encryption.signature.SignatureKeyPrivate
+import care.data4life.datadonation.encryption.signature.SignatureKeyPublic
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertTrue
@@ -36,12 +37,9 @@ import kotlin.test.assertTrue
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-class SignatureKeyCommonTest {
+open class SignatureKeyCommonTest {
 
-    @BeforeTest
-    fun setup() {
-        initEncryption()
-    }
+
 
     @Test
     fun `Generate, sign and verify`() {
@@ -52,6 +50,8 @@ class SignatureKeyCommonTest {
         val prv = key.serializedPrivate()
         val pub = key.serializedPublic()
         val nkey = SignatureKeyPrivate(prv,pub,2048,Algorithm.Signature.RsaPSS(HashSize.Hash256))
+        val pubHandle = SignatureKeyPublic(pub,2048,Algorithm.Signature.RsaPSS(HashSize.Hash256))
+        assertTrue(pubHandle.verify(testData,signature))
         assertTrue(nkey.verify(testData,signature))
         assertTrue(nkey.verify(testData,nkey.sign(testData)))
     }

@@ -33,7 +33,6 @@
 package care.data4life.datadonation.encryption.assymetric
 
 import care.data4life.datadonation.encryption.KeyNative
-import care.data4life.datadonation.encryption.protos.rsaPkcsIDENTIFIER
 import care.data4life.datadonation.encryption.sequence
 import care.data4life.datadonation.encryption.signature.SignatureKeyPrivate
 import care.data4life.datadonation.toByteArray
@@ -41,6 +40,8 @@ import care.data4life.datadonation.toNSData
 import platform.CoreFoundation.CFDataRef
 import platform.Foundation.*
 import platform.Security.*
+
+internal val rsaPkcsIDENTIFIER = listOf(42,34376,8845069,1,1,1)
 
 class EncryptionAsymmetricKeyNative : KeyNative,
     EncryptionPrivateKey,

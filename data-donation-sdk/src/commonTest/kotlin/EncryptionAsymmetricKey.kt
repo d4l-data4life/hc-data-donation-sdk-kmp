@@ -1,7 +1,6 @@
 import care.data4life.datadonation.encryption.Algorithm
 import care.data4life.datadonation.encryption.HashSize
 import care.data4life.datadonation.encryption.assymetric.EncryptionPrivateKey
-import care.data4life.datadonation.encryption.initEncryption
 import care.data4life.datadonation.encryption.symmetric.EncryptionSymmetricKey
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -41,10 +40,6 @@ import kotlin.test.assertTrue
 
 class EncryptionAsymmetricKeyCommonTest {
 
-    @BeforeTest
-    fun setup() {
-        initEncryption()
-    }
 
     @Test
     fun `Generate, encrypt and decrypt`() {
