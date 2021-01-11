@@ -39,8 +39,10 @@ import care.data4life.datadonation.encryption.hybrid.HybridEncryptionFactory
 import care.data4life.datadonation.internal.data.service.ConsentService
 import care.data4life.datadonation.internal.data.service.DonationService
 import care.data4life.datadonation.internal.data.store.*
+import care.data4life.datadonation.internal.domain.repositories.*
 import care.data4life.datadonation.internal.domain.repositories.ConsentDocumentRepository
 import care.data4life.datadonation.internal.domain.repositories.CredentialsRepository
+import care.data4life.datadonation.internal.domain.repositories.DonationRepository
 import care.data4life.datadonation.internal.domain.repositories.RegistrationRepository
 import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
 import care.data4life.datadonation.internal.domain.usecases.*
@@ -130,6 +132,7 @@ private val coreModule = module {
     single<UserConsentRepository.Remote> { UserConsentDataStore(get()) }
     single<RegistrationRepository.Remote> { RegistrationDataStore(get()) }
     single<ConsentDocumentRepository.Remote> { ConsentDocumentDataStore(get()) }
+    single<DonationRepository.Remote> { DonationDataStore(get()) }
 
 
     //Repositories
@@ -137,8 +140,10 @@ private val coreModule = module {
     single { RegistrationRepository(get()) }
     single { ConsentDocumentRepository(get(), get()) }
     single { CredentialsRepository(get()) }
+    single { DonationRepository(get()) }
 
     //Usecases
+    single { DonateResources(get(), get(), get(), Base64Factory.createEncoder()) }
     single { RegisterNewDonor(get(), get(), get(), Base64Factory.createEncoder()) }
     single { FetchConsentDocuments(get()) }
     single { CreateUserConsent(get()) }

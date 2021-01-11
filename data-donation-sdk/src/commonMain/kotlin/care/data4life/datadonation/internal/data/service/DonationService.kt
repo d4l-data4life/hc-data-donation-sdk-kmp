@@ -49,7 +49,7 @@ internal class DonationService(
         "${environment.url}/donation/api/v1"
     }
 
-    suspend fun requestRegistrationToken(): String {
+    suspend fun requestToken(): String {
         return client.getWithQuery<String>(environment, baseUrl = baseUrl, path = Endpoints.token)
             .let {
                 it.substring(
@@ -66,6 +66,10 @@ internal class DonationService(
             path = register,
             body = ByteArrayContent(payload, ContentType.Application.OctetStream)
         )
+    }
+
+    suspend fun donateResources(payload: ByteArray) {
+        // TODO
     }
 
     object Endpoints {

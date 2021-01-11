@@ -30,25 +30,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.domain.usecases
+package care.data4life.datadonation.internal.domain.repositories
 
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+internal class DonationRepository(val remote: Remote) {
 
-@RunWith(JUnit4::class)
-class FetchUserConsentsAndroidTest : FetchUserConsentsTest()
+    suspend fun requestDonationToken() = remote.requestDonationToken()
 
-@RunWith(JUnit4::class)
-class CreateUserConsentAndroidTest : CreateUserConsentTest()
+    suspend fun donateResources(data: ByteArray) = remote.donateResources(data)
 
-@RunWith(JUnit4::class)
-class FetchConsentAndroidDocumentsTest : FetchConsentDocumentsTest()
-
-@RunWith(JUnit4::class)
-class RegisterNewDonorAndroidTest : RegisterNewDonorTest()
-
-@RunWith(JUnit4::class)
-class RevokeUserConsentAndroidTest : RevokeUserConsentTest()
-
-@RunWith(JUnit4::class)
-class DonateResourcesAndroidTest : DonateResourcesTest()
+    interface Remote {
+        suspend fun requestDonationToken(): String
+        suspend fun donateResources(data: ByteArray)
+    }
+}

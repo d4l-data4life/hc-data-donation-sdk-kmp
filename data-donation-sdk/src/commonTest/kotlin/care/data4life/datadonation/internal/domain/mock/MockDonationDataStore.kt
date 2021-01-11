@@ -30,25 +30,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.domain.usecases
+package care.data4life.datadonation.internal.domain.mock
 
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import care.data4life.datadonation.internal.domain.repositories.DonationRepository
+import care.data4life.datadonation.internal.mock.MockException
 
-@RunWith(JUnit4::class)
-class FetchUserConsentsAndroidTest : FetchUserConsentsTest()
+class MockDonationDataStore : DonationRepository.Remote {
 
-@RunWith(JUnit4::class)
-class CreateUserConsentAndroidTest : CreateUserConsentTest()
+    var whenRequestDonationToken: (() -> String)? = null
+    var whenDonateResources: ((data: ByteArray) -> Unit)? = null
 
-@RunWith(JUnit4::class)
-class FetchConsentAndroidDocumentsTest : FetchConsentDocumentsTest()
+    override suspend fun requestDonationToken(): String =
+        whenRequestDonationToken?.invoke() ?: throw  MockException()
 
-@RunWith(JUnit4::class)
-class RegisterNewDonorAndroidTest : RegisterNewDonorTest()
+    override suspend fun donateResources(data: ByteArray) {
+        whenDonateResources?.invoke(data)
+    }
 
-@RunWith(JUnit4::class)
-class RevokeUserConsentAndroidTest : RevokeUserConsentTest()
-
-@RunWith(JUnit4::class)
-class DonateResourcesAndroidTest : DonateResourcesTest()
+}

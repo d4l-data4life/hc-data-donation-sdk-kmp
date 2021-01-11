@@ -71,11 +71,7 @@ interface Contract {
 
         fun revokeUserConsent(language: String?, callback: Callback)
 
-        /** TODO Donation with FHIR models
-         * fun <T : DomainResource> donateResource(
-         * resource: T,
-         * callback: Callback)
-         * */
+        fun donateResources(resources: List<String>, listener: Callback)
     }
 }
 

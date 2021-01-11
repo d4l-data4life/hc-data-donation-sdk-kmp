@@ -54,7 +54,7 @@ internal abstract class DonationServiceTest : BaseServiceTest<DonationService>()
         givenTextServiceResponseWith(tokenFromService)
 
         //When
-        val result = service.requestRegistrationToken()
+        val result = service.requestToken()
 
         //Then
         assertEquals(result, token)

@@ -30,5 +30,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.domain.repositories
+package care.data4life.datadonation.internal.data.store
 
+import care.data4life.datadonation.internal.data.service.DonationService
+import care.data4life.datadonation.internal.domain.repositories.DonationRepository
+
+internal class DonationDataStore(private val donationService: DonationService) :
+    DonationRepository.Remote {
+
+    override suspend fun requestDonationToken() = donationService.requestToken()
+
+    override suspend fun donateResources(data: ByteArray) = donationService.donateResources(data)
+
+}
