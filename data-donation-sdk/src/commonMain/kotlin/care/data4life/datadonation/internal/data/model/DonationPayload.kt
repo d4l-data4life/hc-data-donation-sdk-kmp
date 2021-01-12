@@ -1,7 +1,7 @@
 /*
  * BSD 3-Clause License
  *
- * Copyright (c) 2020, D4L data4life gGmbH
+ * Copyright (c) 2021, D4L data4life gGmbH
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,18 +30,47 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.data.store
+package care.data4life.datadonation.internal.data.model
 
-import care.data4life.datadonation.internal.data.model.DonationPayload
-import care.data4life.datadonation.internal.data.service.DonationService
-import care.data4life.datadonation.internal.domain.repositories.DonationRepository
+data class DonationPayload(val request: ByteArray, val documents: List<DocumentWithSignature>) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || this::class != other::class) return false
 
-internal class DonationDataStore(private val donationService: DonationService) :
-    DonationRepository.Remote {
+        other as DonationPayload
 
-    override suspend fun requestDonationToken() = donationService.requestToken()
+        if (!request.contentEquals(other.request)) return false
+        if (documents != other.documents) return false
 
-    override suspend fun donateResources(payload: DonationPayload) =
-        donationService.donateResources(payload)
+        return true
+    }
 
+    override fun hashCode(): Int {
+        var result = request.contentHashCode()
+        result = 31 * result + documents.hashCode()
+        return result
+
+    }
+
+}
+
+data class DocumentWithSignature(val document: ByteArray, val signature: ByteArray) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || this::class != other::class) return false
+
+        other as DocumentWithSignature
+
+        if (!document.contentEquals(other.document)) return false
+        if (!signature.contentEquals(other.signature)) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = document.contentHashCode()
+        result = 31 * result + signature.contentHashCode()
+        return result
+
+    }
 }

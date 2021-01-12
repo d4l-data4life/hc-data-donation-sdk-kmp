@@ -36,6 +36,7 @@ package care.data4life.datadonation.internal.domain.usecases
 import CapturingResultListener
 import care.data4life.datadonation.encryption.hybrid.HybridEncryption
 import care.data4life.datadonation.encryption.signature.SignatureKeyPrivate
+import care.data4life.datadonation.encryption.symmetric.EncryptionSymmetricKey
 import care.data4life.datadonation.internal.data.exception.MissingCredentialsException
 import care.data4life.datadonation.internal.data.model.*
 import care.data4life.datadonation.internal.data.service.ConsentService
@@ -104,6 +105,14 @@ abstract class DonateResourcesTest {
 
     }
 
+    /*private val encryptionSymmetricKey = object : EncryptionSymmetricKey {
+        override fun decrypt(encrypted: ByteArray, associatedData: ByteArray) = Result.success(byteArrayOf())
+        override fun encrypt(plainText: ByteArray, associatedData: ByteArray) = ByteArray(0)
+        override fun serialized() = ByteArray(0)
+        override val pkcs8 = ""
+
+    }*/
+
     private val donateResources =
         DonateResources(
             donationRepository,
@@ -113,13 +122,16 @@ abstract class DonateResourcesTest {
             { signatureKey }
 
 
+
     private val capturingListener = DonateResourcesListener()
 
     @Test
     fun donateResourcesTest() = runTest {
         //Given
+        var result: DonationPayload? = null
         mockDonationDataStore.whenRequestDonationToken = { dummyNonce }
         mockUserConsentDataStore.whenSignUserConsent = { _, _ -> dummySignature }
+        mockDonationDataStore.whenDonateResources = {  payload ->  result = payload }
 
         //When
         donateResources.runWithParams(
@@ -129,6 +141,8 @@ abstract class DonateResourcesTest {
 
         //Then
         assertEquals(capturingListener.captured, Unit)
+        assertTrue(result!!.request.contentEquals(dummyEncryptedSignedMessage))
+        assertEquals(result!!.documents.size, dummyResourceList.size)
         assertNull(capturingListener.error)
     }
 

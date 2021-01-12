@@ -33,10 +33,16 @@
 package care.data4life.datadonation.internal.data.service
 
 import care.data4life.datadonation.core.model.Environment
+import care.data4life.datadonation.internal.data.model.ConsentCreationPayload
+import care.data4life.datadonation.internal.data.model.DonationPayload
+import care.data4life.datadonation.internal.data.service.DonationService.Endpoints.donate
 import care.data4life.datadonation.internal.data.service.DonationService.Endpoints.register
 import io.ktor.client.*
+import io.ktor.client.request.*
+import io.ktor.client.request.forms.*
 import io.ktor.http.*
 import io.ktor.http.content.*
+import kotlinx.datetime.Clock
 
 internal class DonationService(
     private val client: HttpClient,
@@ -68,12 +74,35 @@ internal class DonationService(
         )
     }
 
-    suspend fun donateResources(payload: ByteArray) {
-        // TODO
+    suspend fun donateResources(payload: DonationPayload) {
+        return client.postWithBody(
+            environment,
+           "",// accessToken, // TODO double-check if we need the access token here
+            baseUrl = baseUrl,
+            path = donate,
+            body = MultiPartFormDataContent(
+                formData {
+                    append(FormDataEntries.request, payload.request)
+                    payload.documents.forEachIndexed { index, document ->
+                        append("${FormDataEntries.signature}$index", document.signature)
+                        append("${FormDataEntries.donation}$index", document.document)
+                    }
+                }
+            )
+        ) /*{
+            header(ConsentService.Companion.Headers.XSRFToken, getToken(accessToken))
+        }*/
     }
 
     object Endpoints {
         const val token = "token"
         const val register = "register"
+        const val donate = "donate"
+    }
+
+    object FormDataEntries {
+        const val request = "request"
+        const val signature = "signature_"
+        const val donation = "donation_"
     }
 }

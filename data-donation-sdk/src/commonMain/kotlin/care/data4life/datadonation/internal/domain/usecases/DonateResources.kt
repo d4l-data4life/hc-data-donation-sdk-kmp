@@ -37,6 +37,7 @@ import care.data4life.datadonation.encryption.Algorithm
 import care.data4life.datadonation.encryption.HashSize
 import care.data4life.datadonation.encryption.hybrid.HybridEncryption
 import care.data4life.datadonation.encryption.signature.SignatureKeyPrivate
+import care.data4life.datadonation.encryption.symmetric.EncryptionSymmetricKey
 import care.data4life.datadonation.internal.data.exception.MissingCredentialsException
 import care.data4life.datadonation.internal.data.model.*
 import care.data4life.datadonation.internal.data.service.ConsentService.Companion.defaultDonationConsentKey
@@ -55,6 +56,7 @@ internal class DonateResources(
     private val encryption: HybridEncryption,
     private val base64encoder: Base64Encoder,
     private val signatureProvider: (KeyPair) -> SignatureKeyPrivate = defaultSignatureProvider
+    //private val newSymmetricKeyProvider: () -> EncryptionSymmetricKey = defaultNewSymmetricKeyProvider
 ) :
     ParameterizedUsecase<DonateResources.Parameters, Unit>() {
 
@@ -64,6 +66,10 @@ internal class DonateResources(
             keyPair.public,
             2048,
             Algorithm.Signature.RsaPSS(HashSize.Hash256)) }
+
+        /*private val defaultNewSymmetricKeyProvider = { EncryptionSymmetricKey(
+            HybridEncryption.AES_KEY_LENGTH,
+            Algorithm.Symmetric.AES(HashSize.Hash256)) }*/
     }
 
     override suspend fun execute() {
@@ -85,13 +91,34 @@ internal class DonateResources(
             encryptedMessage
         )
         val signedMessage = SignedConsentMessage(consentMessage.toJsonString(), signature) // 8 - 11 (register 15)
-        val payload = encryption.encrypt(signedMessage.toJsonString().toByteArray()) // 14 (register 24)
-        // Create document form resources and sign with ALP public key
-        donationRepository.donateResources(payload) // TODO Add missing fields related to resources (document)
+        val encryptedSignedMessage = encryption.encrypt(signedMessage.toJsonString().toByteArray()) // 14 (register 24)
+        // Create document form resources, encrypt with ALP public key and sign with user private key
+
+        /*val symmetricKey = newSymmetricKeyProvider.invoke()
+
+        val encryptedDocument = symmetricKey.encrypt(resources.toDocument(), byteArrayOf())
+
+        val encryptedSymmetricKey = encryption.encrypt(symmetricKey.serialized())
+
+        val signedEncryptedDocument = keyPair.sign(encryptedDocument)*/
+
+        // 15 ?? -> Code described by 15 not found in JS SDK
+
+        val signedEncryptedDocuments = resources.map {
+            val encryptedDocument = encryption.encrypt(it.toByteArray()) // 16 // TODO encrypt with ALP public key instead of Data Donation
+            DocumentWithSignature(
+                document = encryptedDocument,
+                signature = keyPair.sign(encryptedDocument) // 17
+            )
+        }
+        val payload = DonationPayload(
+            request = encryptedSignedMessage,
+            documents = signedEncryptedDocuments
+        )
+        donationRepository.donateResources(payload)
     }
 
     data class Parameters(val keyPair: KeyPair?, val resources: List<String>)
 
 
 }
-
