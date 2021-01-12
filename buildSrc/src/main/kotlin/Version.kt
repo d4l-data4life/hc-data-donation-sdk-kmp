@@ -24,6 +24,8 @@ object Version {
     // https://github.com/russhwolf/multiplatform-settings
     const val multiplatformSettings = "0.5.1"
 
+    // https://github.com/Kotlin/kotlinx-datetime
+    const val dateTime = "0.1.0"
 
     // Android
     // https://developer.android.com/studio
@@ -73,9 +75,9 @@ object Version {
     //Encryption
     const val bouncyCastle = "1.64"
 
-    const val dateTime = "0.1.0"
 
     // Junit Test
     const val testJUnit = "4.13"
+
 
 }

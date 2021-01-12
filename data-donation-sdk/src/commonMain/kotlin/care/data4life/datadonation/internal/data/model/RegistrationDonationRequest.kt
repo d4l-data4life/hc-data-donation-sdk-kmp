@@ -30,20 +30,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.utils
+package care.data4life.datadonation.internal.data.model
 
-import care.data4life.datadonation.internal.data.model.ConsentMessage
-import care.data4life.datadonation.internal.data.model.DonationRequest
-import care.data4life.datadonation.internal.data.model.RegistrationRequest
-import care.data4life.datadonation.internal.data.model.SignedConsentMessage
-import kotlinx.serialization.json.Json
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+typealias RegistrationRequest = DonationRequest
 
-internal fun ConsentMessage.toJsonString() =
-    Json.encodeToString(ConsentMessage.serializer(), this)
-
-internal fun DonationRequest.toJsonString() =
-    Json.encodeToString(DonationRequest.serializer(), this)
-
-internal fun SignedConsentMessage.toJsonString() =
-    Json.encodeToString(SignedConsentMessage.serializer(), this)
+@Serializable
+data class DonationRequest(@SerialName("donorID") val donorId: String, val token: String)

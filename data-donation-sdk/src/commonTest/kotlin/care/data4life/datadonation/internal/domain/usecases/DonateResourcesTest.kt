@@ -34,9 +34,9 @@
 package care.data4life.datadonation.internal.domain.usecases
 
 import CapturingResultListener
-import care.data4life.datadonation.encryption.Algorithm
 import care.data4life.datadonation.encryption.hybrid.HybridEncryption
 import care.data4life.datadonation.encryption.signature.SignatureKeyPrivate
+import care.data4life.datadonation.internal.data.exception.MissingCredentialsException
 import care.data4life.datadonation.internal.data.model.*
 import care.data4life.datadonation.internal.data.service.ConsentService
 import care.data4life.datadonation.internal.domain.mock.MockConsentDataStore
@@ -45,14 +45,10 @@ import care.data4life.datadonation.internal.domain.mock.MockUserSessionTokenData
 import care.data4life.datadonation.internal.domain.repositories.DonationRepository
 import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
 import care.data4life.datadonation.internal.utils.Base64Encoder
-import care.data4life.datadonation.internal.utils.KeyGenerator
 import care.data4life.datadonation.internal.utils.toJsonString
 import io.ktor.utils.io.charsets.*
 import runTest
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
+import kotlin.test.*
 
 abstract class DonateResourcesTest {
 
@@ -66,10 +62,10 @@ abstract class DonateResourcesTest {
     private val dummyResourceList = listOf("resource1", "resource2", "resource3")
 
     private val mockUserConsentDataStore = MockConsentDataStore()
-    private val mockRegistrationDataStore = MockDonationDataStore()
+    private val mockDonationDataStore = MockDonationDataStore()
     private val userConsentRepository =
         UserConsentRepository(mockUserConsentDataStore, MockUserSessionTokenDataStore())
-    private val donationRepository = DonationRepository(mockRegistrationDataStore)
+    private val donationRepository = DonationRepository(mockDonationDataStore)
 
     private val signatureKey = object: SignatureKeyPrivate {
         override fun sign(data: ByteArray) = byteArrayOf()
@@ -81,11 +77,11 @@ abstract class DonateResourcesTest {
     }
 
     private val requestJsonString =
-        RegistrationRequest(signatureKey.pkcs8Public, dummyNonce).toJsonString()
+        DonationRequest(signatureKey.pkcs8Public, dummyNonce).toJsonString()
 
     private val consentMessage = ConsentMessage(
         ConsentService.defaultDonationConsentKey,
-        ConsentSignatureType.ConsentOnce.apiValue,
+        ConsentSignatureType.NormalUse.apiValue,
         dummyEncryptedRequest64Encoded
     )
 
@@ -108,27 +104,22 @@ abstract class DonateResourcesTest {
 
     }
 
-    private val mockKeyGenerator = object : KeyGenerator {
-        override fun newSignatureKeyPrivate(
-            size: Int,
-            algorithm: Algorithm.Signature
-        ): SignatureKeyPrivate = signatureKey
-    }
-
     private val donateResources =
         DonateResources(
             donationRepository,
             userConsentRepository,
             encryptor,
-            base64Encoder,
-            mockKeyGenerator
-        )
+            base64Encoder)
+            { signatureKey }
+
 
     private val capturingListener = DonateResourcesListener()
 
     @Test
     fun donateResourcesTest() = runTest {
         //Given
+        mockDonationDataStore.whenRequestDonationToken = { dummyNonce }
+        mockUserConsentDataStore.whenSignUserConsent = { _, _ -> dummySignature }
 
         //When
         donateResources.runWithParams(
@@ -144,8 +135,8 @@ abstract class DonateResourcesTest {
     @Test
     fun donateResourcesTestWithoutKeyFails() = runTest {
         //Given
-        //mockRegistrationDataStore.whenRequestDonationToken = { dummyNonce }
-        //mockUserConsentDataStore.whenSignUserConsent = { _, _ -> dummySignature }
+        mockDonationDataStore.whenRequestDonationToken = { dummyNonce }
+        mockUserConsentDataStore.whenSignUserConsent = { _, _ -> dummySignature }
 
         //When
         donateResources.runWithParams(
@@ -155,7 +146,7 @@ abstract class DonateResourcesTest {
 
         //Then
         assertNull(capturingListener.captured)
-        assertNotNull(capturingListener.error)
+        assertTrue(capturingListener.error is MissingCredentialsException)
     }
 
     class DonateResourcesListener: CapturingResultListener<Unit>()

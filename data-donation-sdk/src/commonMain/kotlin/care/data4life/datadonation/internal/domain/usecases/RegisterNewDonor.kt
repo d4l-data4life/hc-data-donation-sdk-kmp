@@ -75,10 +75,7 @@ internal class RegisterNewDonor(
 
     private suspend fun registerNewDonor(newKeyPair: SignatureKeyPrivate) {
         val token = registrationRepository.requestRegistrationToken()
-        val request = RegistrationRequest(
-            newKeyPair.pkcs8Public,
-            token
-        )
+        val request = RegistrationRequest(newKeyPair.pkcs8Public, token)
         val encryptedMessage =
             base64encoder.encode(encryption.encrypt(request.toJsonString().toByteArray()))
         val signature = consentRepository.signUserConsent(encryptedMessage)
