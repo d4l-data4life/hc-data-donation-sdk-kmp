@@ -32,6 +32,7 @@
 
 package care.data4life.datadonation.encryption.hybrid
 
+import care.data4life.datadonation.Contract
 import care.data4life.datadonation.encryption.Algorithm
 import care.data4life.datadonation.encryption.HashSize
 import care.data4life.datadonation.encryption.assymetric.EncryptionPrivateKey
@@ -39,17 +40,28 @@ import care.data4life.datadonation.encryption.assymetric.EncryptionPublicKey
 import care.data4life.datadonation.encryption.symmetric.EncryptionSymmetricKey
 import care.data4life.datadonation.internal.domain.repositories.CredentialsRepository
 import care.data4life.datadonation.internal.utils.decodeBase64Bytes
+import kotlin.properties.Delegates
 
-//internal expect val hybridEncryptionSerializer: HybridEncryptionPayload.Serializer
 
-internal class HybridEncryptionFactory(private val repository: CredentialsRepository) {
-    fun createEncryption() =
-        HybridEncryptionHandle(
-            HybridEncryptionSymmetricKeyProvider,
-            HybridAsymmetricSymmetricKeyProvider(repository.getDataDonationPublicKey()),
-            HybridEncryptionSerializer)
+internal class HybridEncryptionRegistry(private val repository: CredentialsRepository) {
+
+    companion object {
+        fun CredentialsRepository.createEncryption(service: Contract.Service): HybridEncryption {
+            val publicKey = when (service) {
+                Contract.Service.DD -> getDataDonationPublicKey()
+                Contract.Service.ALP -> getAnalyticsPlatformPublicKey()
+            }
+            return HybridEncryptionHandle(
+                HybridEncryptionSymmetricKeyProvider,
+                HybridAsymmetricSymmetricKeyProvider(publicKey),
+                HybridEncryptionSerializer
+            )
+        }
+    }
+
+    val hybridEncryptionDD: HybridEncryption by lazy { repository.createEncryption(Contract.Service.DD) }
+    val hybridEncryptionALP: HybridEncryption by lazy { repository.createEncryption(Contract.Service.ALP) }
 }
-
 
 internal object HybridEncryptionSymmetricKeyProvider: HybridEncryption.SymmetricKeyProvider {
     override fun getNewKey(): EncryptionSymmetricKey {

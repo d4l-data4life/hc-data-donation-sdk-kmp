@@ -37,23 +37,20 @@ import care.data4life.datadonation.encryption.Algorithm
 import care.data4life.datadonation.encryption.HashSize
 import care.data4life.datadonation.encryption.hybrid.HybridEncryption
 import care.data4life.datadonation.encryption.signature.SignatureKeyPrivate
-import care.data4life.datadonation.encryption.symmetric.EncryptionSymmetricKey
 import care.data4life.datadonation.internal.data.exception.MissingCredentialsException
 import care.data4life.datadonation.internal.data.model.*
 import care.data4life.datadonation.internal.data.service.ConsentService.Companion.defaultDonationConsentKey
 import care.data4life.datadonation.internal.domain.repositories.DonationRepository
-import care.data4life.datadonation.internal.domain.repositories.RegistrationRepository
 import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
 import care.data4life.datadonation.internal.utils.Base64Encoder
-import care.data4life.datadonation.internal.utils.DefaultKeyGenerator
-import care.data4life.datadonation.internal.utils.KeyGenerator
 import care.data4life.datadonation.internal.utils.toJsonString
 import io.ktor.utils.io.core.*
 
 internal class DonateResources(
     private val donationRepository: DonationRepository,
     private val consentRepository: UserConsentRepository,
-    private val encryption: HybridEncryption,
+    private val encryptionDD: HybridEncryption,
+    private val encryptionALP: HybridEncryption,
     private val base64encoder: Base64Encoder,
     private val signatureProvider: (KeyPair) -> SignatureKeyPrivate = defaultSignatureProvider
     //private val newSymmetricKeyProvider: () -> EncryptionSymmetricKey = defaultNewSymmetricKeyProvider
@@ -82,7 +79,7 @@ internal class DonateResources(
         val token = donationRepository.requestDonationToken()
         val request = DonationRequest(keyPair.pkcs8Public, token)
         val encryptedMessage =
-            base64encoder.encode(encryption.encrypt(request.toJsonString().toByteArray()))
+            base64encoder.encode(encryptionDD.encrypt(request.toJsonString().toByteArray()))
         val signature = consentRepository.signUserConsent(encryptedMessage)
 
         val consentMessage = ConsentMessage(
@@ -91,7 +88,7 @@ internal class DonateResources(
             encryptedMessage
         )
         val signedMessage = SignedConsentMessage(consentMessage.toJsonString(), signature) // 8 - 11 (register 15)
-        val encryptedSignedMessage = encryption.encrypt(signedMessage.toJsonString().toByteArray()) // 14 (register 24)
+        val encryptedSignedMessage = encryptionDD.encrypt(signedMessage.toJsonString().toByteArray()) // 14 (register 24)
         // Create document form resources, encrypt with ALP public key and sign with user private key
 
         /*val symmetricKey = newSymmetricKeyProvider.invoke()
@@ -105,7 +102,7 @@ internal class DonateResources(
         // 15 ?? -> Code described by 15 not found in JS SDK
 
         val signedEncryptedDocuments = resources.map {
-            val encryptedDocument = encryption.encrypt(it.toByteArray()) // 16 // TODO encrypt with ALP public key instead of Data Donation
+            val encryptedDocument = encryptionALP.encrypt(it.encodeToByteArray()) // 16
             DocumentWithSignature(
                 document = encryptedDocument,
                 signature = keyPair.sign(encryptedDocument) // 17

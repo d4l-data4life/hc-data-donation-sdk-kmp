@@ -42,8 +42,10 @@ import kotlinx.coroutines.CoroutineScope
 
 interface Contract {
 
+    enum class Service(name: String) { DD("DataDonation"), ALP("AnalyticsPlatform") }
+
     interface Configuration {
-        fun getServicePublicKey(): String
+        fun getServicePublicKey(service: Service): String
         fun getDonorKeyPair(): KeyPair?
         fun getUserSessionToken(tokenListener: ResultListener<String>)
         fun getEnvironment(): Environment

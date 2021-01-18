@@ -61,6 +61,10 @@ abstract class DonateResourcesTest {
     private val dummyEncryptedSignedMessage = byteArrayOf(4, 5)
 
     private val dummyResourceList = listOf("resource1", "resource2", "resource3")
+    private val dummyEncryptedResourceList =
+        listOf(DummyData.rawData, DummyData.rawData, DummyData.rawData)
+    private val dummyEncryptedResourceSignatureList =
+        listOf(DummyData.rawData, DummyData.rawData, DummyData.rawData)
 
     private val mockUserConsentDataStore = MockConsentDataStore()
     private val mockDonationDataStore = MockDonationDataStore()
@@ -69,7 +73,12 @@ abstract class DonateResourcesTest {
     private val donationRepository = DonationRepository(mockDonationDataStore)
 
     private val signatureKey = object: SignatureKeyPrivate {
-        override fun sign(data: ByteArray) = byteArrayOf()
+        override fun sign(data: ByteArray) = when (data) {
+            dummyEncryptedResourceList[0] -> dummyEncryptedResourceSignatureList[0]
+            dummyEncryptedResourceList[1] -> dummyEncryptedResourceSignatureList[1]
+            dummyEncryptedResourceList[2] -> dummyEncryptedResourceSignatureList[2]
+            else -> byteArrayOf()
+        }
         override fun serializedPrivate() = DummyData.keyPair.private
         override val pkcs8Private = ""
         override fun verify(data: ByteArray, signature: ByteArray) = true
@@ -89,10 +98,21 @@ abstract class DonateResourcesTest {
     private val signedConsentJsonString =
         SignedConsentMessage(consentMessage.toJsonString(), dummySignature).toJsonString()
 
-    private val encryptor = object : HybridEncryption {
+    private val encryptorDD = object : HybridEncryption {
         override fun encrypt(plaintext: ByteArray) = when (plaintext.decodeToString()) {
             requestJsonString -> dummyEncryptedRequest
             signedConsentJsonString -> dummyEncryptedSignedMessage
+            else -> byteArrayOf()
+        }
+        override fun decrypt(ciphertext: ByteArray) = Result.success(byteArrayOf())
+
+    }
+
+    private val encryptorALP = object : HybridEncryption {
+        override fun encrypt(plaintext: ByteArray) = when (plaintext.decodeToString()) {
+            dummyResourceList[0] -> dummyEncryptedResourceList[0]
+            dummyResourceList[1] -> dummyEncryptedResourceList[1]
+            dummyResourceList[2] -> dummyEncryptedResourceList[2]
             else -> byteArrayOf()
         }
         override fun decrypt(ciphertext: ByteArray) = Result.success(byteArrayOf())
@@ -117,7 +137,8 @@ abstract class DonateResourcesTest {
         DonateResources(
             donationRepository,
             userConsentRepository,
-            encryptor,
+            encryptorDD,
+            encryptorALP,
             base64Encoder)
             { signatureKey }
 
@@ -143,6 +164,8 @@ abstract class DonateResourcesTest {
         assertEquals(capturingListener.captured, Unit)
         assertTrue(result!!.request.contentEquals(dummyEncryptedSignedMessage))
         assertEquals(result!!.documents.size, dummyResourceList.size)
+        assertTrue(result!!.documents[0].document.contentEquals(dummyEncryptedResourceList[0]))
+        assertTrue(result!!.documents[0].signature.contentEquals(dummyEncryptedResourceSignatureList[0]))
         assertNull(capturingListener.error)
     }
 
