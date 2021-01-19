@@ -33,6 +33,8 @@
 package care.data4life.datadonation.internal.data.service
 
 import care.data4life.datadonation.core.model.Environment
+import care.data4life.datadonation.internal.data.model.DocumentWithSignature
+import care.data4life.datadonation.internal.data.model.DonationPayload
 import care.data4life.datadonation.internal.data.model.DummyData
 import io.ktor.client.*
 import io.ktor.http.*
@@ -64,7 +66,7 @@ internal abstract class DonationServiceTest : BaseServiceTest<DonationService>()
     @Test
     fun registerNewDonorTest() = runTest {
         //Given
-        givenServiceNoResponse()
+        givenServiceNoResponse(ContentType.Application.OctetStream)
 
         //When
         service.registerNewDonor(DummyData.rawData)
@@ -73,4 +75,17 @@ internal abstract class DonationServiceTest : BaseServiceTest<DonationService>()
         assertEquals(HttpMethod.Put, lastRequest.method)
     }
 
+    @Test
+    fun donateResourcesTest() = runTest {
+        //Given
+        val document = DocumentWithSignature(DummyData.rawData, DummyData.rawData)
+        val payload = DonationPayload(DummyData.rawData, listOf(document, document, document))
+        givenServiceNoResponse(ContentType.MultiPart.FormData)
+
+        //When
+        service.donateResources(payload)
+
+        //Then
+        assertEquals(HttpMethod.Post, lastRequest.method)
+    }
 }

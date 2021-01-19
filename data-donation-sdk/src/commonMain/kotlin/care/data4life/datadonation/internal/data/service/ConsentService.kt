@@ -100,7 +100,7 @@ internal class ConsentService(
         version: Int,
         language: String?
     ) {
-        return client.postWithBody(
+        return client.postWithoutContentType(
             environment,
             accessToken,
             baseUrl,
@@ -117,7 +117,7 @@ internal class ConsentService(
     }
 
     suspend fun requestSignature(accessToken: String, message: String): ConsentSignature {
-        return client.postWithBody(
+        return client.postWithoutContentType(
             environment,
             accessToken,
             baseUrl,

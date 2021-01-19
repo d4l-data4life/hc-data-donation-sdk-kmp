@@ -84,17 +84,20 @@ abstract class BaseServiceTest<R : Any> {
         service = buildMockService(engine)
     }
 
-    protected fun givenServiceNoResponse() {
+    protected fun givenServiceNoResponse(contentType: ContentType) {
         val engine = MockEngine.config {
             addHandler { request ->
                 lastRequest = request
                 respondOk()
             }
         }
-        service = buildMockService(engine, ContentType.Application.OctetStream)
+        service = buildMockService(engine, contentType)
     }
 
-    protected fun givenServiceToResponse(vararg pathResponse: Pair<String, MockRequestHandleScope.() -> HttpResponseData>) {
+    protected fun givenServiceToResponse(
+        vararg pathResponse: Pair<String, MockRequestHandleScope.() -> HttpResponseData>,
+        contentType: ContentType
+    ) {
         val engine = MockEngine.config {
             addHandler { request ->
                 lastRequest = request
@@ -106,7 +109,7 @@ abstract class BaseServiceTest<R : Any> {
                 respondOk()
             }
         }
-        service = buildMockService(engine, ContentType.Application.OctetStream)
+        service = buildMockService(engine, contentType)
     }
 
     private fun buildMockService(

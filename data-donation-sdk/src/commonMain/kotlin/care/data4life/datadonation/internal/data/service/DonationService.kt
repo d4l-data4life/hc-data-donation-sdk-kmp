@@ -33,16 +33,13 @@
 package care.data4life.datadonation.internal.data.service
 
 import care.data4life.datadonation.core.model.Environment
-import care.data4life.datadonation.internal.data.model.ConsentCreationPayload
 import care.data4life.datadonation.internal.data.model.DonationPayload
 import care.data4life.datadonation.internal.data.service.DonationService.Endpoints.donate
 import care.data4life.datadonation.internal.data.service.DonationService.Endpoints.register
 import io.ktor.client.*
-import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
 import io.ktor.http.*
 import io.ktor.http.content.*
-import kotlinx.datetime.Clock
 
 internal class DonationService(
     private val client: HttpClient,
@@ -75,9 +72,9 @@ internal class DonationService(
     }
 
     suspend fun donateResources(payload: DonationPayload) {
-        return client.postWithBody(
+        return client.postWithoutContentType(
             environment,
-           "",// accessToken, // TODO double-check if we need the access token here
+           // accessToken, // TODO double-check if we need the access token here
             baseUrl = baseUrl,
             path = donate,
             body = MultiPartFormDataContent(

@@ -69,7 +69,8 @@ internal abstract class ConsentServiceTest : BaseServiceTest<ConsentService>() {
                     TokenVerificationResult.serializer(),
                     tokenVerificationResult
                 )
-            })
+            }),
+            contentType = ContentType.Application.OctetStream
         )
 
         //When
@@ -135,7 +136,8 @@ internal abstract class ConsentServiceTest : BaseServiceTest<ConsentService>() {
                     ConsentSignature.serializer(),
                     consentSignature
                 )
-            })
+            }),
+            contentType = ContentType.Application.OctetStream
         )
 
 
@@ -152,7 +154,8 @@ internal abstract class ConsentServiceTest : BaseServiceTest<ConsentService>() {
         //Given
         givenServiceToResponse(
             Pair("xsrf",
-                { respond("", headers = headersOf("X-Csrf-Token", "anyThing")) })
+                { respond("", headers = headersOf("X-Csrf-Token", "anyThing")) }),
+            contentType = ContentType.Application.OctetStream
         )
 
         //When
