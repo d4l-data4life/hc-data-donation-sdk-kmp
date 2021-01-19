@@ -65,14 +65,14 @@ open class ClientTest {
                         "nEgS+ZIQAp4Y9BId1Ris5XgZDwmMYF8mB1sqGEnbQkmkaMPoboeherMio0Z/PD6J" +
                         "rQIDAQAB"
 
-            Contract.Service.ALP -> // TODO update with correct ALP test key
-                "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwWYsUPv7etCQYYhMtwkP" +
-                        "xGH7144My0yUnqCmF38w40S7CCd54fa1zhijyvAEU67gMgxesyi2bMHPQJp2E63f" +
-                        "g/0IcY4kY//9NrtWY7QovOJaFa8ov+wiIbKa3Y5zy4sxq8VoBJlr1EBYaQNX6I9f" +
-                        "NG+IcQlkoTTqL+qt7lYsW0P4H3vR/92HHaJjA+yvSbXhePMh2IN4ESTqbBSSwWfd" +
-                        "AHtFlH63hV65EB0pUudPumWpUrJWYczveoUO3XUU4qmJ7lZU0kTUFBwwfdeprZtG" +
-                        "nEgS+ZIQAp4Y9BId1Ris5XgZDwmMYF8mB1sqGEnbQkmkaMPoboeherMio0Z/PD6J" +
-                        "rQIDAQAB"
+            Contract.Service.ALP ->
+                "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvemFxDHLfwTWztqu+M5t" +
+                        "+becNfUvJpYBqRYsRFKxoUe2s+9WZjwPMzIvJ43DlCK2dqtZelomGhVpi53AqbG7" +
+                        "/Nm3dMH1nNSacfz20tZclshimJuHF1d126tbGn/3WdAxYfTq9DN8GZmqgRf1iunl" +
+                        "+DwE/sP3Dm8I1y4BG3RyQcD/K66s0PWvpX71UlvoVdWmWA5rGkfzi4msdZz7wfwV" +
+                        "I1cGnAX+YrBGTfkwJtHuHXCcLuR3zdNnG/ZB87O0Etl2bFHjCsDbAIRDggjXW+t0" +
+                        "0G+OALY8BMdU1cYKb8GBdqQW11BhRttGvFKFFt3i/8KH0b9ff80whY0bbeTAo51/" +
+                        "1QIDAQAB"
         }
 
         override fun getDonorKeyPair(): KeyPair? = null
@@ -146,13 +146,23 @@ open class ClientTest {
         //Then
     }
 
+    @Ignore
+    @Test
+    fun donateResourcesTest() = runTest {
+        //Given
+
+        //When
+        donateResourcesTest(listOf("donated_resource"))
+        //Then
+    }
+
     private suspend fun fetchConsentDocument(
-        consentDucomentVersion: Int?,
+        consentDocumentVersion: Int?,
         language: String?
     ): List<ConsentDocument> =
         suspendCoroutine { continuation ->
             client.fetchConsentDocument(
-                consentDucomentVersion,
+                consentDocumentVersion,
                 language,
                 object : ResultListener<List<ConsentDocument>> {
                     override fun onSuccess(t: List<ConsentDocument>) {
@@ -215,6 +225,20 @@ open class ClientTest {
     private suspend fun revokeUserConsent(language: String?) =
         suspendCoroutine<Unit> { continuation ->
             client.revokeUserConsent(language,
+                object : Callback {
+                    override fun onSuccess() {
+                        continuation.resume(Unit)
+                    }
+
+                    override fun onError(exception: Exception) {
+                        continuation.resumeWithException(exception)
+                    }
+                })
+        }
+
+    private suspend fun donateResourcesTest(resources: List<String>) =
+        suspendCoroutine<Unit> { continuation ->
+            client.donateResources(resources,
                 object : Callback {
                     override fun onSuccess() {
                         continuation.resume(Unit)
