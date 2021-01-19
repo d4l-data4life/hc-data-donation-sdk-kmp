@@ -36,7 +36,6 @@ package care.data4life.datadonation.internal.domain.usecases
 import CapturingResultListener
 import care.data4life.datadonation.encryption.hybrid.HybridEncryption
 import care.data4life.datadonation.encryption.signature.SignatureKeyPrivate
-import care.data4life.datadonation.encryption.symmetric.EncryptionSymmetricKey
 import care.data4life.datadonation.internal.data.exception.MissingCredentialsException
 import care.data4life.datadonation.internal.data.model.*
 import care.data4life.datadonation.internal.data.service.ConsentService
@@ -49,7 +48,10 @@ import care.data4life.datadonation.internal.utils.Base64Encoder
 import care.data4life.datadonation.internal.utils.toJsonString
 import io.ktor.utils.io.charsets.*
 import runTest
-import kotlin.test.*
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 abstract class DonateResourcesTest {
 
@@ -125,14 +127,6 @@ abstract class DonateResourcesTest {
 
     }
 
-    /*private val encryptionSymmetricKey = object : EncryptionSymmetricKey {
-        override fun decrypt(encrypted: ByteArray, associatedData: ByteArray) = Result.success(byteArrayOf())
-        override fun encrypt(plainText: ByteArray, associatedData: ByteArray) = ByteArray(0)
-        override fun serialized() = ByteArray(0)
-        override val pkcs8 = ""
-
-    }*/
-
     private val donateResources =
         DonateResources(
             donationRepository,
@@ -141,7 +135,6 @@ abstract class DonateResourcesTest {
             encryptorALP,
             base64Encoder)
             { signatureKey }
-
 
 
     private val capturingListener = DonateResourcesListener()

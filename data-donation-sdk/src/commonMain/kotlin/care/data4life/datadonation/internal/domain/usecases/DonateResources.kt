@@ -53,7 +53,6 @@ internal class DonateResources(
     private val encryptionALP: HybridEncryption,
     private val base64encoder: Base64Encoder,
     private val signatureProvider: (KeyPair) -> SignatureKeyPrivate = defaultSignatureProvider
-    //private val newSymmetricKeyProvider: () -> EncryptionSymmetricKey = defaultNewSymmetricKeyProvider
 ) :
     ParameterizedUsecase<DonateResources.Parameters, Unit>() {
 
@@ -63,10 +62,6 @@ internal class DonateResources(
             keyPair.public,
             2048,
             Algorithm.Signature.RsaPSS(HashSize.Hash256)) }
-
-        /*private val defaultNewSymmetricKeyProvider = { EncryptionSymmetricKey(
-            HybridEncryption.AES_KEY_LENGTH,
-            Algorithm.Symmetric.AES(HashSize.Hash256)) }*/
     }
 
     override suspend fun execute() {
@@ -87,25 +82,14 @@ internal class DonateResources(
             ConsentSignatureType.NormalUse.apiValue,
             encryptedMessage
         )
-        val signedMessage = SignedConsentMessage(consentMessage.toJsonString(), signature) // 8 - 11 (register 15)
-        val encryptedSignedMessage = encryptionDD.encrypt(signedMessage.toJsonString().toByteArray()) // 14 (register 24)
-        // Create document form resources, encrypt with ALP public key and sign with user private key
-
-        /*val symmetricKey = newSymmetricKeyProvider.invoke()
-
-        val encryptedDocument = symmetricKey.encrypt(resources.toDocument(), byteArrayOf())
-
-        val encryptedSymmetricKey = encryption.encrypt(symmetricKey.serialized())
-
-        val signedEncryptedDocument = keyPair.sign(encryptedDocument)*/
-
-        // 15 ?? -> Code described by 15 not found in JS SDK
+        val signedMessage = SignedConsentMessage(consentMessage.toJsonString(), signature)
+        val encryptedSignedMessage = encryptionDD.encrypt(signedMessage.toJsonString().toByteArray())
 
         val signedEncryptedDocuments = resources.map {
-            val encryptedDocument = encryptionALP.encrypt(it.encodeToByteArray()) // 16
+            val encryptedDocument = encryptionALP.encrypt(it.encodeToByteArray())
             DocumentWithSignature(
                 document = encryptedDocument,
-                signature = keyPair.sign(encryptedDocument) // 17
+                signature = keyPair.sign(encryptedDocument)
             )
         }
         val payload = DonationPayload(
