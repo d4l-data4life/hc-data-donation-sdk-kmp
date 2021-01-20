@@ -72,9 +72,8 @@ internal class DonationService(
     }
 
     suspend fun donateResources(payload: DonationPayload) {
-        return client.postWithoutContentType(
+        return client.postWithBody(
             environment,
-           // accessToken, // TODO double-check if we need the access token here
             baseUrl = baseUrl,
             path = donate,
             body = MultiPartFormDataContent(
@@ -86,9 +85,7 @@ internal class DonationService(
                     }
                 }
             )
-        ) /*{
-            header(ConsentService.Companion.Headers.XSRFToken, getToken(accessToken))
-        }*/
+        )
     }
 
     object Endpoints {

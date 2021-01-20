@@ -40,6 +40,9 @@ import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.UserConsent
+import care.data4life.datadonation.encryption.Algorithm
+import care.data4life.datadonation.encryption.HashSize
+import care.data4life.datadonation.internal.utils.DefaultKeyGenerator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import runTest
@@ -53,6 +56,10 @@ import kotlin.test.assertEquals
 open class ClientTest {
 
     private val language = "en"
+    private val keyPair = DefaultKeyGenerator.newSignatureKeyPrivate(
+        2048,
+        Algorithm.Signature.RsaPSS(HashSize.Hash256)
+    ).let { KeyPair(it.serializedPublic(), it.serializedPrivate()) }
 
     val client = Client(object : Contract.Configuration {
         override fun getServicePublicKey(service: Contract.Service): String = when (service) {
@@ -75,11 +82,11 @@ open class ClientTest {
                         "1QIDAQAB"
         }
 
-        override fun getDonorKeyPair(): KeyPair? = null
+        override fun getDonorKeyPair(): KeyPair = keyPair
 
         override fun getUserSessionToken(tokenListener: ResultListener<String>) {
             tokenListener.onSuccess(
-                "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJvd25lcjoyYmVkNjZmZC1hMjkwLTRiNWUtODRlMC0zMmFiNTNmNjJkNDYiLCJpc3MiOiJ1cm46Z2hjIiwiZXhwIjoxNjAzMjAyODc1LCJuYmYiOjE2MDMyMDI0NTUsImlhdCI6MTYwMzIwMjUxNSwianRpIjoiYWRjYzI2Y2EtMzdlMS00Y2NkLTlhMjUtMmI4NzFlODFmZWRjIiwiZ2hjOmFpZCI6ImJjOTg2ZDEzLTg1Y2EtNGZhYy04ZTQyLTNlMWY2MjI4NDdiNSIsImdoYzpjaWQiOiI4OWRiYzg3Ni1hYzdjLTQzYjctODc0MS0yNWIxNDA2NWZiOTEjYW5kcm9pZF9odWIiLCJnaGM6dWlkIjoiMmJlZDY2ZmQtYTI5MC00YjVlLTg0ZTAtMzJhYjUzZjYyZDQ2IiwiZ2hjOnNjb3BlIjoicGVybTpyIHJlYzpyIHJlYzp3IGF0dGFjaG1lbnQ6ciBhdHRhY2htZW50OncgdXNlcjpyIHVzZXI6cSJ9.MaVF4l6Xasg1f4wFT-ometDj6z7FKTRFOvdvsalmSTVPcEgXvIK84HZX8dF8Z3knACMaEFdcz7vmTF_BGkrjro3yU0Xod0HHtoqPkEexLs-DC-2vgThHYLgZlaajgvpins-Ei_qCHK71dCrZ2osVPp0XLVnt-X3zdbj84fr1mywyvQ7wwEcwyectBb50FGzaR39LOUvAam-sbsfMVGmflrNYRf2oHnOTIJ4HgAnN-zLk4j5JxK1AZqy1XMEtsacKKDBLdzi3WgU7SZhHXZA-9LN3k21PaxegeyU1-NpLGOELZ9CC0ezrBDy9saZUc8GlFjP-E2mP4ZqvWy2jOp4HUVRrppbHwN9z2a2QTvJf6X-2bx_I2jxzg0LsqzvQ8nk_TUZkIo071ls1MHi7Kn7MeLowWUBHZ4rsR-6puhtnHEKJoPZazguK-p_FrpFgOOHbZuksFrtUhcw64FTma6FzMpNtlQc6gvi_VQoZx8fqcPBfIpZ9r_sWLEDhjXtTkfPUNKjY6J0CiRu0_wlmErmBdAKwlk8oyoXiNz69VFm4y4qc3a02MPEtwoAnB0LD3D-lmVTr79uFC4vY-NtF5fjjk8zjygP4pznb-V3UC7l8s2BpyXKil8ckvx9FgmRI0WoKPeFqYh3NvS8U5C-P0T0Ca23x4_oUgTwEPlMDzMpXw1U"
+                "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJvd25lcjpmMmNiNDBhZS1lOGQxLTQzOTctOGIzZC1hMjRmODgwZTRjYmQiLCJpc3MiOiJ1cm46Z2hjIiwiZXhwIjoxNjExMTYzOTMzLCJuYmYiOjE2MTExNjM1MTMsImlhdCI6MTYxMTE2MzU3MywianRpIjoiMDA3MzA5YzAtYTc1ZS00N2JkLWIyMGUtMTJiMmM3OWI1YTlmIiwiZ2hjOmFpZCI6ImVmZGRiOTVhLWFkMTktNDczMS1iOWM5LThjZWMwOTg3MzQzZSIsImdoYzpjaWQiOiI4OWRiYzg3Ni1hYzdjLTQzYjctODc0MS0yNWIxNDA2NWZiOTEjYW5kcm9pZF9odWIiLCJnaGM6dWlkIjoiZjJjYjQwYWUtZThkMS00Mzk3LThiM2QtYTI0Zjg4MGU0Y2JkIiwiZ2hjOnRpZCI6ImQ0bCIsImdoYzpzY29wZSI6InBlcm06ciByZWM6ciByZWM6dyBhdHRhY2htZW50OnIgYXR0YWNobWVudDp3IHVzZXI6ciB1c2VyOnEifQ.D9OZg6TvXAGmiHTNdO8J3pq2exhUhFGulDG3RVug8h2Vx6ZfbdXgtIjc8RbnLqTwXIh58CIOBwbEia4BlasXoqOk0v37K30bpBqXwKUpZ6lX92S2tYaSu1WOE7RwpgMHaRF_uiUcPmewKGucWs4cfxdQ3oprVHmrzyfFBY_GFIR5BKaCDPx3Cc07VxMhG7vJQszzuushmaxsCzvH_6wi3FkG7WYOHgz5I6hMbj-R-d-bOrk8Hpx4LabncqHOfeuoXTM0y-Ll-NTIzef3aso0a29KUz--reTgsGFawLwNSSW6Ml_2WpJpnlpEzN-HYX1mhAJY6mNXYAx-RYhrXvZyR2RDDEPwsWrWrY8qDeVHrxSUkCfWGkJGnTJczdAL2FQuVYc0atwr2MeoKiiseJ_b6i4sFshTbuEX9RaFD8oeTkTNc0w8EwQjk3rHg92osdA5Z-loSdWHZxFpChXURTojnup17huMKAvDoP_RKC7CmJ7VON7IwKb9GgmImu-c6PxahhRMIMOj25Tx1wmW0lgF6xe3TFimJRWrYmcf4micWdFpE7vwkTQHC_zwr0IkaJH6lTqwRJclkh-jcB2KJB3Ngweu7auJ3Y6Vi0S7kiKAW361ciAQSuDv7YgM12lgkPAOzn_EaUc0l2HsQOIpD_u16KHo5CYDNgw1yKCSFGE0CeU"
             )
         }
 
@@ -112,6 +119,7 @@ open class ClientTest {
         println("UserConsent $result")
     }
 
+
     @Ignore
     @Test
     fun registerNewDonorTest() = runTest {
@@ -136,8 +144,8 @@ open class ClientTest {
         println(result)
     }
 
-    @Test
     @Ignore
+    @Test
     fun revokeUserConsentsTest() = runTest {
         //Given
 
@@ -150,9 +158,9 @@ open class ClientTest {
     @Test
     fun donateResourcesTest() = runTest {
         //Given
-
+        registerNewDonorTest()
         //When
-        donateResourcesTest(listOf("donated_resource"))
+        donateResources(listOf("donated_resource"))
         //Then
     }
 
@@ -236,7 +244,7 @@ open class ClientTest {
                 })
         }
 
-    private suspend fun donateResourcesTest(resources: List<String>) =
+    private suspend fun donateResources(resources: List<String>) =
         suspendCoroutine<Unit> { continuation ->
             client.donateResources(resources,
                 object : Callback {

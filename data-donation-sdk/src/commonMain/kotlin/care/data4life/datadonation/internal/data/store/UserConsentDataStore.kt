@@ -33,6 +33,7 @@
 package care.data4life.datadonation.internal.data.store
 
 import care.data4life.datadonation.core.model.UserConsent
+import care.data4life.datadonation.internal.data.model.ConsentSignatureType
 import care.data4life.datadonation.internal.data.service.ConsentService
 import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
 
@@ -45,8 +46,12 @@ internal class UserConsentDataStore(private val service: ConsentService): UserCo
     override suspend fun fetchUserConsents(accessToken: String): List<UserConsent> =
         service.fetchUserConsents(accessToken, false)
 
-    override suspend fun signUserConsent(accessToken: String, message: String): String =
-        service.requestSignature(accessToken, message).signature
+    override suspend fun signUserConsent(
+        accessToken: String,
+        message: String,
+        consentSignatureType: ConsentSignatureType
+    ): String =
+        service.requestSignature(accessToken, message, consentSignatureType).signature
 
     override suspend fun revokeUserConsent(accessToken: String, language: String?) =
         service.revokeUserConsent(accessToken, language)

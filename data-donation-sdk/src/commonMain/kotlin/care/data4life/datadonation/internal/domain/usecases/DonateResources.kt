@@ -75,7 +75,8 @@ internal class DonateResources(
         val request = DonationRequest(keyPair.pkcs8Public, token)
         val encryptedMessage =
             base64encoder.encode(encryptionDD.encrypt(request.toJsonString().toByteArray()))
-        val signature = consentRepository.signUserConsent(encryptedMessage)
+        val signature =
+            consentRepository.signUserConsent(encryptedMessage, ConsentSignatureType.NormalUse)
 
         val consentMessage = ConsentMessage(
             defaultDonationConsentKey,

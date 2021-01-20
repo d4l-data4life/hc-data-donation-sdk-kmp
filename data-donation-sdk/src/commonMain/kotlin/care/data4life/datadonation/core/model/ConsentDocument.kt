@@ -47,5 +47,5 @@ data class ConsentDocument(
     val text: String,
     val requiresToken: Boolean = false,
     @SerialName("studyID") val studyId: String = "",
-    val programName: String
-)
+    val programName: String? = ""
+ )

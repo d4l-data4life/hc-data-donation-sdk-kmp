@@ -99,7 +99,7 @@ suspend inline fun <reified T> HttpClient.putWithoutHeader(
     apply(block)
 }
 
-suspend inline fun <reified T> HttpClient.postWithoutContentType(
+suspend inline fun <reified T> HttpClient.postWithJsonBody(
     environment: Environment,
     accessToken: String,
     baseUrl: String,
@@ -116,7 +116,7 @@ suspend inline fun <reified T> HttpClient.postWithoutContentType(
     apply(block)
 }
 
-suspend inline fun <reified T> HttpClient.postWithoutContentType(
+suspend inline fun <reified T> HttpClient.postWithBody(
     environment: Environment,
     baseUrl: String,
     path: String,
@@ -124,7 +124,7 @@ suspend inline fun <reified T> HttpClient.postWithoutContentType(
     block: HttpRequestBuilder.() -> Unit = {}
 ): T = post(
     scheme = if (environment == Environment.LOCAL) "http" else "https",
-    host = baseUrl, path = path
+    host = baseUrl, path = path, body = body
 ) {
     this.body = body
     apply(block)

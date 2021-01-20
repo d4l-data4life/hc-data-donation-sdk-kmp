@@ -65,7 +65,7 @@ object Version {
 
     // Network
     // https://ktor.io/
-    const val ktor = "1.4.1"
+    const val ktor = "1.4.2"
 
 
     // Database

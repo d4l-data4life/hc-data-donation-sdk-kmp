@@ -33,6 +33,7 @@
 package care.data4life.datadonation.internal.domain.mock
 
 import care.data4life.datadonation.core.model.UserConsent
+import care.data4life.datadonation.internal.data.model.ConsentSignatureType
 import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
 import care.data4life.datadonation.internal.mock.MockException
 import io.ktor.utils.io.errors.IOException
@@ -53,7 +54,11 @@ class MockConsentDataStore : UserConsentRepository.Remote {
     override suspend fun fetchUserConsents(accessToken: String): List<UserConsent> =
         whenFetchUserConsents?.invoke(accessToken) ?: throw MockException()
 
-    override suspend fun signUserConsent(accessToken: String, message: String): String =
+    override suspend fun signUserConsent(
+        accessToken: String,
+        message: String,
+        consentSignatureType: ConsentSignatureType
+    ): String =
         whenSignUserConsent?.invoke(accessToken, message) ?: throw MockException()
 
 

@@ -38,5 +38,5 @@ import kotlinx.serialization.Serializable
 data class ConsentSigningRequest(
     val consentDocumentKey: String,
     val payload: String,
-    val signatureType: String = ConsentSignatureType.NormalUse.apiValue // ConsentSignatureType enum -> apiValue
+    val signatureType: String = ConsentSignatureType.NormalUse.apiValue
 )
