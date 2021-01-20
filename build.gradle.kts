@@ -37,6 +37,9 @@ allprojects {
         maven(url = "https://dl.bintray.com/touchlabpublic/kotlin")
         maven(url = "https://oss.sonatype.org/content/repositories/snapshots/")
         maven(url = "https://dl.bintray.com/korlibs/korlibs")
+        maven("https://raw.github.com/d4l-data4life/maven-repository/main/features")
+        maven("https://raw.github.com/d4l-data4life/maven-repository/main/snapshots")
+        maven("https://raw.github.com/d4l-data4life/maven-repository/main/releases")
     }
 }
 
