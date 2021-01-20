@@ -46,12 +46,11 @@ internal class UserConsentDataStore(private val service: ConsentService): UserCo
     override suspend fun fetchUserConsents(accessToken: String): List<UserConsent> =
         service.fetchUserConsents(accessToken, false)
 
-    override suspend fun signUserConsent(
-        accessToken: String,
-        message: String,
-        consentSignatureType: ConsentSignatureType
-    ): String =
-        service.requestSignature(accessToken, message, consentSignatureType).signature
+    override suspend fun signUserConsentRegistration(accessToken: String, message: String): String =
+        service.requestSignatureRegistration(accessToken, message).signature
+
+    override suspend fun signUserConsentDonation(accessToken: String, message: String): String =
+        service.requestSignatureDonation(accessToken, message).signature
 
     override suspend fun revokeUserConsent(accessToken: String, language: String?) =
         service.revokeUserConsent(accessToken, language)

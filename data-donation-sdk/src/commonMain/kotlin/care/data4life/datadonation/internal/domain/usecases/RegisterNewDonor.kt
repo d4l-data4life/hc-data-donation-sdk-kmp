@@ -79,7 +79,7 @@ internal class RegisterNewDonor(
         val encryptedMessage =
             base64encoder.encode(encryption.encrypt(request.toJsonString().toByteArray()))
         val signature =
-            consentRepository.signUserConsent(encryptedMessage, ConsentSignatureType.ConsentOnce)
+            consentRepository.signUserConsentRegistration(encryptedMessage)
 
         val consentMessage = ConsentMessage(
             defaultDonationConsentKey,

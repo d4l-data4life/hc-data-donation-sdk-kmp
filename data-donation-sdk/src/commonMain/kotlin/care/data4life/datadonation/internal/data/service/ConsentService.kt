@@ -116,7 +116,7 @@ internal class ConsentService(
         }
     }
 
-    suspend fun requestSignature(accessToken: String, message: String, consentSignatureType: ConsentSignatureType): ConsentSignature {
+    suspend fun requestSignatureRegistration(accessToken: String, message: String): ConsentSignature {
         return client.postWithJsonBody(
             environment,
             accessToken,
@@ -125,7 +125,23 @@ internal class ConsentService(
             ConsentSigningRequest(
                 defaultDonationConsentKey,
                 message,
-                consentSignatureType.apiValue
+                ConsentSignatureType.ConsentOnce.apiValue
+            )
+        ) {
+            header(Headers.XSRFToken, getToken(accessToken))
+        }
+    }
+
+    suspend fun requestSignatureDonation(accessToken: String, message: String): ConsentSignature {
+        return client.putWithBody(
+            environment,
+            accessToken,
+            baseUrl,
+            "${Endpoints.userConsents}/$defaultDonationConsentKey/signatures",
+            ConsentSigningRequest(
+                defaultDonationConsentKey,
+                message,
+                ConsentSignatureType.NormalUse.apiValue
             )
         ) {
             header(Headers.XSRFToken, getToken(accessToken))

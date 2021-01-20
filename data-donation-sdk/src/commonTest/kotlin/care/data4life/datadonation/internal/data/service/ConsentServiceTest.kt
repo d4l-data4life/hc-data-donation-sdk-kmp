@@ -127,7 +127,7 @@ internal abstract class ConsentServiceTest : BaseServiceTest<ConsentService>() {
     }
 
     @Test
-    fun requestSignatureTest() = runTest {
+    fun requestSignatureRegistrationTest() = runTest {
         //Given
         givenServiceToResponse(
             Pair("xsrf",
@@ -143,11 +143,35 @@ internal abstract class ConsentServiceTest : BaseServiceTest<ConsentService>() {
 
 
         //When
-        val result = service.requestSignature("T", "message", ConsentSignatureType.ConsentOnce)
+        val result = service.requestSignatureRegistration("T", "message")
 
         //Then
         assertEquals(result, consentSignature)
         assertEquals(HttpMethod.Post, lastRequest.method)
+    }
+
+    @Test
+    fun requestSignatureDonationTest() = runTest {
+        //Given
+        givenServiceToResponse(
+            Pair("xsrf",
+                { respond("", headers = headersOf("X-Csrf-Token", "anyThing")) }),
+            Pair("userConsents", {
+                responseWith(
+                    ConsentSignature.serializer(),
+                    consentSignature
+                )
+            }),
+            contentType = ContentType.Application.OctetStream
+        )
+
+
+        //When
+        val result = service.requestSignatureDonation("T", "message")
+
+        //Then
+        assertEquals(result, consentSignature)
+        assertEquals(HttpMethod.Put, lastRequest.method)
     }
 
     @Test

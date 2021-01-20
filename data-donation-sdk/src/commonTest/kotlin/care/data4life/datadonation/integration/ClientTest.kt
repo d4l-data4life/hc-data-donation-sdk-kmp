@@ -56,10 +56,7 @@ import kotlin.test.assertEquals
 open class ClientTest {
 
     private val language = "en"
-    private val keyPair = DefaultKeyGenerator.newSignatureKeyPrivate(
-        2048,
-        Algorithm.Signature.RsaPSS(HashSize.Hash256)
-    ).let { KeyPair(it.serializedPublic(), it.serializedPrivate()) }
+    private var keyPair: KeyPair? = null
 
     val client = Client(object : Contract.Configuration {
         override fun getServicePublicKey(service: Contract.Service): String = when (service) {
@@ -82,11 +79,11 @@ open class ClientTest {
                         "1QIDAQAB"
         }
 
-        override fun getDonorKeyPair(): KeyPair = keyPair
+        override fun getDonorKeyPair(): KeyPair? = keyPair
 
         override fun getUserSessionToken(tokenListener: ResultListener<String>) {
             tokenListener.onSuccess(
-                "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJvd25lcjpmMmNiNDBhZS1lOGQxLTQzOTctOGIzZC1hMjRmODgwZTRjYmQiLCJpc3MiOiJ1cm46Z2hjIiwiZXhwIjoxNjExMTYzOTMzLCJuYmYiOjE2MTExNjM1MTMsImlhdCI6MTYxMTE2MzU3MywianRpIjoiMDA3MzA5YzAtYTc1ZS00N2JkLWIyMGUtMTJiMmM3OWI1YTlmIiwiZ2hjOmFpZCI6ImVmZGRiOTVhLWFkMTktNDczMS1iOWM5LThjZWMwOTg3MzQzZSIsImdoYzpjaWQiOiI4OWRiYzg3Ni1hYzdjLTQzYjctODc0MS0yNWIxNDA2NWZiOTEjYW5kcm9pZF9odWIiLCJnaGM6dWlkIjoiZjJjYjQwYWUtZThkMS00Mzk3LThiM2QtYTI0Zjg4MGU0Y2JkIiwiZ2hjOnRpZCI6ImQ0bCIsImdoYzpzY29wZSI6InBlcm06ciByZWM6ciByZWM6dyBhdHRhY2htZW50OnIgYXR0YWNobWVudDp3IHVzZXI6ciB1c2VyOnEifQ.D9OZg6TvXAGmiHTNdO8J3pq2exhUhFGulDG3RVug8h2Vx6ZfbdXgtIjc8RbnLqTwXIh58CIOBwbEia4BlasXoqOk0v37K30bpBqXwKUpZ6lX92S2tYaSu1WOE7RwpgMHaRF_uiUcPmewKGucWs4cfxdQ3oprVHmrzyfFBY_GFIR5BKaCDPx3Cc07VxMhG7vJQszzuushmaxsCzvH_6wi3FkG7WYOHgz5I6hMbj-R-d-bOrk8Hpx4LabncqHOfeuoXTM0y-Ll-NTIzef3aso0a29KUz--reTgsGFawLwNSSW6Ml_2WpJpnlpEzN-HYX1mhAJY6mNXYAx-RYhrXvZyR2RDDEPwsWrWrY8qDeVHrxSUkCfWGkJGnTJczdAL2FQuVYc0atwr2MeoKiiseJ_b6i4sFshTbuEX9RaFD8oeTkTNc0w8EwQjk3rHg92osdA5Z-loSdWHZxFpChXURTojnup17huMKAvDoP_RKC7CmJ7VON7IwKb9GgmImu-c6PxahhRMIMOj25Tx1wmW0lgF6xe3TFimJRWrYmcf4micWdFpE7vwkTQHC_zwr0IkaJH6lTqwRJclkh-jcB2KJB3Ngweu7auJ3Y6Vi0S7kiKAW361ciAQSuDv7YgM12lgkPAOzn_EaUc0l2HsQOIpD_u16KHo5CYDNgw1yKCSFGE0CeU"
+                "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJvd25lcjpmMmNiNDBhZS1lOGQxLTQzOTctOGIzZC1hMjRmODgwZTRjYmQiLCJpc3MiOiJ1cm46Z2hjIiwiZXhwIjoxNjExMTY3ODA3LCJuYmYiOjE2MTExNjczODcsImlhdCI6MTYxMTE2NzQ0NywianRpIjoiMWMxZjVhMmItZjA0Ny00NTc5LWE0YWItZDBjY2ZmOTVkMDEwIiwiZ2hjOmFpZCI6ImVmZGRiOTVhLWFkMTktNDczMS1iOWM5LThjZWMwOTg3MzQzZSIsImdoYzpjaWQiOiI4OWRiYzg3Ni1hYzdjLTQzYjctODc0MS0yNWIxNDA2NWZiOTEjYW5kcm9pZF9odWIiLCJnaGM6dWlkIjoiZjJjYjQwYWUtZThkMS00Mzk3LThiM2QtYTI0Zjg4MGU0Y2JkIiwiZ2hjOnRpZCI6ImQ0bCIsImdoYzpzY29wZSI6InBlcm06ciByZWM6ciByZWM6dyBhdHRhY2htZW50OnIgYXR0YWNobWVudDp3IHVzZXI6ciB1c2VyOnEifQ.JpjUvgAk-wCJAY8xu5J9CT93655lXqyy3dki0Gr0sWtU4PpCZePmeGHPABmBKdg3Bj8kdnbz2463OMfeGELigOLe1Mx8nPPPiGV2SPliCZp-rOOOodxscAd1OTT1AnCPmwJXlXHuNj4CUnR_Urr0dvpNt8a3CdwsezhgDwoyDQpKYPbMN-IrI1WcHaG8SCOPhiX-6zMVrnwpS6fBAtAtUbpvVQZXraKjdbiB3ZCoCWAMKG3_2TtamklOYFCPm1rladkptIFPVXR4y_6LoR_ILN77SERxrEERASvm1ZJXwd2EjLHKkabJ1EgIYiqntiCrRNawtYs0sjo4g_5il4nzUHZbrNWHo0c0m9Qzjahj3vJAQEddJcTZdJyM7_Ootmqwo3DTcn4w_xfIDoTArW5tHJ27TRBIo73PoOCAF4iZA4TGE9NassegeEtLl9jtKBDUr3MZVZkZEPZip8XWvX8E3UtIAVx-cji1hHK6P-jOzTZOCYJNCFx2C5ZK7zhVN9oWsImeiagViEe5OuxXWcFc38QE5eHBGjbOAKEGLchkuxk6zX2HhycJEW6JT73Vcf8iYytLF596SQ_uY4O2m1cr8HshFc10mAhGgnMhqHhe1QUIWlwFe5HHz7P4LTeK7zP8iAAVgEqlx7X1ryvpw5ekz7p1hbLYB9hKvvJ-vx13HkI"
             )
         }
 
@@ -158,7 +155,10 @@ open class ClientTest {
     @Test
     fun donateResourcesTest() = runTest {
         //Given
-        registerNewDonorTest()
+        //registerNewDonorTest()
+        val consentDocument = fetchConsentDocument(null, language).first()
+        createUserConsent(consentDocument.version, consentDocument.language)
+        keyPair = register()
         //When
         donateResources(listOf("donated_resource"))
         //Then
