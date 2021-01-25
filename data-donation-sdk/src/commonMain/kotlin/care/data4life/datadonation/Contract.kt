@@ -38,6 +38,7 @@ import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.UserConsent
+import care.data4life.fhir.stu3.model.FhirResource
 import kotlinx.coroutines.CoroutineScope
 
 interface Contract {
@@ -71,11 +72,11 @@ interface Contract {
 
         fun revokeUserConsent(language: String?, callback: Callback)
 
-        /** TODO Donation with FHIR models
-         * fun <T : DomainResource> donateResource(
-         * resource: T,
-         * callback: Callback)
-         * */
+        fun <T : FhirResource> donateResource(
+            resource: T,
+            callback: Callback
+        )
+
     }
 }
 

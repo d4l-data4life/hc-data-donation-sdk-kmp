@@ -73,6 +73,8 @@ kotlin {
                 implementation(Dependency.Multiplatform.serialization.protobuf)
 
                 implementation(Dependency.Multiplatform.dateTime)
+
+                implementation(Dependency.Multiplatform.Fhir.common)
             }
         }
         commonTest {
