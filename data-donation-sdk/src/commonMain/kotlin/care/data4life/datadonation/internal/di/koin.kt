@@ -76,8 +76,8 @@ internal fun initKoin(configuration: Contract.Configuration): KoinApplication {
                         override suspend fun getUserSessionToken(): String? =
                             suspendCoroutine { continuation ->
                                 configuration.getUserSessionToken(object : ResultListener<String> {
-                                    override fun onSuccess(value: String) {
-                                        continuation.resume(value)
+                                    override fun onSuccess(t: String) {
+                                        continuation.resume(t)
                                     }
 
                                     override fun onError(exception: Exception) {
