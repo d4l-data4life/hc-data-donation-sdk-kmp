@@ -132,6 +132,7 @@ private val coreModule = module {
     single<RegistrationRepository.Remote> { RegistrationDataStore(get()) }
     single<ConsentDocumentRepository.Remote> { ConsentDocumentDataStore(get()) }
     single<DonationRepository.Remote> { DonationDataStore(get()) }
+    single<ServiceTokenRepository.Remote> { ServiceTokenDataStore(get()) }
 
 
     //Repositories
@@ -140,6 +141,7 @@ private val coreModule = module {
     single { ConsentDocumentRepository(get(), get()) }
     single { CredentialsRepository(get()) }
     single { DonationRepository(get()) }
+    single { ServiceTokenRepository(get()) }
 
     //Usecases
     single {
