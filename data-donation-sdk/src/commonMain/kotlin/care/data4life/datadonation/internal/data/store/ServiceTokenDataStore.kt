@@ -33,11 +33,11 @@
 package care.data4life.datadonation.internal.data.store
 
 import care.data4life.datadonation.internal.data.service.DonationService
-import care.data4life.datadonation.internal.domain.repositories.RegistrationRepository
+import care.data4life.datadonation.internal.domain.repositories.ServiceTokenRepository
 
-internal class RegistrationDataStore(private val donationService: DonationService) :
-    RegistrationRepository.Remote {
+internal class ServiceTokenDataStore(private val donationService: DonationService) :
+    ServiceTokenRepository.Remote {
 
-    override suspend fun registerNewDonor(data: ByteArray) = donationService.registerNewDonor(data)
+    override suspend fun requestToken() = donationService.requestToken()
 
 }

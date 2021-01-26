@@ -34,14 +34,11 @@ package care.data4life.datadonation.internal.domain.repositories
 
 import care.data4life.datadonation.internal.data.model.DonationPayload
 
-internal class DonationRepository(val remote: Remote) {
-
-    suspend fun requestDonationToken() = remote.requestDonationToken()
+internal class DonationRepository(private val remote: Remote) {
 
     suspend fun donateResources(payload: DonationPayload) = remote.donateResources(payload)
 
     interface Remote {
-        suspend fun requestDonationToken(): String
         suspend fun donateResources(payload: DonationPayload)
     }
 }

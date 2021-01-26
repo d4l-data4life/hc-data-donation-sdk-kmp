@@ -39,8 +39,6 @@ import care.data4life.datadonation.internal.domain.repositories.DonationReposito
 internal class DonationDataStore(private val donationService: DonationService) :
     DonationRepository.Remote {
 
-    override suspend fun requestDonationToken() = donationService.requestToken()
-
     override suspend fun donateResources(payload: DonationPayload) =
         donationService.donateResources(payload)
 

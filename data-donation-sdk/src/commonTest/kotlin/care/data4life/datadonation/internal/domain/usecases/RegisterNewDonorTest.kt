@@ -42,8 +42,10 @@ import care.data4life.datadonation.internal.data.model.*
 import care.data4life.datadonation.internal.data.service.ConsentService
 import care.data4life.datadonation.internal.domain.mock.MockConsentDataStore
 import care.data4life.datadonation.internal.domain.mock.MockRegistrationDataStore
+import care.data4life.datadonation.internal.domain.mock.MockServiceTokenDataStore
 import care.data4life.datadonation.internal.domain.mock.MockUserSessionTokenDataStore
 import care.data4life.datadonation.internal.domain.repositories.RegistrationRepository
+import care.data4life.datadonation.internal.domain.repositories.ServiceTokenRepository
 import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
 import care.data4life.datadonation.internal.utils.Base64Encoder
 import care.data4life.datadonation.internal.utils.KeyGenerator
@@ -64,7 +66,9 @@ abstract class RegisterNewDonorTest {
     private val dummyEncryptedSignedMessage = byteArrayOf(4, 5)
 
     private val mockUserConsentDataStore = MockConsentDataStore()
+    private val mockServiceTokenDataStore = MockServiceTokenDataStore()
     private val mockRegistrationDataStore = MockRegistrationDataStore()
+    private val serviceTokenRepository = ServiceTokenRepository(mockServiceTokenDataStore)
     private val userConsentRepository =
         UserConsentRepository(mockUserConsentDataStore, MockUserSessionTokenDataStore())
     private val registrationRepository = RegistrationRepository(mockRegistrationDataStore)
@@ -115,6 +119,7 @@ abstract class RegisterNewDonorTest {
 
     private val registerNewDonor =
         RegisterNewDonor(
+            serviceTokenRepository,
             registrationRepository,
             userConsentRepository,
             encryptor,
@@ -127,7 +132,7 @@ abstract class RegisterNewDonorTest {
     @Test
     fun registerNewDonorTestWithoutKey() = runTest {
         //Given
-        mockRegistrationDataStore.whenRequestRegistrationToken = { dummyNonce }
+        mockServiceTokenDataStore.whenRequestToken = { dummyNonce }
         mockUserConsentDataStore.whenSignUserConsent = { _, _ -> dummySignature }
 
         //When

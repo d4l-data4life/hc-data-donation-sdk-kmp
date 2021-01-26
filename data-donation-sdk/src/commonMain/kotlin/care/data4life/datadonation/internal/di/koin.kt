@@ -146,6 +146,7 @@ private val coreModule = module {
         DonateResources(
             get(),
             get(),
+            get(),
             get<HybridEncryptionRegistry>().hybridEncryptionDD,
             get<HybridEncryptionRegistry>().hybridEncryptionALP,
             Base64Factory.createEncoder()
@@ -153,6 +154,7 @@ private val coreModule = module {
     }
     single {
         RegisterNewDonor(
+            get(),
             get(),
             get(),
             get<HybridEncryptionRegistry>().hybridEncryptionDD,

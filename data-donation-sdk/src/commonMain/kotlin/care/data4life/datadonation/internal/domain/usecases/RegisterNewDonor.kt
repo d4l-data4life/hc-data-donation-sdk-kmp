@@ -43,6 +43,7 @@ import care.data4life.datadonation.internal.data.model.RegistrationRequest
 import care.data4life.datadonation.internal.data.model.SignedConsentMessage
 import care.data4life.datadonation.internal.data.service.ConsentService.Companion.defaultDonationConsentKey
 import care.data4life.datadonation.internal.domain.repositories.RegistrationRepository
+import care.data4life.datadonation.internal.domain.repositories.ServiceTokenRepository
 import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
 import care.data4life.datadonation.internal.utils.Base64Encoder
 import care.data4life.datadonation.internal.utils.DefaultKeyGenerator
@@ -51,6 +52,7 @@ import care.data4life.datadonation.internal.utils.toJsonString
 import io.ktor.utils.io.core.*
 
 internal class RegisterNewDonor(
+    private val serviceTokenRepository: ServiceTokenRepository,
     private val registrationRepository: RegistrationRepository,
     private val consentRepository: UserConsentRepository,
     private val encryption: HybridEncryption,
@@ -74,7 +76,7 @@ internal class RegisterNewDonor(
     }
 
     private suspend fun registerNewDonor(newKeyPair: SignatureKeyPrivate) {
-        val token = registrationRepository.requestRegistrationToken()
+        val token = serviceTokenRepository.requestToken()
         val request = RegistrationRequest(newKeyPair.pkcs8Public, token)
         val encryptedMessage =
             base64encoder.encode(encryption.encrypt(request.toJsonString().toByteArray()))

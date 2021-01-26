@@ -41,12 +41,14 @@ import care.data4life.datadonation.internal.data.exception.MissingCredentialsExc
 import care.data4life.datadonation.internal.data.model.*
 import care.data4life.datadonation.internal.data.service.ConsentService.Companion.defaultDonationConsentKey
 import care.data4life.datadonation.internal.domain.repositories.DonationRepository
+import care.data4life.datadonation.internal.domain.repositories.ServiceTokenRepository
 import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
 import care.data4life.datadonation.internal.utils.Base64Encoder
 import care.data4life.datadonation.internal.utils.toJsonString
 import io.ktor.utils.io.core.*
 
 internal class DonateResources(
+    private val serviceTokenRepository: ServiceTokenRepository,
     private val donationRepository: DonationRepository,
     private val consentRepository: UserConsentRepository,
     private val encryptionDD: HybridEncryption,
@@ -71,7 +73,7 @@ internal class DonateResources(
     }
 
     private suspend fun donateResources(keyPair: SignatureKeyPrivate, resources: List<String>) {
-        val token = donationRepository.requestDonationToken()
+        val token = serviceTokenRepository.requestToken()
         val request = DonationRequest(keyPair.pkcs8Public, token)
         val encryptedMessage =
             base64encoder.encode(encryptionDD.encrypt(request.toJsonString().toByteArray()))

@@ -38,11 +38,7 @@ import care.data4life.datadonation.internal.mock.MockException
 
 class MockDonationDataStore : DonationRepository.Remote {
 
-    var whenRequestDonationToken: (() -> String)? = null
     var whenDonateResources: ((payload: DonationPayload) -> Unit)? = null
-
-    override suspend fun requestDonationToken(): String =
-        whenRequestDonationToken?.invoke() ?: throw  MockException()
 
     override suspend fun donateResources(payload: DonationPayload) {
         whenDonateResources?.invoke(payload)

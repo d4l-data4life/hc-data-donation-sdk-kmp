@@ -1,7 +1,7 @@
 /*
  * BSD 3-Clause License
  *
- * Copyright (c) 2020, D4L data4life gGmbH
+ * Copyright (c) 2021, D4L data4life gGmbH
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,14 +30,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.data.store
+package care.data4life.datadonation.internal.domain.repositories
 
-import care.data4life.datadonation.internal.data.service.DonationService
-import care.data4life.datadonation.internal.domain.repositories.RegistrationRepository
+class ServiceTokenRepository(private val remote: Remote) {
 
-internal class RegistrationDataStore(private val donationService: DonationService) :
-    RegistrationRepository.Remote {
+    suspend fun requestToken() = remote.requestToken()
 
-    override suspend fun registerNewDonor(data: ByteArray) = donationService.registerNewDonor(data)
-
+    interface Remote {
+        suspend fun requestToken(): String
+    }
 }
