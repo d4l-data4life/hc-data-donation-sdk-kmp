@@ -83,7 +83,7 @@ abstract class RegisterNewDonorTest {
     }
 
     private val requestJsonString =
-        RegistrationRequest(signatureKey.pkcs8Public, dummyNonce).toJsonString()
+        ConsentRequest(signatureKey.pkcs8Public, dummyNonce).toJsonString()
 
     private val consentMessage = ConsentMessage(
         ConsentService.defaultDonationConsentKey,
@@ -94,7 +94,7 @@ abstract class RegisterNewDonorTest {
     private val signedConsentJsonString =
         SignedConsentMessage(consentMessage.toJsonString(), dummySignature).toJsonString()
 
-    private val encryptor = object : HybridEncryption {
+    private val encryptorDD = object : HybridEncryption {
         override fun encrypt(plaintext: ByteArray) = when (plaintext.decodeToString()) {
             requestJsonString -> dummyEncryptedRequest
             signedConsentJsonString -> dummyEncryptedSignedMessage
@@ -117,13 +117,17 @@ abstract class RegisterNewDonorTest {
         ): SignatureKeyPrivate = signatureKey
     }
 
+    private val createRequestConsentPayload = CreateRequestConsentPayload(
+        serviceTokenRepository,
+        userConsentRepository,
+        encryptorDD,
+        base64Encoder
+    )
+
     private val registerNewDonor =
         RegisterNewDonor(
-            serviceTokenRepository,
+            createRequestConsentPayload,
             registrationRepository,
-            userConsentRepository,
-            encryptor,
-            base64Encoder,
             mockKeyGenerator
         )
 
@@ -132,7 +136,7 @@ abstract class RegisterNewDonorTest {
     @Test
     fun registerNewDonorTestWithoutKey() = runTest {
         //Given
-        mockServiceTokenDataStore.whenRequestToken = { dummyNonce }
+        mockServiceTokenDataStore.whenRequestDonationToken = { dummyNonce }
         mockUserConsentDataStore.whenSignUserConsent = { _, _ -> dummySignature }
 
         //When

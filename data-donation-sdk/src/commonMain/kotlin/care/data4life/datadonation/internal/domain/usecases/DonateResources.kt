@@ -48,12 +48,9 @@ import care.data4life.datadonation.internal.utils.toJsonString
 import io.ktor.utils.io.core.*
 
 internal class DonateResources(
-    private val serviceTokenRepository: ServiceTokenRepository,
+    private val createRequestConsentPayload: CreateRequestConsentPayload,
     private val donationRepository: DonationRepository,
-    private val consentRepository: UserConsentRepository,
-    private val encryptionDD: HybridEncryption,
     private val encryptionALP: HybridEncryption,
-    private val base64encoder: Base64Encoder,
     private val signatureProvider: (KeyPair) -> SignatureKeyPrivate = defaultSignatureProvider
 ) :
     ParameterizedUsecase<DonateResources.Parameters, Unit>() {
@@ -73,21 +70,12 @@ internal class DonateResources(
     }
 
     private suspend fun donateResources(keyPair: SignatureKeyPrivate, resources: List<String>) {
-        val token = serviceTokenRepository.requestToken()
-        val request = DonationRequest(keyPair.pkcs8Public, token)
-        val encryptedMessage =
-            base64encoder.encode(encryptionDD.encrypt(request.toJsonString().toByteArray()))
-        val signature =
-            consentRepository.signUserConsentDonation(encryptedMessage)
-
-        val consentMessage = ConsentMessage(
-            defaultDonationConsentKey,
-            ConsentSignatureType.NormalUse.apiValue,
-            encryptedMessage
-        )
-        val signedMessage = SignedConsentMessage(consentMessage.toJsonString(), signature)
-        val encryptedSignedMessage = encryptionDD.encrypt(signedMessage.toJsonString().toByteArray())
-
+        val encryptedSignedMessage = createRequestConsentPayload.withParams(
+            CreateRequestConsentPayload.Parameters(
+                ConsentSignatureType.NormalUse,
+                keyPair
+            )
+        ).execute()
         val signedEncryptedDocuments = resources.map {
             val encryptedDocument = encryptionALP.encrypt(it.encodeToByteArray())
             DocumentWithSignature(

@@ -93,7 +93,7 @@ abstract class DonateResourcesTest {
     }
 
     private val requestJsonString =
-        DonationRequest(signatureKey.pkcs8Public, dummyNonce).toJsonString()
+        ConsentRequest(signatureKey.pkcs8Public, dummyNonce).toJsonString()
 
     private val consentMessage = ConsentMessage(
         ConsentService.defaultDonationConsentKey,
@@ -131,14 +131,18 @@ abstract class DonateResourcesTest {
 
     }
 
+    private val createRequestConsentPayload = CreateRequestConsentPayload(
+        serviceTokenRepository,
+        userConsentRepository,
+        encryptorDD,
+        base64Encoder
+    )
+
     private val donateResources =
         DonateResources(
-            serviceTokenRepository,
+            createRequestConsentPayload,
             donationRepository,
-            userConsentRepository,
-            encryptorDD,
-            encryptorALP,
-            base64Encoder)
+            encryptorALP)
             { signatureKey }
 
 
@@ -148,7 +152,7 @@ abstract class DonateResourcesTest {
     fun donateResourcesTest() = runTest {
         //Given
         var result: DonationPayload? = null
-        mockServiceTokenDataStore.whenRequestToken = { dummyNonce }
+        mockServiceTokenDataStore.whenRequestDonationToken = { dummyNonce }
         mockUserConsentDataStore.whenSignUserConsent = { _, _ -> dummySignature }
         mockDonationDataStore.whenDonateResources = {  payload ->  result = payload }
 
@@ -170,7 +174,7 @@ abstract class DonateResourcesTest {
     @Test
     fun donateResourcesTestWithoutKeyFails() = runTest {
         //Given
-        mockServiceTokenDataStore.whenRequestToken = { dummyNonce }
+        mockServiceTokenDataStore.whenRequestDonationToken = { dummyNonce }
         mockUserConsentDataStore.whenSignUserConsent = { _, _ -> dummySignature }
 
         //When

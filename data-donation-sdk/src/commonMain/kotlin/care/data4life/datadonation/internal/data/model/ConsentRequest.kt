@@ -35,7 +35,5 @@ package care.data4life.datadonation.internal.data.model
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-typealias RegistrationRequest = DonationRequest
-
 @Serializable
-data class DonationRequest(@SerialName("donorID") val donorId: String, val token: String)
+data class ConsentRequest(@SerialName("donorID") val donorId: String, val token: String)

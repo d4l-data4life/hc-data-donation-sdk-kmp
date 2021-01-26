@@ -1,7 +1,7 @@
 /*
  * BSD 3-Clause License
  *
- * Copyright (c) 2020, D4L data4life gGmbH
+ * Copyright (c) 2021, D4L data4life gGmbH
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,55 +32,51 @@
 
 package care.data4life.datadonation.internal.domain.usecases
 
-import care.data4life.datadonation.core.model.KeyPair
-import care.data4life.datadonation.encryption.Algorithm
-import care.data4life.datadonation.encryption.HashSize
 import care.data4life.datadonation.encryption.hybrid.HybridEncryption
 import care.data4life.datadonation.encryption.signature.SignatureKeyPrivate
 import care.data4life.datadonation.internal.data.model.*
-import care.data4life.datadonation.internal.data.service.ConsentService.Companion.defaultDonationConsentKey
-import care.data4life.datadonation.internal.domain.repositories.RegistrationRepository
+import care.data4life.datadonation.internal.data.service.ConsentService
 import care.data4life.datadonation.internal.domain.repositories.ServiceTokenRepository
 import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
 import care.data4life.datadonation.internal.utils.Base64Encoder
-import care.data4life.datadonation.internal.utils.DefaultKeyGenerator
-import care.data4life.datadonation.internal.utils.KeyGenerator
 import care.data4life.datadonation.internal.utils.toJsonString
 import io.ktor.utils.io.core.*
 
-internal class RegisterNewDonor(
-    private val createRequestConsentPayload: CreateRequestConsentPayload,
-    private val registrationRepository: RegistrationRepository,
-    private val keyGenerator: KeyGenerator = DefaultKeyGenerator
-) :
-    ParameterizedUsecase<RegisterNewDonor.Parameters, KeyPair>() {
+internal class CreateRequestConsentPayload(
+    private val serviceTokenRepository: ServiceTokenRepository,
+    private val consentRepository: UserConsentRepository,
+    private val encryptionDD: HybridEncryption,
+    private val base64encoder: Base64Encoder,
+):
+    ParameterizedUsecase<CreateRequestConsentPayload.Parameters, ByteArray>() {
 
-    override suspend fun execute(): KeyPair {
-        return if (parameter.keyPair == null) {
-            val newKeyPair = keyGenerator.newSignatureKeyPrivate(
-                2048,
-                Algorithm.Signature.RsaPSS(HashSize.Hash256)
-            )
-            registerNewDonor(newKeyPair)
+    override suspend fun execute(): ByteArray {
+        val token = serviceTokenRepository.requestDonationToken()
+        val request = ConsentRequest(parameter.SignatureKeyPrivate.pkcs8Public, token)
+        val encryptedMessage =
+            base64encoder.encode(encryptionDD.encrypt(request.toJsonString().toByteArray()))
 
-            KeyPair(newKeyPair.serializedPublic(), newKeyPair.serializedPrivate())
-        } else {
-            parameter.keyPair!!
+        val signature = when (parameter.signatureType) {
+            ConsentSignatureType.ConsentOnce -> {
+                consentRepository.signUserConsentRegistration(encryptedMessage)
+            }
+            ConsentSignatureType.NormalUse -> {
+                consentRepository.signUserConsentDonation(encryptedMessage)
+            }
+            else -> throw UnsupportedOperationException()
         }
+
+        val consentMessage = ConsentMessage(
+            ConsentService.defaultDonationConsentKey,
+            parameter.signatureType.apiValue,
+            encryptedMessage
+        )
+        val signedMessage = SignedConsentMessage(consentMessage.toJsonString(), signature)
+        return encryptionDD.encrypt(signedMessage.toJsonString().toByteArray())
     }
 
-    private suspend fun registerNewDonor(newKeyPair: SignatureKeyPrivate) {
-        val payload = createRequestConsentPayload.withParams(
-            CreateRequestConsentPayload.Parameters(
-                ConsentSignatureType.ConsentOnce,
-                newKeyPair
-            )
-        ).execute()
-        registrationRepository.registerNewDonor(payload)
-    }
-
-    data class Parameters(val keyPair: KeyPair?)
-
-
+    data class Parameters(
+        val signatureType: ConsentSignatureType,
+        val SignatureKeyPrivate: SignatureKeyPrivate
+    )
 }
-

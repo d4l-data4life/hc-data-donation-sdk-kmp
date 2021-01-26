@@ -144,23 +144,24 @@ private val coreModule = module {
     single { ServiceTokenRepository(get()) }
 
     //Usecases
+    single { CreateRequestConsentPayload(
+        get(),
+        get(),
+        get<HybridEncryptionRegistry>().hybridEncryptionDD,
+        Base64Factory.createEncoder()
+    )}
     single {
         DonateResources(
             get(),
             get(),
-            get(),
-            get<HybridEncryptionRegistry>().hybridEncryptionDD,
-            get<HybridEncryptionRegistry>().hybridEncryptionALP,
-            Base64Factory.createEncoder()
+            get<HybridEncryptionRegistry>().hybridEncryptionALP
         )
     }
     single {
         RegisterNewDonor(
             get(),
             get(),
-            get(),
-            get<HybridEncryptionRegistry>().hybridEncryptionDD,
-            Base64Factory.createEncoder()
+            get()
         )
     }
     single { FetchConsentDocuments(get()) }
