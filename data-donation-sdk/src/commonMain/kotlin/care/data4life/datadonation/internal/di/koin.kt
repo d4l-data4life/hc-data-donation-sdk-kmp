@@ -160,7 +160,6 @@ private val coreModule = module {
     single {
         RegisterNewDonor(
             get(),
-            get(),
             get()
         )
     }
