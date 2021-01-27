@@ -132,6 +132,14 @@ object Dependency {
 
         val dateTime = "org.jetbrains.kotlinx:kotlinx-datetime:${Version.dateTime}"
 
+        object Fhir {
+            const val common = "care.data4life.hc-fhir-sdk-kmp:fhir:${Version.fhir}"
+            const val jvm = "care.data4life.hc-fhir-sdk-kmp:fhir-jvm:${Version.fhir}"
+            const val android = "care.data4life.hc-fhir-sdk-kmp:fhir-android:${Version.fhir}"
+            const val iosArm64 = "care.data4life.hc-fhir-sdk-kmp:fhir-iosarm64:${Version.fhir}"
+            const val iosX64 = "care.data4life.hc-fhir-sdk-kmp:fhir-iosx64:${Version.fhir}"
+        }
+
     }
 
     val test = Test
@@ -184,7 +192,7 @@ object Dependency {
         }
 
         const val threeTenABP = "com.jakewharton.threetenabp:threetenabp:${Version.threeTenABP}"
-        
+
         const val bouncyCastle = "org.bouncycastle:bcprov-jdk15on:${Version.bouncyCastle}"
 
     }

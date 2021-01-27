@@ -48,6 +48,10 @@ import care.data4life.datadonation.internal.domain.repositories.ServiceTokenRepo
 import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
 import care.data4life.datadonation.internal.utils.Base64Encoder
 import care.data4life.datadonation.internal.utils.toJsonString
+import care.data4life.fhir.stu3.FhirStu3Parser
+import care.data4life.fhir.stu3.codesystem.QuestionnaireResponseStatus
+import care.data4life.fhir.stu3.model.QuestionnaireResponse
+import care.data4life.fhir.stu3.model.Reference
 import io.ktor.utils.io.charsets.*
 import runTest
 import kotlin.test.Test
@@ -64,7 +68,15 @@ abstract class DonateResourcesTest {
     private val dummyEncryptedRequest64Encoded = "encryptedRequest64Encoded"
     private val dummyEncryptedSignedMessage = byteArrayOf(4, 5)
 
-    private val dummyResourceList = listOf("resource1", "resource2", "resource3")
+    private val dummyResponse = QuestionnaireResponse(
+        status = QuestionnaireResponseStatus.COMPLETED,
+        id = "id_1",
+        language = "en",
+        questionnaire = Reference(id = "questionnaire_id"),
+        item = emptyList()
+    )
+    private val dummyResourceList =
+        listOf(dummyResponse, dummyResponse.copy(id = "id_2"), dummyResponse.copy(id = "id_3"))
     private val dummyEncryptedResourceList =
         listOf(DummyData.rawData, DummyData.rawData, DummyData.rawData)
     private val dummyEncryptedResourceSignatureList =
@@ -77,6 +89,8 @@ abstract class DonateResourcesTest {
         UserConsentRepository(mockUserConsentDataStore, MockUserSessionTokenDataStore())
     private val serviceTokenRepository = ServiceTokenRepository(mockServiceTokenDataStore)
     private val donationRepository = DonationRepository(mockDonationDataStore)
+
+    private val fhirParser = FhirStu3Parser.defaultJsonParser()
 
     private val signatureKey = object: SignatureKeyPrivate {
         override fun sign(data: ByteArray) = when (data) {
@@ -115,11 +129,12 @@ abstract class DonateResourcesTest {
     }
 
     private val encryptorALP = object : HybridEncryption {
-        override fun encrypt(plaintext: ByteArray) = when (plaintext.decodeToString()) {
-            dummyResourceList[0] -> dummyEncryptedResourceList[0]
-            dummyResourceList[1] -> dummyEncryptedResourceList[1]
-            dummyResourceList[2] -> dummyEncryptedResourceList[2]
-            else -> byteArrayOf()
+        override fun encrypt(plaintext: ByteArray) =
+            when (fhirParser.fromJson(QuestionnaireResponse::class, plaintext.decodeToString())) {
+                dummyResourceList[0] -> dummyEncryptedResourceList[0]
+                dummyResourceList[1] -> dummyEncryptedResourceList[1]
+                dummyResourceList[2] -> dummyEncryptedResourceList[2]
+                else -> byteArrayOf()
         }
         override fun decrypt(ciphertext: ByteArray) = Result.success(byteArrayOf())
 

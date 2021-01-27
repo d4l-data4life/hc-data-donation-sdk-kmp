@@ -40,9 +40,8 @@ import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.UserConsent
-import care.data4life.datadonation.encryption.Algorithm
-import care.data4life.datadonation.encryption.HashSize
-import care.data4life.datadonation.internal.utils.DefaultKeyGenerator
+import care.data4life.fhir.stu3.codesystem.QuestionnaireResponseStatus
+import care.data4life.fhir.stu3.model.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import runTest
@@ -155,12 +154,24 @@ open class ClientTest {
     @Test
     fun donateResourcesTest() = runTest {
         //Given
-        //registerNewDonorTest()
+        val response = QuestionnaireResponse(
+            status = QuestionnaireResponseStatus.COMPLETED,
+            id = "id",
+            language = "en",
+            questionnaire = Reference(id = "questionnaire_id"),
+            item = listOf(
+                QuestionnaireResponseItem(
+                    linkId = "linkId",
+                    text = "dummy text question",
+                    answer = listOf(QuestionnaireResponseItemAnswer(valueString = "dummy answer"))
+                )
+            )
+        )
         val consentDocument = fetchConsentDocument(null, language).first()
         createUserConsent(consentDocument.version, consentDocument.language)
         keyPair = register()
         //When
-        donateResources(listOf("donated_resource"))
+        donateResources(listOf(response))
         //Then
     }
 
@@ -244,7 +255,7 @@ open class ClientTest {
                 })
         }
 
-    private suspend fun donateResources(resources: List<String>) =
+    private suspend fun donateResources(resources: List<FhirResource>) =
         suspendCoroutine<Unit> { continuation ->
             client.donateResources(resources,
                 object : Callback {

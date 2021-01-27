@@ -39,6 +39,7 @@ import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.di.initKoin
 import care.data4life.datadonation.internal.domain.usecases.*
+import care.data4life.fhir.stu3.model.FhirResource
 import kotlinx.coroutines.launch
 
 class Client(private val configuration: Contract.Configuration) : Contract.DataDonation {
@@ -96,12 +97,13 @@ class Client(private val configuration: Contract.Configuration) : Contract.DataD
             .runForListener(callback)
     }
 
-    override fun donateResources(resources: List<String>, callback: Callback) {
+    override fun <T : FhirResource> donateResources(resources: List<T>, callback: Callback) {
         donateResources.withParams(
             DonateResources.Parameters(
                 configuration.getDonorKeyPair(),
                 resources
-            )).runForListener(callback)
+            )
+        ).runForListener(callback)
     }
 
     private fun <ReturnType : Any> Usecase<ReturnType>.runForListener(

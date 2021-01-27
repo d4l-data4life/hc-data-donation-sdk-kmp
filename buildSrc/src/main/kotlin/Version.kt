@@ -76,6 +76,9 @@ object Version {
     const val bouncyCastle = "1.64"
 
 
+    // https://github.com/d4l-data4life/hc-fhir-sdk-kmp
+    const val fhir = "0.0.1-add-custom-maven-deployment-SNAPSHOT"
+
     // Junit Test
     const val testJUnit = "4.13"
 

@@ -45,6 +45,8 @@ import care.data4life.datadonation.internal.domain.repositories.ServiceTokenRepo
 import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
 import care.data4life.datadonation.internal.utils.Base64Encoder
 import care.data4life.datadonation.internal.utils.toJsonString
+import care.data4life.fhir.stu3.FhirStu3Parser
+import care.data4life.fhir.stu3.model.FhirResource
 import io.ktor.utils.io.core.*
 
 internal class DonateResources(
@@ -69,7 +71,7 @@ internal class DonateResources(
         } ?: throw MissingCredentialsException()
     }
 
-    private suspend fun donateResources(keyPair: SignatureKeyPrivate, resources: List<String>) {
+    private suspend fun donateResources(keyPair: SignatureKeyPrivate, resources: List<FhirResource>) {
         val encryptedSignedMessage = createRequestConsentPayload.withParams(
             CreateRequestConsentPayload.Parameters(
                 ConsentSignatureType.NormalUse,
@@ -77,7 +79,7 @@ internal class DonateResources(
             )
         ).execute()
         val signedEncryptedDocuments = resources.map {
-            val encryptedDocument = encryptionALP.encrypt(it.encodeToByteArray())
+            val encryptedDocument = encryptionALP.encrypt(it.toJsonString().toByteArray())
             DocumentWithSignature(
                 document = encryptedDocument,
                 signature = keyPair.sign(encryptedDocument)
@@ -90,7 +92,9 @@ internal class DonateResources(
         donationRepository.donateResources(payload)
     }
 
-    data class Parameters(val keyPair: KeyPair?, val resources: List<String>)
+    data class Parameters(val keyPair: KeyPair?, val resources: List<FhirResource>)
 
 
 }
+
+internal fun FhirResource.toJsonString() = FhirStu3Parser.defaultJsonParser().toJson(this)
