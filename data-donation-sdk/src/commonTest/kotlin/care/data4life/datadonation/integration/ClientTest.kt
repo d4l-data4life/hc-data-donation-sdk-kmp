@@ -40,6 +40,8 @@ import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.UserConsent
+import care.data4life.fhir.stu3.codesystem.QuestionnaireResponseStatus
+import care.data4life.fhir.stu3.model.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import runTest
@@ -53,22 +55,34 @@ import kotlin.test.assertEquals
 open class ClientTest {
 
     private val language = "en"
+    private var keyPair: KeyPair? = null
 
     val client = Client(object : Contract.Configuration {
-        override fun getServicePublicKey(): String =
-            "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwWYsUPv7etCQYYhMtwkP" +
-                    "xGH7144My0yUnqCmF38w40S7CCd54fa1zhijyvAEU67gMgxesyi2bMHPQJp2E63f" +
-                    "g/0IcY4kY//9NrtWY7QovOJaFa8ov+wiIbKa3Y5zy4sxq8VoBJlr1EBYaQNX6I9f" +
-                    "NG+IcQlkoTTqL+qt7lYsW0P4H3vR/92HHaJjA+yvSbXhePMh2IN4ESTqbBSSwWfd" +
-                    "AHtFlH63hV65EB0pUudPumWpUrJWYczveoUO3XUU4qmJ7lZU0kTUFBwwfdeprZtG" +
-                    "nEgS+ZIQAp4Y9BId1Ris5XgZDwmMYF8mB1sqGEnbQkmkaMPoboeherMio0Z/PD6J" +
-                    "rQIDAQAB"
+        override fun getServicePublicKey(service: Contract.Service): String = when (service) {
+            Contract.Service.DD ->
+                "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwWYsUPv7etCQYYhMtwkP" +
+                        "xGH7144My0yUnqCmF38w40S7CCd54fa1zhijyvAEU67gMgxesyi2bMHPQJp2E63f" +
+                        "g/0IcY4kY//9NrtWY7QovOJaFa8ov+wiIbKa3Y5zy4sxq8VoBJlr1EBYaQNX6I9f" +
+                        "NG+IcQlkoTTqL+qt7lYsW0P4H3vR/92HHaJjA+yvSbXhePMh2IN4ESTqbBSSwWfd" +
+                        "AHtFlH63hV65EB0pUudPumWpUrJWYczveoUO3XUU4qmJ7lZU0kTUFBwwfdeprZtG" +
+                        "nEgS+ZIQAp4Y9BId1Ris5XgZDwmMYF8mB1sqGEnbQkmkaMPoboeherMio0Z/PD6J" +
+                        "rQIDAQAB"
 
-        override fun getDonorKeyPair(): KeyPair? = null
+            Contract.Service.ALP ->
+                "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvemFxDHLfwTWztqu+M5t" +
+                        "+becNfUvJpYBqRYsRFKxoUe2s+9WZjwPMzIvJ43DlCK2dqtZelomGhVpi53AqbG7" +
+                        "/Nm3dMH1nNSacfz20tZclshimJuHF1d126tbGn/3WdAxYfTq9DN8GZmqgRf1iunl" +
+                        "+DwE/sP3Dm8I1y4BG3RyQcD/K66s0PWvpX71UlvoVdWmWA5rGkfzi4msdZz7wfwV" +
+                        "I1cGnAX+YrBGTfkwJtHuHXCcLuR3zdNnG/ZB87O0Etl2bFHjCsDbAIRDggjXW+t0" +
+                        "0G+OALY8BMdU1cYKb8GBdqQW11BhRttGvFKFFt3i/8KH0b9ff80whY0bbeTAo51/" +
+                        "1QIDAQAB"
+        }
+
+        override fun getDonorKeyPair(): KeyPair? = keyPair
 
         override fun getUserSessionToken(tokenListener: ResultListener<String>) {
             tokenListener.onSuccess(
-                "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJvd25lcjoyYmVkNjZmZC1hMjkwLTRiNWUtODRlMC0zMmFiNTNmNjJkNDYiLCJpc3MiOiJ1cm46Z2hjIiwiZXhwIjoxNjAzMjAyODc1LCJuYmYiOjE2MDMyMDI0NTUsImlhdCI6MTYwMzIwMjUxNSwianRpIjoiYWRjYzI2Y2EtMzdlMS00Y2NkLTlhMjUtMmI4NzFlODFmZWRjIiwiZ2hjOmFpZCI6ImJjOTg2ZDEzLTg1Y2EtNGZhYy04ZTQyLTNlMWY2MjI4NDdiNSIsImdoYzpjaWQiOiI4OWRiYzg3Ni1hYzdjLTQzYjctODc0MS0yNWIxNDA2NWZiOTEjYW5kcm9pZF9odWIiLCJnaGM6dWlkIjoiMmJlZDY2ZmQtYTI5MC00YjVlLTg0ZTAtMzJhYjUzZjYyZDQ2IiwiZ2hjOnNjb3BlIjoicGVybTpyIHJlYzpyIHJlYzp3IGF0dGFjaG1lbnQ6ciBhdHRhY2htZW50OncgdXNlcjpyIHVzZXI6cSJ9.MaVF4l6Xasg1f4wFT-ometDj6z7FKTRFOvdvsalmSTVPcEgXvIK84HZX8dF8Z3knACMaEFdcz7vmTF_BGkrjro3yU0Xod0HHtoqPkEexLs-DC-2vgThHYLgZlaajgvpins-Ei_qCHK71dCrZ2osVPp0XLVnt-X3zdbj84fr1mywyvQ7wwEcwyectBb50FGzaR39LOUvAam-sbsfMVGmflrNYRf2oHnOTIJ4HgAnN-zLk4j5JxK1AZqy1XMEtsacKKDBLdzi3WgU7SZhHXZA-9LN3k21PaxegeyU1-NpLGOELZ9CC0ezrBDy9saZUc8GlFjP-E2mP4ZqvWy2jOp4HUVRrppbHwN9z2a2QTvJf6X-2bx_I2jxzg0LsqzvQ8nk_TUZkIo071ls1MHi7Kn7MeLowWUBHZ4rsR-6puhtnHEKJoPZazguK-p_FrpFgOOHbZuksFrtUhcw64FTma6FzMpNtlQc6gvi_VQoZx8fqcPBfIpZ9r_sWLEDhjXtTkfPUNKjY6J0CiRu0_wlmErmBdAKwlk8oyoXiNz69VFm4y4qc3a02MPEtwoAnB0LD3D-lmVTr79uFC4vY-NtF5fjjk8zjygP4pznb-V3UC7l8s2BpyXKil8ckvx9FgmRI0WoKPeFqYh3NvS8U5C-P0T0Ca23x4_oUgTwEPlMDzMpXw1U"
+                "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJvd25lcjpmMmNiNDBhZS1lOGQxLTQzOTctOGIzZC1hMjRmODgwZTRjYmQiLCJpc3MiOiJ1cm46Z2hjIiwiZXhwIjoxNjExMTY3ODA3LCJuYmYiOjE2MTExNjczODcsImlhdCI6MTYxMTE2NzQ0NywianRpIjoiMWMxZjVhMmItZjA0Ny00NTc5LWE0YWItZDBjY2ZmOTVkMDEwIiwiZ2hjOmFpZCI6ImVmZGRiOTVhLWFkMTktNDczMS1iOWM5LThjZWMwOTg3MzQzZSIsImdoYzpjaWQiOiI4OWRiYzg3Ni1hYzdjLTQzYjctODc0MS0yNWIxNDA2NWZiOTEjYW5kcm9pZF9odWIiLCJnaGM6dWlkIjoiZjJjYjQwYWUtZThkMS00Mzk3LThiM2QtYTI0Zjg4MGU0Y2JkIiwiZ2hjOnRpZCI6ImQ0bCIsImdoYzpzY29wZSI6InBlcm06ciByZWM6ciByZWM6dyBhdHRhY2htZW50OnIgYXR0YWNobWVudDp3IHVzZXI6ciB1c2VyOnEifQ.JpjUvgAk-wCJAY8xu5J9CT93655lXqyy3dki0Gr0sWtU4PpCZePmeGHPABmBKdg3Bj8kdnbz2463OMfeGELigOLe1Mx8nPPPiGV2SPliCZp-rOOOodxscAd1OTT1AnCPmwJXlXHuNj4CUnR_Urr0dvpNt8a3CdwsezhgDwoyDQpKYPbMN-IrI1WcHaG8SCOPhiX-6zMVrnwpS6fBAtAtUbpvVQZXraKjdbiB3ZCoCWAMKG3_2TtamklOYFCPm1rladkptIFPVXR4y_6LoR_ILN77SERxrEERASvm1ZJXwd2EjLHKkabJ1EgIYiqntiCrRNawtYs0sjo4g_5il4nzUHZbrNWHo0c0m9Qzjahj3vJAQEddJcTZdJyM7_Ootmqwo3DTcn4w_xfIDoTArW5tHJ27TRBIo73PoOCAF4iZA4TGE9NassegeEtLl9jtKBDUr3MZVZkZEPZip8XWvX8E3UtIAVx-cji1hHK6P-jOzTZOCYJNCFx2C5ZK7zhVN9oWsImeiagViEe5OuxXWcFc38QE5eHBGjbOAKEGLchkuxk6zX2HhycJEW6JT73Vcf8iYytLF596SQ_uY4O2m1cr8HshFc10mAhGgnMhqHhe1QUIWlwFe5HHz7P4LTeK7zP8iAAVgEqlx7X1ryvpw5ekz7p1hbLYB9hKvvJ-vx13HkI"
             )
         }
 
@@ -101,6 +115,7 @@ open class ClientTest {
         println("UserConsent $result")
     }
 
+
     @Ignore
     @Test
     fun registerNewDonorTest() = runTest {
@@ -125,8 +140,8 @@ open class ClientTest {
         println(result)
     }
 
-    @Test
     @Ignore
+    @Test
     fun revokeUserConsentsTest() = runTest {
         //Given
 
@@ -135,13 +150,38 @@ open class ClientTest {
         //Then
     }
 
+    @Ignore
+    @Test
+    fun donateResourcesTest() = runTest {
+        //Given
+        val response = QuestionnaireResponse(
+            status = QuestionnaireResponseStatus.COMPLETED,
+            id = "id",
+            language = "en",
+            questionnaire = Reference(id = "questionnaire_id"),
+            item = listOf(
+                QuestionnaireResponseItem(
+                    linkId = "linkId",
+                    text = "dummy text question",
+                    answer = listOf(QuestionnaireResponseItemAnswer(valueString = "dummy answer"))
+                )
+            )
+        )
+        val consentDocument = fetchConsentDocument(null, language).first()
+        createUserConsent(consentDocument.version, consentDocument.language)
+        keyPair = register()
+        //When
+        donateResources(listOf(response))
+        //Then
+    }
+
     private suspend fun fetchConsentDocument(
-        consentDucomentVersion: Int?,
+        consentDocumentVersion: Int?,
         language: String?
     ): List<ConsentDocument> =
         suspendCoroutine { continuation ->
             client.fetchConsentDocument(
-                consentDucomentVersion,
+                consentDocumentVersion,
                 language,
                 object : ResultListener<List<ConsentDocument>> {
                     override fun onSuccess(t: List<ConsentDocument>) {
@@ -204,6 +244,20 @@ open class ClientTest {
     private suspend fun revokeUserConsent(language: String?) =
         suspendCoroutine<Unit> { continuation ->
             client.revokeUserConsent(language,
+                object : Callback {
+                    override fun onSuccess() {
+                        continuation.resume(Unit)
+                    }
+
+                    override fun onError(exception: Exception) {
+                        continuation.resumeWithException(exception)
+                    }
+                })
+        }
+
+    private suspend fun donateResources(resources: List<FhirResource>) =
+        suspendCoroutine<Unit> { continuation ->
+            client.donateResources(resources,
                 object : Callback {
                     override fun onSuccess() {
                         continuation.resume(Unit)

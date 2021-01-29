@@ -37,5 +37,6 @@ import care.data4life.datadonation.internal.data.store.CredentialsDataStore
 internal class CredentialsRepository(private val dataStore: CredentialsDataStore) {
 
     fun getDataDonationPublicKey() = dataStore.getDataDonationPublicKey()
+    fun getAnalyticsPlatformPublicKey() = dataStore.getAnalyticsPlatformPublicKey()
 
 }

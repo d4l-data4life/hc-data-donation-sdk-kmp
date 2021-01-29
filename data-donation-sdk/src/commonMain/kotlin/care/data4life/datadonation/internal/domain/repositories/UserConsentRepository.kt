@@ -33,6 +33,7 @@
 package care.data4life.datadonation.internal.domain.repositories
 
 import care.data4life.datadonation.core.model.UserConsent
+import care.data4life.datadonation.internal.data.model.ConsentSignatureType
 import care.data4life.datadonation.internal.data.store.UserSessionTokenDataStore
 
 internal class UserConsentRepository(
@@ -46,8 +47,11 @@ internal class UserConsentRepository(
     suspend fun fetchUserConsents(): List<UserConsent> =
         remote.fetchUserConsents(sessionToken.getUserSessionToken()!!)
 
-    suspend fun signUserConsent(message: String): String =
-        remote.signUserConsent(sessionToken.getUserSessionToken()!!, message)
+    suspend fun signUserConsentRegistration(message: String): String =
+        remote.signUserConsentRegistration(sessionToken.getUserSessionToken()!!, message)
+
+    suspend fun signUserConsentDonation(message: String): String =
+        remote.signUserConsentDonation(sessionToken.getUserSessionToken()!!, message)
 
     suspend fun revokeUserConsent(language: String?) =
         remote.revokeUserConsent(sessionToken.getUserSessionToken()!!, language)
@@ -55,7 +59,8 @@ internal class UserConsentRepository(
     interface Remote {
         suspend fun createUserConsent(accessToken: String, version: Int, language: String?)
         suspend fun fetchUserConsents(accessToken: String): List<UserConsent>
-        suspend fun signUserConsent(accessToken: String, message: String): String
+        suspend fun signUserConsentRegistration(accessToken: String, message: String): String
+        suspend fun signUserConsentDonation(accessToken: String, message: String): String
         suspend fun revokeUserConsent(accessToken: String, language: String?)
     }
 }

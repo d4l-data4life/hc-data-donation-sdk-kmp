@@ -33,8 +33,11 @@
 package care.data4life.datadonation.internal.data.service
 
 import care.data4life.datadonation.core.model.Environment
+import care.data4life.datadonation.internal.data.model.DonationPayload
+import care.data4life.datadonation.internal.data.service.DonationService.Endpoints.donate
 import care.data4life.datadonation.internal.data.service.DonationService.Endpoints.register
 import io.ktor.client.*
+import io.ktor.client.request.forms.*
 import io.ktor.http.*
 import io.ktor.http.content.*
 
@@ -49,7 +52,7 @@ internal class DonationService(
         "${environment.url}/donation/api/v1"
     }
 
-    suspend fun requestRegistrationToken(): String {
+    suspend fun requestToken(): String {
         return client.getWithQuery<String>(environment, baseUrl = baseUrl, path = Endpoints.token)
             .let {
                 it.substring(
@@ -68,8 +71,32 @@ internal class DonationService(
         )
     }
 
+    suspend fun donateResources(payload: DonationPayload) {
+        return client.postWithBody(
+            environment,
+            baseUrl = baseUrl,
+            path = donate,
+            body = MultiPartFormDataContent(
+                formData {
+                    append(FormDataEntries.request, payload.request)
+                    payload.documents.forEachIndexed { index, document ->
+                        append("${FormDataEntries.signature}$index", document.signature)
+                        append("${FormDataEntries.donation}$index", document.document)
+                    }
+                }
+            )
+        )
+    }
+
     object Endpoints {
         const val token = "token"
         const val register = "register"
+        const val donate = "donate"
+    }
+
+    object FormDataEntries {
+        const val request = "request"
+        const val signature = "signature_"
+        const val donation = "donation_"
     }
 }

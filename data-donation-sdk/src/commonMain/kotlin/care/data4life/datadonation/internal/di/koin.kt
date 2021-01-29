@@ -34,15 +34,11 @@ package care.data4life.datadonation.internal.di
 
 import care.data4life.datadonation.Contract
 import care.data4life.datadonation.core.listener.ResultListener
-import care.data4life.datadonation.encryption.hybrid.HybridEncryption
-import care.data4life.datadonation.encryption.hybrid.HybridEncryptionFactory
+import care.data4life.datadonation.encryption.hybrid.HybridEncryptionRegistry
 import care.data4life.datadonation.internal.data.service.ConsentService
 import care.data4life.datadonation.internal.data.service.DonationService
 import care.data4life.datadonation.internal.data.store.*
-import care.data4life.datadonation.internal.domain.repositories.ConsentDocumentRepository
-import care.data4life.datadonation.internal.domain.repositories.CredentialsRepository
-import care.data4life.datadonation.internal.domain.repositories.RegistrationRepository
-import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
+import care.data4life.datadonation.internal.domain.repositories.*
 import care.data4life.datadonation.internal.domain.usecases.*
 import care.data4life.datadonation.internal.utils.Base64Factory
 import io.ktor.client.*
@@ -69,7 +65,10 @@ internal fun initKoin(configuration: Contract.Configuration): KoinApplication {
                 single<CredentialsDataStore> {
                     object : CredentialsDataStore {
                         override fun getDataDonationPublicKey(): String =
-                            configuration.getServicePublicKey()
+                            configuration.getServicePublicKey(Contract.Service.DD)
+
+                        override fun getAnalyticsPlatformPublicKey() : String =
+                            configuration.getServicePublicKey(Contract.Service.ALP)
                     }
                 }
                 single<UserSessionTokenDataStore> {
@@ -77,8 +76,8 @@ internal fun initKoin(configuration: Contract.Configuration): KoinApplication {
                         override suspend fun getUserSessionToken(): String? =
                             suspendCoroutine { continuation ->
                                 configuration.getUserSessionToken(object : ResultListener<String> {
-                                    override fun onSuccess(value: String) {
-                                        continuation.resume(value)
+                                    override fun onSuccess(t: String) {
+                                        continuation.resume(t)
                                     }
 
                                     override fun onError(exception: Exception) {
@@ -119,7 +118,9 @@ private val coreModule = module {
         }
     }
 
-    single<HybridEncryption> { HybridEncryptionFactory(get()).createEncryption() }
+    //HybridEncryption
+    single { HybridEncryptionRegistry(get()) }
+
 
     //Services
     single { ConsentService(get(), get()) }
@@ -130,6 +131,8 @@ private val coreModule = module {
     single<UserConsentRepository.Remote> { UserConsentDataStore(get()) }
     single<RegistrationRepository.Remote> { RegistrationDataStore(get()) }
     single<ConsentDocumentRepository.Remote> { ConsentDocumentDataStore(get()) }
+    single<DonationRepository.Remote> { DonationDataStore(get()) }
+    single<ServiceTokenRepository.Remote> { ServiceTokenDataStore(get()) }
 
 
     //Repositories
@@ -137,9 +140,29 @@ private val coreModule = module {
     single { RegistrationRepository(get()) }
     single { ConsentDocumentRepository(get(), get()) }
     single { CredentialsRepository(get()) }
+    single { DonationRepository(get()) }
+    single { ServiceTokenRepository(get()) }
 
     //Usecases
-    single { RegisterNewDonor(get(), get(), get(), Base64Factory.createEncoder()) }
+    single { CreateRequestConsentPayload(
+        get(),
+        get(),
+        get<HybridEncryptionRegistry>().hybridEncryptionDD,
+        Base64Factory.createEncoder()
+    )}
+    single {
+        DonateResources(
+            get(),
+            get(),
+            get<HybridEncryptionRegistry>().hybridEncryptionALP
+        )
+    }
+    single {
+        RegisterNewDonor(
+            get(),
+            get()
+        )
+    }
     single { FetchConsentDocuments(get()) }
     single { CreateUserConsent(get()) }
     single { FetchUserConsents(get()) }

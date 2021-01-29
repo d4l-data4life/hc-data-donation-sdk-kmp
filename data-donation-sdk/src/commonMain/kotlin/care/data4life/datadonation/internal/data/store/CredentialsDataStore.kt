@@ -35,5 +35,5 @@ package care.data4life.datadonation.internal.data.store
 internal interface CredentialsDataStore {
 
     fun getDataDonationPublicKey(): String
-
+    fun getAnalyticsPlatformPublicKey(): String
 }

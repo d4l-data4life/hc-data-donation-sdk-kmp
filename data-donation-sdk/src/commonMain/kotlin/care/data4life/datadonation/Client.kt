@@ -50,6 +50,7 @@ class Client(private val configuration: Contract.Configuration) : Contract.DataD
     private val fetchConsentDocuments: FetchConsentDocuments by koinApplication.koin.inject()
     private val fetchUserConsents: FetchUserConsents by koinApplication.koin.inject()
     private val revokeUserContent: RevokeUserConsent by koinApplication.koin.inject()
+    private val donateResources: DonateResources by koinApplication.koin.inject()
 
 
     override fun fetchConsentDocument(
@@ -96,8 +97,13 @@ class Client(private val configuration: Contract.Configuration) : Contract.DataD
             .runForListener(callback)
     }
 
-    override fun <T : FhirResource> donateResource(resource: T, callback: Callback) {
-        TODO("Not yet implemented")
+    override fun <T : FhirResource> donateResources(resources: List<T>, callback: Callback) {
+        donateResources.withParams(
+            DonateResources.Parameters(
+                configuration.getDonorKeyPair(),
+                resources
+            )
+        ).runForListener(callback)
     }
 
     private fun <ReturnType : Any> Usecase<ReturnType>.runForListener(

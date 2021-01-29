@@ -30,28 +30,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.data.store
+package care.data4life.datadonation.internal.data.model
 
-import care.data4life.datadonation.core.model.UserConsent
-import care.data4life.datadonation.internal.data.model.ConsentSignatureType
-import care.data4life.datadonation.internal.data.service.ConsentService
-import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-internal class UserConsentDataStore(private val service: ConsentService): UserConsentRepository.Remote {
-
-    override suspend fun createUserConsent(accessToken: String, version: Int, language: String?) {
-        service.createUserConsent(accessToken, version, language)
-    }
-
-    override suspend fun fetchUserConsents(accessToken: String): List<UserConsent> =
-        service.fetchUserConsents(accessToken, false)
-
-    override suspend fun signUserConsentRegistration(accessToken: String, message: String): String =
-        service.requestSignatureRegistration(accessToken, message).signature
-
-    override suspend fun signUserConsentDonation(accessToken: String, message: String): String =
-        service.requestSignatureDonation(accessToken, message).signature
-
-    override suspend fun revokeUserConsent(accessToken: String, language: String?) =
-        service.revokeUserConsent(accessToken, language)
-}
+@Serializable
+data class ConsentRequest(@SerialName("donorID") val donorId: String, val token: String)

@@ -1,7 +1,7 @@
 /*
  * BSD 3-Clause License
  *
- * Copyright (c) 2020, D4L data4life gGmbH
+ * Copyright (c) 2021, D4L data4life gGmbH
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,28 +30,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.data.store
+package care.data4life.datadonation.internal.domain.mock
 
-import care.data4life.datadonation.core.model.UserConsent
-import care.data4life.datadonation.internal.data.model.ConsentSignatureType
-import care.data4life.datadonation.internal.data.service.ConsentService
-import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
+import care.data4life.datadonation.internal.domain.repositories.ServiceTokenRepository
+import care.data4life.datadonation.internal.mock.MockException
 
-internal class UserConsentDataStore(private val service: ConsentService): UserConsentRepository.Remote {
+class MockServiceTokenDataStore : ServiceTokenRepository.Remote {
 
-    override suspend fun createUserConsent(accessToken: String, version: Int, language: String?) {
-        service.createUserConsent(accessToken, version, language)
-    }
+    var whenRequestDonationToken: (() -> String)? = null
 
-    override suspend fun fetchUserConsents(accessToken: String): List<UserConsent> =
-        service.fetchUserConsents(accessToken, false)
-
-    override suspend fun signUserConsentRegistration(accessToken: String, message: String): String =
-        service.requestSignatureRegistration(accessToken, message).signature
-
-    override suspend fun signUserConsentDonation(accessToken: String, message: String): String =
-        service.requestSignatureDonation(accessToken, message).signature
-
-    override suspend fun revokeUserConsent(accessToken: String, language: String?) =
-        service.revokeUserConsent(accessToken, language)
+    override suspend fun requestDonationToken(): String =
+        whenRequestDonationToken?.invoke() ?: throw  MockException()
 }

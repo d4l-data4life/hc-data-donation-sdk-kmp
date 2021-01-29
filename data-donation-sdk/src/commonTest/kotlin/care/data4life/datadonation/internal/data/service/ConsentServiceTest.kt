@@ -37,6 +37,7 @@ import care.data4life.datadonation.core.model.ConsentEvent
 import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.model.ConsentSignature
+import care.data4life.datadonation.internal.data.model.ConsentSignatureType
 import care.data4life.datadonation.internal.data.model.TokenVerificationResult
 import care.data4life.datadonation.internal.data.service.ConsentService.Companion.defaultDonationConsentKey
 import io.ktor.client.*
@@ -69,7 +70,8 @@ internal abstract class ConsentServiceTest : BaseServiceTest<ConsentService>() {
                     TokenVerificationResult.serializer(),
                     tokenVerificationResult
                 )
-            })
+            }),
+            contentType = ContentType.Application.OctetStream
         )
 
         //When
@@ -125,7 +127,7 @@ internal abstract class ConsentServiceTest : BaseServiceTest<ConsentService>() {
     }
 
     @Test
-    fun requestSignatureTest() = runTest {
+    fun requestSignatureRegistrationTest() = runTest {
         //Given
         givenServiceToResponse(
             Pair("xsrf",
@@ -135,12 +137,13 @@ internal abstract class ConsentServiceTest : BaseServiceTest<ConsentService>() {
                     ConsentSignature.serializer(),
                     consentSignature
                 )
-            })
+            }),
+            contentType = ContentType.Application.OctetStream
         )
 
 
         //When
-        val result = service.requestSignature("T", "message")
+        val result = service.requestSignatureRegistration("T", "message")
 
         //Then
         assertEquals(result, consentSignature)
@@ -148,11 +151,36 @@ internal abstract class ConsentServiceTest : BaseServiceTest<ConsentService>() {
     }
 
     @Test
+    fun requestSignatureDonationTest() = runTest {
+        //Given
+        givenServiceToResponse(
+            Pair("xsrf",
+                { respond("", headers = headersOf("X-Csrf-Token", "anyThing")) }),
+            Pair("userConsents", {
+                responseWith(
+                    ConsentSignature.serializer(),
+                    consentSignature
+                )
+            }),
+            contentType = ContentType.Application.OctetStream
+        )
+
+
+        //When
+        val result = service.requestSignatureDonation("T", "message")
+
+        //Then
+        assertEquals(result, consentSignature)
+        assertEquals(HttpMethod.Put, lastRequest.method)
+    }
+
+    @Test
     fun revokeConsentTest() = runTest {
         //Given
         givenServiceToResponse(
             Pair("xsrf",
-                { respond("", headers = headersOf("X-Csrf-Token", "anyThing")) })
+                { respond("", headers = headersOf("X-Csrf-Token", "anyThing")) }),
+            contentType = ContentType.Application.OctetStream
         )
 
         //When

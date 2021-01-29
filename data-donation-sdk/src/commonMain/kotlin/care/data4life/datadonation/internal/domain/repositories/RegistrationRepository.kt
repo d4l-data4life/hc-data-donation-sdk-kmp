@@ -34,12 +34,9 @@ package care.data4life.datadonation.internal.domain.repositories
 
 internal class RegistrationRepository(private val remote: Remote) {
 
-    suspend fun requestRegistrationToken() = remote.requestRegistrationToken()
-
     suspend fun registerNewDonor(data: ByteArray) = remote.registerNewDonor(data)
 
     interface Remote {
-        suspend fun requestRegistrationToken(): String
         suspend fun registerNewDonor(data: ByteArray)
     }
 }

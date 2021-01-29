@@ -1,7 +1,7 @@
 /*
  * BSD 3-Clause License
  *
- * Copyright (c) 2020, D4L data4life gGmbH
+ * Copyright (c) 2021, D4L data4life gGmbH
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,28 +30,47 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.data.store
+package care.data4life.datadonation.internal.data.model
 
-import care.data4life.datadonation.core.model.UserConsent
-import care.data4life.datadonation.internal.data.model.ConsentSignatureType
-import care.data4life.datadonation.internal.data.service.ConsentService
-import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
+data class DonationPayload(val request: ByteArray, val documents: List<DocumentWithSignature>) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || this::class != other::class) return false
 
-internal class UserConsentDataStore(private val service: ConsentService): UserConsentRepository.Remote {
+        other as DonationPayload
 
-    override suspend fun createUserConsent(accessToken: String, version: Int, language: String?) {
-        service.createUserConsent(accessToken, version, language)
+        if (!request.contentEquals(other.request)) return false
+        if (documents != other.documents) return false
+
+        return true
     }
 
-    override suspend fun fetchUserConsents(accessToken: String): List<UserConsent> =
-        service.fetchUserConsents(accessToken, false)
+    override fun hashCode(): Int {
+        var result = request.contentHashCode()
+        result = 31 * result + documents.hashCode()
+        return result
 
-    override suspend fun signUserConsentRegistration(accessToken: String, message: String): String =
-        service.requestSignatureRegistration(accessToken, message).signature
+    }
 
-    override suspend fun signUserConsentDonation(accessToken: String, message: String): String =
-        service.requestSignatureDonation(accessToken, message).signature
+}
 
-    override suspend fun revokeUserConsent(accessToken: String, language: String?) =
-        service.revokeUserConsent(accessToken, language)
+data class DocumentWithSignature(val document: ByteArray, val signature: ByteArray) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || this::class != other::class) return false
+
+        other as DocumentWithSignature
+
+        if (!document.contentEquals(other.document)) return false
+        if (!signature.contentEquals(other.signature)) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = document.contentHashCode()
+        result = 31 * result + signature.contentHashCode()
+        return result
+
+    }
 }

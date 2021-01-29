@@ -34,29 +34,32 @@
 package care.data4life.datadonation.internal.domain.usecases
 
 import CapturingResultListener
-import care.data4life.datadonation.core.model.KeyPair
-import care.data4life.datadonation.encryption.Algorithm
 import care.data4life.datadonation.encryption.hybrid.HybridEncryption
 import care.data4life.datadonation.encryption.signature.SignatureKeyPrivate
+import care.data4life.datadonation.internal.data.exception.MissingCredentialsException
 import care.data4life.datadonation.internal.data.model.*
 import care.data4life.datadonation.internal.data.service.ConsentService
 import care.data4life.datadonation.internal.domain.mock.MockConsentDataStore
-import care.data4life.datadonation.internal.domain.mock.MockRegistrationDataStore
+import care.data4life.datadonation.internal.domain.mock.MockDonationDataStore
 import care.data4life.datadonation.internal.domain.mock.MockServiceTokenDataStore
 import care.data4life.datadonation.internal.domain.mock.MockUserSessionTokenDataStore
-import care.data4life.datadonation.internal.domain.repositories.RegistrationRepository
+import care.data4life.datadonation.internal.domain.repositories.DonationRepository
 import care.data4life.datadonation.internal.domain.repositories.ServiceTokenRepository
 import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
 import care.data4life.datadonation.internal.utils.Base64Encoder
-import care.data4life.datadonation.internal.utils.KeyGenerator
 import care.data4life.datadonation.internal.utils.toJsonString
+import care.data4life.fhir.stu3.FhirStu3Parser
+import care.data4life.fhir.stu3.codesystem.QuestionnaireResponseStatus
+import care.data4life.fhir.stu3.model.QuestionnaireResponse
+import care.data4life.fhir.stu3.model.Reference
 import io.ktor.utils.io.charsets.*
 import runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
-abstract class RegisterNewDonorTest {
+abstract class DonateResourcesTest {
 
     private val dummyNonce = "random_nonce"
     private val dummyPublicKey64Encoded = "publicKey64Encoded"
@@ -65,16 +68,37 @@ abstract class RegisterNewDonorTest {
     private val dummyEncryptedRequest64Encoded = "encryptedRequest64Encoded"
     private val dummyEncryptedSignedMessage = byteArrayOf(4, 5)
 
+    private val dummyResponse = QuestionnaireResponse(
+        status = QuestionnaireResponseStatus.COMPLETED,
+        id = "id_1",
+        language = "en",
+        questionnaire = Reference(id = "questionnaire_id"),
+        item = emptyList()
+    )
+    private val dummyResourceList =
+        listOf(dummyResponse, dummyResponse.copy(id = "id_2"), dummyResponse.copy(id = "id_3"))
+    private val dummyEncryptedResourceList =
+        listOf(DummyData.rawData, DummyData.rawData, DummyData.rawData)
+    private val dummyEncryptedResourceSignatureList =
+        listOf(DummyData.rawData, DummyData.rawData, DummyData.rawData)
+
     private val mockUserConsentDataStore = MockConsentDataStore()
+    private val mockDonationDataStore = MockDonationDataStore()
     private val mockServiceTokenDataStore = MockServiceTokenDataStore()
-    private val mockRegistrationDataStore = MockRegistrationDataStore()
-    private val serviceTokenRepository = ServiceTokenRepository(mockServiceTokenDataStore)
     private val userConsentRepository =
         UserConsentRepository(mockUserConsentDataStore, MockUserSessionTokenDataStore())
-    private val registrationRepository = RegistrationRepository(mockRegistrationDataStore)
+    private val serviceTokenRepository = ServiceTokenRepository(mockServiceTokenDataStore)
+    private val donationRepository = DonationRepository(mockDonationDataStore)
+
+    private val fhirParser = FhirStu3Parser.defaultJsonParser()
 
     private val signatureKey = object: SignatureKeyPrivate {
-        override fun sign(data: ByteArray) = byteArrayOf()
+        override fun sign(data: ByteArray) = when (data) {
+            dummyEncryptedResourceList[0] -> dummyEncryptedResourceSignatureList[0]
+            dummyEncryptedResourceList[1] -> dummyEncryptedResourceSignatureList[1]
+            dummyEncryptedResourceList[2] -> dummyEncryptedResourceSignatureList[2]
+            else -> byteArrayOf()
+        }
         override fun serializedPrivate() = DummyData.keyPair.private
         override val pkcs8Private = ""
         override fun verify(data: ByteArray, signature: ByteArray) = true
@@ -87,7 +111,7 @@ abstract class RegisterNewDonorTest {
 
     private val consentMessage = ConsentMessage(
         ConsentService.defaultDonationConsentKey,
-        ConsentSignatureType.ConsentOnce.apiValue,
+        ConsentSignatureType.NormalUse.apiValue,
         dummyEncryptedRequest64Encoded
     )
 
@@ -104,17 +128,22 @@ abstract class RegisterNewDonorTest {
 
     }
 
+    private val encryptorALP = object : HybridEncryption {
+        override fun encrypt(plaintext: ByteArray) =
+            when (fhirParser.fromJson(QuestionnaireResponse::class, plaintext.decodeToString())) {
+                dummyResourceList[0] -> dummyEncryptedResourceList[0]
+                dummyResourceList[1] -> dummyEncryptedResourceList[1]
+                dummyResourceList[2] -> dummyEncryptedResourceList[2]
+                else -> byteArrayOf()
+        }
+        override fun decrypt(ciphertext: ByteArray) = Result.success(byteArrayOf())
+
+    }
+
     private val base64Encoder = object : Base64Encoder {
         override fun encode(src: ByteArray) = dummyEncryptedRequest64Encoded
         override fun decode(src: ByteArray, charset: Charset) = ""
 
-    }
-
-    private val mockKeyGenerator = object : KeyGenerator {
-        override fun newSignatureKeyPrivate(
-            size: Int,
-            algorithm: Algorithm.Signature
-        ): SignatureKeyPrivate = signatureKey
     }
 
     private val createRequestConsentPayload = CreateRequestConsentPayload(
@@ -124,45 +153,57 @@ abstract class RegisterNewDonorTest {
         base64Encoder
     )
 
-    private val registerNewDonor =
-        RegisterNewDonor(
+    private val donateResources =
+        DonateResources(
             createRequestConsentPayload,
-            registrationRepository,
-            mockKeyGenerator
-        )
+            donationRepository,
+            encryptorALP)
+            { signatureKey }
 
-    private val capturingListener = RegisterNewDonorListener()
+
+    private val capturingListener = DonateResourcesListener()
 
     @Test
-    fun registerNewDonorTestWithoutKey() = runTest {
+    fun donateResourcesTest() = runTest {
+        //Given
+        var result: DonationPayload? = null
+        mockServiceTokenDataStore.whenRequestDonationToken = { dummyNonce }
+        mockUserConsentDataStore.whenSignUserConsent = { _, _ -> dummySignature }
+        mockDonationDataStore.whenDonateResources = {  payload ->  result = payload }
+
+        //When
+        donateResources.runWithParams(
+            DonateResources.Parameters(DummyData.keyPair, dummyResourceList),
+            capturingListener
+        )
+
+        //Then
+        assertEquals(capturingListener.captured, Unit)
+        assertTrue(result!!.request.contentEquals(dummyEncryptedSignedMessage))
+        assertEquals(result!!.documents.size, dummyResourceList.size)
+        assertTrue(result!!.documents[0].document.contentEquals(dummyEncryptedResourceList[0]))
+        assertTrue(result!!.documents[0].signature.contentEquals(dummyEncryptedResourceSignatureList[0]))
+        assertNull(capturingListener.error)
+    }
+
+    @Test
+    fun donateResourcesTestWithoutKeyFails() = runTest {
         //Given
         mockServiceTokenDataStore.whenRequestDonationToken = { dummyNonce }
         mockUserConsentDataStore.whenSignUserConsent = { _, _ -> dummySignature }
 
         //When
-        registerNewDonor.runWithParams(RegisterNewDonor.Parameters(null), capturingListener)
-
-        //Then
-        assertEquals(
-            capturingListener.captured,
-            KeyPair(signatureKey.serializedPublic(), signatureKey.serializedPrivate())
+        donateResources.runWithParams(
+            DonateResources.Parameters(null, dummyResourceList),
+            capturingListener
         )
-        assertNull(capturingListener.error)
-    }
-
-    @Test
-    fun registerNewDonorTestWithKey() = runTest {
-        //Given
-
-        //When
-        registerNewDonor.runWithParams(RegisterNewDonor.Parameters(DummyData.keyPair), capturingListener)
 
         //Then
-        assertEquals(capturingListener.captured, DummyData.keyPair)
-        assertNull(capturingListener.error)
+        assertNull(capturingListener.captured)
+        assertTrue(capturingListener.error is MissingCredentialsException)
     }
 
-    class RegisterNewDonorListener: CapturingResultListener<KeyPair>()
+    class DonateResourcesListener: CapturingResultListener<Unit>()
 
 }
 

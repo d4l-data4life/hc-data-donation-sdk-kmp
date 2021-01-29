@@ -24,6 +24,8 @@ object Version {
     // https://github.com/russhwolf/multiplatform-settings
     const val multiplatformSettings = "0.5.1"
 
+    // https://github.com/Kotlin/kotlinx-datetime
+    const val dateTime = "0.1.0"
 
     // Android
     // https://developer.android.com/studio
@@ -63,7 +65,7 @@ object Version {
 
     // Network
     // https://ktor.io/
-    const val ktor = "1.4.1"
+    const val ktor = "1.4.2"
 
 
     // Database
@@ -73,12 +75,12 @@ object Version {
     //Encryption
     const val bouncyCastle = "1.64"
 
-    const val dateTime = "0.1.0"
 
     // https://github.com/d4l-data4life/hc-fhir-sdk-kmp
     const val fhir = "0.0.1-add-custom-maven-deployment-SNAPSHOT"
 
     // Junit Test
     const val testJUnit = "4.13"
+
 
 }

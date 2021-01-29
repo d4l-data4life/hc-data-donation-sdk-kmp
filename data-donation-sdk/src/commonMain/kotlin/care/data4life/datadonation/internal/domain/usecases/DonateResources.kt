@@ -37,50 +37,64 @@ import care.data4life.datadonation.encryption.Algorithm
 import care.data4life.datadonation.encryption.HashSize
 import care.data4life.datadonation.encryption.hybrid.HybridEncryption
 import care.data4life.datadonation.encryption.signature.SignatureKeyPrivate
+import care.data4life.datadonation.internal.data.exception.MissingCredentialsException
 import care.data4life.datadonation.internal.data.model.*
 import care.data4life.datadonation.internal.data.service.ConsentService.Companion.defaultDonationConsentKey
-import care.data4life.datadonation.internal.domain.repositories.RegistrationRepository
+import care.data4life.datadonation.internal.domain.repositories.DonationRepository
 import care.data4life.datadonation.internal.domain.repositories.ServiceTokenRepository
 import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
 import care.data4life.datadonation.internal.utils.Base64Encoder
-import care.data4life.datadonation.internal.utils.DefaultKeyGenerator
-import care.data4life.datadonation.internal.utils.KeyGenerator
 import care.data4life.datadonation.internal.utils.toJsonString
+import care.data4life.fhir.stu3.FhirStu3Parser
+import care.data4life.fhir.stu3.model.FhirResource
 import io.ktor.utils.io.core.*
 
-internal class RegisterNewDonor(
+internal class DonateResources(
     private val createRequestConsentPayload: CreateRequestConsentPayload,
-    private val registrationRepository: RegistrationRepository,
-    private val keyGenerator: KeyGenerator = DefaultKeyGenerator
+    private val donationRepository: DonationRepository,
+    private val encryptionALP: HybridEncryption,
+    private val signatureProvider: (KeyPair) -> SignatureKeyPrivate = defaultSignatureProvider
 ) :
-    ParameterizedUsecase<RegisterNewDonor.Parameters, KeyPair>() {
+    ParameterizedUsecase<DonateResources.Parameters, Unit>() {
 
-    override suspend fun execute(): KeyPair {
-        return if (parameter.keyPair == null) {
-            val newKeyPair = keyGenerator.newSignatureKeyPrivate(
-                2048,
-                Algorithm.Signature.RsaPSS(HashSize.Hash256)
-            )
-            registerNewDonor(newKeyPair)
-
-            KeyPair(newKeyPair.serializedPublic(), newKeyPair.serializedPrivate())
-        } else {
-            parameter.keyPair!!
-        }
+    companion object {
+        private val defaultSignatureProvider = { keyPair: KeyPair -> SignatureKeyPrivate(
+            keyPair.private,
+            keyPair.public,
+            2048,
+            Algorithm.Signature.RsaPSS(HashSize.Hash256)) }
     }
 
-    private suspend fun registerNewDonor(newKeyPair: SignatureKeyPrivate) {
-        val payload = createRequestConsentPayload.withParams(
+    override suspend fun execute() {
+        parameter.keyPair?.let {
+            donateResources(signatureProvider.invoke(it), parameter.resources)
+        } ?: throw MissingCredentialsException()
+    }
+
+    private suspend fun donateResources(keyPair: SignatureKeyPrivate, resources: List<FhirResource>) {
+        val encryptedSignedMessage = createRequestConsentPayload.withParams(
             CreateRequestConsentPayload.Parameters(
-                ConsentSignatureType.ConsentOnce,
-                newKeyPair
+                ConsentSignatureType.NormalUse,
+                keyPair
             )
         ).execute()
-        registrationRepository.registerNewDonor(payload)
+        val signedEncryptedDocuments = resources.map {
+            val encryptedDocument = encryptionALP.encrypt(it.toJsonString().toByteArray())
+            DocumentWithSignature(
+                document = encryptedDocument,
+                signature = keyPair.sign(encryptedDocument)
+            )
+        }
+        val payload = DonationPayload(
+            request = encryptedSignedMessage,
+            documents = signedEncryptedDocuments
+        )
+        donationRepository.donateResources(payload)
     }
 
-    data class Parameters(val keyPair: KeyPair?)
+    data class Parameters(val keyPair: KeyPair?, val resources: List<FhirResource>)
 
 
 }
 
+internal fun FhirResource.toJsonString() = FhirStu3Parser.defaultJsonParser().toJson(this)

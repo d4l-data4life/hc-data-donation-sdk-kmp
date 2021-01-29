@@ -43,8 +43,10 @@ import kotlinx.coroutines.CoroutineScope
 
 interface Contract {
 
+    enum class Service(name: String) { DD("DataDonation"), ALP("AnalyticsPlatform") }
+
     interface Configuration {
-        fun getServicePublicKey(): String
+        fun getServicePublicKey(service: Service): String
         fun getDonorKeyPair(): KeyPair?
         fun getUserSessionToken(tokenListener: ResultListener<String>)
         fun getEnvironment(): Environment
@@ -72,8 +74,8 @@ interface Contract {
 
         fun revokeUserConsent(language: String?, callback: Callback)
 
-        fun <T : FhirResource> donateResource(
-            resource: T,
+        fun <T : FhirResource> donateResources(
+            resources: List<T>,
             callback: Callback
         )
 

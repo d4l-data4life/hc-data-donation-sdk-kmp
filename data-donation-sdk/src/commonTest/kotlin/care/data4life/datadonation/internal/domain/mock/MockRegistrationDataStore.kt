@@ -37,11 +37,7 @@ import care.data4life.datadonation.internal.mock.MockException
 
 class MockRegistrationDataStore : RegistrationRepository.Remote {
 
-    var whenRequestRegistrationToken: (() -> String)? = null
     var whenRegisterNewDonor: ((data: ByteArray) -> Unit)? = null
-
-    override suspend fun requestRegistrationToken(): String =
-        whenRequestRegistrationToken?.invoke() ?: throw  MockException()
 
     override suspend fun registerNewDonor(data: ByteArray) {
         whenRegisterNewDonor?.invoke(data)
