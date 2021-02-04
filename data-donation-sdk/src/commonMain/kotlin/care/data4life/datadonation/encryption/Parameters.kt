@@ -43,11 +43,18 @@ sealed class Algorithm {
     }
 
     sealed class Signature : Algorithm() {
-        class RsaPSS(val hashSize: HashSize) : Signature()
+        class RsaPSS(
+            val hashSize: HashSize,
+            val saltLength: SaltLength = SaltLength.Salt32
+        ) : Signature()
     }
 }
 
 
 enum class HashSize(val bits: Int) {
     Hash256(256)
+}
+
+enum class SaltLength(val bytes: Int) {
+    Salt0(0), Salt32(32)
 }

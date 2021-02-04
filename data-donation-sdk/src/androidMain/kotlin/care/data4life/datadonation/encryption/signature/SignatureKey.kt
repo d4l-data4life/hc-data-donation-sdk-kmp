@@ -105,7 +105,7 @@ private fun Signature.applyParams(algo: Algorithm.Signature) {
     val params = when(algo) {
         is Algorithm.Signature.RsaPSS -> {
             val sha = "SHA-${algo.hashSize.bits}"
-            PSSParameterSpec(sha, "MGF1", MGF1ParameterSpec(sha), 32, 1)
+            PSSParameterSpec(sha, "MGF1", MGF1ParameterSpec(sha), algo.saltLength.bytes, 1)
         }
     }
     setParameter(params)

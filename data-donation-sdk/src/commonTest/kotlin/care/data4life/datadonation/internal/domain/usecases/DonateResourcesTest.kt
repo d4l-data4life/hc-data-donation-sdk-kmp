@@ -158,7 +158,7 @@ abstract class DonateResourcesTest {
             createRequestConsentPayload,
             donationRepository,
             encryptorALP)
-            { signatureKey }
+            { _, _ -> signatureKey }
 
 
     private val capturingListener = DonateResourcesListener()

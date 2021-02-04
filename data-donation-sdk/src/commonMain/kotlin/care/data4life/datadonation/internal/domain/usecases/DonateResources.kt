@@ -35,16 +35,13 @@ package care.data4life.datadonation.internal.domain.usecases
 import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.encryption.Algorithm
 import care.data4life.datadonation.encryption.HashSize
+import care.data4life.datadonation.encryption.SaltLength
 import care.data4life.datadonation.encryption.hybrid.HybridEncryption
 import care.data4life.datadonation.encryption.signature.SignatureKeyPrivate
 import care.data4life.datadonation.internal.data.exception.MissingCredentialsException
 import care.data4life.datadonation.internal.data.model.*
-import care.data4life.datadonation.internal.data.service.ConsentService.Companion.defaultDonationConsentKey
 import care.data4life.datadonation.internal.domain.repositories.DonationRepository
-import care.data4life.datadonation.internal.domain.repositories.ServiceTokenRepository
-import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
-import care.data4life.datadonation.internal.utils.Base64Encoder
-import care.data4life.datadonation.internal.utils.toJsonString
+import care.data4life.datadonation.internal.utils.encodeBase64
 import care.data4life.fhir.stu3.FhirStu3Parser
 import care.data4life.fhir.stu3.model.FhirResource
 import io.ktor.utils.io.core.*
@@ -53,36 +50,48 @@ internal class DonateResources(
     private val createRequestConsentPayload: CreateRequestConsentPayload,
     private val donationRepository: DonationRepository,
     private val encryptionALP: HybridEncryption,
-    private val signatureProvider: (KeyPair) -> SignatureKeyPrivate = defaultSignatureProvider
+    private val signatureProvider: (KeyPair, SaltLength) -> SignatureKeyPrivate = defaultSignatureProvider
 ) :
     ParameterizedUsecase<DonateResources.Parameters, Unit>() {
 
     companion object {
-        private val defaultSignatureProvider = { keyPair: KeyPair -> SignatureKeyPrivate(
-            keyPair.private,
-            keyPair.public,
-            2048,
-            Algorithm.Signature.RsaPSS(HashSize.Hash256)) }
+        private val defaultSignatureProvider = { keyPair: KeyPair, saltLength: SaltLength ->
+            SignatureKeyPrivate(
+                keyPair.private,
+                keyPair.public,
+                2048,
+                Algorithm.Signature.RsaPSS(HashSize.Hash256, saltLength)
+            )
+        }
     }
 
     override suspend fun execute() {
         parameter.keyPair?.let {
-            donateResources(signatureProvider.invoke(it), parameter.resources)
+            donateResources(
+                signatureProvider.invoke(it, SaltLength.Salt32),
+                signatureProvider.invoke(it, SaltLength.Salt0),
+                parameter.resources
+            )
         } ?: throw MissingCredentialsException()
     }
 
-    private suspend fun donateResources(keyPair: SignatureKeyPrivate, resources: List<FhirResource>) {
+    private suspend fun donateResources(
+        keyPairSignature: SignatureKeyPrivate,
+        keyPairHash: SignatureKeyPrivate,
+        resources: List<FhirResource>
+    ) {
         val encryptedSignedMessage = createRequestConsentPayload.withParams(
             CreateRequestConsentPayload.Parameters(
                 ConsentSignatureType.NormalUse,
-                keyPair
+                keyPairSignature
             )
         ).execute()
-        val signedEncryptedDocuments = resources.map {
-            val encryptedDocument = encryptionALP.encrypt(it.toJsonString().toByteArray())
+        val signedEncryptedDocuments = resources.map { resource ->
+            val encryptedDocument = encryptionALP.encrypt(resource.toJsonString().toByteArray())
             DocumentWithSignature(
                 document = encryptedDocument,
-                signature = keyPair.sign(encryptedDocument)
+                signature = keyPairSignature.sign(encryptedDocument),
+                name = resource.id?.let { keyPairHash.sign(it.toByteArray()).encodeBase64() } ?: "",
             )
         }
         val payload = DonationPayload(

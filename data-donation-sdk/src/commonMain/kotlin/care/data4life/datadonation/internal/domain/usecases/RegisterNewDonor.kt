@@ -35,18 +35,12 @@ package care.data4life.datadonation.internal.domain.usecases
 import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.encryption.Algorithm
 import care.data4life.datadonation.encryption.HashSize
-import care.data4life.datadonation.encryption.hybrid.HybridEncryption
+import care.data4life.datadonation.encryption.SaltLength
 import care.data4life.datadonation.encryption.signature.SignatureKeyPrivate
-import care.data4life.datadonation.internal.data.model.*
-import care.data4life.datadonation.internal.data.service.ConsentService.Companion.defaultDonationConsentKey
+import care.data4life.datadonation.internal.data.model.ConsentSignatureType
 import care.data4life.datadonation.internal.domain.repositories.RegistrationRepository
-import care.data4life.datadonation.internal.domain.repositories.ServiceTokenRepository
-import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
-import care.data4life.datadonation.internal.utils.Base64Encoder
 import care.data4life.datadonation.internal.utils.DefaultKeyGenerator
 import care.data4life.datadonation.internal.utils.KeyGenerator
-import care.data4life.datadonation.internal.utils.toJsonString
-import io.ktor.utils.io.core.*
 
 internal class RegisterNewDonor(
     private val createRequestConsentPayload: CreateRequestConsentPayload,
@@ -59,7 +53,7 @@ internal class RegisterNewDonor(
         return if (parameter.keyPair == null) {
             val newKeyPair = keyGenerator.newSignatureKeyPrivate(
                 2048,
-                Algorithm.Signature.RsaPSS(HashSize.Hash256)
+                Algorithm.Signature.RsaPSS(HashSize.Hash256, SaltLength.Salt32)
             )
             registerNewDonor(newKeyPair)
 

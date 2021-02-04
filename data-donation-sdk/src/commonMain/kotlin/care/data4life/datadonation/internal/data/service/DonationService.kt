@@ -79,14 +79,24 @@ internal class DonationService(
             body = MultiPartFormDataContent(
                 formData {
                     append(FormDataEntries.request, payload.request)
+                    val headersBuilder = HeadersBuilder()
                     payload.documents.forEachIndexed { index, document ->
                         append("${FormDataEntries.signature}$index", document.signature)
-                        append("${FormDataEntries.donation}$index", document.document)
+                        append(
+                            "${FormDataEntries.donation}$index",
+                            document.document,
+                            headersBuilder.buildFileName(document.name)
+                        )
                     }
                 }
             )
         )
     }
+
+    private fun HeadersBuilder.buildFileName(fileName: String) = apply {
+        clear()
+        append(HttpHeaders.ContentDisposition, "${FormDataHeaders.fileName}$fileName")
+    }.build()
 
     object Endpoints {
         const val token = "token"
@@ -98,5 +108,9 @@ internal class DonationService(
         const val request = "request"
         const val signature = "signature_"
         const val donation = "donation_"
+    }
+
+    object FormDataHeaders {
+        const val fileName = "filename="
     }
 }

@@ -54,7 +54,11 @@ data class DonationPayload(val request: ByteArray, val documents: List<DocumentW
 
 }
 
-data class DocumentWithSignature(val document: ByteArray, val signature: ByteArray) {
+data class DocumentWithSignature(
+    val document: ByteArray,
+    val signature: ByteArray,
+    val name: String = ""
+) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false
@@ -63,6 +67,8 @@ data class DocumentWithSignature(val document: ByteArray, val signature: ByteArr
 
         if (!document.contentEquals(other.document)) return false
         if (!signature.contentEquals(other.signature)) return false
+        if (name != other.name) return false
+
 
         return true
     }
@@ -70,6 +76,7 @@ data class DocumentWithSignature(val document: ByteArray, val signature: ByteArr
     override fun hashCode(): Int {
         var result = document.contentHashCode()
         result = 31 * result + signature.contentHashCode()
+        result = 31 * result + name.hashCode()
         return result
 
     }
