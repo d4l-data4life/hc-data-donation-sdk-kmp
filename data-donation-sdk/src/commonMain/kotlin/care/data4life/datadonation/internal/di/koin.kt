@@ -67,7 +67,7 @@ internal fun initKoin(configuration: Contract.Configuration): KoinApplication {
                         override fun getDataDonationPublicKey(): String =
                             configuration.getServicePublicKey(Contract.Service.DD)
 
-                        override fun getAnalyticsPlatformPublicKey() : String =
+                        override fun getAnalyticsPlatformPublicKey(): String =
                             configuration.getServicePublicKey(Contract.Service.ALP)
                     }
                 }
@@ -144,19 +144,23 @@ private val coreModule = module {
     single { ServiceTokenRepository(get()) }
 
     //Usecases
-    single { CreateRequestConsentPayload(
-        get(),
-        get(),
-        get<HybridEncryptionRegistry>().hybridEncryptionDD,
-        Base64Factory.createEncoder()
-    )}
+    single {
+        CreateRequestConsentPayload(
+            get(),
+            get(),
+            get<HybridEncryptionRegistry>().hybridEncryptionDD,
+            Base64Factory.createEncoder()
+        )
+    }
     single {
         DonateResources(
+            get(),
             get(),
             get(),
             get<HybridEncryptionRegistry>().hybridEncryptionALP
         )
     }
+    single { FilterSensitiveInformation() }
     single {
         RegisterNewDonor(
             get(),

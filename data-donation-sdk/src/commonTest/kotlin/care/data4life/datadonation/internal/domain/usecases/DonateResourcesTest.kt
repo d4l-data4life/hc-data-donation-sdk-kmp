@@ -39,10 +39,7 @@ import care.data4life.datadonation.encryption.signature.SignatureKeyPrivate
 import care.data4life.datadonation.internal.data.exception.MissingCredentialsException
 import care.data4life.datadonation.internal.data.model.*
 import care.data4life.datadonation.internal.data.service.ConsentService
-import care.data4life.datadonation.internal.domain.mock.MockConsentDataStore
-import care.data4life.datadonation.internal.domain.mock.MockDonationDataStore
-import care.data4life.datadonation.internal.domain.mock.MockServiceTokenDataStore
-import care.data4life.datadonation.internal.domain.mock.MockUserSessionTokenDataStore
+import care.data4life.datadonation.internal.domain.mock.*
 import care.data4life.datadonation.internal.domain.repositories.DonationRepository
 import care.data4life.datadonation.internal.domain.repositories.ServiceTokenRepository
 import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
@@ -85,6 +82,7 @@ abstract class DonateResourcesTest {
     private val mockUserConsentDataStore = MockConsentDataStore()
     private val mockDonationDataStore = MockDonationDataStore()
     private val mockServiceTokenDataStore = MockServiceTokenDataStore()
+    private val mockFilterSensitiveInformation = MockFilterSensitiveInformation()
     private val userConsentRepository =
         UserConsentRepository(mockUserConsentDataStore, MockUserSessionTokenDataStore())
     private val serviceTokenRepository = ServiceTokenRepository(mockServiceTokenDataStore)
@@ -92,13 +90,14 @@ abstract class DonateResourcesTest {
 
     private val fhirParser = FhirStu3Parser.defaultJsonParser()
 
-    private val signatureKey = object: SignatureKeyPrivate {
+    private val signatureKey = object : SignatureKeyPrivate {
         override fun sign(data: ByteArray) = when (data) {
             dummyEncryptedResourceList[0] -> dummyEncryptedResourceSignatureList[0]
             dummyEncryptedResourceList[1] -> dummyEncryptedResourceSignatureList[1]
             dummyEncryptedResourceList[2] -> dummyEncryptedResourceSignatureList[2]
             else -> byteArrayOf()
         }
+
         override fun serializedPrivate() = DummyData.keyPair.private
         override val pkcs8Private = ""
         override fun verify(data: ByteArray, signature: ByteArray) = true
@@ -124,6 +123,7 @@ abstract class DonateResourcesTest {
             signedConsentJsonString -> dummyEncryptedSignedMessage
             else -> byteArrayOf()
         }
+
         override fun decrypt(ciphertext: ByteArray) = Result.success(byteArrayOf())
 
     }
@@ -135,7 +135,8 @@ abstract class DonateResourcesTest {
                 dummyResourceList[1] -> dummyEncryptedResourceList[1]
                 dummyResourceList[2] -> dummyEncryptedResourceList[2]
                 else -> byteArrayOf()
-        }
+            }
+
         override fun decrypt(ciphertext: ByteArray) = Result.success(byteArrayOf())
 
     }
@@ -155,10 +156,12 @@ abstract class DonateResourcesTest {
 
     private val donateResources =
         DonateResources(
+            mockFilterSensitiveInformation,
             createRequestConsentPayload,
             donationRepository,
-            encryptorALP)
-            { signatureKey }
+            encryptorALP
+        )
+        { signatureKey }
 
 
     private val capturingListener = DonateResourcesListener()
@@ -169,7 +172,7 @@ abstract class DonateResourcesTest {
         var result: DonationPayload? = null
         mockServiceTokenDataStore.whenRequestDonationToken = { dummyNonce }
         mockUserConsentDataStore.whenSignUserConsent = { _, _ -> dummySignature }
-        mockDonationDataStore.whenDonateResources = {  payload ->  result = payload }
+        mockDonationDataStore.whenDonateResources = { payload -> result = payload }
 
         //When
         donateResources.runWithParams(
@@ -203,7 +206,7 @@ abstract class DonateResourcesTest {
         assertTrue(capturingListener.error is MissingCredentialsException)
     }
 
-    class DonateResourcesListener: CapturingResultListener<Unit>()
+    class DonateResourcesListener : CapturingResultListener<Unit>()
 
 }
 
