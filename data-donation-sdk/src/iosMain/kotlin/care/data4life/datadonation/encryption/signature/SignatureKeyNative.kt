@@ -33,6 +33,7 @@
 package care.data4life.datadonation.encryption.signature
 
 import care.data4life.datadonation.encryption.KeyNative
+import care.data4life.datadonation.encryption.SaltLength
 import care.data4life.datadonation.encryption.assymetric.rsaPkcsIDENTIFIER
 import care.data4life.datadonation.encryption.sequence
 import care.data4life.datadonation.toByteArray
@@ -50,8 +51,8 @@ import platform.darwin.noErr
 
 class SignatureKeyNative : KeyNative, SignatureKeyPrivate {
 
-    constructor(keyType: SecKeyAlgorithm, algoType: SecKeyAlgorithm, size: Int)
-            : super(keyType, algoType, size)
+    constructor(keyType: SecKeyAlgorithm, algoType: SecKeyAlgorithm, size: Int, saltLength: SaltLength)
+            : super(keyType, algoType, size, saltLength)
 
     constructor(private: SecKeyRef, public: SecKeyRef, algoType: SecKeyAlgorithm)
             : super(private, public, algoType)
@@ -120,7 +121,7 @@ class SignatureKeyNative : KeyNative, SignatureKeyPrivate {
 
 }
 
-fun generateKey(type: SecKeyAlgorithm, size: Int): Pair<SecKeyRef, SecKeyRef> {
+fun generateKey(type: SecKeyAlgorithm, size: Int, saltLength: SaltLength): Pair<SecKeyRef, SecKeyRef> {
     memScoped {
         val publicKeyAttr = CFDictionaryCreateMutable(kCFAllocatorSystemDefault, 3, null, null)!!
         publicKeyAttr += kSecAttrIsPermanent to CFBridgingRetain(NSNumber(bool = false))
@@ -141,6 +142,16 @@ fun generateKey(type: SecKeyAlgorithm, size: Int): Pair<SecKeyRef, SecKeyRef> {
             )
         )
         privateKeyAttr += kSecAttrAccessible to CFBridgingRetain(NSNumber(bool = true))
+
+        //TODO: create salt 0 for iOS
+        //val saltBytes = ByteArray(0)
+        val saltBytes = CPointer<int_8tVar>()
+        var salt: CFDataRef? = CFDataCreate(null, saltBytes,0);
+
+        if (saltLength == SaltLength.Salt0) {
+            privateKeyAttr += kSecAttrSalt to salt
+        }
+        //end
 
         val keyPairAttr = CFDictionaryCreateMutable(kCFAllocatorSystemDefault, 5, null, null)!!
         keyPairAttr += kSecAttrKeyType to type

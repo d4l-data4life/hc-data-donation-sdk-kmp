@@ -51,8 +51,8 @@ abstract class KeyNative {
     protected val publicKey: SecKeyRef
     protected val algoType: SecKeyAlgorithm
 
-    constructor(keyType: SecKeyAlgorithm, algoType: SecKeyAlgorithm, size: Int) {
-        val (private, public) = generateKey(keyType, size)
+    constructor(keyType: SecKeyAlgorithm, algoType: SecKeyAlgorithm, size: Int, saltLength: SaltLength = SaltLength.Salt32) {
+        val (private, public) = generateKey(keyType, size, saltLength)
         privateKey = private
         publicKey = public
         this.algoType = algoType

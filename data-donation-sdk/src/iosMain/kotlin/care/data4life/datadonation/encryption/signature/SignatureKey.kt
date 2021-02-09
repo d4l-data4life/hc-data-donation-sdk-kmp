@@ -38,7 +38,8 @@ import platform.Security.*
 
 actual fun SignatureKeyPrivate(size: Int, algorithm: Algorithm.Signature): SignatureKeyPrivate {
     val params: Pair<CFStringRef, SecKeyAlgorithm> = algorithm.toAttributes()
-    return SignatureKeyNative(params.first, params.second, size)
+    //TODO: check if salt0, salt32 or both are needed
+    return SignatureKeyNative(params.first, params.second, size, SaltLength.Salt32)
 }
 
 
@@ -61,9 +62,9 @@ actual fun SignatureKeyPrivate(
 
 
     return SignatureKeyNative(
-        algorithm.toAttributes().second
         KeyNative.buildSecKeyRef(serializedPrivate, algorithm, KeyNative.KeyType.Private, size),
         KeyNative.buildSecKeyRef(serializedPublic, algorithm, KeyNative.KeyType.Public, size),
+        algorithm.toAttributes().second
     )
 }
 
@@ -72,7 +73,7 @@ actual fun SignatureKeyPublic(
     size: Int,
     algorithm: Algorithm.Signature
 ): SignatureKeyPublic {
-    val key = KeyNative.buildSecKeyRef(serialized, algorithm, KeyNative.KeyType.Public)
+    val key = KeyNative.buildSecKeyRef(serialized, algorithm, KeyNative.KeyType.Public, size)
     return SignatureKeyNative(
         key,//unused
         key,
