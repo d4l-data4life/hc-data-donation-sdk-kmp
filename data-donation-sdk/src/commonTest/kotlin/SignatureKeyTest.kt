@@ -55,7 +55,7 @@ open class SignatureKeyCommonTest {
     }
 
     @Test
-    fun `Generate, sign and verify hash is deterministic after salt0 impl`() {
+    fun `Check if sign hash is deterministic using salt0`() {
         val testData = byteArrayOf(1)
         val key = SignatureKeyPrivate(2048, Algorithm.Signature.RsaPSS(HashSize.Hash256, SaltLength.Salt0))
         val signature1 = key.sign(testData)
@@ -66,7 +66,7 @@ open class SignatureKeyCommonTest {
     }
 
     @Test
-    fun `Generate, sign and verify hash is undeterministic with salt32 impl`() {
+    fun `Check if sign hash is deterministic using salt32`() {
         val testData = byteArrayOf(1)
         val key = SignatureKeyPrivate(2048, Algorithm.Signature.RsaPSS(HashSize.Hash256, SaltLength.Salt32))
         val signature1 = key.sign(testData)
