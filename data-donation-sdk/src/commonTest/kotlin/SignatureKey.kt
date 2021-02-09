@@ -1,9 +1,7 @@
 import care.data4life.datadonation.encryption.*
 import care.data4life.datadonation.encryption.signature.SignatureKeyPrivate
 import care.data4life.datadonation.encryption.signature.SignatureKeyPublic
-import kotlin.test.BeforeTest
-import kotlin.test.Test
-import kotlin.test.assertTrue
+import kotlin.test.*
 
 /*
  * BSD 3-Clause License
@@ -54,6 +52,28 @@ open class SignatureKeyCommonTest {
         assertTrue(pubHandle.verify(testData,signature))
         assertTrue(nkey.verify(testData,signature))
         assertTrue(nkey.verify(testData,nkey.sign(testData)))
+    }
+
+    @Test
+    fun `Generate, sign and verify hash is deterministic after salt0 impl`() {
+        val testData = byteArrayOf(1)
+        val key = SignatureKeyPrivate(2048, Algorithm.Signature.RsaPSS(HashSize.Hash256, SaltLength.Salt0))
+        val signature1 = key.sign(testData)
+        assertTrue(key.verify(testData,signature1))
+
+        val signature2 = key.sign(testData)
+        assertEquals(signature1, signature2)
+    }
+
+    @Test
+    fun `Generate, sign and verify hash is undeterministic with salt32 impl`() {
+        val testData = byteArrayOf(1)
+        val key = SignatureKeyPrivate(2048, Algorithm.Signature.RsaPSS(HashSize.Hash256, SaltLength.Salt32))
+        val signature1 = key.sign(testData)
+        assertTrue(key.verify(testData,signature1))
+
+        val signature2 = key.sign(testData)
+        assertNotEquals(signature1, signature2)
     }
 
 
