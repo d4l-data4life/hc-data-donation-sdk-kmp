@@ -45,10 +45,10 @@ import care.data4life.datadonation.internal.domain.repositories.ServiceTokenRepo
 import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
 import care.data4life.datadonation.internal.utils.Base64Encoder
 import care.data4life.datadonation.internal.utils.toJsonString
-import care.data4life.fhir.stu3.FhirStu3Parser
-import care.data4life.fhir.stu3.codesystem.QuestionnaireResponseStatus
-import care.data4life.fhir.stu3.model.QuestionnaireResponse
-import care.data4life.fhir.stu3.model.Reference
+import care.data4life.hl7.fhir.stu3.FhirStu3Parser
+import care.data4life.hl7.fhir.stu3.codesystem.QuestionnaireResponseStatus
+import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
+import care.data4life.hl7.fhir.stu3.model.Reference
 import io.ktor.utils.io.charsets.*
 import runTest
 import kotlin.test.Test

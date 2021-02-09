@@ -33,7 +33,7 @@
 package care.data4life.datadonation.internal.domain.mock
 
 import care.data4life.datadonation.internal.domain.usecases.FilterSensitiveInformation
-import care.data4life.fhir.stu3.model.FhirResource
+import care.data4life.hl7.fhir.stu3.model.FhirResource
 
 class MockFilterSensitiveInformation : FilterSensitiveInformation() {
     override suspend fun execute(): List<FhirResource> {
