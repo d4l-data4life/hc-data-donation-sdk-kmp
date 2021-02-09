@@ -62,7 +62,7 @@ open class SignatureKeyCommonTest {
         assertTrue(key.verify(testData,signature1))
 
         val signature2 = key.sign(testData)
-        assertEquals(signature1, signature2)
+        assertTrue(signature1.contentEquals(signature2))
     }
 
     @Test
@@ -73,7 +73,7 @@ open class SignatureKeyCommonTest {
         assertTrue(key.verify(testData,signature1))
 
         val signature2 = key.sign(testData)
-        assertNotEquals(signature1, signature2)
+        assertFalse(signature1.contentEquals(signature2))
     }
 
 
