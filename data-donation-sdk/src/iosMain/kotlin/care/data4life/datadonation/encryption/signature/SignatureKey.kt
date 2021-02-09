@@ -61,9 +61,9 @@ actual fun SignatureKeyPrivate(
 
 
     return SignatureKeyNative(
-        KeyNative.buildSecKeyRef(serializedPrivate, algorithm, KeyNative.KeyType.Private),
-        KeyNative.buildSecKeyRef(serializedPublic, algorithm, KeyNative.KeyType.Public),
         algorithm.toAttributes().second
+        KeyNative.buildSecKeyRef(serializedPrivate, algorithm, KeyNative.KeyType.Private, size),
+        KeyNative.buildSecKeyRef(serializedPublic, algorithm, KeyNative.KeyType.Public, size),
     )
 }
 

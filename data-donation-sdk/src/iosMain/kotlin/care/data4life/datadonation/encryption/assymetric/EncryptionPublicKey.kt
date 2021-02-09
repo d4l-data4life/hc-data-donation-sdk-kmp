@@ -49,9 +49,9 @@ actual fun EncryptionPublicKey(
     algorithm: Algorithm.Asymmetric
 ): EncryptionPublicKey {
     val key = try {
-        KeyNative.buildSecKeyRef(serializedKey, algorithm, KeyNative.KeyType.Public)
+        KeyNative.buildSecKeyRef(serializedKey, algorithm, KeyNative.KeyType.Public, size)
     } catch (t: GeneralEncryptionException) {
-        KeyNative.buildSecKeyRef(serializedKey.let { it.sliceArray(24..it.lastIndex) }, algorithm, KeyNative.KeyType.Public)
+        KeyNative.buildSecKeyRef(serializedKey.let { it.sliceArray(24..it.lastIndex) }, algorithm, KeyNative.KeyType.Public, size)
     }
 
     return EncryptionAsymmetricKeyNative(
@@ -70,11 +70,11 @@ actual fun EncryptionPrivateKey(
 ): EncryptionPrivateKey {
 
     val keys = try {
-        KeyNative.buildSecKeyRef(serializedPrivate, algorithm, KeyNative.KeyType.Private) to
-                KeyNative.buildSecKeyRef(serializedPublic, algorithm, KeyNative.KeyType.Public)
+        KeyNative.buildSecKeyRef(serializedPrivate, algorithm, KeyNative.KeyType.Private, size) to
+                KeyNative.buildSecKeyRef(serializedPublic, algorithm, KeyNative.KeyType.Public, size)
     } catch (t: GeneralEncryptionException) {
-        KeyNative.buildSecKeyRef(serializedPrivate.let { it.sliceArray(26..it.lastIndex) }, algorithm, KeyNative.KeyType.Private) to
-                KeyNative.buildSecKeyRef(serializedPublic.let { it.sliceArray(24..it.lastIndex) }, algorithm, KeyNative.KeyType.Public)
+        KeyNative.buildSecKeyRef(serializedPrivate.let { it.sliceArray(26..it.lastIndex) }, algorithm, KeyNative.KeyType.Private, size) to
+                KeyNative.buildSecKeyRef(serializedPublic.let { it.sliceArray(24..it.lastIndex) }, algorithm, KeyNative.KeyType.Public, size)
     }
     return EncryptionAsymmetricKeyNative(
         keys.first,keys.second,

@@ -65,7 +65,7 @@ abstract class KeyNative {
     }
 
     companion object {
-        fun buildSecKeyRef(serialized: ByteArray, algorithm: Algorithm, type: KeyType): SecKeyRef =
+        fun buildSecKeyRef(serialized: ByteArray, algorithm: Algorithm, type: KeyType, size: Int): SecKeyRef =
             memScoped {
                 val data = CFBridgingRetain(serialized.toNSData()) as CFDataRef
                 val pubAttr = CFDictionaryCreateMutable(kCFAllocatorSystemDefault, 6, null, null)!!
@@ -81,7 +81,7 @@ abstract class KeyNative {
                         pubAttr += kSecAttrKeyType to kSecAttrKeyTypeRSA
                         pubAttr += kSecAttrKeyClass to type.nativeType
                         pubAttr += kSecAttrAccessible to CFBridgingRetain(NSNumber(bool = true))
-                        pubAttr += kSecAttrKeySizeInBits to CFBridgingRetain(NSNumber(int = 2048))
+                        pubAttr += kSecAttrKeySizeInBits to CFBridgingRetain(NSNumber(int = size))
                     }
                     is Algorithm.Asymmetric.RsaOAEP -> {
                         pubAttr += kSecAttrIsPermanent to CFBridgingRetain(NSNumber(bool = false))
@@ -94,7 +94,7 @@ abstract class KeyNative {
                         pubAttr += kSecAttrKeyType to kSecAttrKeyTypeRSA
                         pubAttr += kSecAttrKeyClass to type.nativeType
                         pubAttr += kSecAttrAccessible to CFBridgingRetain(NSNumber(bool = true))
-                        pubAttr += kSecAttrKeySizeInBits to CFBridgingRetain(NSNumber(int = 2048))
+                        pubAttr += kSecAttrKeySizeInBits to CFBridgingRetain(NSNumber(int = size))
                     }
                     is Algorithm.Symmetric.AES -> throw NotImplementedError("No native AES support is available")
                 }
