@@ -38,7 +38,7 @@ import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.UserConsent
-import care.data4life.fhir.stu3.model.FhirResource
+import care.data4life.hl7.fhir.stu3.model.FhirResource
 import kotlinx.coroutines.CoroutineScope
 
 interface Contract {

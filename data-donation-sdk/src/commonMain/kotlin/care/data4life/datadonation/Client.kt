@@ -39,7 +39,7 @@ import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.di.initKoin
 import care.data4life.datadonation.internal.domain.usecases.*
-import care.data4life.fhir.stu3.model.FhirResource
+import care.data4life.hl7.fhir.stu3.model.FhirResource
 import kotlinx.coroutines.launch
 
 class Client(private val configuration: Contract.Configuration) : Contract.DataDonation {
