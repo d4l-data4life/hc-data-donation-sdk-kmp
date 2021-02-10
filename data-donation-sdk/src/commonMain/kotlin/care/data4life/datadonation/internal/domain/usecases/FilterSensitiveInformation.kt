@@ -32,10 +32,10 @@
 
 package care.data4life.datadonation.internal.domain.usecases
 
-import care.data4life.fhir.stu3.model.FhirResource
-import care.data4life.fhir.stu3.model.QuestionnaireResponse
-import care.data4life.fhir.stu3.model.QuestionnaireResponseItem
-import care.data4life.fhir.stu3.model.QuestionnaireResponseItemAnswer
+import care.data4life.hl7.fhir.stu3.model.FhirResource
+import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
+import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponseItem
+import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponseItemAnswer
 
 open class FilterSensitiveInformation :
     ParameterizedUsecase<List<FhirResource>, List<FhirResource>>() {

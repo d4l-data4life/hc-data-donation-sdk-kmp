@@ -55,6 +55,16 @@ function clearDonationService() {
   (cd ../${DONATION_SERVICE_DIR} && make docker-database-delete)
 }
 
+function updateAll() {
+  echo "PULL ALL REPOSITORIES ********************"
+  (cd ../${SURVEY_SERVICE_DIR} && git pull)
+  (cd ../${SURVEY_DATA_DIR} && git pull)
+  (cd ../${CONSENT_SERVICE_DIR} && git pull)
+  (cd ../${CONSENT_DATA_DIR} && git pull)
+  (cd ../${DONATION_SERVICE_DIR} && git pull)
+  cd "$SRC_DIR" || exit
+}
+
 function DD-start() {
   clearSurveyService || true
   clearConsentService || true
