@@ -8,15 +8,15 @@ object Version {
 
     // Kotlin
     // https://github.com/JetBrains/kotlin
-    const val kotlin = "1.4.10"
+    const val kotlin = "1.4.21"
     const val kotlinGradlePlugin = kotlin
 
     // https://github.com/Kotlin/kotlinx.coroutines
-    const val kotlinCoroutines = "1.3.9-native-mt-2"
+    const val kotlinCoroutines = "1.4.2-native-mt"
     const val kotlinCoroutinesIO = "0.1.16"
 
     // https://github.com/Kotlin/kotlinx.serialization
-    const val kotlinSerialization = "1.0.0-RC"
+    const val kotlinSerialization = "1.0.1"
 
     // https://github.com/touchlab/Stately
     const val stately = "1.1.0"
@@ -77,7 +77,7 @@ object Version {
 
 
     // https://github.com/d4l-data4life/hc-fhir-sdk-kmp
-    const val fhir = "0.0.1-add-package-hl7-SNAPSHOT"
+    const val fhir = "0.1.0"
 
     // Junit Test
     const val testJUnit = "4.13"

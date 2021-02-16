@@ -51,18 +51,6 @@ object Dependency {
             val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Version.kotlinCoroutines}"
         }
 
-        val coroutinesIO = CoroutinesIO
-
-        object CoroutinesIO {
-            //https://github.com/Kotlin/kotlinx-io
-            val common =
-                "org.jetbrains.kotlinx:kotlinx-coroutines-io:${Version.kotlinCoroutinesIO}"
-            val java =
-                "org.jetbrains.kotlinx:kotlinx-coroutines-io-jvm:${Version.kotlinCoroutinesIO}"
-            val native =
-                "org.jetbrains.kotlinx:kotlinx-coroutines-io-native:${Version.kotlinCoroutinesIO}"
-        }
-
         val ktor = Ktor
 
         object Ktor {
@@ -100,17 +88,6 @@ object Dependency {
                 "org.jetbrains.kotlinx:kotlinx-serialization-protobuf:${Version.kotlinSerialization}"
         }
 
-        val sqlDelight = SqlDelight
-
-        object SqlDelight {
-            // https://github.com/cashapp/sqldelight
-            const val jdk = "com.squareup.sqldelight:sqlite-driver:${Version.sqlDelight}"
-            const val js = "com.squareup.sqldelight:sqljs-driver:${Version.sqlDelight}"
-            const val native = "com.squareup.sqldelight:native-driver:${Version.sqlDelight}"
-            const val android = "com.squareup.sqldelight:android-driver:${Version.sqlDelight}"
-            const val ios = "com.squareup.sqldelight:ios-driver:${Version.sqlDelight}"
-        }
-
         val koin = Koin
 
         object Koin {
@@ -126,9 +103,6 @@ object Dependency {
         }
 
         val stately = "co.touchlab:stately-common:${Version.stately}"
-        val multiplatformSettings =
-            "com.russhwolf:multiplatform-settings:${Version.multiplatformSettings}"
-
 
         val dateTime = "org.jetbrains.kotlinx:kotlinx-datetime:${Version.dateTime}"
 
@@ -152,44 +126,6 @@ object Dependency {
 
     object Android {
         const val desugar = "com.android.tools:desugar_jdk_libs:${Version.androidDesugar}"
-
-        // AndroidX
-        const val androidXCoreKtx = "androidx.core:core-ktx:${Version.androidXKtx}"
-        const val androidXAppCompat = "androidx.appcompat:appcompat:${Version.androidXAppCompat}"
-        const val androidXBrowser = "androidx.browser:browser:${Version.androidXBrowser}"
-        const val androidXConstraintLayout =
-            "androidx.constraintlayout:constraintlayout:${Version.androidXConstraintLayout}"
-
-        // AndroidX - Lifecylce
-        const val androidXLifecylceCommonJava8 =
-            "androidx.lifecycle:lifecycle-common-java8:${Version.androidXLifecycle}"
-        const val androidXLifecylceExtensions =
-            "androidx.lifecycle:lifecycle-extensions:${Version.androidXLifecycle}"
-
-        // AndroidX - Navigation
-        const val androidXNavigationFragmentKtx =
-            "androidx.navigation:navigation-fragment-ktx:${Version.androidXNavigation}"
-        const val androidXNavigationUiKtx =
-            "androidx.navigation:navigation-ui-ktx:${Version.androidXNavigation}"
-
-        // Material
-        const val material = "com.google.android.material:material:${Version.material}"
-
-        val d4l = D4L
-
-        object D4L {
-            const val hcSDK =
-                "com.github.gesundheitscloud.hc-sdk-android:sdk-android:${Version.hcSDKAndroid}"
-            const val hcSdkSecurestore =
-                "com.github.gesundheitscloud.hc-sdk-android:securestore-android:${Version.hcSDKAndroid}"
-            const val hcSdkCrypto =
-                "com.github.gesundheitscloud.hc-sdk-android:crypto-android:${Version.hcSDKAndroid}"
-            const val hcSdkHelper =
-                "com.github.gesundheitscloud.sdk-fhir-helper-multiplatform:fhir-helper-android:${Version.hcSdkHelperAndroid}"
-            const val hcSdkUtils =
-                "de.gesundheitscloud.sdk-util-multiplatform:util-android:${Version.hcSdkUtilsAndroid}"
-            const val fhir = "de.gesundheitscloud:hc-fhir-android:${Version.fhirAndroid}"
-        }
 
         const val threeTenABP = "com.jakewharton.threetenabp:threetenabp:${Version.threeTenABP}"
 
