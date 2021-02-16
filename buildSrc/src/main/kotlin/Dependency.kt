@@ -114,6 +114,8 @@ object Dependency {
             const val iosX64 = "care.data4life.hc-fhir-sdk-kmp:fhir-iosx64:${Version.fhir}"
         }
 
+        val uuid = "com.benasher44:uuid:${Version.uuid}"
+
     }
 
     val test = Test

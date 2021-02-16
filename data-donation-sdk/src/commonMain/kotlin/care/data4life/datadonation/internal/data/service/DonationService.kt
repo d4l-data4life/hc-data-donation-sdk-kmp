@@ -36,6 +36,7 @@ import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.internal.data.model.DonationPayload
 import care.data4life.datadonation.internal.data.service.DonationService.Endpoints.donate
 import care.data4life.datadonation.internal.data.service.DonationService.Endpoints.register
+import com.benasher44.uuid.uuid4
 import io.ktor.client.*
 import io.ktor.client.request.forms.*
 import io.ktor.http.*
@@ -80,6 +81,7 @@ internal class DonationService(
                 formData {
                     append(FormDataEntries.request, payload.request)
                     payload.documents.forEachIndexed { index, document ->
+                        "${FormDataHeaders.fileName}${uuid4()} "
                         append("${FormDataEntries.signature}$index", document.signature)
                         append("${FormDataEntries.donation}$index", document.document)
                     }
@@ -98,5 +100,9 @@ internal class DonationService(
         const val request = "request"
         const val signature = "signature_"
         const val donation = "donation_"
+    }
+
+    object FormDataHeaders {
+        const val fileName = "filename="
     }
 }

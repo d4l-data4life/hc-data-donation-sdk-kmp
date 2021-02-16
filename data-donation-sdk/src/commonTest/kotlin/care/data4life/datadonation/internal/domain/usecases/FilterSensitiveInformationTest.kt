@@ -36,6 +36,7 @@ import care.data4life.hl7.fhir.stu3.codesystem.QuestionnaireResponseStatus
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponseItem
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponseItemAnswer
+import care.data4life.hl7.fhir.stu3.primitive.Integer
 import runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -51,7 +52,7 @@ abstract class FilterSensitiveInformationTest {
     private val intAnswer =
         QuestionnaireResponseItemAnswer(
             id = "intAnswer",
-            valueInteger = "12"
+            valueInteger = Integer(12)
         ) //TODO replace when fhir lib updated
 
 

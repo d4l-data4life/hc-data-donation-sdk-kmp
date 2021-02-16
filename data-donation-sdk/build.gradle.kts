@@ -75,6 +75,8 @@ kotlin {
                 implementation(Dependency.Multiplatform.dateTime)
 
                 implementation(Dependency.Multiplatform.Fhir.common)
+
+                implementation(Dependency.Multiplatform.uuid)
             }
         }
         commonTest {
@@ -155,7 +157,7 @@ kotlin {
                     "-lcrypto",
                     "-L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator",
                     "-L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift-5.0/iphonesimulator",
-                    "-rpath","/usr/lib/swift"
+                    "-rpath", "/usr/lib/swift"
                 )
             }
         }
