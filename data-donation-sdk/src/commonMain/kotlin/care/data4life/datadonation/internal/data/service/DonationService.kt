@@ -41,6 +41,7 @@ import io.ktor.client.*
 import io.ktor.client.request.forms.*
 import io.ktor.http.*
 import io.ktor.http.content.*
+import io.ktor.utils.io.core.*
 
 internal class DonationService(
     private val client: HttpClient,
@@ -81,9 +82,18 @@ internal class DonationService(
                 formData {
                     append(FormDataEntries.request, payload.request)
                     payload.documents.forEachIndexed { index, document ->
-                        "${FormDataHeaders.fileName}${uuid4()}"
                         append("${FormDataEntries.signature}$index", document.signature)
-                        append("${FormDataEntries.donation}$index", document.document)
+                        appendInput(
+                            key = "${FormDataEntries.donation}$index",
+                            headers = Headers.build {
+                                append(
+                                    HttpHeaders.ContentDisposition,
+                                    "${FormDataHeaders.fileName}${uuid4()}"
+                                )
+                            },
+                            size = document.document.size.toLong()
+                        )
+                        { buildPacket { writeFully(document.document) } }
                     }
                 }
             )
