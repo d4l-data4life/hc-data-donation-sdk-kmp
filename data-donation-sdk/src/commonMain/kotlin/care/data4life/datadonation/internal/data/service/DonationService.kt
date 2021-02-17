@@ -81,7 +81,7 @@ internal class DonationService(
                 formData {
                     append(FormDataEntries.request, payload.request)
                     payload.documents.forEachIndexed { index, document ->
-                        "${FormDataHeaders.fileName}${uuid4()} "
+                        "${FormDataHeaders.fileName}${uuid4()}"
                         append("${FormDataEntries.signature}$index", document.signature)
                         append("${FormDataEntries.donation}$index", document.document)
                     }

@@ -56,7 +56,7 @@ class CachedUserSessionTokenDataStore(
     override suspend fun getUserSessionToken(): String? =
         suspendCoroutine { continuation ->
 
-            if (cachedAt < clock.now().minus(1.minutes)) {
+            if (cachedAt > clock.now().minus(1.minutes)) {
                 continuation.resume(cachedValue)
             } else {
                 configuration.getUserSessionToken(object : ResultListener<String> {
