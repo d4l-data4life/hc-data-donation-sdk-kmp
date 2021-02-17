@@ -33,7 +33,6 @@
 package care.data4life.datadonation.internal.di
 
 import care.data4life.datadonation.Contract
-import care.data4life.datadonation.core.listener.ResultListener
 import care.data4life.datadonation.encryption.hybrid.HybridEncryptionRegistry
 import care.data4life.datadonation.internal.data.service.ConsentService
 import care.data4life.datadonation.internal.data.service.DonationService
@@ -45,12 +44,11 @@ import io.ktor.client.*
 import io.ktor.client.features.json.*
 import io.ktor.client.features.json.serializer.*
 import io.ktor.client.features.logging.*
+import kotlinx.datetime.Clock
 import org.koin.core.KoinApplication
 import org.koin.core.module.Module
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 import kotlin.native.concurrent.ThreadLocal
 
 @ThreadLocal
@@ -62,6 +60,7 @@ internal fun initKoin(configuration: Contract.Configuration): KoinApplication {
     DataDonationKoinContext.koinApp = koinApplication {
         modules(
             module {
+                single<Contract.Configuration> { configuration }
                 single<CredentialsDataStore> {
                     object : CredentialsDataStore {
                         override fun getDataDonationPublicKey(): String =
@@ -72,22 +71,7 @@ internal fun initKoin(configuration: Contract.Configuration): KoinApplication {
                     }
                 }
                 single<UserSessionTokenDataStore> {
-                    object : UserSessionTokenDataStore {
-                        override suspend fun getUserSessionToken(): String? =
-                            suspendCoroutine { continuation ->
-                                configuration.getUserSessionToken(object : ResultListener<String> {
-                                    override fun onSuccess(t: String) {
-                                        continuation.resume(t)
-                                    }
-
-                                    override fun onError(exception: Exception) {
-                                        continuation.resume(null)
-                                    }
-
-                                })
-                            }
-
-                    }
+                    CachedUserSessionTokenDataStore(get(), Clock.System)
                 }
                 single { configuration.getEnvironment() }
             },
