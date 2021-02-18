@@ -36,11 +36,14 @@ import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.internal.data.model.DonationPayload
 import care.data4life.datadonation.internal.data.service.DonationService.Endpoints.donate
 import care.data4life.datadonation.internal.data.service.DonationService.Endpoints.register
+import care.data4life.datadonation.internal.utils.encodeBase64
+import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuid4
 import io.ktor.client.*
 import io.ktor.client.request.forms.*
 import io.ktor.http.*
 import io.ktor.http.content.*
+import io.ktor.utils.io.*
 import io.ktor.utils.io.core.*
 
 internal class DonationService(
@@ -88,7 +91,7 @@ internal class DonationService(
                             headers = Headers.build {
                                 append(
                                     HttpHeaders.ContentDisposition,
-                                    "${FormDataHeaders.fileName}${uuid4()}"
+                                    "${FormDataHeaders.fileName}\"${uuid4().toBase64()}\"" //TODO change to hash
                                 )
                             },
                             size = document.document.size.toLong()
@@ -115,4 +118,14 @@ internal class DonationService(
     object FormDataHeaders {
         const val fileName = "filename="
     }
+}
+
+
+fun Uuid.toBase64(): String {
+    val byteArray = ByteArray(16)
+    buildPacket {
+        writeLong(this@toBase64.mostSignificantBits)
+        writeLong(this@toBase64.leastSignificantBits)
+    }.readAvailable(byteArray)
+    return byteArray.encodeBase64()
 }
