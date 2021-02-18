@@ -50,6 +50,7 @@ import care.data4life.hl7.fhir.stu3.codesystem.QuestionnaireResponseStatus
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
 import care.data4life.hl7.fhir.stu3.model.Reference
 import io.ktor.utils.io.charsets.*
+import kotlinx.serialization.json.Json
 import runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -79,10 +80,15 @@ abstract class DonateResourcesTest {
     private val dummyEncryptedResourceSignatureList =
         listOf(DummyData.rawData, DummyData.rawData, DummyData.rawData)
 
+
+    private val jsonParser = Json {}
+
+
     private val mockUserConsentDataStore = MockConsentDataStore()
     private val mockDonationDataStore = MockDonationDataStore()
     private val mockServiceTokenDataStore = MockServiceTokenDataStore()
     private val mockFilterSensitiveInformation = MockFilterSensitiveInformation()
+    private val mockRemoveInternalInformation = MockRemoveInternalInformation(jsonParser)
     private val userConsentRepository =
         UserConsentRepository(mockUserConsentDataStore, MockUserSessionTokenDataStore())
     private val serviceTokenRepository = ServiceTokenRepository(mockServiceTokenDataStore)
@@ -157,6 +163,7 @@ abstract class DonateResourcesTest {
     private val donateResources =
         DonateResources(
             mockFilterSensitiveInformation,
+            mockRemoveInternalInformation,
             createRequestConsentPayload,
             donationRepository,
             encryptorALP

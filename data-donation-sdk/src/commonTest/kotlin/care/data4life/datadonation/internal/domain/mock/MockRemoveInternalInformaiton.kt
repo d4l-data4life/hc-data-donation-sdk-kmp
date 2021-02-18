@@ -1,7 +1,7 @@
 /*
  * BSD 3-Clause License
  *
- * Copyright (c) 2020, D4L data4life gGmbH
+ * Copyright (c) 2021, D4L data4life gGmbH
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,35 +30,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.domain.usecases
+package care.data4life.datadonation.internal.domain.mock
 
-import org.junit.Ignore
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import care.data4life.datadonation.internal.domain.usecases.RemoveInternalInformation
+import kotlinx.serialization.json.Json
 
-@RunWith(JUnit4::class)
-class FetchUserConsentsAndroidTest : FetchUserConsentsTest()
-
-@RunWith(JUnit4::class)
-class CreateUserConsentAndroidTest : CreateUserConsentTest()
-
-@RunWith(JUnit4::class)
-class FetchConsentAndroidDocumentsTest : FetchConsentDocumentsTest()
-
-@RunWith(JUnit4::class)
-class FilterSensitiveInformationAndroidTest : FilterSensitiveInformationTest()
-
-@RunWith(JUnit4::class)
-class RegisterNewDonorAndroidTest : RegisterNewDonorTest()
-
-@RunWith(JUnit4::class)
-class RemoveInternalInformationAndroidTest : RemoveInternalInformationTest()
-
-@RunWith(JUnit4::class)
-class RevokeUserConsentAndroidTest : RevokeUserConsentTest()
-
-@Ignore // TODO: Ignored until fhir kmp dependency is updated to parse FhirResource to json
-@RunWith(JUnit4::class)
-class DonateResourcesAndroidTest : DonateResourcesTest()
-
-
+class MockRemoveInternalInformation(json: Json) : RemoveInternalInformation(json) {
+    override suspend fun execute(): List<String> {
+        return parameter.map { it.toString() }
+    }
+}

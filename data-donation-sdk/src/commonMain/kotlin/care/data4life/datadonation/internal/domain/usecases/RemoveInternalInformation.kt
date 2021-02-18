@@ -1,7 +1,7 @@
 /*
  * BSD 3-Clause License
  *
- * Copyright (c) 2020, D4L data4life gGmbH
+ * Copyright (c) 2021, D4L data4life gGmbH
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,33 +32,19 @@
 
 package care.data4life.datadonation.internal.domain.usecases
 
-import org.junit.Ignore
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import care.data4life.hl7.fhir.stu3.FhirStu3Parser
+import care.data4life.hl7.fhir.stu3.model.FhirResource
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
 
-@RunWith(JUnit4::class)
-class FetchUserConsentsAndroidTest : FetchUserConsentsTest()
+open class RemoveInternalInformation(private val json: Json) :
+    ParameterizedUsecase<List<FhirResource>, List<String>>() {
+    override suspend fun execute(): List<String> = parameter.map {
+        val jsonString = FhirStu3Parser.defaultJsonParser().toJson(it)
 
-@RunWith(JUnit4::class)
-class CreateUserConsentAndroidTest : CreateUserConsentTest()
-
-@RunWith(JUnit4::class)
-class FetchConsentAndroidDocumentsTest : FetchConsentDocumentsTest()
-
-@RunWith(JUnit4::class)
-class FilterSensitiveInformationAndroidTest : FilterSensitiveInformationTest()
-
-@RunWith(JUnit4::class)
-class RegisterNewDonorAndroidTest : RegisterNewDonorTest()
-
-@RunWith(JUnit4::class)
-class RemoveInternalInformationAndroidTest : RemoveInternalInformationTest()
-
-@RunWith(JUnit4::class)
-class RevokeUserConsentAndroidTest : RevokeUserConsentTest()
-
-@Ignore // TODO: Ignored until fhir kmp dependency is updated to parse FhirResource to json
-@RunWith(JUnit4::class)
-class DonateResourcesAndroidTest : DonateResourcesTest()
-
-
+        return@map (json.parseToJsonElement(jsonString) as JsonObject).let {
+            json.encodeToString(JsonObject(it.minus("id").minus("ID")))
+        }
+    }
+}
