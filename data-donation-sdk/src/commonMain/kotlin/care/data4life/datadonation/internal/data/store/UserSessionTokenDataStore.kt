@@ -32,6 +32,48 @@
 
 package care.data4life.datadonation.internal.data.store
 
+import care.data4life.datadonation.Contract
+import care.data4life.datadonation.core.listener.ResultListener
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
+import kotlin.time.minutes
+
 internal interface UserSessionTokenDataStore {
     suspend fun getUserSessionToken(): String?
+}
+
+class CachedUserSessionTokenDataStore(
+    private val configuration: Contract.Configuration,
+    private val clock: Clock
+) :
+    UserSessionTokenDataStore {
+
+    private lateinit var cachedValue: String
+    private var cachedAt = Instant.fromEpochSeconds(0)
+
+    override suspend fun getUserSessionToken(): String? =
+        suspendCoroutine { continuation ->
+
+            if (cachedAt > clock.now().minus(1.minutes)) {
+                continuation.resume(cachedValue)
+            } else {
+                configuration.getUserSessionToken(object : ResultListener<String> {
+                    override fun onSuccess(t: String) {
+                        cachedValue = t
+                        cachedAt = clock.now()
+                        continuation.resume(t)
+                    }
+
+                    override fun onError(exception: Exception) {
+                        continuation.resume(null)
+                    }
+
+                })
+            }
+
+
+        }
+
 }

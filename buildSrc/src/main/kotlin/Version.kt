@@ -67,6 +67,8 @@ object Version {
     // https://ktor.io/
     const val ktor = "1.4.2"
 
+    // https://github.com/benasher44/uuid
+    const val uuid = "0.2.3"
 
     // Database
     // https://github.com/cashapp/sqldelight
