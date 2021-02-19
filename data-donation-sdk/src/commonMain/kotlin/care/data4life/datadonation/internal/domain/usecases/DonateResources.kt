@@ -48,6 +48,7 @@ import io.ktor.utils.io.core.*
 
 internal class DonateResources(
     private val filterSensitiveInformation: FilterSensitiveInformation,
+    private val removeInternalInformation: RemoveInternalInformation,
     private val createRequestConsentPayload: CreateRequestConsentPayload,
     private val donationRepository: DonationRepository,
     private val encryptionALP: HybridEncryption,
@@ -70,14 +71,16 @@ internal class DonateResources(
         parameter.keyPair?.let {
             donateResources(
                 signatureProvider.invoke(it),
-                filterSensitiveInformation.withParams(parameter.resources).execute()
+                removeInternalInformation.withParams(
+                    filterSensitiveInformation.withParams(parameter.resources).execute()
+                ).execute()
             )
         } ?: throw MissingCredentialsException()
     }
 
     private suspend fun donateResources(
         keyPair: SignatureKeyPrivate,
-        resources: List<FhirResource>
+        jsonResources: List<String>
     ) {
         val encryptedSignedMessage = createRequestConsentPayload.withParams(
             CreateRequestConsentPayload.Parameters(
@@ -85,8 +88,8 @@ internal class DonateResources(
                 keyPair
             )
         ).execute()
-        val signedEncryptedDocuments = resources.map {
-            val encryptedDocument = encryptionALP.encrypt(it.toJsonString().toByteArray())
+        val signedEncryptedDocuments = jsonResources.map {
+            val encryptedDocument = encryptionALP.encrypt(it.toByteArray())
             DocumentWithSignature(
                 document = encryptedDocument,
                 signature = keyPair.sign(encryptedDocument)

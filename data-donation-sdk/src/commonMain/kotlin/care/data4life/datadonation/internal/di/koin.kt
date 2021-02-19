@@ -141,6 +141,7 @@ private val coreModule = module {
             get(),
             get(),
             get(),
+            get(),
             get<HybridEncryptionRegistry>().hybridEncryptionALP
         )
     }
@@ -154,6 +155,7 @@ private val coreModule = module {
     single { FetchConsentDocuments(get()) }
     single { CreateUserConsent(get()) }
     single { FetchUserConsents(get()) }
+    single { RemoveInternalInformation(kotlinx.serialization.json.Json {}) }
     single { RevokeUserConsent(get()) }
 }
 
