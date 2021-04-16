@@ -5,13 +5,13 @@ on:
     paths-ignore:
       - 'docs/**'
     branches:
-      - master
+      - main
       - release/*
   pull_request:
     paths-ignore:
       - 'docs/**'
     branches:
-      - master
+      - main
       - release/*
       - feature/*
       - bugfix/*
