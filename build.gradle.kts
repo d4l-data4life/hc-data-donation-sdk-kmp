@@ -37,6 +37,7 @@ plugins {
     id("org.jetbrains.kotlin.multiplatform") version Version.kotlinGradlePlugin apply false
     id("org.jetbrains.kotlin.plugin.serialization") version Version.kotlinGradlePlugin apply false
 
+    id("scripts.dependency-updates")
     id("scripts.download-scripts")
 }
 
