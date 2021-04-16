@@ -20,8 +20,6 @@ import org.gradle.kotlin.dsl.exclude
 object Dependency {
 
     object GradlePlugin {
-        const val android = "com.android.tools.build:gradle:${Version.androidGradlePlugin}"
-        const val kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Version.kotlin}"
         const val kotlinAllOpen = "org.jetbrains.kotlin:kotlin-allopen:${Version.kotlin}"
         const val kotlinSerialization =
             "org.jetbrains.kotlin.plugin.serialization:${Version.kotlin}"

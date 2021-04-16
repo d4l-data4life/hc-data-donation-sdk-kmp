@@ -15,12 +15,11 @@
  */
 
 plugins {
-    kotlin("multiplatform")
-
-    kotlin("plugin.serialization")
+    kotlinMultiplatform()
+    kotlinSerialization()
 
     // Android
-    id("com.android.library")
+    androidLibrary()
 
     // Publish
     id("maven-publish")
@@ -30,7 +29,6 @@ group = LibraryConfig.group
 
 
 kotlin {
-
     android("android") {
         publishLibraryVariants("release")
     }

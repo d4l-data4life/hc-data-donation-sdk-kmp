@@ -24,18 +24,16 @@ buildscript {
         }
     }
     dependencies {
-        classpath(Dependency.GradlePlugin.kotlin)
-        classpath(Dependency.GradlePlugin.android)
+        classpath(GradlePlugin.kotlin)
+        classpath(GradlePlugin.android)
         classpath(Dependency.GradlePlugin.sqlDelight)
         classpath(Dependency.GradlePlugin.cocoapodsext)
-        classpath(Dependency.kotlin.serialization)
-        classpath(kotlin("gradle-plugin", Version.kotlin))
     }
 }
 
 plugins {
-    id("org.jetbrains.kotlin.multiplatform") version Version.kotlinGradlePlugin apply false
-    id("org.jetbrains.kotlin.plugin.serialization") version Version.kotlinGradlePlugin apply false
+    kotlinMultiplatform(false)
+    kotlinSerialization(false)
 
     id("scripts.dependency-updates")
     id("scripts.download-scripts")

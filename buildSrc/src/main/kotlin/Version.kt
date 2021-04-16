@@ -17,6 +17,13 @@
 object Version {
 
     // Gradle Plugin
+    object GradlePlugin {
+        const val kotlin = Version.kotlin
+
+        // Android
+        // https://developer.android.com/studio
+        const val android = "4.1.0"
+    }
 
     // IOS
     // https://github.com/touchlab/KotlinCocoapods/
@@ -25,7 +32,6 @@ object Version {
     // Kotlin
     // https://github.com/JetBrains/kotlin
     const val kotlin = "1.4.21"
-    const val kotlinGradlePlugin = kotlin
 
     // https://github.com/Kotlin/kotlinx.coroutines
     const val kotlinCoroutines = "1.4.2-native-mt"
@@ -42,10 +48,6 @@ object Version {
 
     // https://github.com/Kotlin/kotlinx-datetime
     const val dateTime = "0.1.0"
-
-    // Android
-    // https://developer.android.com/studio
-    const val androidGradlePlugin = "4.1.0"
 
     // https://developer.android.com/studio/write/java8-support
     const val androidDesugar = "1.0.4"

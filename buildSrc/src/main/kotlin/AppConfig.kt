@@ -29,5 +29,4 @@ object AppConfig {
 
         const val applicationId = group
     }
-
 }
