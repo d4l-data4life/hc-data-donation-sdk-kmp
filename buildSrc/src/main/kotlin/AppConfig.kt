@@ -16,9 +16,7 @@
 
 object AppConfig {
 
-    const val version = LibraryConfig.version
     const val group = "care.data4life.datadonation"
-
 
     val android = AndroidConfig
 
@@ -28,7 +26,6 @@ object AppConfig {
         const val targetSdkVersion = LibraryConfig.android.targetSdkVersion
 
         const val versionCode = LibraryConfig.versionCode
-        const val versionName = LibraryConfig.version
 
         const val applicationId = group
     }

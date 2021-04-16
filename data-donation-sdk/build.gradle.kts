@@ -26,7 +26,6 @@ plugins {
     id("maven-publish")
 }
 
-version = LibraryConfig.version
 group = LibraryConfig.group
 
 
@@ -181,8 +180,6 @@ kotlin {
 
 }
 
-
-
 android {
     compileSdkVersion(LibraryConfig.android.compileSdkVersion)
 
@@ -190,8 +187,8 @@ android {
         minSdkVersion(LibraryConfig.android.minSdkVersion)
         targetSdkVersion(LibraryConfig.android.targetSdkVersion)
 
-        versionCode = LibraryConfig.android.versionCode
-        versionName = LibraryConfig.android.versionName
+        versionCode = 1
+        versionName = "${project.version}"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunnerArguments(
@@ -241,7 +238,6 @@ publishing {
                 if (this is MavenPublication) {
                     groupId = LibraryConfig.githubGroup
                     artifactId = LibraryConfig.artifactId
-                    version = LibraryConfig.version
 
                     when (name) {
                         "androidRelease" -> {
