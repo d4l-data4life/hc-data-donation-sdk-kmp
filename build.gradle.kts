@@ -37,8 +37,7 @@ plugins {
     id("org.jetbrains.kotlin.multiplatform") version Version.kotlinGradlePlugin apply false
     id("org.jetbrains.kotlin.plugin.serialization") version Version.kotlinGradlePlugin apply false
 
-    // https://github.com/ben-manes/gradle-versions-plugin
-    id("com.github.ben-manes.versions") version "0.28.0"
+    id("scripts.download-scripts")
 }
 
 allprojects {

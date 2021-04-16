@@ -14,21 +14,3 @@
  * contact D4L by email to help@data4life.care.
  */
 
-plugins {
-    `kotlin-dsl`
-}
-
-repositories {
-    gradlePluginPortal()
-    mavenCentral()
-    maven("https://dl.bintray.com/data4life/maven")
-}
-
-dependencies {
-    // download scripts
-    implementation("de.undercouch:gradle-download-task:4.1.1")
-}
-
-kotlinDslPluginOptions {
-    experimentalWarning.set(false)
-}
