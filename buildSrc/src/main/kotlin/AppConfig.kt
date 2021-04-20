@@ -25,7 +25,7 @@ object AppConfig {
         const val compileSdkVersion = LibraryConfig.android.compileSdkVersion
         const val targetSdkVersion = LibraryConfig.android.targetSdkVersion
 
-        const val versionCode = LibraryConfig.versionCode
+        const val versionCode = 1
 
         const val applicationId = group
     }

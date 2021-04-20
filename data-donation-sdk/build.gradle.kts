@@ -22,7 +22,7 @@ plugins {
     androidLibrary()
 
     // Publish
-    id("maven-publish")
+    id("scripts.publishing-config")
 }
 
 group = LibraryConfig.group
@@ -35,7 +35,9 @@ kotlin {
 
     ios {
         binaries {
-            framework()
+            framework {
+                baseName = LibraryConfig.name
+            }
         }
     }
 
@@ -212,78 +214,6 @@ android {
         getByName("test") {
             java.setSrcDirs(setOf("src/androidTest/kotlin"))
             res.setSrcDirs(setOf("src/androidTest/res"))
-        }
-    }
-}
-
-
-publishing {
-    repositories {
-        maven {
-            name = "GithubPackages"
-            url = uri("https://maven.pkg.github.com/gesundheitscloud/data-donation-sdk-native")
-            credentials {
-                username =
-                    (project.findProperty("gpr.user") ?: System.getenv("USERNAME"))?.toString()
-                password =
-                    (project.findProperty("gpr.key") ?: System.getenv("TOKEN"))?.toString()
-            }
-        }
-
-        publications {
-            all {
-                if (this is MavenPublication) {
-                    groupId = LibraryConfig.githubGroup
-                    artifactId = LibraryConfig.artifactId
-
-                    when (name) {
-                        "androidRelease" -> {
-                            artifactId = "${project.name}-android"
-                        }
-                        "metadata" -> {
-                            artifactId = "${project.name}-metadata"
-                        }
-                        "jvm" -> {
-                            artifactId = "${project.name}-jvm"
-                        }
-                        "iosArm64" -> {
-                            artifactId = "${project.name}-iosarm64"
-                        }
-                        "iosX64" -> {
-                            artifactId = "${project.name}-iosx64"
-                        }
-                        else -> {
-                            artifactId = "${project.name}-common"
-                        }
-                    }
-
-                    pom {
-                        name.set(LibraryConfig.name)
-                        url.set(LibraryConfig.url)
-                        inceptionYear.set(LibraryConfig.inceptionYear)
-                        licenses {
-                            license {
-                                name.set(LibraryConfig.licenseName)
-                                url.set(LibraryConfig.licenseUrl)
-                                distribution.set(LibraryConfig.licenseDistribution)
-                            }
-                        }
-                        developers {
-                            developer {
-                                id.set(LibraryConfig.developerId)
-                                name.set(LibraryConfig.developerName)
-                                email.set(LibraryConfig.developerEmail)
-                            }
-                        }
-
-                        scm {
-                            connection.set(LibraryConfig.scmConnection)
-                            developerConnection.set(LibraryConfig.scmDeveloperConnection)
-                            url.set(LibraryConfig.scmUrl)
-                        }
-                    }
-                }
-            }
         }
     }
 }

@@ -15,36 +15,51 @@
  */
 
 object LibraryConfig {
-    const val group = "care.data4life.datadonation.common"
-    const val githubGroup = "com.github.gesundheitscloud"
-    const val artifactId = "data-donation-sdk-native"
-    const val versionCode = 1
-    const val name = "gesundheitscloud/$artifactId"
-    const val host = "github.com"
-    const val url = "https://$host/$name"
-    const val inceptionYear = "2020"
 
-    // DEVELOPER
-    const val developerId = "gesundheitscloud"
-    const val developerName = "D4L data4life gGmbH"
-    const val developerEmail = "mobile@data4life.care"
+    const val group = "care.data4life"
+    const val name = "d4l-data-donation-sdk-kmp"
 
-    // LICENSE
-    const val licenseName = ""
-    const val licenseUrl = "$url/blob/main/LICENSE"
-    const val licenseDistribution = "repo"
+    const val githubOwner = "gesundheitscloud"
+    const val githubRepository = "data-donation-sdk-native"
 
-    // SCM
-    const val scmUrl = "git://$host/$name.git"
-    const val scmConnection = "scm:$scmUrl"
-    const val scmDeveloperConnection = "$scmConnection"
+
+    val publish = PublishConfig
+
+    object PublishConfig {
+        const val name = LibraryConfig.name
+        const val groupId = "${LibraryConfig.group}.${LibraryConfig.name}"
+
+        const val description = "Kotlin multi platform library implementing Data Donation on the Data4life ecosystem."
+        const val year = "2021"
+
+        // URL
+        const val host = "github.com"
+        const val path = "$githubOwner/$githubRepository"
+
+        const val url = "https://$host/$path"
+
+        // DEVELOPER
+        const val developerId = "d4l-data4life"
+        const val developerName = "D4L data4life gGmbH"
+        const val developerEmail = "mobile@data4life.care"
+
+        // LICENSE
+        const val licenseName = "Private"
+        const val licenseUrl = "$url/blob/main/LICENSE"
+        const val licenseDistribution = "repo"
+
+        // SCM
+        const val scmUrl = "git://$host/$path.git"
+        const val scmConnection = "scm:$scmUrl"
+        const val scmDeveloperConnection = scmConnection
+    }
 
     val android = AndroidLibraryConfig
 
     object AndroidLibraryConfig {
         const val minSdkVersion = 23
-        const val compileSdkVersion = 29
-        const val targetSdkVersion = 29
+        const val compileSdkVersion = 30
+        const val targetSdkVersion = 30
 
         const val resourcePrefix = "d4l_data_donation_"
     }
