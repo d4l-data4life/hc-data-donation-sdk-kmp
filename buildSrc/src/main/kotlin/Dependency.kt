@@ -19,17 +19,6 @@ import org.gradle.kotlin.dsl.exclude
 
 object Dependency {
 
-    object GradlePlugin {
-        const val kotlinAllOpen = "org.jetbrains.kotlin:kotlin-allopen:${Version.kotlin}"
-        const val kotlinSerialization =
-            "org.jetbrains.kotlin.plugin.serialization:${Version.kotlin}"
-        const val cocoapodsext = "co.touchlab:kotlinnativecocoapods:${Version.cocoapodsext}"
-
-        const val sqlDelight = "com.squareup.sqldelight:gradle-plugin:${Version.sqlDelight}"
-    }
-
-    val kotlin = Kotlin
-
     object Kotlin {
         val stdLib = "org.jetbrains.kotlin:kotlin-stdlib:${Version.kotlin}"
         val reflect = "org.jetbrains.kotlin:kotlin-reflect:${Version.kotlin}"

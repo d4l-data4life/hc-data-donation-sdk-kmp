@@ -26,8 +26,6 @@ buildscript {
     dependencies {
         classpath(GradlePlugin.kotlin)
         classpath(GradlePlugin.android)
-        classpath(Dependency.GradlePlugin.sqlDelight)
-        classpath(Dependency.GradlePlugin.cocoapodsext)
     }
 }
 

@@ -39,7 +39,6 @@ kotlin {
         }
     }
 
-
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinNativeCompile> {
         kotlinOptions {
             freeCompilerArgs += listOf("-Xallow-result-return-type")

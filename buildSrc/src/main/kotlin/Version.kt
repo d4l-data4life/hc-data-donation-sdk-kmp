@@ -25,10 +25,6 @@ object Version {
         const val android = "4.1.0"
     }
 
-    // IOS
-    // https://github.com/touchlab/KotlinCocoapods/
-    const val cocoapodsext = "0.12"
-
     // Kotlin
     // https://github.com/JetBrains/kotlin
     const val kotlin = "1.4.21"
@@ -43,18 +39,17 @@ object Version {
     // https://github.com/touchlab/Stately
     const val stately = "1.1.0"
 
-    // https://github.com/russhwolf/multiplatform-settings
-    const val multiplatformSettings = "0.5.1"
-
     // https://github.com/Kotlin/kotlinx-datetime
     const val dateTime = "0.1.0"
 
     // https://developer.android.com/studio/write/java8-support
     const val androidDesugar = "1.0.4"
+
     const val hcSDKAndroid = "8c5268e858"
     const val hcSdkHelperAndroid = "1.2.2"
     const val hcSdkUtilsAndroid = "1.3.1"
     const val fhirAndroid = "0.3.0"
+
     // https://github.com/JakeWharton/ThreeTenABP/
     const val threeTenABP = "1.1.1"
 
@@ -88,10 +83,6 @@ object Version {
     // https://github.com/benasher44/uuid
     const val uuid = "0.2.3"
 
-    // Database
-    // https://github.com/cashapp/sqldelight
-    const val sqlDelight = "1.4.4"
-
     //Encryption
     const val bouncyCastle = "1.64"
 
@@ -101,6 +92,5 @@ object Version {
 
     // Junit Test
     const val testJUnit = "4.13"
-
 
 }
