@@ -22,9 +22,10 @@ import java.security.PublicKey
 import java.security.SecureRandom
 import javax.crypto.Cipher
 
-
 class EncryptionKeyPrivateHandleBouncy(
-    private val cipher: Cipher, private val privateKey: PrivateKey, private val publicKey: PublicKey
+    private val cipher: Cipher,
+    private val privateKey: PrivateKey,
+    private val publicKey: PublicKey
 ) : EncryptionPrivateKey,
     EncryptionPublicKey by EncryptionKeyPublicHandleBouncy(cipher, publicKey) {
 
@@ -38,11 +39,11 @@ class EncryptionKeyPrivateHandleBouncy(
         cipher.init(Cipher.DECRYPT_MODE, privateKey)
         return runCatching { cipher.doFinal(data) }
     }
-
 }
 
 class EncryptionKeyPublicHandleBouncy(
-    private val cipher: Cipher, private val publicKey: PublicKey
+    private val cipher: Cipher,
+    private val publicKey: PublicKey
 ) : EncryptionPublicKey {
     private val random = SecureRandom()
     override fun encrypt(data: ByteArray): ByteArray {
@@ -55,5 +56,4 @@ class EncryptionKeyPublicHandleBouncy(
     @OptIn(InternalAPI::class)
     override val pkcs8Public: String
         get() = publicKey.encoded.encodeBase64()
-
 }

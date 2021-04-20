@@ -16,22 +16,19 @@
 
 package care.data4life.datadonation.encryption.signature
 
-
 import care.data4life.datadonation.encryption.Algorithm
 import care.data4life.datadonation.encryption.assymetric.bouncyCastleProvider
 import java.security.*
 import java.security.spec.*
 
-
-actual fun SignatureKeyPrivate(size: Int,algorithm: Algorithm.Signature): SignatureKeyPrivate {
-    return when(algorithm) {
+actual fun SignatureKeyPrivate(size: Int, algorithm: Algorithm.Signature): SignatureKeyPrivate {
+    return when (algorithm) {
         is Algorithm.Signature.RsaPSS -> {
-            val (signature, key) = signatureGen(size,algorithm)
-            SignatureKeyPrivateHandleBouncy(signature,key.private,key.public)
+            val (signature, key) = signatureGen(size, algorithm)
+            SignatureKeyPrivateHandleBouncy(signature, key.private, key.public)
         }
     }
 }
-
 
 actual fun SignatureKeyPrivate(
     serializedPrivate: ByteArray,
@@ -43,7 +40,7 @@ actual fun SignatureKeyPrivate(
     val privateSpec = PKCS8EncodedKeySpec(serializedPrivate)
     val privateKey = factory.generatePrivate(privateSpec)
 
-    return SignatureKeyPrivateHandleBouncy(signature,privateKey,publicKey)
+    return SignatureKeyPrivateHandleBouncy(signature, privateKey, publicKey)
 }
 
 actual fun SignatureKeyPublic(
@@ -86,7 +83,7 @@ private fun signatureGen(size: Int, algo: Algorithm.Signature): Pair<Signature, 
 }
 
 private fun Signature.applyParams(algo: Algorithm.Signature) {
-    val params = when(algo) {
+    val params = when (algo) {
         is Algorithm.Signature.RsaPSS -> {
             val sha = "SHA-${algo.hashSize.bits}"
             PSSParameterSpec(sha, "MGF1", MGF1ParameterSpec(sha), 32, 1)

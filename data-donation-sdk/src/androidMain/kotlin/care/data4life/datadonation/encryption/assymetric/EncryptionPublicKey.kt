@@ -23,14 +23,13 @@ import java.security.spec.PKCS8EncodedKeySpec
 import java.security.spec.X509EncodedKeySpec
 import javax.crypto.Cipher
 
-
 actual fun EncryptionPublicKey(
     serializedKey: ByteArray,
     size: Int,
     algorithm: Algorithm.Asymmetric
 ): EncryptionPublicKey {
     val (_, key, cipher) = publicKey(algorithm, serializedKey)
-    return EncryptionKeyPublicHandleBouncy(cipher,key)
+    return EncryptionKeyPublicHandleBouncy(cipher, key)
 }
 
 private fun publicKey(
@@ -54,7 +53,7 @@ actual fun EncryptionPrivateKey(
     val (factory, publicKey, cipher) = publicKey(algorithm, serializedPublic)
     val privateSpec = PKCS8EncodedKeySpec(serializedPrivate)
     val privateKey = factory.generatePrivate(privateSpec)
-    return EncryptionKeyPrivateHandleBouncy(cipher,privateKey,publicKey)
+    return EncryptionKeyPrivateHandleBouncy(cipher, privateKey, publicKey)
 }
 
 actual fun EncryptionPrivateKey(
@@ -62,14 +61,13 @@ actual fun EncryptionPrivateKey(
     algorithm: Algorithm.Asymmetric
 ): EncryptionPrivateKey {
 
-    return when(algorithm) {
+    return when (algorithm) {
         is Algorithm.Asymmetric.RsaOAEP -> {
-            val (cipher,keyPair) = cipherGen(size,algorithm)
-            EncryptionKeyPrivateHandleBouncy(cipher,keyPair.private,keyPair.public)
+            val (cipher, keyPair) = cipherGen(size, algorithm)
+            EncryptionKeyPrivateHandleBouncy(cipher, keyPair.private, keyPair.public)
         }
     }
 }
-
 
 private fun cipherGen(size: Int, algo: Algorithm.Asymmetric): Pair<Cipher, KeyPair> {
     val cipherKeyPair = attributes(algo)

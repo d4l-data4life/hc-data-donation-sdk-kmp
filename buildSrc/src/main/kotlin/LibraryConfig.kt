@@ -22,7 +22,6 @@ object LibraryConfig {
     const val githubOwner = "gesundheitscloud"
     const val githubRepository = "data-donation-sdk-native"
 
-
     val publish = PublishConfig
 
     object PublishConfig {

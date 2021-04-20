@@ -16,14 +16,16 @@
 
 package care.data4life.datadonation.encryption.symmetric
 
-import io.ktor.util.*
+import io.ktor.util.InternalAPI
+import io.ktor.util.encodeBase64
 import java.security.Key
 import java.security.SecureRandom
 import javax.crypto.Cipher
 import javax.crypto.spec.GCMParameterSpec
 
 class EncryptionSymmetricKeyHandleBouncy(
-    private val cipher: Cipher, private val key: Key
+    private val cipher: Cipher,
+    private val key: Key
 ) : EncryptionSymmetricKey {
 
     private val random = SecureRandom()
@@ -31,7 +33,7 @@ class EncryptionSymmetricKeyHandleBouncy(
     override fun decrypt(encrypted: ByteArray, associatedData: ByteArray): Result<ByteArray> {
         val iv = encrypted.sliceArray(0..15)
         val encrypted = encrypted.sliceArray(16..encrypted.lastIndex)
-        cipher.init(Cipher.DECRYPT_MODE, key, GCMParameterSpec(128,iv))
+        cipher.init(Cipher.DECRYPT_MODE, key, GCMParameterSpec(128, iv))
         cipher.updateAAD(associatedData)
         return runCatching { cipher.doFinal(encrypted) }
     }
@@ -39,7 +41,7 @@ class EncryptionSymmetricKeyHandleBouncy(
     override fun encrypt(plainText: ByteArray, associatedData: ByteArray): ByteArray {
         val iv = ByteArray(16)
         random.nextBytes(iv)
-        val specParam = GCMParameterSpec(128,iv)
+        val specParam = GCMParameterSpec(128, iv)
         cipher.init(Cipher.ENCRYPT_MODE, key, specParam, random)
         cipher.updateAAD(associatedData)
         return iv + cipher.doFinal(plainText)
@@ -50,5 +52,4 @@ class EncryptionSymmetricKeyHandleBouncy(
     @OptIn(InternalAPI::class)
     override val pkcs8: String
         get() = serialized().encodeBase64()
-
 }

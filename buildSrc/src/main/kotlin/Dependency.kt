@@ -70,10 +70,10 @@ object Dependency {
             val androidSerialization = "io.ktor:ktor-client-serialization-jvm:${Version.ktor}"
             val iosSerialization = "io.ktor:ktor-client-serialization-native:${Version.ktor}"
 
-            //Logger
+            // Logger
             val logger = "io.ktor:ktor-client-logging:${Version.ktor}"
 
-            //Testing
+            // Testing
             val mock = "io.ktor:ktor-client-mock:${Version.ktor}"
             val jvmMock = "io.ktor:ktor-client-mock-jvm:${Version.ktor}"
             val nativeMock = "io.ktor:ktor-client-mock-native:${Version.ktor}"
@@ -118,7 +118,6 @@ object Dependency {
         }
 
         val uuid = "com.benasher44:uuid:${Version.uuid}"
-
     }
 
     val test = Test
@@ -135,7 +134,6 @@ object Dependency {
         const val threeTenABP = "com.jakewharton.threetenabp:threetenabp:${Version.threeTenABP}"
 
         const val bouncyCastle = "org.bouncycastle:bcprov-jdk15on:${Version.bouncyCastle}"
-
     }
 
     val androidTest = AndroidTest
@@ -156,7 +154,7 @@ object Dependency {
             "androidx.test.uiautomator:uiautomator:${Version.androidXUiAutomator}"
     }
 
-    //Use for ktor dependency on ion
+    // Use for ktor dependency on ion
     val coroutinesExcludeNative: ExternalModuleDependency.() -> Unit = {
         exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core-native")
     }

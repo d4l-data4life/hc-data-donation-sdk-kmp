@@ -53,7 +53,6 @@ object Version {
     // https://github.com/JakeWharton/ThreeTenABP/
     const val threeTenABP = "1.1.1"
 
-
     // AndroidX
     const val androidX = "1.1.0"
     const val androidXKtx = "1.2.0"
@@ -83,14 +82,12 @@ object Version {
     // https://github.com/benasher44/uuid
     const val uuid = "0.2.3"
 
-    //Encryption
+    // Encryption
     const val bouncyCastle = "1.64"
-
 
     // https://github.com/d4l-data4life/hc-fhir-sdk-kmp
     const val fhir = "0.1.0"
 
     // Junit Test
     const val testJUnit = "4.13"
-
 }

@@ -25,14 +25,12 @@ import javax.crypto.KeyGenerator
 import javax.crypto.SecretKeyFactory
 import javax.crypto.spec.SecretKeySpec
 
-
 actual fun EncryptionSymmetricKey(size: Int, algorithm: Algorithm.Symmetric): EncryptionSymmetricKey {
-    val (cipher,key) = cipherGen(size,algorithm)
+    val (cipher, key) = cipherGen(size, algorithm)
     return when (algorithm) {
-        is Algorithm.Symmetric.AES -> EncryptionSymmetricKeyHandleBouncy(cipher,key)
+        is Algorithm.Symmetric.AES -> EncryptionSymmetricKeyHandleBouncy(cipher, key)
     }
 }
-
 
 actual fun EncryptionSymmetricKey(
     serializedKey: ByteArray,
@@ -41,7 +39,7 @@ actual fun EncryptionSymmetricKey(
 ): EncryptionSymmetricKey {
 
     val keyAttributes = attributes(algorithm)
-    val spec = SecretKeySpec(serializedKey,keyAttributes.second)
+    val spec = SecretKeySpec(serializedKey, keyAttributes.second)
 
     val factory = SecretKeyFactory.getInstance(keyAttributes.second, bouncyCastleProvider)
     val key = factory.generateSecret(spec)
