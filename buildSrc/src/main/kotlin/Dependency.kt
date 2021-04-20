@@ -101,7 +101,7 @@ object Dependency {
             const val android_scope = "org.koin:koin-androidx-scope:${Version.koin}"
             const val android_vm = "org.koin:koin-androidx-viewmodel:${Version.koin}"
             const val android_fragment = "org.koin:koin-androidx-fragment:${Version.koin}"
-            const val android_ext = "org.koin:koin-androidx-ext:${Version.koin}"
+            const val androidExt = "org.koin:koin-androidx-ext:${Version.koin}"
             const val tor = "org.koin:koin-tor:${Version.koin}"
         }
 

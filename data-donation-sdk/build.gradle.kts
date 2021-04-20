@@ -109,7 +109,7 @@ kotlin {
                 implementation(Dependency.Multiplatform.coroutines.android)
 
                 //DI
-                implementation(Dependency.Multiplatform.koin.android_ext)
+                implementation(Dependency.Multiplatform.koin.androidExt)
 
                 //
                 implementation(Dependency.android.threeTenABP)

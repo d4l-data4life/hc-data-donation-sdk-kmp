@@ -16,12 +16,9 @@
 
 buildscript {
     repositories {
+        gradlePluginPortal()
         mavenCentral()
         google()
-        jcenter()
-        maven {
-            url = uri("https://plugins.gradle.org/m2/")
-        }
     }
     dependencies {
         classpath(GradlePlugin.kotlin)
@@ -42,17 +39,17 @@ allprojects {
     repositories {
         mavenCentral()
         google()
-        jcenter()
 
-        maven("https://kotlin.bintray.com/kotlin")
-        maven("https://kotlin.bintray.com/kotlinx")
-        maven("https://jitpack.io")
-        maven(url = "https://dl.bintray.com/touchlabpublic/kotlin")
-        maven(url = "https://oss.sonatype.org/content/repositories/snapshots/")
-        maven(url = "https://dl.bintray.com/korlibs/korlibs")
-        maven("https://raw.github.com/d4l-data4life/maven-repository/main/features")
-        maven("https://raw.github.com/d4l-data4life/maven-repository/main/snapshots")
-        maven("https://raw.github.com/d4l-data4life/maven-repository/main/releases")
+        gitHub(project)
+
+        d4l()
+
+        // Only because of koin 3.0.1-alpha-2, replacemt https://insert-koin.io/docs/setup/v3
+        maven(url = "https://dl.bintray.com/touchlabpublic/kotlin") {
+            content {
+                includeGroup("org.koin")
+            }
+        }
     }
 }
 
