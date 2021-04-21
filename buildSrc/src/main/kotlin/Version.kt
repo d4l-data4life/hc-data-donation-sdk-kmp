@@ -40,7 +40,7 @@ object Version {
     const val stately = "1.1.0"
 
     // https://github.com/Kotlin/kotlinx-datetime
-    const val dateTime = "0.1.0"
+    const val dateTime = "0.1.1"
 
     // https://developer.android.com/studio/write/java8-support
     const val androidDesugar = "1.0.4"
