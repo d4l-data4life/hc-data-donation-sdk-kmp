@@ -145,7 +145,7 @@ kotlin {
             }
         }
 
-        configure(listOf(targets["iosArm64"], targets["iosX64"])) {
+        configure(listOf(targets["iosX64"])) {
             this as org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
             compilations["main"].kotlinOptions.freeCompilerArgs += mutableListOf(
@@ -175,8 +175,37 @@ kotlin {
                 )
             }
         }
-    }
+        configure(listOf(targets["iosArm64"])) {
+            this as org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
+            compilations["main"].kotlinOptions.freeCompilerArgs += mutableListOf(
+                "-include-binary",
+                "$projectDir/native/crypto/libcrypto.a"
+            )
+            compilations.getByName("main") {
+                this as org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeCompilation
+
+                val iOSDCryptoDD by cinterops.creating {
+                    packageName("crypto.dd")
+                    // Path to .def file
+                    defFile("src/iosMain/cinterop/iOSCryptoDD.def")
+
+                    // Directories for header search (an analogue of the -I<path> compiler option)
+                    includeDirs("$projectDir/native/crypto/")
+                }
+            }
+
+            binaries.all {
+                linkerOpts(
+                    "-L$projectDir/native/crypto",
+                    "-lcrypto",
+                    "-L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos",
+                    "-L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift-5.0/iphoneos",
+                    "-rpath", "/usr/lib/swift"
+                )
+            }
+        }
+    }
 }
 
 android {
