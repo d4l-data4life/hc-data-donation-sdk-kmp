@@ -1,0 +1,24 @@
+build:
+  - .github/**/*
+
+dependencies:
+  - buildSrc/**/*
+
+documentation:
+  - docs/**/*
+  - README.adoc
+  - LICENSE
+  - CHANGELOG.adoc
+  - CODE-OF-CONDUCT.adoc
+  - CONTRIBUTION.adoc
+  - readmeOSS.adoc
+
+library:
+  - data-donation-sdk/**/*
+
+# Sample
+sample-android:
+  - sample-android/**/*
+
+sample-ios:
+  - sample-ios/**/*

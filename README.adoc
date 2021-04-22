@@ -20,12 +20,12 @@ To build iOSCryptoDD and include it in the project:
 `xcodebuild BITCODE_GENERATION_MODE=bitcode OTHER_CFLAGS="-fembed-bitcode" -scheme iOSCryptoDDD -arch arm64 -sdk iphoneos`
 
 2. Copy iOSCryptoDD-Swift.h header from the build folder, located under DerivedSources
-3. Run in terminal:  lipo -create libcrypto_arm64.a libcrypto_iosx64.a -output libcrypto.a
+3. Run in terminal: lipo -create libcrypto_arm64.a libcrypto_iosx64.a -output libcrypto.a
 4. Place header and resulting libcrypto.a into native/crypto
 5. Delete data-donation-sdk/build folder if it exists to recreate a klib with a new native lib
 
-P.S.
-The following config is needed right now in library consumer build.gradle because for some reason default toolchain path to swift stdlib is not taken into account
+P.S. The following config is needed right now in library consumer build.gradle because for some reason default toolchain path to swift stdlib is not taken into account
+
 ```
 val os = if (buildForDevice) "iphoneos" else "iphonesimulator"
 linkerOpts(

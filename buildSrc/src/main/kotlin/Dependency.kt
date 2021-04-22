@@ -1,20 +1,23 @@
+/*
+ * Copyright (c) 2021 D4L data4life gGmbH / All rights reserved.
+ *
+ * D4L owns all legal rights, title and interest in and to the Software Development Kit ("SDK"),
+ * including any intellectual property rights that subsist in the SDK.
+ *
+ * The SDK and its documentation may be accessed and used for viewing/review purposes only.
+ * Any usage of the SDK for other purposes, including usage for the development of
+ * applications/third-party applications shall require the conclusion of a license agreement
+ * between you and D4L.
+ *
+ * If you are interested in licensing the SDK for your own applications/third-party
+ * applications and/or if you’d like to contribute to the development of the SDK, please
+ * contact D4L by email to help@data4life.care.
+ */
+
 import org.gradle.api.artifacts.ExternalModuleDependency
 import org.gradle.kotlin.dsl.exclude
 
 object Dependency {
-
-    object GradlePlugin {
-        const val android = "com.android.tools.build:gradle:${Version.androidGradlePlugin}"
-        const val kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Version.kotlin}"
-        const val kotlinAllOpen = "org.jetbrains.kotlin:kotlin-allopen:${Version.kotlin}"
-        const val kotlinSerialization =
-            "org.jetbrains.kotlin.plugin.serialization:${Version.kotlin}"
-        const val cocoapodsext = "co.touchlab:kotlinnativecocoapods:${Version.cocoapodsext}"
-
-        const val sqlDelight = "com.squareup.sqldelight:gradle-plugin:${Version.sqlDelight}"
-    }
-
-    val kotlin = Kotlin
 
     object Kotlin {
         val stdLib = "org.jetbrains.kotlin:kotlin-stdlib:${Version.kotlin}"
@@ -67,10 +70,10 @@ object Dependency {
             val androidSerialization = "io.ktor:ktor-client-serialization-jvm:${Version.ktor}"
             val iosSerialization = "io.ktor:ktor-client-serialization-native:${Version.ktor}"
 
-            //Logger
+            // Logger
             val logger = "io.ktor:ktor-client-logging:${Version.ktor}"
 
-            //Testing
+            // Testing
             val mock = "io.ktor:ktor-client-mock:${Version.ktor}"
             val jvmMock = "io.ktor:ktor-client-mock-jvm:${Version.ktor}"
             val nativeMock = "io.ktor:ktor-client-mock-native:${Version.ktor}"
@@ -98,7 +101,7 @@ object Dependency {
             const val android_scope = "org.koin:koin-androidx-scope:${Version.koin}"
             const val android_vm = "org.koin:koin-androidx-viewmodel:${Version.koin}"
             const val android_fragment = "org.koin:koin-androidx-fragment:${Version.koin}"
-            const val android_ext = "org.koin:koin-androidx-ext:${Version.koin}"
+            const val androidExt = "org.koin:koin-androidx-ext:${Version.koin}"
             const val tor = "org.koin:koin-tor:${Version.koin}"
         }
 
@@ -115,7 +118,6 @@ object Dependency {
         }
 
         val uuid = "com.benasher44:uuid:${Version.uuid}"
-
     }
 
     val test = Test
@@ -132,7 +134,6 @@ object Dependency {
         const val threeTenABP = "com.jakewharton.threetenabp:threetenabp:${Version.threeTenABP}"
 
         const val bouncyCastle = "org.bouncycastle:bcprov-jdk15on:${Version.bouncyCastle}"
-
     }
 
     val androidTest = AndroidTest
@@ -153,7 +154,7 @@ object Dependency {
             "androidx.test.uiautomator:uiautomator:${Version.androidXUiAutomator}"
     }
 
-    //Use for ktor dependency on ion
+    // Use for ktor dependency on ion
     val coroutinesExcludeNative: ExternalModuleDependency.() -> Unit = {
         exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core-native")
     }
