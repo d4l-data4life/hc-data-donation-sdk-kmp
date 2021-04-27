@@ -20,12 +20,14 @@ package scripts
  * You need to add following dependencies to the buildSrc/build.gradle.kts
  *
  * - implementation("com.diffplug.spotless:spotless-plugin-gradle:5.10.2")
- * - implementation("com.pinterest:ktlint:0.40.0")
+ * - implementation("com.pinterest:ktlint:0.41.0")
  *
  */
 plugins {
     id("com.diffplug.spotless")
 }
+
+val ktlintVersion = "0.41.0"
 
 spotless {
     ratchetFrom("origin/main")
@@ -33,15 +35,19 @@ spotless {
     kotlin {
         target("**/*.kt")
         targetExclude("buildSrc/build/")
-        ktlint("0.40.0")
-            .userData(mapOf("disabled_rules" to "no-wildcard-imports"))
+        ktlint(ktlintVersion).userData(
+            mapOf(
+                "disabled_rules" to "no-wildcard-imports",
+                "ij_kotlin_imports_layout" to "*"
+            )
+        )
         trimTrailingWhitespace()
         indentWithSpaces()
         endWithNewline()
     }
     kotlinGradle {
         target("*.gradle.kts")
-        ktlint("0.40.0")
+        ktlint(ktlintVersion)
         trimTrailingWhitespace()
         indentWithSpaces()
         endWithNewline()
