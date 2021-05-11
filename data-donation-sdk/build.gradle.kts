@@ -74,7 +74,7 @@ kotlin {
                 implementation(Dependency.Multiplatform.kotlin.stdlibCommon)
                 implementation(Dependency.Multiplatform.stately)
 
-                implementation(Dependency.Multiplatform.koin.core)
+                implementation(Dependency.Multiplatform.koin.commonCore)
 
                 implementation(Dependency.Multiplatform.coroutines.common)
 
@@ -109,7 +109,7 @@ kotlin {
                 implementation(Dependency.Multiplatform.coroutines.android)
 
                 //DI
-                implementation(Dependency.Multiplatform.koin.androidExt)
+                implementation(Dependency.Multiplatform.koin.android)
 
                 //
                 implementation(Dependency.android.threeTenABP)

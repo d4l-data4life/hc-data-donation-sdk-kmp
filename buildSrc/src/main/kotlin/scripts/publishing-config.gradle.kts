@@ -56,17 +56,17 @@ publishing {
 
         maven {
             name = "ReleasePackages"
-            setUrl("$target/releases")
+            setUrl("$target/maven-releases/releases")
         }
 
         maven {
             name = "SnapshotPackages"
-            setUrl("$target/snapshots")
+            setUrl("$target/maven-snapshots/snapshots")
         }
 
         maven {
             name = "FeaturePackages"
-            setUrl("$target/features")
+            setUrl("$target/maven-features/features")
         }
     }
 

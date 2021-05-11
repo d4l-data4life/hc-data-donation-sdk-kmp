@@ -45,13 +45,6 @@ allprojects {
         gitHub(project)
 
         d4l()
-
-        // Only because of koin 3.0.1-alpha-2, replacemt https://insert-koin.io/docs/setup/v3
-        maven(url = "https://dl.bintray.com/touchlabpublic/kotlin") {
-            content {
-                includeGroup("org.koin")
-            }
-        }
     }
 }
 

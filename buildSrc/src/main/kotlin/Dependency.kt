@@ -95,14 +95,11 @@ object Dependency {
 
         object Koin {
             // https://github.com/InsertKoinIO/koin
-            const val core = "org.koin:koin-core:${Version.koin}"
-            const val coreExt = "org.koin:koin-core-ext:${Version.koin}"
-            const val test = "org.koin:koin-test:${Version.koin}"
-            const val android_scope = "org.koin:koin-androidx-scope:${Version.koin}"
-            const val android_vm = "org.koin:koin-androidx-viewmodel:${Version.koin}"
-            const val android_fragment = "org.koin:koin-androidx-fragment:${Version.koin}"
-            const val androidExt = "org.koin:koin-androidx-ext:${Version.koin}"
-            const val tor = "org.koin:koin-tor:${Version.koin}"
+            const val commonCore = "io.insert-koin:koin-core:${Version.koin}"
+            const val test = "io.insert-koin:koin-test:${Version.koin}"
+            const val test_junit4 = "io.insert-koin:koin-test-junit4:${Version.koin}"
+            const val android = "io.insert-koin:koin-android:${Version.koin}"
+            const val android_ext = "io.insert-koin:koin-android-ext:${Version.koin}"
         }
 
         val stately = "co.touchlab:stately-common:${Version.stately}"

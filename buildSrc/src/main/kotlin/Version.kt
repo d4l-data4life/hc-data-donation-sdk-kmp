@@ -27,7 +27,7 @@ object Version {
 
     // Kotlin
     // https://github.com/JetBrains/kotlin
-    const val kotlin = "1.4.21"
+    const val kotlin = "1.4.32"
 
     // https://github.com/Kotlin/kotlinx.coroutines
     const val kotlinCoroutines = "1.4.2-native-mt"
@@ -73,7 +73,7 @@ object Version {
 
     // Injection
     // https://github.com/InsertKoinIO/koin
-    const val koin = "3.0.1-alpha-2"
+    const val koin = "3.0.1"
 
     // Network
     // https://ktor.io/
