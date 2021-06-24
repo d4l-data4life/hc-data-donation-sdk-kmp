@@ -52,7 +52,6 @@ class Client(private val configuration: Contract.Configuration) : Contract.DataD
     private val revokeUserContent: RevokeUserConsent by koinApplication.koin.inject()
     private val donateResources: DonateResources by koinApplication.koin.inject()
 
-
     override fun fetchConsentDocument(
         consentDocumentVersion: Int?,
         language: String?,
@@ -65,7 +64,6 @@ class Client(private val configuration: Contract.Configuration) : Contract.DataD
             )
         ).runForListener(listener)
     }
-
 
     override fun createUserConsent(
         consentDocumentVersion: Int,
@@ -88,8 +86,12 @@ class Client(private val configuration: Contract.Configuration) : Contract.DataD
             .runForListener(listener)
     }
 
-    override fun fetchUserConsents(listener: ResultListener<List<UserConsent>>) {
-        fetchUserConsents.runForListener(listener)
+    override fun fetchUserConsents(
+        listener: ResultListener<List<UserConsent>>,
+        consentKey: String
+    ) {
+        fetchUserConsents.withParams(FetchUserConsents.Parameters(consentKey))
+            .runForListener(listener)
     }
 
     override fun revokeUserConsent(language: String?, callback: Callback) {

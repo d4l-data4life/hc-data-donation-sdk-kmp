@@ -33,10 +33,8 @@
 package care.data4life.datadonation.internal.domain.mock
 
 import care.data4life.datadonation.core.model.UserConsent
-import care.data4life.datadonation.internal.data.model.ConsentSignatureType
 import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
 import care.data4life.datadonation.internal.mock.MockException
-import io.ktor.utils.io.errors.IOException
 
 class MockConsentDataStore : UserConsentRepository.Remote {
 
@@ -46,12 +44,14 @@ class MockConsentDataStore : UserConsentRepository.Remote {
     var whenSignUserConsent: ((accessToken: String, message: String) -> String)? = null
     var whenRevokeUserConsent: ((accessToken: String, language: String?) -> Unit)? = null
 
-
     override suspend fun createUserConsent(accessToken: String, version: Int, language: String?) {
         whenCreateUserConsent?.invoke(accessToken, version, language)
     }
 
-    override suspend fun fetchUserConsents(accessToken: String): List<UserConsent> =
+    override suspend fun fetchUserConsents(
+        accessToken: String,
+        consentKey: String
+    ): List<UserConsent> =
         whenFetchUserConsents?.invoke(accessToken) ?: throw MockException()
 
     override suspend fun signUserConsentRegistration(accessToken: String, message: String): String {
@@ -62,9 +62,7 @@ class MockConsentDataStore : UserConsentRepository.Remote {
         return whenSignUserConsent?.invoke(accessToken, message) ?: throw MockException()
     }
 
-
     override suspend fun revokeUserConsent(accessToken: String, language: String?) {
         whenRevokeUserConsent?.invoke(accessToken, language)
     }
-
 }
