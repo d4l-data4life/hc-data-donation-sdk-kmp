@@ -82,8 +82,5 @@ interface Contract {
             resources: List<T>,
             callback: Callback
         )
-
     }
 }
-
-
