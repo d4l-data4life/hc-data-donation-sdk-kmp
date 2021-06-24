@@ -45,7 +45,6 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
 import kotlin.time.hours
 
-
 internal class ConsentService(
     private val client: HttpClient,
     private val environment: Environment
@@ -56,7 +55,6 @@ internal class ConsentService(
     } else {
         "${environment.url}/consent/api/v1"
     }
-
 
     private lateinit var XSRFToken: String
     private var tokenFetched = LocalDateTime(1, 1, 1, 1, 1).toInstant(TimeZone.UTC)
@@ -75,7 +73,6 @@ internal class ConsentService(
         return XSRFToken
     }
 
-
     suspend fun fetchConsentDocuments(
         accessToken: String,
         version: Int?,
@@ -88,9 +85,13 @@ internal class ConsentService(
         }
     }
 
-    suspend fun fetchUserConsents(accessToken: String, latest: Boolean?): List<UserConsent> {
+    suspend fun fetchUserConsents(
+        accessToken: String,
+        latest: Boolean?,
+        consentKey: String = defaultDonationConsentKey
+    ): List<UserConsent> {
         return client.getWithQuery(environment, accessToken, baseUrl, Endpoints.userConsents) {
-            parameter(Parameters.userConsentDocumentKey, defaultDonationConsentKey)
+            parameter(Parameters.userConsentDocumentKey, consentKey)
             parameter(Parameters.latest, latest)
         }
     }
@@ -116,7 +117,10 @@ internal class ConsentService(
         }
     }
 
-    suspend fun requestSignatureRegistration(accessToken: String, message: String): ConsentSignature {
+    suspend fun requestSignatureRegistration(
+        accessToken: String,
+        message: String
+    ): ConsentSignature {
         return client.postWithJsonBody(
             environment,
             accessToken,
@@ -183,5 +187,4 @@ internal class ConsentService(
             const val XSRFToken = "X-Csrf-Token"
         }
     }
-
 }
