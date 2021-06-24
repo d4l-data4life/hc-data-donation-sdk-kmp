@@ -50,21 +50,21 @@ fun RepositoryHandler.gitHub(project: Project) {
 }
 
 fun RepositoryHandler.d4l() {
-    maven("https://raw.github.com/d4l-data4life/maven-repository/main/releases") {
+    maven("https://raw.github.com/d4l-data4life/maven-releases/main/releases") {
         content {
             Repository.d4l.forEach { group ->
                 includeGroup(group)
             }
         }
     }
-    maven("https://raw.github.com/d4l-data4life/maven-repository/main/snapshots") {
+    maven("https://raw.github.com/d4l-data4life/maven-snapshots/main/snapshots") {
         content {
             Repository.d4l.forEach { group ->
                 includeGroup(group)
             }
         }
     }
-    maven("https://raw.github.com/d4l-data4life/maven-repository/main/features") {
+    maven("https://raw.github.com/d4l-data4life/maven-features/main/features") {
         content {
             Repository.d4l.forEach { group ->
                 includeGroup(group)
