@@ -56,17 +56,17 @@ abstract class FetchUserConsentsTest {
 
     @Test
     fun fetchUserContents() = runTest {
-        //Given
+        // Given
         val dummyConsentList = listOf(DummyData.userConsent)
         mockConsentDataStore.whenFetchUserConsents = { _ -> dummyConsentList }
 
-        //When
+        // When
         userConsents.runWithParams(
             FetchUserConsents.Parameters(defaultDonationConsentKey),
             capturingListener
         )
 
-        //Then
+        // Then
         assertEquals(capturingListener.captured, dummyConsentList)
         assertNull(capturingListener.error)
     }
