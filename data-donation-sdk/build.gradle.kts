@@ -15,11 +15,11 @@
  */
 
 plugins {
-    kotlinMultiplatform()
-    kotlinSerialization()
-
     // Android
     androidLibrary()
+
+    kotlinMultiplatform()
+    kotlinSerialization()
 
     // Publish
     id("scripts.publishing-config")
