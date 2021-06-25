@@ -15,11 +15,11 @@
  */
 
 plugins {
-    kotlinMultiplatform()
-    kotlinSerialization()
-
     // Android
     androidLibrary()
+
+    kotlinMultiplatform()
+    kotlinSerialization()
 
     // Publish
     id("scripts.publishing-config")
@@ -30,7 +30,7 @@ group = LibraryConfig.group
 
 kotlin {
     android("android") {
-        publishLibraryVariants("release")
+        publishLibraryVariants("release", "debug")
     }
 
     ios {
