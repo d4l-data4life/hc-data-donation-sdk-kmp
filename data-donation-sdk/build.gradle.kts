@@ -30,7 +30,7 @@ group = LibraryConfig.group
 
 kotlin {
     android("android") {
-        publishLibraryVariants("release")
+        publishLibraryVariants("release", "debug")
     }
 
     ios {
