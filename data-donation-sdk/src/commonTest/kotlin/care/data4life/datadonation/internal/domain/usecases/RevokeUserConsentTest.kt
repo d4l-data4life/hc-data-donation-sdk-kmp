@@ -33,9 +33,7 @@
 package care.data4life.datadonation.internal.domain.usecases
 
 import CapturingResultListener
-import care.data4life.datadonation.internal.domain.mock.MockConsentDataStore
-import care.data4life.datadonation.internal.domain.mock.MockUserSessionTokenDataStore
-import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
+import care.data4life.datadonation.internal.domain.mock.MockUserConsentRepository
 import runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -43,11 +41,9 @@ import kotlin.test.assertNull
 
 abstract class RevokeUserConsentTest {
 
-    private val mockConsentDataStore = MockConsentDataStore()
-    private val userConsentRepository =
-        UserConsentRepository(mockConsentDataStore, MockUserSessionTokenDataStore())
+    private val mockUserConsentRepository = MockUserConsentRepository()
 
-    private val revokeConsent = RevokeUserConsent(userConsentRepository)
+    private val revokeConsent = RevokeUserConsent(mockUserConsentRepository)
 
     private val capturingListener = RevokeUserConsentListener()
 

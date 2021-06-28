@@ -33,10 +33,10 @@
 package care.data4life.datadonation.internal.domain.mock
 
 import care.data4life.datadonation.core.model.UserConsent
-import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
+import care.data4life.datadonation.internal.domain.repositories.RemoteUserConsentRepository
 import care.data4life.datadonation.internal.mock.MockException
 
-class MockConsentDataStore : UserConsentRepository.Remote {
+class MockConsentDataStore : RemoteUserConsentRepository {
 
     var whenCreateUserConsent: ((accessToken: String, version: Int, language: String?) -> UserConsent)? =
         null
@@ -51,8 +51,7 @@ class MockConsentDataStore : UserConsentRepository.Remote {
     override suspend fun fetchUserConsents(
         accessToken: String,
         consentKey: String
-    ): List<UserConsent> =
-        whenFetchUserConsents?.invoke(accessToken) ?: throw MockException()
+    ): List<UserConsent> = whenFetchUserConsents?.invoke(accessToken) ?: throw MockException()
 
     override suspend fun signUserConsentRegistration(accessToken: String, message: String): String {
         return whenSignUserConsent?.invoke(accessToken, message) ?: throw MockException()

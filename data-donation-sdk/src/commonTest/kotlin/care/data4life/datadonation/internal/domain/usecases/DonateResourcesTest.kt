@@ -42,7 +42,6 @@ import care.data4life.datadonation.internal.data.service.ConsentService
 import care.data4life.datadonation.internal.domain.mock.*
 import care.data4life.datadonation.internal.domain.repositories.DonationRepository
 import care.data4life.datadonation.internal.domain.repositories.ServiceTokenRepository
-import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
 import care.data4life.datadonation.internal.utils.Base64Encoder
 import care.data4life.datadonation.internal.utils.toJsonString
 import care.data4life.hl7.fhir.stu3.FhirStu3Parser
@@ -89,8 +88,7 @@ abstract class DonateResourcesTest {
     private val mockServiceTokenDataStore = MockServiceTokenDataStore()
     private val mockFilterSensitiveInformation = MockFilterSensitiveInformation()
     private val mockRemoveInternalInformation = MockRemoveInternalInformation(jsonParser)
-    private val userConsentRepository =
-        UserConsentRepository(mockUserConsentDataStore, MockUserSessionTokenDataStore())
+    private val mockUserConsentRepository = MockUserConsentRepository()
     private val serviceTokenRepository = ServiceTokenRepository(mockServiceTokenDataStore)
     private val donationRepository = DonationRepository(mockDonationDataStore)
 
@@ -155,7 +153,7 @@ abstract class DonateResourcesTest {
 
     private val createRequestConsentPayload = CreateRequestConsentPayload(
         serviceTokenRepository,
-        userConsentRepository,
+        mockUserConsentRepository,
         encryptorDD,
         base64Encoder
     )
@@ -178,7 +176,7 @@ abstract class DonateResourcesTest {
         //Given
         var result: DonationPayload? = null
         mockServiceTokenDataStore.whenRequestDonationToken = { dummyNonce }
-        mockUserConsentDataStore.whenSignUserConsent = { _, _ -> dummySignature }
+        mockUserConsentRepository.whenSignUserConsent = { _ -> dummySignature }
         mockDonationDataStore.whenDonateResources = { payload -> result = payload }
 
         //When
@@ -200,7 +198,7 @@ abstract class DonateResourcesTest {
     fun donateResourcesTestWithoutKeyFails() = runTest {
         //Given
         mockServiceTokenDataStore.whenRequestDonationToken = { dummyNonce }
-        mockUserConsentDataStore.whenSignUserConsent = { _, _ -> dummySignature }
+        mockUserConsentRepository.whenSignUserConsent = { _ -> dummySignature }
 
         //When
         donateResources.runWithParams(

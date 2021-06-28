@@ -36,10 +36,12 @@ import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.service.ConsentService.Companion.defaultDonationConsentKey
 import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
 
-internal class FetchUserConsents(private val consentRepository: UserConsentRepository) :
-    ParameterizedUsecase<FetchUserConsents.Parameters, List<UserConsent>>() {
+internal class FetchUserConsents(
+    private val consentRepository: UserConsentRepository
+) : ParameterizedUsecase<FetchUserConsents.Parameters, List<UserConsent>>() {
 
-    override suspend fun execute(): List<UserConsent> = consentRepository.fetchUserConsents(parameter.consentKey)
+    override suspend fun execute(): List<UserConsent> =
+        consentRepository.fetchUserConsents(parameter.consentKey)
 
     data class Parameters(val consentKey: String = defaultDonationConsentKey)
 }
