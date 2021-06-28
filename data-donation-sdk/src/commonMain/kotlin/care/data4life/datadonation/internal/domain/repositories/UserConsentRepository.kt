@@ -78,5 +78,4 @@ internal class UserConsentRepositoryImpl(
 
     override suspend fun revokeUserConsent(language: String?) =
         remote.revokeUserConsent(sessionToken.getUserSessionToken()!!, language)
-
 }

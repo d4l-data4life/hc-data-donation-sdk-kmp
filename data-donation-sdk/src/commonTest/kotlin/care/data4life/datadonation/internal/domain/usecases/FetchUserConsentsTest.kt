@@ -36,7 +36,6 @@ import CapturingResultListener
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.model.DummyData
 import care.data4life.datadonation.internal.data.service.ConsentService.Companion.defaultDonationConsentKey
-import care.data4life.datadonation.internal.domain.mock.MockConsentDataStore
 import care.data4life.datadonation.internal.domain.mock.MockUserConsentRepository
 import runTest
 import kotlin.test.Test

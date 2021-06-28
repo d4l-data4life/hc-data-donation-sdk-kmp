@@ -49,15 +49,15 @@ abstract class RevokeUserConsentTest {
 
     @Test
     fun revokeUserContent() = runTest {
-        //Given
+        // Given
 
-        //When
+        // When
         revokeConsent.runWithParams(RevokeUserConsent.Parameters("language"), capturingListener)
 
-        //Then
+        // Then
         assertEquals(capturingListener.captured, Unit)
         assertNull(capturingListener.error)
     }
 
-    class RevokeUserConsentListener: CapturingResultListener<Unit>()
+    class RevokeUserConsentListener : CapturingResultListener<Unit>()
 }

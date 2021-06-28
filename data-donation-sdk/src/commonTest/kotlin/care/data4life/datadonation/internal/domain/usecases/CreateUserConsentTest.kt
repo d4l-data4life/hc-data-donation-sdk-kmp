@@ -30,7 +30,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 package care.data4life.datadonation.internal.domain.usecases
 
 import CapturingResultListener
@@ -51,23 +50,23 @@ abstract class CreateUserConsentTest {
 
     @Test
     fun createUserContent() = runTest {
-        //Given
+        // Given
         mockUserConsentRepository.whenFetchUserConsents = { _ -> listOf(DummyData.userConsent) }
 
-
-        //When
+        // When
         creteUser.runWithParams(
             CreateUserConsent.Parameters(
                 null,
                 1,
                 "language"
-            ), capturingListener)
+            ),
+            capturingListener
+        )
 
-        //Then
+        // Then
         assertEquals(capturingListener.captured, DummyData.userConsent)
         assertNull(capturingListener.error)
     }
 
-    class CreateUserContentListener: CapturingResultListener<UserConsent>()
-
+    class CreateUserContentListener : CapturingResultListener<UserConsent>()
 }

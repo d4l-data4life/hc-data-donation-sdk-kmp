@@ -30,7 +30,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 package care.data4life.datadonation.internal.domain.usecases
 
 import CapturingResultListener
@@ -73,7 +72,7 @@ abstract class RegisterNewDonorTest {
     private val mockUserConsentRepository = MockUserConsentRepository()
     private val registrationRepository = RegistrationRepository(mockRegistrationDataStore)
 
-    private val signatureKey = object: SignatureKeyPrivate {
+    private val signatureKey = object : SignatureKeyPrivate {
         override fun sign(data: ByteArray) = byteArrayOf()
         override fun serializedPrivate() = DummyData.keyPair.private
         override val pkcs8Private = ""
@@ -101,13 +100,11 @@ abstract class RegisterNewDonorTest {
             else -> byteArrayOf()
         }
         override fun decrypt(ciphertext: ByteArray) = Result.success(byteArrayOf())
-
     }
 
     private val base64Encoder = object : Base64Encoder {
         override fun encode(src: ByteArray) = dummyEncryptedRequest64Encoded
         override fun decode(src: ByteArray, charset: Charset) = ""
-
     }
 
     private val mockKeyGenerator = object : KeyGenerator {
@@ -135,14 +132,14 @@ abstract class RegisterNewDonorTest {
 
     @Test
     fun registerNewDonorTestWithoutKey() = runTest {
-        //Given
+        // Given
         mockServiceTokenDataStore.whenRequestDonationToken = { dummyNonce }
         mockUserConsentRepository.whenSignUserConsent = { _ -> dummySignature }
 
-        //When
+        // When
         registerNewDonor.runWithParams(RegisterNewDonor.Parameters(null), capturingListener)
 
-        //Then
+        // Then
         assertEquals(
             capturingListener.captured,
             KeyPair(signatureKey.serializedPublic(), signatureKey.serializedPrivate())
@@ -152,17 +149,15 @@ abstract class RegisterNewDonorTest {
 
     @Test
     fun registerNewDonorTestWithKey() = runTest {
-        //Given
+        // Given
 
-        //When
+        // When
         registerNewDonor.runWithParams(RegisterNewDonor.Parameters(DummyData.keyPair), capturingListener)
 
-        //Then
+        // Then
         assertEquals(capturingListener.captured, DummyData.keyPair)
         assertNull(capturingListener.error)
     }
 
-    class RegisterNewDonorListener: CapturingResultListener<KeyPair>()
-
+    class RegisterNewDonorListener : CapturingResultListener<KeyPair>()
 }
-
