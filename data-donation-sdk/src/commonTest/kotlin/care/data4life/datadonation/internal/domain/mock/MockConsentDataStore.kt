@@ -33,10 +33,10 @@
 package care.data4life.datadonation.internal.domain.mock
 
 import care.data4life.datadonation.core.model.UserConsent
-import care.data4life.datadonation.internal.domain.repositories.RemoteUserConsentRepository
+import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
 import care.data4life.datadonation.internal.mock.MockException
 
-class MockConsentDataStore : RemoteUserConsentRepository {
+class MockConsentDataStore : UserConsentRepository.Remote {
 
     var whenCreateUserConsent: ((accessToken: String, version: Int, language: String?) -> UserConsent)? =
         null

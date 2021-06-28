@@ -50,6 +50,7 @@ import org.koin.core.module.Module
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import kotlin.native.concurrent.ThreadLocal
+import care.data4life.datadonation.internal.domain.repositories.Contract as RepositoryContract
 
 @ThreadLocal
 internal object DataDonationKoinContext {
@@ -112,14 +113,14 @@ private val coreModule = module {
     single { DonationService(get(), get()) }
 
     // DataStores
-    single<RemoteUserConsentRepository> { UserConsentDataStore(get()) }
+    single<UserConsentRepository.Remote> { UserConsentDataStore(get()) }
     single<RegistrationRepository.Remote> { RegistrationDataStore(get()) }
     single<ConsentDocumentRepository.Remote> { ConsentDocumentDataStore(get()) }
     single<DonationRepository.Remote> { DonationDataStore(get()) }
     single<ServiceTokenRepository.Remote> { ServiceTokenDataStore(get()) }
 
     // Repositories
-    single<UserConsentRepository> { UserConsentRepositoryImpl(get(), get()) }
+    single<RepositoryContract.UserConsentRepository> { UserConsentRepository(get(), get()) }
     single { RegistrationRepository(get()) }
     single { ConsentDocumentRepository(get(), get()) }
     single { CredentialsRepository(get()) }

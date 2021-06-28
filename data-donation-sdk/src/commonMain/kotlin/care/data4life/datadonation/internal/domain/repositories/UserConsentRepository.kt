@@ -36,33 +36,10 @@ import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.service.ConsentService.Companion.defaultDonationConsentKey
 import care.data4life.datadonation.internal.data.store.UserSessionTokenDataStore
 
-internal interface UserConsentRepository {
-    suspend fun createUserConsent(version: Int, language: String?)
-    suspend fun fetchUserConsents(
-        consentKey: String = defaultDonationConsentKey
-    ): List<UserConsent>
-
-    suspend fun signUserConsentRegistration(message: String): String
-    suspend fun signUserConsentDonation(message: String): String
-    suspend fun revokeUserConsent(language: String?)
-}
-
-internal interface RemoteUserConsentRepository {
-    suspend fun createUserConsent(accessToken: String, version: Int, language: String?)
-    suspend fun fetchUserConsents(
-        accessToken: String,
-        consentKey: String = defaultDonationConsentKey
-    ): List<UserConsent>
-
-    suspend fun signUserConsentRegistration(accessToken: String, message: String): String
-    suspend fun signUserConsentDonation(accessToken: String, message: String): String
-    suspend fun revokeUserConsent(accessToken: String, language: String?)
-}
-
-internal class UserConsentRepositoryImpl(
-    private val remote: RemoteUserConsentRepository,
+internal class UserConsentRepository(
+    private val remote: Remote,
     private val sessionToken: UserSessionTokenDataStore
-) : UserConsentRepository {
+) : Contract.UserConsentRepository {
 
     override suspend fun createUserConsent(version: Int, language: String?) =
         remote.createUserConsent(sessionToken.getUserSessionToken()!!, version, language)
@@ -78,4 +55,16 @@ internal class UserConsentRepositoryImpl(
 
     override suspend fun revokeUserConsent(language: String?) =
         remote.revokeUserConsent(sessionToken.getUserSessionToken()!!, language)
+
+    internal interface Remote {
+        suspend fun createUserConsent(accessToken: String, version: Int, language: String?)
+        suspend fun fetchUserConsents(
+            accessToken: String,
+            consentKey: String = defaultDonationConsentKey
+        ): List<UserConsent>
+
+        suspend fun signUserConsentRegistration(accessToken: String, message: String): String
+        suspend fun signUserConsentDonation(accessToken: String, message: String): String
+        suspend fun revokeUserConsent(accessToken: String, language: String?)
+    }
 }

@@ -32,10 +32,10 @@
 
 package care.data4life.datadonation.internal.domain.usecases
 
-import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
+import care.data4life.datadonation.internal.domain.repositories.Contract
 
 internal class RevokeUserConsent(
-    private val consentRepository: UserConsentRepository,
+    private val consentRepository: Contract.UserConsentRepository,
 ) : ParameterizedUsecase<RevokeUserConsent.Parameters, Unit>() {
 
     override suspend fun execute() {

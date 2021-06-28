@@ -34,11 +34,11 @@ package care.data4life.datadonation.internal.data.store
 
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.service.ConsentService
-import care.data4life.datadonation.internal.domain.repositories.RemoteUserConsentRepository
+import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
 
 internal class UserConsentDataStore(
     private val service: ConsentService
-) : RemoteUserConsentRepository {
+) : UserConsentRepository.Remote {
 
     override suspend fun createUserConsent(accessToken: String, version: Int, language: String?) {
         service.createUserConsent(accessToken, version, language)
