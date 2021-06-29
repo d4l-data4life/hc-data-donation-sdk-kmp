@@ -38,9 +38,8 @@ import care.data4life.datadonation.internal.mock.MockException
 
 class MockConsentDataStore : UserConsentRepository.Remote {
 
-    var whenCreateUserConsent: ((accessToken: String, version: Int, language: String?) -> UserConsent)? =
-        null
-    var whenFetchUserConsents: ((accessToken: String) -> List<UserConsent>)? = null
+    var whenCreateUserConsent: ((accessToken: String, version: Int, language: String?) -> UserConsent)? = null
+    var whenFetchUserConsents: ((accessToken: String, consentKey: String?) -> List<UserConsent>)? = null
     var whenSignUserConsent: ((accessToken: String, message: String) -> String)? = null
     var whenRevokeUserConsent: ((accessToken: String, language: String?) -> Unit)? = null
 
@@ -50,8 +49,9 @@ class MockConsentDataStore : UserConsentRepository.Remote {
 
     override suspend fun fetchUserConsents(
         accessToken: String,
-        consentKey: String
-    ): List<UserConsent> = whenFetchUserConsents?.invoke(accessToken) ?: throw MockException()
+        consentKey: String?
+    ): List<UserConsent> =
+        whenFetchUserConsents?.invoke(accessToken, consentKey) ?: throw MockException()
 
     override suspend fun signUserConsentRegistration(accessToken: String, message: String): String {
         return whenSignUserConsent?.invoke(accessToken, message) ?: throw MockException()

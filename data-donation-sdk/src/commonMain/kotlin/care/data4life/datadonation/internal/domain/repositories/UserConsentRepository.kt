@@ -33,7 +33,6 @@
 package care.data4life.datadonation.internal.domain.repositories
 
 import care.data4life.datadonation.core.model.UserConsent
-import care.data4life.datadonation.internal.data.service.ConsentService.Companion.defaultDonationConsentKey
 import care.data4life.datadonation.internal.data.store.UserSessionTokenDataStore
 
 internal class UserConsentRepository(
@@ -44,7 +43,10 @@ internal class UserConsentRepository(
     override suspend fun createUserConsent(version: Int, language: String?) =
         remote.createUserConsent(sessionToken.getUserSessionToken()!!, version, language)
 
-    override suspend fun fetchUserConsents(consentKey: String): List<UserConsent> =
+    override suspend fun fetchUserConsents(): List<UserConsent> =
+        remote.fetchUserConsents(sessionToken.getUserSessionToken()!!)
+
+    override suspend fun fetchUserConsent(consentKey: String): List<UserConsent> =
         remote.fetchUserConsents(sessionToken.getUserSessionToken()!!, consentKey)
 
     override suspend fun signUserConsentRegistration(message: String): String =
@@ -60,7 +62,7 @@ internal class UserConsentRepository(
         suspend fun createUserConsent(accessToken: String, version: Int, language: String?)
         suspend fun fetchUserConsents(
             accessToken: String,
-            consentKey: String = defaultDonationConsentKey
+            consentKey: String? = null
         ): List<UserConsent>
 
         suspend fun signUserConsentRegistration(accessToken: String, message: String): String

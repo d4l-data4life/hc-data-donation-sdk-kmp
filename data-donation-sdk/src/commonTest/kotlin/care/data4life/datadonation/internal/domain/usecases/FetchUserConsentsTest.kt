@@ -35,7 +35,6 @@ package care.data4life.datadonation.internal.domain.usecases
 import CapturingResultListener
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.model.DummyData
-import care.data4life.datadonation.internal.data.service.ConsentService.Companion.defaultDonationConsentKey
 import care.data4life.datadonation.internal.domain.mock.MockUserConsentRepository
 import runTest
 import kotlin.test.Test
@@ -51,9 +50,18 @@ abstract class FetchUserConsentsTest {
     private val capturingListener = FetchUserConsentListener()
 
     @Test
-    fun fetchUserContents() = runTest {
+    fun fetchAllUserConsents() = runTest {
+        fetchUserConsents()
+    }
+
+    @Test
+    fun fetchSingleUserConsent() = runTest {
+        fetchUserConsents("custom-consent-key")
+    }
+
+    private suspend fun fetchUserConsents(consentKeyParam: String? = null) {
         // Given
-        var consentKeyInput: String? = null
+        var consentKeyInput: String? = "dummy"
         val dummyConsentList = listOf(DummyData.userConsent)
 
         mockUserConsentRepository.whenFetchUserConsents = { consentKey ->
@@ -63,12 +71,12 @@ abstract class FetchUserConsentsTest {
 
         // When
         userConsents.runWithParams(
-            FetchUserConsents.Parameters(defaultDonationConsentKey),
+            FetchUserConsents.Parameters(consentKeyParam),
             capturingListener
         )
 
         // Then
-        assertEquals(defaultDonationConsentKey, consentKeyInput)
+        assertEquals(consentKeyParam, consentKeyInput)
         assertEquals(capturingListener.captured, dummyConsentList)
         assertNull(capturingListener.error)
     }

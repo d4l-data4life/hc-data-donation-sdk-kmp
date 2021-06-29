@@ -76,10 +76,11 @@ internal class ConsentService(
     suspend fun fetchConsentDocuments(
         accessToken: String,
         version: Int?,
-        language: String?
+        language: String?,
+        consentKey: String
     ): List<ConsentDocument> {
         return client.getWithQuery(environment, accessToken, baseUrl, Endpoints.consentDocuments) {
-            parameter(Parameters.consentDocumentKey, defaultDonationConsentKey)
+            parameter(Parameters.consentDocumentKey, consentKey)
             parameter(Parameters.version, version)
             parameter(Parameters.language, language)
         }
@@ -88,7 +89,7 @@ internal class ConsentService(
     suspend fun fetchUserConsents(
         accessToken: String,
         latest: Boolean?,
-        consentKey: String = defaultDonationConsentKey
+        consentKey: String? = null
     ): List<UserConsent> {
         return client.getWithQuery(environment, accessToken, baseUrl, Endpoints.userConsents) {
             parameter(Parameters.userConsentDocumentKey, consentKey)

@@ -14,26 +14,20 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.domain.repositories
+package care.data4life.datadonation.internal.domain.mock
 
 import care.data4life.datadonation.core.model.ConsentDocument
-import care.data4life.datadonation.core.model.UserConsent
+import care.data4life.datadonation.internal.domain.repositories.Contract
+import care.data4life.datadonation.internal.mock.MockException
 
-internal class Contract {
-    internal interface UserConsentRepository {
-        suspend fun createUserConsent(version: Int, language: String?)
-        suspend fun fetchUserConsents(): List<UserConsent>
-        suspend fun fetchUserConsent(consentKey: String): List<UserConsent>
-        suspend fun signUserConsentRegistration(message: String): String
-        suspend fun signUserConsentDonation(message: String): String
-        suspend fun revokeUserConsent(language: String?)
-    }
+class MockConsentDocumentRepository : Contract.ConsentDocumentRepository {
+    var whenFetchConsentDocuments: ((language: String?, version: Int?, consentKey: String) -> List<ConsentDocument>)? = null
 
-    internal interface ConsentDocumentRepository {
-        suspend fun fetchConsentDocuments(
-            language: String?,
-            version: Int?,
-            consentKey: String
-        ): List<ConsentDocument>
+    override suspend fun fetchConsentDocuments(
+        language: String?,
+        version: Int?,
+        consentKey: String
+    ): List<ConsentDocument> {
+        return whenFetchConsentDocuments?.invoke(language, version, consentKey) ?: throw MockException()
     }
 }

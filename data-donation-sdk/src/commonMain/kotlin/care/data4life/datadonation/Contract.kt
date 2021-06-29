@@ -38,7 +38,6 @@ import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.UserConsent
-import care.data4life.datadonation.internal.data.service.ConsentService.Companion.defaultDonationConsentKey
 import care.data4life.hl7.fhir.stu3.model.FhirResource
 import kotlinx.coroutines.CoroutineScope
 
@@ -55,9 +54,10 @@ interface Contract {
     }
 
     interface DataDonation {
-        fun fetchConsentDocument(
+        fun fetchConsentDocuments(
             consentDocumentVersion: Int?,
             language: String?,
+            consentKey: String,
             listener: ResultListener<List<ConsentDocument>>
         )
 
@@ -71,10 +71,12 @@ interface Contract {
             listener: ResultListener<KeyPair>
         )
 
-        fun fetchUserConsents(
-            listener: ResultListener<List<UserConsent>>,
-            consentKey: String = defaultDonationConsentKey
+        fun fetchUserConsent(
+            consentKey: String,
+            listener: ResultListener<List<UserConsent>>
         )
+
+        fun fetchUserConsents(listener: ResultListener<List<UserConsent>>)
 
         fun revokeUserConsent(language: String?, callback: Callback)
 

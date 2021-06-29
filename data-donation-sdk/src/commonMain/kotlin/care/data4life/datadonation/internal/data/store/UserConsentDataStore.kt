@@ -46,8 +46,8 @@ internal class UserConsentDataStore(
 
     override suspend fun fetchUserConsents(
         accessToken: String,
-        consentKey: String
-    ): List<UserConsent> = service.fetchUserConsents(accessToken, false)
+        consentKey: String?
+    ): List<UserConsent> = service.fetchUserConsents(accessToken, false, consentKey)
 
     override suspend fun signUserConsentRegistration(accessToken: String, message: String): String =
         service.requestSignatureRegistration(accessToken, message).signature
