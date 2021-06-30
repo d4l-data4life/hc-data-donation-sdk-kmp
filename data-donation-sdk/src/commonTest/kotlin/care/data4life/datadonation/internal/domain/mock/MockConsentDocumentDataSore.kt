@@ -35,18 +35,16 @@ package care.data4life.datadonation.internal.domain.mock
 import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.internal.domain.repositories.ConsentDocumentRepository
 import care.data4life.datadonation.internal.mock.MockException
-import io.ktor.utils.io.errors.*
 
 class MockConsentDocumentDataSore : ConsentDocumentRepository.Remote {
 
-    var whenFetchConsentDocuments: ((accessToken: String, version: Int?, language: String?) -> List<ConsentDocument>)? =
-        null
+    var whenFetchConsentDocuments: ((accessToken: String, version: Int?, language: String?, consentKey: String) -> List<ConsentDocument>)? = null
 
     override suspend fun fetchConsentDocuments(
         accessToken: String,
         version: Int?,
-        language: String?
+        language: String?,
+        consentKey: String
     ): List<ConsentDocument> =
-        whenFetchConsentDocuments?.invoke(accessToken, version, language) ?: throw MockException()
-
+        whenFetchConsentDocuments?.invoke(accessToken, version, language, consentKey) ?: throw MockException()
 }

@@ -30,7 +30,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 package care.data4life.datadonation.internal.domain.usecases
 
 import CapturingResultListener
@@ -38,19 +37,21 @@ import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.encryption.Algorithm
 import care.data4life.datadonation.encryption.hybrid.HybridEncryption
 import care.data4life.datadonation.encryption.signature.SignatureKeyPrivate
-import care.data4life.datadonation.internal.data.model.*
+import care.data4life.datadonation.internal.data.model.ConsentMessage
+import care.data4life.datadonation.internal.data.model.ConsentRequest
+import care.data4life.datadonation.internal.data.model.ConsentSignatureType
+import care.data4life.datadonation.internal.data.model.DummyData
+import care.data4life.datadonation.internal.data.model.SignedConsentMessage
 import care.data4life.datadonation.internal.data.service.ConsentService
-import care.data4life.datadonation.internal.domain.mock.MockConsentDataStore
 import care.data4life.datadonation.internal.domain.mock.MockRegistrationDataStore
 import care.data4life.datadonation.internal.domain.mock.MockServiceTokenDataStore
-import care.data4life.datadonation.internal.domain.mock.MockUserSessionTokenDataStore
+import care.data4life.datadonation.internal.domain.mock.MockUserConsentRepository
 import care.data4life.datadonation.internal.domain.repositories.RegistrationRepository
 import care.data4life.datadonation.internal.domain.repositories.ServiceTokenRepository
-import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
 import care.data4life.datadonation.internal.utils.Base64Encoder
 import care.data4life.datadonation.internal.utils.KeyGenerator
 import care.data4life.datadonation.internal.utils.toJsonString
-import io.ktor.utils.io.charsets.*
+import io.ktor.utils.io.charsets.Charset
 import runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -65,15 +66,13 @@ abstract class RegisterNewDonorTest {
     private val dummyEncryptedRequest64Encoded = "encryptedRequest64Encoded"
     private val dummyEncryptedSignedMessage = byteArrayOf(4, 5)
 
-    private val mockUserConsentDataStore = MockConsentDataStore()
     private val mockServiceTokenDataStore = MockServiceTokenDataStore()
     private val mockRegistrationDataStore = MockRegistrationDataStore()
     private val serviceTokenRepository = ServiceTokenRepository(mockServiceTokenDataStore)
-    private val userConsentRepository =
-        UserConsentRepository(mockUserConsentDataStore, MockUserSessionTokenDataStore())
+    private val mockUserConsentRepository = MockUserConsentRepository()
     private val registrationRepository = RegistrationRepository(mockRegistrationDataStore)
 
-    private val signatureKey = object: SignatureKeyPrivate {
+    private val signatureKey = object : SignatureKeyPrivate {
         override fun sign(data: ByteArray) = byteArrayOf()
         override fun serializedPrivate() = DummyData.keyPair.private
         override val pkcs8Private = ""
@@ -101,13 +100,11 @@ abstract class RegisterNewDonorTest {
             else -> byteArrayOf()
         }
         override fun decrypt(ciphertext: ByteArray) = Result.success(byteArrayOf())
-
     }
 
     private val base64Encoder = object : Base64Encoder {
         override fun encode(src: ByteArray) = dummyEncryptedRequest64Encoded
         override fun decode(src: ByteArray, charset: Charset) = ""
-
     }
 
     private val mockKeyGenerator = object : KeyGenerator {
@@ -119,7 +116,7 @@ abstract class RegisterNewDonorTest {
 
     private val createRequestConsentPayload = CreateRequestConsentPayload(
         serviceTokenRepository,
-        userConsentRepository,
+        mockUserConsentRepository,
         encryptorDD,
         base64Encoder
     )
@@ -135,14 +132,14 @@ abstract class RegisterNewDonorTest {
 
     @Test
     fun registerNewDonorTestWithoutKey() = runTest {
-        //Given
+        // Given
         mockServiceTokenDataStore.whenRequestDonationToken = { dummyNonce }
-        mockUserConsentDataStore.whenSignUserConsent = { _, _ -> dummySignature }
+        mockUserConsentRepository.whenSignUserConsent = { _ -> dummySignature }
 
-        //When
+        // When
         registerNewDonor.runWithParams(RegisterNewDonor.Parameters(null), capturingListener)
 
-        //Then
+        // Then
         assertEquals(
             capturingListener.captured,
             KeyPair(signatureKey.serializedPublic(), signatureKey.serializedPrivate())
@@ -152,17 +149,15 @@ abstract class RegisterNewDonorTest {
 
     @Test
     fun registerNewDonorTestWithKey() = runTest {
-        //Given
+        // Given
 
-        //When
+        // When
         registerNewDonor.runWithParams(RegisterNewDonor.Parameters(DummyData.keyPair), capturingListener)
 
-        //Then
+        // Then
         assertEquals(capturingListener.captured, DummyData.keyPair)
         assertNull(capturingListener.error)
     }
 
-    class RegisterNewDonorListener: CapturingResultListener<KeyPair>()
-
+    class RegisterNewDonorListener : CapturingResultListener<KeyPair>()
 }
-
