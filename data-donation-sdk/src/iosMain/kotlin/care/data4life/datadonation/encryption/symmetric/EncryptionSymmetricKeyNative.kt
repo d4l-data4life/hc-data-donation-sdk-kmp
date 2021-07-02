@@ -37,6 +37,7 @@ import care.data4life.datadonation.toNSData
 import kotlinx.cinterop.addressOf
 import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.usePinned
+import platform.Foundation.NSData
 import platform.Security.*
 import swift.iOSCryptoDD.*
 
