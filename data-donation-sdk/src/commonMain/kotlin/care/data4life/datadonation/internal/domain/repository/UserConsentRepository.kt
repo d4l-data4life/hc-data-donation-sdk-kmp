@@ -43,10 +43,7 @@ internal class UserConsentRepository(
     override suspend fun createUserConsent(version: Int, language: String?) =
         remote.createUserConsent(sessionToken.getUserSessionToken()!!, version, language)
 
-    override suspend fun fetchUserConsents(): List<UserConsent> =
-        remote.fetchUserConsents(sessionToken.getUserSessionToken()!!)
-
-    override suspend fun fetchUserConsent(consentKey: String): List<UserConsent> =
+    override suspend fun fetchUserConsents(consentKey: String?): List<UserConsent> =
         remote.fetchUserConsents(sessionToken.getUserSessionToken()!!, consentKey)
 
     override suspend fun signUserConsentRegistration(message: String): String =

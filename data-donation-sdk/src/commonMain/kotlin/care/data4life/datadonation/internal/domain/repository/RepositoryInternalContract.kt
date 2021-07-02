@@ -22,8 +22,7 @@ import care.data4life.datadonation.core.model.UserConsent
 internal interface RepositoryInternalContract {
     interface UserConsentRepository {
         suspend fun createUserConsent(version: Int, language: String?)
-        suspend fun fetchUserConsents(): List<UserConsent>
-        suspend fun fetchUserConsent(consentKey: String): List<UserConsent>
+        suspend fun fetchUserConsents(consentKey: String? = null): List<UserConsent>
         suspend fun signUserConsentRegistration(message: String): String
         suspend fun signUserConsentDonation(message: String): String
         suspend fun revokeUserConsent(language: String?)

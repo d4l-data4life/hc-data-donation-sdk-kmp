@@ -19,10 +19,10 @@ package care.data4life.datadonation.internal.mock.stub
 import care.data4life.datadonation.internal.data.store.UserSessionTokenDataStore
 import care.data4life.datadonation.internal.mock.MockContract
 
-class UserSessionTokeDataStoreStub : UserSessionTokenDataStore, MockContract.Stub {
+class UserSessionTokenDataStoreStub : UserSessionTokenDataStore, MockContract.Stub {
     var sessionToken: String? = null
 
-    override suspend fun getUserSessionToken(): String? = null
+    override suspend fun getUserSessionToken(): String? = sessionToken
 
     override fun clear() {
         sessionToken = null

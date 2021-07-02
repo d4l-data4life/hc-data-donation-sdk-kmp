@@ -52,11 +52,7 @@ internal class FetchUserConsentsFactory(
     ) : UsecaseContract.Usecase<List<UserConsent>> {
 
         override suspend fun execute(): List<UserConsent> {
-            return if (parameter.consentKey == null) {
-                consentRepository.fetchUserConsents()
-            } else {
-                consentRepository.fetchUserConsent(parameter.consentKey)
-            }
+            return consentRepository.fetchUserConsents(parameter.consentKey)
         }
     }
 

@@ -31,11 +31,7 @@ class UserConsentRepositoryStub : RepositoryInternalContract.UserConsentReposito
         whenCreateUserConsent?.invoke(version, language)
     }
 
-    override suspend fun fetchUserConsents(): List<UserConsent> {
-        return whenFetchUserConsents?.invoke(null) ?: throw MockException()
-    }
-
-    override suspend fun fetchUserConsent(consentKey: String): List<UserConsent> {
+    override suspend fun fetchUserConsents(consentKey: String?): List<UserConsent> {
         return whenFetchUserConsents?.invoke(consentKey) ?: throw MockException()
     }
 
