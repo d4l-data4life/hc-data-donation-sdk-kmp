@@ -1,7 +1,9 @@
-import care.data4life.datadonation.encryption.*
-import care.data4life.datadonation.encryption.assymetric.EncryptionPrivateKey
+import care.data4life.datadonation.encryption.Algorithm
+import care.data4life.datadonation.encryption.HashSize
 import care.data4life.datadonation.encryption.symmetric.EncryptionSymmetricKey
-import kotlin.test.*
+import kotlin.test.Ignore
+import kotlin.test.Test
+import kotlin.test.assertTrue
 
 /*
  * BSD 3-Clause License
@@ -37,8 +39,7 @@ import kotlin.test.*
 
 class EncryptionSymmetricKeyCommonTest {
 
-
-
+    @Ignore
     @Test
     fun `Generate, encrypt and decrypt`() {
         val testData = byteArrayOf(1,2,3,4,5,1,2,3,4,5,1,2,3,4,5)
