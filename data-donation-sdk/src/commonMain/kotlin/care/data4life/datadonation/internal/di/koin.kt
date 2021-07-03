@@ -33,6 +33,7 @@
 package care.data4life.datadonation.internal.di
 
 import care.data4life.datadonation.Contract
+import care.data4life.datadonation.core.listener.listenerModule
 import care.data4life.datadonation.encryption.hybrid.HybridEncryptionRegistry
 import care.data4life.datadonation.internal.data.service.ConsentService
 import care.data4life.datadonation.internal.data.service.DonationService
@@ -64,7 +65,8 @@ internal fun initKoin(configuration: Contract.Configuration): KoinApplication {
         modules(
             resolveRootModule(configuration),
             platformModule(),
-            coreModule()
+            coreModule(),
+            listenerModule(configuration)
         )
     }
 }

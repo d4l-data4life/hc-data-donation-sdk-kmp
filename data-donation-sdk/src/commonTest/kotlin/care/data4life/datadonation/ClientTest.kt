@@ -16,30 +16,37 @@
 
 package care.data4life.datadonation
 
+import care.data4life.datadonation.core.listener.ListenerContract
+import care.data4life.datadonation.core.listener.listenerModule
 import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.UserConsent
-import care.data4life.datadonation.internal.data.model.DummyData
 import care.data4life.datadonation.internal.di.coreModule
 import care.data4life.datadonation.internal.di.platformModule
 import care.data4life.datadonation.internal.di.resolveRootModule
 import care.data4life.datadonation.internal.domain.usecases.FetchUserConsentsFactory
 import care.data4life.datadonation.internal.domain.usecases.UsecaseContract
+import care.data4life.datadonation.internal.domain.usecases.UsecaseContract.Usecase
 import care.data4life.datadonation.mock.stub.ClientConfigurationStub
 import care.data4life.datadonation.mock.stub.FetchUserConsentStub
 import care.data4life.datadonation.mock.stub.FetchUserUsecaseStub
 import care.data4life.datadonation.mock.stub.ResultListenerStub
-import kotlinx.coroutines.CoroutineScope
-import org.koin.core.context.startKoin
+import care.data4life.datadonation.mock.stub.TaskRunnerStub
+import org.koin.core.context.stopKoin
 import org.koin.dsl.bind
+import org.koin.dsl.koinApplication
 import org.koin.dsl.module
-import runBlockingTest
-import testCoroutineContext
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNull
+import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 class ClientTest {
+    @BeforeTest
+    fun setUp() {
+        stopKoin()
+    }
+
     @Test
     fun `It fulfils DataDonationFactory`() {
         val factory: Any = Client
@@ -55,29 +62,26 @@ class ClientTest {
     }
 
     @Test
-    fun `Given fetchUserConsents is called without a ConsentKey and with a ResultListener it executes the Usecase with its default Parameter`() = runBlockingTest {
+    fun `Given fetchUserConsents is called without a ConsentKey and with a ResultListener it resolves the Usecase with its default Parameter and delegates them to the TaskRunner`() {
         // Given
         val config = ClientConfigurationStub()
         val listener = ResultListenerStub<List<UserConsent>>()
         val usecase = FetchUserUsecaseStub()
-        val consents = listOf(
-            DummyData.userConsent
-        )
 
         var capturedParameter: UsecaseContract.FetchUserConsentsParameter? = null
-        var capturedResult: List<UserConsent>? = null
-        var capturedError: Exception? = null
+        var capturedListener: ListenerContract.ResultListener<*>? = null
+        var capturedUsecase: Usecase<*>? = null
 
         config.whenGetEnvironment = { Environment.LOCAL }
-        config.whenGetCoroutineScope = { CoroutineScope(testCoroutineContext) }
 
-        val di = startKoin {
+        val di = koinApplication {
             modules(
                 resolveRootModule(config),
                 coreModule(),
                 platformModule(),
+                listenerModule(config),
                 module(override = true) {
-                    single<UsecaseContract.FetchUserConsents> {
+                    single {
                         FetchUserConsentStub().also {
                             it.whenWithParameter = { delegateParameter ->
                                 capturedParameter = delegateParameter
@@ -85,36 +89,99 @@ class ClientTest {
                             }
                         }
                     } bind UsecaseContract.FetchUserConsents::class
+
+                    single {
+                        TaskRunnerStub().also {
+                            it.whenRunListener = { delegatedResultListener, delegatedUsecase ->
+                                capturedListener = delegatedResultListener
+                                capturedUsecase = delegatedUsecase
+                            }
+                        }
+                    } bind ListenerContract.TaskRunner::class
                 }
             )
         }
 
         val client = Client(config, di)
 
-        listener.whenOnSuccess = { delegatedResult ->
-            println("delegatedResult")
-            capturedResult = delegatedResult
-        }
-        listener.whenOnError = { delegatedError ->
-            capturedError = delegatedError
-        }
-
-        usecase.whenExecute = {
-            consents
-        }
-
         // When
         client.fetchUserConsents(listener)
 
         // Then
-        assertNull(capturedError)
-        assertEquals(
-            actual = capturedResult,
-            expected = consents
-        )
         assertEquals(
             actual = capturedParameter,
             expected = FetchUserConsentsFactory.Parameters()
+        )
+        assertSame(
+            actual = capturedListener,
+            expected = listener
+        )
+        assertSame(
+            actual = capturedUsecase,
+            expected = usecase
+        )
+    }
+
+    @Test
+    fun `Given fetchUserConsents is called with a ConsentKey and with a ResultListener it resolves the Usecase with its Parameter, which contains the given value and delegates them to the TaskRunner`() {
+        // Given
+        val config = ClientConfigurationStub()
+        val listener = ResultListenerStub<List<UserConsent>>()
+        val usecase = FetchUserUsecaseStub()
+
+        val consentKey = "abc"
+
+        var capturedParameter: UsecaseContract.FetchUserConsentsParameter? = null
+        var capturedListener: ListenerContract.ResultListener<*>? = null
+        var capturedUsecase: Usecase<*>? = null
+
+        config.whenGetEnvironment = { Environment.LOCAL }
+
+        val di = koinApplication {
+            modules(
+                resolveRootModule(config),
+                coreModule(),
+                platformModule(),
+                listenerModule(config),
+                module(override = true) {
+                    single {
+                        FetchUserConsentStub().also {
+                            it.whenWithParameter = { delegateParameter ->
+                                capturedParameter = delegateParameter
+                                usecase
+                            }
+                        }
+                    } bind UsecaseContract.FetchUserConsents::class
+
+                    single {
+                        TaskRunnerStub().also {
+                            it.whenRunListener = { delegatedResultListener, delegatedUsecase ->
+                                capturedListener = delegatedResultListener
+                                capturedUsecase = delegatedUsecase
+                            }
+                        }
+                    } bind ListenerContract.TaskRunner::class
+                }
+            )
+        }
+
+        val client = Client(config, di)
+
+        // When
+        client.fetchUserConsents(listener, consentKey)
+
+        // Then
+        assertEquals(
+            actual = capturedParameter,
+            expected = FetchUserConsentsFactory.Parameters(consentKey)
+        )
+        assertSame(
+            actual = capturedListener,
+            expected = listener
+        )
+        assertSame(
+            actual = capturedUsecase,
+            expected = usecase
         )
     }
 }

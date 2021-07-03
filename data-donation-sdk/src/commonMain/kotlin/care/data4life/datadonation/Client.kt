@@ -52,19 +52,7 @@ class Client internal constructor(
     private val fetchUserConsents: UsecaseContract.FetchUserConsents by koinApplication.koin.inject()
     private val revokeUserContent: RevokeUserConsent by koinApplication.koin.inject()
     private val donateResources: DonateResources by koinApplication.koin.inject()
-
-    private fun <ReturnType : Any> runUsecase(
-        listener: ListenerContract.ResultListener<ReturnType>,
-        usecase: UsecaseContract.Usecase<ReturnType>
-    ) {
-        configuration.getCoroutineScope().launch {
-            try {
-                listener.onSuccess(usecase.execute())
-            } catch (ex: Exception) {
-                listener.onError(ex)
-            }
-        }
-    }
+    private val taskRunner: ListenerContract.TaskRunner by koinApplication.koin.inject()
 
     override fun fetchConsentDocuments(
         consentDocumentVersion: Int?,
@@ -109,7 +97,7 @@ class Client internal constructor(
     ) {
         val parameter = FetchUserConsentsFactory.Parameters(consentKey)
 
-        runUsecase(
+        taskRunner.run(
             listener,
             fetchUserConsents.withParams(parameter)
         )
