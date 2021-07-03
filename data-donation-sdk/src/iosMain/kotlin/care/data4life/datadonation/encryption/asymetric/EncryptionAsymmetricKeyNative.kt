@@ -36,8 +36,6 @@ import care.data4life.datadonation.encryption.KeyNative
 import care.data4life.datadonation.encryption.sequence
 import care.data4life.datadonation.toByteArray
 import care.data4life.datadonation.toNSData
-import kotlinx.cinterop.addressOf
-import kotlinx.cinterop.usePinned
 import platform.CoreFoundation.CFDataRef
 import platform.Foundation.*
 import platform.Security.*
@@ -60,26 +58,22 @@ class EncryptionAsymmetricKeyNative :
         val input = CFBridgingRetain(data.toNSData()) as CFDataRef
         val decrypted = SecKeyCreateDecryptedData(privateKey, algoType, input, null)!!
         CFBridgingRelease(input)
-<<<<<<< HEAD:data-donation-sdk/src/iosMain/kotlin/care/data4life/datadonation/encryption/asymetric/EncryptionAsymmetricKeyNative.kt
         return@runCatching(CFBridgingRelease(decrypted) as NSData).toByteArray()
-=======
-        return@runCatching(CFBridgingRelease(decrypted) as Payload).toByteArray()
->>>>>>> aaa56f9... Fix iOS test setup:data-donation-sdk/src/iosMain/kotlin/care/data4life/datadonation/encryption/assymetric/EncryptionAsymmetricKeyNative.kt
     }
 
     override fun encrypt(data: ByteArray): ByteArray {
         val input = CFBridgingRetain(data.toNSData()) as CFDataRef
         val encrypted = SecKeyCreateEncryptedData(publicKey, algoType, input, null)!!
         CFBridgingRelease(input)
-        return (CFBridgingRelease(encrypted) as Payload).toByteArray()
+        return (CFBridgingRelease(encrypted) as NSData).toByteArray()
     }
 
     override fun serializedPublic(): ByteArray =
-        (CFBridgingRelease(SecKeyCopyExternalRepresentation(publicKey, null)) as Payload)
+        (CFBridgingRelease(SecKeyCopyExternalRepresentation(publicKey, null)) as NSData)
             .toByteArray()
 
     override fun serializedPrivate(): ByteArray =
-        (CFBridgingRelease(SecKeyCopyExternalRepresentation(privateKey, null)) as Payload)
+        (CFBridgingRelease(SecKeyCopyExternalRepresentation(privateKey, null)) as NSData)
             .toByteArray()
 
     fun toPkcs8Private(privateKey: ByteArray) =
@@ -103,14 +97,14 @@ class EncryptionAsymmetricKeyNative :
         ).encoded
 
     override val pkcs8Private: String
-        get() = (CFBridgingRelease(SecKeyCopyExternalRepresentation(privateKey, null)) as Payload)
+        get() = (CFBridgingRelease(SecKeyCopyExternalRepresentation(privateKey, null)) as NSData)
             .toByteArray()
             .let(::toPkcs8Private)
             .toNSData()
             .base64EncodedStringWithOptions(NSDataBase64EncodingEndLineWithLineFeed)
 
     override val pkcs8Public: String
-        get() = (CFBridgingRelease(SecKeyCopyExternalRepresentation(publicKey, null)) as Payload)
+        get() = (CFBridgingRelease(SecKeyCopyExternalRepresentation(publicKey, null)) as NSData)
             .toByteArray()
             .let(::toPkcs8Public)
             .toNSData()

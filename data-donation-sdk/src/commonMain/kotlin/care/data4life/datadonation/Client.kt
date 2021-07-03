@@ -60,14 +60,13 @@ class Client internal constructor(
         consentKey: String,
         listener: ListenerContract.ResultListener<List<ConsentDocument>>
     ) {
-        TODO()
-        /*fetchConsentDocuments.withParams(
+        fetchConsentDocuments.withParams(
             FetchConsentDocuments.Parameters(
                 consentDocumentVersion,
                 language,
                 consentKey
             )
-        ).runForListener(listener)*/
+        ).runForListener(listener)
     }
 
     override fun createUserConsent(

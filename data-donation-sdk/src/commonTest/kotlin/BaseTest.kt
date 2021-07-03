@@ -29,7 +29,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-import care.data4life.datadonation.core.listener.ResultListener
+import care.data4life.datadonation.core.listener.ListenerContract
 import kotlinx.coroutines.CoroutineScope
 import kotlin.coroutines.CoroutineContext
 
@@ -38,12 +38,12 @@ internal expect val testCoroutineContext: CoroutineContext
 internal expect fun runBlockingTest(block: suspend CoroutineScope.() -> Unit)
 internal expect fun runWithBlockingTest(context: CoroutineContext, block: suspend CoroutineScope.() -> Unit)
 
-abstract class CapturingResultListener<R : Any> : ResultListener<R> {
+abstract class CapturingResultListener<R : Any> : ListenerContract.ResultListener<R> {
     var captured: R? = null
     var error: Exception? = null
 
-    override fun onSuccess(t: R) {
-        captured = t
+    override fun onSuccess(result: R) {
+        captured = result
     }
 
     override fun onError(exception: Exception) {

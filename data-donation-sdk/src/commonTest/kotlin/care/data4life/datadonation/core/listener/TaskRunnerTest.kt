@@ -84,9 +84,9 @@ class TaskRunnerTest {
         usecase.exec = { throw exception }
 
         config.whenGetCoroutineScope = { CoroutineScope(this.coroutineContext) }
-        listener.whenOnError = { delegatedExecption ->
+        listener.whenOnError = { delegatedException ->
             launch {
-                capturedException.send(delegatedExecption)
+                capturedException.send(delegatedException)
             }
         }
 

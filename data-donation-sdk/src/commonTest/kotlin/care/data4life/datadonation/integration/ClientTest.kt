@@ -36,6 +36,7 @@ import care.data4life.datadonation.Client
 import care.data4life.datadonation.Contract
 import care.data4life.datadonation.core.listener.ListenerContract.Callback
 import care.data4life.datadonation.core.listener.ListenerContract.ResultListener
+import care.data4life.datadonation.core.listener.listenerModule
 import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.KeyPair
@@ -71,7 +72,9 @@ class ClientTest {
     }
 
     @Test
-    @Ignore // TODO "Use MockEngine"
+    @Ignore
+    // TODO "Use MockEngine"
+    // TODO: iOS -> infinity loop, maybe because the refused connection? If so we need to figure out of setting a timeout for iOS
     fun fetchConsentDocumentTest() = runWithBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val consentKey = "custom-consent-key"
@@ -80,23 +83,24 @@ class ClientTest {
 
         val config = object : ConfigurationBase() {
             override fun getDonorKeyPair(): KeyPair? = null
-            override fun getCoroutineContext(): CoroutineScope = GlobalScope
+            override fun getCoroutineScope(): CoroutineScope = GlobalScope
         }
 
         val koin = koinApplication {
             modules(
                 resolveRootModule(config),
                 platformModule(),
-                coreModule()
+                coreModule(),
+                listenerModule(config)
             )
         }
 
         val client = Client(config, koin)
         val capturedResult = Channel<List<ConsentDocument>>()
         val listener = object : ResultListener<List<ConsentDocument>> {
-            override fun onSuccess(t: List<ConsentDocument>) {
+            override fun onSuccess(result: List<ConsentDocument>) {
                 launch {
-                    capturedResult.send(t)
+                    capturedResult.send(result)
                 }
             }
 
@@ -120,7 +124,9 @@ class ClientTest {
     }
 
     @Test
-    @Ignore // TODO "Use MockEngine"
+    @Ignore
+    // TODO "Use MockEngine"
+    // TODO: iOS -> infinity loop, maybe because the refused connection? If so we need to figure out of setting a timeout for iOS
     fun createUserConsentTest() = runWithBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val consentKey = "custom-consent-key"
@@ -129,23 +135,24 @@ class ClientTest {
 
         val config = object : ConfigurationBase() {
             override fun getDonorKeyPair(): KeyPair? = null
-            override fun getCoroutineContext(): CoroutineScope = GlobalScope
+            override fun getCoroutineScope(): CoroutineScope = GlobalScope
         }
 
         val koin = koinApplication {
             modules(
                 resolveRootModule(config),
                 platformModule(),
-                coreModule()
+                coreModule(),
+                listenerModule(config)
             )
         }
 
         val client = Client(config, koin)
         val capturedConsentDoc = Channel<List<ConsentDocument>>()
         val consentDocListener = object : ResultListener<List<ConsentDocument>> {
-            override fun onSuccess(t: List<ConsentDocument>) {
+            override fun onSuccess(result: List<ConsentDocument>) {
                 launch {
-                    capturedConsentDoc.send(t)
+                    capturedConsentDoc.send(result)
                 }
             }
 
@@ -154,9 +161,9 @@ class ClientTest {
 
         val capturedConsent = Channel<UserConsent>()
         val consentListener = object : ResultListener<UserConsent> {
-            override fun onSuccess(t: UserConsent) {
+            override fun onSuccess(result: UserConsent) {
                 launch {
-                    capturedConsent.send(t)
+                    capturedConsent.send(result)
                 }
             }
 
@@ -187,30 +194,30 @@ class ClientTest {
     }
 
     @Test
-    @Ignore // TODO: Works on Android but not iOS -> Koin resolves not correctly
     fun registerNewDonorTest() = runWithBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val keyPair = KeyPair(ByteArray(42), ByteArray(23))
 
         val config = object : ConfigurationBase() {
             override fun getDonorKeyPair(): KeyPair = keyPair
-            override fun getCoroutineContext(): CoroutineScope = GlobalScope
+            override fun getCoroutineScope(): CoroutineScope = GlobalScope
         }
 
         val koin = koinApplication {
             modules(
                 resolveRootModule(config),
                 platformModule(),
-                coreModule()
+                coreModule(),
+                listenerModule(config)
             )
         }
 
         val client = Client(config, koin)
         val capturedRegistrationKey = Channel<KeyPair>()
         val consentRegistrationKeyListener = object : ResultListener<KeyPair> {
-            override fun onSuccess(t: KeyPair) {
+            override fun onSuccess(result: KeyPair) {
                 launch {
-                    capturedRegistrationKey.send(t)
+                    capturedRegistrationKey.send(result)
                 }
             }
 
@@ -230,36 +237,38 @@ class ClientTest {
 
     @Test
     @Ignore // TODO "Use MockEngine"
+    // TODO: iOS -> infinity loop, maybe because the refused connection? If so we need to figure out of setting a timeout for iOS
     fun fetchUserConsentsTest() = runWithBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val consentKey = "custom-consent-key"
 
         val config = object : ConfigurationBase() {
             override fun getDonorKeyPair(): KeyPair? = null
-            override fun getCoroutineContext(): CoroutineScope = GlobalScope
+            override fun getCoroutineScope(): CoroutineScope = GlobalScope
         }
 
         val koin = koinApplication {
             modules(
                 resolveRootModule(config),
                 platformModule(),
-                coreModule()
+                coreModule(),
+                listenerModule(config)
             )
         }
 
         val client = Client(config, koin)
         val capturedResult = Channel<List<UserConsent>>()
         val listener = object : ResultListener<List<UserConsent>> {
-            override fun onSuccess(t: List<UserConsent>) {
+            override fun onSuccess(result: List<UserConsent>) {
                 launch {
-                    capturedResult.send(t)
+                    capturedResult.send(result)
                 }
             }
 
             override fun onError(exception: Exception) = throw exception
         }
         // When
-        client.fetchUserConsent(consentKey, listener)
+        client.fetchUserConsents(listener, consentKey)
         val result = capturedResult.receive()
         // Then
         assertEquals(
@@ -271,21 +280,22 @@ class ClientTest {
     @Test
     @Ignore
     // TODO: Use MockEngine
-    // TODO: iOS -> Koin resolves not correctly
+    // TODO: iOS -> infinity loop, maybe because the refused connection? If so we need to figure out of setting a timeout for iOS
     fun revokeUserConsentsTest() = runWithBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val language = "en"
 
         val config = object : ConfigurationBase() {
             override fun getDonorKeyPair(): KeyPair? = null
-            override fun getCoroutineContext(): CoroutineScope = GlobalScope
+            override fun getCoroutineScope(): CoroutineScope = GlobalScope
         }
 
         val koin = koinApplication {
             modules(
                 resolveRootModule(config),
                 platformModule(),
-                coreModule()
+                coreModule(),
+                listenerModule(config)
             )
         }
 
@@ -311,8 +321,6 @@ class ClientTest {
 
     @Test
     // TODO: Workaround Signature Key
-    // TODO: Use MockEngine
-    // TODO: Fix DI issue iOS
     @Ignore
     fun donateResourcesTest() = runWithBlockingTest(GlobalScope.coroutineContext) {
         // Given
@@ -323,14 +331,15 @@ class ClientTest {
 
         val config = object : ConfigurationBase() {
             override fun getDonorKeyPair(): KeyPair = keyPair
-            override fun getCoroutineContext(): CoroutineScope = GlobalScope
+            override fun getCoroutineScope(): CoroutineScope = GlobalScope
         }
 
         val koin = koinApplication {
             modules(
                 resolveRootModule(config),
                 platformModule(),
-                coreModule()
+                coreModule(),
+                listenerModule(config)
             )
         }
 
