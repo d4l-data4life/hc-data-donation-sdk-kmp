@@ -24,9 +24,6 @@ import org.junit.runners.JUnit4
 class CreateUserConsentAndroidTest : CreateUserConsentTest()
 
 @RunWith(JUnit4::class)
-class FetchConsentAndroidDocumentsTest : FetchConsentDocumentsTest()
-
-@RunWith(JUnit4::class)
 class FilterSensitiveInformationAndroidTest : FilterSensitiveInformationTest()
 
 @RunWith(JUnit4::class)

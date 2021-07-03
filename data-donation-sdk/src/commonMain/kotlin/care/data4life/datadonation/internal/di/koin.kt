@@ -47,7 +47,7 @@ import care.data4life.datadonation.internal.domain.repository.RepositoryInternal
 import care.data4life.datadonation.internal.domain.repository.ServiceTokenRepository
 import care.data4life.datadonation.internal.domain.repository.UserConsentRepository
 import care.data4life.datadonation.internal.domain.usecases.*
-import care.data4life.datadonation.internal.domain.usecases.UsecaseContract.FetchUserConsents
+import care.data4life.datadonation.internal.domain.usecases.UsecaseContract.*
 import care.data4life.datadonation.internal.utils.Base64Factory
 import io.ktor.client.*
 import io.ktor.client.features.json.*
@@ -168,8 +168,8 @@ internal fun coreModule(): Module {
                 get()
             )
         }
-        single {
-            FetchConsentDocuments(get())
+        single<FetchConsentDocuments> {
+            FetchConsentDocumentsFactory(get())
         } bind FetchConsentDocuments::class
         single { CreateUserConsent(get()) }
         single<FetchUserConsents> {
