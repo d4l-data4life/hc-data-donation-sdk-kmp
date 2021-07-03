@@ -14,26 +14,26 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.mock.spy
+package care.data4life.datadonation.mock.stub
 
-import care.data4life.datadonation.core.listener.ResultListener
-import care.data4life.datadonation.internal.mock.MockContract
+import care.data4life.datadonation.core.listener.ListenerContract
+import care.data4life.datadonation.mock.MockContract
+import care.data4life.datadonation.mock.MockException
 
-abstract class CapturingResultListener<R : Any> : ResultListener<R>, MockContract.Spy {
+class CallbackStub : ListenerContract.Callback, MockContract.Stub {
+    var whenOnSuccess: (() -> Unit)? = null
+    var whenOnError: ((Exception) -> Unit)? = null
 
-    var captured: R? = null
-    var error: Exception? = null
-
-    override fun onSuccess(result: R) {
-        captured = result
+    override fun onSuccess() {
+        return whenOnSuccess?.invoke() ?: throw MockException()
     }
 
     override fun onError(exception: Exception) {
-        error = exception
+        return whenOnError?.invoke(exception) ?: throw MockException()
     }
 
     override fun clear() {
-        captured = null
-        error = null
+        whenOnSuccess = null
+        whenOnError = null
     }
 }

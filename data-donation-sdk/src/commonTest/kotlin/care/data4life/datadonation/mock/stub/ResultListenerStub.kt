@@ -14,13 +14,13 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.mock.stub
+package care.data4life.datadonation.mock.stub
 
-import care.data4life.datadonation.core.listener.ResultListener
-import care.data4life.datadonation.internal.mock.MockContract
-import care.data4life.datadonation.internal.mock.MockException
+import care.data4life.datadonation.core.listener.ListenerContract
+import care.data4life.datadonation.mock.MockContract
+import care.data4life.datadonation.mock.MockException
 
-class ResultListenerStub<ReturnType : Any> : ResultListener<ReturnType>, MockContract.Stub {
+class ResultListenerStub<ReturnType : Any> : ListenerContract.ResultListener<ReturnType>, MockContract.Stub {
     var whenOnSuccess: ((ReturnType) -> Unit)? = null
     var whenOnError: ((Exception) -> Unit)? = null
 

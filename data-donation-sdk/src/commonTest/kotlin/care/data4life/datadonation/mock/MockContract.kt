@@ -14,17 +14,12 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.mock.stub
+package care.data4life.datadonation.mock
 
-import care.data4life.datadonation.internal.data.store.UserSessionTokenDataStore
-import care.data4life.datadonation.internal.mock.MockContract
-
-class UserSessionTokenDataStoreStub : UserSessionTokenDataStore, MockContract.Stub {
-    var sessionToken: String? = null
-
-    override suspend fun getUserSessionToken(): String? = sessionToken
-
-    override fun clear() {
-        sessionToken = null
+interface MockContract {
+    interface Stub {
+        fun clear()
     }
+
+    interface Spy : Stub
 }

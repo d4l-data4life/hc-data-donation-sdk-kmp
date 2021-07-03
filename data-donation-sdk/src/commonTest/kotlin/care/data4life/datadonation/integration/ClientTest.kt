@@ -34,8 +34,8 @@ package care.data4life.datadonation.integration
 
 import care.data4life.datadonation.Client
 import care.data4life.datadonation.Contract
-import care.data4life.datadonation.core.listener.Callback
-import care.data4life.datadonation.core.listener.ResultListener
+import care.data4life.datadonation.core.listener.ListenerContract.Callback
+import care.data4life.datadonation.core.listener.ListenerContract.ResultListener
 import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.KeyPair

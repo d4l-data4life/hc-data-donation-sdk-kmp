@@ -14,20 +14,26 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.domain.mock
+package care.data4life.datadonation.mock.spy
 
-import care.data4life.datadonation.core.model.ConsentDocument
-import care.data4life.datadonation.internal.domain.repository.RepositoryInternalContract
-import care.data4life.datadonation.mock.MockException
+import care.data4life.datadonation.core.listener.ListenerContract
+import care.data4life.datadonation.mock.MockContract
 
-class MockConsentDocumentRepository : RepositoryInternalContract.ConsentDocumentRepository {
-    var whenFetchConsentDocuments: ((language: String?, version: Int?, consentKey: String) -> List<ConsentDocument>)? = null
+abstract class CapturingResultListener<R : Any> : ListenerContract.ResultListener<R>, MockContract.Spy {
 
-    override suspend fun fetchConsentDocuments(
-        language: String?,
-        version: Int?,
-        consentKey: String
-    ): List<ConsentDocument> {
-        return whenFetchConsentDocuments?.invoke(language, version, consentKey) ?: throw MockException()
+    var captured: R? = null
+    var error: Exception? = null
+
+    override fun onSuccess(result: R) {
+        captured = result
+    }
+
+    override fun onError(exception: Exception) {
+        error = exception
+    }
+
+    override fun clear() {
+        captured = null
+        error = null
     }
 }

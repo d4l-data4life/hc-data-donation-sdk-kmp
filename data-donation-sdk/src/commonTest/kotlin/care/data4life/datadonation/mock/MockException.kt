@@ -30,9 +30,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.core.listener
+package care.data4life.datadonation.mock
 
-interface Callback {
-    fun onSuccess()
-    fun onError(exception: Exception)
-}
+class MockException : IllegalStateException()

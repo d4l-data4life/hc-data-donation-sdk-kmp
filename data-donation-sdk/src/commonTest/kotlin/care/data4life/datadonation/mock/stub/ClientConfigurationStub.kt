@@ -14,22 +14,22 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.mock.stub
+package care.data4life.datadonation.mock.stub
 
 import care.data4life.datadonation.Contract
-import care.data4life.datadonation.core.listener.ResultListener
+import care.data4life.datadonation.core.listener.ListenerContract
 import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.KeyPair
-import care.data4life.datadonation.internal.mock.MockContract
-import care.data4life.datadonation.internal.mock.MockException
+import care.data4life.datadonation.mock.MockContract
+import care.data4life.datadonation.mock.MockException
 import kotlinx.coroutines.CoroutineScope
 
 class ClientConfigurationStub : Contract.Configuration, MockContract.Stub {
     var whenGetServicePublicKey: ((Contract.Service) -> String)? = null
     var whenGetDonorKeyPair: (() -> KeyPair?)? = null
-    var whenGetUserSessionToken: ((ResultListener<String>) -> Unit)? = null
+    var whenGetUserSessionToken: ((ListenerContract.ResultListener<String>) -> Unit)? = null
     var whenGetEnvironment: (() -> Environment)? = null
-    var whenGetCoroutineContext: (() -> CoroutineScope)? = null
+    var whenGetCoroutineScope: (() -> CoroutineScope)? = null
 
     override fun getServicePublicKey(service: Contract.Service): String {
         return whenGetServicePublicKey?.invoke(service) ?: throw MockException()
@@ -41,7 +41,7 @@ class ClientConfigurationStub : Contract.Configuration, MockContract.Stub {
         return whenGetDonorKeyPair!!.invoke()
     }
 
-    override fun getUserSessionToken(tokenListener: ResultListener<String>) {
+    override fun getUserSessionToken(tokenListener: ListenerContract.ResultListener<String>) {
         return whenGetUserSessionToken?.invoke(tokenListener) ?: throw MockException()
     }
 
@@ -49,8 +49,8 @@ class ClientConfigurationStub : Contract.Configuration, MockContract.Stub {
         return whenGetEnvironment?.invoke() ?: throw MockException()
     }
 
-    override fun getCoroutineContext(): CoroutineScope {
-        return whenGetCoroutineContext?.invoke() ?: throw MockException()
+    override fun getCoroutineScope(): CoroutineScope {
+        return whenGetCoroutineScope?.invoke() ?: throw MockException()
     }
 
     override fun clear() {
@@ -58,6 +58,6 @@ class ClientConfigurationStub : Contract.Configuration, MockContract.Stub {
         whenGetDonorKeyPair = null
         whenGetUserSessionToken = null
         whenGetEnvironment = null
-        whenGetCoroutineContext = null
+        whenGetCoroutineScope = null
     }
 }

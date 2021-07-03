@@ -24,10 +24,10 @@ import care.data4life.datadonation.internal.di.platformModule
 import care.data4life.datadonation.internal.di.resolveRootModule
 import care.data4life.datadonation.internal.domain.usecases.FetchUserConsentsFactory
 import care.data4life.datadonation.internal.domain.usecases.UsecaseContract
-import care.data4life.datadonation.internal.mock.stub.ClientConfigurationStub
-import care.data4life.datadonation.internal.mock.stub.FetchUserConsentStub
-import care.data4life.datadonation.internal.mock.stub.FetchUserUsecaseStub
-import care.data4life.datadonation.internal.mock.stub.ResultListenerStub
+import care.data4life.datadonation.mock.stub.ClientConfigurationStub
+import care.data4life.datadonation.mock.stub.FetchUserConsentStub
+import care.data4life.datadonation.mock.stub.FetchUserUsecaseStub
+import care.data4life.datadonation.mock.stub.ResultListenerStub
 import kotlinx.coroutines.CoroutineScope
 import org.koin.core.context.startKoin
 import org.koin.dsl.bind
@@ -69,7 +69,7 @@ class ClientTest {
         var capturedError: Exception? = null
 
         config.whenGetEnvironment = { Environment.LOCAL }
-        config.whenGetCoroutineContext = { CoroutineScope(testCoroutineContext) }
+        config.whenGetCoroutineScope = { CoroutineScope(testCoroutineContext) }
 
         val di = startKoin {
             modules(

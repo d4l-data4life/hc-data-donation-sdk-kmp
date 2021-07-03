@@ -34,7 +34,7 @@ package care.data4life.datadonation.internal.domain.mock
 
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.domain.repository.RepositoryInternalContract
-import care.data4life.datadonation.internal.mock.MockException
+import care.data4life.datadonation.mock.MockException
 
 class MockConsentDataStore : RepositoryInternalContract.UserConsentRemote {
 

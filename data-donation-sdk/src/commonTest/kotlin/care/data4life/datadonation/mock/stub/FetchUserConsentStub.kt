@@ -14,14 +14,14 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.mock.stub
+package care.data4life.datadonation.mock.stub
 
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.domain.usecases.UsecaseContract.FetchUserConsents
 import care.data4life.datadonation.internal.domain.usecases.UsecaseContract.FetchUserConsentsParameter
 import care.data4life.datadonation.internal.domain.usecases.UsecaseContract.Usecase
-import care.data4life.datadonation.internal.mock.MockContract
-import care.data4life.datadonation.internal.mock.MockException
+import care.data4life.datadonation.mock.MockContract
+import care.data4life.datadonation.mock.MockException
 
 class FetchUserConsentStub : FetchUserConsents, MockContract.Stub {
     var whenWithParameter: ((FetchUserConsentsParameter) -> Usecase<List<UserConsent>>)? = null

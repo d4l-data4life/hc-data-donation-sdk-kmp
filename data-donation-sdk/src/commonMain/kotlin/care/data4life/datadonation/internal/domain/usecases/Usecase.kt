@@ -32,7 +32,7 @@
 
 package care.data4life.datadonation.internal.domain.usecases
 
-import care.data4life.datadonation.core.listener.ResultListener
+import care.data4life.datadonation.core.listener.ListenerContract
 
 interface Usecase<ReturnType> {
 
@@ -47,12 +47,11 @@ abstract class ParameterizedUsecase<Parameter : Any, ReturnType> : Usecase<Retur
         this.parameter = parameter
         return this
     }
-
 }
 
 suspend fun <T : Any, R : Any> ParameterizedUsecase<T, R>.runWithParams(
     parameters: T,
-    listener: ResultListener<R>
+    listener: ListenerContract.ResultListener<R>
 ) {
     try {
         listener.onSuccess(withParams(parameters).execute())

@@ -18,9 +18,9 @@ package care.data4life.datadonation.internal.domain.repository
 
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.model.DummyData
-import care.data4life.datadonation.internal.mock.MockContract
-import care.data4life.datadonation.internal.mock.MockException
-import care.data4life.datadonation.internal.mock.stub.UserSessionTokenDataStoreStub
+import care.data4life.datadonation.mock.MockContract
+import care.data4life.datadonation.mock.MockException
+import care.data4life.datadonation.mock.stub.UserSessionTokenDataStoreStub
 import runBlockingTest
 import kotlin.test.Test
 import kotlin.test.assertEquals

@@ -46,11 +46,11 @@ import care.data4life.datadonation.internal.domain.mock.MockRegistrationDataStor
 import care.data4life.datadonation.internal.domain.mock.MockServiceTokenDataStore
 import care.data4life.datadonation.internal.domain.repository.RegistrationRepository
 import care.data4life.datadonation.internal.domain.repository.ServiceTokenRepository
-import care.data4life.datadonation.internal.mock.spy.CapturingResultListener
-import care.data4life.datadonation.internal.mock.stub.UserConsentRepositoryStub
 import care.data4life.datadonation.internal.utils.Base64Encoder
 import care.data4life.datadonation.internal.utils.KeyGenerator
 import care.data4life.datadonation.internal.utils.toJsonString
+import care.data4life.datadonation.mock.spy.CapturingResultListener
+import care.data4life.datadonation.mock.stub.UserConsentRepositoryStub
 import io.ktor.utils.io.charsets.Charset
 import runBlockingTest
 import kotlin.test.Test
