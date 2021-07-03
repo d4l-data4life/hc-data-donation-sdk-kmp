@@ -69,7 +69,7 @@ object Dependency {
             val androidCore = "io.ktor:ktor-client-android:${Version.ktor}"
             val jvmJson = "io.ktor:ktor-client-json-jvm:${Version.ktor}"
             val ios = "io.ktor:ktor-client-ios:${Version.ktor}"
-            val iosCore = "io.ktor:ktor-client-core-native:${Version.ktor}"
+            val iosCore = "io.ktor:ktor-client-core:${Version.ktor}"
             val iosJson = "io.ktor:ktor-client-json-native:${Version.ktor}"
             val commonSerialization = "io.ktor:ktor-client-serialization:${Version.ktor}"
             val androidSerialization = "io.ktor:ktor-client-serialization-jvm:${Version.ktor}"

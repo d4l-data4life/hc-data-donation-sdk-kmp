@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.encryption.assymetric
+package care.data4life.datadonation.encryption.asymetric
 
 import care.data4life.datadonation.encryption.Algorithm
 import care.data4life.datadonation.encryption.HashSize
@@ -40,8 +40,6 @@ import platform.CoreFoundation.CFStringRef
 import platform.Security.SecKeyAlgorithm
 import platform.Security.kSecAttrKeyTypeRSA
 import platform.Security.kSecKeyAlgorithmRSAEncryptionOAEPSHA256
-
-
 
 actual fun EncryptionPublicKey(
     serializedKey: ByteArray,
@@ -61,7 +59,6 @@ actual fun EncryptionPublicKey(
     )
 }
 
-
 actual fun EncryptionPrivateKey(
     serializedPrivate: ByteArray,
     serializedPublic: ByteArray,
@@ -71,13 +68,13 @@ actual fun EncryptionPrivateKey(
 
     val keys = try {
         KeyNative.buildSecKeyRef(serializedPrivate, algorithm, KeyNative.KeyType.Private) to
-                KeyNative.buildSecKeyRef(serializedPublic, algorithm, KeyNative.KeyType.Public)
+            KeyNative.buildSecKeyRef(serializedPublic, algorithm, KeyNative.KeyType.Public)
     } catch (t: GeneralEncryptionException) {
         KeyNative.buildSecKeyRef(serializedPrivate.let { it.sliceArray(26..it.lastIndex) }, algorithm, KeyNative.KeyType.Private) to
-                KeyNative.buildSecKeyRef(serializedPublic.let { it.sliceArray(24..it.lastIndex) }, algorithm, KeyNative.KeyType.Public)
+            KeyNative.buildSecKeyRef(serializedPublic.let { it.sliceArray(24..it.lastIndex) }, algorithm, KeyNative.KeyType.Public)
     }
     return EncryptionAsymmetricKeyNative(
-        keys.first,keys.second,
+        keys.first, keys.second,
         algorithm.toAttributes().second
     )
 }
@@ -91,7 +88,6 @@ private fun Algorithm.Asymmetric.toAttributes(): Pair<CFStringRef, SecKeyAlgorit
         }
     }
 }
-
 
 actual fun EncryptionPrivateKey(
     size: Int,

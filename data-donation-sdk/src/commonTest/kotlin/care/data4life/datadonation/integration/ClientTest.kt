@@ -44,7 +44,7 @@ import care.data4life.hl7.fhir.stu3.codesystem.QuestionnaireResponseStatus
 import care.data4life.hl7.fhir.stu3.model.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
-import runTest
+import runBlockingTest
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
@@ -93,7 +93,7 @@ open class ClientTest {
 
     @Ignore
     @Test
-    fun fetchConsentDocumentTest() = runTest {
+    fun fetchConsentDocumentTest() = runBlockingTest {
 
         // When
         val result = fetchConsentDocuments(null, language, consentKey)
@@ -104,7 +104,7 @@ open class ClientTest {
 
     @Ignore
     @Test
-    fun createUserConsentTest() = runTest {
+    fun createUserConsentTest() = runBlockingTest {
         // Given
         val consentDocument = fetchConsentDocuments(null, language, consentKey).first()
 
@@ -116,7 +116,7 @@ open class ClientTest {
 
     @Ignore
     @Test
-    fun registerNewDonorTest() = runTest {
+    fun registerNewDonorTest() = runBlockingTest {
         // Given
         createUserConsentTest()
 
@@ -128,7 +128,7 @@ open class ClientTest {
 
     @Test
     @Ignore
-    fun fetchUserConsentsTest() = runTest {
+    fun fetchUserConsentsTest() = runBlockingTest {
         // Given
 
         // When
@@ -139,7 +139,7 @@ open class ClientTest {
 
     @Ignore
     @Test
-    fun revokeUserConsentsTest() = runTest {
+    fun revokeUserConsentsTest() = runBlockingTest {
         // Given
 
         // When
@@ -149,7 +149,7 @@ open class ClientTest {
 
     @Ignore
     @Test
-    fun donateResourcesTest() = runTest {
+    fun donateResourcesTest() = runBlockingTest {
         // Given
         val response = QuestionnaireResponse(
             status = QuestionnaireResponseStatus.COMPLETED,

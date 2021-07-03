@@ -1,10 +1,3 @@
-import care.data4life.datadonation.encryption.Asn1
-import care.data4life.datadonation.encryption.INTEGER
-import care.data4life.datadonation.encryption.sequence
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
-
 /*
  * BSD 3-Clause License
  *
@@ -37,47 +30,26 @@ import kotlin.test.assertTrue
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * Testing compliance with:
- * http://luca.ntop.org/Teaching/Appunti/asn1.html
- */
+package care.data4life.datadonation.encryption.asymetric
 
-class Asn1Test {
-    val testData = UByteArray(10) { 1u }
+import care.data4life.datadonation.encryption.Algorithm
 
-    @Test
-    fun integer() {
-        val asn1 = "test" sequence {
-            "test" integer testData
-        }
+expect fun EncryptionPrivateKey(serializedPrivate: ByteArray, serializedPublic: ByteArray, size: Int, algorithm: Algorithm.Asymmetric): EncryptionPrivateKey
 
-        //Type
-        assertEquals(asn1.encoded[2],2u)
-        //Length
-        assertEquals(asn1.encoded[3],testData.size.toUByte())
-        //Value
-        assertTrue(asn1.encoded.sliceArray(4..asn1.encoded.lastIndex).contentEquals(testData))
-    }
+expect fun EncryptionPublicKey(serializedKey: ByteArray, size: Int, algorithm: Algorithm.Asymmetric): EncryptionPublicKey
 
-    @Test
-    fun `octet string`() {
-        val asn1 = "test" sequence {
-            "test" octet_string {
-                "test" sequence {
-                    "test" integer testData
-                }
-            }
-        }
+expect fun EncryptionPrivateKey(size: Int, algorithm: Algorithm.Asymmetric): EncryptionPrivateKey
 
-        //Type
-        assertEquals(asn1.encoded[2],4u)
-        //Length (size of data plus 1 for each Type and Length of nested structures)
-        assertEquals(asn1.encoded[3],(4 + testData.size).toUByte())
-        //Value
-        assertTrue(
-            asn1.encoded.sliceArray(4..asn1.encoded.lastIndex)
-                .contentEquals(ubyteArrayOf(48u, (testData.size+2).toUByte(), 2u, testData.size.toUByte()) + testData)
-        )
-    }
+// TODO: expect fun EncryptionKeyPublic(pkcs1: String):EncryptionKeyPublic
 
+interface EncryptionPrivateKey : EncryptionPublicKey {
+    fun decrypt(data: ByteArray): Result<ByteArray>
+    fun serializedPrivate(): ByteArray
+    val pkcs8Private: String
+}
+
+interface EncryptionPublicKey {
+    fun encrypt(data: ByteArray): ByteArray
+    fun serializedPublic(): ByteArray
+    val pkcs8Public: String
 }

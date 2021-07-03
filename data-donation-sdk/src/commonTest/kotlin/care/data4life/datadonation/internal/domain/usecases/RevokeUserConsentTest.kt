@@ -34,7 +34,7 @@ package care.data4life.datadonation.internal.domain.usecases
 
 import CapturingResultListener
 import care.data4life.datadonation.internal.domain.mock.MockUserConsentRepository
-import runTest
+import runBlockingTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -48,7 +48,7 @@ abstract class RevokeUserConsentTest {
     private val capturingListener = RevokeUserConsentListener()
 
     @Test
-    fun revokeUserContent() = runTest {
+    fun revokeUserContent() = runBlockingTest {
         // Given
 
         // When

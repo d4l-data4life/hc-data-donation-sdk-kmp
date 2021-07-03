@@ -38,7 +38,7 @@ import care.data4life.datadonation.internal.data.model.DonationPayload
 import care.data4life.datadonation.internal.data.model.DummyData
 import io.ktor.client.*
 import io.ktor.http.*
-import runTest
+import runBlockingTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -51,41 +51,41 @@ internal abstract class DonationServiceTest : BaseServiceTest<DonationService>()
         DonationService(httpClient, environment)
 
     @Test
-    fun requestRegistrationTokenTest() = runTest {
-        //Given
+    fun requestRegistrationTokenTest() = runBlockingTest {
+        // Given
         givenTextServiceResponseWith(tokenFromService)
 
-        //When
+        // When
         val result = service.requestToken()
 
-        //Then
+        // Then
         assertEquals(result, token)
         assertEquals(HttpMethod.Get, lastRequest.method)
     }
 
     @Test
-    fun registerNewDonorTest() = runTest {
-        //Given
+    fun registerNewDonorTest() = runBlockingTest {
+        // Given
         givenServiceNoResponse(ContentType.Application.OctetStream)
 
-        //When
+        // When
         service.registerNewDonor(DummyData.rawData)
 
-        //Then
+        // Then
         assertEquals(HttpMethod.Put, lastRequest.method)
     }
 
     @Test
-    fun donateResourcesTest() = runTest {
-        //Given
+    fun donateResourcesTest() = runBlockingTest {
+        // Given
         val document = DocumentWithSignature(DummyData.rawData, DummyData.rawData)
         val payload = DonationPayload(DummyData.rawData, listOf(document, document, document))
         givenServiceNoResponse(ContentType.MultiPart.FormData)
 
-        //When
+        // When
         service.donateResources(payload)
 
-        //Then
+        // Then
         assertEquals(HttpMethod.Post, lastRequest.method)
     }
 }

@@ -14,7 +14,7 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.encryption.assymetric
+package care.data4life.datadonation.encryption.asymetric
 
 import care.data4life.datadonation.encryption.Algorithm
 import org.bouncycastle.jce.provider.BouncyCastleProvider

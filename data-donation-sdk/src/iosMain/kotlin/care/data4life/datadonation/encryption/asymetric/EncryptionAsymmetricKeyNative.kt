@@ -30,84 +30,92 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.encryption.assymetric
+package care.data4life.datadonation.encryption.asymetric
 
 import care.data4life.datadonation.encryption.KeyNative
 import care.data4life.datadonation.encryption.sequence
-import care.data4life.datadonation.encryption.signature.SignatureKeyPrivate
-import care.data4life.datadonation.toByteArray
 import care.data4life.datadonation.toNSData
+import kotlinx.cinterop.addressOf
+import kotlinx.cinterop.usePinned
 import platform.CoreFoundation.CFDataRef
 import platform.Foundation.*
 import platform.Security.*
+import platform.posix.*
 
-internal val rsaPkcsIDENTIFIER = listOf(42,34376,8845069,1,1,1)
+internal val rsaPkcsIDENTIFIER = listOf(42, 34376, 8845069, 1, 1, 1)
+// see: https://github.com/JetBrains/kotlin-native/issues/3172
+typealias Payload = NSData
 
-class EncryptionAsymmetricKeyNative : KeyNative,
+fun Payload.toByteArray(): ByteArray = ByteArray(this@toByteArray.length.toInt()).apply {
+    usePinned {
+        memcpy(it.addressOf(0), this@toByteArray.bytes, this@toByteArray.length)
+    }
+}
+
+class EncryptionAsymmetricKeyNative :
+    KeyNative,
     EncryptionPrivateKey,
     EncryptionPublicKey {
 
-    constructor(keyType: SecKeyAlgorithm, algoType: SecKeyAlgorithm, size: Int)
-            : super(keyType, algoType, size)
+    constructor(keyType: SecKeyAlgorithm, algoType: SecKeyAlgorithm, size: Int) :
+        super(keyType, algoType, size)
 
-    constructor(private: SecKeyRef, public: SecKeyRef, algoType: SecKeyAlgorithm)
-            : super(private, public, algoType)
+    constructor(private: SecKeyRef, public: SecKeyRef, algoType: SecKeyAlgorithm) :
+        super(private, public, algoType)
 
     override fun decrypt(data: ByteArray): Result<ByteArray> = runCatching {
-            val input = CFBridgingRetain(data.toNSData()) as CFDataRef
-            val decrypted = SecKeyCreateDecryptedData(privateKey, algoType, input, null)!!
-            CFBridgingRelease(input)
-            (CFBridgingRelease(decrypted) as NSData).toByteArray()
-        }
+        val input = CFBridgingRetain(data.toNSData()) as CFDataRef
+        val decrypted = SecKeyCreateDecryptedData(privateKey, algoType, input, null)!!
+        CFBridgingRelease(input)
+        return@runCatching(CFBridgingRelease(decrypted) as Payload).toByteArray()
+    }
 
     override fun encrypt(data: ByteArray): ByteArray {
         val input = CFBridgingRetain(data.toNSData()) as CFDataRef
         val encrypted = SecKeyCreateEncryptedData(publicKey, algoType, input, null)!!
         CFBridgingRelease(input)
-        return (CFBridgingRelease(encrypted) as NSData).toByteArray()
+        return (CFBridgingRelease(encrypted) as Payload).toByteArray()
     }
 
-
-
     override fun serializedPublic(): ByteArray =
-        (CFBridgingRelease(SecKeyCopyExternalRepresentation(publicKey, null)) as NSData)
+        (CFBridgingRelease(SecKeyCopyExternalRepresentation(publicKey, null)) as Payload)
             .toByteArray()
 
     override fun serializedPrivate(): ByteArray =
-        (CFBridgingRelease(SecKeyCopyExternalRepresentation(privateKey, null)) as NSData)
+        (CFBridgingRelease(SecKeyCopyExternalRepresentation(privateKey, null)) as Payload)
             .toByteArray()
 
-
     fun toPkcs8Private(privateKey: ByteArray) =
-        ("PrivateKeyInfo" sequence {
-            "version" integer byteArrayOf(0)
-            "algorithm" sequence {
-                "algorithm" object_identifier rsaPkcsIDENTIFIER
-            }
-            "PrivateKey" octet_string { raw(privateKey) }
-        }).encoded
-
-    fun toPkcs8Public(publicKey: ByteArray) = (
-            "PublicKeyInfo" sequence {
+        (
+            "PrivateKeyInfo" sequence {
+                "version" integer byteArrayOf(0)
                 "algorithm" sequence {
                     "algorithm" object_identifier rsaPkcsIDENTIFIER
                 }
-                "PublicKey" bit_string  { raw(publicKey) }
-            }).encoded
+                "PrivateKey" octet_string { raw(privateKey) }
+            }
+            ).encoded
 
+    fun toPkcs8Public(publicKey: ByteArray) = (
+        "PublicKeyInfo" sequence {
+            "algorithm" sequence {
+                "algorithm" object_identifier rsaPkcsIDENTIFIER
+            }
+            "PublicKey" bit_string { raw(publicKey) }
+        }
+        ).encoded
 
     override val pkcs8Private: String
-        get() = (CFBridgingRelease(SecKeyCopyExternalRepresentation(privateKey, null)) as NSData)
+        get() = (CFBridgingRelease(SecKeyCopyExternalRepresentation(privateKey, null)) as Payload)
             .toByteArray()
             .let(::toPkcs8Private)
             .toNSData()
             .base64EncodedStringWithOptions(NSDataBase64EncodingEndLineWithLineFeed)
 
     override val pkcs8Public: String
-        get() = (CFBridgingRelease(SecKeyCopyExternalRepresentation(publicKey, null)) as NSData)
+        get() = (CFBridgingRelease(SecKeyCopyExternalRepresentation(publicKey, null)) as Payload)
             .toByteArray()
             .let(::toPkcs8Public)
             .toNSData()
             .base64EncodedStringWithOptions(NSDataBase64EncodingEndLineWithLineFeed)
-
 }

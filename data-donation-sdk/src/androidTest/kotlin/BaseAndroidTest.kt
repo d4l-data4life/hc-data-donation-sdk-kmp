@@ -14,7 +14,11 @@
  * contact D4L by email to help@data4life.care.
  */
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.runBlocking
+import java.util.concurrent.Executors
+import kotlin.coroutines.CoroutineContext
 
 /*
  * BSD 3-Clause License
@@ -48,4 +52,8 @@ import kotlinx.coroutines.runBlocking
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-internal actual fun <T> runTest(block: suspend () -> T) { runBlocking { block() } }
+// see:
+actual val testCoroutineContext: CoroutineContext = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
+actual fun runBlockingTest(block: suspend CoroutineScope.() -> Unit) {
+    runBlocking(testCoroutineContext) { this.block() }
+}

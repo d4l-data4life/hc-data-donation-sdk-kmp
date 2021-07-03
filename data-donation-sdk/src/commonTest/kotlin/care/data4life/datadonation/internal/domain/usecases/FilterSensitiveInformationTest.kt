@@ -37,7 +37,7 @@ import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponseItem
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponseItemAnswer
 import care.data4life.hl7.fhir.stu3.primitive.Integer
-import runTest
+import runBlockingTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -53,21 +53,20 @@ abstract class FilterSensitiveInformationTest {
         QuestionnaireResponseItemAnswer(
             id = "intAnswer",
             valueInteger = Integer(12)
-        ) //TODO replace when fhir lib updated
-
+        ) // TODO replace when fhir lib updated
 
     @Test
-    fun `empty QuestionnaireResponse is untouched`() = runTest {
-        //Given
+    fun `empty QuestionnaireResponse is untouched`() = runBlockingTest {
+        // Given
         val response = QuestionnaireResponse(status = QuestionnaireResponseStatus.COMPLETED)
 
         val resources =
             listOf(response)
 
-        //When
+        // When
         val result = usecase.withParams(resources).execute()
 
-        //Then
+        // Then
         assertEquals(
             result.size,
             1
@@ -79,8 +78,8 @@ abstract class FilterSensitiveInformationTest {
     }
 
     @Test
-    fun `QuestionnaireResponse with only string answer is redacted`() = runTest {
-        //Given
+    fun `QuestionnaireResponse with only string answer is redacted`() = runBlockingTest {
+        // Given
         val response = QuestionnaireResponse(
             status = QuestionnaireResponseStatus.COMPLETED,
             item = answers(stringAnswer)
@@ -89,10 +88,10 @@ abstract class FilterSensitiveInformationTest {
         val resources =
             listOf(response)
 
-        //When
+        // When
         val result = usecase.withParams(resources).execute()
 
-        //Then
+        // Then
         assertEquals(
             result.size,
             1
@@ -106,10 +105,9 @@ abstract class FilterSensitiveInformationTest {
         )
     }
 
-
     @Test
-    fun `QuestionnaireResponse with multiple string answer, all redacted`() = runTest {
-        //Given
+    fun `QuestionnaireResponse with multiple string answer, all redacted`() = runBlockingTest {
+        // Given
         val response = QuestionnaireResponse(
             status = QuestionnaireResponseStatus.COMPLETED,
             item = answers(stringAnswer.copy(), stringAnswer.copy(valueString = "somethingElse"))
@@ -117,10 +115,10 @@ abstract class FilterSensitiveInformationTest {
         val resources =
             listOf(response)
 
-        //When
+        // When
         val result = usecase.withParams(resources).execute()
 
-        //Then
+        // Then
         assertEquals(
             result.size,
             1
@@ -139,8 +137,8 @@ abstract class FilterSensitiveInformationTest {
     }
 
     @Test
-    fun `QuestionnaireResponse with multiple different answer, only string redacted`() = runTest {
-        //Given
+    fun `QuestionnaireResponse with multiple different answer, only string redacted`() = runBlockingTest {
+        // Given
         val response = QuestionnaireResponse(
             status = QuestionnaireResponseStatus.COMPLETED,
             item = answers(stringAnswer, intAnswer)
@@ -148,10 +146,10 @@ abstract class FilterSensitiveInformationTest {
         val resources =
             listOf(response)
 
-        //When
+        // When
         val result = usecase.withParams(resources).execute()
 
-        //Then
+        // Then
         assertTrue { result[0] is QuestionnaireResponse }
         assertTrue { (result[0] as QuestionnaireResponse).item!!.size == 2 }
         assertTrue { (result[0] as QuestionnaireResponse).item!!.first().answer!!.size == 1 }
@@ -167,8 +165,8 @@ abstract class FilterSensitiveInformationTest {
 
     @Test
     fun `QuestionnaireResponse with multi level answers, string filtered in deeper levels`() =
-        runTest {
-            //Given
+        runBlockingTest {
+            // Given
             val response = QuestionnaireResponse(
                 status = QuestionnaireResponseStatus.COMPLETED,
                 item = listOf(
@@ -182,10 +180,10 @@ abstract class FilterSensitiveInformationTest {
             val resources =
                 listOf(response)
 
-            //When
+            // When
             val result = usecase.withParams(resources).execute()
 
-            //Then
+            // Then
             assertEquals(
                 result.size,
                 1
@@ -199,7 +197,6 @@ abstract class FilterSensitiveInformationTest {
                 FilterSensitiveInformation.redacted
             )
         }
-
 
     private fun answers(vararg answers: QuestionnaireResponseItemAnswer): List<QuestionnaireResponseItem> =
         answers.map { QuestionnaireResponseItem(answer = listOf(it), linkId = it.toString()) }

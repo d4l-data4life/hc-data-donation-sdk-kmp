@@ -14,9 +14,11 @@
  * contact D4L by email to help@data4life.care.
  */
 
-import care.data4life.datadonation.core.listener.ResultListener
-import kotlinx.coroutines.CoroutineScope
-import kotlin.coroutines.CoroutineContext
+package care.data4life.datadonation.encryption
+
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 /*
  * BSD 3-Clause License
@@ -50,19 +52,46 @@ import kotlin.coroutines.CoroutineContext
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// see:https://github.com/Kotlin/kotlinx.coroutines/issues/1996
-internal expect val testCoroutineContext: CoroutineContext
-internal expect fun runBlockingTest(block: suspend CoroutineScope.() -> Unit)
+/**
+ * Testing compliance with:
+ * http://luca.ntop.org/Teaching/Appunti/asn1.html
+ */
 
-abstract class CapturingResultListener<R : Any> : ResultListener<R> {
-    var captured: R? = null
-    var error: Exception? = null
+class Asn1Test {
+    val testData = UByteArray(10) { 1u }
 
-    override fun onSuccess(t: R) {
-        captured = t
+    @Test
+    fun integer() {
+        val asn1 = "test" sequence {
+            "test" integer testData
+        }
+
+        // Type
+        assertEquals(asn1.encoded[2], 2u)
+        // Length
+        assertEquals(asn1.encoded[3], testData.size.toUByte())
+        // Value
+        assertTrue(asn1.encoded.sliceArray(4..asn1.encoded.lastIndex).contentEquals(testData))
     }
 
-    override fun onError(exception: Exception) {
-        error = exception
+    @Test
+    fun `octet string`() {
+        val asn1 = "test" sequence {
+            "test" octet_string {
+                "test" sequence {
+                    "test" integer testData
+                }
+            }
+        }
+
+        // Type
+        assertEquals(asn1.encoded[2], 4u)
+        // Length (size of data plus 1 for each Type and Length of nested structures)
+        assertEquals(asn1.encoded[3], (4 + testData.size).toUByte())
+        // Value
+        assertTrue(
+            asn1.encoded.sliceArray(4..asn1.encoded.lastIndex)
+                .contentEquals(ubyteArrayOf(48u, (testData.size + 2).toUByte(), 2u, testData.size.toUByte()) + testData)
+        )
     }
 }
