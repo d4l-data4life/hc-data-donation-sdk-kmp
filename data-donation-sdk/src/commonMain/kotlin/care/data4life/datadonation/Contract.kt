@@ -43,7 +43,10 @@ import kotlinx.coroutines.CoroutineScope
 
 interface Contract {
 
-    enum class Service(name: String) { DD("DataDonation"), ALP("AnalyticsPlatform") }
+    enum class Service(name: String) {
+        DD("DataDonation"),
+        ALP("AnalyticsPlatform")
+    }
 
     interface Configuration {
         fun getServicePublicKey(service: Service): String
@@ -71,12 +74,10 @@ interface Contract {
             listener: ResultListener<KeyPair>
         )
 
-        fun fetchUserConsent(
-            consentKey: String,
-            listener: ResultListener<List<UserConsent>>
+        fun fetchUserConsents(
+            listener: ResultListener<List<UserConsent>>,
+            consentKey: String? = null
         )
-
-        fun fetchUserConsents(listener: ResultListener<List<UserConsent>>)
 
         fun revokeUserConsent(language: String?, callback: Callback)
 

@@ -42,6 +42,7 @@ See link:{link-repository}/compare/v0.0.1...main[changeset]
 === Fixed
 * iOS encryption NSData was not able to convert to ByteArray.
 * iOS tests were not able to run properly in coroutine context.
+* Dependencies are now resolved correctly by Koin.
 
 * iOS encryption NSData was not able to convert to ByteArray.
 * iOS tests were not able to run properly in coroutine context.

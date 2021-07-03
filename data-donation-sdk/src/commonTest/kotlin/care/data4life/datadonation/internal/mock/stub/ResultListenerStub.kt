@@ -14,22 +14,26 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.domain.usecases
+package care.data4life.datadonation.internal.mock.stub
 
-import care.data4life.datadonation.core.model.UserConsent
+import care.data4life.datadonation.core.listener.ResultListener
+import care.data4life.datadonation.internal.mock.MockContract
+import care.data4life.datadonation.internal.mock.MockException
 
-interface UsecaseContract {
-    interface Usecase<ReturnType> {
-        suspend fun execute(): ReturnType
+class ResultListenerStub<ReturnType : Any> : ResultListener<ReturnType>, MockContract.Stub {
+    var whenOnSuccess: ((ReturnType) -> Unit)? = null
+    var whenOnError: ((Exception) -> Unit)? = null
+
+    override fun onSuccess(result: ReturnType) {
+        return whenOnSuccess?.invoke(result) ?: throw MockException()
     }
 
-    interface UsecaseFactory<Parameter : Any, ReturnType : Any> {
-        fun withParams(parameter: Parameter): Usecase<ReturnType>
+    override fun onError(exception: Exception) {
+        return whenOnError?.invoke(exception) ?: throw MockException()
     }
 
-    interface FetchUserConsentsParameter {
-        val consentKey: String?
+    override fun clear() {
+        whenOnSuccess = null
+        whenOnError = null
     }
-
-    interface FetchUserConsents : UsecaseFactory<FetchUserConsentsParameter, List<UserConsent>>
 }

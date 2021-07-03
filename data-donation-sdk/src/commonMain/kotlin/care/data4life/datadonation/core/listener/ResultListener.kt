@@ -32,7 +32,7 @@
 
 package care.data4life.datadonation.core.listener
 
-interface ResultListener<T: Any> {
-    fun onSuccess(t: T)
+interface ResultListener<T : Any> {
+    fun onSuccess(result: T)
     fun onError(exception: Exception)
 }

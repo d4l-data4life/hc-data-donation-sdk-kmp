@@ -60,20 +60,16 @@ class CachedUserSessionTokenDataStore(
                 continuation.resume(cachedValue)
             } else {
                 configuration.getUserSessionToken(object : ResultListener<String> {
-                    override fun onSuccess(t: String) {
-                        cachedValue = t
+                    override fun onSuccess(result: String) {
+                        cachedValue = result
                         cachedAt = clock.now()
-                        continuation.resume(t)
+                        continuation.resume(result)
                     }
 
                     override fun onError(exception: Exception) {
                         continuation.resume(null)
                     }
-
                 })
             }
-
-
         }
-
 }

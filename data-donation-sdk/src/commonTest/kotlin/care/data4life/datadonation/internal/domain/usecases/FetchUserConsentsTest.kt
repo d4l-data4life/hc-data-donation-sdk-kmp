@@ -84,7 +84,6 @@ class FetchUserConsentsTest {
             expected = dummyConsentList
         )
         assertNull(capturedConsentKey)
->>>>>>> 0821822... Refactor FetchUserConsents
     }
 
     @Test

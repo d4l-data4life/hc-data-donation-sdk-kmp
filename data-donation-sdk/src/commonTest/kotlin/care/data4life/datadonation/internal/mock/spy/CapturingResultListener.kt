@@ -24,8 +24,8 @@ abstract class CapturingResultListener<R : Any> : ResultListener<R>, MockContrac
     var captured: R? = null
     var error: Exception? = null
 
-    override fun onSuccess(t: R) {
-        captured = t
+    override fun onSuccess(result: R) {
+        captured = result
     }
 
     override fun onError(exception: Exception) {

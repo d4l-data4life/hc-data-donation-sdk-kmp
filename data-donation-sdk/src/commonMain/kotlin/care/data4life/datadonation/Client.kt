@@ -50,9 +50,22 @@ class Client internal constructor(
     private val createUserContent: CreateUserConsent by koinApplication.koin.inject()
     private val registerNewDonor: RegisterNewDonor by koinApplication.koin.inject()
     private val fetchConsentDocuments: FetchConsentDocuments by koinApplication.koin.inject()
-    private val fetchUserConsents: FetchUserConsents by koinApplication.koin.inject()
+    private val fetchUserConsents: UsecaseContract.FetchUserConsents by koinApplication.koin.inject()
     private val revokeUserContent: RevokeUserConsent by koinApplication.koin.inject()
     private val donateResources: DonateResources by koinApplication.koin.inject()
+
+    private fun <ReturnType : Any> runUsecase(
+        listener: ResultListener<ReturnType>,
+        usecase: UsecaseContract.Usecase<ReturnType>
+    ) {
+        configuration.getCoroutineContext().launch {
+            try {
+                listener.onSuccess(usecase.execute())
+            } catch (ex: Exception) {
+                listener.onError(ex)
+            }
+        }
+    }
 
     override fun fetchConsentDocuments(
         consentDocumentVersion: Int?,
@@ -91,16 +104,16 @@ class Client internal constructor(
             .runForListener(listener)
     }
 
-    override fun fetchUserConsent(
-        consentKey: String,
+    override fun fetchUserConsents(
         listener: ResultListener<List<UserConsent>>,
+        consentKey: String?
     ) {
-        /*fetchUserConsents.withParams(FetchUserConsents.Parameters(consentKey))
-            .runForListener(listener)*/
-    }
+        val parameter = FetchUserConsentsFactory.Parameters(consentKey)
 
-    override fun fetchUserConsents(listener: ResultListener<List<UserConsent>>) {
-        // fetchUserConsents.runForListener(listener)
+        runUsecase(
+            listener,
+            fetchUserConsents.withParams(parameter)
+        )
     }
 
     override fun revokeUserConsent(language: String?, callback: Callback) {
@@ -117,6 +130,7 @@ class Client internal constructor(
         ).runForListener(callback)
     }
 
+    // TODO: Remove -> Wrong level of abstraction
     private fun <ReturnType : Any> Usecase<ReturnType>.runForListener(
         listener: ResultListener<ReturnType>
     ) {
@@ -129,6 +143,7 @@ class Client internal constructor(
         }
     }
 
+    // TODO: Remove -> Wrong level of abstraction
     private fun <ReturnType : Any> Usecase<ReturnType>.runForListener(
         listener: Callback
     ) {

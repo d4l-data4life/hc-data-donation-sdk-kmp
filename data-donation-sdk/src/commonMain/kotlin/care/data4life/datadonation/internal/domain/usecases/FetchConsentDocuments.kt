@@ -35,11 +35,17 @@ package care.data4life.datadonation.internal.domain.usecases
 import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.internal.domain.repository.RepositoryInternalContract
 
-internal class FetchConsentDocuments(private val consentDocumentRepository: RepositoryInternalContract.ConsentDocumentRepository) :
-    ParameterizedUsecase<FetchConsentDocuments.Parameters, List<ConsentDocument>>() {
+internal class FetchConsentDocuments(
+    private val consentDocumentRepository: RepositoryInternalContract.ConsentDocumentRepository
+) : ParameterizedUsecase<FetchConsentDocuments.Parameters, List<ConsentDocument>>() {
 
-    override suspend fun execute(): List<ConsentDocument> =
-        consentDocumentRepository.fetchConsentDocuments(parameter.language, parameter.version, parameter.consentKey)
+    override suspend fun execute(): List<ConsentDocument> {
+        return consentDocumentRepository.fetchConsentDocuments(
+            parameter.language,
+            parameter.version,
+            parameter.consentKey
+        )
+    }
 
     data class Parameters(val version: Int?, val language: String?, val consentKey: String)
 }

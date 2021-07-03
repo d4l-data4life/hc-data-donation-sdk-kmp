@@ -107,6 +107,8 @@ kotlin {
                 //Kotlin
                 implementation(Dependency.Multiplatform.kotlin.stdlibAndroid)
                 implementation(Dependency.Multiplatform.coroutines.android)
+                implementation(Dependency.Java.slf4jApi)
+                implementation(Dependency.Java.slf4jSimple)
 
                 //DI
                 implementation(Dependency.Multiplatform.koin.android)
@@ -139,16 +141,13 @@ kotlin {
                 }
                 implementation(Dependency.Multiplatform.serialization.common)
                 implementation(Dependency.Multiplatform.serialization.protobuf)
+                implementation(Dependency.Multiplatform.ktor.iosCore)
+                implementation(Dependency.Multiplatform.ktor.ios)
             }
         }
         val iosTest by getting {
             dependencies {
                 dependsOn(commonTest.get())
-                implementation(Dependency.Multiplatform.coroutines.common) {
-                    version {
-                        strictly(Version.kotlinCoroutines)
-                    }
-                }
             }
         }
 
