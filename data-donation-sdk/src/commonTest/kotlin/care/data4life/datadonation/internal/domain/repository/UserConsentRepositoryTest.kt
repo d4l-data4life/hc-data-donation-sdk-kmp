@@ -155,7 +155,7 @@ class UserConsentRepositoryTest {
     }
 
     @Test
-    fun `Given signUserConsentRegistration is called with a Message, it resolves the SessionToken and delegates them to the UserConsentRemote and returns a String`() = runBlockingTest {
+    fun `Given signUserConsentRegistration is called with a Message, it resolves the SessionToken and delegates that to the UserConsentRemote and returns a String`() = runBlockingTest {
         // Given
         val remote = UserConsentRemoteStub()
         val session = UserSessionTokenDataStoreStub()
@@ -194,7 +194,7 @@ class UserConsentRepositoryTest {
     }
 
     @Test
-    fun `Given signUserConsentDonation is called with a Message, it resolves the SessionToken and delegates them to the UserConsentRemote and returns a String`() = runBlockingTest {
+    fun `Given signUserConsentDonation is called with a Message, it resolves the SessionToken and delegates that to the UserConsentRemote and returns a String`() = runBlockingTest {
         // Given
         val remote = UserConsentRemoteStub()
         val session = UserSessionTokenDataStoreStub()
@@ -233,7 +233,7 @@ class UserConsentRepositoryTest {
     }
 
     @Test
-    fun `Given revokeUserConsent is called with a Language, it resolves the SessionToken and delegates them to the UserConsentRemote and just runs`() = runBlockingTest {
+    fun `Given revokeUserConsent is called with a Language, it resolves the SessionToken and delegates that to the UserConsentRemote and just runs`() = runBlockingTest {
         // Given
         val remote = UserConsentRemoteStub()
         val session = UserSessionTokenDataStoreStub()

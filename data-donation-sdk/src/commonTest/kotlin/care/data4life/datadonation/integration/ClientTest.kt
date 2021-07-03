@@ -74,7 +74,7 @@ class ClientTest {
     @Test
     @Ignore
     // TODO "Use MockEngine"
-    // TODO: iOS -> infinity loop, maybe because the refused connection? If so we need to figure out of setting a timeout for iOS
+    // TODO: infinity loop caused by the refused connection - If so we need to figure out of setting a timeout
     fun fetchConsentDocumentTest() = runWithBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val consentKey = "custom-consent-key"
@@ -126,7 +126,7 @@ class ClientTest {
     @Test
     @Ignore
     // TODO "Use MockEngine"
-    // TODO: iOS -> infinity loop, maybe because the refused connection? If so we need to figure out of setting a timeout for iOS
+    // TODO: infinity loop caused by the refused connection - If so we need to figure out of setting a timeout
     fun createUserConsentTest() = runWithBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val consentKey = "custom-consent-key"
@@ -237,7 +237,7 @@ class ClientTest {
 
     @Test
     @Ignore // TODO "Use MockEngine"
-    // TODO: iOS -> infinity loop, maybe because the refused connection? If so we need to figure out of setting a timeout for iOS
+    // TODO: infinity loop caused by the refused connection - If so we need to figure out of setting a timeout
     fun fetchUserConsentsTest() = runWithBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val consentKey = "custom-consent-key"
@@ -280,7 +280,7 @@ class ClientTest {
     @Test
     @Ignore
     // TODO: Use MockEngine
-    // TODO: iOS -> infinity loop, maybe because the refused connection? If so we need to figure out of setting a timeout for iOS
+    // TODO: infinity loop caused by the refused connection - If so we need to figure out of setting a timeout
     fun revokeUserConsentsTest() = runWithBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val language = "en"

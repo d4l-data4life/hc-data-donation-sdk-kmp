@@ -124,12 +124,18 @@ internal fun coreModule(): Module {
         single<RepositoryContract.UserConsentRemote> {
             UserConsentDataStore(get())
         } bind RepositoryContract.UserConsentRemote::class
-        single { RegistrationDataStore(get()) } bind RegistrationRepository.Remote::class
+        single<RegistrationRepository.Remote> {
+            RegistrationDataStore(get())
+        } bind RegistrationRepository.Remote::class
         single<RepositoryContract.ConsentDocumentRemote> {
             ConsentDocumentDataStore(get())
         } bind RepositoryContract.ConsentDocumentRemote::class
-        single { DonationDataStore(get()) } bind DonationRepository.Remote::class
-        single { ServiceTokenDataStore(get()) } bind ServiceTokenRepository.Remote::class
+        single<DonationRepository.Remote> {
+            DonationDataStore(get())
+        } bind DonationRepository.Remote::class
+        single<ServiceTokenRepository.Remote> {
+            ServiceTokenDataStore(get())
+        } bind ServiceTokenRepository.Remote::class
 
         // Repositories
         single<RepositoryInternalContract.UserConsentRepository> {

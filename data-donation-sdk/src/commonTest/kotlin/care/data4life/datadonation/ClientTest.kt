@@ -18,15 +18,19 @@ package care.data4life.datadonation
 
 import care.data4life.datadonation.core.listener.ListenerContract
 import care.data4life.datadonation.core.listener.listenerModule
+import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.di.coreModule
 import care.data4life.datadonation.internal.di.platformModule
 import care.data4life.datadonation.internal.di.resolveRootModule
+import care.data4life.datadonation.internal.domain.usecases.FetchConsentDocumentsFactory
 import care.data4life.datadonation.internal.domain.usecases.FetchUserConsentsFactory
 import care.data4life.datadonation.internal.domain.usecases.UsecaseContract
 import care.data4life.datadonation.internal.domain.usecases.UsecaseContract.Usecase
 import care.data4life.datadonation.mock.stub.ClientConfigurationStub
+import care.data4life.datadonation.mock.stub.FetchConsentDocumentsStub
+import care.data4life.datadonation.mock.stub.FetchConsentDocumentsUsecaseStub
 import care.data4life.datadonation.mock.stub.FetchUserConsentStub
 import care.data4life.datadonation.mock.stub.FetchUserUsecaseStub
 import care.data4life.datadonation.mock.stub.ResultListenerStub
@@ -62,7 +66,7 @@ class ClientTest {
     }
 
     @Test
-    fun `Given fetchUserConsents is called without a ConsentKey and with a ResultListener it resolves the Usecase with its default Parameter and delegates them to the TaskRunner`() {
+    fun `Given fetchUserConsents is called without a ConsentKey and with a ResultListener it resolves the Usecase with its default Parameter and delegates that to the TaskRunner`() {
         // Given
         val config = ClientConfigurationStub()
         val listener = ResultListenerStub<List<UserConsent>>()
@@ -123,7 +127,7 @@ class ClientTest {
     }
 
     @Test
-    fun `Given fetchUserConsents is called with a ConsentKey and with a ResultListener it resolves the Usecase with its Parameter, which contains the given value and delegates them to the TaskRunner`() {
+    fun `Given fetchUserConsents is called with a ConsentKey and with a ResultListener  it resolves the Usecase with wraps the given Parameter and delegates that to the TaskRunner`() {
         // Given
         val config = ClientConfigurationStub()
         val listener = ResultListenerStub<List<UserConsent>>()
@@ -174,6 +178,80 @@ class ClientTest {
         assertEquals(
             actual = capturedParameter,
             expected = FetchUserConsentsFactory.Parameters(consentKey)
+        )
+        assertSame(
+            actual = capturedListener,
+            expected = listener
+        )
+        assertSame(
+            actual = capturedUsecase,
+            expected = usecase
+        )
+    }
+
+    @Test
+    fun `Given fetchConsentDocuments is called with a ConsentKey and with a ResultListener it resolves the Usecase with wraps the given Parameter and delegates that to the TaskRunner`() {
+        // Given
+        val config = ClientConfigurationStub()
+        val listener = ResultListenerStub<List<ConsentDocument>>()
+        val usecase = FetchConsentDocumentsUsecaseStub()
+
+        val version = 23
+        val language = "de-j-old-n-kotlin-x-done"
+        val consentKey = "abc"
+
+        var capturedParameter: UsecaseContract.FetchConsentDocumentsParameter? = null
+        var capturedListener: ListenerContract.ResultListener<*>? = null
+        var capturedUsecase: Usecase<*>? = null
+
+        config.whenGetEnvironment = { Environment.LOCAL }
+
+        val di = koinApplication {
+            modules(
+                resolveRootModule(config),
+                coreModule(),
+                platformModule(),
+                listenerModule(config),
+                module(override = true) {
+                    single {
+                        FetchConsentDocumentsStub().also {
+                            it.whenWithParameter = { delegateParameter ->
+                                capturedParameter = delegateParameter
+                                usecase
+                            }
+                        }
+                    } bind UsecaseContract.FetchConsentDocuments::class
+
+                    single {
+                        TaskRunnerStub().also {
+                            it.whenRunListener = { delegatedResultListener, delegatedUsecase ->
+                                capturedListener = delegatedResultListener
+                                capturedUsecase = delegatedUsecase
+                            }
+                        }
+                    } bind ListenerContract.TaskRunner::class
+                }
+            )
+        }
+
+        val client = Client(config, di)
+
+        // When
+        client.fetchConsentDocuments(
+            version,
+            language,
+            consentKey,
+            listener
+        )
+
+        // Then
+        assertEquals(
+            actual = capturedParameter,
+            expected = FetchConsentDocumentsFactory.Parameters(
+                version = version,
+                language = language,
+                consentKey = consentKey
+            )
         )
         assertSame(
             actual = capturedListener,

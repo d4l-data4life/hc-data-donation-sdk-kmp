@@ -37,7 +37,7 @@ class ConsentDocumentRepositoryTest {
     }
 
     @Test
-    fun `Given fetchConsentDocuments is called with a AccessToken, a Version and a ConsentKey, it resolves the SessionToken and delegates them to the ConsentDocumentRemote and returns a List of ConsentDocuments`() = runBlockingTest {
+    fun `Given fetchConsentDocuments is called with a AccessToken, a Version and a ConsentKey, it resolves the SessionToken and delegates that to the ConsentDocumentRemote and returns a List of ConsentDocuments`() = runBlockingTest {
         // Given
         val remote = ConsentDocumentRemoteStub()
         val session = UserSessionTokenDataStoreStub()
