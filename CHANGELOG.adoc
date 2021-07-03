@@ -31,6 +31,8 @@ See link:{link-repository}/compare/v0.0.1...main[changeset]
 
 === Added
 
+* slf4j for Koin.
+
 === Changed
 
 === Deprecated

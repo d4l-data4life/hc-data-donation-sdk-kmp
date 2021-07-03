@@ -110,6 +110,8 @@ kotlin {
 
                 //DI
                 implementation(Dependency.Multiplatform.koin.android)
+                implementation(Dependency.Java.slf4jSimple)
+                implementation(Dependency.Java.slf4jApi)
 
                 //
                 implementation(Dependency.android.threeTenABP)

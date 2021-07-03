@@ -25,6 +25,11 @@ object Dependency {
         val serialization = "org.jetbrains.kotlin:kotlin-serialization:${Version.kotlin}"
     }
 
+    object Java {
+        val slf4jApi = "org.slf4j:slf4j-api:${Version.slf4j}"
+        val slf4jSimple = "org.slf4j:slf4j-simple:${Version.slf4j}"
+    }
+
     object Multiplatform {
         val kotlin = Kotlin
 
