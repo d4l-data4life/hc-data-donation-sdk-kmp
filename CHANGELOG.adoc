@@ -43,6 +43,8 @@ See link:{link-repository}/compare/v0.0.1...main[changeset]
 
 === Bumped
 
+* Kotlin Coroutines 1.4.2 -> 1.4.3.
+
 === Migration
 
 == link:{link-repository}/releases/tag/v0.0.1[0.0.1]

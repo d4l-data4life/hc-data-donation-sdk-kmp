@@ -30,7 +30,7 @@ object Version {
     const val kotlin = "1.4.32"
 
     // https://github.com/Kotlin/kotlinx.coroutines
-    const val kotlinCoroutines = "1.4.2-native-mt"
+    const val kotlinCoroutines = "1.4.3-native-mt"
     const val kotlinCoroutinesIO = "0.1.16"
 
     // https://github.com/Kotlin/kotlinx.serialization
