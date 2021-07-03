@@ -30,13 +30,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.domain.mock
+package care.data4life.datadonation.mock
 
 import care.data4life.datadonation.core.model.UserConsent
-import care.data4life.datadonation.internal.domain.repository.RepositoryInternalContract
-import care.data4life.datadonation.mock.MockException
+import care.data4life.datadonation.internal.domain.repository.RepositoryContract
 
-class MockConsentDataStore : RepositoryInternalContract.UserConsentRemote {
+class ConsentDataStoreStub : RepositoryContract.UserConsentRemote {
 
     var whenCreateUserConsent: ((accessToken: String, version: Int, language: String?) -> UserConsent)? = null
     var whenFetchUserConsents: ((accessToken: String, consentKey: String?) -> List<UserConsent>)? = null

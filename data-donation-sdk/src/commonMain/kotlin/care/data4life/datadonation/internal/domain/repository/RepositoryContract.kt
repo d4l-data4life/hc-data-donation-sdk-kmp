@@ -19,19 +19,24 @@ package care.data4life.datadonation.internal.domain.repository
 import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.UserConsent
 
-internal interface RepositoryInternalContract {
-    interface UserConsentRepository {
-        suspend fun createUserConsent(version: Int, language: String?)
-        suspend fun fetchUserConsents(consentKey: String? = null): List<UserConsent>
-        suspend fun signUserConsentRegistration(message: String): String
-        suspend fun signUserConsentDonation(message: String): String
-        suspend fun revokeUserConsent(language: String?)
+interface RepositoryContract {
+    interface UserConsentRemote {
+        suspend fun createUserConsent(accessToken: String, version: Int, language: String?)
+        suspend fun fetchUserConsents(
+            accessToken: String,
+            consentKey: String? = null
+        ): List<UserConsent>
+
+        suspend fun signUserConsentRegistration(accessToken: String, message: String): String
+        suspend fun signUserConsentDonation(accessToken: String, message: String): String
+        suspend fun revokeUserConsent(accessToken: String, language: String?)
     }
 
-    interface ConsentDocumentRepository {
+    interface ConsentDocumentRemote {
         suspend fun fetchConsentDocuments(
-            language: String?,
+            accessToken: String,
             version: Int?,
+            language: String?,
             consentKey: String
         ): List<ConsentDocument>
     }

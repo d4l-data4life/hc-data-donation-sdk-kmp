@@ -36,7 +36,7 @@ import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.store.UserSessionTokenDataStore
 
 internal class UserConsentRepository(
-    private val remote: RepositoryInternalContract.UserConsentRemote,
+    private val remote: RepositoryContract.UserConsentRemote,
     private val sessionToken: UserSessionTokenDataStore
 ) : RepositoryInternalContract.UserConsentRepository {
 

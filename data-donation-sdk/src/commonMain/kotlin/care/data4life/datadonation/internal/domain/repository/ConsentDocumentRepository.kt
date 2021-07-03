@@ -36,7 +36,7 @@ import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.internal.data.store.UserSessionTokenDataStore
 
 internal class ConsentDocumentRepository(
-    private val remote: Remote,
+    private val remote: RepositoryContract.ConsentDocumentRemote,
     private val sessionToken: UserSessionTokenDataStore
 ) : RepositoryInternalContract.ConsentDocumentRepository {
 
@@ -51,14 +51,5 @@ internal class ConsentDocumentRepository(
             language,
             consentKey
         )
-    }
-
-    interface Remote {
-        suspend fun fetchConsentDocuments(
-            accessToken: String,
-            version: Int?,
-            language: String?,
-            consentKey: String
-        ): List<ConsentDocument>
     }
 }

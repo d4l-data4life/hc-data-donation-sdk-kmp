@@ -30,14 +30,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.domain.mock
+package care.data4life.datadonation.mock
 
 import care.data4life.datadonation.core.model.ConsentDocument
-import care.data4life.datadonation.internal.domain.repository.ConsentDocumentRepository
-import care.data4life.datadonation.mock.MockException
+import care.data4life.datadonation.internal.domain.repository.RepositoryContract
 
-class MockConsentDocumentDataSore : ConsentDocumentRepository.Remote {
-
+class ConsentDocumentDataSoreStub : RepositoryContract.ConsentDocumentRemote {
     var whenFetchConsentDocuments: ((accessToken: String, version: Int?, language: String?, consentKey: String) -> List<ConsentDocument>)? = null
 
     override suspend fun fetchConsentDocuments(
