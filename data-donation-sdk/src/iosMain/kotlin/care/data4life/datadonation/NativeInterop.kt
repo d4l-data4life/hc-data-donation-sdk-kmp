@@ -33,23 +33,27 @@
 package care.data4life.datadonation
 
 import kotlinx.cinterop.addressOf
+import kotlinx.cinterop.allocArrayOf
+import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.usePinned
 import platform.Foundation.NSData
-import platform.Foundation.dataWithBytesNoCopy
+import platform.Foundation.create
 import platform.posix.memcpy
 
+// see: https://github.com/JetBrains/kotlin-native/issues/3172
+// see: https://stackoverflow.com/questions/58521108/how-to-convert-kotlin-bytearray-to-nsdata-and-viceversa
+// see: https://gist.github.com/noahsark769/61cfb7a8b7231e2069a9dab94cf74a62
+fun NSData.toByteArray(): ByteArray = ByteArray(this@toByteArray.length.toInt()).apply {
+    usePinned {
+        memcpy(it.addressOf(0), this@toByteArray.bytes, this@toByteArray.length)
+    }
+}
+
+fun ByteArray.toNSData(): NSData = memScoped {
+    NSData.create(
+        bytes = allocArrayOf(this@toNSData),
+        length = this@toNSData.size.toULong()
+    )
+}
 
 fun UByteArray.toNSData() = asByteArray().toNSData()
-
-fun ByteArray.toNSData() = asUByteArray().usePinned {
-    if(size>0)
-        NSData.dataWithBytesNoCopy(it.addressOf(0), it.get().size.toULong())
-    else
-        NSData()
-}
-
-fun NSData.toByteArray() = ByteArray(length.toInt()).usePinned {
-    if(length>0u)
-        memcpy(it.addressOf(0), bytes, length)
-    it.get()
-}

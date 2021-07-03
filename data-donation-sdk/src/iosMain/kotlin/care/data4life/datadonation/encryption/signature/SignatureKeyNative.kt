@@ -35,6 +35,7 @@ package care.data4life.datadonation.encryption.signature
 import care.data4life.datadonation.encryption.KeyNative
 import care.data4life.datadonation.encryption.asymetric.rsaPkcsIDENTIFIER
 import care.data4life.datadonation.encryption.sequence
+import care.data4life.datadonation.toByteArray
 import care.data4life.datadonation.toNSData
 import kotlinx.cinterop.*
 import platform.CoreFoundation.*
@@ -45,16 +46,6 @@ import platform.Foundation.NSError
 import platform.Foundation.NSNumber
 import platform.Security.*
 import platform.darwin.noErr
-import platform.posix.*
-
-// see: https://github.com/JetBrains/kotlin-native/issues/3172
-typealias Payload = NSData
-
-fun Payload.toByteArray(): ByteArray = ByteArray(this@toByteArray.length.toInt()).apply {
-    usePinned {
-        memcpy(it.addressOf(0), this@toByteArray.bytes, this@toByteArray.length)
-    }
-}
 
 class SignatureKeyNative : KeyNative, SignatureKeyPrivate {
 
@@ -68,18 +59,18 @@ class SignatureKeyNative : KeyNative, SignatureKeyPrivate {
         val inputCfDataRef = CFBridgingRetain(data.toNSData()) as CFDataRef
         val k = SecKeyCreateSignature(privateKey, algoType, inputCfDataRef, null)!!
         CFBridgingRelease(inputCfDataRef)
-        return (CFBridgingRelease(k) as Payload).toByteArray()
+        return (CFBridgingRelease(k) as NSData).toByteArray()
     }
 
     override val pkcs8Private: String
-        get() = (CFBridgingRelease(SecKeyCopyExternalRepresentation(privateKey, null)) as Payload)
+        get() = (CFBridgingRelease(SecKeyCopyExternalRepresentation(privateKey, null)) as NSData)
             .toByteArray()
             .let(::toPkcs8Private)
             .toNSData()
             .base64EncodedStringWithOptions(NSDataBase64EncodingEndLineWithLineFeed)
 
     override val pkcs8Public: String
-        get() = (CFBridgingRelease(SecKeyCopyExternalRepresentation(publicKey, null)) as Payload)
+        get() = (CFBridgingRelease(SecKeyCopyExternalRepresentation(publicKey, null)) as NSData)
             .toByteArray()
             .let(::toPkcs8Public)
             .toNSData()
@@ -99,11 +90,11 @@ class SignatureKeyNative : KeyNative, SignatureKeyPrivate {
         }
 
     override fun serializedPublic(): ByteArray =
-        (CFBridgingRelease(SecKeyCopyExternalRepresentation(publicKey, null)) as Payload)
+        (CFBridgingRelease(SecKeyCopyExternalRepresentation(publicKey, null)) as NSData)
             .toByteArray()
 
     override fun serializedPrivate(): ByteArray =
-        (CFBridgingRelease(SecKeyCopyExternalRepresentation(privateKey, null)) as Payload)
+        (CFBridgingRelease(SecKeyCopyExternalRepresentation(privateKey, null)) as NSData)
             .toByteArray()
 
     fun toPkcs8Private(privateKey: ByteArray) =
