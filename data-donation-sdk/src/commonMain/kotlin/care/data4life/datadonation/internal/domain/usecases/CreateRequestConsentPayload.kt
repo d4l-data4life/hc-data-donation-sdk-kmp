@@ -39,15 +39,15 @@ import care.data4life.datadonation.internal.data.model.ConsentRequest
 import care.data4life.datadonation.internal.data.model.ConsentSignatureType
 import care.data4life.datadonation.internal.data.model.SignedConsentMessage
 import care.data4life.datadonation.internal.data.service.ConsentService
-import care.data4life.datadonation.internal.domain.repositories.Contract
-import care.data4life.datadonation.internal.domain.repositories.ServiceTokenRepository
+import care.data4life.datadonation.internal.domain.repository.RepositoryInternalContract
+import care.data4life.datadonation.internal.domain.repository.ServiceTokenRepository
 import care.data4life.datadonation.internal.utils.Base64Encoder
 import care.data4life.datadonation.internal.utils.toJsonString
 import io.ktor.utils.io.core.toByteArray
 
 internal class CreateRequestConsentPayload(
     private val serviceTokenRepository: ServiceTokenRepository,
-    private val consentRepository: Contract.UserConsentRepository,
+    private val consentRepository: RepositoryInternalContract.UserConsentRepository,
     private val encryptionDD: HybridEncryption,
     private val base64encoder: Base64Encoder,
 ) : ParameterizedUsecase<CreateRequestConsentPayload.Parameters, ByteArray>() {

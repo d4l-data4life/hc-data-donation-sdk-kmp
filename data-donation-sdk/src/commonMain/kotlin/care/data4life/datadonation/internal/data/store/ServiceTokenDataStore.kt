@@ -33,11 +33,10 @@
 package care.data4life.datadonation.internal.data.store
 
 import care.data4life.datadonation.internal.data.service.DonationService
-import care.data4life.datadonation.internal.domain.repositories.ServiceTokenRepository
+import care.data4life.datadonation.internal.domain.repository.ServiceTokenRepository
 
 internal class ServiceTokenDataStore(private val donationService: DonationService) :
     ServiceTokenRepository.Remote {
 
     override suspend fun requestDonationToken() = donationService.requestToken()
-
 }

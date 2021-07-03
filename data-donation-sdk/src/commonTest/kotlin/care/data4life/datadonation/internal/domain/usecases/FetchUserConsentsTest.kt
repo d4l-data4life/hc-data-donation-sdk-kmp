@@ -32,54 +32,87 @@
 
 package care.data4life.datadonation.internal.domain.usecases
 
-import CapturingResultListener
-import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.model.DummyData
-import care.data4life.datadonation.internal.domain.mock.MockUserConsentRepository
+import care.data4life.datadonation.internal.mock.stub.UserConsentRepositoryStub
 import runBlockingTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
+import kotlin.test.assertSame
+import kotlin.test.assertTrue
 
-abstract class FetchUserConsentsTest {
-
-    private val mockUserConsentRepository = MockUserConsentRepository()
-
-    private val userConsents = FetchUserConsents(mockUserConsentRepository)
-
-    private val capturingListener = FetchUserConsentListener()
-
+class FetchUserConsentsTest {
     @Test
-    fun fetchAllUserConsents() = runBlockingTest {
-        fetchUserConsents()
+    fun `It fulfils UsecaseFactory`() {
+        val factory: Any = FetchUserConsentsFactory(UserConsentRepositoryStub())
+
+        assertTrue(factory is UsecaseContract.UsecaseFactory<*, *>)
     }
 
     @Test
-    fun fetchSingleUserConsent() = runBlockingTest {
-        fetchUserConsents("custom-consent-key")
-    }
-
-    private suspend fun fetchUserConsents(consentKeyParam: String? = null) {
+    fun `Given withParams is called with the appropriate Parameter it creates a Usecase`() {
         // Given
-        var consentKeyInput: String? = "dummy"
-        val dummyConsentList = listOf(DummyData.userConsent)
+        val parameter = FetchUserConsentsFactory.Parameters()
 
-        mockUserConsentRepository.whenFetchUserConsents = { consentKey ->
-            consentKeyInput = consentKey
+        // When
+        val usecase: Any = FetchUserConsentsFactory(UserConsentRepositoryStub()).withParams(parameter)
+
+        // Then
+        assertTrue(usecase is UsecaseContract.Usecase<*>)
+    }
+
+    @Test
+    fun `Given a Usecase had been created and execute is called, it delegates the call to the consentRepository without the consentKey, if the key is null`() = runBlockingTest {
+        // Given
+        val parameter = FetchUserConsentsFactory.Parameters(consentKey = null)
+        val dummyConsentList = listOf(DummyData.userConsent)
+        var capturedConsentKey: String? = null
+        val userContentRepository = UserConsentRepositoryStub()
+
+        userContentRepository.whenFetchUserConsents = { delegatedConsentKey ->
+            capturedConsentKey = delegatedConsentKey
             dummyConsentList
         }
 
         // When
-        userConsents.runWithParams(
-            FetchUserConsents.Parameters(consentKeyParam),
-            capturingListener
-        )
+        val usecase = FetchUserConsentsFactory(userContentRepository).withParams(parameter)
+        val result = usecase.execute()
 
         // Then
-        assertEquals(consentKeyParam, consentKeyInput)
-        assertEquals(capturingListener.captured, dummyConsentList)
-        assertNull(capturingListener.error)
+        assertSame(
+            actual = result,
+            expected = dummyConsentList
+        )
+        assertNull(capturedConsentKey)
+>>>>>>> 0821822... Refactor FetchUserConsents
     }
 
-    class FetchUserConsentListener : CapturingResultListener<List<UserConsent>>()
+    @Test
+    fun `Given a Usecase had been created and execute is called, it delegates the call to the consentRepository with the consentKey, if the key is not null`() = runBlockingTest {
+        // Given
+        val consentKey = "key"
+        val parameter = FetchUserConsentsFactory.Parameters(consentKey = consentKey)
+        val dummyConsentList = listOf(DummyData.userConsent)
+        var capturedConsentKey: String? = null
+        val userContentRepository = UserConsentRepositoryStub()
+
+        userContentRepository.whenFetchUserConsents = { delegatedConsentKey ->
+            capturedConsentKey = delegatedConsentKey
+            dummyConsentList
+        }
+
+        // When
+        val usecase = FetchUserConsentsFactory(userContentRepository).withParams(parameter)
+        val result = usecase.execute()
+
+        // Then
+        assertSame(
+            actual = result,
+            expected = dummyConsentList
+        )
+        assertEquals(
+            actual = capturedConsentKey,
+            expected = consentKey
+        )
+    }
 }

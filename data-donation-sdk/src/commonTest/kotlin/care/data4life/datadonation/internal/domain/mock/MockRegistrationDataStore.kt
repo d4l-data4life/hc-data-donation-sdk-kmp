@@ -32,8 +32,7 @@
 
 package care.data4life.datadonation.internal.domain.mock
 
-import care.data4life.datadonation.internal.domain.repositories.RegistrationRepository
-import care.data4life.datadonation.internal.mock.MockException
+import care.data4life.datadonation.internal.domain.repository.RegistrationRepository
 
 class MockRegistrationDataStore : RegistrationRepository.Remote {
 
@@ -42,5 +41,4 @@ class MockRegistrationDataStore : RegistrationRepository.Remote {
     override suspend fun registerNewDonor(data: ByteArray) {
         whenRegisterNewDonor?.invoke(data)
     }
-
 }

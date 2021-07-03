@@ -32,15 +32,16 @@
 
 package care.data4life.datadonation.internal.domain.usecases
 
-import CapturingResultListener
 import care.data4life.datadonation.encryption.hybrid.HybridEncryption
 import care.data4life.datadonation.encryption.signature.SignatureKeyPrivate
 import care.data4life.datadonation.internal.data.exception.MissingCredentialsException
 import care.data4life.datadonation.internal.data.model.*
 import care.data4life.datadonation.internal.data.service.ConsentService
 import care.data4life.datadonation.internal.domain.mock.*
-import care.data4life.datadonation.internal.domain.repositories.DonationRepository
-import care.data4life.datadonation.internal.domain.repositories.ServiceTokenRepository
+import care.data4life.datadonation.internal.domain.repository.DonationRepository
+import care.data4life.datadonation.internal.domain.repository.ServiceTokenRepository
+import care.data4life.datadonation.internal.mock.spy.CapturingResultListener
+import care.data4life.datadonation.internal.mock.stub.UserConsentRepositoryStub
 import care.data4life.datadonation.internal.utils.Base64Encoder
 import care.data4life.datadonation.internal.utils.toJsonString
 import care.data4life.hl7.fhir.stu3.FhirStu3Parser
@@ -85,7 +86,7 @@ abstract class DonateResourcesTest {
     private val mockServiceTokenDataStore = MockServiceTokenDataStore()
     private val mockFilterSensitiveInformation = MockFilterSensitiveInformation()
     private val mockRemoveInternalInformation = MockRemoveInternalInformation(jsonParser)
-    private val mockUserConsentRepository = MockUserConsentRepository()
+    private val mockUserConsentRepository = UserConsentRepositoryStub()
     private val serviceTokenRepository = ServiceTokenRepository(mockServiceTokenDataStore)
     private val donationRepository = DonationRepository(mockDonationDataStore)
 

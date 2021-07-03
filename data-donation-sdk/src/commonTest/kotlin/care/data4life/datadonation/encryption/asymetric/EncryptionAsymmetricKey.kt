@@ -37,7 +37,6 @@ import kotlin.test.Test
 import kotlin.test.assertTrue
 
 class EncryptionAsymmetricKeyCommonTest {
-
     @Test
     fun `Generate, encrypt and decrypt`() {
         val testData = byteArrayOf(1, 2, 3, 4, 5)

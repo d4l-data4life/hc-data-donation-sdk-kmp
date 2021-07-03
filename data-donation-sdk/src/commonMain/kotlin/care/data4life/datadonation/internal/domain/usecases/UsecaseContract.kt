@@ -16,28 +16,12 @@
 
 package care.data4life.datadonation.internal.domain.usecases
 
-import org.junit.Ignore
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+interface UsecaseContract {
+    interface Usecase<ReturnType> {
+        suspend fun execute(): ReturnType
+    }
 
-@RunWith(JUnit4::class)
-class CreateUserConsentAndroidTest : CreateUserConsentTest()
-
-@RunWith(JUnit4::class)
-class FetchConsentAndroidDocumentsTest : FetchConsentDocumentsTest()
-
-@RunWith(JUnit4::class)
-class FilterSensitiveInformationAndroidTest : FilterSensitiveInformationTest()
-
-@RunWith(JUnit4::class)
-class RegisterNewDonorAndroidTest : RegisterNewDonorTest()
-
-@RunWith(JUnit4::class)
-class RemoveInternalInformationAndroidTest : RemoveInternalInformationTest()
-
-@RunWith(JUnit4::class)
-class RevokeUserConsentAndroidTest : RevokeUserConsentTest()
-
-@Ignore // TODO: Ignored until fhir kmp dependency is updated to parse FhirResource to json
-@RunWith(JUnit4::class)
-class DonateResourcesAndroidTest : DonateResourcesTest()
+    interface UsecaseFactory<Parameter : Any, ReturnType : Any> {
+        fun withParams(parameter: Parameter): Usecase<ReturnType>
+    }
+}

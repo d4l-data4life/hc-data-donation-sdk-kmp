@@ -38,7 +38,7 @@ import care.data4life.datadonation.encryption.HashSize
 import care.data4life.datadonation.encryption.asymetric.EncryptionPrivateKey
 import care.data4life.datadonation.encryption.asymetric.EncryptionPublicKey
 import care.data4life.datadonation.encryption.symmetric.EncryptionSymmetricKey
-import care.data4life.datadonation.internal.domain.repositories.CredentialsRepository
+import care.data4life.datadonation.internal.domain.repository.CredentialsRepository
 import care.data4life.datadonation.internal.utils.decodeBase64Bytes
 
 internal class HybridEncryptionRegistry(private val repository: CredentialsRepository) {

@@ -49,7 +49,7 @@ class Client internal constructor(
 ) : Contract.DataDonation {
     private val createUserContent: CreateUserConsent by koinApplication.koin.inject()
     private val registerNewDonor: RegisterNewDonor by koinApplication.koin.inject()
-    // private val fetchConsentDocuments: FetchConsentDocuments by koinApplication.koin.inject()
+    private val fetchConsentDocuments: FetchConsentDocuments by koinApplication.koin.inject()
     private val fetchUserConsents: FetchUserConsents by koinApplication.koin.inject()
     private val revokeUserContent: RevokeUserConsent by koinApplication.koin.inject()
     private val donateResources: DonateResources by koinApplication.koin.inject()
@@ -95,12 +95,12 @@ class Client internal constructor(
         consentKey: String,
         listener: ResultListener<List<UserConsent>>,
     ) {
-        fetchUserConsents.withParams(FetchUserConsents.Parameters(consentKey))
-            .runForListener(listener)
+        /*fetchUserConsents.withParams(FetchUserConsents.Parameters(consentKey))
+            .runForListener(listener)*/
     }
 
     override fun fetchUserConsents(listener: ResultListener<List<UserConsent>>) {
-        fetchUserConsents.runForListener(listener)
+        // fetchUserConsents.runForListener(listener)
     }
 
     override fun revokeUserConsent(language: String?, callback: Callback) {

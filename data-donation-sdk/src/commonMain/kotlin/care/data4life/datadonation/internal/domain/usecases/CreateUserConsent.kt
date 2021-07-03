@@ -34,10 +34,10 @@ package care.data4life.datadonation.internal.domain.usecases
 
 import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.UserConsent
-import care.data4life.datadonation.internal.domain.repositories.Contract
+import care.data4life.datadonation.internal.domain.repository.RepositoryInternalContract
 
 internal class CreateUserConsent(
-    private val consentRepository: Contract.UserConsentRepository
+    private val consentRepository: RepositoryInternalContract.UserConsentRepository
 ) : ParameterizedUsecase<CreateUserConsent.Parameters, UserConsent>() {
 
     override suspend fun execute(): UserConsent {

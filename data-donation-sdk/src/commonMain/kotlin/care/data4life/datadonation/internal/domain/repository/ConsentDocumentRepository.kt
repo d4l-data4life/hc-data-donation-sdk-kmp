@@ -1,7 +1,7 @@
 /*
  * BSD 3-Clause License
  *
- * Copyright (c) 2021, D4L data4life gGmbH
+ * Copyright (c) 2020, D4L data4life gGmbH
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,13 +30,35 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.domain.repositories
+package care.data4life.datadonation.internal.domain.repository
 
-class ServiceTokenRepository(private val remote: Remote) {
+import care.data4life.datadonation.core.model.ConsentDocument
+import care.data4life.datadonation.internal.data.store.UserSessionTokenDataStore
 
-    suspend fun requestDonationToken() = remote.requestDonationToken()
+internal class ConsentDocumentRepository(
+    private val remote: Remote,
+    private val sessionToken: UserSessionTokenDataStore
+) : RepositoryInternalContract.ConsentDocumentRepository {
+
+    override suspend fun fetchConsentDocuments(
+        language: String?,
+        version: Int?,
+        consentKey: String
+    ): List<ConsentDocument> {
+        return remote.fetchConsentDocuments(
+            sessionToken.getUserSessionToken()!!,
+            version,
+            language,
+            consentKey
+        )
+    }
 
     interface Remote {
-        suspend fun requestDonationToken(): String
+        suspend fun fetchConsentDocuments(
+            accessToken: String,
+            version: Int?,
+            language: String?,
+            consentKey: String
+        ): List<ConsentDocument>
     }
 }

@@ -14,20 +14,17 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.domain.mock
+package care.data4life.datadonation.internal.mock.stub
 
-import care.data4life.datadonation.core.model.ConsentDocument
-import care.data4life.datadonation.internal.domain.repository.RepositoryInternalContract
-import care.data4life.datadonation.internal.mock.MockException
+import care.data4life.datadonation.internal.data.store.UserSessionTokenDataStore
+import care.data4life.datadonation.internal.mock.MockContract
 
-class MockConsentDocumentRepository : RepositoryInternalContract.ConsentDocumentRepository {
-    var whenFetchConsentDocuments: ((language: String?, version: Int?, consentKey: String) -> List<ConsentDocument>)? = null
+class UserSessionTokeDataStoreStub : UserSessionTokenDataStore, MockContract.Stub {
+    var sessionToken: String? = null
 
-    override suspend fun fetchConsentDocuments(
-        language: String?,
-        version: Int?,
-        consentKey: String
-    ): List<ConsentDocument> {
-        return whenFetchConsentDocuments?.invoke(language, version, consentKey) ?: throw MockException()
+    override suspend fun getUserSessionToken(): String? = null
+
+    override fun clear() {
+        sessionToken = null
     }
 }

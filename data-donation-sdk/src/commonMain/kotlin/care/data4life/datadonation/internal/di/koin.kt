@@ -116,8 +116,8 @@ internal fun coreModule(): Module {
         single { DonationService(get(), get()) }
 
         // DataStores
-        single { UserConsentDataStore(get()) } bind UserConsentRepository.Remote::class
-        single { RegistrationDataStore(get()) } bind RegistrationRepository.Remote::class
+        single<care.data4life.datadonation.internal.domain.repository.RepositoryInternalContract.UserConsentRemote> { UserConsentDataStore(get()) }
+		single { RegistrationDataStore(get()) } bind RegistrationRepository.Remote::class
         single { ConsentDocumentDataStore(get()) }
         single { DonationDataStore(get()) } bind DonationRepository.Remote::class
         single { ServiceTokenDataStore(get()) } bind ServiceTokenRepository.Remote::class

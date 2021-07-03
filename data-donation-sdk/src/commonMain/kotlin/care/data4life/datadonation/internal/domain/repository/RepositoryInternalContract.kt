@@ -14,13 +14,13 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.domain.repositories
+package care.data4life.datadonation.internal.domain.repository
 
 import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.UserConsent
 
-internal class Contract {
-    internal interface UserConsentRepository {
+internal interface RepositoryInternalContract {
+    interface UserConsentRepository {
         suspend fun createUserConsent(version: Int, language: String?)
         suspend fun fetchUserConsents(): List<UserConsent>
         suspend fun fetchUserConsent(consentKey: String): List<UserConsent>
@@ -29,7 +29,19 @@ internal class Contract {
         suspend fun revokeUserConsent(language: String?)
     }
 
-    internal interface ConsentDocumentRepository {
+    interface UserConsentRemote {
+        suspend fun createUserConsent(accessToken: String, version: Int, language: String?)
+        suspend fun fetchUserConsents(
+            accessToken: String,
+            consentKey: String? = null
+        ): List<UserConsent>
+
+        suspend fun signUserConsentRegistration(accessToken: String, message: String): String
+        suspend fun signUserConsentDonation(accessToken: String, message: String): String
+        suspend fun revokeUserConsent(accessToken: String, language: String?)
+    }
+
+    interface ConsentDocumentRepository {
         suspend fun fetchConsentDocuments(
             language: String?,
             version: Int?,

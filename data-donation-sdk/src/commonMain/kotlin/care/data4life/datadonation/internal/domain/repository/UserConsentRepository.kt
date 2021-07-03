@@ -30,13 +30,31 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.domain.repositories
+package care.data4life.datadonation.internal.domain.repository
 
-internal class RegistrationRepository(private val remote: Remote) {
+import care.data4life.datadonation.core.model.UserConsent
+import care.data4life.datadonation.internal.data.store.UserSessionTokenDataStore
 
-    suspend fun registerNewDonor(data: ByteArray) = remote.registerNewDonor(data)
+internal class UserConsentRepository(
+    private val remote: RepositoryInternalContract.UserConsentRemote,
+    private val sessionToken: UserSessionTokenDataStore
+) : RepositoryInternalContract.UserConsentRepository {
 
-    interface Remote {
-        suspend fun registerNewDonor(data: ByteArray)
-    }
+    override suspend fun createUserConsent(version: Int, language: String?) =
+        remote.createUserConsent(sessionToken.getUserSessionToken()!!, version, language)
+
+    override suspend fun fetchUserConsents(): List<UserConsent> =
+        remote.fetchUserConsents(sessionToken.getUserSessionToken()!!)
+
+    override suspend fun fetchUserConsent(consentKey: String): List<UserConsent> =
+        remote.fetchUserConsents(sessionToken.getUserSessionToken()!!, consentKey)
+
+    override suspend fun signUserConsentRegistration(message: String): String =
+        remote.signUserConsentRegistration(sessionToken.getUserSessionToken()!!, message)
+
+    override suspend fun signUserConsentDonation(message: String): String =
+        remote.signUserConsentDonation(sessionToken.getUserSessionToken()!!, message)
+
+    override suspend fun revokeUserConsent(language: String?) =
+        remote.revokeUserConsent(sessionToken.getUserSessionToken()!!, language)
 }

@@ -144,6 +144,11 @@ kotlin {
         val iosTest by getting {
             dependencies {
                 dependsOn(commonTest.get())
+                implementation(Dependency.Multiplatform.coroutines.common) {
+                    version {
+                        strictly(Version.kotlinCoroutines)
+                    }
+                }
             }
         }
 

@@ -33,8 +33,7 @@
 package care.data4life.datadonation.internal.domain.mock
 
 import care.data4life.datadonation.internal.data.model.DonationPayload
-import care.data4life.datadonation.internal.domain.repositories.DonationRepository
-import care.data4life.datadonation.internal.mock.MockException
+import care.data4life.datadonation.internal.domain.repository.DonationRepository
 
 class MockDonationDataStore : DonationRepository.Remote {
 
@@ -43,5 +42,4 @@ class MockDonationDataStore : DonationRepository.Remote {
     override suspend fun donateResources(payload: DonationPayload) {
         whenDonateResources?.invoke(payload)
     }
-
 }
