@@ -1,24 +1,4 @@
 /*
- * Copyright (c) 2021 D4L data4life gGmbH / All rights reserved.
- *
- * D4L owns all legal rights, title and interest in and to the Software Development Kit ("SDK"),
- * including any intellectual property rights that subsist in the SDK.
- *
- * The SDK and its documentation may be accessed and used for viewing/review purposes only.
- * Any usage of the SDK for other purposes, including usage for the development of
- * applications/third-party applications shall require the conclusion of a license agreement
- * between you and D4L.
- *
- * If you are interested in licensing the SDK for your own applications/third-party
- * applications and/or if you’d like to contribute to the development of the SDK, please
- * contact D4L by email to help@data4life.care.
- */
-
-import care.data4life.datadonation.core.listener.ResultListener
-import kotlinx.coroutines.CoroutineScope
-import kotlin.coroutines.CoroutineContext
-
-/*
  * BSD 3-Clause License
  *
  * Copyright (c) 2020, D4L data4life gGmbH
@@ -49,10 +29,14 @@ import kotlin.coroutines.CoroutineContext
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+import care.data4life.datadonation.core.listener.ResultListener
+import kotlinx.coroutines.CoroutineScope
+import kotlin.coroutines.CoroutineContext
 
 // see:https://github.com/Kotlin/kotlinx.coroutines/issues/1996
 internal expect val testCoroutineContext: CoroutineContext
 internal expect fun runBlockingTest(block: suspend CoroutineScope.() -> Unit)
+internal expect fun runWithBlockingTest(context: CoroutineContext, block: suspend CoroutineScope.() -> Unit)
 
 abstract class CapturingResultListener<R : Any> : ResultListener<R> {
     var captured: R? = null
