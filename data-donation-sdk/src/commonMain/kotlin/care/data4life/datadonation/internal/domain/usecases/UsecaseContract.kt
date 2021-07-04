@@ -17,6 +17,7 @@
 package care.data4life.datadonation.internal.domain.usecases
 
 import care.data4life.datadonation.core.model.ConsentDocument
+import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.UserConsent
 
 interface UsecaseContract {
@@ -47,4 +48,12 @@ interface UsecaseContract {
     }
 
     interface RevokeUserConsent : UsecaseFactory<RevokeUserConsentParameter, Unit>
+
+    interface CreateUserConsentParameters {
+        val keyPair: KeyPair?
+        val version: Int
+        val language: String?
+    }
+
+    interface CreateUserConsent : UsecaseFactory<CreateUserConsentParameters, UserConsent>
 }

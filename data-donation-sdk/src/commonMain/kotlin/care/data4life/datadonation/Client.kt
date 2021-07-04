@@ -46,7 +46,7 @@ class Client internal constructor(
     private val configuration: Contract.Configuration,
     koinApplication: KoinApplication
 ) : Contract.DataDonation {
-    private val createUserContent: CreateUserConsent by koinApplication.koin.inject()
+    // private val createUserContent: CreateUserConsent by koinApplication.koin.inject()
     private val registerNewDonor: RegisterNewDonor by koinApplication.koin.inject()
     private val fetchConsentDocuments: UsecaseContract.FetchConsentDocuments by koinApplication.koin.inject()
     private val fetchUserConsents: UsecaseContract.FetchUserConsents by koinApplication.koin.inject()
@@ -77,13 +77,13 @@ class Client internal constructor(
         language: String?,
         listener: ListenerContract.ResultListener<UserConsent>
     ) {
-        createUserContent.withParams(
-            CreateUserConsent.Parameters(
+        /*createUserContent.withParams(
+            CreateUserConsentFactory.Parameters(
                 configuration.getDonorKeyPair(),
                 consentDocumentVersion,
                 language
             )
-        ).runForListener(listener)
+        ).runForListener(listener)*/
     }
 
     override fun registerDonor(

@@ -36,14 +36,27 @@ import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.domain.repository.RepositoryContract
 
-internal class CreateUserConsent(
+internal class CreateUserConsentFactory(
     private val consentRepository: RepositoryContract.UserConsentRepository
-) : ParameterizedUsecase<CreateUserConsent.Parameters, UserConsent>() {
+) : UsecaseContract.CreateUserConsent {
 
-    override suspend fun execute(): UserConsent {
-        consentRepository.createUserConsent(parameter.version, parameter.language)
-        return consentRepository.fetchUserConsents().first()
+    override fun withParams(
+        parameter: UsecaseContract.CreateUserConsentParameters
+    ): UsecaseContract.Usecase<UserConsent> = CreateUserConsent(consentRepository, parameter)
+
+    private class CreateUserConsent(
+        private val consentRepository: RepositoryContract.UserConsentRepository,
+        private val parameter: UsecaseContract.CreateUserConsentParameters
+    ) : UsecaseContract.Usecase<UserConsent> {
+        override suspend fun execute(): UserConsent {
+            consentRepository.createUserConsent(parameter.version, parameter.language)
+            return consentRepository.fetchUserConsents().first()
+        }
     }
 
-    data class Parameters(val keyPair: KeyPair?, val version: Int, val language: String?)
+    data class Parameters(
+        override val keyPair: KeyPair?, // TODO: Why this is needed?
+        override val version: Int,
+        override val language: String?
+    ) : UsecaseContract.CreateUserConsentParameters
 }

@@ -32,41 +32,82 @@
 
 package care.data4life.datadonation.internal.domain.usecases
 
-import care.data4life.datadonation.core.model.UserConsent
+import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.mock.DummyData
-import care.data4life.datadonation.mock.spy.CapturingResultListener
 import care.data4life.datadonation.mock.stub.UserConsentRepositoryStub
 import runBlockingTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
+import kotlin.test.assertSame
+import kotlin.test.assertTrue
 
-abstract class CreateUserConsentTest {
-
-    private val mockUserConsentRepository = UserConsentRepositoryStub()
-    private val creteUser = CreateUserConsent(mockUserConsentRepository)
-
-    private val capturingListener = CreateUserContentListener()
-
+class CreateUserConsentTest {
     @Test
-    fun createUserContent() = runBlockingTest {
-        // Given
-        mockUserConsentRepository.whenFetchUserConsents = { _ -> listOf(DummyData.userConsent) }
+    fun `It fulfils CreateUserConsent`() {
+        val factory: Any = CreateUserConsentFactory(UserConsentRepositoryStub())
 
-        // When
-        creteUser.runWithParams(
-            CreateUserConsent.Parameters(
-                null,
-                1,
-                "language"
-            ),
-            capturingListener
-        )
-
-        // Then
-        assertEquals(capturingListener.captured, DummyData.userConsent)
-        assertNull(capturingListener.error)
+        assertTrue(factory is UsecaseContract.CreateUserConsent)
     }
 
-    class CreateUserContentListener : CapturingResultListener<UserConsent>()
+    @Test
+    fun `Given withParams is called with the appropriate Parameter it creates a Usecase`() {
+        // Given
+        val parameter = CreateUserConsentFactory.Parameters(
+            KeyPair(ByteArray(23), ByteArray(42)),
+            23,
+            "en-DE-x-private"
+        )
+
+        // When
+        val usecase: Any = CreateUserConsentFactory(UserConsentRepositoryStub()).withParams(parameter)
+
+        // Then
+        assertTrue(usecase is UsecaseContract.Usecase<*>)
+    }
+
+    @Test
+    fun `Given a Usecase had been created and execute is called, it delegates the call to the UserContentRepository with the given parameters and returns the first consent`() = runBlockingTest {
+        // Given
+        val version = 42
+        val language = "de-j-old-n-kotlin-x-done"
+        val keyPair = KeyPair(ByteArray(23), ByteArray(42))
+
+        var capturedVersion: Int? = null
+        var capturedLanguage: String? = null
+        var capturedConsentKey: String? = null
+
+        val consent = DummyData.userConsent
+
+        val repo = UserConsentRepositoryStub()
+
+        repo.whenCreateUserConsent = { delegatedVersion, delegatedLanguage ->
+            capturedVersion = delegatedVersion
+            capturedLanguage = delegatedLanguage
+        }
+        repo.whenFetchUserConsents = { delegatedConsentKey ->
+            capturedConsentKey = delegatedConsentKey
+            listOf(consent, DummyData.userConsent.copy(accountId = "not expected"))
+        }
+
+        val parameter = CreateUserConsentFactory.Parameters(keyPair, version, language)
+
+        // When
+        val result = CreateUserConsentFactory(repo).withParams(parameter).execute()
+
+        // Then
+        assertSame(
+            actual = consent,
+            expected = result
+        )
+        assertEquals(
+            actual = capturedLanguage,
+            expected = language
+        )
+        assertEquals(
+            actual = capturedVersion,
+            expected = version
+        )
+        assertNull(capturedConsentKey)
+    }
 }
