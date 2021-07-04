@@ -54,6 +54,7 @@ import kotlin.test.assertEquals
 
 open class ClientTest {
 
+    private val consentKey = "custom-consent-key"
     private val language = "en"
     private var keyPair: KeyPair? = null
 
@@ -61,21 +62,21 @@ open class ClientTest {
         override fun getServicePublicKey(service: Contract.Service): String = when (service) {
             Contract.Service.DD ->
                 "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwWYsUPv7etCQYYhMtwkP" +
-                        "xGH7144My0yUnqCmF38w40S7CCd54fa1zhijyvAEU67gMgxesyi2bMHPQJp2E63f" +
-                        "g/0IcY4kY//9NrtWY7QovOJaFa8ov+wiIbKa3Y5zy4sxq8VoBJlr1EBYaQNX6I9f" +
-                        "NG+IcQlkoTTqL+qt7lYsW0P4H3vR/92HHaJjA+yvSbXhePMh2IN4ESTqbBSSwWfd" +
-                        "AHtFlH63hV65EB0pUudPumWpUrJWYczveoUO3XUU4qmJ7lZU0kTUFBwwfdeprZtG" +
-                        "nEgS+ZIQAp4Y9BId1Ris5XgZDwmMYF8mB1sqGEnbQkmkaMPoboeherMio0Z/PD6J" +
-                        "rQIDAQAB"
+                    "xGH7144My0yUnqCmF38w40S7CCd54fa1zhijyvAEU67gMgxesyi2bMHPQJp2E63f" +
+                    "g/0IcY4kY//9NrtWY7QovOJaFa8ov+wiIbKa3Y5zy4sxq8VoBJlr1EBYaQNX6I9f" +
+                    "NG+IcQlkoTTqL+qt7lYsW0P4H3vR/92HHaJjA+yvSbXhePMh2IN4ESTqbBSSwWfd" +
+                    "AHtFlH63hV65EB0pUudPumWpUrJWYczveoUO3XUU4qmJ7lZU0kTUFBwwfdeprZtG" +
+                    "nEgS+ZIQAp4Y9BId1Ris5XgZDwmMYF8mB1sqGEnbQkmkaMPoboeherMio0Z/PD6J" +
+                    "rQIDAQAB"
 
             Contract.Service.ALP ->
                 "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvemFxDHLfwTWztqu+M5t" +
-                        "+becNfUvJpYBqRYsRFKxoUe2s+9WZjwPMzIvJ43DlCK2dqtZelomGhVpi53AqbG7" +
-                        "/Nm3dMH1nNSacfz20tZclshimJuHF1d126tbGn/3WdAxYfTq9DN8GZmqgRf1iunl" +
-                        "+DwE/sP3Dm8I1y4BG3RyQcD/K66s0PWvpX71UlvoVdWmWA5rGkfzi4msdZz7wfwV" +
-                        "I1cGnAX+YrBGTfkwJtHuHXCcLuR3zdNnG/ZB87O0Etl2bFHjCsDbAIRDggjXW+t0" +
-                        "0G+OALY8BMdU1cYKb8GBdqQW11BhRttGvFKFFt3i/8KH0b9ff80whY0bbeTAo51/" +
-                        "1QIDAQAB"
+                    "+becNfUvJpYBqRYsRFKxoUe2s+9WZjwPMzIvJ43DlCK2dqtZelomGhVpi53AqbG7" +
+                    "/Nm3dMH1nNSacfz20tZclshimJuHF1d126tbGn/3WdAxYfTq9DN8GZmqgRf1iunl" +
+                    "+DwE/sP3Dm8I1y4BG3RyQcD/K66s0PWvpX71UlvoVdWmWA5rGkfzi4msdZz7wfwV" +
+                    "I1cGnAX+YrBGTfkwJtHuHXCcLuR3zdNnG/ZB87O0Etl2bFHjCsDbAIRDggjXW+t0" +
+                    "0G+OALY8BMdU1cYKb8GBdqQW11BhRttGvFKFFt3i/8KH0b9ff80whY0bbeTAo51/" +
+                    "1QIDAQAB"
         }
 
         override fun getDonorKeyPair(): KeyPair? = keyPair
@@ -88,72 +89,68 @@ open class ClientTest {
 
         override fun getEnvironment() = Environment.LOCAL
         override fun getCoroutineContext(): CoroutineScope = GlobalScope
-
     })
 
     @Ignore
     @Test
     fun fetchConsentDocumentTest() = runTest {
 
-        //When
-        val result = fetchConsentDocument(null, language)
+        // When
+        val result = fetchConsentDocuments(null, language, consentKey)
 
-        //Then
+        // Then
         assertEquals(1, result.size)
     }
-
 
     @Ignore
     @Test
     fun createUserConsentTest() = runTest {
-        //Given
-        val consentDocument = fetchConsentDocument(null, language).first()
+        // Given
+        val consentDocument = fetchConsentDocuments(null, language, consentKey).first()
 
-        //When
+        // When
         val result = createUserConsent(consentDocument.version, consentDocument.language)
-        //Then
+        // Then
         println("UserConsent $result")
     }
-
 
     @Ignore
     @Test
     fun registerNewDonorTest() = runTest {
-        //Given
+        // Given
         createUserConsentTest()
 
-        //When
+        // When
         val result = register()
-        //Then
+        // Then
         println("Keypair $result")
     }
-
 
     @Test
     @Ignore
     fun fetchUserConsentsTest() = runTest {
-        //Given
+        // Given
 
-        //When
+        // When
         val result = fetchUserConsent()
-        //Then
+        // Then
         println(result)
     }
 
     @Ignore
     @Test
     fun revokeUserConsentsTest() = runTest {
-        //Given
+        // Given
 
-        //When
+        // When
         revokeUserConsent(language)
-        //Then
+        // Then
     }
 
     @Ignore
     @Test
     fun donateResourcesTest() = runTest {
-        //Given
+        // Given
         val response = QuestionnaireResponse(
             status = QuestionnaireResponseStatus.COMPLETED,
             id = "id",
@@ -167,22 +164,24 @@ open class ClientTest {
                 )
             )
         )
-        val consentDocument = fetchConsentDocument(null, language).first()
+        val consentDocument = fetchConsentDocuments(null, language, consentKey).first()
         createUserConsent(consentDocument.version, consentDocument.language)
         keyPair = register()
-        //When
+        // When
         donateResources(listOf(response))
-        //Then
+        // Then
     }
 
-    private suspend fun fetchConsentDocument(
+    private suspend fun fetchConsentDocuments(
         consentDocumentVersion: Int?,
-        language: String?
+        language: String?,
+        consentKey: String
     ): List<ConsentDocument> =
         suspendCoroutine { continuation ->
-            client.fetchConsentDocument(
+            client.fetchConsentDocuments(
                 consentDocumentVersion,
                 language,
+                consentKey,
                 object : ResultListener<List<ConsentDocument>> {
                     override fun onSuccess(t: List<ConsentDocument>) {
                         continuation.resume(t)
@@ -191,7 +190,8 @@ open class ClientTest {
                     override fun onError(exception: Exception) {
                         continuation.resumeWithException(exception)
                     }
-                })
+                }
+            )
         }
 
     private suspend fun createUserConsent(
@@ -210,7 +210,8 @@ open class ClientTest {
                     override fun onError(exception: Exception) {
                         continuation.resumeWithException(exception)
                     }
-                })
+                }
+            )
         }
 
     private suspend fun register(): KeyPair =
@@ -243,7 +244,8 @@ open class ClientTest {
 
     private suspend fun revokeUserConsent(language: String?) =
         suspendCoroutine<Unit> { continuation ->
-            client.revokeUserConsent(language,
+            client.revokeUserConsent(
+                language,
                 object : Callback {
                     override fun onSuccess() {
                         continuation.resume(Unit)
@@ -252,12 +254,14 @@ open class ClientTest {
                     override fun onError(exception: Exception) {
                         continuation.resumeWithException(exception)
                     }
-                })
+                }
+            )
         }
 
     private suspend fun donateResources(resources: List<FhirResource>) =
         suspendCoroutine<Unit> { continuation ->
-            client.donateResources(resources,
+            client.donateResources(
+                resources,
                 object : Callback {
                     override fun onSuccess() {
                         continuation.resume(Unit)
@@ -266,8 +270,7 @@ open class ClientTest {
                     override fun onError(exception: Exception) {
                         continuation.resumeWithException(exception)
                     }
-                })
+                }
+            )
         }
 }
-
-

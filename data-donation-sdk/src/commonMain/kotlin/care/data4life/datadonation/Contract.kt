@@ -54,9 +54,10 @@ interface Contract {
     }
 
     interface DataDonation {
-        fun fetchConsentDocument(
+        fun fetchConsentDocuments(
             consentDocumentVersion: Int?,
             language: String?,
+            consentKey: String,
             listener: ResultListener<List<ConsentDocument>>
         )
 
@@ -70,6 +71,11 @@ interface Contract {
             listener: ResultListener<KeyPair>
         )
 
+        fun fetchUserConsent(
+            consentKey: String,
+            listener: ResultListener<List<UserConsent>>
+        )
+
         fun fetchUserConsents(listener: ResultListener<List<UserConsent>>)
 
         fun revokeUserConsent(language: String?, callback: Callback)
@@ -78,8 +84,5 @@ interface Contract {
             resources: List<T>,
             callback: Callback
         )
-
     }
 }
-
-

@@ -30,7 +30,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 package care.data4life.datadonation.internal.domain.usecases
 
 import CapturingResultListener
@@ -42,7 +41,6 @@ import care.data4life.datadonation.internal.data.service.ConsentService
 import care.data4life.datadonation.internal.domain.mock.*
 import care.data4life.datadonation.internal.domain.repositories.DonationRepository
 import care.data4life.datadonation.internal.domain.repositories.ServiceTokenRepository
-import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
 import care.data4life.datadonation.internal.utils.Base64Encoder
 import care.data4life.datadonation.internal.utils.toJsonString
 import care.data4life.hl7.fhir.stu3.FhirStu3Parser
@@ -80,17 +78,14 @@ abstract class DonateResourcesTest {
     private val dummyEncryptedResourceSignatureList =
         listOf(DummyData.rawData, DummyData.rawData, DummyData.rawData)
 
-
     private val jsonParser = Json {}
-
 
     private val mockUserConsentDataStore = MockConsentDataStore()
     private val mockDonationDataStore = MockDonationDataStore()
     private val mockServiceTokenDataStore = MockServiceTokenDataStore()
     private val mockFilterSensitiveInformation = MockFilterSensitiveInformation()
     private val mockRemoveInternalInformation = MockRemoveInternalInformation(jsonParser)
-    private val userConsentRepository =
-        UserConsentRepository(mockUserConsentDataStore, MockUserSessionTokenDataStore())
+    private val mockUserConsentRepository = MockUserConsentRepository()
     private val serviceTokenRepository = ServiceTokenRepository(mockServiceTokenDataStore)
     private val donationRepository = DonationRepository(mockDonationDataStore)
 
@@ -131,7 +126,6 @@ abstract class DonateResourcesTest {
         }
 
         override fun decrypt(ciphertext: ByteArray) = Result.success(byteArrayOf())
-
     }
 
     private val encryptorALP = object : HybridEncryption {
@@ -144,18 +138,16 @@ abstract class DonateResourcesTest {
             }
 
         override fun decrypt(ciphertext: ByteArray) = Result.success(byteArrayOf())
-
     }
 
     private val base64Encoder = object : Base64Encoder {
         override fun encode(src: ByteArray) = dummyEncryptedRequest64Encoded
         override fun decode(src: ByteArray, charset: Charset) = ""
-
     }
 
     private val createRequestConsentPayload = CreateRequestConsentPayload(
         serviceTokenRepository,
-        userConsentRepository,
+        mockUserConsentRepository,
         encryptorDD,
         base64Encoder
     )
@@ -167,27 +159,25 @@ abstract class DonateResourcesTest {
             createRequestConsentPayload,
             donationRepository,
             encryptorALP
-        )
-        { signatureKey }
-
+        ) { signatureKey }
 
     private val capturingListener = DonateResourcesListener()
 
     @Test
     fun donateResourcesTest() = runTest {
-        //Given
+        // Given
         var result: DonationPayload? = null
         mockServiceTokenDataStore.whenRequestDonationToken = { dummyNonce }
-        mockUserConsentDataStore.whenSignUserConsent = { _, _ -> dummySignature }
+        mockUserConsentRepository.whenSignUserConsent = { _ -> dummySignature }
         mockDonationDataStore.whenDonateResources = { payload -> result = payload }
 
-        //When
+        // When
         donateResources.runWithParams(
             DonateResources.Parameters(DummyData.keyPair, dummyResourceList),
             capturingListener
         )
 
-        //Then
+        // Then
         assertEquals(capturingListener.captured, Unit)
         assertTrue(result!!.request.contentEquals(dummyEncryptedSignedMessage))
         assertEquals(result!!.documents.size, dummyResourceList.size)
@@ -198,22 +188,20 @@ abstract class DonateResourcesTest {
 
     @Test
     fun donateResourcesTestWithoutKeyFails() = runTest {
-        //Given
+        // Given
         mockServiceTokenDataStore.whenRequestDonationToken = { dummyNonce }
-        mockUserConsentDataStore.whenSignUserConsent = { _, _ -> dummySignature }
+        mockUserConsentRepository.whenSignUserConsent = { _ -> dummySignature }
 
-        //When
+        // When
         donateResources.runWithParams(
             DonateResources.Parameters(null, dummyResourceList),
             capturingListener
         )
 
-        //Then
+        // Then
         assertNull(capturingListener.captured)
         assertTrue(capturingListener.error is MissingCredentialsException)
     }
 
     class DonateResourcesListener : CapturingResultListener<Unit>()
-
 }
-

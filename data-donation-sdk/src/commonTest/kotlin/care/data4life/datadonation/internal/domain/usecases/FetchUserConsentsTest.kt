@@ -32,34 +32,54 @@
 
 package care.data4life.datadonation.internal.domain.usecases
 
+import CapturingResultListener
+import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.model.DummyData
-import care.data4life.datadonation.internal.domain.mock.MockConsentDataStore
-import care.data4life.datadonation.internal.domain.mock.MockUserSessionTokenDataStore
-import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
+import care.data4life.datadonation.internal.domain.mock.MockUserConsentRepository
 import runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
 abstract class FetchUserConsentsTest {
 
-    private val mockConsentDataStore = MockConsentDataStore()
-    private val userConsentRepository =
-        UserConsentRepository(mockConsentDataStore, MockUserSessionTokenDataStore())
+    private val mockUserConsentRepository = MockUserConsentRepository()
 
-    private val userConsents = FetchUserConsents(userConsentRepository)
+    private val userConsents = FetchUserConsents(mockUserConsentRepository)
+
+    private val capturingListener = FetchUserConsentListener()
 
     @Test
-    fun fetchUserContents() = runTest {
-        //Given
-        val dummyConsentList = listOf(DummyData.userConsent)
-        mockConsentDataStore.whenFetchUserConsents = { _ ->  dummyConsentList }
-
-
-        //When
-        val result = userConsents.execute()
-
-        //Then
-        assertEquals(result, dummyConsentList)
+    fun fetchAllUserConsents() = runTest {
+        fetchUserConsents()
     }
 
+    @Test
+    fun fetchSingleUserConsent() = runTest {
+        fetchUserConsents("custom-consent-key")
+    }
+
+    private suspend fun fetchUserConsents(consentKeyParam: String? = null) {
+        // Given
+        var consentKeyInput: String? = "dummy"
+        val dummyConsentList = listOf(DummyData.userConsent)
+
+        mockUserConsentRepository.whenFetchUserConsents = { consentKey ->
+            consentKeyInput = consentKey
+            dummyConsentList
+        }
+
+        // When
+        userConsents.runWithParams(
+            FetchUserConsents.Parameters(consentKeyParam),
+            capturingListener
+        )
+
+        // Then
+        assertEquals(consentKeyParam, consentKeyInput)
+        assertEquals(capturingListener.captured, dummyConsentList)
+        assertNull(capturingListener.error)
+    }
+
+    class FetchUserConsentListener : CapturingResultListener<List<UserConsent>>()
 }

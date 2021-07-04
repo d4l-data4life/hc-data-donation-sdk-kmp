@@ -30,15 +30,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 package care.data4life.datadonation.internal.domain.usecases
 
 import CapturingResultListener
 import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.internal.data.model.DummyData
-import care.data4life.datadonation.internal.domain.mock.MockConsentDocumentDataSore
-import care.data4life.datadonation.internal.domain.mock.MockUserSessionTokenDataStore
-import care.data4life.datadonation.internal.domain.repositories.ConsentDocumentRepository
+import care.data4life.datadonation.internal.domain.mock.MockConsentDocumentRepository
 import runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -46,26 +43,38 @@ import kotlin.test.assertNull
 
 abstract class FetchConsentDocumentsTest {
 
-    private val consentDocumentDataSore = MockConsentDocumentDataSore()
-    private val consentDocumentRepository = ConsentDocumentRepository(consentDocumentDataSore, MockUserSessionTokenDataStore())
+    private val consentDocumentRepository = MockConsentDocumentRepository()
     private val fetchConsentDocument = FetchConsentDocuments(consentDocumentRepository)
 
     private val capturingListener = FetchConsentDocumentListener()
 
     @Test
     fun createUserContentFullParams() = runTest {
-        //Given
+        // Given
+        val expectedLanguage = "en"
+        val expectedVersion = 1
+        val expectedConsentKey = "custom-consent-key"
+        var languageInput: String? = "dummy"
+        var versionInput: Int? = -1
+        var consentKeyInput = "dummy"
         val documentList = listOf(DummyData.consentDocument)
-        consentDocumentDataSore.whenFetchConsentDocuments = { _, _, _ ->  documentList }
+        consentDocumentRepository.whenFetchConsentDocuments = { language: String?, version: Int?, consentKey: String ->
+            languageInput = language
+            versionInput = version
+            consentKeyInput = consentKey
+            documentList
+        }
 
-        //When
-        fetchConsentDocument.runWithParams(FetchConsentDocuments.Parameters(1, "en"), capturingListener)
+        // When
+        fetchConsentDocument.runWithParams(FetchConsentDocuments.Parameters(expectedVersion, expectedLanguage, expectedConsentKey), capturingListener)
 
-        //Then
+        // Then
+        assertEquals(expectedVersion, versionInput)
+        assertEquals(expectedLanguage, languageInput)
+        assertEquals(expectedConsentKey, consentKeyInput)
         assertEquals(capturingListener.captured, documentList)
         assertNull(capturingListener.error)
     }
 
-    class FetchConsentDocumentListener: CapturingResultListener<List<ConsentDocument>>()
+    class FetchConsentDocumentListener : CapturingResultListener<List<ConsentDocument>>()
 }
-

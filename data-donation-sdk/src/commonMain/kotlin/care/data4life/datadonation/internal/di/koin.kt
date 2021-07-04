@@ -50,6 +50,7 @@ import org.koin.core.module.Module
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import kotlin.native.concurrent.ThreadLocal
+import care.data4life.datadonation.internal.domain.repositories.Contract as RepositoryContract
 
 @ThreadLocal
 internal object DataDonationKoinContext {
@@ -88,12 +89,14 @@ private val coreModule = module {
         HttpClient {
             install(JsonFeature) {
                 serializer =
-                    KotlinxSerializer(kotlinx.serialization.json.Json {
-                        isLenient = true
-                        ignoreUnknownKeys = true
-                        allowSpecialFloatingPointValues = true
-                        useArrayPolymorphism = false
-                    })
+                    KotlinxSerializer(
+                        kotlinx.serialization.json.Json {
+                            isLenient = true
+                            ignoreUnknownKeys = true
+                            allowSpecialFloatingPointValues = true
+                            useArrayPolymorphism = false
+                        }
+                    )
             }
             install(Logging) {
                 logger = SimpleLogger()
@@ -102,32 +105,29 @@ private val coreModule = module {
         }
     }
 
-    //HybridEncryption
+    // HybridEncryption
     single { HybridEncryptionRegistry(get()) }
 
-
-    //Services
+    // Services
     single { ConsentService(get(), get()) }
     single { DonationService(get(), get()) }
 
-
-    //DataStores
+    // DataStores
     single<UserConsentRepository.Remote> { UserConsentDataStore(get()) }
     single<RegistrationRepository.Remote> { RegistrationDataStore(get()) }
     single<ConsentDocumentRepository.Remote> { ConsentDocumentDataStore(get()) }
     single<DonationRepository.Remote> { DonationDataStore(get()) }
     single<ServiceTokenRepository.Remote> { ServiceTokenDataStore(get()) }
 
-
-    //Repositories
-    single { UserConsentRepository(get(), get()) }
+    // Repositories
+    single<RepositoryContract.UserConsentRepository> { UserConsentRepository(get(), get()) }
     single { RegistrationRepository(get()) }
     single { ConsentDocumentRepository(get(), get()) }
     single { CredentialsRepository(get()) }
     single { DonationRepository(get()) }
     single { ServiceTokenRepository(get()) }
 
-    //Usecases
+    // Usecases
     single {
         CreateRequestConsentPayload(
             get(),
