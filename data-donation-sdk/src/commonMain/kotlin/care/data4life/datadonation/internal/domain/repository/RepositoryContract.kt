@@ -48,4 +48,9 @@ internal interface RepositoryContract {
     interface RegistrationRepository {
         suspend fun registerNewDonor(data: ByteArray)
     }
+
+    interface CredentialsRepository {
+        fun getDataDonationPublicKey(): String
+        fun getAnalyticsPlatformPublicKey(): String
+    }
 }

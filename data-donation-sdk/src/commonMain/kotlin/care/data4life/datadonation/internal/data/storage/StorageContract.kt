@@ -42,20 +42,24 @@ interface StorageContract {
         ): List<ConsentDocument>
     }
 
-    interface ServiceTokenRepositoryRemoteStorage {
+    interface ServiceTokenRemoteStorage {
         suspend fun requestDonationToken(): String
     }
 
-    interface DonationRepositoryRemoteStorage {
+    interface DonationRemoteStorage {
         suspend fun donateResources(payload: DonationPayload)
     }
 
-    interface RegistrationRepositoryRemoteStorage {
+    interface RegistrationRemoteStorage {
         suspend fun registerNewDonor(data: ByteArray)
     }
 
     interface CredentialsDataRemoteStorage {
         fun getDataDonationPublicKey(): String
         fun getAnalyticsPlatformPublicKey(): String
+    }
+
+    interface UserSessionTokenDataStorage {
+        suspend fun getUserSessionToken(): String?
     }
 }

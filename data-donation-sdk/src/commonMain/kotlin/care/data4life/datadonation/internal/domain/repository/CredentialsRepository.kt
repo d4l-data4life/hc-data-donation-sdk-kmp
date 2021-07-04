@@ -36,8 +36,7 @@ import care.data4life.datadonation.internal.data.storage.StorageContract
 
 internal class CredentialsRepository(
     private val dataStore: StorageContract.CredentialsDataRemoteStorage
-) {
-
-    fun getDataDonationPublicKey() = dataStore.getDataDonationPublicKey()
-    fun getAnalyticsPlatformPublicKey() = dataStore.getAnalyticsPlatformPublicKey()
+) : RepositoryContract.CredentialsRepository {
+    override fun getDataDonationPublicKey() = dataStore.getDataDonationPublicKey()
+    override fun getAnalyticsPlatformPublicKey() = dataStore.getAnalyticsPlatformPublicKey()
 }

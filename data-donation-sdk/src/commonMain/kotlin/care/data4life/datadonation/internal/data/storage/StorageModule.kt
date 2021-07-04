@@ -26,20 +26,20 @@ fun storageModule(): Module {
             UserConsentDataStore(get())
         } bind StorageContract.UserConsentRemoteStorage::class
 
-        single<StorageContract.RegistrationRepositoryRemoteStorage> {
+        single<StorageContract.RegistrationRemoteStorage> {
             RegistrationDataStore(get())
-        } bind StorageContract.RegistrationRepositoryRemoteStorage::class
+        } bind StorageContract.RegistrationRemoteStorage::class
 
         single<StorageContract.ConsentDocumentRemoteStorage> {
             ConsentDocumentDataStorage(get())
         } bind StorageContract.ConsentDocumentRemoteStorage::class
 
-        single<StorageContract.DonationRepositoryRemoteStorage> {
+        single<StorageContract.DonationRemoteStorage> {
             DonationDataStore(get())
-        } bind StorageContract.DonationRepositoryRemoteStorage::class
+        } bind StorageContract.DonationRemoteStorage::class
 
-        single<StorageContract.ServiceTokenRepositoryRemoteStorage> {
+        single<StorageContract.ServiceTokenRemoteStorage> {
             ServiceTokenDataStore(get())
-        } bind StorageContract.ServiceTokenRepositoryRemoteStorage::class
+        } bind StorageContract.ServiceTokenRemoteStorage::class
     }
 }

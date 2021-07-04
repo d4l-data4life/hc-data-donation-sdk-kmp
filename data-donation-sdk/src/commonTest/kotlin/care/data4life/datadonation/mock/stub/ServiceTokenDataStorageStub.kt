@@ -20,7 +20,7 @@ import care.data4life.datadonation.internal.data.storage.StorageContract
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 
-class ServiceTokenDataStorageStub : StorageContract.ServiceTokenRepositoryRemoteStorage, MockContract.Stub {
+class ServiceTokenDataStorageStub : StorageContract.ServiceTokenRemoteStorage, MockContract.Stub {
 
     var whenRequestDonationToken: (() -> String)? = null
 

@@ -25,13 +25,20 @@ import care.data4life.datadonation.mock.stub.HybridEncryptionStub
 import care.data4life.datadonation.mock.stub.RegistrationRepositoryStub
 import care.data4life.datadonation.mock.stub.ServiceTokenRepositoryStub
 import care.data4life.datadonation.mock.stub.UserConsentRepositoryStub
+import org.koin.core.context.stopKoin
 import org.koin.dsl.bind
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 
 class UsecaseKoinTest {
+    @BeforeTest
+    fun setUp() {
+        stopKoin()
+    }
+
     @Test
     fun `Given usecaseModule is called with it creates a Module, which contains CreateRequestConsentPayload`() {
         // Given

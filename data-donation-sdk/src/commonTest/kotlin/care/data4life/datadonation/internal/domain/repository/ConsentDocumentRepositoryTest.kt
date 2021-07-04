@@ -18,7 +18,7 @@ package care.data4life.datadonation.internal.domain.repository
 
 import care.data4life.datadonation.mock.DummyData
 import care.data4life.datadonation.mock.stub.ConsentDocumentRemoteStorageStub
-import care.data4life.datadonation.mock.stub.UserSessionTokenDataStoreStub
+import care.data4life.datadonation.mock.stub.UserSessionTokenDataStorageStub
 import runBlockingTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -30,7 +30,7 @@ class ConsentDocumentRepositoryTest {
     fun `It fulfils ConsentDocumentRepository`() {
         val repo: Any = ConsentDocumentRepository(
             ConsentDocumentRemoteStorageStub(),
-            UserSessionTokenDataStoreStub()
+            UserSessionTokenDataStorageStub()
         )
 
         assertTrue(repo is RepositoryContract.ConsentDocumentRepository)
@@ -40,7 +40,7 @@ class ConsentDocumentRepositoryTest {
     fun `Given fetchConsentDocuments is called with a AccessToken, a Version and a ConsentKey, it resolves the SessionToken and delegates that to the ConsentDocumentRemote and returns a List of ConsentDocuments`() = runBlockingTest {
         // Given
         val remote = ConsentDocumentRemoteStorageStub()
-        val session = UserSessionTokenDataStoreStub()
+        val session = UserSessionTokenDataStorageStub()
 
         val consentKey = "tomato"
         val version = 23

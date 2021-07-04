@@ -45,6 +45,7 @@ import care.data4life.datadonation.internal.data.storage.storageModule
 import care.data4life.datadonation.internal.di.coreModule
 import care.data4life.datadonation.internal.di.platformModule
 import care.data4life.datadonation.internal.di.resolveRootModule
+import care.data4life.datadonation.internal.domain.repository.repositoryModule
 import care.data4life.datadonation.internal.domain.usecases.usecaseModule
 import care.data4life.datadonation.mock.DummyData
 import care.data4life.hl7.fhir.stu3.codesystem.QuestionnaireResponseStatus
@@ -95,7 +96,8 @@ class ClientTest {
                 coreModule(),
                 listenerModule(config),
                 storageModule(),
-                usecaseModule()
+                usecaseModule(),
+                repositoryModule()
             )
         }
 
@@ -149,7 +151,8 @@ class ClientTest {
                 coreModule(),
                 listenerModule(config),
                 storageModule(),
-                usecaseModule()
+                usecaseModule(),
+                repositoryModule()
             )
         }
 
@@ -217,7 +220,8 @@ class ClientTest {
                 coreModule(),
                 listenerModule(config),
                 storageModule(),
-                usecaseModule()
+                usecaseModule(),
+                repositoryModule()
             )
         }
 
@@ -263,7 +267,8 @@ class ClientTest {
                 coreModule(),
                 listenerModule(config),
                 storageModule(),
-                usecaseModule()
+                usecaseModule(),
+                repositoryModule()
             )
         }
 
@@ -308,7 +313,8 @@ class ClientTest {
                 coreModule(),
                 listenerModule(config),
                 storageModule(),
-                usecaseModule()
+                usecaseModule(),
+                repositoryModule()
             )
         }
 
@@ -354,7 +360,8 @@ class ClientTest {
                 coreModule(),
                 listenerModule(config),
                 storageModule(),
-                usecaseModule()
+                usecaseModule(),
+                repositoryModule()
             )
         }
 

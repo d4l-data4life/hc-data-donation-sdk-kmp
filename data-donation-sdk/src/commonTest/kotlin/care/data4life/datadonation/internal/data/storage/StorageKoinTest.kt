@@ -65,7 +65,7 @@ class StorageKoinTest {
             )
         }
         // Then
-        val store: StorageContract.RegistrationRepositoryRemoteStorage = koin.koin.get()
+        val store: StorageContract.RegistrationRemoteStorage = koin.koin.get()
         assertNotNull(store)
     }
 
@@ -101,7 +101,7 @@ class StorageKoinTest {
             )
         }
         // Then
-        val store: StorageContract.DonationRepositoryRemoteStorage = koin.koin.get()
+        val store: StorageContract.DonationRemoteStorage = koin.koin.get()
         assertNotNull(store)
     }
 
@@ -119,7 +119,7 @@ class StorageKoinTest {
             )
         }
         // Then
-        val store: StorageContract.ServiceTokenRepositoryRemoteStorage = koin.koin.get()
+        val store: StorageContract.ServiceTokenRemoteStorage = koin.koin.get()
         assertNotNull(store)
     }
 }

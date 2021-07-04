@@ -16,15 +16,19 @@
 
 package care.data4life.datadonation.mock.stub
 
-import care.data4life.datadonation.internal.data.storage.UserSessionTokenDataStore
+import care.data4life.datadonation.internal.data.storage.StorageContract
 import care.data4life.datadonation.mock.MockContract
 
-class UserSessionTokenDataStoreStub : UserSessionTokenDataStore, MockContract.Stub {
-    var sessionToken: String? = null
+class CredentialsDataRemoteStorageStub : StorageContract.CredentialsDataRemoteStorage, MockContract.Stub {
+    override fun getDataDonationPublicKey(): String {
+        TODO("Not yet implemented")
+    }
 
-    override suspend fun getUserSessionToken(): String? = sessionToken
+    override fun getAnalyticsPlatformPublicKey(): String {
+        TODO("Not yet implemented")
+    }
 
     override fun clear() {
-        sessionToken = null
+        TODO("Not yet implemented")
     }
 }

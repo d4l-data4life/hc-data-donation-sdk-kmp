@@ -40,13 +40,7 @@ import care.data4life.datadonation.internal.data.service.ConsentService
 import care.data4life.datadonation.internal.data.service.DonationService
 import care.data4life.datadonation.internal.data.service.ServiceContract
 import care.data4life.datadonation.internal.data.storage.*
-import care.data4life.datadonation.internal.domain.repository.ConsentDocumentRepository
-import care.data4life.datadonation.internal.domain.repository.CredentialsRepository
-import care.data4life.datadonation.internal.domain.repository.DonationRepository
-import care.data4life.datadonation.internal.domain.repository.RegistrationRepository
-import care.data4life.datadonation.internal.domain.repository.RepositoryContract
-import care.data4life.datadonation.internal.domain.repository.ServiceTokenRepository
-import care.data4life.datadonation.internal.domain.repository.UserConsentRepository
+import care.data4life.datadonation.internal.domain.repository.repositoryModule
 import care.data4life.datadonation.internal.domain.usecases.*
 import io.ktor.client.*
 import io.ktor.client.features.json.*
@@ -68,7 +62,8 @@ internal fun initKoin(configuration: Contract.Configuration): KoinApplication {
             coreModule(),
             listenerModule(configuration),
             storageModule(),
-            usecaseModule()
+            usecaseModule(),
+            repositoryModule()
         )
     }
 }
@@ -87,9 +82,9 @@ internal fun resolveRootModule(configuration: Contract.Configuration): Module {
             }
         }
         // TODO: Pull this out into storage
-        single<UserSessionTokenDataStore> {
+        single<StorageContract.UserSessionTokenDataStorage> {
             CachedUserSessionTokenDataStore(get(), Clock.System)
-        }
+        } bind StorageContract.UserSessionTokenDataStorage::class
 
         single { configuration.getEnvironment() }
     }
@@ -129,24 +124,6 @@ internal fun coreModule(): Module {
         single<ServiceContract.DonationService> {
             DonationService(get(), get())
         } bind ServiceContract.DonationService::class
-
-        // Repositories
-        single<RepositoryContract.UserConsentRepository> {
-            UserConsentRepository(get(), get())
-        } bind RepositoryContract.UserConsentRepository::class
-        single<RepositoryContract.RegistrationRepository> {
-            RegistrationRepository(get())
-        } bind RepositoryContract.RegistrationRepository::class
-        single<RepositoryContract.ConsentDocumentRepository> {
-            ConsentDocumentRepository(get(), get())
-        } bind RepositoryContract.ConsentDocumentRepository::class
-        single { CredentialsRepository(get()) }
-        single<RepositoryContract.DonationRepository> {
-            DonationRepository(get())
-        } bind RepositoryContract.DonationRepository::class
-        single<RepositoryContract.ServiceTokenRepository> {
-            ServiceTokenRepository(get())
-        } bind RepositoryContract.ServiceTokenRepository::class
     }
 }
 

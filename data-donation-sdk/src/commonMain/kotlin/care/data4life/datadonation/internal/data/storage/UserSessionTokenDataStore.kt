@@ -40,15 +40,10 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import kotlin.time.minutes
 
-internal interface UserSessionTokenDataStore {
-    suspend fun getUserSessionToken(): String?
-}
-
 class CachedUserSessionTokenDataStore(
     private val configuration: Contract.Configuration,
     private val clock: Clock
-) :
-    UserSessionTokenDataStore {
+) : StorageContract.UserSessionTokenDataStorage {
 
     private lateinit var cachedValue: String
     private var cachedAt = Instant.fromEpochSeconds(0)

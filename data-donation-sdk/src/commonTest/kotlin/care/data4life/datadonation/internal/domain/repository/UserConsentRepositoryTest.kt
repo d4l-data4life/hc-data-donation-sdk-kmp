@@ -17,8 +17,8 @@
 package care.data4life.datadonation.internal.domain.repository
 
 import care.data4life.datadonation.mock.DummyData
-import care.data4life.datadonation.mock.stub.UserConsentRemoteStub
-import care.data4life.datadonation.mock.stub.UserSessionTokenDataStoreStub
+import care.data4life.datadonation.mock.stub.UserConsentRemoteStorageStub
+import care.data4life.datadonation.mock.stub.UserSessionTokenDataStorageStub
 import runBlockingTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -29,7 +29,10 @@ import kotlin.test.assertTrue
 class UserConsentRepositoryTest {
     @Test
     fun `It fulfils UserConsentRepository`() {
-        val repo: Any = UserConsentRepository(UserConsentRemoteStub(), UserSessionTokenDataStoreStub())
+        val repo: Any = UserConsentRepository(
+            UserConsentRemoteStorageStub(),
+            UserSessionTokenDataStorageStub()
+        )
 
         assertTrue(repo is RepositoryContract.UserConsentRepository)
     }
@@ -37,8 +40,8 @@ class UserConsentRepositoryTest {
     @Test
     fun `Given createUserConsent is called with a Version and a Language, it resolves the SessionToken and delegates everything to the UserConsentRemote and just runs`() = runBlockingTest {
         // Given
-        val remote = UserConsentRemoteStub()
-        val session = UserSessionTokenDataStoreStub()
+        val remote = UserConsentRemoteStorageStub()
+        val session = UserSessionTokenDataStorageStub()
         val sessionToken = "token"
         val version = 23
         val language = "de-j-old-n-kotlin-x-done"
@@ -77,8 +80,8 @@ class UserConsentRepositoryTest {
     @Test
     fun `Given fetchUserConsents is called without a ConsentKey, it resolves the SessionToken and delegates it to the UserConsentRemote and returns a List of UserConsent`() = runBlockingTest {
         // Given
-        val remote = UserConsentRemoteStub()
-        val session = UserSessionTokenDataStoreStub()
+        val remote = UserConsentRemoteStorageStub()
+        val session = UserSessionTokenDataStorageStub()
         val sessionToken = "token"
         val userConsents = listOf(
             DummyData.userConsent,
@@ -115,8 +118,8 @@ class UserConsentRepositoryTest {
     @Test
     fun `Given fetchUserConsents is called with a ConsentKey, it resolves the SessionToken and delegates it to the UserConsentRemote and returns a List of UserConsent`() = runBlockingTest {
         // Given
-        val remote = UserConsentRemoteStub()
-        val session = UserSessionTokenDataStoreStub()
+        val remote = UserConsentRemoteStorageStub()
+        val session = UserSessionTokenDataStorageStub()
         val sessionToken = "token"
         val consentKey = "soup"
         val userConsents = listOf(
@@ -157,8 +160,8 @@ class UserConsentRepositoryTest {
     @Test
     fun `Given signUserConsentRegistration is called with a Message, it resolves the SessionToken and delegates that to the UserConsentRemote and returns a String`() = runBlockingTest {
         // Given
-        val remote = UserConsentRemoteStub()
-        val session = UserSessionTokenDataStoreStub()
+        val remote = UserConsentRemoteStorageStub()
+        val session = UserSessionTokenDataStorageStub()
         val sessionToken = "token"
         val message = "soup"
         val registrationMessage = "potato"
@@ -196,8 +199,8 @@ class UserConsentRepositoryTest {
     @Test
     fun `Given signUserConsentDonation is called with a Message, it resolves the SessionToken and delegates that to the UserConsentRemote and returns a String`() = runBlockingTest {
         // Given
-        val remote = UserConsentRemoteStub()
-        val session = UserSessionTokenDataStoreStub()
+        val remote = UserConsentRemoteStorageStub()
+        val session = UserSessionTokenDataStorageStub()
         val sessionToken = "token"
         val message = "soup"
         val registrationMessage = "potato"
@@ -235,8 +238,8 @@ class UserConsentRepositoryTest {
     @Test
     fun `Given revokeUserConsent is called with a Language, it resolves the SessionToken and delegates that to the UserConsentRemote and just runs`() = runBlockingTest {
         // Given
-        val remote = UserConsentRemoteStub()
-        val session = UserSessionTokenDataStoreStub()
+        val remote = UserConsentRemoteStorageStub()
+        val session = UserSessionTokenDataStorageStub()
         val sessionToken = "token"
         val language = "de-j-old-n-kotlin-x-done"
 

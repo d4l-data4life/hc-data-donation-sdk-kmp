@@ -36,7 +36,7 @@ import care.data4life.datadonation.internal.data.service.ServiceContract
 
 internal class ServiceTokenDataStore(
     private val donationService: ServiceContract.DonationService
-) : StorageContract.ServiceTokenRepositoryRemoteStorage {
+) : StorageContract.ServiceTokenRemoteStorage {
 
     override suspend fun requestDonationToken() = donationService.requestToken()
 }

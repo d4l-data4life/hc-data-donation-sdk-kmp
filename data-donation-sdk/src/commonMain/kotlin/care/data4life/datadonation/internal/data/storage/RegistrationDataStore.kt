@@ -36,7 +36,7 @@ import care.data4life.datadonation.internal.data.service.ServiceContract
 
 internal class RegistrationDataStore(
     private val donationService: ServiceContract.DonationService
-) : StorageContract.RegistrationRepositoryRemoteStorage {
+) : StorageContract.RegistrationRemoteStorage {
 
     override suspend fun registerNewDonor(data: ByteArray) = donationService.registerNewDonor(data)
 }

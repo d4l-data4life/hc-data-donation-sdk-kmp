@@ -21,7 +21,7 @@ import care.data4life.datadonation.internal.data.storage.StorageContract
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 
-class UserConsentRemoteStub : StorageContract.UserConsentRemoteStorage, MockContract.Stub {
+class UserConsentRemoteStorageStub : StorageContract.UserConsentRemoteStorage, MockContract.Stub {
     var whenCreateUserConsent: ((String?, Int, String?) -> Unit)? = null
     var whenFetchUserConsents: ((String?, String?) -> List<UserConsent>)? = null
     var whenSignUserConsentRegistration: ((String, String) -> String)? = null

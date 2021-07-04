@@ -42,18 +42,18 @@ import care.data4life.datadonation.encryption.HashSize
 import care.data4life.datadonation.encryption.asymetric.EncryptionPrivateKey
 import care.data4life.datadonation.encryption.asymetric.EncryptionPublicKey
 import care.data4life.datadonation.encryption.symmetric.EncryptionSymmetricKey
-import care.data4life.datadonation.internal.domain.repository.CredentialsRepository
+import care.data4life.datadonation.internal.domain.repository.RepositoryContract
 import care.data4life.datadonation.internal.utils.decodeBase64Bytes
 
 internal class HybridEncryptionRegistry(
-    private val repository: CredentialsRepository
+    private val repository: RepositoryContract.CredentialsRepository
 ) : EncryptionContract.HybridEncryptionRegistry {
 
     companion object {
-        fun CredentialsRepository.createEncryption(service: Contract.Service): HybridEncryption {
+        fun createEncryption(repository: RepositoryContract.CredentialsRepository, service: Contract.Service): HybridEncryption {
             val publicKey = when (service) {
-                Contract.Service.DD -> getDataDonationPublicKey()
-                Contract.Service.ALP -> getAnalyticsPlatformPublicKey()
+                Contract.Service.DD -> repository.getDataDonationPublicKey()
+                Contract.Service.ALP -> repository.getAnalyticsPlatformPublicKey()
             }
             return HybridEncryptionHandle(
                 HybridEncryptionSymmetricKeyProvider,
@@ -63,8 +63,8 @@ internal class HybridEncryptionRegistry(
         }
     }
 
-    override val hybridEncryptionDD: HybridEncryption by lazy { repository.createEncryption(Contract.Service.DD) }
-    override val hybridEncryptionALP: HybridEncryption by lazy { repository.createEncryption(Contract.Service.ALP) }
+    override val hybridEncryptionDD: HybridEncryption by lazy { createEncryption(repository, Contract.Service.DD) }
+    override val hybridEncryptionALP: HybridEncryption by lazy { createEncryption(repository, Contract.Service.ALP) }
 }
 
 internal object HybridEncryptionSymmetricKeyProvider : SymmetricKeyProvider {
