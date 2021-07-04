@@ -72,16 +72,6 @@ internal fun resolveRootModule(configuration: Contract.Configuration): Module {
     return module {
         single { configuration }
         // TODO: Pull this out into storage
-        single<StorageContract.CredentialsDataStorage> {
-            object : StorageContract.CredentialsDataStorage {
-                override fun getDataDonationPublicKey(): String =
-                    configuration.getServicePublicKey(Contract.Service.DD)
-
-                override fun getAnalyticsPlatformPublicKey(): String =
-                    configuration.getServicePublicKey(Contract.Service.ALP)
-            }
-        }
-        // TODO: Pull this out into storage
         single<StorageContract.UserSessionTokenDataStorage> {
             CachedUserSessionTokenDataStore(get(), Clock.System)
         } bind StorageContract.UserSessionTokenDataStorage::class

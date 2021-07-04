@@ -16,11 +16,15 @@
 
 package care.data4life.datadonation.internal.data.storage
 
+import care.data4life.datadonation.Contract
+import care.data4life.datadonation.core.listener.ListenerContract
 import care.data4life.datadonation.internal.data.service.ServiceContract
+import care.data4life.datadonation.mock.stub.ClientConfigurationStub
 import care.data4life.datadonation.mock.stub.ConsentServiceStub
 import care.data4life.datadonation.mock.stub.DonationServiceStub
 import org.koin.core.context.stopKoin
 import org.koin.dsl.bind
+import org.koin.dsl.binds
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import kotlin.test.BeforeTest
@@ -120,6 +124,31 @@ class StorageKoinTest {
         }
         // Then
         val store: StorageContract.ServiceTokenRemoteStorage = koin.koin.get()
+        assertNotNull(store)
+    }
+
+    @Test
+    fun `Given storageModule is called with it creates a Module, which contains a CredentialsDataStorage`() {
+        // Given
+        val config = ClientConfigurationStub()
+
+        // When
+        val koin = koinApplication {
+            modules(
+                storageModule(),
+                module {
+                    single<Contract.Configuration> {
+                        config
+                    } binds arrayOf(
+                        Contract.Configuration::class,
+                        ListenerContract.ScopeResolver::class,
+                        StorageContract.CredentialProvider::class
+                    )
+                }
+            )
+        }
+        // Then
+        val store: StorageContract.CredentialsDataStorage = koin.koin.get()
         assertNotNull(store)
     }
 }

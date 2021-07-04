@@ -41,5 +41,9 @@ fun resolveStorageModule(): Module {
         single<StorageContract.ServiceTokenRemoteStorage> {
             ServiceTokenDataStore(get())
         } bind StorageContract.ServiceTokenRemoteStorage::class
+
+        single<StorageContract.CredentialsDataStorage> {
+            CredentialsDataStorage(get())
+        } bind StorageContract.CredentialsDataStorage::class
     }
 }
