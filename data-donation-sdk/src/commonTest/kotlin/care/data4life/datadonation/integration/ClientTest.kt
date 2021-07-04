@@ -41,10 +41,11 @@ import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.UserConsent
-import care.data4life.datadonation.internal.data.model.DummyData
+import care.data4life.datadonation.internal.data.storage.storageModule
 import care.data4life.datadonation.internal.di.coreModule
 import care.data4life.datadonation.internal.di.platformModule
 import care.data4life.datadonation.internal.di.resolveRootModule
+import care.data4life.datadonation.mock.DummyData
 import care.data4life.hl7.fhir.stu3.codesystem.QuestionnaireResponseStatus
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponseItem
@@ -91,7 +92,8 @@ class ClientTest {
                 resolveRootModule(config),
                 platformModule(),
                 coreModule(),
-                listenerModule(config)
+                listenerModule(config),
+                storageModule()
             )
         }
 
@@ -143,7 +145,8 @@ class ClientTest {
                 resolveRootModule(config),
                 platformModule(),
                 coreModule(),
-                listenerModule(config)
+                listenerModule(config),
+                storageModule()
             )
         }
 
@@ -208,7 +211,8 @@ class ClientTest {
                 resolveRootModule(config),
                 platformModule(),
                 coreModule(),
-                listenerModule(config)
+                listenerModule(config),
+                storageModule()
             )
         }
 
@@ -252,7 +256,8 @@ class ClientTest {
                 resolveRootModule(config),
                 platformModule(),
                 coreModule(),
-                listenerModule(config)
+                listenerModule(config),
+                storageModule()
             )
         }
 
@@ -295,7 +300,8 @@ class ClientTest {
                 resolveRootModule(config),
                 platformModule(),
                 coreModule(),
-                listenerModule(config)
+                listenerModule(config),
+                storageModule()
             )
         }
 
@@ -339,7 +345,8 @@ class ClientTest {
                 resolveRootModule(config),
                 platformModule(),
                 coreModule(),
-                listenerModule(config)
+                listenerModule(config),
+                storageModule()
             )
         }
 

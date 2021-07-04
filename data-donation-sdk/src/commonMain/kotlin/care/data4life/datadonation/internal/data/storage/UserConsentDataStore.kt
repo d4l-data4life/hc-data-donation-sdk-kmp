@@ -30,13 +30,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.data.store
+package care.data4life.datadonation.internal.data.storage
 
-import care.data4life.datadonation.internal.data.service.DonationService
-import care.data4life.datadonation.internal.domain.repository.RegistrationRepository
+import care.data4life.datadonation.core.model.UserConsent
+import care.data4life.datadonation.internal.data.service.ConsentService
+import care.data4life.datadonation.internal.data.service.ServiceContract
+import care.data4life.datadonation.internal.domain.repository.RepositoryContract
 
-internal class RegistrationDataStore(private val donationService: DonationService) :
-    RegistrationRepository.Remote {
+internal class UserConsentDataStore(
+    private val service: ServiceContract.ConsentService
+) : RepositoryContract.UserConsentRemoteStorage {
 
-    override suspend fun registerNewDonor(data: ByteArray) = donationService.registerNewDonor(data)
+    override suspend fun createUserConsent(accessToken: String, version: Int, language: String?) {
+        service.createUserConsent(accessToken, version, language)
+    }
+
+    override suspend fun fetchUserConsents(
+        accessToken: String,
+        consentKey: String?
+    ): List<UserConsent> = service.fetchUserConsents(accessToken, false, consentKey)
+
+    override suspend fun signUserConsentRegistration(accessToken: String, message: String): String =
+        service.requestSignatureRegistration(accessToken, message).signature
+
+    override suspend fun signUserConsentDonation(accessToken: String, message: String): String =
+        service.requestSignatureDonation(accessToken, message).signature
+
+    override suspend fun revokeUserConsent(accessToken: String, language: String?) =
+        service.revokeUserConsent(accessToken, language)
 }

@@ -84,7 +84,10 @@ internal abstract class ConsentServiceTest : BaseServiceTest<ConsentService>() {
 
         // Then
         assertEquals(HttpMethod.Post, lastRequest.method)
-        assertEquals(ConsentService.Companion.Endpoints.userConsents, lastRequest.url.encodedPath)
+        assertEquals(
+            ServiceContract.ConsentService.Companion.Endpoints.userConsents,
+            lastRequest.url.encodedPath
+        )
         assertEquals(ContentType.Application.Json, lastRequest.body.contentType)
     }
 
@@ -99,7 +102,10 @@ internal abstract class ConsentServiceTest : BaseServiceTest<ConsentService>() {
         // Then
         assertEquals(listOf(userConsent), result)
         assertEquals(HttpMethod.Get, lastRequest.method)
-        assertEquals(ConsentService.Companion.Endpoints.userConsents, lastRequest.url.encodedPath)
+        assertEquals(
+            ServiceContract.ConsentService.Companion.Endpoints.userConsents,
+            lastRequest.url.encodedPath
+        )
         assertTrue(lastRequest.url.parameters.contains("latest"))
         assertEquals(lastRequest.url.parameters["latest"], false.toString())
     }
@@ -120,7 +126,7 @@ internal abstract class ConsentServiceTest : BaseServiceTest<ConsentService>() {
         assertEquals(listOf(consentDocDummy), result)
         assertEquals(HttpMethod.Get, lastRequest.method)
         assertEquals(
-            ConsentService.Companion.Endpoints.consentDocuments,
+            ServiceContract.ConsentService.Companion.Endpoints.consentDocuments,
             lastRequest.url.encodedPath
         )
         assertTrue(lastRequest.url.parameters.contains("key"))

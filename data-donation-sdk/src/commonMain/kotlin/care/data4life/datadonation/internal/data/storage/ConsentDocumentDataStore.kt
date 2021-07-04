@@ -30,15 +30,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.data.store
+package care.data4life.datadonation.internal.data.storage
 
-import care.data4life.datadonation.internal.data.model.DonationPayload
-import care.data4life.datadonation.internal.data.service.DonationService
-import care.data4life.datadonation.internal.domain.repository.DonationRepository
+import care.data4life.datadonation.core.model.ConsentDocument
+import care.data4life.datadonation.internal.data.service.ConsentService
+import care.data4life.datadonation.internal.data.service.ServiceContract
+import care.data4life.datadonation.internal.domain.repository.RepositoryContract
 
-internal class DonationDataStore(private val donationService: DonationService) :
-    DonationRepository.Remote {
+internal class ConsentDocumentDataStore(
+    private val service: ServiceContract.ConsentService
+) : RepositoryContract.ConsentDocumentRemoteStorage {
 
-    override suspend fun donateResources(payload: DonationPayload) =
-        donationService.donateResources(payload)
+    override suspend fun fetchConsentDocuments(
+        accessToken: String,
+        version: Int?,
+        language: String?,
+        consentKey: String
+    ): List<ConsentDocument> =
+        service.fetchConsentDocuments(accessToken, version, language, consentKey)
 }

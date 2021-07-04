@@ -34,7 +34,7 @@ package care.data4life.datadonation.internal.domain.mock
 
 import care.data4life.datadonation.internal.domain.repository.RegistrationRepository
 
-class MockRegistrationDataStore : RegistrationRepository.Remote {
+class MockRegistrationDataStore : RegistrationRepository.RemoteStorage {
 
     var whenRegisterNewDonor: ((data: ByteArray) -> Unit)? = null
 

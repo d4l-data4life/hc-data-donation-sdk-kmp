@@ -30,46 +30,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.data.store
+package care.data4life.datadonation.internal.data.storage
 
-import care.data4life.datadonation.Contract
-import care.data4life.datadonation.core.listener.ListenerContract
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
-import kotlin.time.minutes
+internal interface CredentialsDataStore {
 
-internal interface UserSessionTokenDataStore {
-    suspend fun getUserSessionToken(): String?
-}
-
-class CachedUserSessionTokenDataStore(
-    private val configuration: Contract.Configuration,
-    private val clock: Clock
-) :
-    UserSessionTokenDataStore {
-
-    private lateinit var cachedValue: String
-    private var cachedAt = Instant.fromEpochSeconds(0)
-
-    override suspend fun getUserSessionToken(): String? =
-        suspendCoroutine { continuation ->
-
-            if (cachedAt > clock.now().minus(1.minutes)) {
-                continuation.resume(cachedValue)
-            } else {
-                configuration.getUserSessionToken(object : ListenerContract.ResultListener<String> {
-                    override fun onSuccess(result: String) {
-                        cachedValue = result
-                        cachedAt = clock.now()
-                        continuation.resume(result)
-                    }
-
-                    override fun onError(exception: Exception) {
-                        continuation.resume(null)
-                    }
-                })
-            }
-        }
+    fun getDataDonationPublicKey(): String
+    fun getAnalyticsPlatformPublicKey(): String
 }

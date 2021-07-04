@@ -37,12 +37,12 @@ import care.data4life.datadonation.core.listener.listenerModule
 import care.data4life.datadonation.encryption.hybrid.HybridEncryptionRegistry
 import care.data4life.datadonation.internal.data.service.ConsentService
 import care.data4life.datadonation.internal.data.service.DonationService
-import care.data4life.datadonation.internal.data.store.*
+import care.data4life.datadonation.internal.data.service.ServiceContract
+import care.data4life.datadonation.internal.data.storage.*
 import care.data4life.datadonation.internal.domain.repository.ConsentDocumentRepository
 import care.data4life.datadonation.internal.domain.repository.CredentialsRepository
 import care.data4life.datadonation.internal.domain.repository.DonationRepository
 import care.data4life.datadonation.internal.domain.repository.RegistrationRepository
-import care.data4life.datadonation.internal.domain.repository.RepositoryContract
 import care.data4life.datadonation.internal.domain.repository.RepositoryInternalContract
 import care.data4life.datadonation.internal.domain.repository.ServiceTokenRepository
 import care.data4life.datadonation.internal.domain.repository.UserConsentRepository
@@ -67,7 +67,8 @@ internal fun initKoin(configuration: Contract.Configuration): KoinApplication {
             resolveRootModule(configuration),
             platformModule(),
             coreModule(),
-            listenerModule(configuration)
+            listenerModule(configuration),
+            storageModule()
         )
     }
 }
@@ -117,25 +118,12 @@ internal fun coreModule(): Module {
         single { HybridEncryptionRegistry(get()) }
 
         // Services
-        single { ConsentService(get(), get()) }
-        single { DonationService(get(), get()) }
-
-        // DataStores
-        single<RepositoryContract.UserConsentRemote> {
-            UserConsentDataStore(get())
-        } bind RepositoryContract.UserConsentRemote::class
-        single<RegistrationRepository.Remote> {
-            RegistrationDataStore(get())
-        } bind RegistrationRepository.Remote::class
-        single<RepositoryContract.ConsentDocumentRemote> {
-            ConsentDocumentDataStore(get())
-        } bind RepositoryContract.ConsentDocumentRemote::class
-        single<DonationRepository.Remote> {
-            DonationDataStore(get())
-        } bind DonationRepository.Remote::class
-        single<ServiceTokenRepository.Remote> {
-            ServiceTokenDataStore(get())
-        } bind ServiceTokenRepository.Remote::class
+        single<ServiceContract.ConsentService> {
+            ConsentService(get(), get())
+        } bind ServiceContract.ConsentService::class
+        single<ServiceContract.DonationService> {
+            DonationService(get(), get())
+        } bind ServiceContract.DonationService::class
 
         // Repositories
         single<RepositoryInternalContract.UserConsentRepository> {

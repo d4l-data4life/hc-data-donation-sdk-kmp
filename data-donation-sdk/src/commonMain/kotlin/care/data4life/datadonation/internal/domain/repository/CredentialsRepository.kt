@@ -32,7 +32,7 @@
 
 package care.data4life.datadonation.internal.domain.repository
 
-import care.data4life.datadonation.internal.data.store.CredentialsDataStore
+import care.data4life.datadonation.internal.data.storage.CredentialsDataStore
 
 internal class CredentialsRepository(private val dataStore: CredentialsDataStore) {
 

@@ -16,7 +16,7 @@
 
 package care.data4life.datadonation.mock.stub
 
-import care.data4life.datadonation.internal.data.store.UserSessionTokenDataStore
+import care.data4life.datadonation.internal.data.storage.UserSessionTokenDataStore
 import care.data4life.datadonation.mock.MockContract
 
 class UserSessionTokenDataStoreStub : UserSessionTokenDataStore, MockContract.Stub {

@@ -20,7 +20,7 @@ import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.domain.repository.RepositoryContract
 import care.data4life.datadonation.mock.MockException
 
-class ConsentDataStoreStub : RepositoryContract.UserConsentRemote {
+class ConsentDataStoreStub : RepositoryContract.UserConsentRemoteStorage {
     var whenCreateUserConsent: ((accessToken: String, version: Int, language: String?) -> UserConsent)? = null
     var whenFetchUserConsents: ((accessToken: String, consentKey: String?) -> List<UserConsent>)? = null
     var whenSignUserConsent: ((accessToken: String, message: String) -> String)? = null

@@ -38,7 +38,7 @@ import care.data4life.datadonation.internal.data.model.ConsentMessage
 import care.data4life.datadonation.internal.data.model.ConsentRequest
 import care.data4life.datadonation.internal.data.model.ConsentSignatureType
 import care.data4life.datadonation.internal.data.model.SignedConsentMessage
-import care.data4life.datadonation.internal.data.service.ConsentService
+import care.data4life.datadonation.internal.data.service.ServiceContract
 import care.data4life.datadonation.internal.domain.repository.RepositoryInternalContract
 import care.data4life.datadonation.internal.domain.repository.ServiceTokenRepository
 import care.data4life.datadonation.internal.utils.Base64Encoder
@@ -69,7 +69,7 @@ internal class CreateRequestConsentPayload(
         }
 
         val consentMessage = ConsentMessage(
-            ConsentService.defaultDonationConsentKey,
+            ServiceContract.DEFAULT_DONATION_CONSENT_KEY,
             parameter.signatureType.apiValue,
             encryptedMessage
         )

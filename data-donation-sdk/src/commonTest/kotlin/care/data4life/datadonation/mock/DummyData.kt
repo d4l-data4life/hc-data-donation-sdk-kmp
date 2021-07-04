@@ -1,36 +1,20 @@
 /*
- * BSD 3-Clause License
+ * Copyright (c) 2021 D4L data4life gGmbH / All rights reserved.
  *
- * Copyright (c) 2020, D4L data4life gGmbH
- * All rights reserved.
+ * D4L owns all legal rights, title and interest in and to the Software Development Kit ("SDK"),
+ * including any intellectual property rights that subsist in the SDK.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
+ * The SDK and its documentation may be accessed and used for viewing/review purposes only.
+ * Any usage of the SDK for other purposes, including usage for the development of
+ * applications/third-party applications shall require the conclusion of a license agreement
+ * between you and D4L.
  *
- *  Redistributions of source code must retain the above copyright notice, this
- * list of conditions and the following disclaimer.
- *
- *  Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution.
- *
- *  Neither the name of the copyright holder nor the names of its
- * contributors may be used to endorse or promote products derived from
- * this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * If you are interested in licensing the SDK for your own applications/third-party
+ * applications and/or if you’d like to contribute to the development of the SDK, please
+ * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.data.model
+package care.data4life.datadonation.mock
 
 import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.ConsentEvent
@@ -58,4 +42,3 @@ object DummyData {
         "089a95f2fb0312de020ad1020a39747970652e676f6f676c65617069732e636f6d2f676f6f676c652e63727970746f2e74696e6b2e5273615373615073735075626c69634b657912910212060803100318201a810200c81996e2f45d2a25d2d03ba6a0a625f206136af26e413daf6689d78e46bf27a11a66bab5b65fe3075bd9a5514e1bff5f8d0602bb977fd13c427302dc0bc4614527dac899c1d0729c714381cdda8cb14965a456ab9c0cfc7799ba1a82516eef2d63a12024afc6663bce12afe00d72793ff61ba5d3b324982610d45f9296430e937702a528b75c8a985c76306fb771dfe5412fbe15388740eb20ffafd27be28df59bfdb7b23dc93e6c1fbf62e81b547b86bf053260f08a8021df156256888d311fa920a6845315029716690839ab419b883709abcdda6e27063c2385d41be98208ee510b46c4a67e1cc333cc9e8586aaf139b03226348a500ac58662af78b62121220301000118031001189a95f2fb032003"
     val keyPair = KeyPair(rawData, rawData)
 }
-

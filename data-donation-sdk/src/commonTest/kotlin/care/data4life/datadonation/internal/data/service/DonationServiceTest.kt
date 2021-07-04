@@ -35,7 +35,7 @@ package care.data4life.datadonation.internal.data.service
 import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.internal.data.model.DocumentWithSignature
 import care.data4life.datadonation.internal.data.model.DonationPayload
-import care.data4life.datadonation.internal.data.model.DummyData
+import care.data4life.datadonation.mock.DummyData
 import io.ktor.client.*
 import io.ktor.http.*
 import runBlockingTest

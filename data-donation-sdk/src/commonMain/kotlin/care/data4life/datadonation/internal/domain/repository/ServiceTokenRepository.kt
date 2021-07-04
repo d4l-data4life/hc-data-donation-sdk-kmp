@@ -32,11 +32,11 @@
 
 package care.data4life.datadonation.internal.domain.repository
 
-class ServiceTokenRepository(private val remote: Remote) {
+class ServiceTokenRepository(private val remoteStorage: RemoteStorage) {
 
-    suspend fun requestDonationToken() = remote.requestDonationToken()
+    suspend fun requestDonationToken() = remoteStorage.requestDonationToken()
 
-    interface Remote {
+    interface RemoteStorage {
         suspend fun requestDonationToken(): String
     }
 }

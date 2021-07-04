@@ -33,7 +33,7 @@
 package care.data4life.datadonation.internal.domain.usecases
 
 import care.data4life.datadonation.core.model.UserConsent
-import care.data4life.datadonation.internal.data.model.DummyData
+import care.data4life.datadonation.mock.DummyData
 import care.data4life.datadonation.mock.spy.CapturingResultListener
 import care.data4life.datadonation.mock.stub.UserConsentRepositoryStub
 import runBlockingTest

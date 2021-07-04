@@ -16,7 +16,7 @@
 
 package care.data4life.datadonation.internal.domain.repository
 
-import care.data4life.datadonation.internal.data.model.DummyData
+import care.data4life.datadonation.mock.DummyData
 import care.data4life.datadonation.mock.stub.UserConsentRemoteStub
 import care.data4life.datadonation.mock.stub.UserSessionTokenDataStoreStub
 import runBlockingTest

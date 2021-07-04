@@ -32,12 +32,11 @@
 
 package care.data4life.datadonation.internal.domain.mock
 
-import care.data4life.datadonation.internal.data.store.UserSessionTokenDataStore
+import care.data4life.datadonation.internal.data.storage.UserSessionTokenDataStore
 
 class MockUserSessionTokenDataStore : UserSessionTokenDataStore {
 
     var whenGetUserSessionToken: (() -> String)? = { "" }
 
     override suspend fun getUserSessionToken(): String? = whenGetUserSessionToken?.invoke()
-
 }

@@ -30,10 +30,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.data.store
+package care.data4life.datadonation.internal.data.storage
 
-internal interface CredentialsDataStore {
+import care.data4life.datadonation.internal.data.service.ServiceContract
+import care.data4life.datadonation.internal.domain.repository.RegistrationRepository
 
-    fun getDataDonationPublicKey(): String
-    fun getAnalyticsPlatformPublicKey(): String
+internal class RegistrationDataStore(
+    private val donationService: ServiceContract.DonationService
+) : RegistrationRepository.RemoteStorage {
+
+    override suspend fun registerNewDonor(data: ByteArray) = donationService.registerNewDonor(data)
 }

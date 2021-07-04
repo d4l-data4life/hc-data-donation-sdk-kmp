@@ -20,7 +20,7 @@ import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.UserConsent
 
 interface RepositoryContract {
-    interface UserConsentRemote {
+    interface UserConsentRemoteStorage {
         suspend fun createUserConsent(accessToken: String, version: Int, language: String?)
         suspend fun fetchUserConsents(
             accessToken: String,
@@ -32,7 +32,7 @@ interface RepositoryContract {
         suspend fun revokeUserConsent(accessToken: String, language: String?)
     }
 
-    interface ConsentDocumentRemote {
+    interface ConsentDocumentRemoteStorage {
         suspend fun fetchConsentDocuments(
             accessToken: String,
             version: Int?,

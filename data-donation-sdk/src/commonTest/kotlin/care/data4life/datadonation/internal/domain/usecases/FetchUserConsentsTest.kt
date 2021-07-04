@@ -32,7 +32,7 @@
 
 package care.data4life.datadonation.internal.domain.usecases
 
-import care.data4life.datadonation.internal.data.model.DummyData
+import care.data4life.datadonation.mock.DummyData
 import care.data4life.datadonation.mock.stub.UserConsentRepositoryStub
 import runBlockingTest
 import kotlin.test.Test
