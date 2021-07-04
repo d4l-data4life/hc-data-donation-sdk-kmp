@@ -40,7 +40,7 @@ import kotlin.test.assertTrue
 
 class RevokeUserConsentTest {
     @Test
-    fun `It fulfils UsecaseFactory`() {
+    fun `It fulfils RevokeUserConsent`() {
         val factory: Any = RevokeUserConsentFactory(UserConsentRepositoryStub())
 
         assertTrue(factory is UsecaseContract.RevokeUserConsent)
