@@ -51,7 +51,7 @@ class FetchConsentDocumentsTest {
     @Test
     fun `Given withParams is called with the appropriate Parameter it creates a Usecase`() {
         // Given
-        val parameter = FetchConsentDocumentsFactory.Parameters(
+        val parameter = FetchConsentDocumentsFactory.Parameter(
             23,
             "b",
             "c"
@@ -86,7 +86,7 @@ class FetchConsentDocumentsTest {
             consentDocuments
         }
 
-        val parameter = FetchConsentDocumentsFactory.Parameters(version, language, consentKey)
+        val parameter = FetchConsentDocumentsFactory.Parameter(version, language, consentKey)
 
         // When
         val result = FetchConsentDocumentsFactory(repo).withParams(parameter).execute()

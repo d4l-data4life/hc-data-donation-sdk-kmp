@@ -57,5 +57,5 @@ internal class FetchUserConsentsFactory(
         }
     }
 
-    data class Parameters(override val consentKey: String? = null) : FetchUserConsentsParameter
+    data class Parameter(override val consentKey: String? = null) : FetchUserConsentsParameter
 }

@@ -53,7 +53,7 @@ class CreateUserConsentTest {
     @Test
     fun `Given withParams is called with the appropriate Parameter it creates a Usecase`() {
         // Given
-        val parameter = CreateUserConsentFactory.Parameters(
+        val parameter = CreateUserConsentFactory.Parameter(
             KeyPair(ByteArray(23), ByteArray(42)),
             23,
             "en-DE-x-private"
@@ -90,7 +90,7 @@ class CreateUserConsentTest {
             listOf(consent, DummyData.userConsent.copy(accountId = "not expected"))
         }
 
-        val parameter = CreateUserConsentFactory.Parameters(keyPair, version, language)
+        val parameter = CreateUserConsentFactory.Parameter(keyPair, version, language)
 
         // When
         val result = CreateUserConsentFactory(repo).withParams(parameter).execute()

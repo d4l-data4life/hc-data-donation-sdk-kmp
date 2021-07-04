@@ -62,7 +62,7 @@ internal class FetchConsentDocumentsFactory(
         }
     }
 
-    data class Parameters(
+    data class Parameter(
         override val version: Int?,
         override val language: String?,
         override val consentKey: String

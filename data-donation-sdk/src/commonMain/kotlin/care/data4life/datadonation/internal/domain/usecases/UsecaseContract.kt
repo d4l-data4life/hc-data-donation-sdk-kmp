@@ -49,11 +49,11 @@ interface UsecaseContract {
 
     interface RevokeUserConsent : UsecaseFactory<RevokeUserConsentParameter, Unit>
 
-    interface CreateUserConsentParameters {
+    interface CreateUserConsentParameter {
         val keyPair: KeyPair?
         val version: Int
         val language: String?
     }
 
-    interface CreateUserConsent : UsecaseFactory<CreateUserConsentParameters, UserConsent>
+    interface CreateUserConsent : UsecaseFactory<CreateUserConsentParameter, UserConsent>
 }

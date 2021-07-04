@@ -142,7 +142,7 @@ class ClientTest {
         val version = 42
 
         val config = object : ConfigurationBase() {
-            override fun getDonorKeyPair(): KeyPair? = null
+            override fun getDonorKeyPair(): KeyPair? = DummyData.keyPair
             override fun getCoroutineScope(): CoroutineScope = GlobalScope
         }
 
