@@ -34,8 +34,7 @@ package care.data4life.datadonation.internal.di
 
 import care.data4life.datadonation.Contract
 import care.data4life.datadonation.core.listener.listenerModule
-import care.data4life.datadonation.encryption.EncryptionContract
-import care.data4life.datadonation.encryption.hybrid.HybridEncryptionRegistry
+import care.data4life.datadonation.encryption.encryptionModule
 import care.data4life.datadonation.internal.data.service.ConsentService
 import care.data4life.datadonation.internal.data.service.DonationService
 import care.data4life.datadonation.internal.data.service.ServiceContract
@@ -63,7 +62,8 @@ internal fun initKoin(configuration: Contract.Configuration): KoinApplication {
             listenerModule(configuration),
             storageModule(),
             usecaseModule(),
-            repositoryModule()
+            repositoryModule(),
+            encryptionModule()
         )
     }
 }
@@ -111,11 +111,6 @@ internal fun coreModule(): Module {
                 }
             }
         }
-
-        // HybridEncryption
-        single<EncryptionContract.HybridEncryptionRegistry> {
-            HybridEncryptionRegistry(get())
-        } bind EncryptionContract.HybridEncryptionRegistry::class
 
         // Services
         single<ServiceContract.ConsentService> {

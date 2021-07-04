@@ -41,6 +41,7 @@ import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.UserConsent
+import care.data4life.datadonation.encryption.encryptionModule
 import care.data4life.datadonation.internal.data.storage.storageModule
 import care.data4life.datadonation.internal.di.coreModule
 import care.data4life.datadonation.internal.di.platformModule
@@ -97,7 +98,8 @@ class ClientTest {
                 listenerModule(config),
                 storageModule(),
                 usecaseModule(),
-                repositoryModule()
+                repositoryModule(),
+                encryptionModule()
             )
         }
 
@@ -152,7 +154,8 @@ class ClientTest {
                 listenerModule(config),
                 storageModule(),
                 usecaseModule(),
-                repositoryModule()
+                repositoryModule(),
+                encryptionModule()
             )
         }
 
@@ -221,7 +224,8 @@ class ClientTest {
                 listenerModule(config),
                 storageModule(),
                 usecaseModule(),
-                repositoryModule()
+                repositoryModule(),
+                encryptionModule()
             )
         }
 
@@ -268,7 +272,8 @@ class ClientTest {
                 listenerModule(config),
                 storageModule(),
                 usecaseModule(),
-                repositoryModule()
+                repositoryModule(),
+                encryptionModule()
             )
         }
 
@@ -314,7 +319,8 @@ class ClientTest {
                 listenerModule(config),
                 storageModule(),
                 usecaseModule(),
-                repositoryModule()
+                repositoryModule(),
+                encryptionModule()
             )
         }
 
@@ -361,7 +367,8 @@ class ClientTest {
                 listenerModule(config),
                 storageModule(),
                 usecaseModule(),
-                repositoryModule()
+                repositoryModule(),
+                encryptionModule()
             )
         }
 
