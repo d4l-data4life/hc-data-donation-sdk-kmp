@@ -72,8 +72,8 @@ internal fun resolveRootModule(configuration: Contract.Configuration): Module {
     return module {
         single { configuration }
         // TODO: Pull this out into storage
-        single<StorageContract.CredentialsDataRemoteStorage> {
-            object : StorageContract.CredentialsDataRemoteStorage {
+        single<StorageContract.CredentialsDataStorage> {
+            object : StorageContract.CredentialsDataStorage {
                 override fun getDataDonationPublicKey(): String =
                     configuration.getServicePublicKey(Contract.Service.DD)
 

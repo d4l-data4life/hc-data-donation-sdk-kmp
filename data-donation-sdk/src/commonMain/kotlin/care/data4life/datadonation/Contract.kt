@@ -37,6 +37,7 @@ import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.UserConsent
+import care.data4life.datadonation.internal.data.storage.StorageContract
 import care.data4life.hl7.fhir.stu3.model.FhirResource
 import kotlinx.coroutines.CoroutineScope
 
@@ -47,8 +48,8 @@ interface Contract {
         ALP("AnalyticsPlatform")
     }
 
-    interface Configuration : ListenerContract.ScopeResolver {
-        fun getServicePublicKey(service: Service): String
+    interface Configuration : ListenerContract.ScopeResolver, StorageContract.CredentialProvider {
+        override fun getServicePublicKey(service: Service): String
         fun getDonorKeyPair(): KeyPair?
         fun getUserSessionToken(tokenListener: ListenerContract.ResultListener<String>)
         fun getEnvironment(): Environment

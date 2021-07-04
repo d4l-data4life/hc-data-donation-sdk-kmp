@@ -18,7 +18,7 @@ package care.data4life.datadonation.internal.domain.repository
 
 import care.data4life.datadonation.internal.data.storage.StorageContract
 import care.data4life.datadonation.mock.stub.ConsentDocumentDataStorageStub
-import care.data4life.datadonation.mock.stub.CredentialsDataRemoteStorageStub
+import care.data4life.datadonation.mock.stub.CredentialsDataStorageStub
 import care.data4life.datadonation.mock.stub.DonationDataStorageStub
 import care.data4life.datadonation.mock.stub.RegistrationDataStorageStub
 import care.data4life.datadonation.mock.stub.ServiceTokenDataStorageStub
@@ -110,9 +110,9 @@ class RepositoryKoinTest {
             modules(
                 resolveRepositoryModule(),
                 module {
-                    single<StorageContract.CredentialsDataRemoteStorage> {
-                        CredentialsDataRemoteStorageStub()
-                    } bind StorageContract.CredentialsDataRemoteStorage::class
+                    single<StorageContract.CredentialsDataStorage> {
+                        CredentialsDataStorageStub()
+                    } bind StorageContract.CredentialsDataStorage::class
                 }
             )
         }

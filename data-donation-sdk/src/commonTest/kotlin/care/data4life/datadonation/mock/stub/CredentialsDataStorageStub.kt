@@ -19,7 +19,7 @@ package care.data4life.datadonation.mock.stub
 import care.data4life.datadonation.internal.data.storage.StorageContract
 import care.data4life.datadonation.mock.MockContract
 
-class CredentialsDataRemoteStorageStub : StorageContract.CredentialsDataRemoteStorage, MockContract.Stub {
+class CredentialsDataStorageStub : StorageContract.CredentialsDataStorage, MockContract.Stub {
     override fun getDataDonationPublicKey(): String {
         TODO("Not yet implemented")
     }
