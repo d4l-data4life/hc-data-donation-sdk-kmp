@@ -17,6 +17,7 @@
 package care.data4life.datadonation.internal.data.storage
 
 import care.data4life.datadonation.Contract
+import care.data4life.datadonation.core.listener.ListenerContract
 import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.model.DonationPayload
@@ -62,6 +63,10 @@ interface StorageContract {
     interface CredentialsDataStorage {
         fun getDataDonationPublicKey(): String
         fun getAnalyticsPlatformPublicKey(): String
+    }
+
+    interface UserSessionTokenProvider {
+        fun getUserSessionToken(tokenListener: ListenerContract.ResultListener<String>)
     }
 
     interface UserSessionTokenDataStorage {

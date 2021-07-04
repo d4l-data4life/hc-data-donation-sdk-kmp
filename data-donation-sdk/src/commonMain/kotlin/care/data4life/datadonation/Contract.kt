@@ -48,11 +48,17 @@ interface Contract {
         ALP("AnalyticsPlatform")
     }
 
-    interface Configuration : ListenerContract.ScopeResolver, StorageContract.CredentialProvider {
+    interface Configuration : ListenerContract.ScopeResolver,
+        StorageContract.CredentialProvider,
+        StorageContract.UserSessionTokenProvider {
         override fun getServicePublicKey(service: Service): String
+
         fun getDonorKeyPair(): KeyPair?
-        fun getUserSessionToken(tokenListener: ListenerContract.ResultListener<String>)
+
+        override fun getUserSessionToken(tokenListener: ListenerContract.ResultListener<String>)
+
         fun getEnvironment(): Environment
+
         override fun getCoroutineScope(): CoroutineScope
     }
 

@@ -16,6 +16,7 @@
 
 package care.data4life.datadonation.internal.data.storage
 
+import kotlinx.datetime.Clock
 import org.koin.core.module.Module
 import org.koin.dsl.bind
 import org.koin.dsl.module
@@ -45,5 +46,9 @@ fun resolveStorageModule(): Module {
         single<StorageContract.CredentialsDataStorage> {
             CredentialsDataStorage(get())
         } bind StorageContract.CredentialsDataStorage::class
+
+        single<StorageContract.UserSessionTokenDataStorage> {
+            CachedUserSessionTokenDataStorage(get(), Clock.System)
+        } bind StorageContract.UserSessionTokenDataStorage::class
     }
 }
