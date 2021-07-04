@@ -21,7 +21,7 @@ listOf("iphoneos", "iphonesimulator").forEach { sdk ->
         commandLine(
             "xcodebuild",
             "-project", "iOSCryptoDD.xcodeproj",
-            "-target", "iOSCryptoDD",
+            "-scheme", "iOSCryptoDD",
             "-sdk", sdk
         )
         workingDir(projectDir)

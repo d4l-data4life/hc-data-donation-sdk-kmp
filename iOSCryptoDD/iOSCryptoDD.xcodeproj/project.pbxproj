@@ -3,11 +3,12 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		A69EB5A1268E22CA00140D25 /* iOSCryptoDD.swift in Sources */ = {isa = PBXBuildFile; fileRef = A69EB5A0268E22CA00140D25 /* iOSCryptoDD.swift */; };
+		A6D241602691F55A00BA634D /* CryptoSwift in Frameworks */ = {isa = PBXBuildFile; productRef = A6D2415F2691F55A00BA634D /* CryptoSwift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -33,6 +34,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A6D241602691F55A00BA634D /* CryptoSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -81,6 +83,9 @@
 			dependencies = (
 			);
 			name = iOSCryptoDD;
+			packageProductDependencies = (
+				A6D2415F2691F55A00BA634D /* CryptoSwift */,
+			);
 			productName = iOSCryptoDD;
 			productReference = A69EB59D268E22CA00140D25 /* libiOSCryptoDD.a */;
 			productType = "com.apple.product-type.library.static";
@@ -108,6 +113,9 @@
 				Base,
 			);
 			mainGroup = A69EB594268E22CA00140D25;
+			packageReferences = (
+				A6D2415E2691F55A00BA634D /* XCRemoteSwiftPackageReference "CryptoSwift" */,
+			);
 			productRefGroup = A69EB59E268E22CA00140D25 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -313,6 +321,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		A6D2415E2691F55A00BA634D /* XCRemoteSwiftPackageReference "CryptoSwift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/krzyzanowskim/CryptoSwift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.4.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		A6D2415F2691F55A00BA634D /* CryptoSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A6D2415E2691F55A00BA634D /* XCRemoteSwiftPackageReference "CryptoSwift" */;
+			productName = CryptoSwift;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = A69EB595268E22CA00140D25 /* Project object */;
 }
