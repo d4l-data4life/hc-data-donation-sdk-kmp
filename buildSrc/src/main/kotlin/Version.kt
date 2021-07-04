@@ -77,7 +77,7 @@ object Version {
 
     // Network
     // https://ktor.io/
-    const val ktor = "1.4.2"
+    const val ktor = "1.5.4"
 
     // https://github.com/benasher44/uuid
     const val uuid = "0.2.3"
