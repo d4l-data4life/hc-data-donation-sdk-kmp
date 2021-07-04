@@ -32,9 +32,6 @@ class RegisterNewDonorAndroidTest : RegisterNewDonorTest()
 @RunWith(JUnit4::class)
 class RemoveInternalInformationAndroidTest : RemoveInternalInformationTest()
 
-@RunWith(JUnit4::class)
-class RevokeUserConsentAndroidTest : RevokeUserConsentTest()
-
 @Ignore // TODO: Ignored until fhir kmp dependency is updated to parse FhirResource to json
 @RunWith(JUnit4::class)
 class DonateResourcesAndroidTest : DonateResourcesTest()

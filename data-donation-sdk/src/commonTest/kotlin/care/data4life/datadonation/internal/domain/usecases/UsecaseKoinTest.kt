@@ -223,7 +223,7 @@ class UsecaseKoinTest {
             )
         }
         // Then
-        val instance: RevokeUserConsent = koin.koin.get()
+        val instance: UsecaseContract.RevokeUserConsent = koin.koin.get()
         assertNotNull(instance)
     }
 }

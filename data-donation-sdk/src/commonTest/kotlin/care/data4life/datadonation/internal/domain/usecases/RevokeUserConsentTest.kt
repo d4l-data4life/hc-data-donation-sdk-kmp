@@ -32,32 +32,52 @@
 
 package care.data4life.datadonation.internal.domain.usecases
 
-import care.data4life.datadonation.mock.spy.CapturingResultListener
 import care.data4life.datadonation.mock.stub.UserConsentRepositoryStub
 import runBlockingTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
-abstract class RevokeUserConsentTest {
-
-    private val mockUserConsentRepository = UserConsentRepositoryStub()
-
-    private val revokeConsent = RevokeUserConsent(mockUserConsentRepository)
-
-    private val capturingListener = RevokeUserConsentListener()
-
+class RevokeUserConsentTest {
     @Test
-    fun revokeUserContent() = runBlockingTest {
-        // Given
+    fun `It fulfils UsecaseFactory`() {
+        val factory: Any = RevokeUserConsentFactory(UserConsentRepositoryStub())
 
-        // When
-        revokeConsent.runWithParams(RevokeUserConsent.Parameters("language"), capturingListener)
-
-        // Then
-        assertEquals(capturingListener.captured, Unit)
-        assertNull(capturingListener.error)
+        assertTrue(factory is UsecaseContract.UsecaseFactory<*, *>)
     }
 
-    class RevokeUserConsentListener : CapturingResultListener<Unit>()
+    @Test
+    fun `Given withParams is called with the appropriate Parameter it creates a Usecase`() {
+        // Given
+        val parameter = RevokeUserConsentFactory.Parameters(null)
+
+        // When
+        val usecase: Any = RevokeUserConsentFactory(UserConsentRepositoryStub()).withParams(parameter)
+
+        // Then
+        assertTrue(usecase is UsecaseContract.Usecase<*>)
+    }
+
+    @Test
+    fun `Given a Usecase had been created and execute is called, it delegates the call to the ConsentRepository with the given language and just runs`() = runBlockingTest {
+        // Given
+        val language = "de-j-old-n-kotlin-x-done"
+        val parameter = RevokeUserConsentFactory.Parameters(language)
+        var capturedLanguage: String? = null
+        val userContentRepository = UserConsentRepositoryStub()
+
+        userContentRepository.whenRevokeUserConsent = { delegatedLanguage ->
+            capturedLanguage = delegatedLanguage
+        }
+
+        // When
+        val usecase = RevokeUserConsentFactory(userContentRepository).withParams(parameter)
+        usecase.execute()
+
+        // Then
+        assertEquals(
+            actual = capturedLanguage,
+            expected = language
+        )
+    }
 }

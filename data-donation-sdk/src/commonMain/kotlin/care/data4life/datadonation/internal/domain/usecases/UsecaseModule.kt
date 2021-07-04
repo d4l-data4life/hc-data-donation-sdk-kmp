@@ -67,8 +67,8 @@ fun resolveUsecaseModule(): Module {
             RemoveInternalInformation(kotlinx.serialization.json.Json {})
         }
 
-        single {
-            RevokeUserConsent(get())
-        } bind RevokeUserConsent::class
+        single<UsecaseContract.RevokeUserConsent> {
+            RevokeUserConsentFactory(get())
+        } bind UsecaseContract.RevokeUserConsent::class
     }
 }
