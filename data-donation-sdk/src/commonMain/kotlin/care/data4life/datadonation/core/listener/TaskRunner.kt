@@ -20,13 +20,13 @@ import care.data4life.datadonation.internal.domain.usecases.UsecaseContract
 import kotlinx.coroutines.launch
 
 class TaskRunner(
-    private val contextResolver: ListenerContract.ContextResolver
+    private val scopeResolver: ListenerContract.ScopeResolver
 ) : ListenerContract.TaskRunner {
     override fun <ReturnType : Any> run(
         listener: ListenerContract.ResultListener<ReturnType>,
         usecase: UsecaseContract.Usecase<ReturnType>
     ) {
-        contextResolver.getCoroutineScope().launch {
+        scopeResolver.getCoroutineScope().launch {
             try {
                 listener.onSuccess(usecase.execute())
             } catch (ex: Exception) {
@@ -39,7 +39,7 @@ class TaskRunner(
         listener: ListenerContract.Callback,
         usecase: UsecaseContract.Usecase<ReturnType>
     ) {
-        contextResolver.getCoroutineScope().launch {
+        scopeResolver.getCoroutineScope().launch {
             try {
                 usecase.execute()
                 listener.onSuccess()

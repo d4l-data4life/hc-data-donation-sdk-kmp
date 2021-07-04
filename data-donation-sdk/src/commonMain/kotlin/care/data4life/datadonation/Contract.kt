@@ -47,7 +47,7 @@ interface Contract {
         ALP("AnalyticsPlatform")
     }
 
-    interface Configuration : ListenerContract.ContextResolver {
+    interface Configuration : ListenerContract.ScopeResolver {
         fun getServicePublicKey(service: Service): String
         fun getDonorKeyPair(): KeyPair?
         fun getUserSessionToken(tokenListener: ListenerContract.ResultListener<String>)

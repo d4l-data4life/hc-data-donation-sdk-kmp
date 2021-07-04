@@ -16,33 +16,30 @@
 
 package care.data4life.datadonation.core.listener
 
-import care.data4life.datadonation.internal.domain.usecases.UsecaseContract
-import kotlinx.coroutines.CoroutineScope
+import care.data4life.datadonation.mock.stub.ClientConfigurationStub
+import org.koin.core.context.stopKoin
+import org.koin.dsl.koinApplication
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertNotNull
 
-interface ListenerContract {
-    interface Callback {
-        fun onSuccess()
-        fun onError(exception: Exception)
+class ListenerModuleTest {
+    @BeforeTest
+    fun setUp() {
+        stopKoin()
     }
 
-    interface ResultListener<T : Any> {
-        fun onSuccess(result: T)
-        fun onError(exception: Exception)
-    }
+    @Test
+    fun `Given listenerModule is called with a ScopeResolver it creates a Module, which contains a TaskRunner`() {
+        // Given
+        val config = ClientConfigurationStub()
 
-    interface ScopeResolver {
-        fun getCoroutineScope(): CoroutineScope
-    }
-
-    interface TaskRunner {
-        fun <ReturnType : Any> run(
-            listener: ResultListener<ReturnType>,
-            usecase: UsecaseContract.Usecase<ReturnType>
-        )
-
-        fun <ReturnType : Any> run(
-            listener: Callback,
-            usecase: UsecaseContract.Usecase<ReturnType>
-        )
+        // When
+        val koin = koinApplication {
+            modules(listenerModule(config))
+        }
+        // Then
+        val runner: ListenerContract.TaskRunner = koin.koin.get()
+        assertNotNull(runner)
     }
 }
