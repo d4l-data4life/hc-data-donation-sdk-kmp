@@ -39,11 +39,11 @@ class RepositoryKoinTest {
     }
 
     @Test
-    fun `Given repositoryModule is called with it creates a Module, which contains a UserConsentRepository`() {
+    fun `Given resolveRepositoryModule is called it creates a Module, which contains a UserConsentRepository`() {
         // When
         val koin = koinApplication {
             modules(
-                repositoryModule(),
+                resolveRepositoryModule(),
                 module {
                     single<StorageContract.UserConsentRemoteStorage> {
                         UserConsentRemoteStorageStub()
@@ -62,11 +62,11 @@ class RepositoryKoinTest {
     }
 
     @Test
-    fun `Given repositoryModule is called with it creates a Module, which contains a RegistrationRepository`() {
+    fun `Given resolveRepositoryModule is called it creates a Module, which contains a RegistrationRepository`() {
         // When
         val koin = koinApplication {
             modules(
-                repositoryModule(),
+                resolveRepositoryModule(),
                 module {
                     single<StorageContract.RegistrationRemoteStorage> {
                         RegistrationDataStorageStub()
@@ -81,11 +81,11 @@ class RepositoryKoinTest {
     }
 
     @Test
-    fun `Given repositoryModule is called with it creates a Module, which contains a ConsentDocumentRepository`() {
+    fun `Given resolveRepositoryModule is called it creates a Module, which contains a ConsentDocumentRepository`() {
         // When
         val koin = koinApplication {
             modules(
-                repositoryModule(),
+                resolveRepositoryModule(),
                 module {
                     single<StorageContract.ConsentDocumentRemoteStorage> {
                         ConsentDocumentDataStorageStub()
@@ -104,11 +104,11 @@ class RepositoryKoinTest {
     }
 
     @Test
-    fun `Given repositoryModule is called with it creates a Module, which contains a CredentialsRepository`() {
+    fun `Given resolveRepositoryModule is called it creates a Module, which contains a CredentialsRepository`() {
         // When
         val koin = koinApplication {
             modules(
-                repositoryModule(),
+                resolveRepositoryModule(),
                 module {
                     single<StorageContract.CredentialsDataRemoteStorage> {
                         CredentialsDataRemoteStorageStub()
@@ -123,11 +123,11 @@ class RepositoryKoinTest {
     }
 
     @Test
-    fun `Given repositoryModule is called with it creates a Module, which contains a DonationRepository`() {
+    fun `Given resolveRepositoryModule is called it creates a Module, which contains a DonationRepository`() {
         // When
         val koin = koinApplication {
             modules(
-                repositoryModule(),
+                resolveRepositoryModule(),
                 module {
                     single<StorageContract.DonationRemoteStorage> {
                         DonationDataStorageStub()
@@ -142,11 +142,11 @@ class RepositoryKoinTest {
     }
 
     @Test
-    fun `Given repositoryModule is called with it creates a Module, which contains a ServiceTokenRepository`() {
+    fun `Given resolveRepositoryModule is called it creates a Module, which contains a ServiceTokenRepository`() {
         // When
         val koin = koinApplication {
             modules(
-                repositoryModule(),
+                resolveRepositoryModule(),
                 module {
                     single<StorageContract.ServiceTokenRemoteStorage> {
                         ServiceTokenDataStorageStub()

@@ -33,11 +33,11 @@ class EncryptionKoinTest {
     }
 
     @Test
-    fun `Given encryptionModule is called with it creates a Module, which contains a HybridEncryptionRegistry`() {
+    fun `Given resolveEncryptionModule is called it creates a Module, which contains a HybridEncryptionRegistry`() {
         // When
         val koin = koinApplication {
             modules(
-                encryptionModule(),
+                resolveEncryptionModule(),
                 module {
                     single<RepositoryContract.CredentialsRepository> {
                         CredentialsRepositoryStub()

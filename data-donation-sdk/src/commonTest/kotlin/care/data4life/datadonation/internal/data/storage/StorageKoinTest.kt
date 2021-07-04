@@ -34,11 +34,11 @@ class StorageKoinTest {
     }
 
     @Test
-    fun `Given storageModule is called with it creates a Module, which contains a UserConsentRemoteStorage`() {
+    fun `Given resolveStorageModule is called it creates a Module, which contains a UserConsentRemoteStorage`() {
         // When
         val koin = koinApplication {
             modules(
-                storageModule(),
+                resolveStorageModule(),
                 module {
                     single<ServiceContract.ConsentService> {
                         ConsentServiceStub()
@@ -52,11 +52,11 @@ class StorageKoinTest {
     }
 
     @Test
-    fun `Given storageModule is called with it creates a Module, which contains a RegistrationRepositoryStorage`() {
+    fun `Given resolveStorageModule is called it creates a Module, which contains a RegistrationRepositoryStorage`() {
         // When
         val koin = koinApplication {
             modules(
-                storageModule(),
+                resolveStorageModule(),
                 module {
                     single<ServiceContract.DonationService> {
                         DonationServiceStub()
@@ -70,11 +70,11 @@ class StorageKoinTest {
     }
 
     @Test
-    fun `Given storageModule is called with it creates a Module, which contains a ConsentDocumentRemoteStorage`() {
+    fun `Given resolveStorageModule is called it creates a Module, which contains a ConsentDocumentRemoteStorage`() {
         // When
         val koin = koinApplication {
             modules(
-                storageModule(),
+                resolveStorageModule(),
                 module {
                     single<ServiceContract.ConsentService> {
                         ConsentServiceStub()
@@ -88,11 +88,11 @@ class StorageKoinTest {
     }
 
     @Test
-    fun `Given storageModule is called with it creates a Module, which contains a DonationRepositoryRemoteStorage`() {
+    fun `Given resolveStorageModule is called it creates a Module, which contains a DonationRepositoryRemoteStorage`() {
         // When
         val koin = koinApplication {
             modules(
-                storageModule(),
+                resolveStorageModule(),
                 module {
                     single<ServiceContract.DonationService> {
                         DonationServiceStub()
@@ -106,11 +106,11 @@ class StorageKoinTest {
     }
 
     @Test
-    fun `Given storageModule is called with it creates a Module, which contains a ServiceTokenRepositoryRemoteStorage`() {
+    fun `Given resolveStorageModule is called it creates a Module, which contains a ServiceTokenRepositoryRemoteStorage`() {
         // When
         val koin = koinApplication {
             modules(
-                storageModule(),
+                resolveStorageModule(),
                 module {
                     single<ServiceContract.DonationService> {
                         DonationServiceStub()

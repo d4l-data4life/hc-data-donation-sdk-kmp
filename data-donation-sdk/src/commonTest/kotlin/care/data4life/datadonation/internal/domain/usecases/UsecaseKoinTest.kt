@@ -40,7 +40,7 @@ class UsecaseKoinTest {
     }
 
     @Test
-    fun `Given usecaseModule is called with it creates a Module, which contains CreateRequestConsentPayload`() {
+    fun `Given resolveUsecaseModule is called it creates a Module, which contains CreateRequestConsentPayload`() {
         // Given
         val hybridEncryptionRegistry = HybridEncryptionRegistryStub()
         hybridEncryptionRegistry.givenHybridEncryptionDD = HybridEncryptionStub()
@@ -48,7 +48,7 @@ class UsecaseKoinTest {
         // When
         val koin = koinApplication {
             modules(
-                usecaseModule(),
+                resolveUsecaseModule(),
                 module {
                     single<RepositoryContract.ServiceTokenRepository> {
                         ServiceTokenRepositoryStub()
@@ -68,7 +68,7 @@ class UsecaseKoinTest {
     }
 
     @Test
-    fun `Given usecaseModule is called with it creates a Module, which contains DonateResources`() {
+    fun `Given resolveUsecaseModule is called it creates a Module, which contains DonateResources`() {
         // Given
         val hybridEncryptionRegistry = HybridEncryptionRegistryStub()
         hybridEncryptionRegistry.givenHybridEncryptionALP = HybridEncryptionStub()
@@ -77,7 +77,7 @@ class UsecaseKoinTest {
         // When
         val koin = koinApplication {
             modules(
-                usecaseModule(),
+                resolveUsecaseModule(),
                 module {
                     single<EncryptionContract.HybridEncryptionRegistry> {
                         hybridEncryptionRegistry
@@ -100,10 +100,10 @@ class UsecaseKoinTest {
     }
 
     @Test
-    fun `Given usecaseModule is called with it creates a Module, which contains FilterSensitiveInformation`() {
+    fun `Given resolveUsecaseModule is called it creates a Module, which contains FilterSensitiveInformation`() {
         // When
         val koin = koinApplication {
-            modules(usecaseModule())
+            modules(resolveUsecaseModule())
         }
         // Then
         val instance: FilterSensitiveInformation = koin.koin.get()
@@ -111,7 +111,7 @@ class UsecaseKoinTest {
     }
 
     @Test
-    fun `Given usecaseModule is called with it creates a Module, which contains RegisterNewDonor`() {
+    fun `Given resolveUsecaseModule is called it creates a Module, which contains RegisterNewDonor`() {
         // Given
         val hybridEncryptionRegistry = HybridEncryptionRegistryStub()
         hybridEncryptionRegistry.givenHybridEncryptionDD = HybridEncryptionStub()
@@ -119,7 +119,7 @@ class UsecaseKoinTest {
         // When
         val koin = koinApplication {
             modules(
-                usecaseModule(),
+                resolveUsecaseModule(),
                 module {
                     single<EncryptionContract.HybridEncryptionRegistry> {
                         hybridEncryptionRegistry
@@ -145,11 +145,11 @@ class UsecaseKoinTest {
     }
 
     @Test
-    fun `Given usecaseModule is called with it creates a Module, which contains FetchConsentDocuments`() {
+    fun `Given resolveUsecaseModule is called it creates a Module, which contains FetchConsentDocuments`() {
         // When
         val koin = koinApplication {
             modules(
-                usecaseModule(),
+                resolveUsecaseModule(),
                 module {
                     single<RepositoryContract.ConsentDocumentRepository> {
                         ConsentDocumentRepositoryStub()
@@ -163,11 +163,11 @@ class UsecaseKoinTest {
     }
 
     @Test
-    fun `Given usecaseModule is called with it creates a Module, which contains CreateUserConsent`() {
+    fun `Given resolveUsecaseModule is called it creates a Module, which contains CreateUserConsent`() {
         // When
         val koin = koinApplication {
             modules(
-                usecaseModule(),
+                resolveUsecaseModule(),
                 module {
                     single<RepositoryContract.UserConsentRepository> {
                         UserConsentRepositoryStub()
@@ -181,11 +181,11 @@ class UsecaseKoinTest {
     }
 
     @Test
-    fun `Given usecaseModule is called with it creates a Module, which contains FetchUserConsents`() {
+    fun `Given resolveUsecaseModule is called it creates a Module, which contains FetchUserConsents`() {
         // When
         val koin = koinApplication {
             modules(
-                usecaseModule(),
+                resolveUsecaseModule(),
                 module {
                     single<RepositoryContract.UserConsentRepository> {
                         UserConsentRepositoryStub()
@@ -199,10 +199,10 @@ class UsecaseKoinTest {
     }
 
     @Test
-    fun `Given usecaseModule is called with it creates a Module, which contains RemoveInternalInformation`() {
+    fun `Given resolveUsecaseModule is called it creates a Module, which contains RemoveInternalInformation`() {
         // When
         val koin = koinApplication {
-            modules(usecaseModule())
+            modules(resolveUsecaseModule())
         }
         // Then
         val instance: RemoveInternalInformation = koin.koin.get()
@@ -210,11 +210,11 @@ class UsecaseKoinTest {
     }
 
     @Test
-    fun `Given usecaseModule is called with it creates a Module, which contains RevokeUserConsent`() {
+    fun `Given resolveUsecaseModule is called it creates a Module, which contains RevokeUserConsent`() {
         // When
         val koin = koinApplication {
             modules(
-                usecaseModule(),
+                resolveUsecaseModule(),
                 module {
                     single<RepositoryContract.UserConsentRepository> {
                         UserConsentRepositoryStub()

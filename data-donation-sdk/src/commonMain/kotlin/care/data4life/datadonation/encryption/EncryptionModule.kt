@@ -21,7 +21,7 @@ import org.koin.core.module.Module
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-fun encryptionModule(): Module {
+fun resolveEncryptionModule(): Module {
     return module {
         single<EncryptionContract.HybridEncryptionRegistry> {
             HybridEncryptionRegistry(get())

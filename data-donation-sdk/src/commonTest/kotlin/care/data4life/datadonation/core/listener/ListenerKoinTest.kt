@@ -30,13 +30,13 @@ class ListenerKoinTest {
     }
 
     @Test
-    fun `Given listenerModule is called with a ScopeResolver it creates a Module, which contains a TaskRunner`() {
+    fun `Given resolveListenerModule is called with a ScopeResolver it creates a Module, which contains a TaskRunner`() {
         // Given
         val config = ClientConfigurationStub()
 
         // When
         val koin = koinApplication {
-            modules(listenerModule(config))
+            modules(resolveListenerModule(config))
         }
         // Then
         val runner: ListenerContract.TaskRunner = koin.koin.get()

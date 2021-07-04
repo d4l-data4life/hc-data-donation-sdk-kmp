@@ -20,7 +20,7 @@ import org.koin.core.module.Module
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-fun storageModule(): Module {
+fun resolveStorageModule(): Module {
     return module {
         single<StorageContract.UserConsentRemoteStorage> {
             UserConsentDataStore(get())

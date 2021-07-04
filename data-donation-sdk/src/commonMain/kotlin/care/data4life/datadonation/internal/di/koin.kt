@@ -33,13 +33,13 @@
 package care.data4life.datadonation.internal.di
 
 import care.data4life.datadonation.Contract
-import care.data4life.datadonation.core.listener.listenerModule
-import care.data4life.datadonation.encryption.encryptionModule
+import care.data4life.datadonation.core.listener.resolveListenerModule
+import care.data4life.datadonation.encryption.resolveEncryptionModule
 import care.data4life.datadonation.internal.data.service.ConsentService
 import care.data4life.datadonation.internal.data.service.DonationService
 import care.data4life.datadonation.internal.data.service.ServiceContract
 import care.data4life.datadonation.internal.data.storage.*
-import care.data4life.datadonation.internal.domain.repository.repositoryModule
+import care.data4life.datadonation.internal.domain.repository.resolveRepositoryModule
 import care.data4life.datadonation.internal.domain.usecases.*
 import io.ktor.client.*
 import io.ktor.client.features.json.*
@@ -57,13 +57,13 @@ internal fun initKoin(configuration: Contract.Configuration): KoinApplication {
     return koinApplication {
         modules(
             resolveRootModule(configuration),
-            platformModule(),
-            coreModule(),
-            listenerModule(configuration),
-            storageModule(),
-            usecaseModule(),
-            repositoryModule(),
-            encryptionModule()
+            resolvePlatformModule(),
+            resolveCoreModule(),
+            resolveListenerModule(configuration),
+            resolveStorageModule(),
+            resolveUsecaseModule(),
+            resolveRepositoryModule(),
+            resolveEncryptionModule()
         )
     }
 }
@@ -90,7 +90,7 @@ internal fun resolveRootModule(configuration: Contract.Configuration): Module {
     }
 }
 
-internal fun coreModule(): Module {
+internal fun resolveCoreModule(): Module {
     return module {
         single {
             HttpClient {
@@ -122,7 +122,7 @@ internal fun coreModule(): Module {
     }
 }
 
-internal expect fun platformModule(): Module
+internal expect fun resolvePlatformModule(): Module
 
 private class SimpleLogger : Logger {
     override fun log(message: String) {
