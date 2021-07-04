@@ -35,6 +35,10 @@ package care.data4life.datadonation.internal.di
 import care.data4life.datadonation.Contract
 import care.data4life.datadonation.core.listener.resolveListenerModule
 import care.data4life.datadonation.encryption.resolveEncryptionModule
+import care.data4life.datadonation.core.listener.ListenerContract
+import care.data4life.datadonation.core.listener.listenerModule
+import care.data4life.datadonation.core.model.Environment
+import care.data4life.datadonation.encryption.encryptionModule
 import care.data4life.datadonation.internal.data.service.ConsentService
 import care.data4life.datadonation.internal.data.service.DonationService
 import care.data4life.datadonation.internal.data.service.ServiceContract
@@ -49,6 +53,7 @@ import kotlinx.datetime.Clock
 import org.koin.core.KoinApplication
 import org.koin.core.module.Module
 import org.koin.dsl.bind
+import org.koin.dsl.binds
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 
@@ -70,13 +75,19 @@ internal fun initKoin(configuration: Contract.Configuration): KoinApplication {
 
 internal fun resolveRootModule(configuration: Contract.Configuration): Module {
     return module {
-        single { configuration }
+        single {
+            configuration
+        } binds arrayOf(
+            Contract.Configuration::class,
+            ListenerContract.ScopeResolver::class,
+            StorageContract.CredentialProvider::class
+        )
         // TODO: Pull this out into storage
         single<StorageContract.UserSessionTokenDataStorage> {
             CachedUserSessionTokenDataStore(get(), Clock.System)
         } bind StorageContract.UserSessionTokenDataStorage::class
 
-        single { configuration.getEnvironment() }
+        single { configuration.getEnvironment() } bind Environment::class
     }
 }
 
