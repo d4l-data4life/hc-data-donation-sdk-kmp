@@ -43,7 +43,7 @@ class RevokeUserConsentTest {
     fun `It fulfils UsecaseFactory`() {
         val factory: Any = RevokeUserConsentFactory(UserConsentRepositoryStub())
 
-        assertTrue(factory is UsecaseContract.UsecaseFactory<*, *>)
+        assertTrue(factory is UsecaseContract.RevokeUserConsent)
     }
 
     @Test

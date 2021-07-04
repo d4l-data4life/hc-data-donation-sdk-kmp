@@ -46,7 +46,7 @@ class FetchUserConsentsTest {
     fun `It fulfils FetchUserConsents`() {
         val factory: Any = FetchUserConsentsFactory(UserConsentRepositoryStub())
 
-        assertTrue(factory is UsecaseContract.UsecaseFactory<*, *>)
+        assertTrue(factory is UsecaseContract.FetchUserConsents)
     }
 
     @Test
