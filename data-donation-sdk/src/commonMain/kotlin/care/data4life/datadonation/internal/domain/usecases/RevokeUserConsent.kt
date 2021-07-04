@@ -40,7 +40,7 @@ internal class RevokeUserConsentFactory(
 
     override fun withParams(
         parameter: UsecaseContract.RevokeUserConsentParameter
-    ): UsecaseContract.Usecase<Unit> =  RevokeUserConsent(consentRepository, parameter)
+    ): UsecaseContract.Usecase<Unit> = RevokeUserConsent(consentRepository, parameter)
 
     private class RevokeUserConsent(
         private val consentRepository: RepositoryContract.UserConsentRepository,

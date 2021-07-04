@@ -17,7 +17,6 @@
 package care.data4life.datadonation.internal.domain.usecases
 
 import care.data4life.datadonation.encryption.EncryptionContract
-import care.data4life.datadonation.encryption.hybrid.HybridEncryptionRegistry
 import care.data4life.datadonation.internal.utils.Base64Factory
 import org.koin.core.module.Module
 import org.koin.dsl.bind
