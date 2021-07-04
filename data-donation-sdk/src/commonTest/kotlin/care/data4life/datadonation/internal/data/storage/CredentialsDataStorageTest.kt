@@ -45,7 +45,7 @@ class CredentialsDataStorageTest {
         val key = "potato"
 
         provider.whenGetServicePublicKey = { service ->
-            if(service == Contract.Service.DD) {
+            if (service == Contract.Service.DD) {
                 key
             } else {
                 throw RuntimeException("This should not happen")
@@ -71,7 +71,7 @@ class CredentialsDataStorageTest {
         val key = "tomato"
 
         provider.whenGetServicePublicKey = { service ->
-            if(service == Contract.Service.ALP) {
+            if (service == Contract.Service.ALP) {
                 key
             } else {
                 throw RuntimeException("This should not happen")

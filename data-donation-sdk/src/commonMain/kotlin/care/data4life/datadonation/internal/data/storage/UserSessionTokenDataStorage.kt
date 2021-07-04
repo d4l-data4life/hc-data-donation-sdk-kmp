@@ -63,7 +63,7 @@ class CachedUserSessionTokenDataStorage(
                     override fun onError(exception: Exception) {
                         continuation.resume(null)
                     }
-                } )
+                })
             }
         }
     }

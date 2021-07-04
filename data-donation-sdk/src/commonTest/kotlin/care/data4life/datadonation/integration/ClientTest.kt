@@ -54,7 +54,6 @@ import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponseItem
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponseItemAnswer
 import care.data4life.hl7.fhir.stu3.model.Reference
-import io.ktor.utils.io.core.toByteArray
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
@@ -350,10 +349,7 @@ class ClientTest {
     @Ignore
     fun donateResourcesTest() = runWithBlockingTest(GlobalScope.coroutineContext) {
         // Given
-        val keyPair = KeyPair(
-            "tomato".toByteArray(),
-            "soup".toByteArray()
-        )
+        val keyPair = DummyData.keyPair
 
         val config = object : ConfigurationBase() {
             override fun getDonorKeyPair(): KeyPair = keyPair

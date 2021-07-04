@@ -128,27 +128,54 @@ class StorageKoinTest {
     }
 
     @Test
-    fun `Given storageModule is called with it creates a Module, which contains a CredentialsDataStorage`() {
+    fun `Given resolveStorageModule is called it creates a Module, which contains a CredentialsDataStorage`() {
         // Given
         val config = ClientConfigurationStub()
 
         // When
         val koin = koinApplication {
             modules(
-                storageModule(),
+                resolveStorageModule(),
                 module {
                     single<Contract.Configuration> {
                         config
                     } binds arrayOf(
                         Contract.Configuration::class,
                         ListenerContract.ScopeResolver::class,
-                        StorageContract.CredentialProvider::class
+                        StorageContract.CredentialProvider::class,
+                        StorageContract.UserSessionTokenProvider::class
                     )
                 }
             )
         }
         // Then
         val store: StorageContract.CredentialsDataStorage = koin.koin.get()
+        assertNotNull(store)
+    }
+
+    @Test
+    fun `Given resolveStorageModule is called it creates a Module, which contains a CachedUserSessionTokenDataStorage`() {
+        // Given
+        val config = ClientConfigurationStub()
+
+        // When
+        val koin = koinApplication {
+            modules(
+                resolveStorageModule(),
+                module {
+                    single<Contract.Configuration> {
+                        config
+                    } binds arrayOf(
+                        Contract.Configuration::class,
+                        ListenerContract.ScopeResolver::class,
+                        StorageContract.CredentialProvider::class,
+                        StorageContract.UserSessionTokenProvider::class
+                    )
+                }
+            )
+        }
+        // Then
+        val store: StorageContract.UserSessionTokenDataStorage = koin.koin.get()
         assertNotNull(store)
     }
 }

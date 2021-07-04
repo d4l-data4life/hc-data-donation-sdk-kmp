@@ -48,7 +48,8 @@ interface Contract {
         ALP("AnalyticsPlatform")
     }
 
-    interface Configuration : ListenerContract.ScopeResolver,
+    interface Configuration :
+        ListenerContract.ScopeResolver,
         StorageContract.CredentialProvider,
         StorageContract.UserSessionTokenProvider {
         override fun getServicePublicKey(service: Service): String
