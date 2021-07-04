@@ -32,11 +32,10 @@
 
 package care.data4life.datadonation.internal.domain.repository
 
-internal class RegistrationRepository(private val remoteStorage: RemoteStorage) {
+import care.data4life.datadonation.internal.data.storage.StorageContract
 
-    suspend fun registerNewDonor(data: ByteArray) = remoteStorage.registerNewDonor(data)
-
-    interface RemoteStorage {
-        suspend fun registerNewDonor(data: ByteArray)
-    }
+internal class RegistrationRepository(
+    private val remoteStorage: StorageContract.RegistrationRepositoryRemoteStorage
+) : RepositoryContract.RegistrationRepository {
+    override suspend fun registerNewDonor(data: ByteArray) = remoteStorage.registerNewDonor(data)
 }

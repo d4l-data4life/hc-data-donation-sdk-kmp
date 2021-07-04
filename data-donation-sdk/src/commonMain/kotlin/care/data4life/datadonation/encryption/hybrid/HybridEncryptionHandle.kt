@@ -32,12 +32,13 @@
 
 package care.data4life.datadonation.encryption.hybrid
 
+import care.data4life.datadonation.encryption.EncryptionContract
 
 internal class HybridEncryptionHandle(
-    private val symmetricKeyProvider: HybridEncryption.SymmetricKeyProvider,
-    private val asymmetricKeyProvider: HybridEncryption.AsymmetricKeyProvider,
+    private val symmetricKeyProvider: EncryptionContract.SymmetricKeyProvider,
+    private val asymmetricKeyProvider: EncryptionContract.AsymmetricKeyProvider,
     private val serializer: HybridEncryptionPayload.Serializer
-) : HybridEncryption {
+) : EncryptionContract.HybridEncryption {
 
     override fun encrypt(plaintext: ByteArray): ByteArray {
         val symPrivateKey = symmetricKeyProvider.getNewKey()

@@ -33,13 +33,11 @@
 package care.data4life.datadonation.internal.data.storage
 
 import care.data4life.datadonation.internal.data.model.DonationPayload
-import care.data4life.datadonation.internal.data.service.DonationService
 import care.data4life.datadonation.internal.data.service.ServiceContract
-import care.data4life.datadonation.internal.domain.repository.DonationRepository
 
 internal class DonationDataStore(
     private val donationService: ServiceContract.DonationService
-) : DonationRepository.RemoteStorage {
+) : StorageContract.DonationRepositoryRemoteStorage {
 
     override suspend fun donateResources(payload: DonationPayload) =
         donationService.donateResources(payload)

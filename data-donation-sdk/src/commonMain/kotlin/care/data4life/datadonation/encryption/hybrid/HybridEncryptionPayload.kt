@@ -32,6 +32,8 @@
 
 package care.data4life.datadonation.encryption.hybrid
 
+import care.data4life.datadonation.encryption.EncryptionContract
+
 class HybridEncryptionPayload(
     val encryptedSymmetricPrivateKey: ByteArray,
     val iv: ByteArray,
@@ -53,11 +55,11 @@ class HybridEncryptionPayload(
     )
 
     companion object {
-        const val HYBRID_ENCRYPTION_VERSION_AES_WITH_GCM = HybridEncryption.HYBRID_ENCRYPTION_VERSION_AES_WITH_GCM
+        const val HYBRID_ENCRYPTION_VERSION_AES_WITH_GCM = EncryptionContract.HYBRID_ENCRYPTION_VERSION_AES_WITH_GCM
         const val VERSION_LENGTH = UByte.SIZE_BYTES
         const val AES_KEY_SIZE_LENGTH = UShort.SIZE_BYTES
         const val CIPHERTEXT_SIZE_LENGTH = ULong.SIZE_BYTES
-        const val AES_IV_LENGTH = HybridEncryption.AES_IV_LENGTH
+        const val AES_IV_LENGTH = EncryptionContract.AES_IV_LENGTH
 
         private fun extractIv(source: ByteArray): ByteArray {
             val data = ByteArray(AES_IV_LENGTH)

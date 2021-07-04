@@ -16,25 +16,18 @@
 
 package care.data4life.datadonation.mock.stub
 
-import care.data4life.datadonation.core.model.ConsentDocument
-import care.data4life.datadonation.internal.domain.repository.RepositoryContract
+import care.data4life.datadonation.internal.data.storage.StorageContract
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 
-class ConsentDocumentRepositoryStub :
-    RepositoryContract.ConsentDocumentRepository,
-    MockContract.Stub {
-    var whenFetchConsentDocuments: ((language: String?, version: Int?, consentKey: String) -> List<ConsentDocument>)? = null
+class ServiceTokenDataStorageStub : StorageContract.ServiceTokenRepositoryRemoteStorage, MockContract.Stub {
 
-    override suspend fun fetchConsentDocuments(
-        language: String?,
-        version: Int?,
-        consentKey: String
-    ): List<ConsentDocument> {
-        return whenFetchConsentDocuments?.invoke(language, version, consentKey) ?: throw MockException()
-    }
+    var whenRequestDonationToken: (() -> String)? = null
+
+    override suspend fun requestDonationToken(): String =
+        whenRequestDonationToken?.invoke() ?: throw MockException()
 
     override fun clear() {
-        whenFetchConsentDocuments = null
+        whenRequestDonationToken = null
     }
 }

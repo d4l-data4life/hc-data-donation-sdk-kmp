@@ -45,6 +45,7 @@ import care.data4life.datadonation.internal.data.storage.storageModule
 import care.data4life.datadonation.internal.di.coreModule
 import care.data4life.datadonation.internal.di.platformModule
 import care.data4life.datadonation.internal.di.resolveRootModule
+import care.data4life.datadonation.internal.domain.usecases.usecaseModule
 import care.data4life.datadonation.mock.DummyData
 import care.data4life.hl7.fhir.stu3.codesystem.QuestionnaireResponseStatus
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
@@ -93,7 +94,8 @@ class ClientTest {
                 platformModule(),
                 coreModule(),
                 listenerModule(config),
-                storageModule()
+                storageModule(),
+                usecaseModule()
             )
         }
 
@@ -146,7 +148,8 @@ class ClientTest {
                 platformModule(),
                 coreModule(),
                 listenerModule(config),
-                storageModule()
+                storageModule(),
+                usecaseModule()
             )
         }
 
@@ -197,6 +200,7 @@ class ClientTest {
     }
 
     @Test
+    // TODO: No API Call?
     fun registerNewDonorTest() = runWithBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val keyPair = KeyPair(ByteArray(42), ByteArray(23))
@@ -212,7 +216,8 @@ class ClientTest {
                 platformModule(),
                 coreModule(),
                 listenerModule(config),
-                storageModule()
+                storageModule(),
+                usecaseModule()
             )
         }
 
@@ -257,7 +262,8 @@ class ClientTest {
                 platformModule(),
                 coreModule(),
                 listenerModule(config),
-                storageModule()
+                storageModule(),
+                usecaseModule()
             )
         }
 
@@ -301,7 +307,8 @@ class ClientTest {
                 platformModule(),
                 coreModule(),
                 listenerModule(config),
-                storageModule()
+                storageModule(),
+                usecaseModule()
             )
         }
 
@@ -346,7 +353,8 @@ class ClientTest {
                 platformModule(),
                 coreModule(),
                 listenerModule(config),
-                storageModule()
+                storageModule(),
+                usecaseModule()
             )
         }
 

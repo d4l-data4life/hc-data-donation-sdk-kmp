@@ -16,29 +16,15 @@
 
 package care.data4life.datadonation.mock.stub
 
-import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.internal.domain.repository.RepositoryContract
 import care.data4life.datadonation.mock.MockContract
-import care.data4life.datadonation.mock.MockException
 
-class ConsentDocumentRemoteStub : RepositoryContract.ConsentDocumentRemoteStorage, MockContract.Stub {
-    var whenFetchConsentDocuments: ((String, Int?, String?, String) -> List<ConsentDocument>)? = null
-
-    override suspend fun fetchConsentDocuments(
-        accessToken: String,
-        version: Int?,
-        language: String?,
-        consentKey: String
-    ): List<ConsentDocument> {
-        return whenFetchConsentDocuments?.invoke(
-            accessToken,
-            version,
-            language,
-            consentKey
-        ) ?: throw MockException()
+class RegistrationRepositoryStub : RepositoryContract.RegistrationRepository, MockContract.Stub {
+    override suspend fun registerNewDonor(data: ByteArray) {
+        TODO("Not yet implemented")
     }
 
     override fun clear() {
-        whenFetchConsentDocuments = null
+        TODO("Not yet implemented")
     }
 }

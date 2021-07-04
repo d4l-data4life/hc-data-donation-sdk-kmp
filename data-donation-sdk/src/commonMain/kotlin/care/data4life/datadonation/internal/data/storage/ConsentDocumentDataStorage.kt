@@ -1,7 +1,7 @@
 /*
  * BSD 3-Clause License
  *
- * Copyright (c) 2021, D4L data4life gGmbH
+ * Copyright (c) 2020, D4L data4life gGmbH
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,15 +30,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.domain.mock
+package care.data4life.datadonation.internal.data.storage
 
-import care.data4life.datadonation.internal.domain.repository.ServiceTokenRepository
-import care.data4life.datadonation.mock.MockException
+import care.data4life.datadonation.core.model.ConsentDocument
+import care.data4life.datadonation.internal.data.service.ServiceContract
 
-class MockServiceTokenDataStore : ServiceTokenRepository.RemoteStorage {
+internal class ConsentDocumentDataStorage(
+    private val service: ServiceContract.ConsentService
+) : StorageContract.ConsentDocumentRemoteStorage {
 
-    var whenRequestDonationToken: (() -> String)? = null
-
-    override suspend fun requestDonationToken(): String =
-        whenRequestDonationToken?.invoke() ?: throw MockException()
+    override suspend fun fetchConsentDocuments(
+        accessToken: String,
+        version: Int?,
+        language: String?,
+        consentKey: String
+    ): List<ConsentDocument> =
+        service.fetchConsentDocuments(accessToken, version, language, consentKey)
 }

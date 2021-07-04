@@ -16,25 +16,21 @@
 
 package care.data4life.datadonation.mock.stub
 
-import care.data4life.datadonation.core.model.ConsentDocument
-import care.data4life.datadonation.internal.domain.repository.RepositoryContract
+import care.data4life.datadonation.encryption.EncryptionContract
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 
-class ConsentDocumentRepositoryStub :
-    RepositoryContract.ConsentDocumentRepository,
-    MockContract.Stub {
-    var whenFetchConsentDocuments: ((language: String?, version: Int?, consentKey: String) -> List<ConsentDocument>)? = null
+class HybridEncryptionRegistryStub : EncryptionContract.HybridEncryptionRegistry, MockContract.Stub {
+    var givenHybridEncryptionDD: EncryptionContract.HybridEncryption? = null
+    var givenHybridEncryptionALP: EncryptionContract.HybridEncryption? = null
 
-    override suspend fun fetchConsentDocuments(
-        language: String?,
-        version: Int?,
-        consentKey: String
-    ): List<ConsentDocument> {
-        return whenFetchConsentDocuments?.invoke(language, version, consentKey) ?: throw MockException()
-    }
+    override val hybridEncryptionDD: EncryptionContract.HybridEncryption
+        get() = givenHybridEncryptionDD ?: throw MockException()
+    override val hybridEncryptionALP: EncryptionContract.HybridEncryption
+        get() = givenHybridEncryptionALP ?: throw MockException()
 
     override fun clear() {
-        whenFetchConsentDocuments = null
+        givenHybridEncryptionDD = null
+        givenHybridEncryptionALP = null
     }
 }

@@ -14,32 +14,20 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.core.listener
+package care.data4life.datadonation.mock.stub
 
-import care.data4life.datadonation.mock.stub.ClientConfigurationStub
-import org.koin.core.context.stopKoin
-import org.koin.dsl.koinApplication
-import kotlin.test.BeforeTest
-import kotlin.test.Test
-import kotlin.test.assertNotNull
+import care.data4life.datadonation.internal.data.storage.StorageContract
+import care.data4life.datadonation.mock.MockContract
 
-class ListenerModuleTest {
-    @BeforeTest
-    fun setUp() {
-        stopKoin()
+class RegistrationDataStorageStub : StorageContract.RegistrationRepositoryRemoteStorage, MockContract.Stub {
+
+    var whenRegisterNewDonor: ((data: ByteArray) -> Unit)? = null
+
+    override suspend fun registerNewDonor(data: ByteArray) {
+        whenRegisterNewDonor?.invoke(data)
     }
 
-    @Test
-    fun `Given listenerModule is called with a ScopeResolver it creates a Module, which contains a TaskRunner`() {
-        // Given
-        val config = ClientConfigurationStub()
-
-        // When
-        val koin = koinApplication {
-            modules(listenerModule(config))
-        }
-        // Then
-        val runner: ListenerContract.TaskRunner = koin.koin.get()
-        assertNotNull(runner)
+    override fun clear() {
+        whenRegisterNewDonor = null
     }
 }

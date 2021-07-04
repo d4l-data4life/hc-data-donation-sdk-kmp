@@ -16,34 +16,30 @@
 
 package care.data4life.datadonation.internal.data.storage
 
-import care.data4life.datadonation.internal.domain.repository.DonationRepository
-import care.data4life.datadonation.internal.domain.repository.RegistrationRepository
-import care.data4life.datadonation.internal.domain.repository.RepositoryContract
-import care.data4life.datadonation.internal.domain.repository.ServiceTokenRepository
 import org.koin.core.module.Module
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
 fun storageModule(): Module {
     return module {
-        single<RepositoryContract.UserConsentRemoteStorage> {
+        single<StorageContract.UserConsentRemoteStorage> {
             UserConsentDataStore(get())
-        } bind RepositoryContract.UserConsentRemoteStorage::class
+        } bind StorageContract.UserConsentRemoteStorage::class
 
-        single<RegistrationRepository.RemoteStorage> {
+        single<StorageContract.RegistrationRepositoryRemoteStorage> {
             RegistrationDataStore(get())
-        } bind RegistrationRepository.RemoteStorage::class
+        } bind StorageContract.RegistrationRepositoryRemoteStorage::class
 
-        single<RepositoryContract.ConsentDocumentRemoteStorage> {
-            ConsentDocumentDataStore(get())
-        } bind RepositoryContract.ConsentDocumentRemoteStorage::class
+        single<StorageContract.ConsentDocumentRemoteStorage> {
+            ConsentDocumentDataStorage(get())
+        } bind StorageContract.ConsentDocumentRemoteStorage::class
 
-        single<DonationRepository.RemoteStorage> {
+        single<StorageContract.DonationRepositoryRemoteStorage> {
             DonationDataStore(get())
-        } bind DonationRepository.RemoteStorage::class
+        } bind StorageContract.DonationRepositoryRemoteStorage::class
 
-        single<ServiceTokenRepository.RemoteStorage> {
+        single<StorageContract.ServiceTokenRepositoryRemoteStorage> {
             ServiceTokenDataStore(get())
-        } bind ServiceTokenRepository.RemoteStorage::class
+        } bind StorageContract.ServiceTokenRepositoryRemoteStorage::class
     }
 }

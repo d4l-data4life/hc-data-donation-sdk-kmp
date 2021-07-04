@@ -34,6 +34,10 @@ package care.data4life.datadonation.encryption.hybrid
 
 import care.data4life.datadonation.Contract
 import care.data4life.datadonation.encryption.Algorithm
+import care.data4life.datadonation.encryption.EncryptionContract
+import care.data4life.datadonation.encryption.EncryptionContract.AsymmetricKeyProvider
+import care.data4life.datadonation.encryption.EncryptionContract.HybridEncryption
+import care.data4life.datadonation.encryption.EncryptionContract.SymmetricKeyProvider
 import care.data4life.datadonation.encryption.HashSize
 import care.data4life.datadonation.encryption.asymetric.EncryptionPrivateKey
 import care.data4life.datadonation.encryption.asymetric.EncryptionPublicKey
@@ -41,7 +45,9 @@ import care.data4life.datadonation.encryption.symmetric.EncryptionSymmetricKey
 import care.data4life.datadonation.internal.domain.repository.CredentialsRepository
 import care.data4life.datadonation.internal.utils.decodeBase64Bytes
 
-internal class HybridEncryptionRegistry(private val repository: CredentialsRepository) {
+internal class HybridEncryptionRegistry(
+    private val repository: CredentialsRepository
+) : EncryptionContract.HybridEncryptionRegistry {
 
     companion object {
         fun CredentialsRepository.createEncryption(service: Contract.Service): HybridEncryption {
@@ -57,14 +63,14 @@ internal class HybridEncryptionRegistry(private val repository: CredentialsRepos
         }
     }
 
-    val hybridEncryptionDD: HybridEncryption by lazy { repository.createEncryption(Contract.Service.DD) }
-    val hybridEncryptionALP: HybridEncryption by lazy { repository.createEncryption(Contract.Service.ALP) }
+    override val hybridEncryptionDD: HybridEncryption by lazy { repository.createEncryption(Contract.Service.DD) }
+    override val hybridEncryptionALP: HybridEncryption by lazy { repository.createEncryption(Contract.Service.ALP) }
 }
 
-internal object HybridEncryptionSymmetricKeyProvider : HybridEncryption.SymmetricKeyProvider {
+internal object HybridEncryptionSymmetricKeyProvider : SymmetricKeyProvider {
     override fun getNewKey(): EncryptionSymmetricKey {
         return EncryptionSymmetricKey(
-            HybridEncryption.AES_KEY_LENGTH,
+            EncryptionContract.AES_KEY_LENGTH,
             Algorithm.Symmetric.AES(HashSize.Hash256)
         )
     }
@@ -72,7 +78,7 @@ internal object HybridEncryptionSymmetricKeyProvider : HybridEncryption.Symmetri
     override fun getKey(keyData: ByteArray): EncryptionSymmetricKey {
         return EncryptionSymmetricKey(
             keyData,
-            HybridEncryption.AES_KEY_LENGTH,
+            EncryptionContract.AES_KEY_LENGTH,
             Algorithm.Symmetric.AES(HashSize.Hash256)
         )
     }
@@ -80,12 +86,13 @@ internal object HybridEncryptionSymmetricKeyProvider : HybridEncryption.Symmetri
     override fun getAuthenticationData() = byteArrayOf()
 }
 
-internal class HybridAsymmetricSymmetricKeyProvider(dataDonationPublicKey: String) :
-    HybridEncryption.AsymmetricKeyProvider {
+internal class HybridAsymmetricSymmetricKeyProvider(
+    dataDonationPublicKey: String
+) : AsymmetricKeyProvider {
 
     private val publicKey = EncryptionPublicKey(
         dataDonationPublicKey.decodeBase64Bytes(),
-        HybridEncryption.RSA_KEY_SIZE_BITS,
+        EncryptionContract.RSA_KEY_SIZE_BITS,
         Algorithm.Asymmetric.RsaOAEP(HashSize.Hash256)
     )
 

@@ -31,7 +31,7 @@ class UserConsentRepositoryTest {
     fun `It fulfils UserConsentRepository`() {
         val repo: Any = UserConsentRepository(UserConsentRemoteStub(), UserSessionTokenDataStoreStub())
 
-        assertTrue(repo is RepositoryInternalContract.UserConsentRepository)
+        assertTrue(repo is RepositoryContract.UserConsentRepository)
     }
 
     @Test

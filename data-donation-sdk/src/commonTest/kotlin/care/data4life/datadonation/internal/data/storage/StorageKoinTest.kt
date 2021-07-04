@@ -17,10 +17,6 @@
 package care.data4life.datadonation.internal.data.storage
 
 import care.data4life.datadonation.internal.data.service.ServiceContract
-import care.data4life.datadonation.internal.domain.repository.DonationRepository
-import care.data4life.datadonation.internal.domain.repository.RegistrationRepository
-import care.data4life.datadonation.internal.domain.repository.RepositoryContract
-import care.data4life.datadonation.internal.domain.repository.ServiceTokenRepository
 import care.data4life.datadonation.mock.stub.ConsentServiceStub
 import care.data4life.datadonation.mock.stub.DonationServiceStub
 import org.koin.core.context.stopKoin
@@ -31,7 +27,7 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 
-class StorageModuleTest {
+class StorageKoinTest {
     @BeforeTest
     fun setUp() {
         stopKoin()
@@ -51,7 +47,7 @@ class StorageModuleTest {
             )
         }
         // Then
-        val store: RepositoryContract.UserConsentRemoteStorage = koin.koin.get()
+        val store: StorageContract.UserConsentRemoteStorage = koin.koin.get()
         assertNotNull(store)
     }
 
@@ -69,7 +65,7 @@ class StorageModuleTest {
             )
         }
         // Then
-        val store: RegistrationRepository.RemoteStorage = koin.koin.get()
+        val store: StorageContract.RegistrationRepositoryRemoteStorage = koin.koin.get()
         assertNotNull(store)
     }
 
@@ -87,7 +83,7 @@ class StorageModuleTest {
             )
         }
         // Then
-        val store: RepositoryContract.ConsentDocumentRemoteStorage = koin.koin.get()
+        val store: StorageContract.ConsentDocumentRemoteStorage = koin.koin.get()
         assertNotNull(store)
     }
 
@@ -105,7 +101,7 @@ class StorageModuleTest {
             )
         }
         // Then
-        val store: DonationRepository.RemoteStorage = koin.koin.get()
+        val store: StorageContract.DonationRepositoryRemoteStorage = koin.koin.get()
         assertNotNull(store)
     }
 
@@ -123,7 +119,7 @@ class StorageModuleTest {
             )
         }
         // Then
-        val store: ServiceTokenRepository.RemoteStorage = koin.koin.get()
+        val store: StorageContract.ServiceTokenRepositoryRemoteStorage = koin.koin.get()
         assertNotNull(store)
     }
 }
