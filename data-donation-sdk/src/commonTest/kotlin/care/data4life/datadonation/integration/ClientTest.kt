@@ -253,7 +253,8 @@ class ClientTest {
     }
 
     @Test
-    @Ignore // TODO "Use MockEngine"
+    @Ignore
+    // TODO "Use MockEngine"
     // TODO: infinity loop caused by the refused connection - If so we need to figure out of setting a timeout
     fun fetchUserConsentsTest() = runWithBlockingTest(GlobalScope.coroutineContext) {
         // Given

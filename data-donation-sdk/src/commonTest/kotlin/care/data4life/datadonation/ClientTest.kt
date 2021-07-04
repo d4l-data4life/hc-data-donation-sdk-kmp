@@ -17,13 +17,9 @@
 package care.data4life.datadonation
 
 import care.data4life.datadonation.core.listener.ListenerContract
-import care.data4life.datadonation.core.listener.listenerModule
 import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.UserConsent
-import care.data4life.datadonation.internal.di.coreModule
-import care.data4life.datadonation.internal.di.platformModule
-import care.data4life.datadonation.internal.di.resolveRootModule
 import care.data4life.datadonation.internal.domain.usecases.FetchConsentDocumentsFactory
 import care.data4life.datadonation.internal.domain.usecases.FetchUserConsentsFactory
 import care.data4life.datadonation.internal.domain.usecases.UsecaseContract
@@ -80,11 +76,7 @@ class ClientTest {
 
         val di = koinApplication {
             modules(
-                resolveRootModule(config),
-                coreModule(),
-                platformModule(),
-                listenerModule(config),
-                module(override = true) {
+                module {
                     single {
                         FetchUserConsentStub().also {
                             it.whenWithParameter = { delegateParameter ->
@@ -143,11 +135,7 @@ class ClientTest {
 
         val di = koinApplication {
             modules(
-                resolveRootModule(config),
-                coreModule(),
-                platformModule(),
-                listenerModule(config),
-                module(override = true) {
+                module {
                     single {
                         FetchUserConsentStub().also {
                             it.whenWithParameter = { delegateParameter ->
@@ -208,11 +196,7 @@ class ClientTest {
 
         val di = koinApplication {
             modules(
-                resolveRootModule(config),
-                coreModule(),
-                platformModule(),
-                listenerModule(config),
-                module(override = true) {
+                module {
                     single {
                         FetchConsentDocumentsStub().also {
                             it.whenWithParameter = { delegateParameter ->
