@@ -42,7 +42,7 @@ import kotlin.test.assertTrue
 
 class FetchConsentDocumentsTest {
     @Test
-    fun `It fulfils FetchConsentDocumentsFactory`() {
+    fun `It fulfils FetchConsentDocuments`() {
         val factory: Any = FetchConsentDocumentsFactory(ConsentDocumentRepositoryStub())
 
         assertTrue(factory is UsecaseContract.FetchConsentDocuments)
