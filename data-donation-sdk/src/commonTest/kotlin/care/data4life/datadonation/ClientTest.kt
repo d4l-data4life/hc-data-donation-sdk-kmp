@@ -62,7 +62,7 @@ class ClientTest {
     }
 
     @Test
-    fun `Given fetchUserConsents is called without a ConsentKey and with a ResultListener it resolves the Usecase with its default Parameter and delegates them to the TaskRunner`() {
+    fun `Given fetchAllUserConsents is called with a ResultListener it resolves the Usecase with its default Parameter and delegates them to the TaskRunner`() {
         // Given
         val config = ClientConfigurationStub()
         val listener = ResultListenerStub<List<UserConsent>>()
@@ -105,7 +105,7 @@ class ClientTest {
         val client = Client(config, di)
 
         // When
-        client.fetchUserConsents(listener)
+        client.fetchAllUserConsents(listener)
 
         // Then
         assertEquals(
@@ -168,7 +168,7 @@ class ClientTest {
         val client = Client(config, di)
 
         // When
-        client.fetchUserConsents(listener, consentKey)
+        client.fetchUserConsents(consentKey, listener)
 
         // Then
         assertEquals(

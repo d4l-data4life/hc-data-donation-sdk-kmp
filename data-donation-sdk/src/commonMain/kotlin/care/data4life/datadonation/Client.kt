@@ -91,10 +91,21 @@ class Client internal constructor(
     }
 
     override fun fetchUserConsents(
-        listener: ListenerContract.ResultListener<List<UserConsent>>,
-        consentKey: String?
+        consentKey: String,
+        listener: ListenerContract.ResultListener<List<UserConsent>>
     ) {
         val parameter = FetchUserConsentsFactory.Parameters(consentKey)
+
+        taskRunner.run(
+            listener,
+            fetchUserConsents.withParams(parameter)
+        )
+    }
+
+    override fun fetchAllUserConsents(
+        listener: ListenerContract.ResultListener<List<UserConsent>>
+    ) {
+        val parameter = FetchUserConsentsFactory.Parameters()
 
         taskRunner.run(
             listener,

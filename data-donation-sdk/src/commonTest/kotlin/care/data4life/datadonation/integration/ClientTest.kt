@@ -268,7 +268,7 @@ class ClientTest {
             override fun onError(exception: Exception) = throw exception
         }
         // When
-        client.fetchUserConsents(listener, consentKey)
+        client.fetchUserConsents(consentKey, listener)
         val result = capturedResult.receive()
         // Then
         assertEquals(
