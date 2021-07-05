@@ -22,40 +22,91 @@ import care.data4life.datadonation.internal.data.service.Header
 import care.data4life.datadonation.internal.data.service.Parameter
 import care.data4life.datadonation.internal.data.service.Path
 import care.data4life.datadonation.internal.data.service.ServiceContract
+import care.data4life.datadonation.mock.MockContract
+import care.data4life.datadonation.mock.MockException
 import io.ktor.client.HttpClient
 
-internal class CallBuilderSpy private constructor() : ServiceContract.CallBuilder {
+internal class CallBuilderSpy private constructor() : ServiceContract.CallBuilder, MockContract.Spy {
+    var whenExecute: ((ServiceContract.Method, Path, Int?) -> Any)? = null
+
+    private var headers: Header? = null
+    val delegatedHeaders: Header?
+        get() = headers
+
+    private var parameter: Parameter? = null
+    val delegatedParameter: Header?
+        get() = parameter
+
+    private var token: AccessToken? = null
+    val delegatedAccessToken: AccessToken?
+        get() = token
+
+    private var json: Boolean = false
+    val delegatedJsonFlag: Boolean
+        get() = json
+
+    private var body: Any? = null
+    val delegatedBody: Any?
+        get() = body
+
     override fun setHeaders(header: Header): ServiceContract.CallBuilder {
-        TODO("Not yet implemented")
+        return this.also { this.headers = header }
     }
 
     override fun setParameter(parameter: Parameter): ServiceContract.CallBuilder {
-        TODO("Not yet implemented")
+        return this.also { this.parameter = parameter }
     }
 
     override fun setAccessToken(token: AccessToken): ServiceContract.CallBuilder {
-        TODO("Not yet implemented")
+        return this.also { this.token = token }
     }
 
     override fun useJsonContentType(): ServiceContract.CallBuilder {
-        TODO("Not yet implemented")
+        return this.also { json = true }
     }
 
     override fun setBody(body: Any): ServiceContract.CallBuilder {
-        TODO("Not yet implemented")
+        return this.also { this.body = body }
     }
 
-    override suspend fun execute(method: ServiceContract.Method, path: Path, port: Int?): Any {
-        TODO("Not yet implemented")
+    override suspend fun execute(
+        method: ServiceContract.Method,
+        path: Path,
+        port: Int?
+    ): Any {
+        return whenExecute?.invoke(
+            method,
+            path,
+            port
+        ) ?: throw MockException()
     }
 
-    companion object : ServiceContract.CallBuilderFactory {
+    override fun clear() {
+        whenExecute = null
+    }
+
+    companion object : ServiceContract.CallBuilderFactory, MockContract.Spy {
+        private var environment: Environment? = null
+        val delegatedEnvironment: Environment?
+            get() = environment
+
+        private var client: HttpClient? = null
+        val delegatedClient: HttpClient?
+            get() = client
+
         override fun getInstance(
             environment: Environment,
             client: HttpClient
-        ): ServiceContract.Service = CallBuilderSpy(
-            environment,
-            client
-        )
+        ): ServiceContract.Service {
+            return CallBuilderSpy().also {
+                this.environment = environment
+                this.client = client
+            }
+        }
+
+        override fun clear() {
+            environment = null
+            client = null
+        }
     }
 }

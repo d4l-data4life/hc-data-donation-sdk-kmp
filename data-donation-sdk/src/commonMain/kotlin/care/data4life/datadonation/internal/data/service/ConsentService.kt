@@ -22,9 +22,7 @@ import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.model.ConsentSignature
 import io.ktor.client.HttpClient
 
-internal class ConsentService private constructor(
-
-) : ServiceContract.ConsentService {
+internal class ConsentService private constructor() : ServiceContract.ConsentService {
     override suspend fun fetchConsentDocuments(
         accessToken: String,
         version: Int?,

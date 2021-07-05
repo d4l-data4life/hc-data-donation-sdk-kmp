@@ -16,5 +16,4 @@
 
 package care.data4life.datadonation.internal.data.service
 
-class ServiceModule {
-}
+class ServiceModule

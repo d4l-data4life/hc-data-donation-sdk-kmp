@@ -42,7 +42,7 @@ internal interface ServiceContract {
         fun getInstance(
             environment: Environment,
             client: HttpClient
-        ) : Service
+        ): Service
     }
 
     // TODO Add a new package with potential HTTP Interceptor
