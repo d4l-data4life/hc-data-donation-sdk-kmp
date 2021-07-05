@@ -36,7 +36,17 @@ internal interface ServiceContract {
         PUT("put")
     }
 
-    interface CallBuilder {
+    interface Service
+
+    interface ServiceFactory {
+        fun getInstance(
+            environment: Environment,
+            client: HttpClient
+        ) : Service
+    }
+
+    // TODO Add a new package with potential HTTP Interceptor
+    interface CallBuilder : Service {
         fun setHeaders(header: Header): CallBuilder
         fun setParameter(parameter: Parameter): CallBuilder
         fun setAccessToken(token: AccessToken): CallBuilder
@@ -55,11 +65,9 @@ internal interface ServiceContract {
         }
     }
 
-    interface CallBuilderFactory {
-        fun getInstance(environment: Environment, client: HttpClient): CallBuilder
-    }
+    interface CallBuilderFactory : ServiceFactory
 
-    interface ConsentService {
+    interface ConsentService : Service {
         suspend fun fetchConsentDocuments(
             accessToken: String,
             version: Int?,
@@ -113,6 +121,8 @@ internal interface ServiceContract {
             }
         }
     }
+
+    interface ConsentServiceFactory : ServiceFactory
 
     interface DonationService {
         suspend fun requestToken(): String

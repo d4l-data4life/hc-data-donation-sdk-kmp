@@ -16,11 +16,5 @@
 
 package care.data4life.datadonation.internal.data.service
 
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
-
-@RunWith(JUnit4::class)
-internal class ConsentServiceLegacyAndroidTestLegacy : ConsentServiceTestLegacy()
-
-@RunWith(JUnit4::class)
-internal class DonationServiceAndroidTest : DonationServiceTest()
+class ServiceModule {
+}
