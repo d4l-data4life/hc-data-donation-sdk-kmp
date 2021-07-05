@@ -18,7 +18,9 @@ package care.data4life.datadonation.core.listener
 
 import care.data4life.datadonation.mock.stub.ClientConfigurationStub
 import org.koin.core.context.stopKoin
+import org.koin.dsl.bind
 import org.koin.dsl.koinApplication
+import org.koin.dsl.module
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertNotNull
@@ -36,7 +38,12 @@ class ListenerKoinTest {
 
         // When
         val koin = koinApplication {
-            modules(resolveListenerModule(config))
+            modules(
+                resolveListenerModule(),
+                module {
+                    single { config } bind ListenerContract.ScopeResolver::class
+                }
+            )
         }
         // Then
         val runner: ListenerContract.TaskRunner = koin.koin.get()

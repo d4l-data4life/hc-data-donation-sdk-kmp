@@ -20,10 +20,10 @@ import org.koin.core.module.Module
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-fun resolveListenerModule(resolver: ListenerContract.ScopeResolver): Module {
+fun resolveListenerModule(): Module {
     return module {
         single<ListenerContract.TaskRunner> {
-            TaskRunner(resolver)
+            TaskRunner(get())
         } bind ListenerContract.TaskRunner::class
     }
 }

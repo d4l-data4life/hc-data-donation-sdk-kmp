@@ -61,7 +61,7 @@ internal fun initKoin(configuration: Contract.Configuration): KoinApplication {
             resolveRootModule(configuration),
             resolvePlatformModule(),
             resolveCoreModule(),
-            resolveListenerModule(configuration),
+            resolveListenerModule(),
             resolveStorageModule(),
             resolveUsecaseModule(),
             resolveRepositoryModule(),
