@@ -11,6 +11,8 @@ The iOSCryptoDD is a wrapper to use the CryptoSwift library and the project only
 The iOSCryptoDD is added as a gradle module to pre-build the Xcode project before the KMP one, its done by the `iOSCryptoDD/build.gradle.kts`.
 It's wired to the KMP lib using a native interop bridge, see: `data-donation-sdk/src/nativeInterop/cinterop/iOSCryptoDD.def` & `data-donation-sdk/build.gradle.kts`
 
+First time usage: before be able to use the project the first time you should trigger the ios build to avoid problems: `./gradlew iOSCryptoDD:buildIphoneos iOSCryptoDD:buildIphonesimulator`
+
 _Note:_ Altho' everything is automatic sometimes when changing the `iOSCryptoDD` project it is required to build the cinterop headers with `./gradlew cinteropIOSCryptoDDIosArm64 cinteropIOSCryptoDDIosX64`.
 
 == Release

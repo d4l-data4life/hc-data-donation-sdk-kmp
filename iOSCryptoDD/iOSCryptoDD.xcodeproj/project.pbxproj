@@ -141,7 +141,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "targetDir=${BUILT_PRODUCTS_DIR}/include/${PRODUCT_MODULE_NAME}\nmkdir -p $targetDir\ncp ${DERIVED_SOURCES_DIR}/*-Swift.h ${targetDir}\n";
+			shellScript = "# Copy swift header files to xcode build directory.\nbuildTargetDir=${BUILT_PRODUCTS_DIR}/include/${PRODUCT_MODULE_NAME}\nmkdir -p $buildTargetDir\necho \"Copying *-Swift.h from ${DERIVED_SOURCES_DIR} to ${targetDir}\"\ncp -R ${DERIVED_SOURCES_DIR}/*-Swift.h ${buildTargetDir}\n\n# Copy xcode build directory for KMP.\ncurrentDir=`pwd`\ntargetDir=${currentDir}/build/${CONFIGURATION}-${PLATFORM_NAME}\nmkdir -p $targetDir\necho \"Copying from ${BUILT_PRODUCTS_DIR} to ${targetDir}\"\ncp -R ${BUILT_PRODUCTS_DIR}/* ${targetDir}\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 

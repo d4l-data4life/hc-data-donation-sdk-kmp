@@ -29,8 +29,8 @@ jobs:
         run: ./gradlew clean
       - name: Version
         run: ./gradlew versionInfo
-      - name: Generate headers
-        run: ./gradlew cinteropIOSCryptoDDIosArm64 cinteropIOSCryptoDDIosX64
+      - name: Build xcode project
+        run: ./gradlew iOSCryptoDD:buildIphoneos iOSCryptoDD:buildIphonesimulator
       - name: Build
         run: ./gradlew build
       - name: Publish Feature to Maven Repo
