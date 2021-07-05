@@ -23,6 +23,8 @@ listOf("iphoneos", "iphonesimulator").forEach { sdk ->
             "-project", "iOSCryptoDD.xcodeproj",
             "-scheme", "iOSCryptoDD",
             "-configuration", "Release",
+            "BITCODE_GENERATION_MODE=bitcode",
+            "OTHER_CFLAGS=\"-fembed-bitcode\"",
             "-sdk", sdk
         )
         workingDir(projectDir)
