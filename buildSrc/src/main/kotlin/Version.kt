@@ -30,7 +30,7 @@ object Version {
     const val kotlin = "1.4.32"
 
     // https://github.com/Kotlin/kotlinx.coroutines
-    const val kotlinCoroutines = "1.4.2-native-mt"
+    const val kotlinCoroutines = "1.4.3-native-mt"
     const val kotlinCoroutinesIO = "0.1.16"
 
     // https://github.com/Kotlin/kotlinx.serialization
@@ -77,7 +77,7 @@ object Version {
 
     // Network
     // https://ktor.io/
-    const val ktor = "1.4.2"
+    const val ktor = "1.5.4"
 
     // https://github.com/benasher44/uuid
     const val uuid = "0.2.3"
