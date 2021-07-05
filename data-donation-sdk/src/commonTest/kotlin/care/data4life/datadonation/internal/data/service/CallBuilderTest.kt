@@ -223,6 +223,54 @@ class CallBuilderTest {
     }
 
     @Test
+    fun `Given a instance was create with a Environment and it was executed it uses the default port`() = runWithBlockingTest(GlobalScope.coroutineContext) {
+        // Given
+        val env = Environment.LOCAL
+        val client = HttpClient(MockEngine) {
+            engine {
+                addHandler { request ->
+                    // Then
+                    assertEquals(
+                        actual = request.url.port,
+                        expected = 80
+                    )
+
+                    defaultResponse()
+                }
+            }
+        }
+
+        // When
+        val builder = CallBuilder.getInstance(env, client)
+        builder.execute()
+    }
+
+    @Test
+    fun `Given a instance was create with a Environment and it was executed with a Port it uses the given port`() = runWithBlockingTest(GlobalScope.coroutineContext) {
+        // Given
+        val port = 17
+
+        val env = Environment.LOCAL
+        val client = HttpClient(MockEngine) {
+            engine {
+                addHandler { request ->
+                    // Then
+                    assertEquals(
+                        actual = request.url.port,
+                        expected = port
+                    )
+
+                    defaultResponse()
+                }
+            }
+        }
+
+        // When
+        val builder = CallBuilder.getInstance(env, client)
+        builder.execute(port = port)
+    }
+
+    @Test
     fun `Given a instance was create with a Environment and it was executed it sets no custom headers to the request by default`() = runWithBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val env = Environment.LOCAL

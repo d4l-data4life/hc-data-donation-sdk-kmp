@@ -25,6 +25,7 @@ import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.header
 import io.ktor.client.request.host
 import io.ktor.client.request.parameter
+import io.ktor.client.request.port
 import io.ktor.client.request.request
 import io.ktor.http.ContentType
 import io.ktor.http.HttpMethod
@@ -94,6 +95,12 @@ internal class CallBuilder constructor(
         setBody(builder)
     }
 
+    private fun setPort(builder: HttpRequestBuilder, port: Int?) {
+        if (port is Int) {
+            builder.port = port
+        }
+    }
+
     private fun addHeader(builder: HttpRequestBuilder) {
         headers.forEach { (field, value) ->
             builder.header(field, value)
@@ -124,9 +131,11 @@ internal class CallBuilder constructor(
     private fun buildQuery(
         builder: HttpRequestBuilder,
         method: ServiceContract.Method,
-        path: Path
+        path: Path,
+        port: Int?
     ) {
         setMandatoryFields(builder, method, path)
+        setPort(builder, port)
         addHeader(builder)
         setParameter(builder)
         setAccessToken(builder)
@@ -135,8 +144,9 @@ internal class CallBuilder constructor(
 
     override suspend fun execute(
         method: ServiceContract.Method,
-        path: Path
-    ): Any = client.request { buildQuery(this, method, path) }
+        path: Path,
+        port: Int?
+    ): Any = client.request { buildQuery(this, method, path, port) }
 
     companion object : ServiceContract.CallBuilderFactory {
         private fun resolveProtocol(environment: Environment): URLProtocol {

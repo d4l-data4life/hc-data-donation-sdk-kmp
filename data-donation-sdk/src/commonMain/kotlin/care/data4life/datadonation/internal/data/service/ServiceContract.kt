@@ -45,7 +45,8 @@ internal interface ServiceContract {
 
         suspend fun execute(
             method: Method = Method.GET,
-            path: Path = listOf("")
+            path: Path = listOf(""),
+            port: Int? = null
         ): Any
 
         companion object {
