@@ -32,7 +32,7 @@ import io.ktor.http.HttpMethod
 import io.ktor.http.URLProtocol
 import io.ktor.http.contentType
 
-internal class CallBuilder constructor(
+internal class CallBuilder private constructor(
     private val client: HttpClient,
     private val host: String,
     private val protocol: URLProtocol
