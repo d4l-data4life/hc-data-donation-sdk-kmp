@@ -25,7 +25,8 @@ listOf("iphoneos", "iphonesimulator").forEach { sdk ->
             "-configuration", "Release",
             "BITCODE_GENERATION_MODE=bitcode",
             "OTHER_CFLAGS=\"-fembed-bitcode\"",
-            "-sdk", sdk
+            "-sdk", sdk,
+            "-arch" , if(sdk == "iphoneos") "arm64" else "x86_64"
         )
         workingDir(projectDir)
 
