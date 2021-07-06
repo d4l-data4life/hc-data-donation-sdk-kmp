@@ -22,6 +22,7 @@ import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.internal.data.storage.StorageContract
 import care.data4life.datadonation.internal.di.resolveRootModule
 import care.data4life.datadonation.mock.stub.ClientConfigurationStub
+import kotlinx.datetime.Clock
 import org.koin.core.context.stopKoin
 import org.koin.dsl.koinApplication
 import kotlin.test.BeforeTest
@@ -92,6 +93,20 @@ class RootKoinTest {
         }
         // Then
         val instance: StorageContract.UserSessionTokenProvider = koin.koin.get()
+        assertNotNull(instance)
+    }
+
+    @Test
+    fun `Given resolveRootModule is called with a Configuration it creates a Module which contains a Clock`() {
+        // Given
+        config.whenGetEnvironment = { Environment.LOCAL }
+
+        // When
+        val koin = koinApplication {
+            modules(resolveRootModule(config))
+        }
+        // Then
+        val instance: Clock = koin.koin.get()
         assertNotNull(instance)
     }
 }

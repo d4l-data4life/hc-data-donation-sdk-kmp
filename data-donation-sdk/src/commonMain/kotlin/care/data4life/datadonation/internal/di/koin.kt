@@ -40,6 +40,7 @@ import care.data4life.datadonation.encryption.resolveEncryptionModule
 import care.data4life.datadonation.internal.data.service.ConsentServiceLegacy
 import care.data4life.datadonation.internal.data.service.DonationService
 import care.data4life.datadonation.internal.data.service.ServiceContract
+import care.data4life.datadonation.internal.data.service.resolveServiceModule
 import care.data4life.datadonation.internal.data.storage.*
 import care.data4life.datadonation.internal.domain.repository.resolveRepositoryModule
 import care.data4life.datadonation.internal.domain.usecases.*
@@ -47,6 +48,7 @@ import io.ktor.client.*
 import io.ktor.client.features.json.*
 import io.ktor.client.features.json.serializer.*
 import io.ktor.client.features.logging.*
+import kotlinx.datetime.Clock
 import org.koin.core.KoinApplication
 import org.koin.core.module.Module
 import org.koin.dsl.bind
@@ -65,7 +67,8 @@ internal fun initKoin(configuration: Contract.Configuration): KoinApplication {
             resolveStorageModule(),
             resolveUsecaseModule(),
             resolveRepositoryModule(),
-            resolveEncryptionModule()
+            resolveEncryptionModule(),
+            resolveServiceModule()
         )
     }
 }
@@ -82,6 +85,8 @@ internal fun resolveRootModule(configuration: Contract.Configuration): Module {
         )
 
         single { configuration.getEnvironment() } bind Environment::class
+
+        single { Clock.System } bind Clock::class
     }
 }
 
@@ -108,9 +113,6 @@ internal fun resolveCoreModule(): Module {
         }
 
         // Services
-        single<ServiceContract.ConsentService> {
-            ConsentServiceLegacy(get(), get())
-        } bind ServiceContract.ConsentService::class
         single<ServiceContract.DonationService> {
             DonationService(get(), get())
         } bind ServiceContract.DonationService::class
