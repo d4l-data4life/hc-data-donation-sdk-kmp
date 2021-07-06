@@ -32,41 +32,44 @@
 
 package care.data4life.datadonation.encryption.symmetric
 
-import care.data4life.datadonation.encryption.KeyNative
 import care.data4life.datadonation.toByteArray
 import care.data4life.datadonation.toNSData
-
-import crypto.dd.CryptoAES
 import kotlinx.cinterop.addressOf
 import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.usePinned
-import platform.Foundation.NSError
+import platform.Foundation.NSData
 import platform.Security.*
-
+import swift.iOSCryptoDD.*
 
 class EncryptionSymmetricKeyNative : EncryptionSymmetricKey {
 
     private val key: ByteArray
     private val cryptoWrapper: CryptoAES
 
-    //TODO: Support for different padding
+    // TODO: Support for different padding
     constructor(size: Int) {
-        val randomByteArray = secureRandomByteArray(size/8)
+        val randomByteArray = secureRandomByteArray(size / 8)
         this.key = randomByteArray
         this.cryptoWrapper = CryptoAES(randomByteArray.toNSData())
     }
 
-    constructor(key:ByteArray) {
+    constructor(key: ByteArray) {
         this.key = key
         this.cryptoWrapper = CryptoAES(key.toNSData())
     }
 
-
-    override fun decrypt(encrypted: ByteArray, associatedData: ByteArray): Result<ByteArray> = runCatching {
-        val iv = encrypted.sliceArray(0..15)
-        val encrypted = encrypted.sliceArray(16..encrypted.lastIndex)
-        cryptoWrapper.decryptWithEncrypted(encrypted.toNSData(), iv.toNSData(), associatedData.toNSData())!!.toByteArray()
-    }
+    override fun decrypt(encrypted: ByteArray, associatedData: ByteArray): Result<ByteArray> =
+        runCatching {
+            val iv = encrypted.sliceArray(0..15)
+            val encrypted = encrypted.sliceArray(16..encrypted.lastIndex)
+            return@runCatching (
+                cryptoWrapper.decryptWithEncrypted(
+                    encrypted.toNSData(),
+                    iv.toNSData(),
+                    associatedData.toNSData()
+                ) as NSData
+                ).toByteArray()
+        }
 
     override fun serialized(): ByteArray = key
 
@@ -75,13 +78,18 @@ class EncryptionSymmetricKeyNative : EncryptionSymmetricKey {
 
     override fun encrypt(plainText: ByteArray, associatedData: ByteArray): ByteArray = memScoped {
         val iv = secureRandomByteArray(16)
-        val encrypted = cryptoWrapper.encryptWithPlainText(plainText.toNSData(), iv.toNSData(), associatedData.toNSData())!!.toByteArray()
-        if(encrypted.isEmpty()) {
+        val encrypted = (
+            cryptoWrapper.encryptWithPlainText(
+                plainText.toNSData(),
+                iv.toNSData(),
+                associatedData.toNSData()
+            ) as NSData
+            ).toByteArray()
+        if (encrypted.isEmpty()) {
             throw Throwable("Unknown encryption error")
         }
         return iv + encrypted
     }
-
 }
 
 internal fun secureRandomByteArray(size: Int) = ByteArray(size).usePinned {

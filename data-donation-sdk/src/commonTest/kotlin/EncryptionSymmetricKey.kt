@@ -1,7 +1,9 @@
-import care.data4life.datadonation.encryption.*
-import care.data4life.datadonation.encryption.assymetric.EncryptionPrivateKey
+import care.data4life.datadonation.encryption.Algorithm
+import care.data4life.datadonation.encryption.HashSize
 import care.data4life.datadonation.encryption.symmetric.EncryptionSymmetricKey
-import kotlin.test.*
+import kotlin.test.Ignore
+import kotlin.test.Test
+import kotlin.test.assertTrue
 
 /*
  * BSD 3-Clause License
@@ -37,27 +39,23 @@ import kotlin.test.*
 
 class EncryptionSymmetricKeyCommonTest {
 
-
-
     @Test
     fun `Generate, encrypt and decrypt`() {
-        val testData = byteArrayOf(1,2,3,4,5,1,2,3,4,5,1,2,3,4,5)
-        val testAuth = byteArrayOf(1,2,3,4,5)
+        val testData = byteArrayOf(1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5)
+        val testAuth = byteArrayOf(1, 2, 3, 4, 5)
         val key = EncryptionSymmetricKey(256, Algorithm.Symmetric.AES(HashSize.Hash256))
-        val encrypted = key.encrypt(testData,testAuth)
-        val decrypted = key.decrypt(encrypted,testAuth)
+        val encrypted = key.encrypt(testData, testAuth)
+        val decrypted = key.decrypt(encrypted, testAuth)
         assertTrue(decrypted.isSuccess)
         assertTrue(testData.contentEquals(decrypted.getOrNull()!!))
     }
 
-
-    @Ignore//TODO: Export of this key type
-    @Test  //TODO: Add proper vaidation after parsing ASN1 is added
+    @Ignore // TODO: Export of this key type
+    @Test // TODO: Add proper vaidation after parsing ASN1 is added
     fun `Key is exported to valid ASN1 DER encoded value`() {
         val key = EncryptionSymmetricKey(256, Algorithm.Symmetric.AES(HashSize.Hash256))
         assertTrue(key.pkcs8.startsWith("MII"))
     }
-
 
     @Test
     fun `Generate, serialize and deserialize`() {
@@ -65,9 +63,14 @@ class EncryptionSymmetricKeyCommonTest {
 
         val serializedKey = key.serialized()
 
-        with(EncryptionSymmetricKey(serializedKey,256, Algorithm.Symmetric.AES(HashSize.Hash256))) {
+        with(
+            EncryptionSymmetricKey(
+                serializedKey,
+                256,
+                Algorithm.Symmetric.AES(HashSize.Hash256)
+            )
+        ) {
             assertTrue(serializedKey.contentEquals(serialized()))
         }
     }
-
 }
