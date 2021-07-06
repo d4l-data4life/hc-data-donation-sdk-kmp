@@ -25,16 +25,17 @@ import care.data4life.datadonation.internal.data.service.ServiceContract
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 import io.ktor.client.HttpClient
+import kotlin.native.concurrent.ThreadLocal
 
-internal class CallBuilderSpy private constructor() : ServiceContract.CallBuilder, MockContract.Spy {
-    var whenExecute: ((ServiceContract.Method, Path) -> Any)? = null
-
+internal class CallBuilderSpy private constructor(
+    private val onExecute: ((ServiceContract.Method, Path) -> Any)?
+) : ServiceContract.CallBuilder {
     private var headers: Header? = null
     val delegatedHeaders: Header?
         get() = headers
 
     private var parameter: Parameter? = null
-    val delegatedParameter: Header?
+    val delegatedParameter: Parameter?
         get() = parameter
 
     private var token: AccessToken? = null
@@ -73,17 +74,16 @@ internal class CallBuilderSpy private constructor() : ServiceContract.CallBuilde
         method: ServiceContract.Method,
         path: Path
     ): Any {
-        return whenExecute?.invoke(
+        return onExecute?.invoke(
             method,
             path
         ) ?: throw MockException()
     }
 
-    override fun clear() {
-        whenExecute = null
-    }
+    @ThreadLocal
+    companion object Factory : ServiceContract.CallBuilderFactory, MockContract.Spy {
+        var onExecute: ((ServiceContract.Method, Path) -> Any)? = null
 
-    companion object : ServiceContract.CallBuilderFactory, MockContract.Spy {
         private var environment: Environment? = null
         val delegatedEnvironment: Environment?
             get() = environment
@@ -96,22 +96,29 @@ internal class CallBuilderSpy private constructor() : ServiceContract.CallBuilde
         val delegatedPort: Int?
             get() = port
 
+        private var instance: CallBuilderSpy? = null
+        val lastInstance: CallBuilderSpy?
+            get() = instance
+
         override fun getInstance(
             environment: Environment,
             client: HttpClient,
             port: Int?
         ): ServiceContract.CallBuilder {
-            return CallBuilderSpy().also {
+            return CallBuilderSpy(onExecute).also {
                 this.environment = environment
                 this.client = client
                 this.port = port
+                this.instance = it
             }
         }
 
         override fun clear() {
+            onExecute = null
             environment = null
             client = null
             port = null
+            instance = null
         }
     }
 }

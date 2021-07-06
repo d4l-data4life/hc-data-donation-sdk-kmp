@@ -36,7 +36,7 @@ internal class CallBuilder private constructor(
     private val client: HttpClient,
     private val host: String,
     private val protocol: URLProtocol,
-    private  val port: Int?
+    private val port: Int?
 ) : ServiceContract.CallBuilder {
     private var headers: Header = mapOf()
     private var parameter: Parameter = mapOf()

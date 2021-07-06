@@ -20,14 +20,13 @@ import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.internal.data.exception.InternalErrorException
 import care.data4life.datadonation.internal.data.service.ServiceContract.CallBuilder.Companion.ACCESS_TOKEN_FIELD
 import care.data4life.datadonation.internal.data.service.ServiceContract.CallBuilder.Companion.ACCESS_TOKEN_VALUE_PREFIX
+import care.data4life.datadonation.mock.util.defaultResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
-import io.ktor.client.engine.mock.MockRequestHandleScope
 import io.ktor.client.engine.mock.respond
 import io.ktor.client.engine.mock.toByteReadPacket
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.json.serializer.KotlinxSerializer
-import io.ktor.client.request.HttpResponseData
 import io.ktor.http.ContentType
 import io.ktor.http.HttpMethod
 import io.ktor.http.URLProtocol
@@ -45,17 +44,6 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class CallBuilderTest {
-    private fun MockRequestHandleScope.defaultResponse(): HttpResponseData {
-        return respond(
-            "Hello, world",
-            headers = headersOf(
-                "Content-Type" to listOf(
-                    ContentType.Text.Plain.toString()
-                )
-            )
-        )
-    }
-
     @Test
     fun `It fulfils CallBuilderFactory`() {
         val factory: Any = CallBuilder

@@ -14,30 +14,14 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.data.service
+package care.data4life.datadonation.util
 
-import org.koin.core.context.stopKoin
-import org.koin.dsl.koinApplication
-import kotlin.test.BeforeTest
-import kotlin.test.Test
-import kotlin.test.assertNotNull
+import care.data4life.datadonation.internal.data.exception.InternalErrorException
 
-class ServiceKoinTest {
-    @BeforeTest
-    fun setUp() {
-        stopKoin()
-    }
-
-    @Test
-    fun `Given resolveServiceModule is called it creates a Module, which contains a CallBuilderFactory`() {
-        // When
-        val koin = koinApplication {
-            modules(
-                resolveServiceModule(),
-            )
-        }
-        // Then
-        val builder: ServiceContract.CallBuilderFactory = koin.koin.get()
-        assertNotNull(builder)
+inline fun <reified T> safeCast(item: Any): T {
+    return if (item !is T) {
+        throw InternalErrorException("Unexpected Response.")
+    } else {
+        item
     }
 }

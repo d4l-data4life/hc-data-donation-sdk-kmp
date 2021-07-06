@@ -20,16 +20,40 @@ import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.model.ConsentSignature
+import care.data4life.datadonation.internal.data.service.ServiceContract.Companion.LOCAL_PORT
+import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PARAMETER.LANGUAGE
+import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PARAMETER.USER_CONSENT_KEY
+import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PARAMETER.VERSION
+import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PATH.USER_CONSENTS
+import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.ROOT
+import care.data4life.datadonation.util.safeCast
 import io.ktor.client.HttpClient
 
-internal class ConsentService private constructor() : ServiceContract.ConsentService {
+internal class ConsentService private constructor(
+    private val callBuilder: ServiceContract.CallBuilder
+) : ServiceContract.ConsentService {
     override suspend fun fetchConsentDocuments(
         accessToken: String,
         version: Int?,
         language: String?,
         consentKey: String
     ): List<ConsentDocument> {
-        TODO("Not yet implemented")
+        val path = ROOT.toMutableList().also { it.add(USER_CONSENTS) }
+        val parameter = mapOf(
+            USER_CONSENT_KEY to consentKey,
+            VERSION to version?.toString(),
+            LANGUAGE to language
+        )
+
+        val response = callBuilder
+            .setAccessToken(accessToken)
+            .setParameter(parameter)
+            .execute(
+                ServiceContract.Method.GET,
+                path
+            )
+
+        return safeCast(response)
     }
 
     override suspend fun fetchUserConsents(
@@ -63,11 +87,26 @@ internal class ConsentService private constructor() : ServiceContract.ConsentSer
     }
 
     companion object : ServiceContract.ConsentServiceFactory {
+        private fun determinePort(environment: Environment): Int? {
+            return if (environment == Environment.LOCAL) {
+                LOCAL_PORT
+            } else {
+                null
+            }
+        }
+
         override fun getInstance(
             environment: Environment,
-            client: HttpClient
-        ): ServiceContract.Service {
-            TODO("Not yet implemented")
+            client: HttpClient,
+            builderFactory: ServiceContract.CallBuilderFactory
+        ): ServiceContract.ConsentService {
+            val callBuilder = builderFactory.getInstance(
+                environment,
+                client,
+                determinePort(environment)
+            )
+
+            return ConsentService(callBuilder)
         }
     }
 }

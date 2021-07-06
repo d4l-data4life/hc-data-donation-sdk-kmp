@@ -24,7 +24,7 @@ import care.data4life.datadonation.internal.data.model.DonationPayload
 import io.ktor.client.HttpClient
 
 typealias Header = Map<String, String>
-typealias Parameter = Map<String, String>
+typealias Parameter = Map<String, String?>
 typealias AccessToken = String
 typealias Path = List<String>
 
@@ -68,7 +68,8 @@ internal interface ServiceContract {
     interface ServiceFactory {
         fun getInstance(
             environment: Environment,
-            client: HttpClient
+            client: HttpClient,
+            builderFactory: CallBuilderFactory
         ): Service
     }
 
@@ -105,6 +106,20 @@ internal interface ServiceContract {
         suspend fun revokeUserConsent(accessToken: String, language: String?)
 
         companion object {
+            val ROOT = listOf("consent", "api", "v1")
+
+            object PARAMETER {
+                const val CONSENT_DOCUMENT_KEY = "key"
+                const val USER_CONSENT_KEY = "consentDocumentKey"
+                const val LANGUAGE = "language"
+                const val VERSION = "version"
+                const val LATEST = "latest"
+            }
+
+            object PATH {
+                const val USER_CONSENTS =  "userConsents"
+            }
+
             const val XSRF_VALIDITY = 23 * 60 * 60 * 1000
 
             object Endpoints {
@@ -155,5 +170,6 @@ internal interface ServiceContract {
 
     companion object {
         const val DEFAULT_DONATION_CONSENT_KEY = "d4l.data-donation.broad"
+        const val LOCAL_PORT = 8080 // TODO -> Do we need a local env?
     }
 }
