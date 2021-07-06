@@ -22,6 +22,7 @@ import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.model.ConsentSignature
 import care.data4life.datadonation.internal.data.model.DonationPayload
 import io.ktor.client.HttpClient
+import kotlinx.datetime.Clock
 
 typealias Header = Map<String, String>
 typealias Parameter = Map<String, Any?>
@@ -63,17 +64,7 @@ internal interface ServiceContract {
         ): CallBuilder
     }
 
-    interface Service
-
-    interface ServiceFactory {
-        fun getInstance(
-            environment: Environment,
-            client: HttpClient,
-            builderFactory: CallBuilderFactory
-        ): Service
-    }
-
-    interface ConsentService : Service {
+    interface ConsentService {
         suspend fun fetchConsentDocuments(
             accessToken: String,
             version: Int?,
@@ -117,7 +108,8 @@ internal interface ServiceContract {
             }
 
             object PATH {
-                const val USER_CONSENTS =  "userConsents"
+                const val USER_CONSENTS = "userConsents"
+                const val CONSENTS_DOCUMENTS = "consentDocuments"
             }
 
             const val XSRF_VALIDITY = 23 * 60 * 60 * 1000
@@ -142,7 +134,14 @@ internal interface ServiceContract {
         }
     }
 
-    interface ConsentServiceFactory : ServiceFactory
+    interface ConsentServiceFactory {
+        fun getInstance(
+            environment: Environment,
+            client: HttpClient,
+            builderFactory: CallBuilderFactory,
+            clock: Clock
+        ): ConsentService
+    }
 
     interface DonationService {
         suspend fun requestToken(): String

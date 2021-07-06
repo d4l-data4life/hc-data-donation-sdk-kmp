@@ -18,17 +18,21 @@ package care.data4life.datadonation.internal.data.service
 
 import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.internal.data.exception.InternalErrorException
+import care.data4life.datadonation.internal.data.model.ConsentCreationPayload
 import care.data4life.datadonation.internal.data.service.ServiceContract.Companion.LOCAL_PORT
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PARAMETER.LANGUAGE
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PARAMETER.LATEST_CONSENT
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PARAMETER.USER_CONSENT_KEY
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PARAMETER.VERSION
+import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PATH.CONSENTS_DOCUMENTS
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PATH.USER_CONSENTS
 import care.data4life.datadonation.mock.DummyData
 import care.data4life.datadonation.mock.spy.CallBuilderSpy
+import care.data4life.datadonation.mock.stub.ClockStub
 import care.data4life.datadonation.mock.util.defaultResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
+import kotlinx.datetime.Instant
 import runBlockingTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -52,26 +56,26 @@ class ConsentServiceTest {
     }
 
     @Test
-    fun `Given getInstance is called with a Environment, a HTTPClient and a CallBuilderFactory it returns a ConsentService`() {
+    fun `Given getInstance is called with a Environment, a HTTPClient, Clock and a CallBuilderFactory it returns a ConsentService`() {
         // Given
         val client = HttpClient(MockEngine) { engine { addHandler { defaultResponse() } } }
         val env = Environment.LOCAL
 
         // When
-        val service: Any = ConsentService.getInstance(env, client, CallBuilderSpy)
+        val service: Any = ConsentService.getInstance(env, client, CallBuilderSpy, ClockStub())
 
         // Then
         assertTrue(service is ServiceContract.ConsentService)
     }
 
     @Test
-    fun `Given getInstance is called with a non LOCAL Environment, a HTTPClient and a CallBuilderFactory it initialises a CallBuilder, while delegating the HTTPClient and Environment`() {
+    fun `Given getInstance is called with a non LOCAL Environment, a HTTPClient, Clock and a CallBuilderFactory it initialises a CallBuilder, while delegating the HTTPClient and Environment`() {
         // Given
         val client = HttpClient(MockEngine) { engine { addHandler { defaultResponse() } } }
         val env = Environment.STAGING
 
         // When
-        ConsentService.getInstance(env, client, CallBuilderSpy)
+        ConsentService.getInstance(env, client, CallBuilderSpy, ClockStub())
 
         // Then
         assertSame(
@@ -86,13 +90,13 @@ class ConsentServiceTest {
     }
 
     @Test
-    fun `Given getInstance is called with a LOCAL Environment, a HTTPClient and a CallBuilderFactory it initialises a CallBuilder, while delegating the HTTPClient, LOCAL_PORT and Environment`() {
+    fun `Given getInstance is called with a LOCAL Environment, a HTTPClient, Clock and a CallBuilderFactory it initialises a CallBuilder, while delegating the HTTPClient, LOCAL_PORT and Environment`() {
         // Given
         val client = HttpClient(MockEngine) { engine { addHandler { defaultResponse() } } }
         val env = Environment.LOCAL
 
         // When
-        ConsentService.getInstance(env, client, CallBuilderSpy)
+        ConsentService.getInstance(env, client, CallBuilderSpy, ClockStub())
 
         // Then
         assertSame(
@@ -127,7 +131,7 @@ class ConsentServiceTest {
         // Then
         val error = assertFailsWith<InternalErrorException> {
             // When
-            val service = ConsentService.getInstance(env, client, CallBuilderSpy)
+            val service = ConsentService.getInstance(env, client, CallBuilderSpy, ClockStub())
             service.fetchConsentDocuments(
                 accessToken = accessToken,
                 version = version,
@@ -167,7 +171,7 @@ class ConsentServiceTest {
         }
 
         // When
-        val service = ConsentService.getInstance(env, client, CallBuilderSpy)
+        val service = ConsentService.getInstance(env, client, CallBuilderSpy, ClockStub())
         val result = service.fetchConsentDocuments(
             accessToken = accessToken,
             version = version,
@@ -187,7 +191,7 @@ class ConsentServiceTest {
         assertEquals(
             actual = capturedPath,
             expected = ServiceContract.ConsentService.ROOT.toMutableList().also {
-                it.add(USER_CONSENTS)
+                it.add(CONSENTS_DOCUMENTS)
             }
         )
         assertEquals(
@@ -220,7 +224,7 @@ class ConsentServiceTest {
         // Then
         val error = assertFailsWith<InternalErrorException> {
             // When
-            val service = ConsentService.getInstance(env, client, CallBuilderSpy)
+            val service = ConsentService.getInstance(env, client, CallBuilderSpy, ClockStub())
             service.fetchUserConsents(
                 accessToken = accessToken,
                 latestConsent = false,
@@ -258,7 +262,7 @@ class ConsentServiceTest {
         }
 
         // When
-        val service = ConsentService.getInstance(env, client, CallBuilderSpy)
+        val service = ConsentService.getInstance(env, client, CallBuilderSpy, ClockStub())
         val result = service.fetchUserConsents(
             accessToken = accessToken,
             latestConsent = lastedConsent,
@@ -289,6 +293,128 @@ class ConsentServiceTest {
             expected = mapOf(
                 LATEST_CONSENT to lastedConsent,
                 USER_CONSENT_KEY to consentKey
+            )
+        )
+    }
+
+    @Test
+    fun `Given a instance had been created and createUserConsent was called with a AccessToken, Version and a Language it just runs`() = runBlockingTest {
+        // Given
+        val client = HttpClient(MockEngine) { engine { addHandler { defaultResponse() } } }
+        val env = Environment.LOCAL
+        val clock = ClockStub()
+
+        val accessToken = "potato"
+        val version = 23
+        val language = "zh-TW-hans-de-informal-x-old"
+
+        var capturedMethod: ServiceContract.Method? = null
+        var capturedPath: Path? = null
+        val expectedTime = Instant.DISTANT_PAST
+        val response = listOf(
+            DummyData.userConsent,
+            DummyData.userConsent.copy(accountId = "potato")
+        )
+
+        clock.whenNow = { expectedTime }
+
+        CallBuilderSpy.onExecute = { method, path ->
+            capturedMethod = method
+            capturedPath = path
+            response
+        }
+
+        // When
+        val service = ConsentService.getInstance(env, client, CallBuilderSpy, clock)
+        service.createUserConsent(
+            accessToken = accessToken,
+            version = version,
+            language = language
+        )
+
+        // Then
+        assertEquals(
+            actual = capturedMethod,
+            expected = ServiceContract.Method.POST
+        )
+        assertEquals(
+            actual = capturedPath,
+            expected = ServiceContract.ConsentService.ROOT.toMutableList().also {
+                it.add(USER_CONSENTS)
+            }
+        )
+        assertEquals(
+            actual = CallBuilderSpy.lastInstance!!.delegatedAccessToken,
+            expected = accessToken
+        )
+        assertEquals(
+            actual = CallBuilderSpy.lastInstance!!.delegatedBody,
+            expected = ConsentCreationPayload(
+                ServiceContract.DEFAULT_DONATION_CONSENT_KEY,
+                version,
+                expectedTime.toString(),
+                language
+            )
+        )
+    }
+
+    @Test
+    fun `Given a instance had been created and createUserConsent was called with a AccessToken, Version and null as Language it just runs`() = runBlockingTest {
+        // Given
+        val client = HttpClient(MockEngine) { engine { addHandler { defaultResponse() } } }
+        val env = Environment.LOCAL
+        val clock = ClockStub()
+
+        val accessToken = "potato"
+        val version = 23
+        val language = null
+
+        var capturedMethod: ServiceContract.Method? = null
+        var capturedPath: Path? = null
+        val expectedTime = Instant.DISTANT_PAST
+        val response = listOf(
+            DummyData.userConsent,
+            DummyData.userConsent.copy(accountId = "potato")
+        )
+
+        clock.whenNow = { expectedTime }
+
+        CallBuilderSpy.onExecute = { method, path ->
+            capturedMethod = method
+            capturedPath = path
+            response
+        }
+
+        // When
+        val service = ConsentService.getInstance(env, client, CallBuilderSpy, clock)
+        service.createUserConsent(
+            accessToken = accessToken,
+            version = version,
+            language = language
+        )
+
+        // Then
+        assertEquals(
+            actual = capturedMethod,
+            expected = ServiceContract.Method.POST
+        )
+        assertEquals(
+            actual = capturedPath,
+            expected = ServiceContract.ConsentService.ROOT.toMutableList().also {
+                it.add(USER_CONSENTS)
+            }
+        )
+        assertEquals(
+            actual = CallBuilderSpy.lastInstance!!.delegatedAccessToken,
+            expected = accessToken
+        )
+        assertEquals(
+            actual = CallBuilderSpy.lastInstance!!.delegatedBody,
+            expected = ConsentCreationPayload(
+                ServiceContract.DEFAULT_DONATION_CONSENT_KEY,
+                version,
+                expectedTime.toString(),
+                ""
             )
         )
     }

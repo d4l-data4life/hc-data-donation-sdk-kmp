@@ -19,19 +19,23 @@ package care.data4life.datadonation.internal.data.service
 import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.UserConsent
+import care.data4life.datadonation.internal.data.model.ConsentCreationPayload
 import care.data4life.datadonation.internal.data.model.ConsentSignature
 import care.data4life.datadonation.internal.data.service.ServiceContract.Companion.LOCAL_PORT
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PARAMETER.LANGUAGE
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PARAMETER.LATEST_CONSENT
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PARAMETER.USER_CONSENT_KEY
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PARAMETER.VERSION
+import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PATH.CONSENTS_DOCUMENTS
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PATH.USER_CONSENTS
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.ROOT
 import care.data4life.datadonation.util.safeCast
 import io.ktor.client.HttpClient
+import kotlinx.datetime.Clock
 
 internal class ConsentService private constructor(
-    private val callBuilder: ServiceContract.CallBuilder
+    private val callBuilder: ServiceContract.CallBuilder,
+    private val clock: Clock
 ) : ServiceContract.ConsentService {
     private fun buildPath(
         endpoint: String
@@ -43,7 +47,7 @@ internal class ConsentService private constructor(
         language: String?,
         consentKey: String
     ): List<ConsentDocument> {
-        val path = buildPath(USER_CONSENTS)
+        val path = buildPath(CONSENTS_DOCUMENTS)
         val parameter = mapOf(
             USER_CONSENT_KEY to consentKey,
             VERSION to version,
@@ -83,8 +87,26 @@ internal class ConsentService private constructor(
         return safeCast(response)
     }
 
-    override suspend fun createUserConsent(accessToken: String, version: Int, language: String?) {
-        TODO("Not yet implemented")
+    override suspend fun createUserConsent(
+        accessToken: String,
+        version: Int,
+        language: String?
+    ) {
+        val path = buildPath(USER_CONSENTS)
+        val payload = ConsentCreationPayload(
+            ServiceContract.DEFAULT_DONATION_CONSENT_KEY,
+            version,
+            clock.now().toString(),
+            language ?: ""
+        )
+
+        callBuilder
+            .setAccessToken(accessToken)
+            .setBody(payload)
+            .execute(
+                ServiceContract.Method.POST,
+                path
+            )
     }
 
     override suspend fun requestSignatureRegistration(
@@ -117,15 +139,16 @@ internal class ConsentService private constructor(
         override fun getInstance(
             environment: Environment,
             client: HttpClient,
-            builderFactory: ServiceContract.CallBuilderFactory
+            builderFactory: ServiceContract.CallBuilderFactory,
+            clock: Clock
         ): ServiceContract.ConsentService {
             val callBuilder = builderFactory.getInstance(
                 environment,
                 client,
-                determinePort(environment)
+                determinePort(environment),
             )
 
-            return ConsentService(callBuilder)
+            return ConsentService(callBuilder, clock)
         }
     }
 }

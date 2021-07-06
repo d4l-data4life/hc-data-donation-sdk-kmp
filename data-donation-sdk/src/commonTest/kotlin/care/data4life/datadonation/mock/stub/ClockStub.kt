@@ -14,14 +14,21 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.util
+package care.data4life.datadonation.mock.stub
 
-import care.data4life.datadonation.internal.data.exception.InternalErrorException
+import care.data4life.datadonation.mock.MockContract
+import care.data4life.datadonation.mock.MockException
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
 
-internal inline fun <reified T> safeCast(item: Any): T {
-    return if (item !is T) {
-        throw InternalErrorException("Unexpected Response.")
-    } else {
-        item
+internal class ClockStub : Clock, MockContract.Stub {
+    var whenNow : (() -> Instant)? = null
+
+    override fun now(): Instant {
+        return whenNow?.invoke() ?: throw MockException()
+    }
+
+    override fun clear() {
+        whenNow = null
     }
 }
