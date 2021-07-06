@@ -19,6 +19,7 @@ package care.data4life.datadonation.internal.domain.usecases
 import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.UserConsent
+import care.data4life.hl7.fhir.stu3.model.FhirResource
 
 interface UsecaseContract {
     interface Usecase<ReturnType> {
@@ -56,4 +57,10 @@ interface UsecaseContract {
     }
 
     interface CreateUserConsent : UsecaseFactory<CreateUserConsentParameter, UserConsent>
+
+    interface MapSensitiveInformation : UsecaseFactory<List<FhirResource>, List<FhirResource>> {
+        companion object {
+            const val REDACTED = "REDACTED"
+        }
+    }
 }

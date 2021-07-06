@@ -14,13 +14,20 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.domain.usecases
+package care.data4life.datadonation.mock.stub
 
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import care.data4life.datadonation.internal.domain.usecases.UsecaseContract
+import care.data4life.datadonation.mock.MockContract
+import care.data4life.hl7.fhir.stu3.model.FhirResource
 
-@RunWith(JUnit4::class)
-class RegisterNewDonorAndroidTest : RegisterNewDonorTest()
+class MapSensitiveInformationStub :
+    UsecaseContract.Usecase<List<FhirResource>>,
+    MockContract.Stub {
+    override suspend fun execute(): List<FhirResource> {
+        TODO("Not yet implemented")
+    }
 
-@RunWith(JUnit4::class)
-class RemoveInternalInformationAndroidTest : RemoveInternalInformationTest()
+    override fun clear() {
+        TODO("Not yet implemented")
+    }
+}

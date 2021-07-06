@@ -42,12 +42,11 @@ import care.data4life.datadonation.internal.data.model.ConsentSignatureType
 import care.data4life.datadonation.internal.data.model.DocumentWithSignature
 import care.data4life.datadonation.internal.data.model.DonationPayload
 import care.data4life.datadonation.internal.domain.repository.RepositoryContract
-import care.data4life.hl7.fhir.stu3.FhirStu3Parser
 import care.data4life.hl7.fhir.stu3.model.FhirResource
 import io.ktor.utils.io.core.*
 
 internal class DonateResources(
-    private val filterSensitiveInformation: FilterSensitiveInformation,
+    private val mapSensitiveInformation: UsecaseContract.MapSensitiveInformation,
     private val removeInternalInformation: RemoveInternalInformation,
     private val createRequestConsentPayload: CreateRequestConsentPayload,
     private val donationRepository: RepositoryContract.DonationRepository,
@@ -71,7 +70,7 @@ internal class DonateResources(
             donateResources(
                 signatureProvider.invoke(it),
                 removeInternalInformation.withParams(
-                    filterSensitiveInformation.withParams(parameter.resources).execute()
+                    mapSensitiveInformation.withParams(parameter.resources).execute()
                 ).execute()
             )
         } ?: throw MissingCredentialsException()
@@ -103,5 +102,3 @@ internal class DonateResources(
 
     data class Parameters(val keyPair: KeyPair?, val resources: List<FhirResource>)
 }
-
-internal fun FhirResource.toJsonString() = FhirStu3Parser.defaultJsonParser().toJson(this)

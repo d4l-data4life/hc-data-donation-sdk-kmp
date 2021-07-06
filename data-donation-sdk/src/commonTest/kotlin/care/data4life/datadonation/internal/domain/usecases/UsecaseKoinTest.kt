@@ -106,7 +106,7 @@ class UsecaseKoinTest {
             modules(resolveUsecaseModule())
         }
         // Then
-        val instance: FilterSensitiveInformation = koin.koin.get()
+        val instance: UsecaseContract.MapSensitiveInformation = koin.koin.get()
         assertNotNull(instance)
     }
 

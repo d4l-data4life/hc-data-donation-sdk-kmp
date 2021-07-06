@@ -42,7 +42,9 @@ internal fun resolveUsecaseModule(): Module {
             )
         }
 
-        single { FilterSensitiveInformation() }
+        single<UsecaseContract.MapSensitiveInformation> {
+            MapSensitiveInformationFactory()
+        } bind UsecaseContract.MapSensitiveInformation::class
 
         single {
             RegisterNewDonor(

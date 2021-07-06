@@ -60,6 +60,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
+/*
 abstract class DonateResourcesTest {
 
     private val dummyNonce = "random_nonce"
@@ -88,7 +89,7 @@ abstract class DonateResourcesTest {
     private val mockUserConsentDataStore = ConsentDataStoreStub()
     private val mockDonationDataStore = DonationDataStorageStub()
     private val mockServiceTokenDataStore = ServiceTokenDataStorageStub()
-    private val mockFilterSensitiveInformation = MockFilterSensitiveInformation()
+    private val mockFilterSensitiveInformation = FilterSensitiveInformationStub()
     private val mockRemoveInternalInformation = MockRemoveInternalInformation(jsonParser)
     private val mockUserConsentRepository = UserConsentRepositoryStub()
     private val serviceTokenRepository = ServiceTokenRepository(mockServiceTokenDataStore)
@@ -210,3 +211,4 @@ abstract class DonateResourcesTest {
 
     class DonateResourcesListener : CapturingResultListener<Unit>()
 }
+*/
