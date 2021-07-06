@@ -75,6 +75,8 @@ object Version {
     // https://github.com/InsertKoinIO/koin
     const val koin = "3.0.1"
 
+    const val slf4j = "1.7.31"
+
     // Network
     // https://ktor.io/
     const val ktor = "1.5.4"
