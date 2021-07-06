@@ -528,14 +528,7 @@ class CallBuilderTest {
         val client = HttpClient(MockEngine) {
             engine {
                 addHandler {
-                    respond(
-                        "Hello, world",
-                        headers = headersOf(
-                            "Content-Type" to listOf(
-                                ContentType.Text.Plain.toString()
-                            )
-                        )
-                    )
+                    defaultResponse()
                 }
             }
         }
@@ -560,14 +553,7 @@ class CallBuilderTest {
         val client = HttpClient(MockEngine) {
             engine {
                 addHandler {
-                    respond(
-                        "Hello, world",
-                        headers = headersOf(
-                            "Content-Type" to listOf(
-                                ContentType.Text.Plain.toString()
-                            )
-                        )
-                    )
+                    defaultResponse()
                 }
             }
         }
@@ -593,14 +579,7 @@ class CallBuilderTest {
         val client = HttpClient(MockEngine) {
             engine {
                 addHandler {
-                    respond(
-                        "Hello, world",
-                        headers = headersOf(
-                            "Content-Type" to listOf(
-                                ContentType.Text.Plain.toString()
-                            )
-                        )
-                    )
+                    defaultResponse()
                 }
             }
         }
@@ -625,14 +604,7 @@ class CallBuilderTest {
         val client = HttpClient(MockEngine) {
             engine {
                 addHandler {
-                    respond(
-                        "Hello, world",
-                        headers = headersOf(
-                            "Content-Type" to listOf(
-                                ContentType.Text.Plain.toString()
-                            )
-                        )
-                    )
+                    defaultResponse()
                 }
             }
         }
