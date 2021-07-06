@@ -27,7 +27,7 @@ object Dependency {
 
     object Java {
         val slf4jApi = "org.slf4j:slf4j-api:${Version.slf4j}"
-        val slf4jSimple = "org.slf4j:slf4j-simple:${Version.slf4j}"
+        val slf4jNop = "org.slf4j:slf4j-nop:${Version.slf4j}"
     }
 
     object Multiplatform {
