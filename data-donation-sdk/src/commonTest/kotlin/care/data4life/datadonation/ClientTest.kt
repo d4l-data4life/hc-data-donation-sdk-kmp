@@ -262,7 +262,7 @@ class ClientTest {
         val listener = CallbackStub()
         val usecase = RevokeUserConsentUsecaseStub()
 
-        val language = "de-j-old-n-kotlin-x-done"
+        val consentKey = "custom-consent-key"
 
         var capturedParameter: UsecaseContract.RevokeUserConsentParameter? = null
         var capturedListener: ListenerContract.Callback? = null
@@ -298,7 +298,7 @@ class ClientTest {
 
         // When
         client.revokeUserConsent(
-            language,
+            consentKey,
             listener
         )
 
@@ -306,7 +306,7 @@ class ClientTest {
         assertEquals(
             actual = capturedParameter,
             expected = RevokeUserConsentFactory.Parameter(
-                language = language,
+                consentKey = consentKey,
             )
         )
         assertSame(
@@ -327,7 +327,7 @@ class ClientTest {
         val usecase = CreateUserConsentUsecaseStub()
 
         val version = 23
-        val language = "de-j-old-n-kotlin-x-done"
+        val consentKey = "custom-consent-key"
         val keyPair = DummyData.keyPair
 
         var capturedParameter: UsecaseContract.CreateUserConsentParameter? = null
@@ -365,8 +365,8 @@ class ClientTest {
 
         // When
         client.createUserConsent(
+            consentKey,
             version,
-            language,
             listener
         )
 
@@ -374,8 +374,8 @@ class ClientTest {
         assertEquals(
             actual = capturedParameter,
             expected = CreateUserConsentFactory.Parameter(
+                consentKey = consentKey,
                 version = version,
-                language = language,
                 keyPair = keyPair
             )
         )

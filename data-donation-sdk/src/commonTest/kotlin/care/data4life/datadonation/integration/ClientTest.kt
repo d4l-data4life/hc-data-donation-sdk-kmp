@@ -194,8 +194,8 @@ class ClientTest {
 
         val consentDoc = capturedConsentDoc.receive().first()
         client.createUserConsent(
+            consentDoc.key,
             consentDoc.version,
-            consentDoc.language,
             consentListener
         )
         val result = capturedConsent.receive()

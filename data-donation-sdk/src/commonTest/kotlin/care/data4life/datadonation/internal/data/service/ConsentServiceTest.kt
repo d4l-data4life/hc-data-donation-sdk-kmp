@@ -20,7 +20,6 @@ import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.internal.data.exception.InternalErrorException
 import care.data4life.datadonation.internal.data.model.ConsentCreationPayload
 import care.data4life.datadonation.internal.data.model.ConsentRevocationPayload
-import care.data4life.datadonation.internal.data.service.ServiceContract.Companion.DEFAULT_DONATION_CONSENT_KEY
 import care.data4life.datadonation.internal.data.service.ServiceContract.Companion.LOCAL_PORT
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PARAMETER.LANGUAGE
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PARAMETER.LATEST_CONSENT
@@ -307,6 +306,7 @@ class ConsentServiceTest {
         val clock = ClockStub()
 
         val accessToken = "potato"
+        val consentKey = "custom-consent-key"
         val version = 23
 
         var capturedMethod: ServiceContract.Method? = null
@@ -329,6 +329,7 @@ class ConsentServiceTest {
         val service = ConsentService.getInstance(env, client, CallBuilderSpy, clock)
         service.createUserConsent(
             accessToken = accessToken,
+            consentKey = consentKey,
             version = version
         )
 
@@ -350,7 +351,7 @@ class ConsentServiceTest {
         assertEquals(
             actual = CallBuilderSpy.lastInstance!!.delegatedBody,
             expected = ConsentCreationPayload(
-                DEFAULT_DONATION_CONSENT_KEY,
+                consentKey,
                 version,
                 expectedTime.toString()
             )
@@ -364,6 +365,7 @@ class ConsentServiceTest {
         val env = Environment.LOCAL
 
         val accessToken = "potato"
+        val consentKey = "custom-consent-key"
 
         var capturedMethod: ServiceContract.Method? = null
         var capturedPath: Path? = null
@@ -380,7 +382,7 @@ class ConsentServiceTest {
 
         // When
         val service = ConsentService.getInstance(env, client, CallBuilderSpy, ClockStub())
-        service.revokeUserConsent(accessToken = accessToken)
+        service.revokeUserConsent(accessToken = accessToken, consentKey = consentKey)
 
         // Then
         assertEquals(
@@ -399,7 +401,7 @@ class ConsentServiceTest {
         )
         assertEquals(
             actual = CallBuilderSpy.lastInstance!!.delegatedBody,
-            expected = ConsentRevocationPayload(DEFAULT_DONATION_CONSENT_KEY)
+            expected = ConsentRevocationPayload(consentKey)
         )
     }
 }

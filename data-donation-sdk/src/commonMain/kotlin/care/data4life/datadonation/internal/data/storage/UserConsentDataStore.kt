@@ -39,8 +39,8 @@ internal class UserConsentDataStore(
     private val service: ServiceContract.ConsentService
 ) : StorageContract.UserConsentRemoteStorage {
 
-    override suspend fun createUserConsent(accessToken: String, version: Int, language: String?) {
-        service.createUserConsent(accessToken, version)
+    override suspend fun createUserConsent(accessToken: String, consentKey: String, version: Int) {
+        service.createUserConsent(accessToken, consentKey, version)
     }
 
     override suspend fun fetchUserConsents(
@@ -54,6 +54,6 @@ internal class UserConsentDataStore(
     override suspend fun signUserConsentDonation(accessToken: String, message: String): String =
         TODO()
 
-    override suspend fun revokeUserConsent(accessToken: String, language: String?) =
-        service.revokeUserConsent(accessToken)
+    override suspend fun revokeUserConsent(accessToken: String, consentKey: String) =
+        service.revokeUserConsent(accessToken, consentKey)
 }

@@ -55,8 +55,8 @@ class CreateUserConsentTest {
         // Given
         val parameter = CreateUserConsentFactory.Parameter(
             KeyPair(ByteArray(23), ByteArray(42)),
-            23,
-            "en-DE-x-private"
+            "custom-consent-key",
+            23
         )
 
         // When
@@ -69,28 +69,29 @@ class CreateUserConsentTest {
     @Test
     fun `Given a Usecase had been created and execute is called, it delegates the call to the UserContentRepository with the given parameters and returns the first consent`() = runBlockingTest {
         // Given
+        val consentKey = "custom-consent-key"
         val version = 42
-        val language = "de-j-old-n-kotlin-x-done"
         val keyPair = KeyPair(ByteArray(23), ByteArray(42))
 
+        var capturedCreationConsentKey: String? = "NotNull"
         var capturedVersion: Int? = null
-        var capturedLanguage: String? = null
-        var capturedConsentKey: String? = null
+
+        var capturedFetchingConsentKey: String? = null
 
         val consent = DummyData.userConsent
 
         val repo = UserConsentRepositoryStub()
 
-        repo.whenCreateUserConsent = { delegatedVersion, delegatedLanguage ->
+        repo.whenCreateUserConsent = { delegatedConsentKey, delegatedVersion ->
+            capturedCreationConsentKey = delegatedConsentKey
             capturedVersion = delegatedVersion
-            capturedLanguage = delegatedLanguage
         }
         repo.whenFetchUserConsents = { delegatedConsentKey ->
-            capturedConsentKey = delegatedConsentKey
+            capturedFetchingConsentKey = delegatedConsentKey
             listOf(consent, DummyData.userConsent.copy(accountId = "not expected"))
         }
 
-        val parameter = CreateUserConsentFactory.Parameter(keyPair, version, language)
+        val parameter = CreateUserConsentFactory.Parameter(keyPair, consentKey, version)
 
         // When
         val result = CreateUserConsentFactory(repo).withParams(parameter).execute()
@@ -101,13 +102,13 @@ class CreateUserConsentTest {
             expected = result
         )
         assertEquals(
-            actual = capturedLanguage,
-            expected = language
+            actual = capturedCreationConsentKey,
+            expected = consentKey
         )
         assertEquals(
             actual = capturedVersion,
             expected = version
         )
-        assertNull(capturedConsentKey)
+        assertNull(capturedFetchingConsentKey)
     }
 }

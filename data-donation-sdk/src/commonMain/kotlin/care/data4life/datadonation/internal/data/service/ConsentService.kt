@@ -21,7 +21,6 @@ import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.model.ConsentCreationPayload
 import care.data4life.datadonation.internal.data.model.ConsentRevocationPayload
-import care.data4life.datadonation.internal.data.service.ServiceContract.Companion.DEFAULT_DONATION_CONSENT_KEY
 import care.data4life.datadonation.internal.data.service.ServiceContract.Companion.LOCAL_PORT
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PARAMETER.LANGUAGE
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PARAMETER.LATEST_CONSENT
@@ -90,11 +89,12 @@ internal class ConsentService private constructor(
 
     override suspend fun createUserConsent(
         accessToken: String,
+        consentKey: String,
         version: Int
     ) {
         val path = buildPath(USER_CONSENTS)
         val payload = ConsentCreationPayload(
-            ServiceContract.DEFAULT_DONATION_CONSENT_KEY,
+            consentKey,
             version,
             clock.now().toString()
         )
@@ -108,9 +108,9 @@ internal class ConsentService private constructor(
             )
     }
 
-    override suspend fun revokeUserConsent(accessToken: String) {
+    override suspend fun revokeUserConsent(accessToken: String, consentKey: String) {
         val path = buildPath(USER_CONSENTS)
-        val payload = ConsentRevocationPayload(DEFAULT_DONATION_CONSENT_KEY)
+        val payload = ConsentRevocationPayload(consentKey)
 
         callBuilder
             .setAccessToken(accessToken)

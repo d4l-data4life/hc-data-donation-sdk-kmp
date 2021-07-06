@@ -79,10 +79,11 @@ internal interface ServiceContract {
 
         suspend fun createUserConsent(
             accessToken: String,
+            consentKey: String,
             version: Int
         )
 
-        suspend fun revokeUserConsent(accessToken: String)
+        suspend fun revokeUserConsent(accessToken: String, consentKey: String)
 
         companion object {
             val ROOT = listOf("consent", "api", "v1")

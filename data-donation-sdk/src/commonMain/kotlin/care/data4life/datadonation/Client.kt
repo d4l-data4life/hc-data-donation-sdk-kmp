@@ -73,14 +73,14 @@ class Client internal constructor(
     }
 
     override fun createUserConsent(
+        consentKey: String,
         consentDocumentVersion: Int,
-        language: String?,
         listener: ListenerContract.ResultListener<UserConsent>
     ) {
         val parameter = CreateUserConsentFactory.Parameter(
             configuration.getDonorKeyPair(),
-            consentDocumentVersion,
-            language
+            consentKey,
+            consentDocumentVersion
         )
 
         taskRunner.run(
@@ -109,10 +109,10 @@ class Client internal constructor(
     }
 
     override fun revokeUserConsent(
-        language: String?,
+        consentKey: String,
         callback: ListenerContract.Callback
     ) {
-        val parameter = RevokeUserConsentFactory.Parameter(language)
+        val parameter = RevokeUserConsentFactory.Parameter(consentKey)
 
         taskRunner.run(
             callback,

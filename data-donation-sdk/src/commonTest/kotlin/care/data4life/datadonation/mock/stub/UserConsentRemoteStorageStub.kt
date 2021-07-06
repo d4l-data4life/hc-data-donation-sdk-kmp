@@ -22,17 +22,17 @@ import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 
 class UserConsentRemoteStorageStub : StorageContract.UserConsentRemoteStorage, MockContract.Stub {
-    var whenCreateUserConsent: ((String?, Int, String?) -> Unit)? = null
+    var whenCreateUserConsent: ((String?, String, Int) -> Unit)? = null
     var whenFetchUserConsents: ((String?, String?) -> List<UserConsent>)? = null
     var whenSignUserConsentRegistration: ((String, String) -> String)? = null
     var whenSignUserConsentDonation: ((String, String) -> String)? = null
-    var whenRevokeUserConsent: ((String, String?) -> Unit)? = null
+    var whenRevokeUserConsent: ((String, String) -> Unit)? = null
 
     override suspend fun createUserConsent(
         accessToken: String,
-        version: Int,
-        language: String?
-    ) = whenCreateUserConsent?.invoke(accessToken, version, language) ?: throw MockException()
+        consentKey: String,
+        version: Int
+    ) = whenCreateUserConsent?.invoke(accessToken, consentKey, version) ?: throw MockException()
 
     override suspend fun fetchUserConsents(
         accessToken: String,
@@ -51,8 +51,8 @@ class UserConsentRemoteStorageStub : StorageContract.UserConsentRemoteStorage, M
 
     override suspend fun revokeUserConsent(
         accessToken: String,
-        language: String?
-    ) = whenRevokeUserConsent?.invoke(accessToken, language) ?: throw MockException()
+        consentKey: String
+    ) = whenRevokeUserConsent?.invoke(accessToken, consentKey) ?: throw MockException()
 
     override fun clear() {
         whenCreateUserConsent = null
