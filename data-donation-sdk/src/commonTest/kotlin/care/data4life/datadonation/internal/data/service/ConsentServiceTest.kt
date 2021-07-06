@@ -127,7 +127,7 @@ class ConsentServiceTest {
         val consentKey = "tomato"
 
         CallBuilderSpy.onExecute = { _, _ ->
-            "Fail!"
+            listOf("something")
         }
 
         // Then
@@ -220,7 +220,7 @@ class ConsentServiceTest {
         val consentKey = "tomato"
 
         CallBuilderSpy.onExecute = { _, _ ->
-            "Fail!"
+            listOf("something")
         }
 
         // Then

@@ -30,7 +30,7 @@ import care.data4life.datadonation.internal.data.service.ServiceContract.Consent
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PATH.CONSENTS_DOCUMENTS
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PATH.USER_CONSENTS
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.ROOT
-import care.data4life.datadonation.util.safeCast
+import care.data4life.datadonation.util.safeListCast
 import io.ktor.client.HttpClient
 import kotlinx.datetime.Clock
 
@@ -63,7 +63,7 @@ internal class ConsentService private constructor(
                 path
             )
 
-        return safeCast(response)
+        return safeListCast(response)
     }
 
     override suspend fun fetchUserConsents(
@@ -85,7 +85,7 @@ internal class ConsentService private constructor(
                 path
             )
 
-        return safeCast(response)
+        return safeListCast(response)
     }
 
     override suspend fun createUserConsent(

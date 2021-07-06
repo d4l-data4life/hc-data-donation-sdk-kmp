@@ -25,3 +25,15 @@ internal inline fun <reified T> safeCast(item: Any): T {
         item
     }
 }
+
+internal inline fun <reified T> safeListCast(list: Any): List<T> {
+    val castedList = safeCast<List<*>>(list)
+
+    castedList.forEach { item ->
+        if (item !is T) {
+            throw InternalErrorException("Unexpected Response.")
+        }
+    }
+
+    return castedList as List<T>
+}
