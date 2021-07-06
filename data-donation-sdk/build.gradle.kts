@@ -115,7 +115,7 @@ kotlin {
 
                 //DI
                 implementation(Dependency.Multiplatform.koin.android)
-                implementation(Dependency.Java.slf4jSimple)
+                implementation(Dependency.Java.slf4jNop)
                 implementation(Dependency.Java.slf4jApi)
 
                 //
