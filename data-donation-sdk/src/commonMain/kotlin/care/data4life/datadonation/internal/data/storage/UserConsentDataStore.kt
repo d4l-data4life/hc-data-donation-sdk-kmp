@@ -40,7 +40,7 @@ internal class UserConsentDataStore(
 ) : StorageContract.UserConsentRemoteStorage {
 
     override suspend fun createUserConsent(accessToken: String, version: Int, language: String?) {
-        service.createUserConsent(accessToken, version, language)
+        service.createUserConsent(accessToken, version)
     }
 
     override suspend fun fetchUserConsents(
@@ -49,11 +49,11 @@ internal class UserConsentDataStore(
     ): List<UserConsent> = service.fetchUserConsents(accessToken, false, consentKey)
 
     override suspend fun signUserConsentRegistration(accessToken: String, message: String): String =
-        service.requestSignatureRegistration(accessToken, message).signature
+        TODO()
 
     override suspend fun signUserConsentDonation(accessToken: String, message: String): String =
-        service.requestSignatureDonation(accessToken, message).signature
+        TODO()
 
     override suspend fun revokeUserConsent(accessToken: String, language: String?) =
-        service.revokeUserConsent(accessToken, language)
+        service.revokeUserConsent(accessToken)
 }

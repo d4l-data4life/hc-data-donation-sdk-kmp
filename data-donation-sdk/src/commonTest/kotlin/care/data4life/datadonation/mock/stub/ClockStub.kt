@@ -22,7 +22,7 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 
 internal class ClockStub : Clock, MockContract.Stub {
-    var whenNow : (() -> Instant)? = null
+    var whenNow: (() -> Instant)? = null
 
     override fun now(): Instant {
         return whenNow?.invoke() ?: throw MockException()

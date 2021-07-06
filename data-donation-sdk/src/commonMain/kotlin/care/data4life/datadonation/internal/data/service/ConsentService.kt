@@ -20,7 +20,8 @@ import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.model.ConsentCreationPayload
-import care.data4life.datadonation.internal.data.model.ConsentSignature
+import care.data4life.datadonation.internal.data.model.ConsentRevocationPayload
+import care.data4life.datadonation.internal.data.service.ServiceContract.Companion.DEFAULT_DONATION_CONSENT_KEY
 import care.data4life.datadonation.internal.data.service.ServiceContract.Companion.LOCAL_PORT
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PARAMETER.LANGUAGE
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PARAMETER.LATEST_CONSENT
@@ -39,7 +40,7 @@ internal class ConsentService private constructor(
 ) : ServiceContract.ConsentService {
     private fun buildPath(
         endpoint: String
-    ) : List<String> = ROOT.toMutableList().also { it.add(endpoint) }
+    ): List<String> = ROOT.toMutableList().also { it.add(endpoint) }
 
     override suspend fun fetchConsentDocuments(
         accessToken: String,
@@ -89,15 +90,13 @@ internal class ConsentService private constructor(
 
     override suspend fun createUserConsent(
         accessToken: String,
-        version: Int,
-        language: String?
+        version: Int
     ) {
         val path = buildPath(USER_CONSENTS)
         val payload = ConsentCreationPayload(
             ServiceContract.DEFAULT_DONATION_CONSENT_KEY,
             version,
-            clock.now().toString(),
-            language ?: ""
+            clock.now().toString()
         )
 
         callBuilder
@@ -109,22 +108,17 @@ internal class ConsentService private constructor(
             )
     }
 
-    override suspend fun requestSignatureRegistration(
-        accessToken: String,
-        message: String
-    ): ConsentSignature {
-        TODO("Not yet implemented")
-    }
+    override suspend fun revokeUserConsent(accessToken: String) {
+        val path = buildPath(USER_CONSENTS)
+        val payload = ConsentRevocationPayload(DEFAULT_DONATION_CONSENT_KEY)
 
-    override suspend fun requestSignatureDonation(
-        accessToken: String,
-        message: String
-    ): ConsentSignature {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun revokeUserConsent(accessToken: String, language: String?) {
-        TODO("Not yet implemented")
+        callBuilder
+            .setAccessToken(accessToken)
+            .setBody(payload)
+            .execute(
+                ServiceContract.Method.DELETE,
+                path
+            )
     }
 
     companion object : ServiceContract.ConsentServiceFactory {

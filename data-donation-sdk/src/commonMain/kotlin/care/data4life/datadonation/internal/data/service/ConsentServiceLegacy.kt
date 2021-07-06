@@ -106,8 +106,7 @@ internal class ConsentServiceLegacy(
 
     override suspend fun createUserConsent(
         accessToken: String,
-        version: Int,
-        language: String?
+        version: Int
     ) {
         return client.postWithJsonBody(
             environment,
@@ -117,15 +116,14 @@ internal class ConsentServiceLegacy(
             ConsentCreationPayload(
                 DEFAULT_DONATION_CONSENT_KEY,
                 version,
-                Clock.System.now().toString(),
-                language ?: ""
+                Clock.System.now().toString()
             )
         ) {
             header(Headers.XSRFToken, getToken(accessToken))
         }
     }
 
-    override suspend fun requestSignatureRegistration(
+    suspend fun requestSignatureRegistration(
         accessToken: String,
         message: String
     ): ConsentSignature {
@@ -144,7 +142,7 @@ internal class ConsentServiceLegacy(
         }
     }
 
-    override suspend fun requestSignatureDonation(accessToken: String, message: String): ConsentSignature {
+    suspend fun requestSignatureDonation(accessToken: String, message: String): ConsentSignature {
         return client.putWithBody(
             environment,
             accessToken,
@@ -160,13 +158,13 @@ internal class ConsentServiceLegacy(
         }
     }
 
-    override suspend fun revokeUserConsent(accessToken: String, language: String?) {
+    override suspend fun revokeUserConsent(accessToken: String) {
         return client.deleteWithBody(
             environment,
             accessToken,
             baseUrl,
             ServiceContract.ConsentService.Companion.Endpoints.userConsents,
-            ConsentRevocationPayload(DEFAULT_DONATION_CONSENT_KEY, language ?: "")
+            ConsentRevocationPayload(DEFAULT_DONATION_CONSENT_KEY)
         ) {
             header(
                 Headers.XSRFToken,

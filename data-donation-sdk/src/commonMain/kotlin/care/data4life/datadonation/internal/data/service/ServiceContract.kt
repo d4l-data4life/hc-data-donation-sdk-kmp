@@ -19,7 +19,6 @@ package care.data4life.datadonation.internal.data.service
 import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.UserConsent
-import care.data4life.datadonation.internal.data.model.ConsentSignature
 import care.data4life.datadonation.internal.data.model.DonationPayload
 import io.ktor.client.HttpClient
 import kotlinx.datetime.Clock
@@ -80,21 +79,10 @@ internal interface ServiceContract {
 
         suspend fun createUserConsent(
             accessToken: String,
-            version: Int,
-            language: String?
+            version: Int
         )
 
-        suspend fun requestSignatureRegistration(
-            accessToken: String,
-            message: String
-        ): ConsentSignature
-
-        suspend fun requestSignatureDonation(
-            accessToken: String,
-            message: String
-        ): ConsentSignature
-
-        suspend fun revokeUserConsent(accessToken: String, language: String?)
+        suspend fun revokeUserConsent(accessToken: String)
 
         companion object {
             val ROOT = listOf("consent", "api", "v1")

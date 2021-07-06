@@ -80,7 +80,7 @@ internal abstract class ConsentServiceTestLegacy : BaseServiceTest<ConsentServic
         )
 
         // When
-        service.createUserConsent("T", 1, null)
+        service.createUserConsent("T", 1)
 
         // Then
         assertEquals(HttpMethod.Post, lastRequest.method)
@@ -203,7 +203,7 @@ internal abstract class ConsentServiceTestLegacy : BaseServiceTest<ConsentServic
         )
 
         // When
-        service.revokeUserConsent("T", "DE")
+        service.revokeUserConsent("T")
 
         // Then
         assertEquals(HttpMethod.Delete, lastRequest.method)
