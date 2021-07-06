@@ -19,7 +19,9 @@ package care.data4life.datadonation.encryption.symetric
 import care.data4life.datadonation.encryption.Algorithm
 import care.data4life.datadonation.encryption.HashSize
 import care.data4life.datadonation.encryption.symmetric.EncryptionSymmetricKey
-import kotlin.test.*
+import kotlin.test.Ignore
+import kotlin.test.Test
+import kotlin.test.assertTrue
 
 /*
  * BSD 3-Clause License
@@ -78,7 +80,13 @@ class EncryptionSymmetricKeyCommonTest {
 
         val serializedKey = key.serialized()
 
-        with(EncryptionSymmetricKey(serializedKey, 256, Algorithm.Symmetric.AES(HashSize.Hash256))) {
+        with(
+            EncryptionSymmetricKey(
+                serializedKey,
+                256,
+                Algorithm.Symmetric.AES(HashSize.Hash256)
+            )
+        ) {
             assertTrue(serializedKey.contentEquals(serialized()))
         }
     }
