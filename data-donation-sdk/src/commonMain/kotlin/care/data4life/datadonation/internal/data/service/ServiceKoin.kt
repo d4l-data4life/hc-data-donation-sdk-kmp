@@ -22,8 +22,6 @@ import org.koin.dsl.module
 
 internal fun resolveServiceModule(): Module {
     return module {
-        single<ServiceContract.CallBuilder> {
-            CallBuilder.getInstance(get(), get())
-        } bind ServiceContract.CallBuilder::class
+
     }
 }

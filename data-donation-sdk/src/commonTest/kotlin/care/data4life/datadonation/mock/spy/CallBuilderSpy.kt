@@ -27,7 +27,7 @@ import care.data4life.datadonation.mock.MockException
 import io.ktor.client.HttpClient
 
 internal class CallBuilderSpy private constructor() : ServiceContract.CallBuilder, MockContract.Spy {
-    var whenExecute: ((ServiceContract.Method, Path, Int?) -> Any)? = null
+    var whenExecute: ((ServiceContract.Method, Path) -> Any)? = null
 
     private var headers: Header? = null
     val delegatedHeaders: Header?
@@ -71,13 +71,11 @@ internal class CallBuilderSpy private constructor() : ServiceContract.CallBuilde
 
     override suspend fun execute(
         method: ServiceContract.Method,
-        path: Path,
-        port: Int?
+        path: Path
     ): Any {
         return whenExecute?.invoke(
             method,
-            path,
-            port
+            path
         ) ?: throw MockException()
     }
 
@@ -94,19 +92,26 @@ internal class CallBuilderSpy private constructor() : ServiceContract.CallBuilde
         val delegatedClient: HttpClient?
             get() = client
 
+        private var port: Int? = null
+        val delegatedPort: Int?
+            get() = port
+
         override fun getInstance(
             environment: Environment,
-            client: HttpClient
-        ): ServiceContract.Service {
+            client: HttpClient,
+            port: Int?
+        ): ServiceContract.CallBuilder {
             return CallBuilderSpy().also {
                 this.environment = environment
                 this.client = client
+                this.port = port
             }
         }
 
         override fun clear() {
             environment = null
             client = null
+            port = null
         }
     }
 }

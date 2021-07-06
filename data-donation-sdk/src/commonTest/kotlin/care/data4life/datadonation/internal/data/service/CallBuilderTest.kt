@@ -223,7 +223,7 @@ class CallBuilderTest {
     }
 
     @Test
-    fun `Given a instance was create with a Environment and it was executed it uses the default port`() = runWithBlockingTest(GlobalScope.coroutineContext) {
+    fun `Given a instance was create with a Environment and it was executed it uses the default Port`() = runWithBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val env = Environment.LOCAL
         val client = HttpClient(MockEngine) {
@@ -246,7 +246,7 @@ class CallBuilderTest {
     }
 
     @Test
-    fun `Given a instance was create with a Environment and it was executed with a Port it uses the given port`() = runWithBlockingTest(GlobalScope.coroutineContext) {
+    fun `Given a instance was create with a Environment and a Port and it was executed it uses the given Port`() = runWithBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val port = 17
 
@@ -266,8 +266,8 @@ class CallBuilderTest {
         }
 
         // When
-        val builder = CallBuilder.getInstance(env, client)
-        builder.execute(port = port)
+        val builder = CallBuilder.getInstance(env, client, port)
+        builder.execute()
     }
 
     @Test
