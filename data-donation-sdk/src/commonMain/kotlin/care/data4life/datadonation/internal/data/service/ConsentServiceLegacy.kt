@@ -95,12 +95,12 @@ internal class ConsentServiceLegacy(
 
     override suspend fun fetchUserConsents(
         accessToken: String,
-        latest: Boolean?,
+        latestConsent: Boolean?,
         consentKey: String?
     ): List<UserConsent> {
         return client.getWithQuery(environment, accessToken, baseUrl, Endpoints.userConsents) {
             parameter(Parameters.userConsentDocumentKey, consentKey)
-            parameter(Parameters.latest, latest)
+            parameter(Parameters.latest, latestConsent)
         }
     }
 

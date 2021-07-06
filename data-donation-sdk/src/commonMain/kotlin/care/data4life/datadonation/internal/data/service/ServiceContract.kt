@@ -24,7 +24,7 @@ import care.data4life.datadonation.internal.data.model.DonationPayload
 import io.ktor.client.HttpClient
 
 typealias Header = Map<String, String>
-typealias Parameter = Map<String, String?>
+typealias Parameter = Map<String, Any?>
 typealias AccessToken = String
 typealias Path = List<String>
 
@@ -83,7 +83,7 @@ internal interface ServiceContract {
 
         suspend fun fetchUserConsents(
             accessToken: String,
-            latest: Boolean?,
+            latestConsent: Boolean?,
             consentKey: String? = null
         ): List<UserConsent>
 
@@ -113,7 +113,7 @@ internal interface ServiceContract {
                 const val USER_CONSENT_KEY = "consentDocumentKey"
                 const val LANGUAGE = "language"
                 const val VERSION = "version"
-                const val LATEST = "latest"
+                const val LATEST_CONSENT = "latest"
             }
 
             object PATH {

@@ -22,6 +22,7 @@ import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.model.ConsentSignature
 import care.data4life.datadonation.internal.data.service.ServiceContract.Companion.LOCAL_PORT
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PARAMETER.LANGUAGE
+import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PARAMETER.LATEST_CONSENT
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PARAMETER.USER_CONSENT_KEY
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PARAMETER.VERSION
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PATH.USER_CONSENTS
@@ -32,16 +33,20 @@ import io.ktor.client.HttpClient
 internal class ConsentService private constructor(
     private val callBuilder: ServiceContract.CallBuilder
 ) : ServiceContract.ConsentService {
+    private fun buildPath(
+        endpoint: String
+    ) : List<String> = ROOT.toMutableList().also { it.add(endpoint) }
+
     override suspend fun fetchConsentDocuments(
         accessToken: String,
         version: Int?,
         language: String?,
         consentKey: String
     ): List<ConsentDocument> {
-        val path = ROOT.toMutableList().also { it.add(USER_CONSENTS) }
+        val path = buildPath(USER_CONSENTS)
         val parameter = mapOf(
             USER_CONSENT_KEY to consentKey,
-            VERSION to version?.toString(),
+            VERSION to version,
             LANGUAGE to language
         )
 
@@ -58,10 +63,24 @@ internal class ConsentService private constructor(
 
     override suspend fun fetchUserConsents(
         accessToken: String,
-        latest: Boolean?,
+        latestConsent: Boolean?,
         consentKey: String?
     ): List<UserConsent> {
-        TODO("Not yet implemented")
+        val path = buildPath(USER_CONSENTS)
+        val parameter = mapOf(
+            LATEST_CONSENT to latestConsent,
+            USER_CONSENT_KEY to consentKey,
+        )
+
+        val response = callBuilder
+            .setAccessToken(accessToken)
+            .setParameter(parameter)
+            .execute(
+                ServiceContract.Method.GET,
+                path
+            )
+
+        return safeCast(response)
     }
 
     override suspend fun createUserConsent(accessToken: String, version: Int, language: String?) {

@@ -33,7 +33,7 @@ class ConsentServiceStub : ServiceContract.ConsentService {
 
     override suspend fun fetchUserConsents(
         accessToken: String,
-        latest: Boolean?,
+        latestConsent: Boolean?,
         consentKey: String?
     ): List<UserConsent> {
         TODO("Not yet implemented")

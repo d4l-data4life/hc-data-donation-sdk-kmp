@@ -20,6 +20,7 @@ import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.internal.data.exception.InternalErrorException
 import care.data4life.datadonation.internal.data.service.ServiceContract.Companion.LOCAL_PORT
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PARAMETER.LANGUAGE
+import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PARAMETER.LATEST_CONSENT
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PARAMETER.USER_CONSENT_KEY
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PARAMETER.VERSION
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PATH.USER_CONSENTS
@@ -109,7 +110,7 @@ class ConsentServiceTest {
     }
 
     @Test
-    fun `Given a instance had been created and fetchConsentDocuments was called with a AccessToken, Version, Language and ConsentKey it fails due to unexpected response`() = runBlockingTest {
+    fun `Given a instance had been created and fetchConsentDocuments was called with a AccessToken, Version, Language and a ConsentKey it fails due to unexpected response`() = runBlockingTest {
         // Given
         val client = HttpClient(MockEngine) { engine { addHandler { defaultResponse() } } }
         val env = Environment.LOCAL
@@ -142,7 +143,7 @@ class ConsentServiceTest {
     }
 
     @Test
-    fun `Given a instance had been created and fetchConsentDocuments was called with a AccessToken, Version, Language and ConsentKey it returns a List of ConsentDocument`() = runBlockingTest {
+    fun `Given a instance had been created and fetchConsentDocuments was called with a AccessToken, Version, Language and a ConsentKey it returns a List of ConsentDocument`() = runBlockingTest {
         // Given
         val client = HttpClient(MockEngine) { engine { addHandler { defaultResponse() } } }
         val env = Environment.LOCAL
@@ -196,29 +197,58 @@ class ConsentServiceTest {
         assertEquals(
             actual = CallBuilderSpy.lastInstance!!.delegatedParameter,
             expected = mapOf(
-                LANGUAGE to language,
-                VERSION to version.toString(),
-                USER_CONSENT_KEY to consentKey
+                USER_CONSENT_KEY to consentKey,
+                VERSION to version,
+                LANGUAGE to language
             )
         )
     }
 
     @Test
-    fun `Given a instance had been created and fetchConsentDocuments was called with a AccessToken, null as Version, Language and ConsentKey it returns a List of ConsentDocument`() = runBlockingTest {
+    fun `Given a instance had been created and fetchUserConsents was called with a AccessToken, Latest and a ConsentKey it fails due to unexpected response`() = runBlockingTest {
         // Given
         val client = HttpClient(MockEngine) { engine { addHandler { defaultResponse() } } }
         val env = Environment.LOCAL
 
         val accessToken = "potato"
-        val version = null
-        val language = "zh-TW-hans-de-informal-x-old"
+        val consentKey = "tomato"
+
+        CallBuilderSpy.onExecute = { _, _ ->
+            "Fail!"
+        }
+
+        // Then
+        val error = assertFailsWith<InternalErrorException> {
+            // When
+            val service = ConsentService.getInstance(env, client, CallBuilderSpy)
+            service.fetchUserConsents(
+                accessToken = accessToken,
+                latestConsent = false,
+                consentKey = consentKey
+            )
+        }
+
+        assertEquals(
+            actual = error.message,
+            expected = "Unexpected Response."
+        )
+    }
+
+    @Test
+    fun `Given a instance had been created and fetchUserConsents was called with a AccessToken, LatestConsent and a ConsentKey it returns a List of UserConsents`() = runBlockingTest {
+        // Given
+        val client = HttpClient(MockEngine) { engine { addHandler { defaultResponse() } } }
+        val env = Environment.LOCAL
+
+        val accessToken = "potato"
+        val lastedConsent = true
         val consentKey = "tomato"
 
         var capturedMethod: ServiceContract.Method? = null
         var capturedPath: Path? = null
         val response = listOf(
-            DummyData.consentDocument,
-            DummyData.consentDocument.copy(key = "soup")
+            DummyData.userConsent,
+            DummyData.userConsent.copy(accountId = "potato")
         )
 
         CallBuilderSpy.onExecute = { method, path ->
@@ -229,10 +259,9 @@ class ConsentServiceTest {
 
         // When
         val service = ConsentService.getInstance(env, client, CallBuilderSpy)
-        val result = service.fetchConsentDocuments(
+        val result = service.fetchUserConsents(
             accessToken = accessToken,
-            version = version,
-            language = language,
+            latestConsent = lastedConsent,
             consentKey = consentKey
         )
 
@@ -258,8 +287,7 @@ class ConsentServiceTest {
         assertEquals(
             actual = CallBuilderSpy.lastInstance!!.delegatedParameter,
             expected = mapOf(
-                LANGUAGE to language,
-                VERSION to version,
+                LATEST_CONSENT to lastedConsent,
                 USER_CONSENT_KEY to consentKey
             )
         )
