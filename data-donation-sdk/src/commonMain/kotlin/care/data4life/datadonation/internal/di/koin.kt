@@ -37,7 +37,6 @@ import care.data4life.datadonation.core.listener.ListenerContract
 import care.data4life.datadonation.core.listener.resolveListenerModule
 import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.encryption.resolveEncryptionModule
-import care.data4life.datadonation.internal.data.service.ConsentServiceLegacy
 import care.data4life.datadonation.internal.data.service.DonationService
 import care.data4life.datadonation.internal.data.service.ServiceContract
 import care.data4life.datadonation.internal.data.service.resolveServiceModule
