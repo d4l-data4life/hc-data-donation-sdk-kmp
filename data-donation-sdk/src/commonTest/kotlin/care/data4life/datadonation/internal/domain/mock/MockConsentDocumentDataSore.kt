@@ -33,8 +33,8 @@
 package care.data4life.datadonation.internal.domain.mock
 
 import care.data4life.datadonation.core.model.ConsentDocument
-import care.data4life.datadonation.internal.domain.repositories.ConsentDocumentRepository
-import care.data4life.datadonation.internal.mock.MockException
+import care.data4life.datadonation.internal.domain.repository.ConsentDocumentRepository
+import care.data4life.datadonation.mock.MockException
 
 class MockConsentDocumentDataSore : ConsentDocumentRepository.Remote {
 

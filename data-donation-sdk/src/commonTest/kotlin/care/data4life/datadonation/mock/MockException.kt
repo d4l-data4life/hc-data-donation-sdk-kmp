@@ -30,13 +30,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.domain.repositories
+package care.data4life.datadonation.mock
 
-import care.data4life.datadonation.internal.data.store.CredentialsDataStore
-
-internal class CredentialsRepository(private val dataStore: CredentialsDataStore) {
-
-    fun getDataDonationPublicKey() = dataStore.getDataDonationPublicKey()
-    fun getAnalyticsPlatformPublicKey() = dataStore.getAnalyticsPlatformPublicKey()
-
-}
+class MockException : IllegalStateException()

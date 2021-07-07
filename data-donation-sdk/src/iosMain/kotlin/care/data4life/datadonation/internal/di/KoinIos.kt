@@ -35,6 +35,6 @@ package care.data4life.datadonation.internal.di
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
-actual fun platformModule(): Module {
-    return module {}
+internal actual fun platformModule(): Module {
+    return module { }
 }

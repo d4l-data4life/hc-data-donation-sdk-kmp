@@ -30,9 +30,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.core.listener
+package care.data4life.datadonation.internal.domain.repository
 
-interface Callback {
-    fun onSuccess()
-    fun onError(exception: Exception)
+import care.data4life.datadonation.internal.data.store.CredentialsDataStore
+
+internal class CredentialsRepository(private val dataStore: CredentialsDataStore) {
+
+    fun getDataDonationPublicKey() = dataStore.getDataDonationPublicKey()
+    fun getAnalyticsPlatformPublicKey() = dataStore.getAnalyticsPlatformPublicKey()
 }

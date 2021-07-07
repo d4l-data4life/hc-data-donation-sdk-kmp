@@ -17,10 +17,10 @@
 package care.data4life.datadonation.internal.domain.mock
 
 import care.data4life.datadonation.core.model.ConsentDocument
-import care.data4life.datadonation.internal.domain.repositories.Contract
-import care.data4life.datadonation.internal.mock.MockException
+import care.data4life.datadonation.internal.domain.repository.RepositoryInternalContract
+import care.data4life.datadonation.mock.MockException
 
-class MockConsentDocumentRepository : Contract.ConsentDocumentRepository {
+class MockConsentDocumentRepository : RepositoryInternalContract.ConsentDocumentRepository {
     var whenFetchConsentDocuments: ((language: String?, version: Int?, consentKey: String) -> List<ConsentDocument>)? = null
 
     override suspend fun fetchConsentDocuments(

@@ -14,26 +14,22 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.domain.repositories
+package care.data4life.datadonation.internal.domain.usecases
 
-import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.UserConsent
 
-internal class Contract {
-    internal interface UserConsentRepository {
-        suspend fun createUserConsent(version: Int, language: String?)
-        suspend fun fetchUserConsents(): List<UserConsent>
-        suspend fun fetchUserConsent(consentKey: String): List<UserConsent>
-        suspend fun signUserConsentRegistration(message: String): String
-        suspend fun signUserConsentDonation(message: String): String
-        suspend fun revokeUserConsent(language: String?)
+interface UsecaseContract {
+    interface Usecase<ReturnType> {
+        suspend fun execute(): ReturnType
     }
 
-    internal interface ConsentDocumentRepository {
-        suspend fun fetchConsentDocuments(
-            language: String?,
-            version: Int?,
-            consentKey: String
-        ): List<ConsentDocument>
+    interface UsecaseFactory<Parameter : Any, ReturnType : Any> {
+        fun withParams(parameter: Parameter): Usecase<ReturnType>
     }
+
+    interface FetchUserConsentsParameter {
+        val consentKey: String?
+    }
+
+    interface FetchUserConsents : UsecaseFactory<FetchUserConsentsParameter, List<UserConsent>>
 }

@@ -32,8 +32,7 @@
 
 package care.data4life.datadonation
 
-import care.data4life.datadonation.core.listener.Callback
-import care.data4life.datadonation.core.listener.ResultListener
+import care.data4life.datadonation.core.listener.ListenerContract
 import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.KeyPair
@@ -43,14 +42,17 @@ import kotlinx.coroutines.CoroutineScope
 
 interface Contract {
 
-    enum class Service(name: String) { DD("DataDonation"), ALP("AnalyticsPlatform") }
+    enum class Service(name: String) {
+        DD("DataDonation"),
+        ALP("AnalyticsPlatform")
+    }
 
-    interface Configuration {
+    interface Configuration : ListenerContract.ScopeResolver {
         fun getServicePublicKey(service: Service): String
         fun getDonorKeyPair(): KeyPair?
-        fun getUserSessionToken(tokenListener: ResultListener<String>)
+        fun getUserSessionToken(tokenListener: ListenerContract.ResultListener<String>)
         fun getEnvironment(): Environment
-        fun getCoroutineContext(): CoroutineScope
+        override fun getCoroutineScope(): CoroutineScope
     }
 
     interface DataDonation {
@@ -58,31 +60,33 @@ interface Contract {
             consentDocumentVersion: Int?,
             language: String?,
             consentKey: String,
-            listener: ResultListener<List<ConsentDocument>>
+            listener: ListenerContract.ResultListener<List<ConsentDocument>>
         )
 
         fun createUserConsent(
             consentDocumentVersion: Int,
             language: String?,
-            listener: ResultListener<UserConsent>
+            listener: ListenerContract.ResultListener<UserConsent>
         )
 
         fun registerDonor(
-            listener: ResultListener<KeyPair>
+            listener: ListenerContract.ResultListener<KeyPair>
         )
 
-        fun fetchUserConsent(
+        fun fetchUserConsents(
             consentKey: String,
-            listener: ResultListener<List<UserConsent>>
+            listener: ListenerContract.ResultListener<List<UserConsent>>
         )
 
-        fun fetchUserConsents(listener: ResultListener<List<UserConsent>>)
+        fun fetchAllUserConsents(
+            listener: ListenerContract.ResultListener<List<UserConsent>>
+        )
 
-        fun revokeUserConsent(language: String?, callback: Callback)
+        fun revokeUserConsent(language: String?, callback: ListenerContract.Callback)
 
         fun <T : FhirResource> donateResources(
             resources: List<T>,
-            callback: Callback
+            callback: ListenerContract.Callback
         )
     }
 

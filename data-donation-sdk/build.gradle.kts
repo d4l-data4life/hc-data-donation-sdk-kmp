@@ -144,6 +144,8 @@ kotlin {
                 }
                 implementation(Dependency.Multiplatform.serialization.common)
                 implementation(Dependency.Multiplatform.serialization.protobuf)
+                implementation(Dependency.Multiplatform.ktor.iosCore)
+                implementation(Dependency.Multiplatform.ktor.ios)
             }
         }
         val iosTest by getting {

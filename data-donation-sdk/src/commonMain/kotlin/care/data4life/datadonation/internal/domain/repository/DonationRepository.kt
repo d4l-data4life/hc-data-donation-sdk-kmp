@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.domain.repositories
+package care.data4life.datadonation.internal.domain.repository
 
 import care.data4life.datadonation.internal.data.model.DonationPayload
 

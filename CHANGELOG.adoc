@@ -35,6 +35,8 @@ See link:{link-repository}/compare/v0.0.1...main[changeset]
 
 === Changed
 
+* The SDK client got a factory as companion. A direct access to the constructor is prohibit.
+
 === Deprecated
 
 === Removed
@@ -43,6 +45,7 @@ See link:{link-repository}/compare/v0.0.1...main[changeset]
 
 * iOS encryption NSData was not able to convert to ByteArray.
 * iOS tests were not able to run properly in coroutine context.
+* Dependencies are now resolved correctly by Koin.
 
 === Security
 

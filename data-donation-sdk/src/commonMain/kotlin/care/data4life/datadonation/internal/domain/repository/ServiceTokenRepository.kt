@@ -1,7 +1,7 @@
 /*
  * BSD 3-Clause License
  *
- * Copyright (c) 2020, D4L data4life gGmbH
+ * Copyright (c) 2021, D4L data4life gGmbH
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,6 +30,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.mock
+package care.data4life.datadonation.internal.domain.repository
 
-class MockException : IllegalStateException()
+class ServiceTokenRepository(private val remote: Remote) {
+
+    suspend fun requestDonationToken() = remote.requestDonationToken()
+
+    interface Remote {
+        suspend fun requestDonationToken(): String
+    }
+}

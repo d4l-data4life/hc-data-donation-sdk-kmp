@@ -33,11 +33,10 @@
 package care.data4life.datadonation.internal.data.store
 
 import care.data4life.datadonation.internal.data.service.DonationService
-import care.data4life.datadonation.internal.domain.repositories.RegistrationRepository
+import care.data4life.datadonation.internal.domain.repository.RegistrationRepository
 
 internal class RegistrationDataStore(private val donationService: DonationService) :
     RegistrationRepository.Remote {
 
     override suspend fun registerNewDonor(data: ByteArray) = donationService.registerNewDonor(data)
-
 }

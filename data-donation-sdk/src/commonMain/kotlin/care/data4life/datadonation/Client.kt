@@ -32,8 +32,8 @@
 
 package care.data4life.datadonation
 
-import care.data4life.datadonation.core.listener.Callback
-import care.data4life.datadonation.core.listener.ResultListener
+import care.data4life.datadonation.core.listener.ListenerContract
+import care.data4life.datadonation.core.listener.ListenerInternalContract
 import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.UserConsent
@@ -49,31 +49,31 @@ class Client internal constructor(
 ) : Contract.DataDonation {
     private val createUserContent: CreateUserConsent by koinApplication.koin.inject()
     private val registerNewDonor: RegisterNewDonor by koinApplication.koin.inject()
-    // private val fetchConsentDocuments: FetchConsentDocuments by koinApplication.koin.inject()
-    private val fetchUserConsents: FetchUserConsents by koinApplication.koin.inject()
+    private val fetchConsentDocuments: FetchConsentDocuments by koinApplication.koin.inject()
+    private val fetchUserConsents: UsecaseContract.FetchUserConsents by koinApplication.koin.inject()
     private val revokeUserContent: RevokeUserConsent by koinApplication.koin.inject()
     private val donateResources: DonateResources by koinApplication.koin.inject()
+    private val usecaseRunner: ListenerInternalContract.UsecaseRunner by koinApplication.koin.inject()
 
     override fun fetchConsentDocuments(
         consentDocumentVersion: Int?,
         language: String?,
         consentKey: String,
-        listener: ResultListener<List<ConsentDocument>>
+        listener: ListenerContract.ResultListener<List<ConsentDocument>>
     ) {
-        TODO()
-        /*fetchConsentDocuments.withParams(
+        fetchConsentDocuments.withParams(
             FetchConsentDocuments.Parameters(
                 consentDocumentVersion,
                 language,
                 consentKey
             )
-        ).runForListener(listener)*/
+        ).runForListener(listener)
     }
 
     override fun createUserConsent(
         consentDocumentVersion: Int,
         language: String?,
-        listener: ResultListener<UserConsent>
+        listener: ListenerContract.ResultListener<UserConsent>
     ) {
         createUserContent.withParams(
             CreateUserConsent.Parameters(
@@ -85,30 +85,47 @@ class Client internal constructor(
     }
 
     override fun registerDonor(
-        listener: ResultListener<KeyPair>
+        listener: ListenerContract.ResultListener<KeyPair>
     ) {
         registerNewDonor.withParams(RegisterNewDonor.Parameters(configuration.getDonorKeyPair()))
             .runForListener(listener)
     }
 
-    override fun fetchUserConsent(
+    override fun fetchUserConsents(
         consentKey: String,
-        listener: ResultListener<List<UserConsent>>,
+        listener: ListenerContract.ResultListener<List<UserConsent>>
     ) {
-        fetchUserConsents.withParams(FetchUserConsents.Parameters(consentKey))
-            .runForListener(listener)
+        val parameter = FetchUserConsentsFactory.Parameters(consentKey)
+
+        usecaseRunner.run(
+            listener,
+            fetchUserConsents.withParams(parameter)
+        )
     }
 
-    override fun fetchUserConsents(listener: ResultListener<List<UserConsent>>) {
-        fetchUserConsents.runForListener(listener)
+    override fun fetchAllUserConsents(
+        listener: ListenerContract.ResultListener<List<UserConsent>>
+    ) {
+        val parameter = FetchUserConsentsFactory.Parameters()
+
+        usecaseRunner.run(
+            listener,
+            fetchUserConsents.withParams(parameter)
+        )
     }
 
-    override fun revokeUserConsent(language: String?, callback: Callback) {
+    override fun revokeUserConsent(
+        language: String?,
+        callback: ListenerContract.Callback
+    ) {
         revokeUserContent.withParams(RevokeUserConsent.Parameters(language))
             .runForListener(callback)
     }
 
-    override fun <T : FhirResource> donateResources(resources: List<T>, callback: Callback) {
+    override fun <T : FhirResource> donateResources(
+        resources: List<T>,
+        callback: ListenerContract.Callback
+    ) {
         donateResources.withParams(
             DonateResources.Parameters(
                 configuration.getDonorKeyPair(),
@@ -117,10 +134,11 @@ class Client internal constructor(
         ).runForListener(callback)
     }
 
+    // TODO: Remove -> Wrong level of abstraction
     private fun <ReturnType : Any> Usecase<ReturnType>.runForListener(
-        listener: ResultListener<ReturnType>
+        listener: ListenerContract.ResultListener<ReturnType>
     ) {
-        configuration.getCoroutineContext().launch {
+        configuration.getCoroutineScope().launch {
             try {
                 listener.onSuccess(this@runForListener.execute())
             } catch (ex: Exception) {
@@ -129,10 +147,11 @@ class Client internal constructor(
         }
     }
 
+    // TODO: Remove -> Wrong level of abstraction
     private fun <ReturnType : Any> Usecase<ReturnType>.runForListener(
-        listener: Callback
+        listener: ListenerContract.Callback
     ) {
-        configuration.getCoroutineContext().launch {
+        configuration.getCoroutineScope().launch {
             try {
                 execute()
                 listener.onSuccess()

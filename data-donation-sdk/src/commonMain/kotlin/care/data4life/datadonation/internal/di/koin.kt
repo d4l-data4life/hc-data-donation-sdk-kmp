@@ -33,17 +33,19 @@
 package care.data4life.datadonation.internal.di
 
 import care.data4life.datadonation.Contract
+import care.data4life.datadonation.core.listener.listenerModule
 import care.data4life.datadonation.encryption.hybrid.HybridEncryptionRegistry
 import care.data4life.datadonation.internal.data.service.ConsentService
 import care.data4life.datadonation.internal.data.service.DonationService
 import care.data4life.datadonation.internal.data.store.*
-import care.data4life.datadonation.internal.domain.repositories.ConsentDocumentRepository
-import care.data4life.datadonation.internal.domain.repositories.CredentialsRepository
-import care.data4life.datadonation.internal.domain.repositories.DonationRepository
-import care.data4life.datadonation.internal.domain.repositories.RegistrationRepository
-import care.data4life.datadonation.internal.domain.repositories.ServiceTokenRepository
-import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
+import care.data4life.datadonation.internal.domain.repository.ConsentDocumentRepository
+import care.data4life.datadonation.internal.domain.repository.CredentialsRepository
+import care.data4life.datadonation.internal.domain.repository.DonationRepository
+import care.data4life.datadonation.internal.domain.repository.RegistrationRepository
+import care.data4life.datadonation.internal.domain.repository.ServiceTokenRepository
+import care.data4life.datadonation.internal.domain.repository.UserConsentRepository
 import care.data4life.datadonation.internal.domain.usecases.*
+import care.data4life.datadonation.internal.domain.usecases.UsecaseContract.FetchUserConsents
 import care.data4life.datadonation.internal.utils.Base64Factory
 import io.ktor.client.*
 import io.ktor.client.features.json.*
@@ -55,6 +57,7 @@ import org.koin.core.module.Module
 import org.koin.dsl.bind
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
+import care.data4life.datadonation.internal.domain.repository.RepositoryInternalContract as RepositoryContract
 
 // TODO: Break down dependencies and move them in their corresponding packages
 internal fun initKoin(configuration: Contract.Configuration): KoinApplication {
@@ -62,7 +65,8 @@ internal fun initKoin(configuration: Contract.Configuration): KoinApplication {
         modules(
             resolveRootModule(configuration),
             platformModule(),
-            coreModule()
+            coreModule(),
+            listenerModule(configuration)
         )
     }
 }
@@ -116,16 +120,22 @@ internal fun coreModule(): Module {
         single { DonationService(get(), get()) }
 
         // DataStores
-        single { UserConsentDataStore(get()) } bind UserConsentRepository.Remote::class
+        single<RepositoryContract.UserConsentRemote> {
+            UserConsentDataStore(get())
+        } bind RepositoryContract.UserConsentRemote::class
         single { RegistrationDataStore(get()) } bind RegistrationRepository.Remote::class
-        single { ConsentDocumentDataStore(get()) }
+        single { ConsentDocumentDataStore(get()) } bind ConsentDocumentRepository.Remote::class
         single { DonationDataStore(get()) } bind DonationRepository.Remote::class
         single { ServiceTokenDataStore(get()) } bind ServiceTokenRepository.Remote::class
 
         // Repositories
-        single { UserConsentRepository(get(), get()) } bind care.data4life.datadonation.internal.domain.repositories.Contract.UserConsentRepository::class
+        single<RepositoryContract.UserConsentRepository> {
+            UserConsentRepository(get(), get())
+        } bind RepositoryContract.UserConsentRepository::class
         single { RegistrationRepository(get()) }
-        single { ConsentDocumentRepository(get(), get()) } bind ConsentDocumentRepository::class
+        single<RepositoryContract.ConsentDocumentRepository> {
+            ConsentDocumentRepository(get(), get())
+        } bind RepositoryContract.ConsentDocumentRepository::class
         single { CredentialsRepository(get()) }
         single { DonationRepository(get()) }
         single { ServiceTokenRepository(get()) }
@@ -155,9 +165,13 @@ internal fun coreModule(): Module {
                 get()
             )
         }
-        single { FetchConsentDocuments(get()) }
+        single {
+            FetchConsentDocuments(get())
+        } bind FetchConsentDocuments::class
         single { CreateUserConsent(get()) }
-        single { FetchUserConsents(get()) }
+        single<FetchUserConsents> {
+            FetchUserConsentsFactory(get())
+        } bind FetchUserConsents::class
         single { RemoveInternalInformation(kotlinx.serialization.json.Json {}) }
         single { RevokeUserConsent(get()) } bind RevokeUserConsent::class
     }

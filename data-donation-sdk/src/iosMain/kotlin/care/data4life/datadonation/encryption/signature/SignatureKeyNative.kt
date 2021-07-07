@@ -155,8 +155,8 @@ fun generateKey(type: SecKeyAlgorithm, size: Int): Pair<SecKeyRef, SecKeyRef> {
         CFBridgingRelease(privateKeyAttr)
         CFBridgingRelease(keyPairAttr)
 
-        if (statusCode == noErr.toInt() && publicKey.value != null && privateKey.value != null) {
-            return privateKey.value!! to publicKey.value!!
+        return if (statusCode == noErr.toInt() && publicKey.value != null && privateKey.value != null) {
+            privateKey.value!! to publicKey.value!!
         } else {
             throw GeneralEncryptionException("Cannot generate keypair: $statusCode")
         }

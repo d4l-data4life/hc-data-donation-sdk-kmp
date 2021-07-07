@@ -32,13 +32,13 @@
 
 package care.data4life.datadonation.internal.domain.mock
 
-import care.data4life.datadonation.internal.domain.repositories.ServiceTokenRepository
-import care.data4life.datadonation.internal.mock.MockException
+import care.data4life.datadonation.internal.domain.repository.ServiceTokenRepository
+import care.data4life.datadonation.mock.MockException
 
 class MockServiceTokenDataStore : ServiceTokenRepository.Remote {
 
     var whenRequestDonationToken: (() -> String)? = null
 
     override suspend fun requestDonationToken(): String =
-        whenRequestDonationToken?.invoke() ?: throw  MockException()
+        whenRequestDonationToken?.invoke() ?: throw MockException()
 }

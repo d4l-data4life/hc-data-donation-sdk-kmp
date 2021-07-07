@@ -39,6 +39,7 @@ import care.data4life.datadonation.toNSData
 import platform.CoreFoundation.CFDataRef
 import platform.Foundation.*
 import platform.Security.*
+import platform.posix.*
 
 internal val rsaPkcsIDENTIFIER = listOf(42, 34376, 8845069, 1, 1, 1)
 

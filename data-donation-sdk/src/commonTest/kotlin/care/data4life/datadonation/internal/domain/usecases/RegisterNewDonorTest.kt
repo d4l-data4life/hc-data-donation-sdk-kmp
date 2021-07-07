@@ -32,7 +32,6 @@
 
 package care.data4life.datadonation.internal.domain.usecases
 
-import CapturingResultListener
 import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.encryption.Algorithm
 import care.data4life.datadonation.encryption.hybrid.HybridEncryption
@@ -45,12 +44,13 @@ import care.data4life.datadonation.internal.data.model.SignedConsentMessage
 import care.data4life.datadonation.internal.data.service.ConsentService
 import care.data4life.datadonation.internal.domain.mock.MockRegistrationDataStore
 import care.data4life.datadonation.internal.domain.mock.MockServiceTokenDataStore
-import care.data4life.datadonation.internal.domain.mock.MockUserConsentRepository
-import care.data4life.datadonation.internal.domain.repositories.RegistrationRepository
-import care.data4life.datadonation.internal.domain.repositories.ServiceTokenRepository
+import care.data4life.datadonation.internal.domain.repository.RegistrationRepository
+import care.data4life.datadonation.internal.domain.repository.ServiceTokenRepository
 import care.data4life.datadonation.internal.utils.Base64Encoder
 import care.data4life.datadonation.internal.utils.KeyGenerator
 import care.data4life.datadonation.internal.utils.toJsonString
+import care.data4life.datadonation.mock.spy.CapturingResultListener
+import care.data4life.datadonation.mock.stub.UserConsentRepositoryStub
 import io.ktor.utils.io.charsets.Charset
 import runBlockingTest
 import kotlin.test.Test
@@ -69,7 +69,7 @@ abstract class RegisterNewDonorTest {
     private val mockServiceTokenDataStore = MockServiceTokenDataStore()
     private val mockRegistrationDataStore = MockRegistrationDataStore()
     private val serviceTokenRepository = ServiceTokenRepository(mockServiceTokenDataStore)
-    private val mockUserConsentRepository = MockUserConsentRepository()
+    private val mockUserConsentRepository = UserConsentRepositoryStub()
     private val registrationRepository = RegistrationRepository(mockRegistrationDataStore)
 
     private val signatureKey = object : SignatureKeyPrivate {

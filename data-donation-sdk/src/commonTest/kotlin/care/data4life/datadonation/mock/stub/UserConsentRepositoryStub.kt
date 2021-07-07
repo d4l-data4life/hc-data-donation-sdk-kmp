@@ -14,13 +14,14 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.domain.mock
+package care.data4life.datadonation.mock.stub
 
 import care.data4life.datadonation.core.model.UserConsent
-import care.data4life.datadonation.internal.domain.repositories.Contract
-import care.data4life.datadonation.internal.mock.MockException
+import care.data4life.datadonation.internal.domain.repository.RepositoryInternalContract
+import care.data4life.datadonation.mock.MockContract
+import care.data4life.datadonation.mock.MockException
 
-class MockUserConsentRepository : Contract.UserConsentRepository {
+class UserConsentRepositoryStub : RepositoryInternalContract.UserConsentRepository, MockContract.Stub {
     var whenCreateUserConsent: ((version: Int, language: String?) -> UserConsent)? = null
     var whenFetchUserConsents: ((consentKey: String?) -> List<UserConsent>)? = null
     var whenSignUserConsent: ((message: String) -> String)? = null
@@ -30,11 +31,7 @@ class MockUserConsentRepository : Contract.UserConsentRepository {
         whenCreateUserConsent?.invoke(version, language)
     }
 
-    override suspend fun fetchUserConsents(): List<UserConsent> {
-        return whenFetchUserConsents?.invoke(null) ?: throw MockException()
-    }
-
-    override suspend fun fetchUserConsent(consentKey: String): List<UserConsent> {
+    override suspend fun fetchUserConsents(consentKey: String?): List<UserConsent> {
         return whenFetchUserConsents?.invoke(consentKey) ?: throw MockException()
     }
 
@@ -48,5 +45,12 @@ class MockUserConsentRepository : Contract.UserConsentRepository {
 
     override suspend fun revokeUserConsent(language: String?) {
         whenRevokeUserConsent?.invoke(language)
+    }
+
+    override fun clear() {
+        whenCreateUserConsent = null
+        whenFetchUserConsents = null
+        whenSignUserConsent = null
+        whenRevokeUserConsent = null
     }
 }
