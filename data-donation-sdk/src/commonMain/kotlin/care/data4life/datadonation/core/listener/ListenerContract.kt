@@ -19,7 +19,7 @@ package care.data4life.datadonation.core.listener
 import care.data4life.datadonation.internal.domain.usecases.UsecaseContract
 import kotlinx.coroutines.CoroutineScope
 
-interface ListenerContract {
+internal interface ListenerContract {
     interface Callback {
         fun onSuccess()
         fun onError(exception: Exception)

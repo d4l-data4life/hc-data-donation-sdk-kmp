@@ -20,7 +20,7 @@ import org.koin.core.module.Module
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-fun listenerModule(resolver: ListenerContract.ScopeResolver): Module {
+internal fun listenerModule(resolver: ListenerContract.ScopeResolver): Module {
     return module {
         single<ListenerContract.TaskRunner> {
             TaskRunner(resolver)
