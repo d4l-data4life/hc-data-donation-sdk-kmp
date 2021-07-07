@@ -41,22 +41,27 @@ kotlin {
         }
     }
 
-    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinNativeCompile> {
-        kotlinOptions {
-            freeCompilerArgs += listOf("-Xallow-result-return-type")
-        }
-    }
-    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompileCommon> {
-        kotlinOptions {
-            freeCompilerArgs += listOf("-Xallow-result-return-type")
-        }
-    }
-    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        kotlinOptions {
-            freeCompilerArgs += listOf("-Xallow-result-return-type")
+    iosArm64 {
+        val platform = "iphoneos"
+        compilations.getByName("main") {
+            cinterops.create("iOSCryptoDD") {
+                val interopTask = tasks[interopProcessingTaskName]
+                interopTask.dependsOn(":iOSCryptoDD:build${platform.capitalize()}")
+                includeDirs.headerFilterOnly("$rootDir/iOSCryptoDD/build/Release-$platform/include")
+            }
         }
     }
 
+    iosX64 {
+        val platform = "iphonesimulator"
+        compilations.getByName("main") {
+            cinterops.create("iOSCryptoDD") {
+                val interopTask = tasks[interopProcessingTaskName]
+                interopTask.dependsOn(":iOSCryptoDD:build${platform.capitalize()}")
+                includeDirs.headerFilterOnly("$rootDir/iOSCryptoDD/build/Release-$platform/include")
+            }
+        }
+    }
 
     sourceSets {
         all {
@@ -112,7 +117,7 @@ kotlin {
 
                 //DI
                 implementation(Dependency.Multiplatform.koin.android)
-                implementation(Dependency.Java.slf4jSimple)
+                implementation(Dependency.Java.slf4jNop)
                 implementation(Dependency.Java.slf4jApi)
 
                 //
@@ -150,65 +155,12 @@ kotlin {
                 dependsOn(commonTest.get())
             }
         }
+    }
 
-        configure(listOf(targets["iosX64"])) {
-            this as org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
-
-            compilations["main"].kotlinOptions.freeCompilerArgs += mutableListOf(
-                "-include-binary",
-                "$projectDir/native/crypto/libcrypto.a"
-            )
-            compilations.getByName("main") {
-                this as org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeCompilation
-
-                val iOSDCryptoDD by cinterops.creating {
-                    packageName("crypto.dd")
-                    // Path to .def file
-                    defFile("src/iosMain/cinterop/iOSCryptoDD.def")
-
-                    // Directories for header search (an analogue of the -I<path> compiler option)
-                    includeDirs("$projectDir/native/crypto/")
-                }
-            }
-
-            binaries.all {
-                linkerOpts(
-                    "-L$projectDir/native/crypto",
-                    "-lcrypto",
-                    "-L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator",
-                    "-L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift-5.0/iphonesimulator",
-                    "-rpath", "/usr/lib/swift"
-                )
-            }
-        }
-        configure(listOf(targets["iosArm64"])) {
-            this as org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
-
-            compilations["main"].kotlinOptions.freeCompilerArgs += mutableListOf(
-                "-include-binary",
-                "$projectDir/native/crypto/libcrypto.a"
-            )
-            compilations.getByName("main") {
-                this as org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeCompilation
-
-                val iOSDCryptoDD by cinterops.creating {
-                    packageName("crypto.dd")
-                    // Path to .def file
-                    defFile("src/iosMain/cinterop/iOSCryptoDD.def")
-
-                    // Directories for header search (an analogue of the -I<path> compiler option)
-                    includeDirs("$projectDir/native/crypto/")
-                }
-            }
-
-            binaries.all {
-                linkerOpts(
-                    "-L$projectDir/native/crypto",
-                    "-lcrypto",
-                    "-L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos",
-                    "-L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift-5.0/iphoneos",
-                    "-rpath", "/usr/lib/swift"
-                )
+    targets.all {
+        compilations.all {
+            kotlinOptions {
+                freeCompilerArgs = freeCompilerArgs + "-Xallow-result-return-type"
             }
         }
     }
