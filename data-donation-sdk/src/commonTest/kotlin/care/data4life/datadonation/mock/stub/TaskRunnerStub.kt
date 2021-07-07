@@ -18,12 +18,12 @@ package care.data4life.datadonation.mock.stub
 
 import care.data4life.datadonation.core.listener.ListenerContract.Callback
 import care.data4life.datadonation.core.listener.ListenerContract.ResultListener
-import care.data4life.datadonation.core.listener.ListenerContract.TaskRunner
+import care.data4life.datadonation.core.listener.ListenerInternalContract
 import care.data4life.datadonation.internal.domain.usecases.UsecaseContract.Usecase
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 
-class TaskRunnerStub : TaskRunner, MockContract.Stub {
+class TaskRunnerStub : ListenerInternalContract.TaskRunner, MockContract.Stub {
     var whenRunListener: ((ResultListener<*>, Usecase<*>) -> Unit)? = null
     var whenRunCallback: ((Callback, Usecase<*>) -> Unit)? = null
 

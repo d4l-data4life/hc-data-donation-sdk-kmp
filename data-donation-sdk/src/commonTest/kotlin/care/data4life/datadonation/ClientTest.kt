@@ -17,6 +17,7 @@
 package care.data4life.datadonation
 
 import care.data4life.datadonation.core.listener.ListenerContract
+import care.data4life.datadonation.core.listener.ListenerInternalContract
 import care.data4life.datadonation.core.listener.listenerModule
 import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.UserConsent
@@ -97,7 +98,7 @@ class ClientTest {
                                 capturedUsecase = delegatedUsecase
                             }
                         }
-                    } bind ListenerContract.TaskRunner::class
+                    } bind ListenerInternalContract.TaskRunner::class
                 }
             )
         }
@@ -160,7 +161,7 @@ class ClientTest {
                                 capturedUsecase = delegatedUsecase
                             }
                         }
-                    } bind ListenerContract.TaskRunner::class
+                    } bind ListenerInternalContract.TaskRunner::class
                 }
             )
         }

@@ -35,7 +35,7 @@ class TaskRunnerTest {
     fun `It fulfils TaskRunner`() {
         val runner: Any = TaskRunner(ClientConfigurationStub())
 
-        assertTrue(runner is ListenerContract.TaskRunner)
+        assertTrue(runner is ListenerInternalContract.TaskRunner)
     }
 
     @Test

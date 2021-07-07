@@ -33,6 +33,7 @@
 package care.data4life.datadonation
 
 import care.data4life.datadonation.core.listener.ListenerContract
+import care.data4life.datadonation.core.listener.ListenerInternalContract
 import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.UserConsent
@@ -52,7 +53,7 @@ class Client internal constructor(
     private val fetchUserConsents: UsecaseContract.FetchUserConsents by koinApplication.koin.inject()
     private val revokeUserContent: RevokeUserConsent by koinApplication.koin.inject()
     private val donateResources: DonateResources by koinApplication.koin.inject()
-    private val taskRunner: ListenerContract.TaskRunner by koinApplication.koin.inject()
+    private val taskRunner: ListenerInternalContract.TaskRunner by koinApplication.koin.inject()
 
     override fun fetchConsentDocuments(
         consentDocumentVersion: Int?,

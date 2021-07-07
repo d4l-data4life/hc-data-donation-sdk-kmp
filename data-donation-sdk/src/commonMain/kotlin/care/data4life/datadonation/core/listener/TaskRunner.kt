@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 
 internal class TaskRunner(
     private val scopeResolver: ListenerContract.ScopeResolver
-) : ListenerContract.TaskRunner {
+) : ListenerInternalContract.TaskRunner {
     override fun <ReturnType : Any> run(
         listener: ListenerContract.ResultListener<ReturnType>,
         usecase: UsecaseContract.Usecase<ReturnType>

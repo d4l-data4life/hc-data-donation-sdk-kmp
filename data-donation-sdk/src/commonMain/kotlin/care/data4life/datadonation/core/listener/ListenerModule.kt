@@ -22,8 +22,8 @@ import org.koin.dsl.module
 
 internal fun listenerModule(resolver: ListenerContract.ScopeResolver): Module {
     return module {
-        single<ListenerContract.TaskRunner> {
+        single<ListenerInternalContract.TaskRunner> {
             TaskRunner(resolver)
-        } bind ListenerContract.TaskRunner::class
+        } bind ListenerInternalContract.TaskRunner::class
     }
 }
