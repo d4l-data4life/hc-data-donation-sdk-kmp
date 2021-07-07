@@ -67,7 +67,7 @@ class Client internal constructor(
             consentKey = consentKey
         )
 
-        taskRunner.run(
+        usecaseRunner.run(
             listener,
             fetchConsentDocuments.withParams(parameter)
         )

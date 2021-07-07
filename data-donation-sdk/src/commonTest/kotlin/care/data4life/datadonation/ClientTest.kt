@@ -67,7 +67,7 @@ class ClientTest {
     }
 
     @Test
-    fun `Given fetchAllUserConsents is called with a ResultListener it resolves the Usecase with its default Parameter and delegates them to the TaskRunner`() {
+    fun `Given fetchAllUserConsents is called with a ResultListener it resolves the Usecase with its default Parameter and delegates them to the UsecaseRunner`() {
         // Given
         val config = ClientConfigurationStub()
         val listener = ResultListenerStub<List<UserConsent>>()
@@ -128,7 +128,7 @@ class ClientTest {
     }
 
     @Test
-    fun `Given fetchUserConsents is called with a ConsentKey and with a ResultListener  it resolves the Usecase with wraps the given Parameter and delegates that to the TaskRunner`() {
+    fun `Given fetchUserConsents is called with a ConsentKey and with a ResultListener  it resolves the Usecase with wraps the given Parameter and delegates that to the UsecaseRunner`() {
         // Given
         val config = ClientConfigurationStub()
         val listener = ResultListenerStub<List<UserConsent>>()
@@ -191,7 +191,7 @@ class ClientTest {
     }
 
     @Test
-    fun `Given fetchConsentDocuments is called with a ConsentKey and with a ResultListener it resolves the Usecase with wraps the given Parameter and delegates that to the TaskRunner`() {
+    fun `Given fetchConsentDocuments is called with a ConsentKey and with a ResultListener it resolves the Usecase with wraps the given Parameter and delegates that to the UsecaseRunner`() {
         // Given
         val config = ClientConfigurationStub()
         val listener = ResultListenerStub<List<ConsentDocument>>()
@@ -224,13 +224,13 @@ class ClientTest {
                     } bind UsecaseContract.FetchConsentDocuments::class
 
                     single {
-                        TaskRunnerStub().also {
+                        UsecaseRunnerStub().also {
                             it.whenRunListener = { delegatedResultListener, delegatedUsecase ->
                                 capturedListener = delegatedResultListener
                                 capturedUsecase = delegatedUsecase
                             }
                         }
-                    } bind ListenerContract.TaskRunner::class
+                    } bind ListenerInternalContract.UsecaseRunner::class
                 }
             )
         }
