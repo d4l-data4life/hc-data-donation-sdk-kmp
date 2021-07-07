@@ -19,7 +19,7 @@ package care.data4life.datadonation.core.listener
 import care.data4life.datadonation.internal.domain.usecases.UsecaseContract
 
 internal interface ListenerInternalContract {
-    interface TaskRunner {
+    interface UsecaseRunner {
         fun <ReturnType : Any> run(
             listener: ListenerContract.ResultListener<ReturnType>,
             usecase: UsecaseContract.Usecase<ReturnType>

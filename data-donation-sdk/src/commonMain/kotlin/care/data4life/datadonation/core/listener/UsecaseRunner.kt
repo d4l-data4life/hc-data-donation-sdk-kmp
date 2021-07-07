@@ -19,9 +19,9 @@ package care.data4life.datadonation.core.listener
 import care.data4life.datadonation.internal.domain.usecases.UsecaseContract
 import kotlinx.coroutines.launch
 
-internal class TaskRunner(
+internal class UsecaseRunner(
     private val scopeResolver: ListenerContract.ScopeResolver
-) : ListenerInternalContract.TaskRunner {
+) : ListenerInternalContract.UsecaseRunner {
     override fun <ReturnType : Any> run(
         listener: ListenerContract.ResultListener<ReturnType>,
         usecase: UsecaseContract.Usecase<ReturnType>

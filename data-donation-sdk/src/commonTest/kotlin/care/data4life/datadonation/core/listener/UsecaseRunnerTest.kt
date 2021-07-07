@@ -30,12 +30,12 @@ import kotlin.test.assertEquals
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
-class TaskRunnerTest {
+class UsecaseRunnerTest {
     @Test
-    fun `It fulfils TaskRunner`() {
-        val runner: Any = TaskRunner(ClientConfigurationStub())
+    fun `It fulfils UsecaseRunner`() {
+        val runner: Any = UsecaseRunner(ClientConfigurationStub())
 
-        assertTrue(runner is ListenerInternalContract.TaskRunner)
+        assertTrue(runner is ListenerInternalContract.UsecaseRunner)
     }
 
     @Test
@@ -45,7 +45,7 @@ class TaskRunnerTest {
         val listener = ResultListenerStub<String>()
         val usecase = UsecaseStub<String>()
 
-        val runner = TaskRunner(config)
+        val runner = UsecaseRunner(config)
 
         val result = "potato"
         val capturedResult = Channel<String>()
@@ -76,7 +76,7 @@ class TaskRunnerTest {
         val listener = ResultListenerStub<String>()
         val usecase = UsecaseStub<String>()
 
-        val runner = TaskRunner(config)
+        val runner = UsecaseRunner(config)
 
         val exception = RuntimeException("tomato")
         val capturedException = Channel<Exception>()
@@ -107,7 +107,7 @@ class TaskRunnerTest {
         val listener = CallbackStub()
         val usecase = UsecaseStub<Unit>()
 
-        val runner = TaskRunner(config)
+        val runner = UsecaseRunner(config)
 
         val wasExecuted = Channel<Boolean>()
         val capturedCall = Channel<Boolean>()
@@ -140,7 +140,7 @@ class TaskRunnerTest {
         val listener = CallbackStub()
         val usecase = UsecaseStub<Unit>()
 
-        val runner = TaskRunner(config)
+        val runner = UsecaseRunner(config)
 
         val exception = RuntimeException("tomato")
         val capturedException = Channel<Exception>()

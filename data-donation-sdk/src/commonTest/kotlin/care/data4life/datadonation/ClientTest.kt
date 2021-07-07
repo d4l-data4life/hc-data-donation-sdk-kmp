@@ -31,7 +31,7 @@ import care.data4life.datadonation.mock.stub.ClientConfigurationStub
 import care.data4life.datadonation.mock.stub.FetchUserConsentStub
 import care.data4life.datadonation.mock.stub.FetchUserUsecaseStub
 import care.data4life.datadonation.mock.stub.ResultListenerStub
-import care.data4life.datadonation.mock.stub.TaskRunnerStub
+import care.data4life.datadonation.mock.stub.UsecaseRunnerStub
 import org.koin.core.context.stopKoin
 import org.koin.dsl.bind
 import org.koin.dsl.koinApplication
@@ -92,13 +92,13 @@ class ClientTest {
                     } bind UsecaseContract.FetchUserConsents::class
 
                     single {
-                        TaskRunnerStub().also {
+                        UsecaseRunnerStub().also {
                             it.whenRunListener = { delegatedResultListener, delegatedUsecase ->
                                 capturedListener = delegatedResultListener
                                 capturedUsecase = delegatedUsecase
                             }
                         }
-                    } bind ListenerInternalContract.TaskRunner::class
+                    } bind ListenerInternalContract.UsecaseRunner::class
                 }
             )
         }
@@ -155,13 +155,13 @@ class ClientTest {
                     } bind UsecaseContract.FetchUserConsents::class
 
                     single {
-                        TaskRunnerStub().also {
+                        UsecaseRunnerStub().also {
                             it.whenRunListener = { delegatedResultListener, delegatedUsecase ->
                                 capturedListener = delegatedResultListener
                                 capturedUsecase = delegatedUsecase
                             }
                         }
-                    } bind ListenerInternalContract.TaskRunner::class
+                    } bind ListenerInternalContract.UsecaseRunner::class
                 }
             )
         }

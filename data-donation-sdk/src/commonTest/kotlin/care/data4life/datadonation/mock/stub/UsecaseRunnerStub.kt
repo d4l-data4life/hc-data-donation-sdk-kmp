@@ -23,7 +23,7 @@ import care.data4life.datadonation.internal.domain.usecases.UsecaseContract.Usec
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 
-class TaskRunnerStub : ListenerInternalContract.TaskRunner, MockContract.Stub {
+class UsecaseRunnerStub : ListenerInternalContract.UsecaseRunner, MockContract.Stub {
     var whenRunListener: ((ResultListener<*>, Usecase<*>) -> Unit)? = null
     var whenRunCallback: ((Callback, Usecase<*>) -> Unit)? = null
 
