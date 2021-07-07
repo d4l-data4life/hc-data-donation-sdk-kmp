@@ -24,3 +24,6 @@ class RegisterNewDonorAndroidTest : RegisterNewDonorTest()
 
 @RunWith(JUnit4::class)
 class RemoveInternalInformationAndroidTest : RemoveInternalInformationTest()
+
+@RunWith(JUnit4::class)
+class DonateResourcesAndroidTest : DonateResourcesTest()

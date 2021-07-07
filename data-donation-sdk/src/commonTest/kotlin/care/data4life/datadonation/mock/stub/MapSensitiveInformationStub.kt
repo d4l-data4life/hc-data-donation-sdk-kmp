@@ -17,17 +17,10 @@
 package care.data4life.datadonation.mock.stub
 
 import care.data4life.datadonation.internal.domain.usecases.UsecaseContract
-import care.data4life.datadonation.mock.MockContract
 import care.data4life.hl7.fhir.stu3.model.FhirResource
 
 class MapSensitiveInformationStub :
-    UsecaseContract.Usecase<List<FhirResource>>,
-    MockContract.Stub {
-    override suspend fun execute(): List<FhirResource> {
-        TODO("Not yet implemented")
-    }
+    UsecaseContract.MapSensitiveInformation,
+    UsecaseFactoryStub<List<FhirResource>, List<FhirResource>>()
 
-    override fun clear() {
-        TODO("Not yet implemented")
-    }
-}
+class MapSensitiveInformationUsecaseStub : UsecaseStub<List<FhirResource>>()

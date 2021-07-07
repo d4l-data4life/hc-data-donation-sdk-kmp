@@ -32,12 +32,16 @@
 
 package care.data4life.datadonation.internal.domain.usecases
 
-import care.data4life.datadonation.encryption.EncryptionContract.HybridEncryption
+import care.data4life.datadonation.encryption.EncryptionContract
 import care.data4life.datadonation.encryption.signature.SignatureKeyPrivate
 import care.data4life.datadonation.internal.data.exception.MissingCredentialsException
-import care.data4life.datadonation.internal.data.model.*
+import care.data4life.datadonation.internal.data.model.ConsentMessage
+import care.data4life.datadonation.internal.data.model.ConsentRequest
+import care.data4life.datadonation.internal.data.model.ConsentSignatureType
+import care.data4life.datadonation.internal.data.model.DonationPayload
+import care.data4life.datadonation.internal.data.model.SignedConsentMessage
 import care.data4life.datadonation.internal.data.service.ServiceContract.Companion.DEFAULT_DONATION_CONSENT_KEY
-import care.data4life.datadonation.internal.domain.mock.*
+import care.data4life.datadonation.internal.domain.mock.MockRemoveInternalInformation
 import care.data4life.datadonation.internal.domain.repository.DonationRepository
 import care.data4life.datadonation.internal.domain.repository.ServiceTokenRepository
 import care.data4life.datadonation.internal.utils.Base64Encoder
@@ -46,21 +50,22 @@ import care.data4life.datadonation.mock.DummyData
 import care.data4life.datadonation.mock.spy.CapturingResultListener
 import care.data4life.datadonation.mock.stub.ConsentDataStoreStub
 import care.data4life.datadonation.mock.stub.DonationDataStorageStub
+import care.data4life.datadonation.mock.stub.MapSensitiveInformationStub
 import care.data4life.datadonation.mock.stub.ServiceTokenDataStorageStub
 import care.data4life.datadonation.mock.stub.UserConsentRepositoryStub
 import care.data4life.hl7.fhir.stu3.FhirStu3Parser
 import care.data4life.hl7.fhir.stu3.codesystem.QuestionnaireResponseStatus
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
 import care.data4life.hl7.fhir.stu3.model.Reference
-import care.data4life.sdk.util.test.runBlockingTest
-import io.ktor.utils.io.charsets.*
+import io.ktor.utils.io.charsets.Charset
 import kotlinx.serialization.json.Json
+import runBlockingTest
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-/*
 abstract class DonateResourcesTest {
 
     private val dummyNonce = "random_nonce"
@@ -89,7 +94,7 @@ abstract class DonateResourcesTest {
     private val mockUserConsentDataStore = ConsentDataStoreStub()
     private val mockDonationDataStore = DonationDataStorageStub()
     private val mockServiceTokenDataStore = ServiceTokenDataStorageStub()
-    private val mockFilterSensitiveInformation = FilterSensitiveInformationStub()
+    private val mapSensitiveInformation = MapSensitiveInformationStub()
     private val mockRemoveInternalInformation = MockRemoveInternalInformation(jsonParser)
     private val mockUserConsentRepository = UserConsentRepositoryStub()
     private val serviceTokenRepository = ServiceTokenRepository(mockServiceTokenDataStore)
@@ -124,7 +129,7 @@ abstract class DonateResourcesTest {
     private val signedConsentJsonString =
         SignedConsentMessage(consentMessage.toJsonString(), dummySignature).toJsonString()
 
-    private val encryptorDD = object : HybridEncryption {
+    private val encryptorDD = object : EncryptionContract.HybridEncryption {
         override fun encrypt(plaintext: ByteArray) = when (plaintext.decodeToString()) {
             requestJsonString -> dummyEncryptedRequest
             signedConsentJsonString -> dummyEncryptedSignedMessage
@@ -134,7 +139,7 @@ abstract class DonateResourcesTest {
         override fun decrypt(ciphertext: ByteArray) = Result.success(byteArrayOf())
     }
 
-    private val encryptorALP = object : HybridEncryption {
+    private val encryptorALP = object : EncryptionContract.HybridEncryption {
         override fun encrypt(plaintext: ByteArray) =
             when (fhirParser.fromJson(QuestionnaireResponse::class, plaintext.decodeToString())) {
                 dummyResourceList[0] -> dummyEncryptedResourceList[0]
@@ -160,7 +165,7 @@ abstract class DonateResourcesTest {
 
     private val donateResources =
         DonateResources(
-            mockFilterSensitiveInformation,
+            mapSensitiveInformation,
             mockRemoveInternalInformation,
             createRequestConsentPayload,
             donationRepository,
@@ -169,6 +174,7 @@ abstract class DonateResourcesTest {
 
     private val capturingListener = DonateResourcesListener()
 
+    @Ignore
     @Test
     fun donateResourcesTest() = runBlockingTest {
         // Given
@@ -184,7 +190,7 @@ abstract class DonateResourcesTest {
         )
 
         // Then
-        assertEquals(capturingListener.captured, Unit)
+        // assertEquals(capturingListener.captured, Unit)
         assertTrue(result!!.request.contentEquals(dummyEncryptedSignedMessage))
         assertEquals(result!!.documents.size, dummyResourceList.size)
         assertTrue(result!!.documents[0].document.contentEquals(dummyEncryptedResourceList[0]))
@@ -211,4 +217,3 @@ abstract class DonateResourcesTest {
 
     class DonateResourcesListener : CapturingResultListener<Unit>()
 }
-*/
