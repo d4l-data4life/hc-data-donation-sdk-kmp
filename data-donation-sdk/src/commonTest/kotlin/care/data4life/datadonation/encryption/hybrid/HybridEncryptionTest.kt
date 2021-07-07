@@ -56,12 +56,13 @@ import care.data4life.datadonation.encryption.hybrid.HybridEncryption.Companion.
 import care.data4life.datadonation.encryption.hybrid.HybridEncryptionPayload.Companion.AES_KEY_SIZE_LENGTH
 import care.data4life.datadonation.encryption.hybrid.HybridEncryptionPayload.Companion.CIPHERTEXT_SIZE_LENGTH
 import care.data4life.datadonation.encryption.hybrid.HybridEncryptionPayload.Companion.VERSION_LENGTH
-import care.data4life.datadonation.internal.utils.*
+import care.data4life.datadonation.internal.utils.CommonBase64Encoder
+import care.data4life.datadonation.internal.utils.decodeBase64Bytes
+import care.data4life.datadonation.internal.utils.decodeHexBytes
 import kotlin.random.Random
 import kotlin.test.*
 
 class HybridEncryptionTest {
-
     private val rsaKey =
         EncryptionPrivateKey(RSA_KEY_SIZE_BITS, Algorithm.Asymmetric.RsaOAEP(HashSize.Hash256))
     private val handle = HybridEncryptionHandle(

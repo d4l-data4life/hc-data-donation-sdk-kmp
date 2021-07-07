@@ -3,7 +3,8 @@
 build/
 local.properties
 gen/
-
+*/build/
+*/build/*
 # IDEA/Android Studio ignores
 *iml
 .idea/*
