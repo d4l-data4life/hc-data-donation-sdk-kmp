@@ -22,7 +22,7 @@ import org.koin.dsl.module
 
 internal fun listenerModule(resolver: ListenerContract.ScopeResolver): Module {
     return module {
-        single {
+        single<ListenerInternalContract.UsecaseRunner> {
             UsecaseRunner(resolver)
         } bind ListenerInternalContract.UsecaseRunner::class
     }
