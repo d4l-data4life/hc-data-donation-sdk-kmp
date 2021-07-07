@@ -112,8 +112,6 @@ kotlin {
                 //Kotlin
                 implementation(Dependency.Multiplatform.kotlin.stdlibAndroid)
                 implementation(Dependency.Multiplatform.coroutines.android)
-                implementation(Dependency.Java.slf4jApi)
-                implementation(Dependency.Java.slf4jSimple)
 
                 //DI
                 implementation(Dependency.Multiplatform.koin.android)
