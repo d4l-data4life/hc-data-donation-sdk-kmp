@@ -1,5 +1,3 @@
-import kotlinx.coroutines.runBlocking
-
 /*
  * BSD 3-Clause License
  *
@@ -31,5 +29,17 @@ import kotlinx.coroutines.runBlocking
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.newSingleThreadContext
+import kotlinx.coroutines.runBlocking
+import kotlin.coroutines.CoroutineContext
 
-internal actual fun <T> runTest(block: suspend () -> T) { runBlocking { block() } }
+actual val testCoroutineContext: CoroutineContext = newSingleThreadContext("testRunner")
+
+actual fun runBlockingTest(block: suspend CoroutineScope.() -> Unit) {
+    runBlocking(testCoroutineContext) { this.block() }
+}
+
+actual fun runWithBlockingTest(context: CoroutineContext, block: suspend CoroutineScope.() -> Unit) {
+    runBlocking(context) { this.block() }
+}

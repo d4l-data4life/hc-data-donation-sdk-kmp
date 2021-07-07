@@ -36,7 +36,7 @@ import CapturingResultListener
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.model.DummyData
 import care.data4life.datadonation.internal.domain.mock.MockUserConsentRepository
-import runTest
+import runBlockingTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -50,12 +50,12 @@ abstract class FetchUserConsentsTest {
     private val capturingListener = FetchUserConsentListener()
 
     @Test
-    fun fetchAllUserConsents() = runTest {
+    fun fetchAllUserConsents() = runBlockingTest {
         fetchUserConsents()
     }
 
     @Test
-    fun fetchSingleUserConsent() = runTest {
+    fun fetchSingleUserConsent() = runBlockingTest {
         fetchUserConsents("custom-consent-key")
     }
 

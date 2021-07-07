@@ -1,5 +1,3 @@
-import care.data4life.datadonation.core.listener.ResultListener
-
 /*
  * BSD 3-Clause License
  *
@@ -31,11 +29,16 @@ import care.data4life.datadonation.core.listener.ResultListener
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+import care.data4life.datadonation.core.listener.ResultListener
+import kotlinx.coroutines.CoroutineScope
+import kotlin.coroutines.CoroutineContext
 
-internal expect fun <T> runTest(block: suspend () -> T)
+// see:https://github.com/Kotlin/kotlinx.coroutines/issues/1996
+internal expect val testCoroutineContext: CoroutineContext
+internal expect fun runBlockingTest(block: suspend CoroutineScope.() -> Unit)
+internal expect fun runWithBlockingTest(context: CoroutineContext, block: suspend CoroutineScope.() -> Unit)
 
-abstract class CapturingResultListener<R: Any> : ResultListener<R> {
-
+abstract class CapturingResultListener<R : Any> : ResultListener<R> {
     var captured: R? = null
     var error: Exception? = null
 
@@ -46,5 +49,4 @@ abstract class CapturingResultListener<R: Any> : ResultListener<R> {
     override fun onError(exception: Exception) {
         error = exception
     }
-
 }

@@ -58,8 +58,8 @@ class EncryptionSymmetricKeyNative : EncryptionSymmetricKey {
         this.cryptoWrapper = CryptoAES(key.toNSData())
     }
 
-    override fun decrypt(encrypted: ByteArray, associatedData: ByteArray): Result<ByteArray> =
-        runCatching {
+    override fun decrypt(encrypted: ByteArray, associatedData: ByteArray): Result<ByteArray> {
+        return runCatching {
             val iv = encrypted.sliceArray(0..15)
             val encrypted = encrypted.sliceArray(16..encrypted.lastIndex)
             return@runCatching (
@@ -70,6 +70,7 @@ class EncryptionSymmetricKeyNative : EncryptionSymmetricKey {
                 ) as NSData
                 ).toByteArray()
         }
+    }
 
     override fun serialized(): ByteArray = key
 

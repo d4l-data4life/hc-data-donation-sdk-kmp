@@ -39,7 +39,7 @@ import care.data4life.hl7.fhir.stu3.codesystem.QuestionnaireResponseStatus
 import care.data4life.hl7.fhir.stu3.model.*
 import care.data4life.hl7.fhir.stu3.primitive.Integer
 import kotlinx.serialization.json.Json
-import runTest
+import runBlockingTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -57,10 +57,9 @@ abstract class RemoveInternalInformationTest {
             valueInteger = Integer(12)
         )
 
-
     @Test
-    fun `QuestionnaireResponse id is removed`() = runTest {
-        //Given
+    fun `QuestionnaireResponse id is removed`() = runBlockingTest {
+        // Given
         val response = QuestionnaireResponse(
             id = "imAnId",
             status = QuestionnaireResponseStatus.COMPLETED
@@ -69,10 +68,10 @@ abstract class RemoveInternalInformationTest {
         val resources =
             listOf(response)
 
-        //When
+        // When
         val result = usecase.withParams(resources).execute()
 
-        //Then
+        // Then
         assertEquals(
             result.size,
             1
@@ -88,8 +87,8 @@ abstract class RemoveInternalInformationTest {
     }
 
     @Test
-    fun `Multiple different resources id removed but other information kept`() = runTest {
-        //Given
+    fun `Multiple different resources id removed but other information kept`() = runBlockingTest {
+        // Given
         val response = QuestionnaireResponse(
             id = "QuestionnaireResponse1",
             status = QuestionnaireResponseStatus.COMPLETED,
@@ -105,10 +104,10 @@ abstract class RemoveInternalInformationTest {
         val resources =
             listOf(response, care)
 
-        //When
+        // When
         val result = usecase.withParams(resources).execute()
 
-        //Then
+        // Then
         assertEquals(
             result.size,
             2
@@ -123,10 +122,9 @@ abstract class RemoveInternalInformationTest {
         assertEquals(care.copy(id = null), careParsed)
     }
 
-
     @Test
-    fun `QuestionnaireResponse not changed when there is no ID`() = runTest {
-        //Given
+    fun `QuestionnaireResponse not changed when there is no ID`() = runBlockingTest {
+        // Given
         val response = QuestionnaireResponse(
             status = QuestionnaireResponseStatus.COMPLETED,
             item = answers(stringAnswer.copy())
@@ -134,10 +132,10 @@ abstract class RemoveInternalInformationTest {
         val resources =
             listOf(response)
 
-        //When
+        // When
         val result = usecase.withParams(resources).execute()
 
-        //Then
+        // Then
         assertEquals(
             result.size,
             1

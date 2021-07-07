@@ -1,8 +1,25 @@
+/*
+ * Copyright (c) 2021 D4L data4life gGmbH / All rights reserved.
+ *
+ * D4L owns all legal rights, title and interest in and to the Software Development Kit ("SDK"),
+ * including any intellectual property rights that subsist in the SDK.
+ *
+ * The SDK and its documentation may be accessed and used for viewing/review purposes only.
+ * Any usage of the SDK for other purposes, including usage for the development of
+ * applications/third-party applications shall require the conclusion of a license agreement
+ * between you and D4L.
+ *
+ * If you are interested in licensing the SDK for your own applications/third-party
+ * applications and/or if you’d like to contribute to the development of the SDK, please
+ * contact D4L by email to help@data4life.care.
+ */
+
+package care.data4life.datadonation.encryption.symetric
+
 import care.data4life.datadonation.encryption.Algorithm
 import care.data4life.datadonation.encryption.HashSize
-import care.data4life.datadonation.encryption.assymetric.EncryptionPrivateKey
 import care.data4life.datadonation.encryption.symmetric.EncryptionSymmetricKey
-import kotlin.test.BeforeTest
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
@@ -38,38 +55,39 @@ import kotlin.test.assertTrue
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-class EncryptionAsymmetricKeyCommonTest {
-
-
+class EncryptionSymmetricKeyCommonTest {
     @Test
     fun `Generate, encrypt and decrypt`() {
-        val testData = byteArrayOf(1, 2, 3, 4, 5)
-
-        val key = EncryptionPrivateKey(2048, Algorithm.Asymmetric.RsaOAEP(HashSize.Hash256))
-        val encrypted = key.encrypt(testData)
-        val decrypted = key.decrypt(encrypted)
+        val testData = byteArrayOf(1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5)
+        val testAuth = byteArrayOf(1, 2, 3, 4, 5)
+        val key = EncryptionSymmetricKey(256, Algorithm.Symmetric.AES(HashSize.Hash256))
+        val encrypted = key.encrypt(testData, testAuth)
+        val decrypted = key.decrypt(encrypted, testAuth)
         assertTrue(decrypted.isSuccess)
-        assertTrue(decrypted.getOrThrow().contentEquals(testData))
+        assertTrue(testData.contentEquals(decrypted.getOrNull()!!))
+    }
+
+    @Ignore // TODO: Export of this key type
+    @Test // TODO: Add proper vaidation after parsing ASN1 is added
+    fun `Key is exported to valid ASN1 DER encoded value`() {
+        val key = EncryptionSymmetricKey(256, Algorithm.Symmetric.AES(HashSize.Hash256))
+        assertTrue(key.pkcs8.startsWith("MII"))
     }
 
     @Test
     fun `Generate, serialize and deserialize`() {
-        val key = EncryptionPrivateKey(2048, Algorithm.Asymmetric.RsaOAEP(HashSize.Hash256))
+        val key = EncryptionSymmetricKey(256, Algorithm.Symmetric.AES(HashSize.Hash256))
 
-        val private = key.serializedPrivate()
-        val public = key.serializedPublic()
+        val serializedKey = key.serialized()
 
-        with(EncryptionPrivateKey(private,public,2048,Algorithm.Asymmetric.RsaOAEP(HashSize.Hash256))) {
-            assertTrue(private.contentEquals(serializedPrivate()))
-            assertTrue(public.contentEquals(serializedPublic()))
+        with(
+            EncryptionSymmetricKey(
+                serializedKey,
+                256,
+                Algorithm.Symmetric.AES(HashSize.Hash256)
+            )
+        ) {
+            assertTrue(serializedKey.contentEquals(serialized()))
         }
-
     }
-
-    @Test//TODO: add proper vaidation after parsing ASN1 is added
-    fun `Key is exported to valid ASN1 DER encoded value`() {
-        val key = EncryptionPrivateKey(2048, Algorithm.Asymmetric.RsaOAEP(HashSize.Hash256))
-        assertTrue(key.pkcs8Private.startsWith("MII"))
-    }
-
 }

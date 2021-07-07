@@ -36,7 +36,7 @@ import CapturingResultListener
 import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.internal.data.model.DummyData
 import care.data4life.datadonation.internal.domain.mock.MockConsentDocumentRepository
-import runTest
+import runBlockingTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -49,7 +49,7 @@ abstract class FetchConsentDocumentsTest {
     private val capturingListener = FetchConsentDocumentListener()
 
     @Test
-    fun createUserContentFullParams() = runTest {
+    fun createUserContentFullParams() = runBlockingTest {
         // Given
         val expectedLanguage = "en"
         val expectedVersion = 1

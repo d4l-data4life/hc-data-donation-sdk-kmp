@@ -32,8 +32,8 @@
 
 package care.data4life.datadonation.encryption.hybrid
 
-import care.data4life.datadonation.encryption.assymetric.EncryptionPrivateKey
-import care.data4life.datadonation.encryption.assymetric.EncryptionPublicKey
+import care.data4life.datadonation.encryption.asymetric.EncryptionPrivateKey
+import care.data4life.datadonation.encryption.asymetric.EncryptionPublicKey
 import care.data4life.datadonation.encryption.symmetric.EncryptionSymmetricKey
 
 interface HybridEncryption {
@@ -59,5 +59,4 @@ interface HybridEncryption {
         fun getPublicKey(): EncryptionPublicKey
         fun getPrivateKey(): EncryptionPrivateKey
     }
-
 }

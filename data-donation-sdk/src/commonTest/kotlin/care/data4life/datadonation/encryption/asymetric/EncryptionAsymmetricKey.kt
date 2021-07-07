@@ -1,10 +1,3 @@
-import care.data4life.datadonation.encryption.*
-import care.data4life.datadonation.encryption.signature.SignatureKeyPrivate
-import care.data4life.datadonation.encryption.signature.SignatureKeyPublic
-import kotlin.test.BeforeTest
-import kotlin.test.Test
-import kotlin.test.assertTrue
-
 /*
  * BSD 3-Clause License
  *
@@ -36,32 +29,42 @@ import kotlin.test.assertTrue
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package care.data4life.datadonation.encryption.asymetric
 
-open class SignatureKeyCommonTest {
+import care.data4life.datadonation.encryption.Algorithm
+import care.data4life.datadonation.encryption.HashSize
+import kotlin.test.Test
+import kotlin.test.assertTrue
 
-
+class EncryptionAsymmetricKeyCommonTest {
 
     @Test
-    fun `Generate, sign and verify`() {
-        val testData = byteArrayOf(1)
-        val key = SignatureKeyPrivate(2048, Algorithm.Signature.RsaPSS(HashSize.Hash256))
-        val signature = key.sign(testData)
-        assertTrue(key.verify(testData,signature))
-        val prv = key.serializedPrivate()
-        val pub = key.serializedPublic()
-        val nkey = SignatureKeyPrivate(prv,pub,2048,Algorithm.Signature.RsaPSS(HashSize.Hash256))
-        val pubHandle = SignatureKeyPublic(pub,2048,Algorithm.Signature.RsaPSS(HashSize.Hash256))
-        assertTrue(pubHandle.verify(testData,signature))
-        assertTrue(nkey.verify(testData,signature))
-        assertTrue(nkey.verify(testData,nkey.sign(testData)))
+    fun `Generate, encrypt and decrypt`() {
+        val testData = byteArrayOf(1, 2, 3, 4, 5)
+
+        val key = EncryptionPrivateKey(2048, Algorithm.Asymmetric.RsaOAEP(HashSize.Hash256))
+        val encrypted = key.encrypt(testData)
+        val decrypted = key.decrypt(encrypted)
+        assertTrue(decrypted.isSuccess)
+        assertTrue(decrypted.getOrThrow().contentEquals(testData))
     }
 
+    @Test
+    fun `Generate, serialize and deserialize`() {
+        val key = EncryptionPrivateKey(2048, Algorithm.Asymmetric.RsaOAEP(HashSize.Hash256))
 
-    @Test//TODO: add proper vaidation after parsing ASN1 is added
+        val private = key.serializedPrivate()
+        val public = key.serializedPublic()
+
+        with(EncryptionPrivateKey(private, public, 2048, Algorithm.Asymmetric.RsaOAEP(HashSize.Hash256))) {
+            assertTrue(private.contentEquals(serializedPrivate()))
+            assertTrue(public.contentEquals(serializedPublic()))
+        }
+    }
+
+    @Test // TODO: add proper vaidation after parsing ASN1 is added
     fun `Key is exported to valid ASN1 DER encoded value`() {
-        val key = SignatureKeyPrivate(2048, Algorithm.Signature.RsaPSS(HashSize.Hash256))
+        val key = EncryptionPrivateKey(2048, Algorithm.Asymmetric.RsaOAEP(HashSize.Hash256))
         assertTrue(key.pkcs8Private.startsWith("MII"))
-        assertTrue(key.pkcs8Public.startsWith("MII"))
     }
-
 }

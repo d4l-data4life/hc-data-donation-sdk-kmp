@@ -44,7 +44,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpMethod
 import io.ktor.http.headersOf
 import kotlinx.serialization.builtins.ListSerializer
-import runTest
+import runBlockingTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -60,7 +60,7 @@ internal abstract class ConsentServiceTest : BaseServiceTest<ConsentService>() {
         ConsentService(httpClient, environment)
 
     @Test
-    fun createUserConsentTest() = runTest {
+    fun createUserConsentTest() = runBlockingTest {
         // Given
         givenServiceToResponse(
             Pair(
@@ -89,7 +89,7 @@ internal abstract class ConsentServiceTest : BaseServiceTest<ConsentService>() {
     }
 
     @Test
-    fun fetchUserConsentsTest() = runTest {
+    fun fetchUserConsentsTest() = runBlockingTest {
         // Given
         givenServiceResponseWith(ListSerializer(UserConsent.serializer()), listOf(userConsent))
 
@@ -105,7 +105,7 @@ internal abstract class ConsentServiceTest : BaseServiceTest<ConsentService>() {
     }
 
     @Test
-    fun fetchDocumentConsentsTest() = runTest {
+    fun fetchDocumentConsentsTest() = runBlockingTest {
         // Given
         val consentKey = "custom-consent-key"
         givenServiceResponseWith(
@@ -130,7 +130,7 @@ internal abstract class ConsentServiceTest : BaseServiceTest<ConsentService>() {
     }
 
     @Test
-    fun requestSignatureRegistrationTest() = runTest {
+    fun requestSignatureRegistrationTest() = runBlockingTest {
         // Given
         givenServiceToResponse(
             Pair(
@@ -158,7 +158,7 @@ internal abstract class ConsentServiceTest : BaseServiceTest<ConsentService>() {
     }
 
     @Test
-    fun requestSignatureDonationTest() = runTest {
+    fun requestSignatureDonationTest() = runBlockingTest {
         // Given
         givenServiceToResponse(
             Pair(
@@ -186,7 +186,7 @@ internal abstract class ConsentServiceTest : BaseServiceTest<ConsentService>() {
     }
 
     @Test
-    fun revokeConsentTest() = runTest {
+    fun revokeConsentTest() = runBlockingTest {
         // Given
         givenServiceToResponse(
             Pair(

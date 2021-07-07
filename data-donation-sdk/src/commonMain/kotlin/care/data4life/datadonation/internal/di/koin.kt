@@ -37,7 +37,12 @@ import care.data4life.datadonation.encryption.hybrid.HybridEncryptionRegistry
 import care.data4life.datadonation.internal.data.service.ConsentService
 import care.data4life.datadonation.internal.data.service.DonationService
 import care.data4life.datadonation.internal.data.store.*
-import care.data4life.datadonation.internal.domain.repositories.*
+import care.data4life.datadonation.internal.domain.repositories.ConsentDocumentRepository
+import care.data4life.datadonation.internal.domain.repositories.CredentialsRepository
+import care.data4life.datadonation.internal.domain.repositories.DonationRepository
+import care.data4life.datadonation.internal.domain.repositories.RegistrationRepository
+import care.data4life.datadonation.internal.domain.repositories.ServiceTokenRepository
+import care.data4life.datadonation.internal.domain.repositories.UserConsentRepository
 import care.data4life.datadonation.internal.domain.usecases.*
 import care.data4life.datadonation.internal.utils.Base64Factory
 import io.ktor.client.*
@@ -47,119 +52,118 @@ import io.ktor.client.features.logging.*
 import kotlinx.datetime.Clock
 import org.koin.core.KoinApplication
 import org.koin.core.module.Module
+import org.koin.dsl.bind
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
-import kotlin.native.concurrent.ThreadLocal
-import care.data4life.datadonation.internal.domain.repositories.Contract as RepositoryContract
 
-@ThreadLocal
-internal object DataDonationKoinContext {
-    lateinit var koinApp: KoinApplication
-}
-
+// TODO: Break down dependencies and move them in their corresponding packages
 internal fun initKoin(configuration: Contract.Configuration): KoinApplication {
-    DataDonationKoinContext.koinApp = koinApplication {
+    return koinApplication {
         modules(
-            module {
-                single<Contract.Configuration> { configuration }
-                single<CredentialsDataStore> {
-                    object : CredentialsDataStore {
-                        override fun getDataDonationPublicKey(): String =
-                            configuration.getServicePublicKey(Contract.Service.DD)
-
-                        override fun getAnalyticsPlatformPublicKey(): String =
-                            configuration.getServicePublicKey(Contract.Service.ALP)
-                    }
-                }
-                single<UserSessionTokenDataStore> {
-                    CachedUserSessionTokenDataStore(get(), Clock.System)
-                }
-                single { configuration.getEnvironment() }
-            },
-            platformModule,
-            coreModule
+            resolveRootModule(configuration),
+            platformModule(),
+            coreModule()
         )
     }
-    return DataDonationKoinContext.koinApp
 }
 
-private val coreModule = module {
+internal fun resolveRootModule(configuration: Contract.Configuration): Module {
+    return module {
+        single { configuration }
+        single<CredentialsDataStore> {
+            object : CredentialsDataStore {
+                override fun getDataDonationPublicKey(): String =
+                    configuration.getServicePublicKey(Contract.Service.DD)
 
-    single {
-        HttpClient {
-            install(JsonFeature) {
-                serializer =
-                    KotlinxSerializer(
-                        kotlinx.serialization.json.Json {
-                            isLenient = true
-                            ignoreUnknownKeys = true
-                            allowSpecialFloatingPointValues = true
-                            useArrayPolymorphism = false
-                        }
-                    )
-            }
-            install(Logging) {
-                logger = SimpleLogger()
-                level = LogLevel.ALL
+                override fun getAnalyticsPlatformPublicKey(): String =
+                    configuration.getServicePublicKey(Contract.Service.ALP)
             }
         }
+        single<UserSessionTokenDataStore> {
+            CachedUserSessionTokenDataStore(get(), Clock.System)
+        }
+        single { configuration.getEnvironment() }
     }
-
-    // HybridEncryption
-    single { HybridEncryptionRegistry(get()) }
-
-    // Services
-    single { ConsentService(get(), get()) }
-    single { DonationService(get(), get()) }
-
-    // DataStores
-    single<UserConsentRepository.Remote> { UserConsentDataStore(get()) }
-    single<RegistrationRepository.Remote> { RegistrationDataStore(get()) }
-    single<ConsentDocumentRepository.Remote> { ConsentDocumentDataStore(get()) }
-    single<DonationRepository.Remote> { DonationDataStore(get()) }
-    single<ServiceTokenRepository.Remote> { ServiceTokenDataStore(get()) }
-
-    // Repositories
-    single<RepositoryContract.UserConsentRepository> { UserConsentRepository(get(), get()) }
-    single { RegistrationRepository(get()) }
-    single { ConsentDocumentRepository(get(), get()) }
-    single { CredentialsRepository(get()) }
-    single { DonationRepository(get()) }
-    single { ServiceTokenRepository(get()) }
-
-    // Usecases
-    single {
-        CreateRequestConsentPayload(
-            get(),
-            get(),
-            get<HybridEncryptionRegistry>().hybridEncryptionDD,
-            Base64Factory.createEncoder()
-        )
-    }
-    single {
-        DonateResources(
-            get(),
-            get(),
-            get(),
-            get(),
-            get<HybridEncryptionRegistry>().hybridEncryptionALP
-        )
-    }
-    single { FilterSensitiveInformation() }
-    single {
-        RegisterNewDonor(
-            get(),
-            get()
-        )
-    }
-    single { FetchConsentDocuments(get()) }
-    single { CreateUserConsent(get()) }
-    single { FetchUserConsents(get()) }
-    single { RemoveInternalInformation(kotlinx.serialization.json.Json {}) }
-    single { RevokeUserConsent(get()) }
 }
 
-expect val platformModule: Module
+internal fun coreModule(): Module {
+    return module {
+        single {
+            HttpClient {
+                install(JsonFeature) {
+                    serializer =
+                        KotlinxSerializer(
+                            kotlinx.serialization.json.Json {
+                                isLenient = true
+                                ignoreUnknownKeys = true
+                                allowSpecialFloatingPointValues = true
+                                useArrayPolymorphism = false
+                            }
+                        )
+                }
+                install(Logging) {
+                    logger = SimpleLogger()
+                    level = LogLevel.ALL
+                }
+            }
+        }
+
+        // HybridEncryption
+        single { HybridEncryptionRegistry(get()) }
+
+        // Services
+        single { ConsentService(get(), get()) }
+        single { DonationService(get(), get()) }
+
+        // DataStores
+        single { UserConsentDataStore(get()) } bind UserConsentRepository.Remote::class
+        single { RegistrationDataStore(get()) } bind RegistrationRepository.Remote::class
+        single { ConsentDocumentDataStore(get()) }
+        single { DonationDataStore(get()) } bind DonationRepository.Remote::class
+        single { ServiceTokenDataStore(get()) } bind ServiceTokenRepository.Remote::class
+
+        // Repositories
+        single { UserConsentRepository(get(), get()) } bind care.data4life.datadonation.internal.domain.repositories.Contract.UserConsentRepository::class
+        single { RegistrationRepository(get()) }
+        single { ConsentDocumentRepository(get(), get()) } bind ConsentDocumentRepository::class
+        single { CredentialsRepository(get()) }
+        single { DonationRepository(get()) }
+        single { ServiceTokenRepository(get()) }
+
+        // Usecases
+        single {
+            CreateRequestConsentPayload(
+                get(),
+                get(),
+                get<HybridEncryptionRegistry>().hybridEncryptionDD,
+                Base64Factory.createEncoder()
+            )
+        }
+        single {
+            DonateResources(
+                get(),
+                get(),
+                get(),
+                get(),
+                get<HybridEncryptionRegistry>().hybridEncryptionALP
+            )
+        } bind DonateResources::class
+        single { FilterSensitiveInformation() }
+        single {
+            RegisterNewDonor(
+                get(),
+                get()
+            )
+        }
+        single { FetchConsentDocuments(get()) }
+        single { CreateUserConsent(get()) }
+        single { FetchUserConsents(get()) }
+        single { RemoveInternalInformation(kotlinx.serialization.json.Json {}) }
+        single { RevokeUserConsent(get()) } bind RevokeUserConsent::class
+    }
+}
+
+internal expect fun platformModule(): Module
 
 private class SimpleLogger : Logger {
     override fun log(message: String) {

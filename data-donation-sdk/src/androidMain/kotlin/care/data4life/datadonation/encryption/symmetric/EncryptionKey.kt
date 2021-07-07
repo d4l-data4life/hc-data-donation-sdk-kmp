@@ -17,7 +17,7 @@
 package care.data4life.datadonation.encryption.symmetric
 
 import care.data4life.datadonation.encryption.Algorithm
-import care.data4life.datadonation.encryption.assymetric.bouncyCastleProvider
+import care.data4life.datadonation.encryption.asymetric.bouncyCastleProvider
 import java.security.Key
 import java.security.SecureRandom
 import javax.crypto.Cipher

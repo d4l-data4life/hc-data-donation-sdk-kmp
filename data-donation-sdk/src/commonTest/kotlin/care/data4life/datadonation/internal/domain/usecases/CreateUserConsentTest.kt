@@ -36,7 +36,7 @@ import CapturingResultListener
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.model.DummyData
 import care.data4life.datadonation.internal.domain.mock.MockUserConsentRepository
-import runTest
+import runBlockingTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -49,7 +49,7 @@ abstract class CreateUserConsentTest {
     private val capturingListener = CreateUserContentListener()
 
     @Test
-    fun createUserContent() = runTest {
+    fun createUserContent() = runBlockingTest {
         // Given
         mockUserConsentRepository.whenFetchUserConsents = { _ -> listOf(DummyData.userConsent) }
 

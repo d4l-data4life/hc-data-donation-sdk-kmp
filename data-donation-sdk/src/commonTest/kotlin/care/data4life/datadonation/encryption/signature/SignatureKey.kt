@@ -1,10 +1,3 @@
-import care.data4life.datadonation.encryption.Asn1
-import care.data4life.datadonation.encryption.INTEGER
-import care.data4life.datadonation.encryption.sequence
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
-
 /*
  * BSD 3-Clause License
  *
@@ -36,48 +29,32 @@ import kotlin.test.assertTrue
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package care.data4life.datadonation.encryption.signature
 
-/**
- * Testing compliance with:
- * http://luca.ntop.org/Teaching/Appunti/asn1.html
- */
+import care.data4life.datadonation.encryption.*
+import kotlin.test.Test
+import kotlin.test.assertTrue
 
-class Asn1Test {
-    val testData = UByteArray(10) { 1u }
-
+class SignatureKeyCommonTest {
     @Test
-    fun integer() {
-        val asn1 = "test" sequence {
-            "test" integer testData
-        }
-
-        //Type
-        assertEquals(asn1.encoded[2],2u)
-        //Length
-        assertEquals(asn1.encoded[3],testData.size.toUByte())
-        //Value
-        assertTrue(asn1.encoded.sliceArray(4..asn1.encoded.lastIndex).contentEquals(testData))
+    fun `Generate, sign and verify`() {
+        val testData = byteArrayOf(1)
+        val key = SignatureKeyPrivate(2048, Algorithm.Signature.RsaPSS(HashSize.Hash256))
+        val signature = key.sign(testData)
+        assertTrue(key.verify(testData, signature))
+        val prv = key.serializedPrivate()
+        val pub = key.serializedPublic()
+        val nkey = SignatureKeyPrivate(prv, pub, 2048, Algorithm.Signature.RsaPSS(HashSize.Hash256))
+        val pubHandle = SignatureKeyPublic(pub, 2048, Algorithm.Signature.RsaPSS(HashSize.Hash256))
+        assertTrue(pubHandle.verify(testData, signature))
+        assertTrue(nkey.verify(testData, signature))
+        assertTrue(nkey.verify(testData, nkey.sign(testData)))
     }
 
-    @Test
-    fun `octet string`() {
-        val asn1 = "test" sequence {
-            "test" octet_string {
-                "test" sequence {
-                    "test" integer testData
-                }
-            }
-        }
-
-        //Type
-        assertEquals(asn1.encoded[2],4u)
-        //Length (size of data plus 1 for each Type and Length of nested structures)
-        assertEquals(asn1.encoded[3],(4 + testData.size).toUByte())
-        //Value
-        assertTrue(
-            asn1.encoded.sliceArray(4..asn1.encoded.lastIndex)
-                .contentEquals(ubyteArrayOf(48u, (testData.size+2).toUByte(), 2u, testData.size.toUByte()) + testData)
-        )
+    @Test // TODO: add proper vaidation after parsing ASN1 is added
+    fun `Key is exported to valid ASN1 DER encoded value`() {
+        val key = SignatureKeyPrivate(2048, Algorithm.Signature.RsaPSS(HashSize.Hash256))
+        assertTrue(key.pkcs8Private.startsWith("MII"))
+        assertTrue(key.pkcs8Public.startsWith("MII"))
     }
-
 }

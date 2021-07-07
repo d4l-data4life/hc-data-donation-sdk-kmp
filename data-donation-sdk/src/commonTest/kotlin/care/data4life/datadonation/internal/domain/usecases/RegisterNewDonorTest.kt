@@ -52,7 +52,7 @@ import care.data4life.datadonation.internal.utils.Base64Encoder
 import care.data4life.datadonation.internal.utils.KeyGenerator
 import care.data4life.datadonation.internal.utils.toJsonString
 import io.ktor.utils.io.charsets.Charset
-import runTest
+import runBlockingTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -131,7 +131,7 @@ abstract class RegisterNewDonorTest {
     private val capturingListener = RegisterNewDonorListener()
 
     @Test
-    fun registerNewDonorTestWithoutKey() = runTest {
+    fun registerNewDonorTestWithoutKey() = runBlockingTest {
         // Given
         mockServiceTokenDataStore.whenRequestDonationToken = { dummyNonce }
         mockUserConsentRepository.whenSignUserConsent = { _ -> dummySignature }
@@ -148,7 +148,7 @@ abstract class RegisterNewDonorTest {
     }
 
     @Test
-    fun registerNewDonorTestWithKey() = runTest {
+    fun registerNewDonorTestWithKey() = runBlockingTest {
         // Given
 
         // When

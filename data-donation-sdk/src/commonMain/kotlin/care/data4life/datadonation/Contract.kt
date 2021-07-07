@@ -85,4 +85,8 @@ interface Contract {
             callback: Callback
         )
     }
+
+    interface DataDonationFactory {
+        fun getInstance(configuration: Configuration): DataDonation
+    }
 }

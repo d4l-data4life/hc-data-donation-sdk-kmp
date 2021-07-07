@@ -40,25 +40,338 @@ import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.UserConsent
+import care.data4life.datadonation.internal.data.model.DummyData
+import care.data4life.datadonation.internal.di.coreModule
+import care.data4life.datadonation.internal.di.platformModule
+import care.data4life.datadonation.internal.di.resolveRootModule
 import care.data4life.hl7.fhir.stu3.codesystem.QuestionnaireResponseStatus
-import care.data4life.hl7.fhir.stu3.model.*
+import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
+import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponseItem
+import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponseItemAnswer
+import care.data4life.hl7.fhir.stu3.model.Reference
+import io.ktor.utils.io.core.toByteArray
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
-import runTest
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.launch
+import org.koin.core.context.stopKoin
+import org.koin.dsl.koinApplication
+import runWithBlockingTest
+import kotlin.test.BeforeTest
 import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
-open class ClientTest {
+// TODO: use MockEngine and make separated E2E tests
+class ClientTest {
+    @BeforeTest
+    fun setUp() {
+        stopKoin()
+    }
 
-    private val consentKey = "custom-consent-key"
-    private val language = "en"
-    private var keyPair: KeyPair? = null
+    @Test
+    @Ignore // TODO "Use MockEngine"
+    fun fetchConsentDocumentTest() = runWithBlockingTest(GlobalScope.coroutineContext) {
+        // Given
+        val consentKey = "custom-consent-key"
+        val language = "en"
+        val version = 42
 
-    val client = Client(object : Contract.Configuration {
+        val config = object : ConfigurationBase() {
+            override fun getDonorKeyPair(): KeyPair? = null
+            override fun getCoroutineContext(): CoroutineScope = GlobalScope
+        }
+
+        val koin = koinApplication {
+            modules(
+                resolveRootModule(config),
+                platformModule(),
+                coreModule()
+            )
+        }
+
+        val client = Client(config, koin)
+        val capturedResult = Channel<List<ConsentDocument>>()
+        val listener = object : ResultListener<List<ConsentDocument>> {
+            override fun onSuccess(t: List<ConsentDocument>) {
+                launch {
+                    capturedResult.send(t)
+                }
+            }
+
+            override fun onError(exception: Exception) = throw exception
+        }
+
+        // When
+        client.fetchConsentDocuments(
+            version,
+            language,
+            consentKey,
+            listener
+        )
+
+        // Then
+        val result = capturedResult.receive()
+        assertEquals(
+            actual = result,
+            expected = emptyList() // TODO use a actual response
+        )
+    }
+
+    @Test
+    @Ignore // TODO "Use MockEngine"
+    fun createUserConsentTest() = runWithBlockingTest(GlobalScope.coroutineContext) {
+        // Given
+        val consentKey = "custom-consent-key"
+        val language = "en"
+        val version = 42
+
+        val config = object : ConfigurationBase() {
+            override fun getDonorKeyPair(): KeyPair? = null
+            override fun getCoroutineContext(): CoroutineScope = GlobalScope
+        }
+
+        val koin = koinApplication {
+            modules(
+                resolveRootModule(config),
+                platformModule(),
+                coreModule()
+            )
+        }
+
+        val client = Client(config, koin)
+        val capturedConsentDoc = Channel<List<ConsentDocument>>()
+        val consentDocListener = object : ResultListener<List<ConsentDocument>> {
+            override fun onSuccess(t: List<ConsentDocument>) {
+                launch {
+                    capturedConsentDoc.send(t)
+                }
+            }
+
+            override fun onError(exception: Exception) = throw exception
+        }
+
+        val capturedConsent = Channel<UserConsent>()
+        val consentListener = object : ResultListener<UserConsent> {
+            override fun onSuccess(t: UserConsent) {
+                launch {
+                    capturedConsent.send(t)
+                }
+            }
+
+            override fun onError(exception: Exception) = throw exception
+        }
+
+        // When
+        client.fetchConsentDocuments(
+            version,
+            language,
+            consentKey,
+            consentDocListener
+        )
+
+        val consentDoc = capturedConsentDoc.receive().first()
+        client.createUserConsent(
+            consentDoc.version,
+            consentDoc.language,
+            consentListener
+        )
+        val result = capturedConsent.receive()
+
+        // Then
+        assertEquals(
+            actual = result,
+            expected = DummyData.userConsent // TODO
+        )
+    }
+
+    @Test
+    @Ignore // TODO: Works on Android but not iOS -> Koin resolves not correctly
+    fun registerNewDonorTest() = runWithBlockingTest(GlobalScope.coroutineContext) {
+        // Given
+        val keyPair = KeyPair(ByteArray(42), ByteArray(23))
+
+        val config = object : ConfigurationBase() {
+            override fun getDonorKeyPair(): KeyPair = keyPair
+            override fun getCoroutineContext(): CoroutineScope = GlobalScope
+        }
+
+        val koin = koinApplication {
+            modules(
+                resolveRootModule(config),
+                platformModule(),
+                coreModule()
+            )
+        }
+
+        val client = Client(config, koin)
+        val capturedRegistrationKey = Channel<KeyPair>()
+        val consentRegistrationKeyListener = object : ResultListener<KeyPair> {
+            override fun onSuccess(t: KeyPair) {
+                launch {
+                    capturedRegistrationKey.send(t)
+                }
+            }
+
+            override fun onError(exception: Exception) = throw exception
+        }
+
+        // When
+        client.registerDonor(consentRegistrationKeyListener)
+        val result = capturedRegistrationKey.receive()
+
+        // Then
+        assertEquals(
+            actual = result,
+            expected = keyPair
+        )
+    }
+
+    @Test
+    @Ignore // TODO "Use MockEngine"
+    fun fetchUserConsentsTest() = runWithBlockingTest(GlobalScope.coroutineContext) {
+        // Given
+        val consentKey = "custom-consent-key"
+
+        val config = object : ConfigurationBase() {
+            override fun getDonorKeyPair(): KeyPair? = null
+            override fun getCoroutineContext(): CoroutineScope = GlobalScope
+        }
+
+        val koin = koinApplication {
+            modules(
+                resolveRootModule(config),
+                platformModule(),
+                coreModule()
+            )
+        }
+
+        val client = Client(config, koin)
+        val capturedResult = Channel<List<UserConsent>>()
+        val listener = object : ResultListener<List<UserConsent>> {
+            override fun onSuccess(t: List<UserConsent>) {
+                launch {
+                    capturedResult.send(t)
+                }
+            }
+
+            override fun onError(exception: Exception) = throw exception
+        }
+        // When
+        client.fetchUserConsent(consentKey, listener)
+        val result = capturedResult.receive()
+        // Then
+        assertEquals(
+            actual = result,
+            expected = emptyList() // TODO
+        )
+    }
+
+    @Test
+    @Ignore
+    // TODO: Use MockEngine
+    // TODO: iOS -> Koin resolves not correctly
+    fun revokeUserConsentsTest() = runWithBlockingTest(GlobalScope.coroutineContext) {
+        // Given
+        val language = "en"
+
+        val config = object : ConfigurationBase() {
+            override fun getDonorKeyPair(): KeyPair? = null
+            override fun getCoroutineContext(): CoroutineScope = GlobalScope
+        }
+
+        val koin = koinApplication {
+            modules(
+                resolveRootModule(config),
+                platformModule(),
+                coreModule()
+            )
+        }
+
+        val client = Client(config, koin)
+        val capturedResult = Channel<Boolean>()
+        val callback = object : Callback {
+            override fun onSuccess() {
+                launch {
+                    capturedResult.send(true)
+                }
+            }
+
+            override fun onError(exception: Exception) = throw exception
+        }
+
+        // When
+        client.revokeUserConsent(language, callback)
+        val result = capturedResult.receive()
+
+        // Then
+        assertTrue(result)
+    }
+
+    @Test
+    // TODO: Workaround Signature Key
+    // TODO: Use MockEngine
+    // TODO: Fix DI issue iOS
+    @Ignore
+    fun donateResourcesTest() = runWithBlockingTest(GlobalScope.coroutineContext) {
+        // Given
+        val keyPair = KeyPair(
+            "tomato".toByteArray(),
+            "soup".toByteArray()
+        )
+
+        val config = object : ConfigurationBase() {
+            override fun getDonorKeyPair(): KeyPair = keyPair
+            override fun getCoroutineContext(): CoroutineScope = GlobalScope
+        }
+
+        val koin = koinApplication {
+            modules(
+                resolveRootModule(config),
+                platformModule(),
+                coreModule()
+            )
+        }
+
+        val client = Client(config, koin)
+
+        val capturedResult = Channel<Boolean>()
+        val callback = object : Callback {
+            override fun onSuccess() {
+                launch {
+                    capturedResult.send(true)
+                }
+            }
+
+            override fun onError(exception: Exception) = throw exception
+        }
+
+        val donation = QuestionnaireResponse(
+            status = QuestionnaireResponseStatus.COMPLETED,
+            id = "id",
+            language = "en",
+            questionnaire = Reference(id = "questionnaire_id"),
+            item = listOf(
+                QuestionnaireResponseItem(
+                    linkId = "linkId",
+                    text = "dummy text question",
+                    answer = listOf(QuestionnaireResponseItemAnswer(valueString = "dummy answer"))
+                )
+            )
+        )
+
+        // When
+        client.donateResources(
+            listOf(donation),
+            callback
+        )
+        val result = capturedResult.receive()
+        // Then
+        assertTrue(result)
+    }
+
+    private abstract class ConfigurationBase : Contract.Configuration {
         override fun getServicePublicKey(service: Contract.Service): String = when (service) {
             Contract.Service.DD ->
                 "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwWYsUPv7etCQYYhMtwkP" +
@@ -79,8 +392,6 @@ open class ClientTest {
                     "1QIDAQAB"
         }
 
-        override fun getDonorKeyPair(): KeyPair? = keyPair
-
         override fun getUserSessionToken(tokenListener: ResultListener<String>) {
             tokenListener.onSuccess(
                 "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJvd25lcjpmMmNiNDBhZS1lOGQxLTQzOTctOGIzZC1hMjRmODgwZTRjYmQiLCJpc3MiOiJ1cm46Z2hjIiwiZXhwIjoxNjExMTY3ODA3LCJuYmYiOjE2MTExNjczODcsImlhdCI6MTYxMTE2NzQ0NywianRpIjoiMWMxZjVhMmItZjA0Ny00NTc5LWE0YWItZDBjY2ZmOTVkMDEwIiwiZ2hjOmFpZCI6ImVmZGRiOTVhLWFkMTktNDczMS1iOWM5LThjZWMwOTg3MzQzZSIsImdoYzpjaWQiOiI4OWRiYzg3Ni1hYzdjLTQzYjctODc0MS0yNWIxNDA2NWZiOTEjYW5kcm9pZF9odWIiLCJnaGM6dWlkIjoiZjJjYjQwYWUtZThkMS00Mzk3LThiM2QtYTI0Zjg4MGU0Y2JkIiwiZ2hjOnRpZCI6ImQ0bCIsImdoYzpzY29wZSI6InBlcm06ciByZWM6ciByZWM6dyBhdHRhY2htZW50OnIgYXR0YWNobWVudDp3IHVzZXI6ciB1c2VyOnEifQ.JpjUvgAk-wCJAY8xu5J9CT93655lXqyy3dki0Gr0sWtU4PpCZePmeGHPABmBKdg3Bj8kdnbz2463OMfeGELigOLe1Mx8nPPPiGV2SPliCZp-rOOOodxscAd1OTT1AnCPmwJXlXHuNj4CUnR_Urr0dvpNt8a3CdwsezhgDwoyDQpKYPbMN-IrI1WcHaG8SCOPhiX-6zMVrnwpS6fBAtAtUbpvVQZXraKjdbiB3ZCoCWAMKG3_2TtamklOYFCPm1rladkptIFPVXR4y_6LoR_ILN77SERxrEERASvm1ZJXwd2EjLHKkabJ1EgIYiqntiCrRNawtYs0sjo4g_5il4nzUHZbrNWHo0c0m9Qzjahj3vJAQEddJcTZdJyM7_Ootmqwo3DTcn4w_xfIDoTArW5tHJ27TRBIo73PoOCAF4iZA4TGE9NassegeEtLl9jtKBDUr3MZVZkZEPZip8XWvX8E3UtIAVx-cji1hHK6P-jOzTZOCYJNCFx2C5ZK7zhVN9oWsImeiagViEe5OuxXWcFc38QE5eHBGjbOAKEGLchkuxk6zX2HhycJEW6JT73Vcf8iYytLF596SQ_uY4O2m1cr8HshFc10mAhGgnMhqHhe1QUIWlwFe5HHz7P4LTeK7zP8iAAVgEqlx7X1ryvpw5ekz7p1hbLYB9hKvvJ-vx13HkI"
@@ -88,189 +399,5 @@ open class ClientTest {
         }
 
         override fun getEnvironment() = Environment.LOCAL
-        override fun getCoroutineContext(): CoroutineScope = GlobalScope
-    })
-
-    @Ignore
-    @Test
-    fun fetchConsentDocumentTest() = runTest {
-
-        // When
-        val result = fetchConsentDocuments(null, language, consentKey)
-
-        // Then
-        assertEquals(1, result.size)
     }
-
-    @Ignore
-    @Test
-    fun createUserConsentTest() = runTest {
-        // Given
-        val consentDocument = fetchConsentDocuments(null, language, consentKey).first()
-
-        // When
-        val result = createUserConsent(consentDocument.version, consentDocument.language)
-        // Then
-        println("UserConsent $result")
-    }
-
-    @Ignore
-    @Test
-    fun registerNewDonorTest() = runTest {
-        // Given
-        createUserConsentTest()
-
-        // When
-        val result = register()
-        // Then
-        println("Keypair $result")
-    }
-
-    @Test
-    @Ignore
-    fun fetchUserConsentsTest() = runTest {
-        // Given
-
-        // When
-        val result = fetchUserConsent()
-        // Then
-        println(result)
-    }
-
-    @Ignore
-    @Test
-    fun revokeUserConsentsTest() = runTest {
-        // Given
-
-        // When
-        revokeUserConsent(language)
-        // Then
-    }
-
-    @Ignore
-    @Test
-    fun donateResourcesTest() = runTest {
-        // Given
-        val response = QuestionnaireResponse(
-            status = QuestionnaireResponseStatus.COMPLETED,
-            id = "id",
-            language = "en",
-            questionnaire = Reference(id = "questionnaire_id"),
-            item = listOf(
-                QuestionnaireResponseItem(
-                    linkId = "linkId",
-                    text = "dummy text question",
-                    answer = listOf(QuestionnaireResponseItemAnswer(valueString = "dummy answer"))
-                )
-            )
-        )
-        val consentDocument = fetchConsentDocuments(null, language, consentKey).first()
-        createUserConsent(consentDocument.version, consentDocument.language)
-        keyPair = register()
-        // When
-        donateResources(listOf(response))
-        // Then
-    }
-
-    private suspend fun fetchConsentDocuments(
-        consentDocumentVersion: Int?,
-        language: String?,
-        consentKey: String
-    ): List<ConsentDocument> =
-        suspendCoroutine { continuation ->
-            client.fetchConsentDocuments(
-                consentDocumentVersion,
-                language,
-                consentKey,
-                object : ResultListener<List<ConsentDocument>> {
-                    override fun onSuccess(t: List<ConsentDocument>) {
-                        continuation.resume(t)
-                    }
-
-                    override fun onError(exception: Exception) {
-                        continuation.resumeWithException(exception)
-                    }
-                }
-            )
-        }
-
-    private suspend fun createUserConsent(
-        consentDocumentVersion: Int,
-        language: String?
-    ): UserConsent =
-        suspendCoroutine { continuation ->
-            client.createUserConsent(
-                consentDocumentVersion,
-                language,
-                object : ResultListener<UserConsent> {
-                    override fun onSuccess(t: UserConsent) {
-                        continuation.resume(t)
-                    }
-
-                    override fun onError(exception: Exception) {
-                        continuation.resumeWithException(exception)
-                    }
-                }
-            )
-        }
-
-    private suspend fun register(): KeyPair =
-        suspendCoroutine { continuation ->
-            client.registerDonor(
-                object : ResultListener<KeyPair> {
-                    override fun onSuccess(t: KeyPair) {
-                        continuation.resume(t)
-                    }
-
-                    override fun onError(exception: Exception) {
-                        continuation.resumeWithException(exception)
-                    }
-                })
-        }
-
-    private suspend fun fetchUserConsent(): List<UserConsent> =
-        suspendCoroutine { continuation ->
-            client.fetchUserConsents(
-                object : ResultListener<List<UserConsent>> {
-                    override fun onSuccess(t: List<UserConsent>) {
-                        continuation.resume(t)
-                    }
-
-                    override fun onError(exception: Exception) {
-                        continuation.resumeWithException(exception)
-                    }
-                })
-        }
-
-    private suspend fun revokeUserConsent(language: String?) =
-        suspendCoroutine<Unit> { continuation ->
-            client.revokeUserConsent(
-                language,
-                object : Callback {
-                    override fun onSuccess() {
-                        continuation.resume(Unit)
-                    }
-
-                    override fun onError(exception: Exception) {
-                        continuation.resumeWithException(exception)
-                    }
-                }
-            )
-        }
-
-    private suspend fun donateResources(resources: List<FhirResource>) =
-        suspendCoroutine<Unit> { continuation ->
-            client.donateResources(
-                resources,
-                object : Callback {
-                    override fun onSuccess() {
-                        continuation.resume(Unit)
-                    }
-
-                    override fun onError(exception: Exception) {
-                        continuation.resumeWithException(exception)
-                    }
-                }
-            )
-        }
 }

@@ -33,28 +33,27 @@
 package care.data4life.datadonation.encryption.signature
 
 import care.data4life.datadonation.encryption.KeyNative
-import care.data4life.datadonation.encryption.assymetric.rsaPkcsIDENTIFIER
+import care.data4life.datadonation.encryption.asymetric.rsaPkcsIDENTIFIER
 import care.data4life.datadonation.encryption.sequence
 import care.data4life.datadonation.toByteArray
 import care.data4life.datadonation.toNSData
 import kotlinx.cinterop.*
+import platform.CoreFoundation.*
+import platform.Foundation.*
+import platform.Foundation.CFBridgingRelease
 import platform.Foundation.CFBridgingRetain
+import platform.Foundation.NSError
 import platform.Foundation.NSNumber
 import platform.Security.*
-import platform.CoreFoundation.*
-import platform.Foundation.CFBridgingRelease
-import platform.Foundation.NSError
-import platform.Foundation.*
 import platform.darwin.noErr
-
 
 class SignatureKeyNative : KeyNative, SignatureKeyPrivate {
 
-    constructor(keyType: SecKeyAlgorithm, algoType: SecKeyAlgorithm, size: Int)
-            : super(keyType, algoType, size)
+    constructor(keyType: SecKeyAlgorithm, algoType: SecKeyAlgorithm, size: Int) :
+        super(keyType, algoType, size)
 
-    constructor(private: SecKeyRef, public: SecKeyRef, algoType: SecKeyAlgorithm)
-            : super(private, public, algoType)
+    constructor(private: SecKeyRef, public: SecKeyRef, algoType: SecKeyAlgorithm) :
+        super(private, public, algoType)
 
     override fun sign(data: ByteArray): ByteArray {
         val inputCfDataRef = CFBridgingRetain(data.toNSData()) as CFDataRef
@@ -62,7 +61,6 @@ class SignatureKeyNative : KeyNative, SignatureKeyPrivate {
         CFBridgingRelease(inputCfDataRef)
         return (CFBridgingRelease(k) as NSData).toByteArray()
     }
-
 
     override val pkcs8Private: String
         get() = (CFBridgingRelease(SecKeyCopyExternalRepresentation(privateKey, null)) as NSData)
@@ -78,20 +76,18 @@ class SignatureKeyNative : KeyNative, SignatureKeyPrivate {
             .toNSData()
             .base64EncodedStringWithOptions(NSDataBase64EncodingEndLineWithLineFeed)
 
-
     override fun verify(data: ByteArray, signature: ByteArray): Boolean =
         memScoped {
             val error = alloc<CFErrorRefVar>()
             val inputCfDataRef = CFBridgingRetain(data.toNSData()) as CFDataRef
             val signatureCfDataRef = CFBridgingRetain(signature.toNSData()) as CFDataRef
             val k = SecKeyVerifySignature(publicKey, algoType, inputCfDataRef, signatureCfDataRef, error.ptr)
-            if(error.value!= null) {
+            if (error.value != null) {
                 val err = CFBridgingRelease(error.value) as NSError
                 throw Throwable(err.localizedDescription)
             }
             return@memScoped k
         }
-
 
     override fun serializedPublic(): ByteArray =
         (CFBridgingRelease(SecKeyCopyExternalRepresentation(publicKey, null)) as NSData)
@@ -102,22 +98,24 @@ class SignatureKeyNative : KeyNative, SignatureKeyPrivate {
             .toByteArray()
 
     fun toPkcs8Private(privateKey: ByteArray) =
-        ("PrivateKeyInfo" sequence {
-            "version" integer byteArrayOf(0)
-            "algorithm" sequence {
-                "algorithm" object_identifier rsaPkcsIDENTIFIER
-            }
-            "PrivateKey" octet_string { raw(privateKey) }
-        }).encoded
-
-    fun toPkcs8Public(publicKey: ByteArray) = (
-            "PublicKeyInfo" sequence {
+        (
+            "PrivateKeyInfo" sequence {
+                "version" integer byteArrayOf(0)
                 "algorithm" sequence {
                     "algorithm" object_identifier rsaPkcsIDENTIFIER
                 }
-                "PublicKey" bit_string  { raw(publicKey) }
-            }).encoded
+                "PrivateKey" octet_string { raw(privateKey) }
+            }
+            ).encoded
 
+    fun toPkcs8Public(publicKey: ByteArray) = (
+        "PublicKeyInfo" sequence {
+            "algorithm" sequence {
+                "algorithm" object_identifier rsaPkcsIDENTIFIER
+            }
+            "PublicKey" bit_string { raw(publicKey) }
+        }
+        ).encoded
 }
 
 fun generateKey(type: SecKeyAlgorithm, size: Int): Pair<SecKeyRef, SecKeyRef> {

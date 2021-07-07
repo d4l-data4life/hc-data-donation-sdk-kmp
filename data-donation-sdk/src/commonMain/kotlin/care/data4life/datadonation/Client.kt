@@ -41,13 +41,15 @@ import care.data4life.datadonation.internal.di.initKoin
 import care.data4life.datadonation.internal.domain.usecases.*
 import care.data4life.hl7.fhir.stu3.model.FhirResource
 import kotlinx.coroutines.launch
+import org.koin.core.KoinApplication
 
-class Client(private val configuration: Contract.Configuration) : Contract.DataDonation {
-
-    private val koinApplication = initKoin(configuration)
+class Client internal constructor(
+    private val configuration: Contract.Configuration,
+    koinApplication: KoinApplication
+) : Contract.DataDonation {
     private val createUserContent: CreateUserConsent by koinApplication.koin.inject()
     private val registerNewDonor: RegisterNewDonor by koinApplication.koin.inject()
-    private val fetchConsentDocuments: FetchConsentDocuments by koinApplication.koin.inject()
+    // private val fetchConsentDocuments: FetchConsentDocuments by koinApplication.koin.inject()
     private val fetchUserConsents: FetchUserConsents by koinApplication.koin.inject()
     private val revokeUserContent: RevokeUserConsent by koinApplication.koin.inject()
     private val donateResources: DonateResources by koinApplication.koin.inject()
@@ -58,13 +60,14 @@ class Client(private val configuration: Contract.Configuration) : Contract.DataD
         consentKey: String,
         listener: ResultListener<List<ConsentDocument>>
     ) {
-        fetchConsentDocuments.withParams(
+        TODO()
+        /*fetchConsentDocuments.withParams(
             FetchConsentDocuments.Parameters(
                 consentDocumentVersion,
                 language,
                 consentKey
             )
-        ).runForListener(listener)
+        ).runForListener(listener)*/
     }
 
     override fun createUserConsent(
@@ -136,6 +139,14 @@ class Client(private val configuration: Contract.Configuration) : Contract.DataD
             } catch (ex: Exception) {
                 listener.onError(ex)
             }
+        }
+    }
+
+    companion object Factory : Contract.DataDonationFactory {
+        override fun getInstance(
+            configuration: Contract.Configuration
+        ): Contract.DataDonation {
+            return Client(configuration, initKoin(configuration))
         }
     }
 }

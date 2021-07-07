@@ -49,7 +49,7 @@ import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
 import care.data4life.hl7.fhir.stu3.model.Reference
 import io.ktor.utils.io.charsets.*
 import kotlinx.serialization.json.Json
-import runTest
+import runBlockingTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -164,7 +164,7 @@ abstract class DonateResourcesTest {
     private val capturingListener = DonateResourcesListener()
 
     @Test
-    fun donateResourcesTest() = runTest {
+    fun donateResourcesTest() = runBlockingTest {
         // Given
         var result: DonationPayload? = null
         mockServiceTokenDataStore.whenRequestDonationToken = { dummyNonce }
@@ -187,7 +187,7 @@ abstract class DonateResourcesTest {
     }
 
     @Test
-    fun donateResourcesTestWithoutKeyFails() = runTest {
+    fun donateResourcesTestWithoutKeyFails() = runBlockingTest {
         // Given
         mockServiceTokenDataStore.whenRequestDonationToken = { dummyNonce }
         mockUserConsentRepository.whenSignUserConsent = { _ -> dummySignature }
