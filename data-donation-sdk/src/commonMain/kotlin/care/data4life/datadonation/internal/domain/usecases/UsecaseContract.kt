@@ -58,7 +58,7 @@ interface UsecaseContract {
 
     interface CreateUserConsent : UsecaseFactory<CreateUserConsentParameter, UserConsent>
 
-    interface MapSensitiveInformation : UsecaseFactory<List<FhirResource>, List<FhirResource>> {
+    interface RedactSensitiveInformation : UsecaseFactory<List<FhirResource>, List<FhirResource>> {
         companion object {
             const val REDACTED = "REDACTED"
         }

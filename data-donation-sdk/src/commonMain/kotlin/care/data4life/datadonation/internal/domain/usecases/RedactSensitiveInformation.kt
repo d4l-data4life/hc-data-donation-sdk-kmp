@@ -32,13 +32,13 @@
 
 package care.data4life.datadonation.internal.domain.usecases
 
-import care.data4life.datadonation.internal.domain.usecases.UsecaseContract.MapSensitiveInformation.Companion.REDACTED
+import care.data4life.datadonation.internal.domain.usecases.UsecaseContract.RedactSensitiveInformation.Companion.REDACTED
 import care.data4life.hl7.fhir.stu3.model.FhirResource
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponseItem
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponseItemAnswer
 
-internal class MapSensitiveInformationFactory : UsecaseContract.MapSensitiveInformation {
+internal class ReactSensitiveInformationFactory : UsecaseContract.RedactSensitiveInformation {
     override fun withParams(
         parameter: List<FhirResource>
     ): UsecaseContract.Usecase<List<FhirResource>> = SensitiveInformationMapper(parameter)

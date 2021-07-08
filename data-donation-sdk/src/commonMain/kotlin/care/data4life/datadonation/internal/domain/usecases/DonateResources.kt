@@ -46,7 +46,7 @@ import care.data4life.hl7.fhir.stu3.model.FhirResource
 import io.ktor.utils.io.core.*
 
 internal class DonateResources(
-    private val mapSensitiveInformation: UsecaseContract.MapSensitiveInformation,
+    private val redactSensitiveInformation: UsecaseContract.RedactSensitiveInformation,
     private val removeInternalInformation: RemoveInternalInformation,
     private val createRequestConsentPayload: CreateRequestConsentPayload,
     private val donationRepository: RepositoryContract.DonationRepository,
@@ -70,7 +70,7 @@ internal class DonateResources(
             donateResources(
                 signatureProvider.invoke(it),
                 removeInternalInformation.withParams(
-                    mapSensitiveInformation.withParams(parameter.resources).execute()
+                    redactSensitiveInformation.withParams(parameter.resources).execute()
                 ).execute()
             )
         } ?: throw MissingCredentialsException()

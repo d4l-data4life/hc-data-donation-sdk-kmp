@@ -50,7 +50,7 @@ import care.data4life.datadonation.mock.DummyData
 import care.data4life.datadonation.mock.spy.CapturingResultListener
 import care.data4life.datadonation.mock.stub.ConsentDataStoreStub
 import care.data4life.datadonation.mock.stub.DonationDataStorageStub
-import care.data4life.datadonation.mock.stub.MapSensitiveInformationStub
+import care.data4life.datadonation.mock.stub.RedactSensitiveInformationStub
 import care.data4life.datadonation.mock.stub.ServiceTokenDataStorageStub
 import care.data4life.datadonation.mock.stub.UserConsentRepositoryStub
 import care.data4life.hl7.fhir.stu3.FhirStu3Parser
@@ -94,7 +94,7 @@ abstract class DonateResourcesTest {
     private val mockUserConsentDataStore = ConsentDataStoreStub()
     private val mockDonationDataStore = DonationDataStorageStub()
     private val mockServiceTokenDataStore = ServiceTokenDataStorageStub()
-    private val mapSensitiveInformation = MapSensitiveInformationStub()
+    private val mapSensitiveInformation = RedactSensitiveInformationStub()
     private val mockRemoveInternalInformation = MockRemoveInternalInformation(jsonParser)
     private val mockUserConsentRepository = UserConsentRepositoryStub()
     private val serviceTokenRepository = ServiceTokenRepository(mockServiceTokenDataStore)

@@ -32,7 +32,7 @@
 
 package care.data4life.datadonation.internal.domain.usecases
 
-import care.data4life.datadonation.internal.domain.usecases.UsecaseContract.MapSensitiveInformation.Companion.REDACTED
+import care.data4life.datadonation.internal.domain.usecases.UsecaseContract.RedactSensitiveInformation.Companion.REDACTED
 import care.data4life.hl7.fhir.stu3.codesystem.QuestionnaireResponseStatus
 import care.data4life.hl7.fhir.stu3.model.DomainResource
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
@@ -46,16 +46,16 @@ import kotlin.test.assertNull
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
-class MapSensitiveInformationTest {
+class RedactSensitiveInformationTest {
     private val questionnaireResponseTemplate = QuestionnaireResponse(status = QuestionnaireResponseStatus.COMPLETED)
     private val questionnaireResponseItemTemplate = QuestionnaireResponseItem(linkId = "does not matter")
     private val questionnaireResponseItemAnswerTemplate = QuestionnaireResponseItemAnswer()
 
     @Test
-    fun `It fulfils MapSensitiveInformation`() {
-        val factory: Any = MapSensitiveInformationFactory()
+    fun `It fulfils RedactSensitiveInformation`() {
+        val factory: Any = ReactSensitiveInformationFactory()
 
-        assertTrue(factory is UsecaseContract.MapSensitiveInformation)
+        assertTrue(factory is UsecaseContract.RedactSensitiveInformation)
     }
 
     @Test
@@ -64,7 +64,7 @@ class MapSensitiveInformationTest {
         val parameter = listOf(DomainResource())
 
         // When
-        val usecase: Any = MapSensitiveInformationFactory().withParams(parameter)
+        val usecase: Any = ReactSensitiveInformationFactory().withParams(parameter)
 
         // Then
         assertTrue(usecase is UsecaseContract.Usecase<*>)
@@ -76,7 +76,7 @@ class MapSensitiveInformationTest {
         val parameter = listOf(DomainResource(), DomainResource())
 
         // When
-        val usecase = MapSensitiveInformationFactory().withParams(parameter)
+        val usecase = ReactSensitiveInformationFactory().withParams(parameter)
         val result = usecase.execute()
 
         // Then
@@ -100,7 +100,7 @@ class MapSensitiveInformationTest {
         )
 
         // When
-        val usecase = MapSensitiveInformationFactory().withParams(parameter)
+        val usecase = ReactSensitiveInformationFactory().withParams(parameter)
         val result = usecase.execute().first()
 
         // Then
@@ -118,7 +118,7 @@ class MapSensitiveInformationTest {
         )
 
         // When
-        val usecase = MapSensitiveInformationFactory().withParams(parameter)
+        val usecase = ReactSensitiveInformationFactory().withParams(parameter)
         val result = usecase.execute().first()
 
         // Then
@@ -136,7 +136,7 @@ class MapSensitiveInformationTest {
         )
 
         // When
-        val usecase = MapSensitiveInformationFactory().withParams(parameter)
+        val usecase = ReactSensitiveInformationFactory().withParams(parameter)
         val result = usecase.execute().first()
 
         // Then
@@ -158,7 +158,7 @@ class MapSensitiveInformationTest {
         )
 
         // When
-        val usecase = MapSensitiveInformationFactory().withParams(parameter)
+        val usecase = ReactSensitiveInformationFactory().withParams(parameter)
         val result = usecase.execute().first()
 
         // Then
@@ -180,7 +180,7 @@ class MapSensitiveInformationTest {
         )
 
         // When
-        val usecase = MapSensitiveInformationFactory().withParams(parameter)
+        val usecase = ReactSensitiveInformationFactory().withParams(parameter)
         val result = usecase.execute().first()
 
         // Then
@@ -202,7 +202,7 @@ class MapSensitiveInformationTest {
         )
 
         // When
-        val usecase = MapSensitiveInformationFactory().withParams(parameter)
+        val usecase = ReactSensitiveInformationFactory().withParams(parameter)
         val result = usecase.execute().first()
 
         // Then
@@ -233,7 +233,7 @@ class MapSensitiveInformationTest {
         )
 
         // When
-        val usecase = MapSensitiveInformationFactory().withParams(parameter)
+        val usecase = ReactSensitiveInformationFactory().withParams(parameter)
         val result = usecase.execute().first()
 
         // Then
@@ -258,7 +258,7 @@ class MapSensitiveInformationTest {
         )
 
         // When
-        val usecase = MapSensitiveInformationFactory().withParams(parameter)
+        val usecase = ReactSensitiveInformationFactory().withParams(parameter)
         val result = usecase.execute().first()
 
         // Then
@@ -280,7 +280,7 @@ class MapSensitiveInformationTest {
         )
 
         // When
-        val usecase = MapSensitiveInformationFactory().withParams(parameter)
+        val usecase = ReactSensitiveInformationFactory().withParams(parameter)
         val result = usecase.execute().first()
 
         // Then
@@ -302,7 +302,7 @@ class MapSensitiveInformationTest {
         )
 
         // When
-        val usecase = MapSensitiveInformationFactory().withParams(parameter)
+        val usecase = ReactSensitiveInformationFactory().withParams(parameter)
         val result = usecase.execute().first()
 
         // Then
@@ -324,7 +324,7 @@ class MapSensitiveInformationTest {
         )
 
         // When
-        val usecase = MapSensitiveInformationFactory().withParams(parameter)
+        val usecase = ReactSensitiveInformationFactory().withParams(parameter)
         val result = usecase.execute().first()
 
         // Then
@@ -350,7 +350,7 @@ class MapSensitiveInformationTest {
         )
 
         // When
-        val usecase = MapSensitiveInformationFactory().withParams(parameter)
+        val usecase = ReactSensitiveInformationFactory().withParams(parameter)
         val result = usecase.execute().first()
 
         // Then
@@ -376,7 +376,7 @@ class MapSensitiveInformationTest {
         )
 
         // When
-        val usecase = MapSensitiveInformationFactory().withParams(parameter)
+        val usecase = ReactSensitiveInformationFactory().withParams(parameter)
         val result = usecase.execute().first()
 
         // Then
@@ -402,7 +402,7 @@ class MapSensitiveInformationTest {
         )
 
         // When
-        val usecase = MapSensitiveInformationFactory().withParams(parameter)
+        val usecase = ReactSensitiveInformationFactory().withParams(parameter)
         val result = usecase.execute().first()
 
         // Then
@@ -428,7 +428,7 @@ class MapSensitiveInformationTest {
         )
 
         // When
-        val usecase = MapSensitiveInformationFactory().withParams(parameter)
+        val usecase = ReactSensitiveInformationFactory().withParams(parameter)
         val result = usecase.execute().first()
 
         // Then
