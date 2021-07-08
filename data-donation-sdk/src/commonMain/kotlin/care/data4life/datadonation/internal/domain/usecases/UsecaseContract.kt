@@ -40,13 +40,13 @@ interface UsecaseContract {
         }
     }
 
-    interface FetchConsentDocumentsParameter {
-        val version: Int?
-        val language: String?
-        val consentKey: String
+    interface FetchConsentDocuments : NewUsecase<FetchConsentDocuments.FetchConsentDocumentsParameter, List<ConsentDocument>> {
+        interface FetchConsentDocumentsParameter {
+            val version: Int?
+            val language: String?
+            val consentKey: String
+        }
     }
-
-    interface FetchConsentDocuments : UsecaseFactory<FetchConsentDocumentsParameter, List<ConsentDocument>>
 
     interface RevokeUserConsentParameter {
         val consentKey: String

@@ -54,7 +54,7 @@ internal fun resolveUsecaseModule(): Module {
         }
 
         single<UsecaseContract.FetchConsentDocuments> {
-            FetchConsentDocumentsFactory(get())
+            FetchConsentDocuments(get())
         }
 
         single<UsecaseContract.CreateUserConsent> {

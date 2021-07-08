@@ -22,7 +22,7 @@ import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.domain.usecases.CreateUserConsentFactory
-import care.data4life.datadonation.internal.domain.usecases.FetchConsentDocumentsFactory
+import care.data4life.datadonation.internal.domain.usecases.FetchConsentDocuments
 import care.data4life.datadonation.internal.domain.usecases.FetchUserConsents
 import care.data4life.datadonation.internal.domain.usecases.RevokeUserConsentFactory
 import care.data4life.datadonation.internal.domain.usecases.UsecaseContract
@@ -33,8 +33,7 @@ import care.data4life.datadonation.mock.stub.ClientConfigurationStub
 import care.data4life.datadonation.mock.stub.CreateUserConsentStub
 import care.data4life.datadonation.mock.stub.CreateUserConsentUsecaseStub
 import care.data4life.datadonation.mock.stub.FetchConsentDocumentsStub
-import care.data4life.datadonation.mock.stub.FetchConsentDocumentsUsecaseStub
-import care.data4life.datadonation.mock.stub.FetchUserConsentUsecaseStub
+import care.data4life.datadonation.mock.stub.FetchUserConsentStub
 import care.data4life.datadonation.mock.stub.ResultListenerStub
 import care.data4life.datadonation.mock.stub.RevokeUserConsentStub
 import care.data4life.datadonation.mock.stub.RevokeUserConsentUsecaseStub
@@ -74,7 +73,7 @@ class ClientTest {
         // Given
         val config = ClientConfigurationStub()
         val listener = ResultListenerStub<List<UserConsent>>()
-        val usecase = FetchUserConsentUsecaseStub()
+        val usecase = FetchUserConsentStub()
 
         var capturedParameter: UsecaseContract.FetchUserConsents.FetchUserConsentsParameter? = null
         var capturedListener: ListenerContract.ResultListener<*>? = null
@@ -127,7 +126,7 @@ class ClientTest {
         // Given
         val config = ClientConfigurationStub()
         val listener = ResultListenerStub<List<UserConsent>>()
-        val usecase = FetchUserConsentUsecaseStub()
+        val usecase = FetchUserConsentStub()
 
         var capturedParameter: UsecaseContract.FetchUserConsents.FetchUserConsentsParameter? = null
         var capturedListener: ListenerContract.ResultListener<*>? = null
@@ -181,35 +180,31 @@ class ClientTest {
         // Given
         val config = ClientConfigurationStub()
         val listener = ResultListenerStub<List<ConsentDocument>>()
-        val usecase = FetchConsentDocumentsUsecaseStub()
+        val usecase = FetchConsentDocumentsStub()
 
         val version = 23
         val language = "de-j-old-n-kotlin-x-done"
         val consentKey = "abc"
 
-        var capturedParameter: UsecaseContract.FetchConsentDocumentsParameter? = null
+        var capturedParameter: UsecaseContract.FetchConsentDocuments.FetchConsentDocumentsParameter? = null
         var capturedListener: ListenerContract.ResultListener<*>? = null
-        var capturedUsecase: Usecase<*>? = null
+        var capturedUsecase: UsecaseContract.NewUsecase<*, *>? = null
 
         config.whenGetEnvironment = { Environment.LOCAL }
 
         val di = koinApplication {
             modules(
                 module {
-                    single {
-                        FetchConsentDocumentsStub().also {
-                            it.whenWithParameter = { delegateParameter ->
-                                capturedParameter = delegateParameter
-                                usecase
-                            }
-                        }
-                    } bind UsecaseContract.FetchConsentDocuments::class
+                    single<UsecaseContract.FetchConsentDocuments> {
+                        usecase
+                    }
 
                     single {
                         UsecaseRunnerStub().also {
-                            it.whenRunListener = { delegatedResultListener, delegatedUsecase ->
+                            it.whenRunListenerNew = { delegatedResultListener, delegatedUsecase, delegatedParameter ->
                                 capturedListener = delegatedResultListener
                                 capturedUsecase = delegatedUsecase
+                                capturedParameter = delegatedParameter as UsecaseContract.FetchConsentDocuments.FetchConsentDocumentsParameter
                             }
                         }
                     } bind ListenerInternalContract.UsecaseRunner::class
@@ -220,7 +215,7 @@ class ClientTest {
         val client = Client(config, di)
 
         // When
-        client.fetchConsentDocuments(
+        val result = client.fetchConsentDocuments(
             version,
             language,
             consentKey,
@@ -229,8 +224,12 @@ class ClientTest {
 
         // Then
         assertEquals(
+            actual = result,
+            expected = Unit
+        )
+        assertEquals(
             actual = capturedParameter,
-            expected = FetchConsentDocumentsFactory.Parameter(
+            expected = FetchConsentDocuments.Parameter(
                 version = version,
                 language = language,
                 consentKey = consentKey

@@ -61,7 +61,7 @@ class Client internal constructor(
         consentKey: String,
         listener: ListenerContract.ResultListener<List<ConsentDocument>>
     ) {
-        val parameter = FetchConsentDocumentsFactory.Parameter(
+        val parameter = FetchConsentDocuments.Parameter(
             version = consentDocumentVersion,
             language = language,
             consentKey = consentKey
@@ -69,7 +69,8 @@ class Client internal constructor(
 
         usecaseRunner.run(
             listener,
-            fetchConsentDocuments.withParams(parameter)
+            fetchConsentDocuments,
+            parameter
         )
     }
 
