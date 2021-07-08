@@ -17,33 +17,32 @@
 package care.data4life.datadonation.internal.domain.repository
 
 import org.koin.core.module.Module
-import org.koin.dsl.bind
 import org.koin.dsl.module
 
 internal fun resolveRepositoryModule(): Module {
     return module {
         single<RepositoryContract.UserConsentRepository> {
             UserConsentRepository(get(), get())
-        } bind RepositoryContract.UserConsentRepository::class
+        }
 
         single<RepositoryContract.RegistrationRepository> {
             RegistrationRepository(get())
-        } bind RepositoryContract.RegistrationRepository::class
+        }
 
         single<RepositoryContract.ConsentDocumentRepository> {
             ConsentDocumentRepository(get(), get())
-        } bind RepositoryContract.ConsentDocumentRepository::class
+        }
 
         single<RepositoryContract.CredentialsRepository> {
             CredentialsRepository(get())
-        } bind RepositoryContract.CredentialsRepository::class
+        }
 
         single<RepositoryContract.DonationRepository> {
             DonationRepository(get())
-        } bind RepositoryContract.DonationRepository::class
+        }
 
         single<RepositoryContract.ServiceTokenRepository> {
             ServiceTokenRepository(get())
-        } bind RepositoryContract.ServiceTokenRepository::class
+        }
     }
 }

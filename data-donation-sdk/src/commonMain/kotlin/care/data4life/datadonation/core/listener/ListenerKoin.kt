@@ -17,13 +17,12 @@
 package care.data4life.datadonation.core.listener
 
 import org.koin.core.module.Module
-import org.koin.dsl.bind
 import org.koin.dsl.module
 
 fun resolveListenerModule(): Module {
     return module {
-        single<ListenerContract.TaskRunner> {
+        single<ListenerInternalContract.UsecaseRunner> {
             UsecaseRunner(get())
-        } bind ListenerInternalContract.UsecaseRunner::class
+        }
     }
 }
