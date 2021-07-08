@@ -32,23 +32,22 @@
 
 package care.data4life.datadonation.internal.domain.usecases
 
-import care.data4life.datadonation.encryption.hybrid.HybridEncryption
+import care.data4life.datadonation.encryption.EncryptionContract
 import care.data4life.datadonation.encryption.signature.SignatureKeyPrivate
 import care.data4life.datadonation.internal.data.model.ConsentMessage
 import care.data4life.datadonation.internal.data.model.ConsentRequest
 import care.data4life.datadonation.internal.data.model.ConsentSignatureType
 import care.data4life.datadonation.internal.data.model.SignedConsentMessage
-import care.data4life.datadonation.internal.data.service.ConsentService
-import care.data4life.datadonation.internal.domain.repository.RepositoryInternalContract
-import care.data4life.datadonation.internal.domain.repository.ServiceTokenRepository
+import care.data4life.datadonation.internal.data.service.ServiceContract
+import care.data4life.datadonation.internal.domain.repository.RepositoryContract
 import care.data4life.datadonation.internal.utils.Base64Encoder
 import care.data4life.datadonation.internal.utils.toJsonString
 import io.ktor.utils.io.core.toByteArray
 
 internal class CreateRequestConsentPayload(
-    private val serviceTokenRepository: ServiceTokenRepository,
-    private val consentRepository: RepositoryInternalContract.UserConsentRepository,
-    private val encryptionDD: HybridEncryption,
+    private val serviceTokenRepository: RepositoryContract.ServiceTokenRepository,
+    private val consentRepository: RepositoryContract.UserConsentRepository,
+    private val encryptionDD: EncryptionContract.HybridEncryption,
     private val base64encoder: Base64Encoder,
 ) : ParameterizedUsecase<CreateRequestConsentPayload.Parameters, ByteArray>() {
 
@@ -69,7 +68,7 @@ internal class CreateRequestConsentPayload(
         }
 
         val consentMessage = ConsentMessage(
-            ConsentService.defaultDonationConsentKey,
+            ServiceContract.DEFAULT_DONATION_CONSENT_KEY,
             parameter.signatureType.apiValue,
             encryptedMessage
         )

@@ -46,7 +46,7 @@ package care.data4life.datadonation.encryption.hybrid/*
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import care.data4life.datadonation.encryption.hybrid.HybridEncryption.Companion.AES_IV_LENGTH
+import care.data4life.datadonation.encryption.EncryptionContract.Companion.AES_IV_LENGTH
 import care.data4life.datadonation.internal.utils.*
 import io.ktor.utils.io.core.internal.*
 import kotlin.random.Random

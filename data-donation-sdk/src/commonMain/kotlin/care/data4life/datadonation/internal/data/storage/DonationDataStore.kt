@@ -30,13 +30,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.data.store
+package care.data4life.datadonation.internal.data.storage
 
-import care.data4life.datadonation.internal.data.service.DonationService
-import care.data4life.datadonation.internal.domain.repository.ServiceTokenRepository
+import care.data4life.datadonation.internal.data.model.DonationPayload
+import care.data4life.datadonation.internal.data.service.ServiceContract
 
-internal class ServiceTokenDataStore(private val donationService: DonationService) :
-    ServiceTokenRepository.Remote {
+internal class DonationDataStore(
+    private val donationService: ServiceContract.DonationService
+) : StorageContract.DonationRemoteStorage {
 
-    override suspend fun requestDonationToken() = donationService.requestToken()
+    override suspend fun donateResources(payload: DonationPayload) =
+        donationService.donateResources(payload)
 }

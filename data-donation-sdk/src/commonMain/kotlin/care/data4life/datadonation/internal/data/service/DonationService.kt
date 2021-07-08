@@ -34,8 +34,11 @@ package care.data4life.datadonation.internal.data.service
 
 import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.internal.data.model.DonationPayload
-import care.data4life.datadonation.internal.data.service.DonationService.Endpoints.donate
-import care.data4life.datadonation.internal.data.service.DonationService.Endpoints.register
+import care.data4life.datadonation.internal.data.service.ServiceContract.DonationService.Companion.Endpoints.donate
+import care.data4life.datadonation.internal.data.service.ServiceContract.DonationService.Companion.Endpoints.register
+import care.data4life.datadonation.internal.data.service.ServiceContract.DonationService.Companion.Endpoints.token
+import care.data4life.datadonation.internal.data.service.ServiceContract.DonationService.Companion.FormDataEntries
+import care.data4life.datadonation.internal.data.service.ServiceContract.DonationService.Companion.FormDataHeaders
 import care.data4life.datadonation.internal.utils.encodeBase64
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuid4
@@ -49,25 +52,26 @@ import io.ktor.utils.io.core.*
 internal class DonationService(
     private val client: HttpClient,
     private val environment: Environment
-) {
+) : ServiceContract.DonationService {
 
+    // TODO: DRY this out
     private val baseUrl = if (environment == Environment.LOCAL) {
         "${environment.url}:9090/api/v1"
     } else {
         "${environment.url}/donation/api/v1"
     }
 
-    suspend fun requestToken(): String {
-        return client.getWithQuery<String>(environment, baseUrl = baseUrl, path = Endpoints.token)
+    override suspend fun requestToken(): String {
+        return client.getWithQuery<String>(environment, baseUrl = baseUrl, path = token)
             .let {
                 it.substring(
                     1,
                     it.length - 2
-                ) //The token arrives between quotes we have to remove them.
+                ) // The token arrives between quotes we have to remove them.
             }
     }
 
-    suspend fun registerNewDonor(payload: ByteArray) {
+    override suspend fun registerNewDonor(payload: ByteArray) {
         return client.putWithoutHeader(
             environment,
             baseUrl = baseUrl,
@@ -76,7 +80,7 @@ internal class DonationService(
         )
     }
 
-    suspend fun donateResources(payload: DonationPayload) {
+    override suspend fun donateResources(payload: DonationPayload) {
         return client.postWithBody(
             environment,
             baseUrl = baseUrl,
@@ -91,35 +95,17 @@ internal class DonationService(
                             headers = Headers.build {
                                 append(
                                     HttpHeaders.ContentDisposition,
-                                    "${FormDataHeaders.fileName}\"${uuid4().toBase64()}\"" //TODO change to hash
+                                    "${FormDataHeaders.fileName}\"${uuid4().toBase64()}\"" // TODO change to hash
                                 )
                             },
                             size = document.document.size.toLong()
-                        )
-                        { buildPacket { writeFully(document.document) } }
+                        ) { buildPacket { writeFully(document.document) } }
                     }
                 }
             )
         )
     }
-
-    object Endpoints {
-        const val token = "token"
-        const val register = "register"
-        const val donate = "donate"
-    }
-
-    object FormDataEntries {
-        const val request = "request"
-        const val signature = "signature_"
-        const val donation = "donation_"
-    }
-
-    object FormDataHeaders {
-        const val fileName = "filename="
-    }
 }
-
 
 fun Uuid.toBase64(): String {
     val byteArray = ByteArray(16)

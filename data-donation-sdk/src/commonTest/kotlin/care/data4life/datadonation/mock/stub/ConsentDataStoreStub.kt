@@ -17,10 +17,10 @@
 package care.data4life.datadonation.mock.stub
 
 import care.data4life.datadonation.core.model.UserConsent
-import care.data4life.datadonation.internal.domain.repository.RepositoryContract
+import care.data4life.datadonation.internal.data.storage.StorageContract
 import care.data4life.datadonation.mock.MockException
 
-class ConsentDataStoreStub : RepositoryContract.UserConsentRemote {
+class ConsentDataStoreStub : StorageContract.UserConsentRemoteStorage {
     var whenCreateUserConsent: ((accessToken: String, version: Int, language: String?) -> UserConsent)? = null
     var whenFetchUserConsents: ((accessToken: String, consentKey: String?) -> List<UserConsent>)? = null
     var whenSignUserConsent: ((accessToken: String, message: String) -> String)? = null

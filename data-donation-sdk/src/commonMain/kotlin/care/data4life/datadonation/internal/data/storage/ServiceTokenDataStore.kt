@@ -30,14 +30,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.domain.mock
+package care.data4life.datadonation.internal.data.storage
 
-import care.data4life.datadonation.internal.data.store.UserSessionTokenDataStore
+import care.data4life.datadonation.internal.data.service.ServiceContract
 
-class MockUserSessionTokenDataStore : UserSessionTokenDataStore {
+internal class ServiceTokenDataStore(
+    private val donationService: ServiceContract.DonationService
+) : StorageContract.ServiceTokenRemoteStorage {
 
-    var whenGetUserSessionToken: (() -> String)? = { "" }
-
-    override suspend fun getUserSessionToken(): String? = whenGetUserSessionToken?.invoke()
-
+    override suspend fun requestDonationToken() = donationService.requestToken()
 }

@@ -33,22 +33,14 @@
 package care.data4life.datadonation.internal.di
 
 import care.data4life.datadonation.Contract
-import care.data4life.datadonation.core.listener.listenerModule
-import care.data4life.datadonation.encryption.hybrid.HybridEncryptionRegistry
+import care.data4life.datadonation.core.listener.resolveListenerModule
+import care.data4life.datadonation.encryption.resolveEncryptionModule
 import care.data4life.datadonation.internal.data.service.ConsentService
 import care.data4life.datadonation.internal.data.service.DonationService
-import care.data4life.datadonation.internal.data.store.*
-import care.data4life.datadonation.internal.domain.repository.ConsentDocumentRepository
-import care.data4life.datadonation.internal.domain.repository.CredentialsRepository
-import care.data4life.datadonation.internal.domain.repository.DonationRepository
-import care.data4life.datadonation.internal.domain.repository.RegistrationRepository
-import care.data4life.datadonation.internal.domain.repository.RepositoryContract
-import care.data4life.datadonation.internal.domain.repository.RepositoryInternalContract
-import care.data4life.datadonation.internal.domain.repository.ServiceTokenRepository
-import care.data4life.datadonation.internal.domain.repository.UserConsentRepository
+import care.data4life.datadonation.internal.data.service.ServiceContract
+import care.data4life.datadonation.internal.data.storage.*
+import care.data4life.datadonation.internal.domain.repository.resolveRepositoryModule
 import care.data4life.datadonation.internal.domain.usecases.*
-import care.data4life.datadonation.internal.domain.usecases.UsecaseContract.*
-import care.data4life.datadonation.internal.utils.Base64Factory
 import io.ktor.client.*
 import io.ktor.client.features.json.*
 import io.ktor.client.features.json.serializer.*
@@ -65,9 +57,13 @@ internal fun initKoin(configuration: Contract.Configuration): KoinApplication {
     return koinApplication {
         modules(
             resolveRootModule(configuration),
-            platformModule(),
-            coreModule(),
-            listenerModule(configuration)
+            resolvePlatformModule(),
+            resolveCoreModule(),
+            resolveListenerModule(configuration),
+            resolveStorageModule(),
+            resolveUsecaseModule(),
+            resolveRepositoryModule(),
+            resolveEncryptionModule()
         )
     }
 }
@@ -75,8 +71,9 @@ internal fun initKoin(configuration: Contract.Configuration): KoinApplication {
 internal fun resolveRootModule(configuration: Contract.Configuration): Module {
     return module {
         single { configuration }
-        single<CredentialsDataStore> {
-            object : CredentialsDataStore {
+        // TODO: Pull this out into storage
+        single<StorageContract.CredentialsDataRemoteStorage> {
+            object : StorageContract.CredentialsDataRemoteStorage {
                 override fun getDataDonationPublicKey(): String =
                     configuration.getServicePublicKey(Contract.Service.DD)
 
@@ -84,14 +81,16 @@ internal fun resolveRootModule(configuration: Contract.Configuration): Module {
                     configuration.getServicePublicKey(Contract.Service.ALP)
             }
         }
-        single<UserSessionTokenDataStore> {
+        // TODO: Pull this out into storage
+        single<StorageContract.UserSessionTokenDataStorage> {
             CachedUserSessionTokenDataStore(get(), Clock.System)
-        }
+        } bind StorageContract.UserSessionTokenDataStorage::class
+
         single { configuration.getEnvironment() }
     }
 }
 
-internal fun coreModule(): Module {
+internal fun resolveCoreModule(): Module {
     return module {
         single {
             HttpClient {
@@ -113,80 +112,17 @@ internal fun coreModule(): Module {
             }
         }
 
-        // HybridEncryption
-        single { HybridEncryptionRegistry(get()) }
-
         // Services
-        single { ConsentService(get(), get()) }
-        single { DonationService(get(), get()) }
-
-        // DataStores
-        single<RepositoryContract.UserConsentRemote> {
-            UserConsentDataStore(get())
-        } bind RepositoryContract.UserConsentRemote::class
-        single<RegistrationRepository.Remote> {
-            RegistrationDataStore(get())
-        } bind RegistrationRepository.Remote::class
-        single<RepositoryContract.ConsentDocumentRemote> {
-            ConsentDocumentDataStore(get())
-        } bind RepositoryContract.ConsentDocumentRemote::class
-        single<DonationRepository.Remote> {
-            DonationDataStore(get())
-        } bind DonationRepository.Remote::class
-        single<ServiceTokenRepository.Remote> {
-            ServiceTokenDataStore(get())
-        } bind ServiceTokenRepository.Remote::class
-
-        // Repositories
-        single<RepositoryInternalContract.UserConsentRepository> {
-            UserConsentRepository(get(), get())
-        } bind RepositoryInternalContract.UserConsentRepository::class
-        single { RegistrationRepository(get()) }
-        single<RepositoryInternalContract.ConsentDocumentRepository> {
-            ConsentDocumentRepository(get(), get())
-        } bind RepositoryInternalContract.ConsentDocumentRepository::class
-        single { CredentialsRepository(get()) }
-        single { DonationRepository(get()) }
-        single { ServiceTokenRepository(get()) }
-
-        // Usecases
-        single {
-            CreateRequestConsentPayload(
-                get(),
-                get(),
-                get<HybridEncryptionRegistry>().hybridEncryptionDD,
-                Base64Factory.createEncoder()
-            )
-        }
-        single {
-            DonateResources(
-                get(),
-                get(),
-                get(),
-                get(),
-                get<HybridEncryptionRegistry>().hybridEncryptionALP
-            )
-        } bind DonateResources::class
-        single { FilterSensitiveInformation() }
-        single {
-            RegisterNewDonor(
-                get(),
-                get()
-            )
-        }
-        single<FetchConsentDocuments> {
-            FetchConsentDocumentsFactory(get())
-        } bind FetchConsentDocuments::class
-        single { CreateUserConsent(get()) }
-        single<FetchUserConsents> {
-            FetchUserConsentsFactory(get())
-        } bind FetchUserConsents::class
-        single { RemoveInternalInformation(kotlinx.serialization.json.Json {}) }
-        single { RevokeUserConsent(get()) } bind RevokeUserConsent::class
+        single<ServiceContract.ConsentService> {
+            ConsentService(get(), get())
+        } bind ServiceContract.ConsentService::class
+        single<ServiceContract.DonationService> {
+            DonationService(get(), get())
+        } bind ServiceContract.DonationService::class
     }
 }
 
-internal expect fun platformModule(): Module
+internal expect fun resolvePlatformModule(): Module
 
 private class SimpleLogger : Logger {
     override fun log(message: String) {

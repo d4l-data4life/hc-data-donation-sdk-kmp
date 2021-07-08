@@ -34,14 +34,14 @@ package care.data4life.datadonation.internal.domain.usecases
 
 import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.encryption.Algorithm
+import care.data4life.datadonation.encryption.EncryptionContract
 import care.data4life.datadonation.encryption.HashSize
-import care.data4life.datadonation.encryption.hybrid.HybridEncryption
 import care.data4life.datadonation.encryption.signature.SignatureKeyPrivate
 import care.data4life.datadonation.internal.data.exception.MissingCredentialsException
 import care.data4life.datadonation.internal.data.model.ConsentSignatureType
 import care.data4life.datadonation.internal.data.model.DocumentWithSignature
 import care.data4life.datadonation.internal.data.model.DonationPayload
-import care.data4life.datadonation.internal.domain.repository.DonationRepository
+import care.data4life.datadonation.internal.domain.repository.RepositoryContract
 import care.data4life.hl7.fhir.stu3.FhirStu3Parser
 import care.data4life.hl7.fhir.stu3.model.FhirResource
 import io.ktor.utils.io.core.*
@@ -50,11 +50,10 @@ internal class DonateResources(
     private val filterSensitiveInformation: FilterSensitiveInformation,
     private val removeInternalInformation: RemoveInternalInformation,
     private val createRequestConsentPayload: CreateRequestConsentPayload,
-    private val donationRepository: DonationRepository,
-    private val encryptionALP: HybridEncryption,
+    private val donationRepository: RepositoryContract.DonationRepository,
+    private val encryptionALP: EncryptionContract.HybridEncryption,
     private val signatureProvider: (KeyPair) -> SignatureKeyPrivate = defaultSignatureProvider
-) :
-    ParameterizedUsecase<DonateResources.Parameters, Unit>() {
+) : ParameterizedUsecase<DonateResources.Parameters, Unit>() {
 
     companion object {
         private val defaultSignatureProvider = { keyPair: KeyPair ->

@@ -14,11 +14,17 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.di
+package care.data4life.datadonation.encryption
 
+import care.data4life.datadonation.encryption.hybrid.HybridEncryptionRegistry
 import org.koin.core.module.Module
+import org.koin.dsl.bind
 import org.koin.dsl.module
 
-internal actual fun resolvePlatformModule(): Module {
-    return module { }
+fun resolveEncryptionModule(): Module {
+    return module {
+        single<EncryptionContract.HybridEncryptionRegistry> {
+            HybridEncryptionRegistry(get())
+        } bind EncryptionContract.HybridEncryptionRegistry::class
+    }
 }

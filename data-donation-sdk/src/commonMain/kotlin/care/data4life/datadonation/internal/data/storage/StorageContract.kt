@@ -14,43 +14,52 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.domain.repository
+package care.data4life.datadonation.internal.data.storage
 
 import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.model.DonationPayload
 
-internal interface RepositoryContract {
-    interface UserConsentRepository {
-        suspend fun createUserConsent(version: Int, language: String?)
-        suspend fun fetchUserConsents(consentKey: String? = null): List<UserConsent>
-        suspend fun signUserConsentRegistration(message: String): String
-        suspend fun signUserConsentDonation(message: String): String
-        suspend fun revokeUserConsent(language: String?)
+interface StorageContract {
+    interface UserConsentRemoteStorage {
+        suspend fun createUserConsent(accessToken: String, version: Int, language: String?)
+        suspend fun fetchUserConsents(
+            accessToken: String,
+            consentKey: String? = null
+        ): List<UserConsent>
+
+        suspend fun signUserConsentRegistration(accessToken: String, message: String): String
+        suspend fun signUserConsentDonation(accessToken: String, message: String): String
+        suspend fun revokeUserConsent(accessToken: String, language: String?)
     }
 
-    interface ConsentDocumentRepository {
+    interface ConsentDocumentRemoteStorage {
         suspend fun fetchConsentDocuments(
-            language: String?,
+            accessToken: String,
             version: Int?,
+            language: String?,
             consentKey: String
         ): List<ConsentDocument>
     }
 
-    interface ServiceTokenRepository {
+    interface ServiceTokenRemoteStorage {
         suspend fun requestDonationToken(): String
     }
 
-    interface DonationRepository {
+    interface DonationRemoteStorage {
         suspend fun donateResources(payload: DonationPayload)
     }
 
-    interface RegistrationRepository {
+    interface RegistrationRemoteStorage {
         suspend fun registerNewDonor(data: ByteArray)
     }
 
-    interface CredentialsRepository {
+    interface CredentialsDataRemoteStorage {
         fun getDataDonationPublicKey(): String
         fun getAnalyticsPlatformPublicKey(): String
+    }
+
+    interface UserSessionTokenDataStorage {
+        suspend fun getUserSessionToken(): String?
     }
 }

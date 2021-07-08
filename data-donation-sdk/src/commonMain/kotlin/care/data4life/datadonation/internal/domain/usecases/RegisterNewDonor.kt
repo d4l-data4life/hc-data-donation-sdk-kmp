@@ -37,13 +37,13 @@ import care.data4life.datadonation.encryption.Algorithm
 import care.data4life.datadonation.encryption.HashSize
 import care.data4life.datadonation.encryption.signature.SignatureKeyPrivate
 import care.data4life.datadonation.internal.data.model.*
-import care.data4life.datadonation.internal.domain.repository.RegistrationRepository
+import care.data4life.datadonation.internal.domain.repository.RepositoryContract
 import care.data4life.datadonation.internal.utils.DefaultKeyGenerator
 import care.data4life.datadonation.internal.utils.KeyGenerator
 
 internal class RegisterNewDonor(
     private val createRequestConsentPayload: CreateRequestConsentPayload,
-    private val registrationRepository: RegistrationRepository,
+    private val registrationRepository: RepositoryContract.RegistrationRepository,
     private val keyGenerator: KeyGenerator = DefaultKeyGenerator
 ) :
     ParameterizedUsecase<RegisterNewDonor.Parameters, KeyPair>() {

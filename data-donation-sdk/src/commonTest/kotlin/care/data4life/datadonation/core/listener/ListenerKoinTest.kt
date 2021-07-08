@@ -23,20 +23,20 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 
-class ListenerModuleTest {
+class ListenerKoinTest {
     @BeforeTest
     fun setUp() {
         stopKoin()
     }
 
     @Test
-    fun `Given listenerModule is called with a ScopeResolver it creates a Module, which contains a TaskRunner`() {
+    fun `Given resolveListenerModule is called with a ScopeResolver it creates a Module, which contains a TaskRunner`() {
         // Given
         val config = ClientConfigurationStub()
 
         // When
         val koin = koinApplication {
-            modules(listenerModule(config))
+            modules(resolveListenerModule(config))
         }
         // Then
         val runner: ListenerInternalContract.UsecaseRunner = koin.koin.get()

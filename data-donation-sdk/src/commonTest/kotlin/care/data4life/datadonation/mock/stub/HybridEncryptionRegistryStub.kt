@@ -16,15 +16,21 @@
 
 package care.data4life.datadonation.mock.stub
 
-import care.data4life.datadonation.internal.data.store.UserSessionTokenDataStore
+import care.data4life.datadonation.encryption.EncryptionContract
 import care.data4life.datadonation.mock.MockContract
+import care.data4life.datadonation.mock.MockException
 
-class UserSessionTokenDataStoreStub : UserSessionTokenDataStore, MockContract.Stub {
-    var sessionToken: String? = null
+class HybridEncryptionRegistryStub : EncryptionContract.HybridEncryptionRegistry, MockContract.Stub {
+    var givenHybridEncryptionDD: EncryptionContract.HybridEncryption? = null
+    var givenHybridEncryptionALP: EncryptionContract.HybridEncryption? = null
 
-    override suspend fun getUserSessionToken(): String? = sessionToken
+    override val hybridEncryptionDD: EncryptionContract.HybridEncryption
+        get() = givenHybridEncryptionDD ?: throw MockException()
+    override val hybridEncryptionALP: EncryptionContract.HybridEncryption
+        get() = givenHybridEncryptionALP ?: throw MockException()
 
     override fun clear() {
-        sessionToken = null
+        givenHybridEncryptionDD = null
+        givenHybridEncryptionALP = null
     }
 }

@@ -33,11 +33,11 @@
 package care.data4life.datadonation.internal.domain.usecases
 
 import care.data4life.datadonation.core.model.UserConsent
-import care.data4life.datadonation.internal.domain.repository.RepositoryInternalContract
+import care.data4life.datadonation.internal.domain.repository.RepositoryContract
 import care.data4life.datadonation.internal.domain.usecases.UsecaseContract.FetchUserConsentsParameter
 
 internal class FetchUserConsentsFactory(
-    private val consentRepository: RepositoryInternalContract.UserConsentRepository
+    private val consentRepository: RepositoryContract.UserConsentRepository
 ) : UsecaseContract.FetchUserConsents {
 
     override fun withParams(parameter: FetchUserConsentsParameter): UsecaseContract.Usecase<List<UserConsent>> {
@@ -48,7 +48,7 @@ internal class FetchUserConsentsFactory(
     }
 
     private class FetchUserConsents(
-        private val consentRepository: RepositoryInternalContract.UserConsentRepository,
+        private val consentRepository: RepositoryContract.UserConsentRepository,
         private val parameter: FetchUserConsentsParameter
     ) : UsecaseContract.Usecase<List<UserConsent>> {
 

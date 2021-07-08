@@ -30,33 +30,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.encryption.hybrid
+package care.data4life.datadonation.internal.data.storage
 
-import care.data4life.datadonation.encryption.asymetric.EncryptionPrivateKey
-import care.data4life.datadonation.encryption.asymetric.EncryptionPublicKey
-import care.data4life.datadonation.encryption.symmetric.EncryptionSymmetricKey
+import care.data4life.datadonation.core.model.ConsentDocument
+import care.data4life.datadonation.internal.data.service.ServiceContract
 
-interface HybridEncryption {
+internal class ConsentDocumentDataStorage(
+    private val service: ServiceContract.ConsentService
+) : StorageContract.ConsentDocumentRemoteStorage {
 
-    companion object {
-        const val HYBRID_ENCRYPTION_VERSION_AES_WITH_GCM = 2
-        const val AES_IV_LENGTH = 16
-        const val AES_AUTH_TAG_LENGTH = 16
-        const val AES_KEY_LENGTH = 256
-        const val RSA_KEY_SIZE_BITS = 2048
-    }
-
-    fun encrypt(plaintext: ByteArray): ByteArray
-    fun decrypt(ciphertext: ByteArray): Result<ByteArray>
-
-    interface SymmetricKeyProvider {
-        fun getNewKey(): EncryptionSymmetricKey
-        fun getKey(keyData: ByteArray): EncryptionSymmetricKey
-        fun getAuthenticationData(): ByteArray
-    }
-
-    interface AsymmetricKeyProvider {
-        fun getPublicKey(): EncryptionPublicKey
-        fun getPrivateKey(): EncryptionPrivateKey
-    }
+    override suspend fun fetchConsentDocuments(
+        accessToken: String,
+        version: Int?,
+        language: String?,
+        consentKey: String
+    ): List<ConsentDocument> =
+        service.fetchConsentDocuments(accessToken, version, language, consentKey)
 }

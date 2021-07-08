@@ -36,15 +36,19 @@ import care.data4life.datadonation.Client
 import care.data4life.datadonation.Contract
 import care.data4life.datadonation.core.listener.ListenerContract.Callback
 import care.data4life.datadonation.core.listener.ListenerContract.ResultListener
-import care.data4life.datadonation.core.listener.listenerModule
+import care.data4life.datadonation.core.listener.resolveListenerModule
 import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.UserConsent
-import care.data4life.datadonation.internal.data.model.DummyData
-import care.data4life.datadonation.internal.di.coreModule
-import care.data4life.datadonation.internal.di.platformModule
+import care.data4life.datadonation.encryption.resolveEncryptionModule
+import care.data4life.datadonation.internal.data.storage.resolveStorageModule
+import care.data4life.datadonation.internal.di.resolveCoreModule
+import care.data4life.datadonation.internal.di.resolvePlatformModule
 import care.data4life.datadonation.internal.di.resolveRootModule
+import care.data4life.datadonation.internal.domain.repository.resolveRepositoryModule
+import care.data4life.datadonation.internal.domain.usecases.resolveUsecaseModule
+import care.data4life.datadonation.mock.DummyData
 import care.data4life.hl7.fhir.stu3.codesystem.QuestionnaireResponseStatus
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponseItem
@@ -89,9 +93,13 @@ class ClientTest {
         val koin = koinApplication {
             modules(
                 resolveRootModule(config),
-                platformModule(),
-                coreModule(),
-                listenerModule(config)
+                resolvePlatformModule(),
+                resolveCoreModule(),
+                resolveListenerModule(config),
+                resolveStorageModule(),
+                resolveUsecaseModule(),
+                resolveRepositoryModule(),
+                resolveEncryptionModule()
             )
         }
 
@@ -141,9 +149,13 @@ class ClientTest {
         val koin = koinApplication {
             modules(
                 resolveRootModule(config),
-                platformModule(),
-                coreModule(),
-                listenerModule(config)
+                resolvePlatformModule(),
+                resolveCoreModule(),
+                resolveListenerModule(config),
+                resolveStorageModule(),
+                resolveUsecaseModule(),
+                resolveRepositoryModule(),
+                resolveEncryptionModule()
             )
         }
 
@@ -194,6 +206,7 @@ class ClientTest {
     }
 
     @Test
+    // TODO: No API Call?
     fun registerNewDonorTest() = runWithBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val keyPair = KeyPair(ByteArray(42), ByteArray(23))
@@ -206,9 +219,13 @@ class ClientTest {
         val koin = koinApplication {
             modules(
                 resolveRootModule(config),
-                platformModule(),
-                coreModule(),
-                listenerModule(config)
+                resolvePlatformModule(),
+                resolveCoreModule(),
+                resolveListenerModule(config),
+                resolveStorageModule(),
+                resolveUsecaseModule(),
+                resolveRepositoryModule(),
+                resolveEncryptionModule()
             )
         }
 
@@ -236,7 +253,8 @@ class ClientTest {
     }
 
     @Test
-    @Ignore // TODO "Use MockEngine"
+    @Ignore
+    // TODO "Use MockEngine"
     // TODO: infinity loop caused by the refused connection - If so we need to figure out of setting a timeout
     fun fetchUserConsentsTest() = runWithBlockingTest(GlobalScope.coroutineContext) {
         // Given
@@ -250,9 +268,13 @@ class ClientTest {
         val koin = koinApplication {
             modules(
                 resolveRootModule(config),
-                platformModule(),
-                coreModule(),
-                listenerModule(config)
+                resolvePlatformModule(),
+                resolveCoreModule(),
+                resolveListenerModule(config),
+                resolveStorageModule(),
+                resolveUsecaseModule(),
+                resolveRepositoryModule(),
+                resolveEncryptionModule()
             )
         }
 
@@ -293,9 +315,13 @@ class ClientTest {
         val koin = koinApplication {
             modules(
                 resolveRootModule(config),
-                platformModule(),
-                coreModule(),
-                listenerModule(config)
+                resolvePlatformModule(),
+                resolveCoreModule(),
+                resolveListenerModule(config),
+                resolveStorageModule(),
+                resolveUsecaseModule(),
+                resolveRepositoryModule(),
+                resolveEncryptionModule()
             )
         }
 
@@ -337,9 +363,13 @@ class ClientTest {
         val koin = koinApplication {
             modules(
                 resolveRootModule(config),
-                platformModule(),
-                coreModule(),
-                listenerModule(config)
+                resolvePlatformModule(),
+                resolveCoreModule(),
+                resolveListenerModule(config),
+                resolveStorageModule(),
+                resolveUsecaseModule(),
+                resolveRepositoryModule(),
+                resolveEncryptionModule()
             )
         }
 

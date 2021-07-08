@@ -33,19 +33,19 @@
 package care.data4life.datadonation.internal.domain.repository
 
 import care.data4life.datadonation.core.model.ConsentDocument
-import care.data4life.datadonation.internal.data.store.UserSessionTokenDataStore
+import care.data4life.datadonation.internal.data.storage.StorageContract
 
 internal class ConsentDocumentRepository(
-    private val remote: RepositoryContract.ConsentDocumentRemote,
-    private val sessionToken: UserSessionTokenDataStore
-) : RepositoryInternalContract.ConsentDocumentRepository {
+    private val remoteStorage: StorageContract.ConsentDocumentRemoteStorage,
+    private val sessionToken: StorageContract.UserSessionTokenDataStorage
+) : RepositoryContract.ConsentDocumentRepository {
 
     override suspend fun fetchConsentDocuments(
         language: String?,
         version: Int?,
         consentKey: String
     ): List<ConsentDocument> {
-        return remote.fetchConsentDocuments(
+        return remoteStorage.fetchConsentDocuments(
             sessionToken.getUserSessionToken()!!,
             version,
             language,

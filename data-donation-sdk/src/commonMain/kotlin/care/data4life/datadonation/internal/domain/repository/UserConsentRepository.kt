@@ -33,25 +33,25 @@
 package care.data4life.datadonation.internal.domain.repository
 
 import care.data4life.datadonation.core.model.UserConsent
-import care.data4life.datadonation.internal.data.store.UserSessionTokenDataStore
+import care.data4life.datadonation.internal.data.storage.StorageContract
 
 internal class UserConsentRepository(
-    private val remote: RepositoryContract.UserConsentRemote,
-    private val sessionToken: UserSessionTokenDataStore
-) : RepositoryInternalContract.UserConsentRepository {
+    private val remoteStorage: StorageContract.UserConsentRemoteStorage,
+    private val sessionToken: StorageContract.UserSessionTokenDataStorage
+) : RepositoryContract.UserConsentRepository {
 
     override suspend fun createUserConsent(version: Int, language: String?) =
-        remote.createUserConsent(sessionToken.getUserSessionToken()!!, version, language)
+        remoteStorage.createUserConsent(sessionToken.getUserSessionToken()!!, version, language)
 
     override suspend fun fetchUserConsents(consentKey: String?): List<UserConsent> =
-        remote.fetchUserConsents(sessionToken.getUserSessionToken()!!, consentKey)
+        remoteStorage.fetchUserConsents(sessionToken.getUserSessionToken()!!, consentKey)
 
     override suspend fun signUserConsentRegistration(message: String): String =
-        remote.signUserConsentRegistration(sessionToken.getUserSessionToken()!!, message)
+        remoteStorage.signUserConsentRegistration(sessionToken.getUserSessionToken()!!, message)
 
     override suspend fun signUserConsentDonation(message: String): String =
-        remote.signUserConsentDonation(sessionToken.getUserSessionToken()!!, message)
+        remoteStorage.signUserConsentDonation(sessionToken.getUserSessionToken()!!, message)
 
     override suspend fun revokeUserConsent(language: String?) =
-        remote.revokeUserConsent(sessionToken.getUserSessionToken()!!, language)
+        remoteStorage.revokeUserConsent(sessionToken.getUserSessionToken()!!, language)
 }

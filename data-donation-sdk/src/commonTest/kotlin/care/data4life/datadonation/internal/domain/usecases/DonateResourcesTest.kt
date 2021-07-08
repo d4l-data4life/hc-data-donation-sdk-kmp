@@ -32,18 +32,21 @@
 
 package care.data4life.datadonation.internal.domain.usecases
 
-import care.data4life.datadonation.encryption.hybrid.HybridEncryption
+import care.data4life.datadonation.encryption.EncryptionContract.HybridEncryption
 import care.data4life.datadonation.encryption.signature.SignatureKeyPrivate
 import care.data4life.datadonation.internal.data.exception.MissingCredentialsException
 import care.data4life.datadonation.internal.data.model.*
-import care.data4life.datadonation.internal.data.service.ConsentService
+import care.data4life.datadonation.internal.data.service.ServiceContract.Companion.DEFAULT_DONATION_CONSENT_KEY
 import care.data4life.datadonation.internal.domain.mock.*
 import care.data4life.datadonation.internal.domain.repository.DonationRepository
 import care.data4life.datadonation.internal.domain.repository.ServiceTokenRepository
 import care.data4life.datadonation.internal.utils.Base64Encoder
 import care.data4life.datadonation.internal.utils.toJsonString
+import care.data4life.datadonation.mock.DummyData
 import care.data4life.datadonation.mock.spy.CapturingResultListener
 import care.data4life.datadonation.mock.stub.ConsentDataStoreStub
+import care.data4life.datadonation.mock.stub.DonationDataStorageStub
+import care.data4life.datadonation.mock.stub.ServiceTokenDataStorageStub
 import care.data4life.datadonation.mock.stub.UserConsentRepositoryStub
 import care.data4life.hl7.fhir.stu3.FhirStu3Parser
 import care.data4life.hl7.fhir.stu3.codesystem.QuestionnaireResponseStatus
@@ -83,8 +86,8 @@ abstract class DonateResourcesTest {
     private val jsonParser = Json {}
 
     private val mockUserConsentDataStore = ConsentDataStoreStub()
-    private val mockDonationDataStore = MockDonationDataStore()
-    private val mockServiceTokenDataStore = MockServiceTokenDataStore()
+    private val mockDonationDataStore = DonationDataStorageStub()
+    private val mockServiceTokenDataStore = ServiceTokenDataStorageStub()
     private val mockFilterSensitiveInformation = MockFilterSensitiveInformation()
     private val mockRemoveInternalInformation = MockRemoveInternalInformation(jsonParser)
     private val mockUserConsentRepository = UserConsentRepositoryStub()
@@ -112,7 +115,7 @@ abstract class DonateResourcesTest {
         ConsentRequest(signatureKey.pkcs8Public, dummyNonce).toJsonString()
 
     private val consentMessage = ConsentMessage(
-        ConsentService.defaultDonationConsentKey,
+        DEFAULT_DONATION_CONSENT_KEY,
         ConsentSignatureType.NormalUse.apiValue,
         dummyEncryptedRequest64Encoded
     )

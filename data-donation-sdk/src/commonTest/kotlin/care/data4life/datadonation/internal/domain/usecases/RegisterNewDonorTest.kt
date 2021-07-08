@@ -34,22 +34,22 @@ package care.data4life.datadonation.internal.domain.usecases
 
 import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.encryption.Algorithm
-import care.data4life.datadonation.encryption.hybrid.HybridEncryption
+import care.data4life.datadonation.encryption.EncryptionContract.HybridEncryption
 import care.data4life.datadonation.encryption.signature.SignatureKeyPrivate
 import care.data4life.datadonation.internal.data.model.ConsentMessage
 import care.data4life.datadonation.internal.data.model.ConsentRequest
 import care.data4life.datadonation.internal.data.model.ConsentSignatureType
-import care.data4life.datadonation.internal.data.model.DummyData
 import care.data4life.datadonation.internal.data.model.SignedConsentMessage
-import care.data4life.datadonation.internal.data.service.ConsentService
-import care.data4life.datadonation.internal.domain.mock.MockRegistrationDataStore
-import care.data4life.datadonation.internal.domain.mock.MockServiceTokenDataStore
+import care.data4life.datadonation.internal.data.service.ServiceContract.Companion.DEFAULT_DONATION_CONSENT_KEY
 import care.data4life.datadonation.internal.domain.repository.RegistrationRepository
 import care.data4life.datadonation.internal.domain.repository.ServiceTokenRepository
 import care.data4life.datadonation.internal.utils.Base64Encoder
 import care.data4life.datadonation.internal.utils.KeyGenerator
 import care.data4life.datadonation.internal.utils.toJsonString
+import care.data4life.datadonation.mock.DummyData
 import care.data4life.datadonation.mock.spy.CapturingResultListener
+import care.data4life.datadonation.mock.stub.RegistrationDataStorageStub
+import care.data4life.datadonation.mock.stub.ServiceTokenDataStorageStub
 import care.data4life.datadonation.mock.stub.UserConsentRepositoryStub
 import io.ktor.utils.io.charsets.Charset
 import runBlockingTest
@@ -66,8 +66,8 @@ abstract class RegisterNewDonorTest {
     private val dummyEncryptedRequest64Encoded = "encryptedRequest64Encoded"
     private val dummyEncryptedSignedMessage = byteArrayOf(4, 5)
 
-    private val mockServiceTokenDataStore = MockServiceTokenDataStore()
-    private val mockRegistrationDataStore = MockRegistrationDataStore()
+    private val mockServiceTokenDataStore = ServiceTokenDataStorageStub()
+    private val mockRegistrationDataStore = RegistrationDataStorageStub()
     private val serviceTokenRepository = ServiceTokenRepository(mockServiceTokenDataStore)
     private val mockUserConsentRepository = UserConsentRepositoryStub()
     private val registrationRepository = RegistrationRepository(mockRegistrationDataStore)
@@ -85,7 +85,7 @@ abstract class RegisterNewDonorTest {
         ConsentRequest(signatureKey.pkcs8Public, dummyNonce).toJsonString()
 
     private val consentMessage = ConsentMessage(
-        ConsentService.defaultDonationConsentKey,
+        DEFAULT_DONATION_CONSENT_KEY,
         ConsentSignatureType.ConsentOnce.apiValue,
         dummyEncryptedRequest64Encoded
     )

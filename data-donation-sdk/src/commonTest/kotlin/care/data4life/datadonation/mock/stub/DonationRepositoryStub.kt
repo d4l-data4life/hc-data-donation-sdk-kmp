@@ -14,11 +14,18 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.di
+package care.data4life.datadonation.mock.stub
 
-import org.koin.core.module.Module
-import org.koin.dsl.module
+import care.data4life.datadonation.internal.data.model.DonationPayload
+import care.data4life.datadonation.internal.domain.repository.RepositoryContract
+import care.data4life.datadonation.mock.MockContract
 
-internal actual fun resolvePlatformModule(): Module {
-    return module { }
+class DonationRepositoryStub : RepositoryContract.DonationRepository, MockContract.Stub {
+    override suspend fun donateResources(payload: DonationPayload) {
+        TODO("Not yet implemented")
+    }
+
+    override fun clear() {
+        TODO("Not yet implemented")
+    }
 }
