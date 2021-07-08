@@ -114,6 +114,7 @@ internal class ConsentService private constructor(
 
         callBuilder
             .setAccessToken(accessToken)
+            .useJsonContentType()
             .setBody(payload)
             .execute(
                 ServiceContract.Method.POST,
@@ -140,6 +141,7 @@ internal class ConsentService private constructor(
 
         val response = callBuilder
             .setAccessToken(accessToken)
+            .useJsonContentType()
             .setBody(payload)
             .execute(
                 ServiceContract.Method.POST,
@@ -167,6 +169,7 @@ internal class ConsentService private constructor(
 
         val response = callBuilder
             .setAccessToken(accessToken)
+            .useJsonContentType()
             .setBody(payload)
             .execute(
                 ServiceContract.Method.PUT,
@@ -182,6 +185,7 @@ internal class ConsentService private constructor(
 
         callBuilder
             .setAccessToken(accessToken)
+            .useJsonContentType()
             .setBody(payload)
             .execute(
                 ServiceContract.Method.DELETE,

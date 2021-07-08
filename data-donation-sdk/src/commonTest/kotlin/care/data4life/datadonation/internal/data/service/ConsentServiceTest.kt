@@ -350,6 +350,7 @@ class ConsentServiceTest {
             actual = CallBuilderSpy.lastInstance!!.delegatedAccessToken,
             expected = accessToken
         )
+        assertTrue(CallBuilderSpy.lastInstance!!.delegatedJsonFlag)
         assertEquals(
             actual = CallBuilderSpy.lastInstance!!.delegatedBody,
             expected = ConsentCreationPayload(
@@ -426,6 +427,11 @@ class ConsentServiceTest {
                 it.addAll(listOf(USER_CONSENTS, DEFAULT_DONATION_CONSENT_KEY, SIGNATURES))
             }
         )
+        assertEquals(
+            actual = CallBuilderSpy.lastInstance!!.delegatedAccessToken,
+            expected = accessToken
+        )
+        assertTrue(CallBuilderSpy.lastInstance!!.delegatedJsonFlag)
         assertEquals(
             actual = CallBuilderSpy.lastInstance!!.delegatedBody,
             expected = ConsentSigningRequest(
@@ -507,6 +513,11 @@ class ConsentServiceTest {
             }
         )
         assertEquals(
+            actual = CallBuilderSpy.lastInstance!!.delegatedAccessToken,
+            expected = accessToken
+        )
+        assertTrue(CallBuilderSpy.lastInstance!!.delegatedJsonFlag)
+        assertEquals(
             actual = CallBuilderSpy.lastInstance!!.delegatedBody,
             expected = ConsentSigningRequest(
                 DEFAULT_DONATION_CONSENT_KEY,
@@ -560,6 +571,7 @@ class ConsentServiceTest {
             actual = CallBuilderSpy.lastInstance!!.delegatedAccessToken,
             expected = accessToken
         )
+        assertTrue(CallBuilderSpy.lastInstance!!.delegatedJsonFlag)
         assertEquals(
             actual = CallBuilderSpy.lastInstance!!.delegatedBody,
             expected = ConsentRevocationPayload(DEFAULT_DONATION_CONSENT_KEY)
