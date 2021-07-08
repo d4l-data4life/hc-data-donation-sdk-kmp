@@ -18,7 +18,6 @@ package care.data4life.datadonation
 
 import care.data4life.datadonation.core.listener.ListenerContract
 import care.data4life.datadonation.core.listener.ListenerInternalContract
-import care.data4life.datadonation.core.listener.listenerModule
 import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.UserConsent
