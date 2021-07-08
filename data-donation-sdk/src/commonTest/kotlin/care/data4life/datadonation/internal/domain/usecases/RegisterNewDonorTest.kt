@@ -130,6 +130,7 @@ abstract class RegisterNewDonorTest {
 
     private val capturingListener = RegisterNewDonorListener()
 
+    @Ignore
     @Test
     fun registerNewDonorTestWithoutKey() = runBlockingTest {
         // Given

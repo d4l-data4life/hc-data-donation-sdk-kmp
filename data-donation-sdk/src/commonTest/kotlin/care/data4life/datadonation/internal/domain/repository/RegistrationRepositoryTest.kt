@@ -44,7 +44,7 @@ class RegistrationRepositoryTest {
         }
 
         // When
-        val repo = RegistrationRepository((storage))
+        val repo = RegistrationRepository(storage)
         repo.registerNewDonor(data)
 
         // Then

@@ -45,7 +45,7 @@ class DonationRepositoryTest {
         }
 
         // When
-        val repo = DonationRepository((storage))
+        val repo = DonationRepository(storage)
         repo.donateResources(payload)
 
         // Then
