@@ -62,7 +62,7 @@ class FetchUserConsentsTest {
     }
 
     @Test
-    fun `Given a Usecase had been created and execute is called, it delegates the call to the consentRepository without the consentKey, if the key is null`() = runBlockingTest {
+    fun `Given a Usecase had been created and execute is called, it delegates the call to the ConsentRepository without the consentKey, if the key is null`() = runBlockingTest {
         // Given
         val parameter = FetchUserConsentsFactory.Parameters(consentKey = null)
         val dummyConsentList = listOf(DummyData.userConsent)
@@ -87,7 +87,7 @@ class FetchUserConsentsTest {
     }
 
     @Test
-    fun `Given a Usecase had been created and execute is called, it delegates the call to the consentRepository with the consentKey, if the key is not null`() = runBlockingTest {
+    fun `Given a Usecase had been created and execute is called, it delegates the call to the ConsentRepository with the consentKey, if the key is not null`() = runBlockingTest {
         // Given
         val consentKey = "key"
         val parameter = FetchUserConsentsFactory.Parameters(consentKey = consentKey)

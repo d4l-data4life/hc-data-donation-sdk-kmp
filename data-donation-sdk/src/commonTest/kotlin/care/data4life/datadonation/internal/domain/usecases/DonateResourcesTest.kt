@@ -43,6 +43,7 @@ import care.data4life.datadonation.internal.domain.repository.ServiceTokenReposi
 import care.data4life.datadonation.internal.utils.Base64Encoder
 import care.data4life.datadonation.internal.utils.toJsonString
 import care.data4life.datadonation.mock.spy.CapturingResultListener
+import care.data4life.datadonation.mock.stub.ConsentDataStoreStub
 import care.data4life.datadonation.mock.stub.UserConsentRepositoryStub
 import care.data4life.hl7.fhir.stu3.FhirStu3Parser
 import care.data4life.hl7.fhir.stu3.codesystem.QuestionnaireResponseStatus
@@ -81,7 +82,7 @@ abstract class DonateResourcesTest {
 
     private val jsonParser = Json {}
 
-    private val mockUserConsentDataStore = MockConsentDataStore()
+    private val mockUserConsentDataStore = ConsentDataStoreStub()
     private val mockDonationDataStore = MockDonationDataStore()
     private val mockServiceTokenDataStore = MockServiceTokenDataStore()
     private val mockFilterSensitiveInformation = MockFilterSensitiveInformation()

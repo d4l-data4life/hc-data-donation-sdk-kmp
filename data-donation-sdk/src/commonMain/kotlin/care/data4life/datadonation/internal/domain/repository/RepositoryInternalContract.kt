@@ -28,18 +28,6 @@ internal interface RepositoryInternalContract {
         suspend fun revokeUserConsent(language: String?)
     }
 
-    interface UserConsentRemote {
-        suspend fun createUserConsent(accessToken: String, version: Int, language: String?)
-        suspend fun fetchUserConsents(
-            accessToken: String,
-            consentKey: String? = null
-        ): List<UserConsent>
-
-        suspend fun signUserConsentRegistration(accessToken: String, message: String): String
-        suspend fun signUserConsentDonation(accessToken: String, message: String): String
-        suspend fun revokeUserConsent(accessToken: String, language: String?)
-    }
-
     interface ConsentDocumentRepository {
         suspend fun fetchConsentDocuments(
             language: String?,

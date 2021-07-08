@@ -32,49 +32,81 @@
 
 package care.data4life.datadonation.internal.domain.usecases
 
-import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.internal.data.model.DummyData
-import care.data4life.datadonation.internal.domain.mock.MockConsentDocumentRepository
-import care.data4life.datadonation.mock.spy.CapturingResultListener
+import care.data4life.datadonation.mock.stub.ConsentDocumentRepositoryStub
 import runBlockingTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNull
+import kotlin.test.assertSame
+import kotlin.test.assertTrue
 
-abstract class FetchConsentDocumentsTest {
-
-    private val consentDocumentRepository = MockConsentDocumentRepository()
-    private val fetchConsentDocument = FetchConsentDocuments(consentDocumentRepository)
-
-    private val capturingListener = FetchConsentDocumentListener()
-
+class FetchConsentDocumentsTest {
     @Test
-    fun createUserContentFullParams() = runBlockingTest {
-        // Given
-        val expectedLanguage = "en"
-        val expectedVersion = 1
-        val expectedConsentKey = "custom-consent-key"
-        var languageInput: String? = "dummy"
-        var versionInput: Int? = -1
-        var consentKeyInput = "dummy"
-        val documentList = listOf(DummyData.consentDocument)
-        consentDocumentRepository.whenFetchConsentDocuments = { language: String?, version: Int?, consentKey: String ->
-            languageInput = language
-            versionInput = version
-            consentKeyInput = consentKey
-            documentList
-        }
+    fun `It fulfils FetchConsentDocuments`() {
+        val factory: Any = FetchConsentDocumentsFactory(ConsentDocumentRepositoryStub())
 
-        // When
-        fetchConsentDocument.runWithParams(FetchConsentDocuments.Parameters(expectedVersion, expectedLanguage, expectedConsentKey), capturingListener)
-
-        // Then
-        assertEquals(expectedVersion, versionInput)
-        assertEquals(expectedLanguage, languageInput)
-        assertEquals(expectedConsentKey, consentKeyInput)
-        assertEquals(capturingListener.captured, documentList)
-        assertNull(capturingListener.error)
+        assertTrue(factory is UsecaseContract.FetchConsentDocuments)
     }
 
-    class FetchConsentDocumentListener : CapturingResultListener<List<ConsentDocument>>()
+    @Test
+    fun `Given withParams is called with the appropriate Parameter it creates a Usecase`() {
+        // Given
+        val parameter = FetchConsentDocumentsFactory.Parameters(
+            23,
+            "b",
+            "c"
+        )
+
+        // When
+        val usecase: Any = FetchConsentDocumentsFactory(ConsentDocumentRepositoryStub()).withParams(parameter)
+
+        // Then
+        assertTrue(usecase is UsecaseContract.Usecase<*>)
+    }
+
+    @Test
+    fun `Given a Usecase had been created and execute is called, it delegates the call to the UserContentRepository with the given parameters`() = runBlockingTest {
+        // Given
+        val version = 42
+        val language = "de-j-old-n-kotlin-x-done"
+        val consentKey = "tomato"
+
+        var capturedVersion: Int? = null
+        var capturedLanguage: String? = null
+        var capturedConsentKey: String? = null
+
+        val consentDocuments = listOf(DummyData.consentDocument)
+
+        val repo = ConsentDocumentRepositoryStub()
+
+        repo.whenFetchConsentDocuments = { delegatedLanguage, delegatedVersion, delegatedConsentKey ->
+            capturedVersion = delegatedVersion
+            capturedLanguage = delegatedLanguage
+            capturedConsentKey = delegatedConsentKey
+            consentDocuments
+        }
+
+        val parameter = FetchConsentDocumentsFactory.Parameters(version, language, consentKey)
+
+        // When
+        val result = FetchConsentDocumentsFactory(repo).withParams(parameter).execute()
+
+        // Then
+        assertSame(
+            actual = consentDocuments,
+            expected = result
+        )
+        assertEquals(
+            actual = capturedLanguage,
+            expected = language
+        )
+        assertEquals(
+            actual = capturedVersion,
+            expected = version
+        )
+        assertEquals(
+            actual = capturedConsentKey,
+            expected = consentKey
+        )
+    }
 }

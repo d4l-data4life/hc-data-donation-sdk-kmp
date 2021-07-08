@@ -42,10 +42,12 @@ import care.data4life.datadonation.internal.domain.repository.ConsentDocumentRep
 import care.data4life.datadonation.internal.domain.repository.CredentialsRepository
 import care.data4life.datadonation.internal.domain.repository.DonationRepository
 import care.data4life.datadonation.internal.domain.repository.RegistrationRepository
+import care.data4life.datadonation.internal.domain.repository.RepositoryContract
+import care.data4life.datadonation.internal.domain.repository.RepositoryInternalContract
 import care.data4life.datadonation.internal.domain.repository.ServiceTokenRepository
 import care.data4life.datadonation.internal.domain.repository.UserConsentRepository
 import care.data4life.datadonation.internal.domain.usecases.*
-import care.data4life.datadonation.internal.domain.usecases.UsecaseContract.FetchUserConsents
+import care.data4life.datadonation.internal.domain.usecases.UsecaseContract.*
 import care.data4life.datadonation.internal.utils.Base64Factory
 import io.ktor.client.*
 import io.ktor.client.features.json.*
@@ -57,7 +59,6 @@ import org.koin.core.module.Module
 import org.koin.dsl.bind
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
-import care.data4life.datadonation.internal.domain.repository.RepositoryInternalContract as RepositoryContract
 
 // TODO: Break down dependencies and move them in their corresponding packages
 internal fun initKoin(configuration: Contract.Configuration): KoinApplication {
@@ -123,19 +124,27 @@ internal fun coreModule(): Module {
         single<RepositoryContract.UserConsentRemote> {
             UserConsentDataStore(get())
         } bind RepositoryContract.UserConsentRemote::class
-        single { RegistrationDataStore(get()) } bind RegistrationRepository.Remote::class
-        single { ConsentDocumentDataStore(get()) } bind ConsentDocumentRepository.Remote::class
-        single { DonationDataStore(get()) } bind DonationRepository.Remote::class
-        single { ServiceTokenDataStore(get()) } bind ServiceTokenRepository.Remote::class
+        single<RegistrationRepository.Remote> {
+            RegistrationDataStore(get())
+        } bind RegistrationRepository.Remote::class
+        single<RepositoryContract.ConsentDocumentRemote> {
+            ConsentDocumentDataStore(get())
+        } bind RepositoryContract.ConsentDocumentRemote::class
+        single<DonationRepository.Remote> {
+            DonationDataStore(get())
+        } bind DonationRepository.Remote::class
+        single<ServiceTokenRepository.Remote> {
+            ServiceTokenDataStore(get())
+        } bind ServiceTokenRepository.Remote::class
 
         // Repositories
-        single<RepositoryContract.UserConsentRepository> {
+        single<RepositoryInternalContract.UserConsentRepository> {
             UserConsentRepository(get(), get())
-        } bind RepositoryContract.UserConsentRepository::class
+        } bind RepositoryInternalContract.UserConsentRepository::class
         single { RegistrationRepository(get()) }
-        single<RepositoryContract.ConsentDocumentRepository> {
+        single<RepositoryInternalContract.ConsentDocumentRepository> {
             ConsentDocumentRepository(get(), get())
-        } bind RepositoryContract.ConsentDocumentRepository::class
+        } bind RepositoryInternalContract.ConsentDocumentRepository::class
         single { CredentialsRepository(get()) }
         single { DonationRepository(get()) }
         single { ServiceTokenRepository(get()) }
@@ -165,8 +174,8 @@ internal fun coreModule(): Module {
                 get()
             )
         }
-        single {
-            FetchConsentDocuments(get())
+        single<FetchConsentDocuments> {
+            FetchConsentDocumentsFactory(get())
         } bind FetchConsentDocuments::class
         single { CreateUserConsent(get()) }
         single<FetchUserConsents> {

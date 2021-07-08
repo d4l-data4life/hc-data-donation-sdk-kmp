@@ -14,31 +14,20 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.domain.usecases
+package care.data4life.datadonation.mock.stub
 
 import care.data4life.datadonation.core.model.ConsentDocument
-import care.data4life.datadonation.core.model.UserConsent
+import care.data4life.datadonation.internal.domain.repository.RepositoryContract
+import care.data4life.datadonation.mock.MockException
 
-interface UsecaseContract {
-    interface Usecase<ReturnType> {
-        suspend fun execute(): ReturnType
-    }
+class ConsentDocumentDataSoreStub : RepositoryContract.ConsentDocumentRemote {
+    var whenFetchConsentDocuments: ((accessToken: String, version: Int?, language: String?, consentKey: String) -> List<ConsentDocument>)? = null
 
-    interface UsecaseFactory<Parameter : Any, ReturnType : Any> {
-        fun withParams(parameter: Parameter): Usecase<ReturnType>
-    }
-
-    interface FetchUserConsentsParameter {
-        val consentKey: String?
-    }
-
-    interface FetchUserConsents : UsecaseFactory<FetchUserConsentsParameter, List<UserConsent>>
-
-    interface FetchConsentDocumentsParameter {
-        val version: Int?
-        val language: String?
-        val consentKey: String
-    }
-
-    interface FetchConsentDocuments : UsecaseContract.UsecaseFactory<FetchConsentDocumentsParameter, List<ConsentDocument>>
+    override suspend fun fetchConsentDocuments(
+        accessToken: String,
+        version: Int?,
+        language: String?,
+        consentKey: String
+    ): List<ConsentDocument> =
+        whenFetchConsentDocuments?.invoke(accessToken, version, language, consentKey) ?: throw MockException()
 }
