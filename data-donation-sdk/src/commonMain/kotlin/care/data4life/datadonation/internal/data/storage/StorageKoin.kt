@@ -23,8 +23,8 @@ import org.koin.dsl.module
 internal fun resolveStorageModule(): Module {
     return module {
         single<StorageContract.UserConsentRemoteStorage> {
-            UserConsentDataStore(get())
-        }
+            UserConsentRemoteStorage(get())
+        } 
 
         single<StorageContract.RegistrationRemoteStorage> {
             RegistrationDataStore(get())
