@@ -33,6 +33,7 @@
 package care.data4life.datadonation
 
 import care.data4life.datadonation.core.listener.ListenerContract
+import care.data4life.datadonation.core.listener.ListenerInternalContract
 import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.UserConsent
@@ -52,7 +53,7 @@ class Client internal constructor(
     private val fetchUserConsents: UsecaseContract.FetchUserConsents by koinApplication.koin.inject()
     private val revokeUserConsent: UsecaseContract.RevokeUserConsent by koinApplication.koin.inject()
     private val donateResources: DonateResources by koinApplication.koin.inject()
-    private val taskRunner: ListenerContract.TaskRunner by koinApplication.koin.inject()
+    private val usecaseRunner: ListenerInternalContract.UsecaseRunner by koinApplication.koin.inject()
 
     override fun fetchConsentDocuments(
         consentDocumentVersion: Int?,
@@ -66,7 +67,7 @@ class Client internal constructor(
             consentKey = consentKey
         )
 
-        taskRunner.run(
+        usecaseRunner.run(
             listener,
             fetchConsentDocuments.withParams(parameter)
         )
@@ -97,12 +98,23 @@ class Client internal constructor(
     }
 
     override fun fetchUserConsents(
-        listener: ListenerContract.ResultListener<List<UserConsent>>,
-        consentKey: String?
+        consentKey: String,
+        listener: ListenerContract.ResultListener<List<UserConsent>>
     ) {
         val parameter = FetchUserConsentsFactory.Parameter(consentKey)
 
-        taskRunner.run(
+        usecaseRunner.run(
+            listener,
+            fetchUserConsents.withParams(parameter)
+        )
+    }
+
+    override fun fetchAllUserConsents(
+        listener: ListenerContract.ResultListener<List<UserConsent>>
+    ) {
+        val parameter = FetchUserConsentsFactory.Parameters()
+
+        usecaseRunner.run(
             listener,
             fetchUserConsents.withParams(parameter)
         )
@@ -114,7 +126,7 @@ class Client internal constructor(
     ) {
         val parameter = RevokeUserConsentFactory.Parameter(language)
 
-        taskRunner.run(
+        usecaseRunner.run(
             callback,
             revokeUserConsent.withParams(parameter)
         )

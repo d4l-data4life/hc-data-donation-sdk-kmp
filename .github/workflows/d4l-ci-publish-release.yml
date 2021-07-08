@@ -24,6 +24,8 @@ jobs:
         run: ./gradlew clean
       - name: Version
         run: ./gradlew versionInfo
+      - name: Build xcode project
+        run: ./gradlew iOSCryptoDD:buildIphoneos iOSCryptoDD:buildIphonesimulator
       - name: Build project
         run: ./gradlew build
       - name: Publish to GitHub Packages

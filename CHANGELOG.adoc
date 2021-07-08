@@ -35,6 +35,8 @@ See link:{link-repository}/compare/v0.0.1...main[changeset]
 
 === Changed
 
+* The SDK client got a factory as companion. A direct access to the constructor is prohibit.
+
 === Deprecated
 
 === Removed
