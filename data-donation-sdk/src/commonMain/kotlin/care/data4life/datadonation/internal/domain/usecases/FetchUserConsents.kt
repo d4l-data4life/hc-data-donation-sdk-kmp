@@ -34,28 +34,18 @@ package care.data4life.datadonation.internal.domain.usecases
 
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.domain.repository.RepositoryContract
-import care.data4life.datadonation.internal.domain.usecases.UsecaseContract.FetchUserConsentsParameter
 
-internal class FetchUserConsentsFactory(
+internal class FetchUserConsents(
     private val consentRepository: RepositoryContract.UserConsentRepository
 ) : UsecaseContract.FetchUserConsents {
 
-    override fun withParams(parameter: FetchUserConsentsParameter): UsecaseContract.Usecase<List<UserConsent>> {
-        return FetchUserConsents(
-            consentRepository,
-            parameter
-        )
+    override suspend fun execute(
+        parameter: UsecaseContract.FetchUserConsents.FetchUserConsentsParameter
+    ): List<UserConsent> {
+        return consentRepository.fetchUserConsents(parameter.consentKey)
     }
 
-    private class FetchUserConsents(
-        private val consentRepository: RepositoryContract.UserConsentRepository,
-        private val parameter: FetchUserConsentsParameter
-    ) : UsecaseContract.Usecase<List<UserConsent>> {
-
-        override suspend fun execute(): List<UserConsent> {
-            return consentRepository.fetchUserConsents(parameter.consentKey)
-        }
-    }
-
-    data class Parameter(override val consentKey: String? = null) : FetchUserConsentsParameter
+    data class Parameter(
+        override val consentKey: String? = null
+    ) : UsecaseContract.FetchUserConsents.FetchUserConsentsParameter
 }

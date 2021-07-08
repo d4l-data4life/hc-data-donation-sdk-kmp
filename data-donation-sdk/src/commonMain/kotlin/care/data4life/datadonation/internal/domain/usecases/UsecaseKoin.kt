@@ -62,7 +62,7 @@ internal fun resolveUsecaseModule(): Module {
         }
 
         single<UsecaseContract.FetchUserConsents> {
-            FetchUserConsentsFactory(get())
+            FetchUserConsents(get())
         }
 
         single {

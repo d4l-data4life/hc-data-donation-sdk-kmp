@@ -22,6 +22,10 @@ import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.hl7.fhir.stu3.model.FhirResource
 
 interface UsecaseContract {
+    interface NewUsecase<Parameter : Any, ReturnType : Any> {
+        suspend fun execute(parameter: Parameter): ReturnType
+    }
+
     interface Usecase<ReturnType> {
         suspend fun execute(): ReturnType
     }
@@ -30,11 +34,11 @@ interface UsecaseContract {
         fun withParams(parameter: Parameter): Usecase<ReturnType>
     }
 
-    interface FetchUserConsentsParameter {
-        val consentKey: String?
+    interface FetchUserConsents : NewUsecase<FetchUserConsents.FetchUserConsentsParameter, List<UserConsent>> {
+        interface FetchUserConsentsParameter {
+            val consentKey: String?
+        }
     }
-
-    interface FetchUserConsents : UsecaseFactory<FetchUserConsentsParameter, List<UserConsent>>
 
     interface FetchConsentDocumentsParameter {
         val version: Int?

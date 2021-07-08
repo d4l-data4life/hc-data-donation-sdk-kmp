@@ -101,7 +101,7 @@ class Client internal constructor(
         consentKey: String,
         listener: ListenerContract.ResultListener<List<UserConsent>>
     ) {
-        val parameter = FetchUserConsentsFactory.Parameter(consentKey)
+        val parameter = FetchUserConsents.Parameter(consentKey)
 
         usecaseRunner.run(
             listener,
@@ -116,7 +116,8 @@ class Client internal constructor(
 
         usecaseRunner.run(
             listener,
-            fetchUserConsents.withParams(parameter)
+            fetchUserConsents,
+            parameter
         )
     }
 

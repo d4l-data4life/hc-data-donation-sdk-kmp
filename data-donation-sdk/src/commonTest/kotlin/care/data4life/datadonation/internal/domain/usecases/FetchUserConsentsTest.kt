@@ -44,27 +44,17 @@ import kotlin.test.assertTrue
 class FetchUserConsentsTest {
     @Test
     fun `It fulfils FetchUserConsents`() {
-        val factory: Any = FetchUserConsentsFactory(UserConsentRepositoryStub())
+        val usecase: Any = FetchUserConsents(
+            UserConsentRepositoryStub()
+        )
 
-        assertTrue(factory is UsecaseContract.FetchUserConsents)
-    }
-
-    @Test
-    fun `Given withParams is called with the appropriate Parameter it creates a Usecase`() {
-        // Given
-        val parameter = FetchUserConsentsFactory.Parameter()
-
-        // When
-        val usecase: Any = FetchUserConsentsFactory(UserConsentRepositoryStub()).withParams(parameter)
-
-        // Then
-        assertTrue(usecase is UsecaseContract.Usecase<*>)
+        assertTrue(usecase is UsecaseContract.FetchUserConsents)
     }
 
     @Test
     fun `Given a Usecase had been created and execute is called, it delegates the call to the ConsentRepository without the consentKey, if the key is null`() = runBlockingTest {
         // Given
-        val parameter = FetchUserConsentsFactory.Parameter(consentKey = null)
+        val parameter = FetchUserConsents.Parameter(consentKey = null)
         val dummyConsentList = listOf(DummyData.userConsent)
         var capturedConsentKey: String? = null
         val userContentRepository = UserConsentRepositoryStub()
@@ -75,8 +65,8 @@ class FetchUserConsentsTest {
         }
 
         // When
-        val usecase = FetchUserConsentsFactory(userContentRepository).withParams(parameter)
-        val result = usecase.execute()
+        val usecase = FetchUserConsents(userContentRepository)
+        val result = usecase.execute(parameter)
 
         // Then
         assertSame(
@@ -90,7 +80,7 @@ class FetchUserConsentsTest {
     fun `Given a Usecase had been created and execute is called, it delegates the call to the ConsentRepository with the consentKey, if the key is not null`() = runBlockingTest {
         // Given
         val consentKey = "key"
-        val parameter = FetchUserConsentsFactory.Parameter(consentKey = consentKey)
+        val parameter = FetchUserConsents.Parameter(consentKey = consentKey)
         val dummyConsentList = listOf(DummyData.userConsent)
         var capturedConsentKey: String? = null
         val userContentRepository = UserConsentRepositoryStub()
@@ -101,8 +91,8 @@ class FetchUserConsentsTest {
         }
 
         // When
-        val usecase = FetchUserConsentsFactory(userContentRepository).withParams(parameter)
-        val result = usecase.execute()
+        val usecase = FetchUserConsents(userContentRepository)
+        val result = usecase.execute(parameter)
 
         // Then
         assertSame(

@@ -21,7 +21,36 @@ import kotlinx.coroutines.launch
 
 internal class UsecaseRunner(
     private val scopeResolver: ListenerContract.ScopeResolver
-) : ListenerInternalContract.UsecaseRunner {
+) : ListenerContract.TaskRunner {
+    override fun <Parameter : Any, ReturnType : Any> run(
+        listener: ListenerContract.ResultListener<ReturnType>,
+        usecase: UsecaseContract.NewUsecase<Parameter, ReturnType>,
+        parameter: Parameter
+    ) {
+        scopeResolver.getCoroutineScope().launch {
+            try {
+                listener.onSuccess(usecase.execute(parameter))
+            } catch (ex: Exception) {
+                listener.onError(ex)
+            }
+        }
+    }
+
+    override fun <Parameter : Any, ReturnType : Any> run(
+        listener: ListenerContract.Callback,
+        usecase: UsecaseContract.NewUsecase<Parameter, ReturnType>,
+        parameter: Parameter
+    ) {
+        scopeResolver.getCoroutineScope().launch {
+            try {
+                usecase.execute(parameter)
+                listener.onSuccess()
+            } catch (ex: Exception) {
+                listener.onError(ex)
+            }
+        }
+    }
+
     override fun <ReturnType : Any> run(
         listener: ListenerContract.ResultListener<ReturnType>,
         usecase: UsecaseContract.Usecase<ReturnType>

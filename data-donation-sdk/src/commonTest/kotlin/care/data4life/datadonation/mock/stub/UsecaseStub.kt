@@ -48,3 +48,17 @@ abstract class UsecaseStub<ReturnType> : UsecaseContract.Usecase<ReturnType>, Mo
         whenExecute = null
     }
 }
+
+abstract class NewUsecaseStub<Parameter : Any, ReturnType : Any> :
+    UsecaseContract.NewUsecase<Parameter, ReturnType>,
+    MockContract.Stub {
+    var whenExecute: ((Parameter) -> ReturnType)? = null
+
+    override suspend fun execute(parameter: Parameter): ReturnType {
+        return whenExecute?.invoke(parameter) ?: throw MockException()
+    }
+
+    override fun clear() {
+        whenExecute = null
+    }
+}
