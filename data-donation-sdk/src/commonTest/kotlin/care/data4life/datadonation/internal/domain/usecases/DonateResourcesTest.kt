@@ -116,7 +116,7 @@ abstract class DonateResourcesTest {
 
     private val consentMessage = ConsentMessage(
         DEFAULT_DONATION_CONSENT_KEY,
-        ConsentSignatureType.NormalUse.apiValue,
+        ConsentSignatureType.NORMAL_USE.apiValue,
         dummyEncryptedRequest64Encoded
     )
 

@@ -19,6 +19,7 @@ package care.data4life.datadonation.internal.data.service
 import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.UserConsent
+import care.data4life.datadonation.internal.data.model.ConsentSignature
 import care.data4life.datadonation.internal.data.model.DonationPayload
 import io.ktor.client.HttpClient
 import kotlinx.datetime.Clock
@@ -82,6 +83,16 @@ internal interface ServiceContract {
             version: Int
         )
 
+        suspend fun requestSignatureRegistration(
+            accessToken: String,
+            message: String
+        ): ConsentSignature
+
+        suspend fun requestSignatureDonation(
+            accessToken: String,
+            message: String
+        ): ConsentSignature
+
         suspend fun revokeUserConsent(accessToken: String)
 
         companion object {
@@ -98,6 +109,7 @@ internal interface ServiceContract {
             object PATH {
                 const val USER_CONSENTS = "userConsents"
                 const val CONSENTS_DOCUMENTS = "consentDocuments"
+                const val SIGNATURES = "signatures"
             }
 
             const val XSRF_VALIDITY = 23 * 60 * 60 * 1000

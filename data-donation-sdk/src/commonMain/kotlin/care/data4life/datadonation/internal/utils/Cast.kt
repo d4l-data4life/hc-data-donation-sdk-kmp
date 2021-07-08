@@ -14,7 +14,7 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.util
+package care.data4life.datadonation.internal.utils
 
 import care.data4life.datadonation.internal.data.exception.InternalErrorException
 

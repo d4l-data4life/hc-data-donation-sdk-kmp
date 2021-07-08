@@ -86,7 +86,7 @@ abstract class RegisterNewDonorTest {
 
     private val consentMessage = ConsentMessage(
         DEFAULT_DONATION_CONSENT_KEY,
-        ConsentSignatureType.ConsentOnce.apiValue,
+        ConsentSignatureType.CONSENT_ONCE.apiValue,
         dummyEncryptedRequest64Encoded
     )
 
