@@ -19,32 +19,11 @@ package care.data4life.datadonation.mock.stub
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.domain.usecases.UsecaseContract.FetchUserConsents
 import care.data4life.datadonation.internal.domain.usecases.UsecaseContract.FetchUserConsentsParameter
-import care.data4life.datadonation.internal.domain.usecases.UsecaseContract.Usecase
 import care.data4life.datadonation.mock.MockContract
-import care.data4life.datadonation.mock.MockException
 
-class FetchUserConsentStub : FetchUserConsents, MockContract.Stub {
-    var whenWithParameter: ((FetchUserConsentsParameter) -> Usecase<List<UserConsent>>)? = null
+class FetchUserConsentStub :
+    FetchUserConsents,
+    UsecaseFactoryStub<FetchUserConsentsParameter, List<UserConsent>>(),
+    MockContract.Stub
 
-    override fun withParams(
-        parameter: FetchUserConsentsParameter
-    ): Usecase<List<UserConsent>> {
-        return whenWithParameter?.invoke(parameter) ?: throw MockException()
-    }
-
-    override fun clear() {
-        whenWithParameter = null
-    }
-}
-
-class FetchUserUsecaseStub : Usecase<List<UserConsent>>, MockContract.Stub {
-    var whenExecute: (() -> List<UserConsent>)? = null
-
-    override suspend fun execute(): List<UserConsent> {
-        return whenExecute?.invoke() ?: throw MockException()
-    }
-
-    override fun clear() {
-        whenExecute = null
-    }
-}
+class FetchUserUsecaseStub : UsecaseStub<List<UserConsent>>(), MockContract.Stub

@@ -23,14 +23,18 @@ import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.domain.usecases.FetchConsentDocumentsFactory
 import care.data4life.datadonation.internal.domain.usecases.FetchUserConsentsFactory
+import care.data4life.datadonation.internal.domain.usecases.RevokeUserConsentFactory
 import care.data4life.datadonation.internal.domain.usecases.UsecaseContract
 import care.data4life.datadonation.internal.domain.usecases.UsecaseContract.Usecase
+import care.data4life.datadonation.mock.stub.CallbackStub
 import care.data4life.datadonation.mock.stub.ClientConfigurationStub
 import care.data4life.datadonation.mock.stub.FetchConsentDocumentsStub
 import care.data4life.datadonation.mock.stub.FetchConsentDocumentsUsecaseStub
 import care.data4life.datadonation.mock.stub.FetchUserConsentStub
 import care.data4life.datadonation.mock.stub.FetchUserUsecaseStub
 import care.data4life.datadonation.mock.stub.ResultListenerStub
+import care.data4life.datadonation.mock.stub.RevokeUserConsentStub
+import care.data4life.datadonation.mock.stub.RevokeUserConsentUsecaseStub
 import care.data4life.datadonation.mock.stub.UsecaseRunnerStub
 import org.koin.core.context.stopKoin
 import org.koin.dsl.bind
@@ -236,6 +240,70 @@ class ClientTest {
                 version = version,
                 language = language,
                 consentKey = consentKey
+            )
+        )
+        assertSame(
+            actual = capturedListener,
+            expected = listener
+        )
+        assertSame(
+            actual = capturedUsecase,
+            expected = usecase
+        )
+    }
+
+    @Test
+    fun `Given revokeUserConsent is called with a ConsentKey and with a Callback it resolves the Usecase with wraps the given Parameter and delegates that to the TaskRunner`() {
+        // Given
+        val config = ClientConfigurationStub()
+        val listener = CallbackStub()
+        val usecase = RevokeUserConsentUsecaseStub()
+
+        val language = "de-j-old-n-kotlin-x-done"
+
+        var capturedParameter: UsecaseContract.RevokeUserConsentParameter? = null
+        var capturedListener: ListenerContract.Callback? = null
+        var capturedUsecase: Usecase<*>? = null
+
+        config.whenGetEnvironment = { Environment.LOCAL }
+
+        val di = koinApplication {
+            modules(
+                module {
+                    single {
+                        RevokeUserConsentStub().also {
+                            it.whenWithParameter = { delegateParameter ->
+                                capturedParameter = delegateParameter
+                                usecase
+                            }
+                        }
+                    } bind UsecaseContract.RevokeUserConsent::class
+
+                    single {
+                        UsecaseRunnerStub().also {
+                            it.whenRunCallback = { delegatedResultListener, delegatedUsecase ->
+                                capturedListener = delegatedResultListener
+                                capturedUsecase = delegatedUsecase
+                            }
+                        }
+                    } bind ListenerInternalContract.UsecaseRunner::class
+                }
+            )
+        }
+
+        val client = Client(config, di)
+
+        // When
+        client.revokeUserConsent(
+            language,
+            listener
+        )
+
+        // Then
+        assertEquals(
+            actual = capturedParameter,
+            expected = RevokeUserConsentFactory.Parameters(
+                language = language,
             )
         )
         assertSame(

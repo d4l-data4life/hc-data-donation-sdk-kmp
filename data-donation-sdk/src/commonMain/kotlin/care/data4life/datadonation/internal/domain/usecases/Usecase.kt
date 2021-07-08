@@ -34,11 +34,13 @@ package care.data4life.datadonation.internal.domain.usecases
 
 import care.data4life.datadonation.core.listener.ListenerContract
 
+@Deprecated("Use the UsecaseContract - Usecase")
 interface Usecase<ReturnType> {
 
     suspend fun execute(): ReturnType
 }
 
+@Deprecated("Use the UsecaseContract - UsecaseFactory")
 abstract class ParameterizedUsecase<Parameter : Any, ReturnType> : Usecase<ReturnType> {
 
     protected lateinit var parameter: Parameter
@@ -49,6 +51,7 @@ abstract class ParameterizedUsecase<Parameter : Any, ReturnType> : Usecase<Retur
     }
 }
 
+@Deprecated("Testconcern")
 suspend fun <T : Any, R : Any> ParameterizedUsecase<T, R>.runWithParams(
     parameters: T,
     listener: ListenerContract.ResultListener<R>

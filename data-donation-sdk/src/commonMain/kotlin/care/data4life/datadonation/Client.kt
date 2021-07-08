@@ -51,7 +51,7 @@ class Client internal constructor(
     private val registerNewDonor: RegisterNewDonor by koinApplication.koin.inject()
     private val fetchConsentDocuments: UsecaseContract.FetchConsentDocuments by koinApplication.koin.inject()
     private val fetchUserConsents: UsecaseContract.FetchUserConsents by koinApplication.koin.inject()
-    private val revokeUserContent: RevokeUserConsent by koinApplication.koin.inject()
+    private val revokeUserConsent: UsecaseContract.RevokeUserConsent by koinApplication.koin.inject()
     private val donateResources: DonateResources by koinApplication.koin.inject()
     private val usecaseRunner: ListenerInternalContract.UsecaseRunner by koinApplication.koin.inject()
 
@@ -121,8 +121,12 @@ class Client internal constructor(
         language: String?,
         callback: ListenerContract.Callback
     ) {
-        revokeUserContent.withParams(RevokeUserConsent.Parameters(language))
-            .runForListener(callback)
+        val parameter = RevokeUserConsentFactory.Parameters(language)
+
+        usecaseRunner.run(
+            callback,
+            revokeUserConsent.withParams(parameter)
+        )
     }
 
     override fun <T : FhirResource> donateResources(
