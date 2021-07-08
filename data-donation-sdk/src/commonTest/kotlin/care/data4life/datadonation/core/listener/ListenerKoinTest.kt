@@ -39,7 +39,7 @@ class ListenerKoinTest {
             modules(resolveListenerModule(config))
         }
         // Then
-        val runner: ListenerContract.TaskRunner = koin.koin.get()
+        val runner: ListenerInternalContract.UsecaseRunner = koin.koin.get()
         assertNotNull(runner)
     }
 }

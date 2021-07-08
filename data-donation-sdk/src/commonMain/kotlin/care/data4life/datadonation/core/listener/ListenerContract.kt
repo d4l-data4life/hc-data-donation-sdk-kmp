@@ -16,7 +16,6 @@
 
 package care.data4life.datadonation.core.listener
 
-import care.data4life.datadonation.internal.domain.usecases.UsecaseContract
 import kotlinx.coroutines.CoroutineScope
 
 interface ListenerContract {
@@ -32,17 +31,5 @@ interface ListenerContract {
 
     interface ScopeResolver {
         fun getCoroutineScope(): CoroutineScope
-    }
-
-    interface TaskRunner {
-        fun <ReturnType : Any> run(
-            listener: ResultListener<ReturnType>,
-            usecase: UsecaseContract.Usecase<ReturnType>
-        )
-
-        fun <ReturnType : Any> run(
-            listener: Callback,
-            usecase: UsecaseContract.Usecase<ReturnType>
-        )
     }
 }
