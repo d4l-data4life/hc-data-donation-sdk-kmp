@@ -16,20 +16,18 @@
 
 package care.data4life.datadonation.core.listener
 
-import kotlinx.coroutines.CoroutineScope
+import care.data4life.datadonation.internal.domain.usecases.UsecaseContract
 
-interface ListenerContract {
-    interface Callback {
-        fun onSuccess()
-        fun onError(exception: Exception)
-    }
+internal interface ListenerInternalContract {
+    interface UsecaseRunner {
+        fun <ReturnType : Any> run(
+            listener: ListenerContract.ResultListener<ReturnType>,
+            usecase: UsecaseContract.Usecase<ReturnType>
+        )
 
-    interface ResultListener<T : Any> {
-        fun onSuccess(result: T)
-        fun onError(exception: Exception)
-    }
-
-    interface ScopeResolver {
-        fun getCoroutineScope(): CoroutineScope
+        fun <ReturnType : Any> run(
+            listener: ListenerContract.Callback,
+            usecase: UsecaseContract.Usecase<ReturnType>
+        )
     }
 }

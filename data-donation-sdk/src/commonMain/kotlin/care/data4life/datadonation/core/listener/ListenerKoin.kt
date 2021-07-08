@@ -23,7 +23,7 @@ import org.koin.dsl.module
 fun resolveListenerModule(): Module {
     return module {
         single<ListenerContract.TaskRunner> {
-            TaskRunner(get())
-        } bind ListenerContract.TaskRunner::class
+            UsecaseRunner(get())
+        } bind ListenerInternalContract.UsecaseRunner::class
     }
 }
