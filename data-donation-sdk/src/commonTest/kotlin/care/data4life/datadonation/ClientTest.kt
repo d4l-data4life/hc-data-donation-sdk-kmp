@@ -351,13 +351,13 @@ class ClientTest {
                     } bind UsecaseContract.CreateUserConsent::class
 
                     single {
-                        TaskRunnerStub().also {
+                        UsecaseRunnerStub().also {
                             it.whenRunListener = { delegatedResultListener, delegatedUsecase ->
                                 capturedListener = delegatedResultListener
                                 capturedUsecase = delegatedUsecase
                             }
                         }
-                    } bind ListenerContract.TaskRunner::class
+                    } bind ListenerInternalContract.UsecaseRunner::class
                 }
             )
         }

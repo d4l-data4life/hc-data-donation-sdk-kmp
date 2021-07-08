@@ -84,7 +84,7 @@ class Client internal constructor(
             language
         )
 
-        taskRunner.run(
+        usecaseRunner.run(
             listener,
             createUserContent.withParams(parameter)
         )
@@ -112,7 +112,7 @@ class Client internal constructor(
     override fun fetchAllUserConsents(
         listener: ListenerContract.ResultListener<List<UserConsent>>
     ) {
-        val parameter = FetchUserConsentsFactory.Parameters()
+        val parameter = FetchUserConsentsFactory.Parameter()
 
         usecaseRunner.run(
             listener,
