@@ -56,7 +56,9 @@ fun resolveUsecaseModule(): Module {
             FetchConsentDocumentsFactory(get())
         } bind UsecaseContract.FetchConsentDocuments::class
 
-        single { CreateUserConsent(get()) }
+        single<UsecaseContract.CreateUserConsent> {
+            CreateUserConsentFactory(get())
+        } bind UsecaseContract.CreateUserConsent::class
 
         single<UsecaseContract.FetchUserConsents> {
             FetchUserConsentsFactory(get())

@@ -176,7 +176,7 @@ class UsecaseKoinTest {
             )
         }
         // Then
-        val instance: CreateUserConsent = koin.koin.get()
+        val instance: UsecaseContract.CreateUserConsent = koin.koin.get()
         assertNotNull(instance)
     }
 

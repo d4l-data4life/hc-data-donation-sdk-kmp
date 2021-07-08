@@ -32,7 +32,8 @@
 
 package care.data4life.datadonation.core.model
 
-data class KeyPair(val public : ByteArray,val private:ByteArray) {
+// TODO: Test this
+data class KeyPair(val public: ByteArray, val private: ByteArray) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false
@@ -49,6 +50,5 @@ data class KeyPair(val public : ByteArray,val private:ByteArray) {
         var result = public.contentHashCode()
         result = 31 * result + private.contentHashCode()
         return result
-
     }
 }

@@ -47,7 +47,7 @@ class Client internal constructor(
     private val configuration: Contract.Configuration,
     koinApplication: KoinApplication
 ) : Contract.DataDonation {
-    private val createUserContent: CreateUserConsent by koinApplication.koin.inject()
+    private val createUserContent: UsecaseContract.CreateUserConsent by koinApplication.koin.inject()
     private val registerNewDonor: RegisterNewDonor by koinApplication.koin.inject()
     private val fetchConsentDocuments: UsecaseContract.FetchConsentDocuments by koinApplication.koin.inject()
     private val fetchUserConsents: UsecaseContract.FetchUserConsents by koinApplication.koin.inject()
@@ -61,7 +61,7 @@ class Client internal constructor(
         consentKey: String,
         listener: ListenerContract.ResultListener<List<ConsentDocument>>
     ) {
-        val parameter = FetchConsentDocumentsFactory.Parameters(
+        val parameter = FetchConsentDocumentsFactory.Parameter(
             version = consentDocumentVersion,
             language = language,
             consentKey = consentKey
@@ -78,13 +78,16 @@ class Client internal constructor(
         language: String?,
         listener: ListenerContract.ResultListener<UserConsent>
     ) {
-        createUserContent.withParams(
-            CreateUserConsent.Parameters(
-                configuration.getDonorKeyPair(),
-                consentDocumentVersion,
-                language
-            )
-        ).runForListener(listener)
+        val parameter = CreateUserConsentFactory.Parameter(
+            configuration.getDonorKeyPair(),
+            consentDocumentVersion,
+            language
+        )
+
+        usecaseRunner.run(
+            listener,
+            createUserContent.withParams(parameter)
+        )
     }
 
     override fun registerDonor(
@@ -98,7 +101,7 @@ class Client internal constructor(
         consentKey: String,
         listener: ListenerContract.ResultListener<List<UserConsent>>
     ) {
-        val parameter = FetchUserConsentsFactory.Parameters(consentKey)
+        val parameter = FetchUserConsentsFactory.Parameter(consentKey)
 
         usecaseRunner.run(
             listener,
@@ -109,7 +112,7 @@ class Client internal constructor(
     override fun fetchAllUserConsents(
         listener: ListenerContract.ResultListener<List<UserConsent>>
     ) {
-        val parameter = FetchUserConsentsFactory.Parameters()
+        val parameter = FetchUserConsentsFactory.Parameter()
 
         usecaseRunner.run(
             listener,
@@ -121,7 +124,7 @@ class Client internal constructor(
         language: String?,
         callback: ListenerContract.Callback
     ) {
-        val parameter = RevokeUserConsentFactory.Parameters(language)
+        val parameter = RevokeUserConsentFactory.Parameter(language)
 
         usecaseRunner.run(
             callback,

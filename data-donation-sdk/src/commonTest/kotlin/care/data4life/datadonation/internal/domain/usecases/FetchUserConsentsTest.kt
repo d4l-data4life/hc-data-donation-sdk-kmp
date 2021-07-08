@@ -52,7 +52,7 @@ class FetchUserConsentsTest {
     @Test
     fun `Given withParams is called with the appropriate Parameter it creates a Usecase`() {
         // Given
-        val parameter = FetchUserConsentsFactory.Parameters()
+        val parameter = FetchUserConsentsFactory.Parameter()
 
         // When
         val usecase: Any = FetchUserConsentsFactory(UserConsentRepositoryStub()).withParams(parameter)
@@ -64,7 +64,7 @@ class FetchUserConsentsTest {
     @Test
     fun `Given a Usecase had been created and execute is called, it delegates the call to the ConsentRepository without the consentKey, if the key is null`() = runBlockingTest {
         // Given
-        val parameter = FetchUserConsentsFactory.Parameters(consentKey = null)
+        val parameter = FetchUserConsentsFactory.Parameter(consentKey = null)
         val dummyConsentList = listOf(DummyData.userConsent)
         var capturedConsentKey: String? = null
         val userContentRepository = UserConsentRepositoryStub()
@@ -90,7 +90,7 @@ class FetchUserConsentsTest {
     fun `Given a Usecase had been created and execute is called, it delegates the call to the ConsentRepository with the consentKey, if the key is not null`() = runBlockingTest {
         // Given
         val consentKey = "key"
-        val parameter = FetchUserConsentsFactory.Parameters(consentKey = consentKey)
+        val parameter = FetchUserConsentsFactory.Parameter(consentKey = consentKey)
         val dummyConsentList = listOf(DummyData.userConsent)
         var capturedConsentKey: String? = null
         val userContentRepository = UserConsentRepositoryStub()

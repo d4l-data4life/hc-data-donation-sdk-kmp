@@ -49,7 +49,7 @@ internal class RevokeUserConsentFactory(
         override suspend fun execute() = consentRepository.revokeUserConsent(parameter.language)
     }
 
-    data class Parameters(
+    data class Parameter(
         override val language: String?
     ) : UsecaseContract.RevokeUserConsentParameter
 }

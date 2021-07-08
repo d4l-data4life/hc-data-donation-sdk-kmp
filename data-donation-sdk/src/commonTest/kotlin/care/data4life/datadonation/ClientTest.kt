@@ -21,13 +21,17 @@ import care.data4life.datadonation.core.listener.ListenerInternalContract
 import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.UserConsent
+import care.data4life.datadonation.internal.domain.usecases.CreateUserConsentFactory
 import care.data4life.datadonation.internal.domain.usecases.FetchConsentDocumentsFactory
 import care.data4life.datadonation.internal.domain.usecases.FetchUserConsentsFactory
 import care.data4life.datadonation.internal.domain.usecases.RevokeUserConsentFactory
 import care.data4life.datadonation.internal.domain.usecases.UsecaseContract
 import care.data4life.datadonation.internal.domain.usecases.UsecaseContract.Usecase
+import care.data4life.datadonation.mock.DummyData
 import care.data4life.datadonation.mock.stub.CallbackStub
 import care.data4life.datadonation.mock.stub.ClientConfigurationStub
+import care.data4life.datadonation.mock.stub.CreateUserConsentStub
+import care.data4life.datadonation.mock.stub.CreateUserConsentUsecaseStub
 import care.data4life.datadonation.mock.stub.FetchConsentDocumentsStub
 import care.data4life.datadonation.mock.stub.FetchConsentDocumentsUsecaseStub
 import care.data4life.datadonation.mock.stub.FetchUserConsentStub
@@ -111,7 +115,7 @@ class ClientTest {
         // Then
         assertEquals(
             actual = capturedParameter,
-            expected = FetchUserConsentsFactory.Parameters()
+            expected = FetchUserConsentsFactory.Parameter()
         )
         assertSame(
             actual = capturedListener,
@@ -170,7 +174,7 @@ class ClientTest {
         // Then
         assertEquals(
             actual = capturedParameter,
-            expected = FetchUserConsentsFactory.Parameters(consentKey)
+            expected = FetchUserConsentsFactory.Parameter(consentKey)
         )
         assertSame(
             actual = capturedListener,
@@ -236,7 +240,7 @@ class ClientTest {
         // Then
         assertEquals(
             actual = capturedParameter,
-            expected = FetchConsentDocumentsFactory.Parameters(
+            expected = FetchConsentDocumentsFactory.Parameter(
                 version = version,
                 language = language,
                 consentKey = consentKey
@@ -302,8 +306,78 @@ class ClientTest {
         // Then
         assertEquals(
             actual = capturedParameter,
-            expected = RevokeUserConsentFactory.Parameters(
+            expected = RevokeUserConsentFactory.Parameter(
                 language = language,
+            )
+        )
+        assertSame(
+            actual = capturedListener,
+            expected = listener
+        )
+        assertSame(
+            actual = capturedUsecase,
+            expected = usecase
+        )
+    }
+
+    @Test
+    fun `Given createUserConsent is called with a ConsentDocumentVersion, a Language and with a ResultListener it resolves the Usecase with wraps the given Parameter and delegates that to the TaskRunner`() {
+        // Given
+        val config = ClientConfigurationStub()
+        val listener = ResultListenerStub<UserConsent>()
+        val usecase = CreateUserConsentUsecaseStub()
+
+        val version = 23
+        val language = "de-j-old-n-kotlin-x-done"
+        val keyPair = DummyData.keyPair
+
+        var capturedParameter: UsecaseContract.CreateUserConsentParameter? = null
+        var capturedListener: ListenerContract.ResultListener<*>? = null
+        var capturedUsecase: Usecase<*>? = null
+
+        config.whenGetEnvironment = { Environment.LOCAL }
+        config.whenGetDonorKeyPair = { keyPair }
+
+        val di = koinApplication {
+            modules(
+                module {
+                    single {
+                        CreateUserConsentStub().also {
+                            it.whenWithParameter = { delegateParameter ->
+                                capturedParameter = delegateParameter
+                                usecase
+                            }
+                        }
+                    } bind UsecaseContract.CreateUserConsent::class
+
+                    single {
+                        UsecaseRunnerStub().also {
+                            it.whenRunListener = { delegatedResultListener, delegatedUsecase ->
+                                capturedListener = delegatedResultListener
+                                capturedUsecase = delegatedUsecase
+                            }
+                        }
+                    } bind ListenerInternalContract.UsecaseRunner::class
+                }
+            )
+        }
+
+        val client = Client(config, di)
+
+        // When
+        client.createUserConsent(
+            version,
+            language,
+            listener
+        )
+
+        // Then
+        assertEquals(
+            actual = capturedParameter,
+            expected = CreateUserConsentFactory.Parameter(
+                version = version,
+                language = language,
+                keyPair = keyPair
             )
         )
         assertSame(

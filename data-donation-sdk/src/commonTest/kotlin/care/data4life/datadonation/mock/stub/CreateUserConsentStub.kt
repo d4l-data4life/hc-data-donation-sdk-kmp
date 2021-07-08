@@ -14,21 +14,15 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.domain.usecases
+package care.data4life.datadonation.mock.stub
 
-import org.junit.Ignore
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import care.data4life.datadonation.core.model.UserConsent
+import care.data4life.datadonation.internal.domain.usecases.UsecaseContract
+import care.data4life.datadonation.mock.MockContract
 
-@RunWith(JUnit4::class)
-class FilterSensitiveInformationAndroidTest : FilterSensitiveInformationTest()
+class CreateUserConsentStub :
+    UsecaseContract.CreateUserConsent,
+    UsecaseFactoryStub<UsecaseContract.CreateUserConsentParameter, UserConsent>(),
+    MockContract.Stub
 
-@RunWith(JUnit4::class)
-class RegisterNewDonorAndroidTest : RegisterNewDonorTest()
-
-@RunWith(JUnit4::class)
-class RemoveInternalInformationAndroidTest : RemoveInternalInformationTest()
-
-@Ignore // TODO: Ignored until fhir kmp dependency is updated to parse FhirResource to json
-@RunWith(JUnit4::class)
-class DonateResourcesAndroidTest : DonateResourcesTest()
+class CreateUserConsentUsecaseStub : UsecaseStub<UserConsent>(), MockContract.Stub

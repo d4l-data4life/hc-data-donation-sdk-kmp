@@ -49,7 +49,7 @@ class RevokeUserConsentTest {
     @Test
     fun `Given withParams is called with the appropriate Parameter it creates a Usecase`() {
         // Given
-        val parameter = RevokeUserConsentFactory.Parameters(null)
+        val parameter = RevokeUserConsentFactory.Parameter(null)
 
         // When
         val usecase: Any = RevokeUserConsentFactory(UserConsentRepositoryStub()).withParams(parameter)
@@ -62,7 +62,7 @@ class RevokeUserConsentTest {
     fun `Given a Usecase had been created and execute is called, it delegates the call to the ConsentRepository with the given language and just runs`() = runBlockingTest {
         // Given
         val language = "de-j-old-n-kotlin-x-done"
-        val parameter = RevokeUserConsentFactory.Parameters(language)
+        val parameter = RevokeUserConsentFactory.Parameter(language)
         var capturedLanguage: String? = null
         val userContentRepository = UserConsentRepositoryStub()
 
