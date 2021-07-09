@@ -17,6 +17,7 @@
 package care.data4life.datadonation
 
 import care.data4life.datadonation.core.listener.ListenerContract
+import care.data4life.datadonation.core.listener.ListenerInternalContract
 import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.UserConsent
@@ -38,7 +39,7 @@ import care.data4life.datadonation.mock.stub.FetchUserUsecaseStub
 import care.data4life.datadonation.mock.stub.ResultListenerStub
 import care.data4life.datadonation.mock.stub.RevokeUserConsentStub
 import care.data4life.datadonation.mock.stub.RevokeUserConsentUsecaseStub
-import care.data4life.datadonation.mock.stub.TaskRunnerStub
+import care.data4life.datadonation.mock.stub.UsecaseRunnerStub
 import org.koin.core.context.stopKoin
 import org.koin.dsl.bind
 import org.koin.dsl.koinApplication
@@ -70,7 +71,7 @@ class ClientTest {
     }
 
     @Test
-    fun `Given fetchUserConsents is called without a ConsentKey and with a ResultListener it resolves the Usecase with its default Parameter and delegates that to the TaskRunner`() {
+    fun `Given fetchAllUserConsents is called with a ResultListener it resolves the Usecase with its default Parameter and delegates them to the UsecaseRunner`() {
         // Given
         val config = ClientConfigurationStub()
         val listener = ResultListenerStub<List<UserConsent>>()
@@ -95,13 +96,13 @@ class ClientTest {
                     } bind UsecaseContract.FetchUserConsents::class
 
                     single {
-                        TaskRunnerStub().also {
+                        UsecaseRunnerStub().also {
                             it.whenRunListener = { delegatedResultListener, delegatedUsecase ->
                                 capturedListener = delegatedResultListener
                                 capturedUsecase = delegatedUsecase
                             }
                         }
-                    } bind ListenerContract.TaskRunner::class
+                    } bind ListenerInternalContract.UsecaseRunner::class
                 }
             )
         }
@@ -109,7 +110,7 @@ class ClientTest {
         val client = Client(config, di)
 
         // When
-        client.fetchUserConsents(listener)
+        client.fetchAllUserConsents(listener)
 
         // Then
         assertEquals(
@@ -127,7 +128,7 @@ class ClientTest {
     }
 
     @Test
-    fun `Given fetchUserConsents is called with a ConsentKey and with a ResultListener  it resolves the Usecase with wraps the given Parameter and delegates that to the TaskRunner`() {
+    fun `Given fetchUserConsents is called with a ConsentKey and with a ResultListener  it resolves the Usecase with wraps the given Parameter and delegates that to the UsecaseRunner`() {
         // Given
         val config = ClientConfigurationStub()
         val listener = ResultListenerStub<List<UserConsent>>()
@@ -154,13 +155,13 @@ class ClientTest {
                     } bind UsecaseContract.FetchUserConsents::class
 
                     single {
-                        TaskRunnerStub().also {
+                        UsecaseRunnerStub().also {
                             it.whenRunListener = { delegatedResultListener, delegatedUsecase ->
                                 capturedListener = delegatedResultListener
                                 capturedUsecase = delegatedUsecase
                             }
                         }
-                    } bind ListenerContract.TaskRunner::class
+                    } bind ListenerInternalContract.UsecaseRunner::class
                 }
             )
         }
@@ -168,7 +169,7 @@ class ClientTest {
         val client = Client(config, di)
 
         // When
-        client.fetchUserConsents(listener, consentKey)
+        client.fetchUserConsents(consentKey, listener)
 
         // Then
         assertEquals(
@@ -186,7 +187,7 @@ class ClientTest {
     }
 
     @Test
-    fun `Given fetchConsentDocuments is called with a ConsentKey and with a ResultListener it resolves the Usecase with wraps the given Parameter and delegates that to the TaskRunner`() {
+    fun `Given fetchConsentDocuments is called with a ConsentKey and with a ResultListener it resolves the Usecase with wraps the given Parameter and delegates that to the UsecaseRunner`() {
         // Given
         val config = ClientConfigurationStub()
         val listener = ResultListenerStub<List<ConsentDocument>>()
@@ -215,13 +216,13 @@ class ClientTest {
                     } bind UsecaseContract.FetchConsentDocuments::class
 
                     single {
-                        TaskRunnerStub().also {
+                        UsecaseRunnerStub().also {
                             it.whenRunListener = { delegatedResultListener, delegatedUsecase ->
                                 capturedListener = delegatedResultListener
                                 capturedUsecase = delegatedUsecase
                             }
                         }
-                    } bind ListenerContract.TaskRunner::class
+                    } bind ListenerInternalContract.UsecaseRunner::class
                 }
             )
         }
@@ -283,13 +284,13 @@ class ClientTest {
                     } bind UsecaseContract.RevokeUserConsent::class
 
                     single {
-                        TaskRunnerStub().also {
+                        UsecaseRunnerStub().also {
                             it.whenRunCallback = { delegatedResultListener, delegatedUsecase ->
                                 capturedListener = delegatedResultListener
                                 capturedUsecase = delegatedUsecase
                             }
                         }
-                    } bind ListenerContract.TaskRunner::class
+                    } bind ListenerInternalContract.UsecaseRunner::class
                 }
             )
         }
@@ -350,13 +351,13 @@ class ClientTest {
                     } bind UsecaseContract.CreateUserConsent::class
 
                     single {
-                        TaskRunnerStub().also {
+                        UsecaseRunnerStub().also {
                             it.whenRunListener = { delegatedResultListener, delegatedUsecase ->
                                 capturedListener = delegatedResultListener
                                 capturedUsecase = delegatedUsecase
                             }
                         }
-                    } bind ListenerContract.TaskRunner::class
+                    } bind ListenerInternalContract.UsecaseRunner::class
                 }
             )
         }

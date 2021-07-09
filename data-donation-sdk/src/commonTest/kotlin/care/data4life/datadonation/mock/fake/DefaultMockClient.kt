@@ -14,19 +14,27 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.data.service
+package care.data4life.datadonation.mock.fake
 
-import org.koin.core.module.Module
-import org.koin.dsl.module
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.mock.MockEngine
+import io.ktor.client.engine.mock.respond
+import io.ktor.http.ContentType
+import io.ktor.http.headersOf
 
-internal fun resolveServiceModule(): Module {
-    return module {
-        single<ServiceContract.CallBuilderFactory> {
-            CallBuilder
+fun getDefaultMockClient(): HttpClient {
+    return HttpClient(MockEngine) {
+        engine {
+            addHandler {
+                respond(
+                    "Hello, world",
+                    headers = headersOf(
+                        "Content-Type" to listOf(
+                            ContentType.Text.Plain.toString()
+                        )
+                    )
+                )
+            }
         }
-
-        single<ServiceContract.ConsentService> {
-            ConsentService.getInstance(get(), get(), get(), get())
-        } bind ServiceContract.ConsentService::class
     }
 }

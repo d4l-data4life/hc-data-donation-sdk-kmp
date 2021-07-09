@@ -35,7 +35,6 @@ package care.data4life.datadonation.internal.di
 import care.data4life.datadonation.Contract
 import care.data4life.datadonation.core.listener.ListenerContract
 import care.data4life.datadonation.core.listener.resolveListenerModule
-import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.encryption.resolveEncryptionModule
 import care.data4life.datadonation.internal.data.service.DonationService
 import care.data4life.datadonation.internal.data.service.ServiceContract
@@ -50,7 +49,6 @@ import io.ktor.client.features.logging.*
 import kotlinx.datetime.Clock
 import org.koin.core.KoinApplication
 import org.koin.core.module.Module
-import org.koin.dsl.bind
 import org.koin.dsl.binds
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
@@ -60,7 +58,6 @@ internal fun initKoin(configuration: Contract.Configuration): KoinApplication {
     return koinApplication {
         modules(
             resolveRootModule(configuration),
-            resolvePlatformModule(),
             resolveCoreModule(),
             resolveListenerModule(),
             resolveStorageModule(),
@@ -112,13 +109,17 @@ internal fun resolveCoreModule(): Module {
         }
 
         // Services
+<<<<<<< HEAD
+=======
+        single<ServiceContract.ConsentService> {
+            ConsentService(get(), get())
+        }
+>>>>>>> main
         single<ServiceContract.DonationService> {
             DonationService(get(), get())
-        } bind ServiceContract.DonationService::class
+        }
     }
 }
-
-internal expect fun resolvePlatformModule(): Module
 
 private class SimpleLogger : Logger {
     override fun log(message: String) {
