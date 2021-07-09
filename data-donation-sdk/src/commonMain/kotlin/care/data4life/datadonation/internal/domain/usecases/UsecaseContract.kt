@@ -62,7 +62,7 @@ interface UsecaseContract {
         }
     }
 
-    interface RedactSensitiveInformation : UsecaseFactory<List<FhirResource>, List<FhirResource>> {
+    interface RedactSensitiveInformation : NewUsecase<List<FhirResource>, List<FhirResource>> {
         companion object {
             const val REDACTED = "REDACTED"
         }

@@ -70,7 +70,7 @@ internal class DonateResources(
             donateResources(
                 signatureProvider.invoke(it),
                 removeInternalInformation.withParams(
-                    redactSensitiveInformation.withParams(parameter.resources).execute()
+                    redactSensitiveInformation.execute(parameter.resources)
                 ).execute()
             )
         } ?: throw MissingCredentialsException()

@@ -59,25 +59,13 @@ class RedactSensitiveInformationTest {
     }
 
     @Test
-    fun `Given withParams is called with the appropriate Parameter it creates a Usecase`() {
-        // Given
-        val parameter = listOf(DomainResource())
-
-        // When
-        val usecase: Any = ReactSensitiveInformationFactory().withParams(parameter)
-
-        // Then
-        assertTrue(usecase is UsecaseContract.Usecase<*>)
-    }
-
-    @Test
     fun `Given a Usecase had been create with and execute is called, it will pass through non QuestionnaireResponses`() = runBlockingTest {
         // Given
         val parameter = listOf(DomainResource(), DomainResource())
 
         // When
-        val usecase = ReactSensitiveInformationFactory().withParams(parameter)
-        val result = usecase.execute()
+        val usecase = ReactSensitiveInformationFactory()
+        val result = usecase.execute(parameter)
 
         // Then
         assertSame(
@@ -100,8 +88,8 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val usecase = ReactSensitiveInformationFactory().withParams(parameter)
-        val result = usecase.execute().first()
+        val usecase = ReactSensitiveInformationFactory()
+        val result = usecase.execute(parameter).first()
 
         // Then
         assertTrue(result is QuestionnaireResponse)
@@ -118,8 +106,8 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val usecase = ReactSensitiveInformationFactory().withParams(parameter)
-        val result = usecase.execute().first()
+        val usecase = ReactSensitiveInformationFactory()
+        val result = usecase.execute(parameter).first()
 
         // Then
         assertTrue(result is QuestionnaireResponse)
@@ -136,8 +124,8 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val usecase = ReactSensitiveInformationFactory().withParams(parameter)
-        val result = usecase.execute().first()
+        val usecase = ReactSensitiveInformationFactory()
+        val result = usecase.execute(parameter).first()
 
         // Then
         assertTrue(result is QuestionnaireResponse)
@@ -158,8 +146,8 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val usecase = ReactSensitiveInformationFactory().withParams(parameter)
-        val result = usecase.execute().first()
+        val usecase = ReactSensitiveInformationFactory()
+        val result = usecase.execute(parameter).first()
 
         // Then
         assertTrue(result is QuestionnaireResponse)
@@ -180,8 +168,8 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val usecase = ReactSensitiveInformationFactory().withParams(parameter)
-        val result = usecase.execute().first()
+        val usecase = ReactSensitiveInformationFactory()
+        val result = usecase.execute(parameter).first()
 
         // Then
         assertTrue(result is QuestionnaireResponse)
@@ -202,8 +190,8 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val usecase = ReactSensitiveInformationFactory().withParams(parameter)
-        val result = usecase.execute().first()
+        val usecase = ReactSensitiveInformationFactory()
+        val result = usecase.execute(parameter).first()
 
         // Then
         assertTrue(result is QuestionnaireResponse)
@@ -233,8 +221,8 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val usecase = ReactSensitiveInformationFactory().withParams(parameter)
-        val result = usecase.execute().first()
+        val usecase = ReactSensitiveInformationFactory()
+        val result = usecase.execute(parameter).first()
 
         // Then
         assertTrue(result is QuestionnaireResponse)
@@ -258,8 +246,8 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val usecase = ReactSensitiveInformationFactory().withParams(parameter)
-        val result = usecase.execute().first()
+        val usecase = ReactSensitiveInformationFactory()
+        val result = usecase.execute(parameter).first()
 
         // Then
         assertTrue(result is QuestionnaireResponse)
@@ -280,8 +268,8 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val usecase = ReactSensitiveInformationFactory().withParams(parameter)
-        val result = usecase.execute().first()
+        val usecase = ReactSensitiveInformationFactory()
+        val result = usecase.execute(parameter).first()
 
         // Then
         assertTrue(result is QuestionnaireResponse)
@@ -302,8 +290,8 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val usecase = ReactSensitiveInformationFactory().withParams(parameter)
-        val result = usecase.execute().first()
+        val usecase = ReactSensitiveInformationFactory()
+        val result = usecase.execute(parameter).first()
 
         // Then
         assertTrue(result is QuestionnaireResponse)
@@ -324,8 +312,8 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val usecase = ReactSensitiveInformationFactory().withParams(parameter)
-        val result = usecase.execute().first()
+        val usecase = ReactSensitiveInformationFactory()
+        val result = usecase.execute(parameter).first()
 
         // Then
         assertTrue(result is QuestionnaireResponse)
@@ -350,8 +338,8 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val usecase = ReactSensitiveInformationFactory().withParams(parameter)
-        val result = usecase.execute().first()
+        val usecase = ReactSensitiveInformationFactory()
+        val result = usecase.execute(parameter).first()
 
         // Then
         assertTrue(result is QuestionnaireResponse)
@@ -376,8 +364,8 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val usecase = ReactSensitiveInformationFactory().withParams(parameter)
-        val result = usecase.execute().first()
+        val usecase = ReactSensitiveInformationFactory()
+        val result = usecase.execute(parameter).first()
 
         // Then
         assertTrue(result is QuestionnaireResponse)
@@ -402,8 +390,8 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val usecase = ReactSensitiveInformationFactory().withParams(parameter)
-        val result = usecase.execute().first()
+        val usecase = ReactSensitiveInformationFactory()
+        val result = usecase.execute(parameter).first()
 
         // Then
         assertTrue(result is QuestionnaireResponse)
@@ -428,8 +416,8 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val usecase = ReactSensitiveInformationFactory().withParams(parameter)
-        val result = usecase.execute().first()
+        val usecase = ReactSensitiveInformationFactory()
+        val result = usecase.execute(parameter).first()
 
         // Then
         assertTrue(result is QuestionnaireResponse)
