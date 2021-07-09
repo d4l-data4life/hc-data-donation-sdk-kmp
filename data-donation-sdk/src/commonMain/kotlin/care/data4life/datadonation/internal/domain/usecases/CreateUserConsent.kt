@@ -49,14 +49,14 @@ internal class CreateUserConsentFactory(
         private val parameter: UsecaseContract.CreateUserConsentParameter
     ) : UsecaseContract.Usecase<UserConsent> {
         override suspend fun execute(): UserConsent {
-            consentRepository.createUserConsent(parameter.version, parameter.language)
+            consentRepository.createUserConsent(parameter.consentKey, parameter.version)
             return consentRepository.fetchUserConsents().first()
         }
     }
 
     data class Parameter(
         override val keyPair: KeyPair?,
-        override val version: Int,
-        override val language: String?
+        override val consentKey: String,
+        override val version: Int
     ) : UsecaseContract.CreateUserConsentParameter
 }

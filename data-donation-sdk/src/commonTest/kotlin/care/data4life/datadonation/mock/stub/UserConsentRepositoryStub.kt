@@ -22,13 +22,13 @@ import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 
 class UserConsentRepositoryStub : RepositoryContract.UserConsentRepository, MockContract.Stub {
-    var whenCreateUserConsent: ((version: Int, language: String?) -> Unit)? = null
+    var whenCreateUserConsent: ((consentKey: String, version: Int) -> Unit)? = null
     var whenFetchUserConsents: ((consentKey: String?) -> List<UserConsent>)? = null
     var whenSignUserConsent: ((message: String) -> String)? = null
-    var whenRevokeUserConsent: ((language: String?) -> Unit)? = null
+    var whenRevokeUserConsent: ((consentKey: String) -> Unit)? = null
 
-    override suspend fun createUserConsent(version: Int, language: String?) {
-        whenCreateUserConsent?.invoke(version, language)
+    override suspend fun createUserConsent(consentKey: String, version: Int) {
+        whenCreateUserConsent?.invoke(consentKey, version)
     }
 
     override suspend fun fetchUserConsents(consentKey: String?): List<UserConsent> {
@@ -43,8 +43,8 @@ class UserConsentRepositoryStub : RepositoryContract.UserConsentRepository, Mock
         return whenSignUserConsent?.invoke(message) ?: throw MockException()
     }
 
-    override suspend fun revokeUserConsent(language: String?) {
-        whenRevokeUserConsent?.invoke(language)
+    override suspend fun revokeUserConsent(consentKey: String) {
+        whenRevokeUserConsent?.invoke(consentKey)
     }
 
     override fun clear() {

@@ -43,24 +43,24 @@ class UserConsentRepositoryTest {
         val remote = UserConsentRemoteStorageStub()
         val session = UserSessionTokenDataStorageStub()
         val sessionToken = "token"
+        val consentKey = "custom-consent-key"
         val version = 23
-        val language = "de-j-old-n-kotlin-x-done"
 
         var capturedToken: String? = null
         var capturedVersion: Int? = null
-        var capturedLanguage: String? = null
+        var capturedConsentKey: String? = "NotNull"
 
         session.sessionToken = sessionToken
-        remote.whenCreateUserConsent = { delegatedToken, delegatedVersion, delegatedLanguage ->
+        remote.whenCreateUserConsent = { delegatedToken, delegatedConsentKey, delegatedVersion ->
             capturedToken = delegatedToken
+            capturedConsentKey = delegatedConsentKey
             capturedVersion = delegatedVersion
-            capturedLanguage = delegatedLanguage
         }
 
         val repo = UserConsentRepository(remote, session)
 
         // When
-        repo.createUserConsent(version, language)
+        repo.createUserConsent(consentKey, version)
 
         // Then
         assertEquals(
@@ -72,8 +72,8 @@ class UserConsentRepositoryTest {
             expected = version
         )
         assertEquals(
-            actual = capturedLanguage,
-            expected = language
+            actual = capturedConsentKey,
+            expected = consentKey
         )
     }
 
@@ -241,21 +241,21 @@ class UserConsentRepositoryTest {
         val remote = UserConsentRemoteStorageStub()
         val session = UserSessionTokenDataStorageStub()
         val sessionToken = "token"
-        val language = "de-j-old-n-kotlin-x-done"
+        val consentKey = "custom-consent-key"
 
         var capturedToken: String? = null
-        var capturedLanguage: String? = null
+        var capturedConsentKey: String? = "NotNull"
 
         session.sessionToken = sessionToken
-        remote.whenRevokeUserConsent = { delegatedToken, delegatedLanguage ->
+        remote.whenRevokeUserConsent = { delegatedToken, delegatedConsentKey ->
             capturedToken = delegatedToken
-            capturedLanguage = delegatedLanguage
+            capturedConsentKey = delegatedConsentKey
         }
 
         val repo = UserConsentRepository(remote, session)
 
         // When
-        repo.revokeUserConsent(language)
+        repo.revokeUserConsent(consentKey)
 
         // Then
         assertEquals(
@@ -263,8 +263,8 @@ class UserConsentRepositoryTest {
             expected = sessionToken
         )
         assertEquals(
-            actual = capturedLanguage,
-            expected = language
+            actual = capturedConsentKey,
+            expected = consentKey
         )
     }
 }

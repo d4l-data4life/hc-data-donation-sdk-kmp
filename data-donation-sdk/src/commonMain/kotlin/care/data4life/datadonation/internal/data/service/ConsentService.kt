@@ -103,11 +103,12 @@ internal class ConsentService private constructor(
 
     override suspend fun createUserConsent(
         accessToken: String,
+        consentKey: String,
         version: Int
     ) {
         val path = buildPath(USER_CONSENTS)
         val payload = ConsentCreationPayload(
-            DEFAULT_DONATION_CONSENT_KEY,
+            consentKey,
             version,
             clock.now().toString()
         )
@@ -179,9 +180,9 @@ internal class ConsentService private constructor(
         return safeCast(response)
     }
 
-    override suspend fun revokeUserConsent(accessToken: String) {
+    override suspend fun revokeUserConsent(accessToken: String, consentKey: String) {
         val path = buildPath(USER_CONSENTS)
-        val payload = ConsentRevocationPayload(DEFAULT_DONATION_CONSENT_KEY)
+        val payload = ConsentRevocationPayload(consentKey)
 
         callBuilder
             .setAccessToken(accessToken)

@@ -24,7 +24,7 @@ import care.data4life.datadonation.internal.data.model.DonationPayload
 
 interface StorageContract {
     interface UserConsentRemoteStorage {
-        suspend fun createUserConsent(accessToken: String, version: Int, language: String?)
+        suspend fun createUserConsent(accessToken: String, consentKey: String, version: Int)
         suspend fun fetchUserConsents(
             accessToken: String,
             consentKey: String? = null
@@ -32,7 +32,7 @@ interface StorageContract {
 
         suspend fun signUserConsentRegistration(accessToken: String, message: String): String
         suspend fun signUserConsentDonation(accessToken: String, message: String): String
-        suspend fun revokeUserConsent(accessToken: String, language: String?)
+        suspend fun revokeUserConsent(accessToken: String, consentKey: String)
     }
 
     interface ConsentDocumentRemoteStorage {
