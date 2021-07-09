@@ -35,10 +35,11 @@ package care.data4life.datadonation.internal.di
 import care.data4life.datadonation.Contract
 import care.data4life.datadonation.core.listener.ListenerContract
 import care.data4life.datadonation.core.listener.resolveListenerModule
+import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.encryption.resolveEncryptionModule
-import care.data4life.datadonation.internal.data.service.ConsentService
 import care.data4life.datadonation.internal.data.service.DonationService
 import care.data4life.datadonation.internal.data.service.ServiceContract
+import care.data4life.datadonation.internal.data.service.resolveServiceModule
 import care.data4life.datadonation.internal.data.storage.*
 import care.data4life.datadonation.internal.domain.repository.resolveRepositoryModule
 import care.data4life.datadonation.internal.domain.usecases.*
@@ -46,6 +47,7 @@ import io.ktor.client.*
 import io.ktor.client.features.json.*
 import io.ktor.client.features.json.serializer.*
 import io.ktor.client.features.logging.*
+import kotlinx.datetime.Clock
 import org.koin.core.KoinApplication
 import org.koin.core.module.Module
 import org.koin.dsl.binds
@@ -62,7 +64,8 @@ internal fun initKoin(configuration: Contract.Configuration): KoinApplication {
             resolveStorageModule(),
             resolveUsecaseModule(),
             resolveRepositoryModule(),
-            resolveEncryptionModule()
+            resolveEncryptionModule(),
+            resolveServiceModule()
         )
     }
 }
@@ -78,7 +81,9 @@ internal fun resolveRootModule(configuration: Contract.Configuration): Module {
             StorageContract.UserSessionTokenProvider::class
         )
 
-        single { configuration.getEnvironment() }
+        single<Environment> { configuration.getEnvironment() }
+
+        single<Clock> { Clock.System }
     }
 }
 
@@ -105,9 +110,6 @@ internal fun resolveCoreModule(): Module {
         }
 
         // Services
-        single<ServiceContract.ConsentService> {
-            ConsentService(get(), get())
-        }
         single<ServiceContract.DonationService> {
             DonationService(get(), get())
         }

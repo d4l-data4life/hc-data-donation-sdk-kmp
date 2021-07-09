@@ -14,10 +14,26 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.data.service
+package care.data4life.datadonation.internal.utils
 
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import care.data4life.datadonation.internal.data.exception.InternalErrorException
 
-@RunWith(JUnit4::class)
-internal class DonationServiceAndroidTest : DonationServiceTest()
+internal inline fun <reified T> safeCast(item: Any): T {
+    return if (item !is T) {
+        throw InternalErrorException("Unexpected Response.")
+    } else {
+        item
+    }
+}
+
+internal inline fun <reified T> safeListCast(list: Any): List<T> {
+    val castedList = safeCast<List<*>>(list)
+
+    castedList.forEach { item ->
+        if (item !is T) {
+            throw InternalErrorException("Unexpected Response.")
+        }
+    }
+
+    return castedList as List<T>
+}

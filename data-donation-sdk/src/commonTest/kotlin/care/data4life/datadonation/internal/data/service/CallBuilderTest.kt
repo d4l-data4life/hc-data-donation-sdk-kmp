@@ -20,21 +20,17 @@ import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.internal.data.exception.InternalErrorException
 import care.data4life.datadonation.internal.data.service.ServiceContract.CallBuilder.Companion.ACCESS_TOKEN_FIELD
 import care.data4life.datadonation.internal.data.service.ServiceContract.CallBuilder.Companion.ACCESS_TOKEN_VALUE_PREFIX
+import care.data4life.datadonation.mock.fake.defaultResponse
 import care.data4life.datadonation.mock.fake.getDefaultMockClient
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
-import io.ktor.client.engine.mock.MockRequestHandleScope
-import io.ktor.client.engine.mock.respond
 import io.ktor.client.engine.mock.toByteReadPacket
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.json.serializer.KotlinxSerializer
 import io.ktor.client.request.HttpRequestData
-import io.ktor.client.request.HttpResponseData
-import io.ktor.http.ContentType
 import io.ktor.http.HttpMethod
 import io.ktor.http.URLProtocol
 import io.ktor.http.fullPath
-import io.ktor.http.headersOf
 import io.ktor.util.KtorExperimentalAPI
 import io.ktor.util.toMap
 import kotlinx.coroutines.GlobalScope
@@ -47,23 +43,12 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class CallBuilderTest {
-    private fun MockRequestHandleScope.defaultResponse(): HttpResponseData {
-        return respond(
-            "Hello, world",
-            headers = headersOf(
-                "Content-Type" to listOf(
-                    ContentType.Text.Plain.toString()
-                )
-            )
-        )
-    }
-
     private fun createMockClientWithAssertion(assert: (HttpRequestData) -> Unit): HttpClient {
         return HttpClient(MockEngine) {
             engine {
                 addHandler { request ->
                     assert.invoke(request)
-                    defaultResponse()
+                    defaultResponse(this)
                 }
             }
         }
@@ -194,7 +179,7 @@ class CallBuilderTest {
     }
 
     @Test
-    fun `Given a instance was create with a Environment and it was executed it uses the default port`() = runWithBlockingTest(GlobalScope.coroutineContext) {
+    fun `Given a instance was create with a Environment and it was executed it uses the default Port`() = runWithBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val env = Environment.LOCAL
         val client = createMockClientWithAssertion { request ->
@@ -211,7 +196,7 @@ class CallBuilderTest {
     }
 
     @Test
-    fun `Given a instance was create with a Environment and it was executed with a Port it uses the given port`() = runWithBlockingTest(GlobalScope.coroutineContext) {
+    fun `Given a instance was create with a Environment and a Port and it was executed it uses the given Port`() = runWithBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val port = 17
 
@@ -225,8 +210,8 @@ class CallBuilderTest {
         }
 
         // When
-        val builder = CallBuilder.getInstance(env, client)
-        builder.execute(port = port)
+        val builder = CallBuilder.getInstance(env, client, port)
+        builder.execute()
     }
 
     @Test
@@ -403,7 +388,7 @@ class CallBuilderTest {
                         )
                     )
 
-                    defaultResponse()
+                    defaultResponse(this)
                 }
             }
         }
@@ -542,7 +527,7 @@ class CallBuilderTest {
                         actual = request.body.toByteReadPacket().readText(),
                         expected = payload
                     )
-                    defaultResponse()
+                    defaultResponse(this)
                 }
             }
         }
@@ -587,7 +572,7 @@ class CallBuilderTest {
                         expected = payload
                     )
 
-                    defaultResponse()
+                    defaultResponse(this)
                 }
             }
         }
@@ -632,7 +617,7 @@ class CallBuilderTest {
                         expected = payload
                     )
 
-                    defaultResponse()
+                    defaultResponse(this)
                 }
             }
         }

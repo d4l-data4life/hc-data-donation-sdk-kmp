@@ -42,6 +42,7 @@ import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.encryption.resolveEncryptionModule
+import care.data4life.datadonation.internal.data.service.resolveServiceModule
 import care.data4life.datadonation.internal.data.storage.resolveStorageModule
 import care.data4life.datadonation.internal.di.resolveCoreModule
 import care.data4life.datadonation.internal.di.resolveRootModule
@@ -96,7 +97,8 @@ class ClientTest {
                 resolveStorageModule(),
                 resolveUsecaseModule(),
                 resolveRepositoryModule(),
-                resolveEncryptionModule()
+                resolveEncryptionModule(),
+                resolveServiceModule()
             )
         }
 
@@ -151,7 +153,8 @@ class ClientTest {
                 resolveStorageModule(),
                 resolveUsecaseModule(),
                 resolveRepositoryModule(),
-                resolveEncryptionModule()
+                resolveEncryptionModule(),
+                resolveServiceModule()
             )
         }
 
@@ -220,7 +223,8 @@ class ClientTest {
                 resolveStorageModule(),
                 resolveUsecaseModule(),
                 resolveRepositoryModule(),
-                resolveEncryptionModule()
+                resolveEncryptionModule(),
+                resolveServiceModule()
             )
         }
 
@@ -268,7 +272,8 @@ class ClientTest {
                 resolveStorageModule(),
                 resolveUsecaseModule(),
                 resolveRepositoryModule(),
-                resolveEncryptionModule()
+                resolveEncryptionModule(),
+                resolveServiceModule()
             )
         }
 
@@ -314,7 +319,8 @@ class ClientTest {
                 resolveStorageModule(),
                 resolveUsecaseModule(),
                 resolveRepositoryModule(),
-                resolveEncryptionModule()
+                resolveEncryptionModule(),
+                resolveServiceModule()
             )
         }
 
@@ -358,7 +364,8 @@ class ClientTest {
                 resolveStorageModule(),
                 resolveUsecaseModule(),
                 resolveRepositoryModule(),
-                resolveEncryptionModule()
+                resolveEncryptionModule(),
+                resolveServiceModule()
             )
         }
 

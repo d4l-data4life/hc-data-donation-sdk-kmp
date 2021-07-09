@@ -33,13 +33,13 @@ class ConsentServiceStub : ServiceContract.ConsentService {
 
     override suspend fun fetchUserConsents(
         accessToken: String,
-        latest: Boolean?,
+        latestConsent: Boolean?,
         consentKey: String?
     ): List<UserConsent> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun createUserConsent(accessToken: String, version: Int, language: String?) {
+    override suspend fun createUserConsent(accessToken: String, version: Int) {
         TODO("Not yet implemented")
     }
 
@@ -57,7 +57,7 @@ class ConsentServiceStub : ServiceContract.ConsentService {
         TODO("Not yet implemented")
     }
 
-    override suspend fun revokeUserConsent(accessToken: String, language: String?) {
+    override suspend fun revokeUserConsent(accessToken: String) {
         TODO("Not yet implemented")
     }
 }

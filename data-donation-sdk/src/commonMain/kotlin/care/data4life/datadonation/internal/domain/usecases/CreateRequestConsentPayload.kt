@@ -58,10 +58,10 @@ internal class CreateRequestConsentPayload(
             base64encoder.encode(encryptionDD.encrypt(request.toJsonString().toByteArray()))
 
         val signature = when (parameter.signatureType) {
-            ConsentSignatureType.ConsentOnce -> {
+            ConsentSignatureType.CONSENT_ONCE -> {
                 consentRepository.signUserConsentRegistration(encryptedMessage)
             }
-            ConsentSignatureType.NormalUse -> {
+            ConsentSignatureType.NORMAL_USE -> {
                 consentRepository.signUserConsentDonation(encryptedMessage)
             }
             else -> throw UnsupportedOperationException()

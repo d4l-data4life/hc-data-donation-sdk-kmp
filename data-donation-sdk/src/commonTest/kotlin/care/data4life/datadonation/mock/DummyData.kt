@@ -20,6 +20,7 @@ import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.ConsentEvent
 import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.UserConsent
+import care.data4life.datadonation.internal.data.model.ConsentSignature
 
 object DummyData {
     val timestamp = "2020-07-06T10:18:12.601Z"
@@ -31,6 +32,8 @@ object DummyData {
         ConsentEvent.Consent,
         timestamp
     )
+
+    val consentSignature = ConsentSignature("Hello world!")
 
     val consentDocument = ConsentDocument("", 1, "", "", "", "en", "", true, "", "")
 

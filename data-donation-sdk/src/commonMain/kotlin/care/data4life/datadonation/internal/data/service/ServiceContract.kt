@@ -22,9 +22,10 @@ import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.model.ConsentSignature
 import care.data4life.datadonation.internal.data.model.DonationPayload
 import io.ktor.client.HttpClient
+import kotlinx.datetime.Clock
 
 typealias Header = Map<String, String>
-typealias Parameter = Map<String, String>
+typealias Parameter = Map<String, Any?>
 typealias AccessToken = String
 typealias Path = List<String>
 
@@ -36,6 +37,7 @@ internal interface ServiceContract {
         PUT("put")
     }
 
+    // TODO Add a new package with potential HTTP Interceptor
     interface CallBuilder {
         fun setHeaders(header: Header): CallBuilder
         fun setParameter(parameter: Parameter): CallBuilder
@@ -45,8 +47,7 @@ internal interface ServiceContract {
 
         suspend fun execute(
             method: Method = Method.GET,
-            path: Path = listOf(""),
-            port: Int? = null
+            path: Path = listOf("")
         ): Any
 
         companion object {
@@ -56,7 +57,11 @@ internal interface ServiceContract {
     }
 
     interface CallBuilderFactory {
-        fun getInstance(environment: Environment, client: HttpClient): CallBuilder
+        fun getInstance(
+            environment: Environment,
+            client: HttpClient,
+            port: Int? = null
+        ): CallBuilder
     }
 
     interface ConsentService {
@@ -69,14 +74,13 @@ internal interface ServiceContract {
 
         suspend fun fetchUserConsents(
             accessToken: String,
-            latest: Boolean?,
+            latestConsent: Boolean?,
             consentKey: String? = null
         ): List<UserConsent>
 
         suspend fun createUserConsent(
             accessToken: String,
-            version: Int,
-            language: String?
+            version: Int
         )
 
         suspend fun requestSignatureRegistration(
@@ -89,9 +93,25 @@ internal interface ServiceContract {
             message: String
         ): ConsentSignature
 
-        suspend fun revokeUserConsent(accessToken: String, language: String?)
+        suspend fun revokeUserConsent(accessToken: String)
 
         companion object {
+            val ROOT = listOf("consent", "api", "v1")
+
+            object PARAMETER {
+                const val CONSENT_DOCUMENT_KEY = "key"
+                const val USER_CONSENT_KEY = "consentDocumentKey"
+                const val LANGUAGE = "language"
+                const val VERSION = "version"
+                const val LATEST_CONSENT = "latest"
+            }
+
+            object PATH {
+                const val USER_CONSENTS = "userConsents"
+                const val CONSENTS_DOCUMENTS = "consentDocuments"
+                const val SIGNATURES = "signatures"
+            }
+
             const val XSRF_VALIDITY = 23 * 60 * 60 * 1000
 
             object Endpoints {
@@ -112,6 +132,15 @@ internal interface ServiceContract {
                 const val XSRFToken = "X-Csrf-Token"
             }
         }
+    }
+
+    interface ConsentServiceFactory {
+        fun getInstance(
+            environment: Environment,
+            client: HttpClient,
+            builderFactory: CallBuilderFactory,
+            clock: Clock
+        ): ConsentService
     }
 
     interface DonationService {
@@ -140,5 +169,6 @@ internal interface ServiceContract {
 
     companion object {
         const val DEFAULT_DONATION_CONSENT_KEY = "d4l.data-donation.broad"
+        const val LOCAL_PORT = 8080 // TODO -> Do we need a local env?
     }
 }

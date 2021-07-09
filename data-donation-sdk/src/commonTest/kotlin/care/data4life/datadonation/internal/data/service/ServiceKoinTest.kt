@@ -17,8 +17,11 @@
 package care.data4life.datadonation.internal.data.service
 
 import care.data4life.datadonation.core.model.Environment
+import care.data4life.datadonation.mock.stub.ClockStub
 import io.ktor.client.HttpClient
+import kotlinx.datetime.Clock
 import org.koin.core.context.stopKoin
+import org.koin.dsl.bind
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import kotlin.test.BeforeTest
@@ -32,21 +35,33 @@ class ServiceKoinTest {
     }
 
     @Test
-    fun `Given resolveServiceModule is called it creates a Module, which contains a CallBuilder`() {
+    fun `Given resolveServiceModule is called it creates a Module, which contains a CallBuilderFactory`() {
+        // When
+        val koin = koinApplication {
+            modules(
+                resolveServiceModule(),
+            )
+        }
+        // Then
+        val builder: ServiceContract.CallBuilderFactory = koin.koin.get()
+        assertNotNull(builder)
+    }
+
+    @Test
+    fun `Given resolveServiceModule is called it creates a Module, which contains a ConsentService`() {
         // When
         val koin = koinApplication {
             modules(
                 resolveServiceModule(),
                 module {
-                    single {
-                        HttpClient()
-                    }
-                    single { Environment.LOCAL }
+                    single { ClockStub() } bind Clock::class
+                    single { HttpClient() }
+                    single { Environment.LOCAL } bind Environment::class
                 }
             )
         }
         // Then
-        val builder: ServiceContract.CallBuilder = koin.koin.get()
+        val builder: ServiceContract.ConsentService = koin.koin.get()
         assertNotNull(builder)
     }
 }

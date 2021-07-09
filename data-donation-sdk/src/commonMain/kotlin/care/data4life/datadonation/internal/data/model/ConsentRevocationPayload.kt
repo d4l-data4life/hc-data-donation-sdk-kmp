@@ -36,6 +36,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ConsentRevocationPayload(
-    val consentDocumentKey: String,
-    val notificationLanguage: String
+    val consentDocumentKey: String
 )

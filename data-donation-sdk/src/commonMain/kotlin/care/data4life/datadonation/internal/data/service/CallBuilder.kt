@@ -35,7 +35,8 @@ import io.ktor.http.contentType
 internal class CallBuilder private constructor(
     private val client: HttpClient,
     private val host: String,
-    private val protocol: URLProtocol
+    private val protocol: URLProtocol,
+    private val port: Int?
 ) : ServiceContract.CallBuilder {
     private var headers: Header = mapOf()
     private var parameter: Parameter = mapOf()
@@ -95,7 +96,7 @@ internal class CallBuilder private constructor(
         setBody(builder)
     }
 
-    private fun setPort(builder: HttpRequestBuilder, port: Int?) {
+    private fun setPort(builder: HttpRequestBuilder) {
         if (port is Int) {
             builder.port = port
         }
@@ -131,11 +132,10 @@ internal class CallBuilder private constructor(
     private fun buildQuery(
         builder: HttpRequestBuilder,
         method: ServiceContract.Method,
-        path: Path,
-        port: Int?
+        path: Path
     ) {
         setMandatoryFields(builder, method, path)
-        setPort(builder, port)
+        setPort(builder)
         addHeader(builder)
         setParameter(builder)
         setAccessToken(builder)
@@ -144,9 +144,8 @@ internal class CallBuilder private constructor(
 
     override suspend fun execute(
         method: ServiceContract.Method,
-        path: Path,
-        port: Int?
-    ): Any = client.request { buildQuery(this, method, path, port) }
+        path: Path
+    ): Any = client.request { buildQuery(this, method, path) }
 
     companion object : ServiceContract.CallBuilderFactory {
         private fun resolveProtocol(environment: Environment): URLProtocol {
@@ -159,12 +158,14 @@ internal class CallBuilder private constructor(
 
         override fun getInstance(
             environment: Environment,
-            client: HttpClient
+            client: HttpClient,
+            port: Int?
         ): ServiceContract.CallBuilder {
             return CallBuilder(
                 client,
                 environment.url,
-                resolveProtocol(environment)
+                resolveProtocol(environment),
+                port
             )
         }
     }

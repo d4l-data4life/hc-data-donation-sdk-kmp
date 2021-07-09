@@ -14,10 +14,21 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.data.service
+package care.data4life.datadonation.mock.stub
 
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import care.data4life.datadonation.mock.MockContract
+import care.data4life.datadonation.mock.MockException
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
 
-@RunWith(JUnit4::class)
-internal class DonationServiceAndroidTest : DonationServiceTest()
+internal class ClockStub : Clock, MockContract.Stub {
+    var whenNow: (() -> Instant)? = null
+
+    override fun now(): Instant {
+        return whenNow?.invoke() ?: throw MockException()
+    }
+
+    override fun clear() {
+        whenNow = null
+    }
+}

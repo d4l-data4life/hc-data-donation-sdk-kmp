@@ -83,7 +83,7 @@ internal class DonateResources(
     ) {
         val encryptedSignedMessage = createRequestConsentPayload.withParams(
             CreateRequestConsentPayload.Parameters(
-                ConsentSignatureType.NormalUse,
+                ConsentSignatureType.NORMAL_USE,
                 keyPair
             )
         ).execute()
