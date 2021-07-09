@@ -16,9 +16,8 @@
 
 rootProject.name = "mpp-data-donation-sdk"
 
-enableFeaturePreview("GRADLE_METADATA")
-
 include(
+    ":iOSCryptoDD",
     ":data-donation-sdk",
     ":docs"
 )

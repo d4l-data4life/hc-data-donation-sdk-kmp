@@ -20,18 +20,17 @@ import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.internal.data.exception.InternalErrorException
 import care.data4life.datadonation.internal.data.service.ServiceContract.CallBuilder.Companion.ACCESS_TOKEN_FIELD
 import care.data4life.datadonation.internal.data.service.ServiceContract.CallBuilder.Companion.ACCESS_TOKEN_VALUE_PREFIX
-import care.data4life.datadonation.mock.util.defaultResponse
+import care.data4life.datadonation.mock.fake.defaultResponse
+import care.data4life.datadonation.mock.fake.getDefaultMockClient
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
-import io.ktor.client.engine.mock.respond
 import io.ktor.client.engine.mock.toByteReadPacket
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.json.serializer.KotlinxSerializer
-import io.ktor.http.ContentType
+import io.ktor.client.request.HttpRequestData
 import io.ktor.http.HttpMethod
 import io.ktor.http.URLProtocol
 import io.ktor.http.fullPath
-import io.ktor.http.headersOf
 import io.ktor.util.KtorExperimentalAPI
 import io.ktor.util.toMap
 import kotlinx.coroutines.GlobalScope
@@ -44,6 +43,17 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class CallBuilderTest {
+    private fun createMockClientWithAssertion(assert: (HttpRequestData) -> Unit): HttpClient {
+        return HttpClient(MockEngine) {
+            engine {
+                addHandler { request ->
+                    assert.invoke(request)
+                    defaultResponse(this)
+                }
+            }
+        }
+    }
+
     @Test
     fun `It fulfils CallBuilderFactory`() {
         val factory: Any = CallBuilder
@@ -55,13 +65,7 @@ class CallBuilderTest {
     fun `Given getInstance is called with a Environment and a HttpClient it returns a CallBuilder`() {
         // Given
         val env = Environment.LOCAL
-        val client = HttpClient(MockEngine) {
-            engine {
-                addHandler {
-                    defaultResponse()
-                }
-            }
-        }
+        val client = getDefaultMockClient()
 
         // When
         val builder: Any = CallBuilder.getInstance(env, client)
@@ -74,18 +78,12 @@ class CallBuilderTest {
     fun `Given a instance was create with an Environment and it was executed it uses GET by default`() = runWithBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val env = Environment.LOCAL
-        val client = HttpClient(MockEngine) {
-            engine {
-                addHandler { request ->
-                    // Then
-                    assertEquals(
-                        actual = request.method,
-                        expected = HttpMethod.Get
-                    )
-
-                    defaultResponse()
-                }
-            }
+        val client = createMockClientWithAssertion { request ->
+            // Then
+            assertEquals(
+                actual = request.method,
+                expected = HttpMethod.Get
+            )
         }
 
         // When
@@ -97,18 +95,12 @@ class CallBuilderTest {
     fun `Given a instance was create with a Environment and it was executed it calls the given Host`() = runWithBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val env = Environment.LOCAL
-        val client = HttpClient(MockEngine) {
-            engine {
-                addHandler { request ->
-                    // Then
-                    assertEquals(
-                        actual = request.url.host,
-                        expected = env.url
-                    )
-
-                    defaultResponse()
-                }
-            }
+        val client = createMockClientWithAssertion { request ->
+            // Then
+            assertEquals(
+                actual = request.url.host,
+                expected = env.url
+            )
         }
 
         // When
@@ -120,18 +112,12 @@ class CallBuilderTest {
     fun `Given a instance was create with a Environment and it was executed it calls the root by default`() = runWithBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val env = Environment.LOCAL
-        val client = HttpClient(MockEngine) {
-            engine {
-                addHandler { request ->
-                    // Then
-                    assertEquals(
-                        actual = request.url.fullPath,
-                        expected = "/"
-                    )
-
-                    defaultResponse()
-                }
-            }
+        val client = createMockClientWithAssertion { request ->
+            // Then
+            assertEquals(
+                actual = request.url.fullPath,
+                expected = "/"
+            )
         }
 
         // When
@@ -145,18 +131,12 @@ class CallBuilderTest {
         val path = listOf("somewhere", "in", "the", "FileTree")
 
         val env = Environment.LOCAL
-        val client = HttpClient(MockEngine) {
-            engine {
-                addHandler { request ->
-                    // Then
-                    assertEquals(
-                        actual = request.url.fullPath,
-                        expected = "/somewhere/in/the/FileTree"
-                    )
-
-                    defaultResponse()
-                }
-            }
+        val client = createMockClientWithAssertion { request ->
+            // Then
+            assertEquals(
+                actual = request.url.fullPath,
+                expected = "/somewhere/in/the/FileTree"
+            )
         }
 
         // When
@@ -168,18 +148,12 @@ class CallBuilderTest {
     fun `Given a instance was create with a LOCAL Environment and it was executed it calls the given Host via HTTP`() = runWithBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val env = Environment.LOCAL
-        val client = HttpClient(MockEngine) {
-            engine {
-                addHandler { request ->
-                    // Then
-                    assertEquals(
-                        actual = request.url.protocol,
-                        expected = URLProtocol.HTTP
-                    )
-
-                    defaultResponse()
-                }
-            }
+        val client = createMockClientWithAssertion { request ->
+            // Then
+            assertEquals(
+                actual = request.url.protocol,
+                expected = URLProtocol.HTTP
+            )
         }
 
         // When
@@ -191,18 +165,12 @@ class CallBuilderTest {
     fun `Given a instance was create with a non LOCAL Environment and it was executed it calls the given Host via HTTP`() = runWithBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val env = Environment.STAGING
-        val client = HttpClient(MockEngine) {
-            engine {
-                addHandler { request ->
-                    // Then
-                    assertEquals(
-                        actual = request.url.protocol,
-                        expected = URLProtocol.HTTPS
-                    )
-
-                    defaultResponse()
-                }
-            }
+        val client = createMockClientWithAssertion { request ->
+            // Then
+            assertEquals(
+                actual = request.url.protocol,
+                expected = URLProtocol.HTTPS
+            )
         }
 
         // When
@@ -214,18 +182,12 @@ class CallBuilderTest {
     fun `Given a instance was create with a Environment and it was executed it uses the default Port`() = runWithBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val env = Environment.LOCAL
-        val client = HttpClient(MockEngine) {
-            engine {
-                addHandler { request ->
-                    // Then
-                    assertEquals(
-                        actual = request.url.port,
-                        expected = 80
-                    )
-
-                    defaultResponse()
-                }
-            }
+        val client = createMockClientWithAssertion { request ->
+            // Then
+            assertEquals(
+                actual = request.url.port,
+                expected = 80
+            )
         }
 
         // When
@@ -239,18 +201,12 @@ class CallBuilderTest {
         val port = 17
 
         val env = Environment.LOCAL
-        val client = HttpClient(MockEngine) {
-            engine {
-                addHandler { request ->
-                    // Then
-                    assertEquals(
-                        actual = request.url.port,
-                        expected = port
-                    )
-
-                    defaultResponse()
-                }
-            }
+        val client = createMockClientWithAssertion { request ->
+            // Then
+            assertEquals(
+                actual = request.url.port,
+                expected = port
+            )
         }
 
         // When
@@ -262,21 +218,15 @@ class CallBuilderTest {
     fun `Given a instance was create with a Environment and it was executed it sets no custom headers to the request by default`() = runWithBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val env = Environment.LOCAL
-        val client = HttpClient(MockEngine) {
-            engine {
-                addHandler { request ->
-                    // Then
-                    assertEquals(
-                        actual = request.headers.toMap(),
-                        expected = mapOf(
-                            "Accept-Charset" to listOf("UTF-8"),
-                            "Accept" to listOf("*/*")
-                        )
-                    )
-
-                    defaultResponse()
-                }
-            }
+        val client = createMockClientWithAssertion { request ->
+            // Then
+            assertEquals(
+                actual = request.headers.toMap(),
+                expected = mapOf(
+                    "Accept-Charset" to listOf("UTF-8"),
+                    "Accept" to listOf("*/*")
+                )
+            )
         }
 
         // When
@@ -293,23 +243,17 @@ class CallBuilderTest {
         )
 
         val env = Environment.LOCAL
-        val client = HttpClient(MockEngine) {
-            engine {
-                addHandler { request ->
-                    // Then
-                    assertEquals(
-                        actual = request.headers.toMap(),
-                        expected = mapOf(
-                            "Accept-Charset" to listOf("UTF-8"),
-                            "Accept" to listOf("*/*"),
-                            "HEADER" to listOf(headers["HEADER"]),
-                            "HEADER2" to listOf(headers["HEADER2"])
-                        )
-                    )
-
-                    defaultResponse()
-                }
-            }
+        val client = createMockClientWithAssertion { request ->
+            // Then
+            assertEquals(
+                actual = request.headers.toMap(),
+                expected = mapOf(
+                    "Accept-Charset" to listOf("UTF-8"),
+                    "Accept" to listOf("*/*"),
+                    "HEADER" to listOf(headers["HEADER"]),
+                    "HEADER2" to listOf(headers["HEADER2"])
+                )
+            )
         }
 
         // When
@@ -321,18 +265,12 @@ class CallBuilderTest {
     fun `Given a instance was create with a Environment and it was executed it sets no custom parameter to the request by default`() = runWithBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val env = Environment.LOCAL
-        val client = HttpClient(MockEngine) {
-            engine {
-                addHandler { request ->
-                    // Then
-                    assertEquals(
-                        actual = request.url.parameters.toMap(),
-                        expected = emptyMap()
-                    )
-
-                    defaultResponse()
-                }
-            }
+        val client = createMockClientWithAssertion { request ->
+            // Then
+            assertEquals(
+                actual = request.url.parameters.toMap(),
+                expected = emptyMap()
+            )
         }
 
         // When
@@ -349,21 +287,15 @@ class CallBuilderTest {
         )
 
         val env = Environment.LOCAL
-        val client = HttpClient(MockEngine) {
-            engine {
-                addHandler { request ->
-                    // Then
-                    assertEquals(
-                        actual = request.url.parameters.toMap(),
-                        expected = mapOf(
-                            "PARAM" to listOf(parameter["PARAM"]),
-                            "PARAM2" to listOf(parameter["PARAM2"])
-                        )
-                    )
-
-                    defaultResponse()
-                }
-            }
+        val client = createMockClientWithAssertion { request ->
+            // Then
+            assertEquals(
+                actual = request.url.parameters.toMap(),
+                expected = mapOf(
+                    "PARAM" to listOf(parameter["PARAM"]),
+                    "PARAM2" to listOf(parameter["PARAM2"])
+                )
+            )
         }
 
         // When
@@ -375,15 +307,9 @@ class CallBuilderTest {
     fun `Given a instance was create with a Environment and it was executed it has no AccessToken by default`() = runWithBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val env = Environment.LOCAL
-        val client = HttpClient(MockEngine) {
-            engine {
-                addHandler { request ->
-                    // Then
-                    assertFalse(request.headers.toMap().containsKey(ACCESS_TOKEN_FIELD))
-
-                    defaultResponse()
-                }
-            }
+        val client = createMockClientWithAssertion { request ->
+            // Then
+            assertFalse(request.headers.toMap().containsKey(ACCESS_TOKEN_FIELD))
         }
 
         // When
@@ -397,23 +323,17 @@ class CallBuilderTest {
         val token = "TOKEN"
 
         val env = Environment.LOCAL
-        val client = HttpClient(MockEngine) {
-            engine {
-                addHandler { request ->
-                    // Then
-                    assertTrue(request.headers.toMap().containsKey(ACCESS_TOKEN_FIELD))
-                    assertEquals(
-                        actual = request.headers.toMap()[ACCESS_TOKEN_FIELD]!!.size,
-                        expected = 1
-                    )
-                    assertEquals(
-                        actual = request.headers.toMap()[ACCESS_TOKEN_FIELD]!!.first(),
-                        expected = "$ACCESS_TOKEN_VALUE_PREFIX $token"
-                    )
-
-                    defaultResponse()
-                }
-            }
+        val client = createMockClientWithAssertion { request ->
+            // Then
+            assertTrue(request.headers.toMap().containsKey(ACCESS_TOKEN_FIELD))
+            assertEquals(
+                actual = request.headers.toMap()[ACCESS_TOKEN_FIELD]!!.size,
+                expected = 1
+            )
+            assertEquals(
+                actual = request.headers.toMap()[ACCESS_TOKEN_FIELD]!!.first(),
+                expected = "$ACCESS_TOKEN_VALUE_PREFIX $token"
+            )
         }
 
         // When
@@ -425,21 +345,15 @@ class CallBuilderTest {
     fun `Given a instance was create with a Environment and it was executed it sets no custom ContentType by default`() = runWithBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val env = Environment.LOCAL
-        val client = HttpClient(MockEngine) {
-            engine {
-                addHandler { request ->
-                    // Then
-                    assertEquals(
-                        actual = request.headers.toMap(),
-                        expected = mapOf(
-                            "Accept-Charset" to listOf("UTF-8"),
-                            "Accept" to listOf("*/*")
-                        )
-                    )
-
-                    defaultResponse()
-                }
-            }
+        val client = createMockClientWithAssertion { request ->
+            // Then
+            assertEquals(
+                actual = request.headers.toMap(),
+                expected = mapOf(
+                    "Accept-Charset" to listOf("UTF-8"),
+                    "Accept" to listOf("*/*")
+                )
+            )
         }
 
         // When
@@ -453,15 +367,14 @@ class CallBuilderTest {
         val env = Environment.LOCAL
         val client = HttpClient(MockEngine) {
             install(JsonFeature) {
-                serializer =
-                    KotlinxSerializer(
-                        Json {
-                            isLenient = true
-                            ignoreUnknownKeys = true
-                            allowSpecialFloatingPointValues = true
-                            useArrayPolymorphism = false
-                        }
-                    )
+                serializer = KotlinxSerializer(
+                    Json {
+                        isLenient = true
+                        ignoreUnknownKeys = true
+                        allowSpecialFloatingPointValues = true
+                        useArrayPolymorphism = false
+                    }
+                )
             }
 
             engine {
@@ -475,7 +388,7 @@ class CallBuilderTest {
                         )
                     )
 
-                    defaultResponse()
+                    defaultResponse(this)
                 }
             }
         }
@@ -490,18 +403,12 @@ class CallBuilderTest {
         // Given
 
         val env = Environment.LOCAL
-        val client = HttpClient(MockEngine) {
-            engine {
-                addHandler { request ->
-                    // Then
-                    assertEquals(
-                        actual = request.body.contentLength,
-                        expected = 0
-                    )
-
-                    defaultResponse()
-                }
-            }
+        val client = createMockClientWithAssertion { request ->
+            // Then
+            assertEquals(
+                actual = request.body.contentLength,
+                expected = 0
+            )
         }
 
         // When
@@ -513,20 +420,7 @@ class CallBuilderTest {
     fun `Given a instance was create with a Environment, setBody is called with a Payload and it was executed with GET, it fails`() = runWithBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val env = Environment.LOCAL
-        val client = HttpClient(MockEngine) {
-            engine {
-                addHandler {
-                    respond(
-                        "Hello, world",
-                        headers = headersOf(
-                            "Content-Type" to listOf(
-                                ContentType.Text.Plain.toString()
-                            )
-                        )
-                    )
-                }
-            }
-        }
+        val client = getDefaultMockClient()
 
         val error = assertFailsWith<InternalErrorException> {
             // When
@@ -545,20 +439,7 @@ class CallBuilderTest {
     fun `Given a instance was create with a Environment, setBody was not called and it was executed with POST, it fails`() = runWithBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val env = Environment.LOCAL
-        val client = HttpClient(MockEngine) {
-            engine {
-                addHandler {
-                    respond(
-                        "Hello, world",
-                        headers = headersOf(
-                            "Content-Type" to listOf(
-                                ContentType.Text.Plain.toString()
-                            )
-                        )
-                    )
-                }
-            }
-        }
+        val client = getDefaultMockClient()
 
         // When
         val error = assertFailsWith<InternalErrorException> {
@@ -578,20 +459,7 @@ class CallBuilderTest {
     fun `Given a instance was create with a Environment, setBody was not called and it was executed with PUT, it fails`() = runWithBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val env = Environment.LOCAL
-        val client = HttpClient(MockEngine) {
-            engine {
-                addHandler {
-                    respond(
-                        "Hello, world",
-                        headers = headersOf(
-                            "Content-Type" to listOf(
-                                ContentType.Text.Plain.toString()
-                            )
-                        )
-                    )
-                }
-            }
-        }
+        val client = getDefaultMockClient()
 
         val error = assertFailsWith<InternalErrorException> {
             // When
@@ -610,20 +478,7 @@ class CallBuilderTest {
     fun `Given a instance was create with a Environment, setBody was not called and it was executed with DELETE, it fails`() = runWithBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val env = Environment.LOCAL
-        val client = HttpClient(MockEngine) {
-            engine {
-                addHandler {
-                    respond(
-                        "Hello, world",
-                        headers = headersOf(
-                            "Content-Type" to listOf(
-                                ContentType.Text.Plain.toString()
-                            )
-                        )
-                    )
-                }
-            }
-        }
+        val client = getDefaultMockClient()
 
         val error = assertFailsWith<InternalErrorException> {
             // When
@@ -644,18 +499,12 @@ class CallBuilderTest {
         val payload = "蕃茄湯"
 
         val env = Environment.LOCAL
-        val client = HttpClient(MockEngine) {
-            engine {
-                addHandler { request ->
-                    // Then
-                    assertEquals(
-                        actual = request.method,
-                        expected = HttpMethod.Post
-                    )
-
-                    defaultResponse()
-                }
-            }
+        val client = createMockClientWithAssertion { request ->
+            // Then
+            assertEquals(
+                actual = request.method,
+                expected = HttpMethod.Post
+            )
         }
 
         // When
@@ -678,8 +527,7 @@ class CallBuilderTest {
                         actual = request.body.toByteReadPacket().readText(),
                         expected = payload
                     )
-
-                    defaultResponse()
+                    defaultResponse(this)
                 }
             }
         }
@@ -695,18 +543,12 @@ class CallBuilderTest {
         val payload = "蕃茄湯"
 
         val env = Environment.LOCAL
-        val client = HttpClient(MockEngine) {
-            engine {
-                addHandler { request ->
-                    // Then
-                    assertEquals(
-                        actual = request.method,
-                        expected = HttpMethod.Put
-                    )
-
-                    defaultResponse()
-                }
-            }
+        val client = createMockClientWithAssertion { request ->
+            // Then
+            assertEquals(
+                actual = request.method,
+                expected = HttpMethod.Put
+            )
         }
 
         // When
@@ -730,7 +572,7 @@ class CallBuilderTest {
                         expected = payload
                     )
 
-                    defaultResponse()
+                    defaultResponse(this)
                 }
             }
         }
@@ -746,18 +588,12 @@ class CallBuilderTest {
         val payload = "蕃茄湯"
 
         val env = Environment.LOCAL
-        val client = HttpClient(MockEngine) {
-            engine {
-                addHandler { request ->
-                    // Then
-                    assertEquals(
-                        actual = request.method,
-                        expected = HttpMethod.Delete
-                    )
-
-                    defaultResponse()
-                }
-            }
+        val client = createMockClientWithAssertion { request ->
+            // Then
+            assertEquals(
+                actual = request.method,
+                expected = HttpMethod.Delete
+            )
         }
 
         // When
@@ -781,7 +617,7 @@ class CallBuilderTest {
                         expected = payload
                     )
 
-                    defaultResponse()
+                    defaultResponse(this)
                 }
             }
         }

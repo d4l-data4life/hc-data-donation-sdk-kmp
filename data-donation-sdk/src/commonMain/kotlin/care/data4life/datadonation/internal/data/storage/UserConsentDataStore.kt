@@ -49,10 +49,10 @@ internal class UserConsentDataStore(
     ): List<UserConsent> = service.fetchUserConsents(accessToken, false, consentKey)
 
     override suspend fun signUserConsentRegistration(accessToken: String, message: String): String =
-        TODO()
+        service.requestSignatureRegistration(accessToken, message).signature
 
     override suspend fun signUserConsentDonation(accessToken: String, message: String): String =
-        TODO()
+        service.requestSignatureDonation(accessToken, message).signature
 
     override suspend fun revokeUserConsent(accessToken: String, consentKey: String) =
         service.revokeUserConsent(accessToken, consentKey)

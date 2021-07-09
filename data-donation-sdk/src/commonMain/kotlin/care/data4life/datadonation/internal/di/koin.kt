@@ -50,7 +50,6 @@ import io.ktor.client.features.logging.*
 import kotlinx.datetime.Clock
 import org.koin.core.KoinApplication
 import org.koin.core.module.Module
-import org.koin.dsl.bind
 import org.koin.dsl.binds
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
@@ -60,7 +59,6 @@ internal fun initKoin(configuration: Contract.Configuration): KoinApplication {
     return koinApplication {
         modules(
             resolveRootModule(configuration),
-            resolvePlatformModule(),
             resolveCoreModule(),
             resolveListenerModule(),
             resolveStorageModule(),
@@ -83,9 +81,9 @@ internal fun resolveRootModule(configuration: Contract.Configuration): Module {
             StorageContract.UserSessionTokenProvider::class
         )
 
-        single { configuration.getEnvironment() } bind Environment::class
+        single<Environment> { configuration.getEnvironment() }
 
-        single { Clock.System } bind Clock::class
+        single<Clock> { Clock.System }
     }
 }
 
@@ -114,11 +112,9 @@ internal fun resolveCoreModule(): Module {
         // Services
         single<ServiceContract.DonationService> {
             DonationService(get(), get())
-        } bind ServiceContract.DonationService::class
+        }
     }
 }
-
-internal expect fun resolvePlatformModule(): Module
 
 private class SimpleLogger : Logger {
     override fun log(message: String) {

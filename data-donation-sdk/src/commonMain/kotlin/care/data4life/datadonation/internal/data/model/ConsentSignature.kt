@@ -39,5 +39,7 @@ data class ConsentSignature(val signature: String)
 
 @Serializable
 enum class ConsentSignatureType(val apiValue: String) {
-    ConsentOnce("consentOnce"), NormalUse("normalUse"), RevokeOnce("revokeOnce")
+    CONSENT_ONCE("consentOnce"),
+    NORMAL_USE("normalUse"),
+    REVOKE_ONCE("revokeOnce")
 }

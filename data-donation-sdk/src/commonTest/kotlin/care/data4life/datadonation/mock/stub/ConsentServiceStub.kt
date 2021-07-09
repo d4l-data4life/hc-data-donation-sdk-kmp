@@ -18,6 +18,7 @@ package care.data4life.datadonation.mock.stub
 
 import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.UserConsent
+import care.data4life.datadonation.internal.data.model.ConsentSignature
 import care.data4life.datadonation.internal.data.service.ServiceContract
 
 class ConsentServiceStub : ServiceContract.ConsentService {
@@ -39,6 +40,20 @@ class ConsentServiceStub : ServiceContract.ConsentService {
     }
 
     override suspend fun createUserConsent(accessToken: String, consentKey: String, version: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun requestSignatureRegistration(
+        accessToken: String,
+        message: String
+    ): ConsentSignature {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun requestSignatureDonation(
+        accessToken: String,
+        message: String
+    ): ConsentSignature {
         TODO("Not yet implemented")
     }
 

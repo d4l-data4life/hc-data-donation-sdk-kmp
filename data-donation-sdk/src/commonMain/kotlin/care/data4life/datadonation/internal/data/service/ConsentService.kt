@@ -21,15 +21,21 @@ import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.model.ConsentCreationPayload
 import care.data4life.datadonation.internal.data.model.ConsentRevocationPayload
+import care.data4life.datadonation.internal.data.model.ConsentSignature
+import care.data4life.datadonation.internal.data.model.ConsentSignatureType
+import care.data4life.datadonation.internal.data.model.ConsentSigningRequest
+import care.data4life.datadonation.internal.data.service.ServiceContract.Companion.DEFAULT_DONATION_CONSENT_KEY
 import care.data4life.datadonation.internal.data.service.ServiceContract.Companion.LOCAL_PORT
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PARAMETER.LANGUAGE
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PARAMETER.LATEST_CONSENT
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PARAMETER.USER_CONSENT_KEY
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PARAMETER.VERSION
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PATH.CONSENTS_DOCUMENTS
+import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PATH.SIGNATURES
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PATH.USER_CONSENTS
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.ROOT
-import care.data4life.datadonation.util.safeCast
+import care.data4life.datadonation.internal.utils.safeCast
+import care.data4life.datadonation.internal.utils.safeListCast
 import io.ktor.client.HttpClient
 import kotlinx.datetime.Clock
 
@@ -38,8 +44,16 @@ internal class ConsentService private constructor(
     private val clock: Clock
 ) : ServiceContract.ConsentService {
     private fun buildPath(
-        endpoint: String
-    ): List<String> = ROOT.toMutableList().also { it.add(endpoint) }
+        endpoint: String,
+        vararg tail: String
+    ): List<String> {
+        val path = ROOT.toMutableList().also { it.add(endpoint) }
+        if (tail.isNotEmpty()) {
+            tail.forEach { directory -> path.add(directory) }
+        }
+
+        return path
+    }
 
     override suspend fun fetchConsentDocuments(
         accessToken: String,
@@ -62,7 +76,7 @@ internal class ConsentService private constructor(
                 path
             )
 
-        return safeCast(response)
+        return safeListCast(response)
     }
 
     override suspend fun fetchUserConsents(
@@ -84,7 +98,7 @@ internal class ConsentService private constructor(
                 path
             )
 
-        return safeCast(response)
+        return safeListCast(response)
     }
 
     override suspend fun createUserConsent(
@@ -101,11 +115,69 @@ internal class ConsentService private constructor(
 
         callBuilder
             .setAccessToken(accessToken)
+            .useJsonContentType()
             .setBody(payload)
             .execute(
                 ServiceContract.Method.POST,
                 path
             )
+    }
+
+    // see: https://github.com/gesundheitscloud/consent-management/blob/master/swagger/api.yml#L356
+    override suspend fun requestSignatureRegistration(
+        accessToken: String,
+        message: String
+    ): ConsentSignature {
+        val consentDocumentKey = DEFAULT_DONATION_CONSENT_KEY
+        val path = buildPath(
+            USER_CONSENTS,
+            consentDocumentKey,
+            SIGNATURES
+        )
+        val payload = ConsentSigningRequest(
+            consentDocumentKey,
+            message,
+            ConsentSignatureType.CONSENT_ONCE.apiValue
+        )
+
+        val response = callBuilder
+            .setAccessToken(accessToken)
+            .useJsonContentType()
+            .setBody(payload)
+            .execute(
+                ServiceContract.Method.POST,
+                path
+            )
+
+        return safeCast(response)
+    }
+
+    override suspend fun requestSignatureDonation(
+        accessToken: String,
+        message: String
+    ): ConsentSignature {
+        val consentDocumentKey = DEFAULT_DONATION_CONSENT_KEY
+        val path = buildPath(
+            USER_CONSENTS,
+            consentDocumentKey,
+            SIGNATURES
+        )
+        val payload = ConsentSigningRequest(
+            consentDocumentKey,
+            message,
+            ConsentSignatureType.NORMAL_USE.apiValue
+        )
+
+        val response = callBuilder
+            .setAccessToken(accessToken)
+            .useJsonContentType()
+            .setBody(payload)
+            .execute(
+                ServiceContract.Method.PUT,
+                path
+            )
+
+        return safeCast(response)
     }
 
     override suspend fun revokeUserConsent(accessToken: String, consentKey: String) {
@@ -114,6 +186,7 @@ internal class ConsentService private constructor(
 
         callBuilder
             .setAccessToken(accessToken)
+            .useJsonContentType()
             .setBody(payload)
             .execute(
                 ServiceContract.Method.DELETE,

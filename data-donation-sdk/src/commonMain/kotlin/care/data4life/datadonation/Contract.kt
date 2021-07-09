@@ -82,8 +82,12 @@ interface Contract {
         )
 
         fun fetchUserConsents(
-            listener: ListenerContract.ResultListener<List<UserConsent>>,
-            consentKey: String? = null
+            consentKey: String,
+            listener: ListenerContract.ResultListener<List<UserConsent>>
+        )
+
+        fun fetchAllUserConsents(
+            listener: ListenerContract.ResultListener<List<UserConsent>>
         )
 
         fun revokeUserConsent(consentKey: String, callback: ListenerContract.Callback)

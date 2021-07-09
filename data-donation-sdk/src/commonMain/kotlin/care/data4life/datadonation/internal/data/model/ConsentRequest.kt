@@ -36,4 +36,8 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ConsentRequest(@SerialName("donorID") val donorId: String, val token: String)
+data class ConsentRequest(
+    @SerialName("donorID")
+    val donorId: String,
+    val token: String
+)

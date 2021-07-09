@@ -65,7 +65,7 @@ internal class RegisterNewDonor(
     private suspend fun registerNewDonor(newKeyPair: SignatureKeyPrivate) {
         val payload = createRequestConsentPayload.withParams(
             CreateRequestConsentPayload.Parameters(
-                ConsentSignatureType.ConsentOnce,
+                ConsentSignatureType.CONSENT_ONCE,
                 newKeyPair
             )
         ).execute()

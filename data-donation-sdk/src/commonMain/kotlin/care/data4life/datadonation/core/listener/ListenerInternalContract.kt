@@ -16,13 +16,18 @@
 
 package care.data4life.datadonation.core.listener
 
-import org.koin.core.module.Module
-import org.koin.dsl.module
+import care.data4life.datadonation.internal.domain.usecases.UsecaseContract
 
-fun resolveListenerModule(): Module {
-    return module {
-        single<ListenerInternalContract.UsecaseRunner> {
-            UsecaseRunner(get())
-        }
+internal interface ListenerInternalContract {
+    interface UsecaseRunner {
+        fun <ReturnType : Any> run(
+            listener: ListenerContract.ResultListener<ReturnType>,
+            usecase: UsecaseContract.Usecase<ReturnType>
+        )
+
+        fun <ReturnType : Any> run(
+            listener: ListenerContract.Callback,
+            usecase: UsecaseContract.Usecase<ReturnType>
+        )
     }
 }

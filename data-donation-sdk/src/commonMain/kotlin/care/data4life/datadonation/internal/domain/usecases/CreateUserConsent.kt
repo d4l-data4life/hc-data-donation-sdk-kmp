@@ -55,7 +55,7 @@ internal class CreateUserConsentFactory(
     }
 
     data class Parameter(
-        override val keyPair: KeyPair?, // TODO: Why this is needed?
+        override val keyPair: KeyPair?,
         override val consentKey: String,
         override val version: Int
     ) : UsecaseContract.CreateUserConsentParameter
