@@ -18,7 +18,7 @@ package care.data4life.datadonation.internal.domain.repository
 
 import care.data4life.datadonation.internal.data.model.DonationPayload
 import care.data4life.datadonation.mock.stub.DonationDataStorageStub
-import runBlockingTest
+import care.data4life.sdk.util.test.runBlockingTest
 import kotlin.test.Test
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
@@ -46,9 +46,13 @@ class DonationRepositoryTest {
 
         // When
         val repo = DonationRepository(storage)
-        repo.donateResources(payload)
+        val result = repo.donateResources(payload)
 
         // Then
+        assertSame(
+            actual = result,
+            expected = Unit
+        )
         assertSame(
             expected = payload,
             actual = capturedPayload

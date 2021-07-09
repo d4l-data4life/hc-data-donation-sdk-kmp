@@ -27,7 +27,7 @@ class ConsentDataStoreStub : StorageContract.UserConsentRemoteStorage {
     var whenRevokeUserConsent: ((accessToken: String, consentKey: String) -> Unit)? = null
 
     override suspend fun createUserConsent(accessToken: String, consentKey: String, version: Int) {
-        whenCreateUserConsent?.invoke(accessToken, consentKey, version)  ?: throw MockException()
+        whenCreateUserConsent?.invoke(accessToken, consentKey, version) ?: throw MockException()
     }
 
     override suspend fun fetchUserConsents(

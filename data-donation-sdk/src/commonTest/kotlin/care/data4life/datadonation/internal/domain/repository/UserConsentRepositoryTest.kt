@@ -60,9 +60,13 @@ class UserConsentRepositoryTest {
         val repo = UserConsentRepository(remote, session)
 
         // When
-        repo.createUserConsent(consentKey, version)
+        val result = repo.createUserConsent(version, language)
 
         // Then
+        assertSame(
+            actual = result,
+            expected = Unit
+        )
         assertEquals(
             actual = capturedToken,
             expected = sessionToken

@@ -17,7 +17,7 @@
 package care.data4life.datadonation.internal.domain.repository
 
 import care.data4life.datadonation.mock.stub.ServiceTokenDataStorageStub
-import runBlockingTest
+import care.data4life.sdk.util.test.runBlockingTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue

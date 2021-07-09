@@ -24,7 +24,7 @@ internal fun resolveStorageModule(): Module {
     return module {
         single<StorageContract.UserConsentRemoteStorage> {
             UserConsentRemoteStorage(get())
-        } 
+        }
 
         single<StorageContract.RegistrationRemoteStorage> {
             RegistrationDataStore(get())
