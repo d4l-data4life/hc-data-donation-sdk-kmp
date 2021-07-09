@@ -22,7 +22,5 @@ import care.data4life.datadonation.mock.MockContract
 
 class CreateUserConsentStub :
     UsecaseContract.CreateUserConsent,
-    UsecaseFactoryStub<UsecaseContract.CreateUserConsentParameter, UserConsent>(),
+    NewUsecaseStub<UsecaseContract.CreateUserConsent.CreateUserConsentParameter, UserConsent>(),
     MockContract.Stub
-
-class CreateUserConsentUsecaseStub : UsecaseStub<UserConsent>(), MockContract.Stub

@@ -87,7 +87,8 @@ class Client internal constructor(
 
         usecaseRunner.run(
             listener,
-            createUserContent.withParams(parameter)
+            createUserContent,
+            parameter
         )
     }
 

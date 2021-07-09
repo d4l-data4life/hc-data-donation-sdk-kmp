@@ -54,13 +54,13 @@ interface UsecaseContract {
         }
     }
 
-    interface CreateUserConsentParameter {
-        val keyPair: KeyPair?
-        val consentKey: String
-        val version: Int
+    interface CreateUserConsent : NewUsecase<CreateUserConsent.CreateUserConsentParameter, UserConsent> {
+        interface CreateUserConsentParameter {
+            val keyPair: KeyPair?
+			val consentKey: String
+			val version: Int
+        }
     }
-
-    interface CreateUserConsent : UsecaseFactory<CreateUserConsentParameter, UserConsent>
 
     interface RedactSensitiveInformation : UsecaseFactory<List<FhirResource>, List<FhirResource>> {
         companion object {

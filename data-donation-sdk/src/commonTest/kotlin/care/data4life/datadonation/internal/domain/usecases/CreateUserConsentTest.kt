@@ -51,22 +51,6 @@ class CreateUserConsentTest {
     }
 
     @Test
-    fun `Given withParams is called with the appropriate Parameter it creates a Usecase`() {
-        // Given
-        val parameter = CreateUserConsentFactory.Parameter(
-            KeyPair(ByteArray(23), ByteArray(42)),
-            "custom-consent-key",
-            23
-        )
-
-        // When
-        val usecase: Any = CreateUserConsentFactory(UserConsentRepositoryStub()).withParams(parameter)
-
-        // Then
-        assertTrue(usecase is UsecaseContract.Usecase<*>)
-    }
-
-    @Test
     fun `Given a Usecase had been created and execute is called, it delegates the call to the UserContentRepository with the given parameters and returns the first consent`() = runBlockingTest {
         // Given
         val consentKey = "custom-consent-key"
@@ -94,7 +78,7 @@ class CreateUserConsentTest {
         val parameter = CreateUserConsentFactory.Parameter(keyPair, consentKey, version)
 
         // When
-        val result = CreateUserConsentFactory(repo).withParams(parameter).execute()
+        val result = CreateUserConsentFactory(repo).execute(parameter)
 
         // Then
         assertSame(

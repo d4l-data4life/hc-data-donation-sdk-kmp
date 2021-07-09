@@ -26,12 +26,10 @@ import care.data4life.datadonation.internal.domain.usecases.FetchConsentDocument
 import care.data4life.datadonation.internal.domain.usecases.FetchUserConsents
 import care.data4life.datadonation.internal.domain.usecases.RevokeUserConsent
 import care.data4life.datadonation.internal.domain.usecases.UsecaseContract
-import care.data4life.datadonation.internal.domain.usecases.UsecaseContract.Usecase
 import care.data4life.datadonation.mock.DummyData
 import care.data4life.datadonation.mock.stub.CallbackStub
 import care.data4life.datadonation.mock.stub.ClientConfigurationStub
 import care.data4life.datadonation.mock.stub.CreateUserConsentStub
-import care.data4life.datadonation.mock.stub.CreateUserConsentUsecaseStub
 import care.data4life.datadonation.mock.stub.FetchConsentDocumentsStub
 import care.data4life.datadonation.mock.stub.FetchUserConsentStub
 import care.data4life.datadonation.mock.stub.ResultListenerStub
@@ -313,15 +311,15 @@ class ClientTest {
         // Given
         val config = ClientConfigurationStub()
         val listener = ResultListenerStub<UserConsent>()
-        val usecase = CreateUserConsentUsecaseStub()
+        val usecase = CreateUserConsentStub()
 
         val version = 23
         val consentKey = "custom-consent-key"
         val keyPair = DummyData.keyPair
 
-        var capturedParameter: UsecaseContract.CreateUserConsentParameter? = null
+        var capturedParameter: UsecaseContract.CreateUserConsent.CreateUserConsentParameter? = null
         var capturedListener: ListenerContract.ResultListener<*>? = null
-        var capturedUsecase: Usecase<*>? = null
+        var capturedUsecase: UsecaseContract.NewUsecase<*, *>? = null
 
         config.whenGetEnvironment = { Environment.LOCAL }
         config.whenGetDonorKeyPair = { keyPair }
@@ -330,19 +328,14 @@ class ClientTest {
             modules(
                 module {
                     single {
-                        CreateUserConsentStub().also {
-                            it.whenWithParameter = { delegateParameter ->
-                                capturedParameter = delegateParameter
-                                usecase
-                            }
-                        }
+                        usecase
                     } bind UsecaseContract.CreateUserConsent::class
 
                     single {
                         UsecaseRunnerStub().also {
-                            it.whenRunListener = { delegatedResultListener, delegatedUsecase ->
                                 capturedListener = delegatedResultListener
                                 capturedUsecase = delegatedUsecase
+                                capturedParameter = delegatedParameter as UsecaseContract.CreateUserConsent.CreateUserConsentParameter
                             }
                         }
                     } bind ListenerInternalContract.UsecaseRunner::class
