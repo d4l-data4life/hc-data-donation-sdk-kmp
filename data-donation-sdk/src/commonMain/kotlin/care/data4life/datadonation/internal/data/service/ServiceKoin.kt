@@ -17,13 +17,12 @@
 package care.data4life.datadonation.internal.data.service
 
 import org.koin.core.module.Module
-import org.koin.dsl.bind
 import org.koin.dsl.module
 
 internal fun resolveServiceModule(): Module {
     return module {
         single<ServiceContract.CallBuilder> {
             CallBuilder.getInstance(get(), get())
-        } bind ServiceContract.CallBuilder::class
+        }
     }
 }
