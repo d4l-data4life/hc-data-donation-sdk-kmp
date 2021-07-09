@@ -44,7 +44,6 @@ import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.encryption.resolveEncryptionModule
 import care.data4life.datadonation.internal.data.storage.resolveStorageModule
 import care.data4life.datadonation.internal.di.resolveCoreModule
-import care.data4life.datadonation.internal.di.resolvePlatformModule
 import care.data4life.datadonation.internal.di.resolveRootModule
 import care.data4life.datadonation.internal.domain.repository.resolveRepositoryModule
 import care.data4life.datadonation.internal.domain.usecases.resolveUsecaseModule
@@ -92,7 +91,6 @@ class ClientTest {
         val koin = koinApplication {
             modules(
                 resolveRootModule(config),
-                resolvePlatformModule(),
                 resolveCoreModule(),
                 resolveListenerModule(),
                 resolveStorageModule(),
@@ -148,7 +146,6 @@ class ClientTest {
         val koin = koinApplication {
             modules(
                 resolveRootModule(config),
-                resolvePlatformModule(),
                 resolveCoreModule(),
                 resolveListenerModule(),
                 resolveStorageModule(),
@@ -218,7 +215,6 @@ class ClientTest {
         val koin = koinApplication {
             modules(
                 resolveRootModule(config),
-                resolvePlatformModule(),
                 resolveCoreModule(),
                 resolveListenerModule(),
                 resolveStorageModule(),
@@ -267,7 +263,6 @@ class ClientTest {
         val koin = koinApplication {
             modules(
                 resolveRootModule(config),
-                resolvePlatformModule(),
                 resolveCoreModule(),
                 resolveListenerModule(),
                 resolveStorageModule(),
@@ -289,7 +284,7 @@ class ClientTest {
             override fun onError(exception: Exception) = throw exception
         }
         // When
-        client.fetchUserConsents(listener, consentKey)
+        client.fetchUserConsents(consentKey, listener)
         val result = capturedResult.receive()
         // Then
         assertEquals(
@@ -314,7 +309,6 @@ class ClientTest {
         val koin = koinApplication {
             modules(
                 resolveRootModule(config),
-                resolvePlatformModule(),
                 resolveCoreModule(),
                 resolveListenerModule(),
                 resolveStorageModule(),
@@ -359,7 +353,6 @@ class ClientTest {
         val koin = koinApplication {
             modules(
                 resolveRootModule(config),
-                resolvePlatformModule(),
                 resolveCoreModule(),
                 resolveListenerModule(),
                 resolveStorageModule(),

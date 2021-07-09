@@ -17,7 +17,7 @@
 package care.data4life.datadonation.di
 
 import care.data4life.datadonation.Contract
-import care.data4life.datadonation.core.listener.ListenerContract
+import care.data4life.datadonation.core.listener.ListenerInternalContract
 import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.internal.di.initKoin
 import care.data4life.datadonation.internal.domain.usecases.DonateResources
@@ -149,7 +149,7 @@ class KoinTest {
         // When
         val app = initKoin(config)
         // Then
-        val usecase: ListenerContract.TaskRunner by app.koin.inject()
+        val usecase: ListenerInternalContract.UsecaseRunner by app.koin.inject()
         assertNotNull(usecase)
     }
 }

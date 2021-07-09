@@ -35,7 +35,6 @@ package care.data4life.datadonation.internal.di
 import care.data4life.datadonation.Contract
 import care.data4life.datadonation.core.listener.ListenerContract
 import care.data4life.datadonation.core.listener.resolveListenerModule
-import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.encryption.resolveEncryptionModule
 import care.data4life.datadonation.internal.data.service.ConsentService
 import care.data4life.datadonation.internal.data.service.DonationService
@@ -49,7 +48,6 @@ import io.ktor.client.features.json.serializer.*
 import io.ktor.client.features.logging.*
 import org.koin.core.KoinApplication
 import org.koin.core.module.Module
-import org.koin.dsl.bind
 import org.koin.dsl.binds
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
@@ -59,7 +57,6 @@ internal fun initKoin(configuration: Contract.Configuration): KoinApplication {
     return koinApplication {
         modules(
             resolveRootModule(configuration),
-            resolvePlatformModule(),
             resolveCoreModule(),
             resolveListenerModule(),
             resolveStorageModule(),
@@ -81,7 +78,7 @@ internal fun resolveRootModule(configuration: Contract.Configuration): Module {
             StorageContract.UserSessionTokenProvider::class
         )
 
-        single { configuration.getEnvironment() } bind Environment::class
+        single { configuration.getEnvironment() }
     }
 }
 
@@ -110,14 +107,12 @@ internal fun resolveCoreModule(): Module {
         // Services
         single<ServiceContract.ConsentService> {
             ConsentService(get(), get())
-        } bind ServiceContract.ConsentService::class
+        }
         single<ServiceContract.DonationService> {
             DonationService(get(), get())
-        } bind ServiceContract.DonationService::class
+        }
     }
 }
-
-internal expect fun resolvePlatformModule(): Module
 
 private class SimpleLogger : Logger {
     override fun log(message: String) {
