@@ -22,5 +22,5 @@ import care.data4life.datadonation.mock.MockContract
 
 class FetchUserConsentStub :
     FetchUserConsents,
-    NewUsecaseStub<FetchUserConsents.FetchUserConsentsParameter, List<UserConsent>>(),
+    UsecaseStub<FetchUserConsents.FetchUserConsentsParameter, List<UserConsent>>(),
     MockContract.Stub

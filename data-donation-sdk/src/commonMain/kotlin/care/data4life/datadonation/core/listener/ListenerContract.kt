@@ -36,26 +36,14 @@ interface ListenerContract {
     interface TaskRunner {
         fun <Parameter : Any, ReturnType : Any> run(
             listener: ResultListener<ReturnType>,
-            usecase: UsecaseContract.NewUsecase<Parameter, ReturnType>,
+            usecase: UsecaseContract.Usecase<Parameter, ReturnType>,
             parameter: Parameter
         )
 
         fun <Parameter : Any, ReturnType : Any> run(
             listener: Callback,
-            usecase: UsecaseContract.NewUsecase<Parameter, ReturnType>,
+            usecase: UsecaseContract.Usecase<Parameter, ReturnType>,
             parameter: Parameter
-        )
-
-        @Deprecated("Make it simpler")
-        fun <ReturnType : Any> run(
-            listener: ResultListener<ReturnType>,
-            usecase: UsecaseContract.Usecase<ReturnType>
-        )
-
-        @Deprecated("Make it simpler")
-        fun <ReturnType : Any> run(
-            listener: Callback,
-            usecase: UsecaseContract.Usecase<ReturnType>
         )
     }
 }

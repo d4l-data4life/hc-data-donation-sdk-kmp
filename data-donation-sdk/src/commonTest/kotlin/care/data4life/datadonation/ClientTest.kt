@@ -74,7 +74,7 @@ class ClientTest {
 
         var capturedParameter: UsecaseContract.FetchUserConsents.FetchUserConsentsParameter? = null
         var capturedListener: ListenerContract.ResultListener<*>? = null
-        var capturedUsecase: UsecaseContract.NewUsecase<*, *>? = null
+        var capturedUsecase: UsecaseContract.Usecase<*, *>? = null
 
         config.whenGetEnvironment = { Environment.LOCAL }
 
@@ -87,7 +87,7 @@ class ClientTest {
 
                     single {
                         UsecaseRunnerStub().also {
-                            it.whenRunListenerNew = { delegatedResultListener, delegatedUsecase, delegatedParameter ->
+                            it.whenRunListener = { delegatedResultListener, delegatedUsecase, delegatedParameter ->
                                 capturedListener = delegatedResultListener
                                 capturedUsecase = delegatedUsecase
                                 capturedParameter = delegatedParameter as UsecaseContract.FetchUserConsents.FetchUserConsentsParameter
@@ -127,7 +127,7 @@ class ClientTest {
 
         var capturedParameter: UsecaseContract.FetchUserConsents.FetchUserConsentsParameter? = null
         var capturedListener: ListenerContract.ResultListener<*>? = null
-        var capturedUsecase: UsecaseContract.NewUsecase<*, *>? = null
+        var capturedUsecase: UsecaseContract.Usecase<*, *>? = null
 
         config.whenGetEnvironment = { Environment.LOCAL }
 
@@ -140,7 +140,7 @@ class ClientTest {
 
                     single {
                         UsecaseRunnerStub().also {
-                            it.whenRunListenerNew = { delegatedResultListener, delegatedUsecase, delegatedParameter ->
+                            it.whenRunListener = { delegatedResultListener, delegatedUsecase, delegatedParameter ->
                                 capturedListener = delegatedResultListener
                                 capturedUsecase = delegatedUsecase
                                 capturedParameter = delegatedParameter as UsecaseContract.FetchUserConsents.FetchUserConsentsParameter
@@ -185,7 +185,7 @@ class ClientTest {
 
         var capturedParameter: UsecaseContract.FetchConsentDocuments.FetchConsentDocumentsParameter? = null
         var capturedListener: ListenerContract.ResultListener<*>? = null
-        var capturedUsecase: UsecaseContract.NewUsecase<*, *>? = null
+        var capturedUsecase: UsecaseContract.Usecase<*, *>? = null
 
         config.whenGetEnvironment = { Environment.LOCAL }
 
@@ -198,7 +198,7 @@ class ClientTest {
 
                     single {
                         UsecaseRunnerStub().also {
-                            it.whenRunListenerNew = { delegatedResultListener, delegatedUsecase, delegatedParameter ->
+                            it.whenRunListener = { delegatedResultListener, delegatedUsecase, delegatedParameter ->
                                 capturedListener = delegatedResultListener
                                 capturedUsecase = delegatedUsecase
                                 capturedParameter = delegatedParameter as UsecaseContract.FetchConsentDocuments.FetchConsentDocumentsParameter
@@ -253,7 +253,7 @@ class ClientTest {
 
         var capturedParameter: UsecaseContract.RevokeUserConsent.RevokeUserConsentParameter? = null
         var capturedListener: ListenerContract.Callback? = null
-        var capturedUsecase: UsecaseContract.NewUsecase<*, *>? = null
+        var capturedUsecase: UsecaseContract.Usecase<*, *>? = null
 
         config.whenGetEnvironment = { Environment.LOCAL }
 
@@ -266,7 +266,7 @@ class ClientTest {
 
                     single {
                         UsecaseRunnerStub().also {
-                            it.whenRunCallbackNew = { delegatedResultListener, delegatedUsecase, delegatedParameter ->
+                            it.whenRunCallback = { delegatedResultListener, delegatedUsecase, delegatedParameter ->
                                 capturedListener = delegatedResultListener
                                 capturedUsecase = delegatedUsecase
                                 capturedParameter = delegatedParameter as UsecaseContract.RevokeUserConsent.RevokeUserConsentParameter
@@ -319,7 +319,7 @@ class ClientTest {
 
         var capturedParameter: UsecaseContract.CreateUserConsent.CreateUserConsentParameter? = null
         var capturedListener: ListenerContract.ResultListener<*>? = null
-        var capturedUsecase: UsecaseContract.NewUsecase<*, *>? = null
+        var capturedUsecase: UsecaseContract.Usecase<*, *>? = null
 
         config.whenGetEnvironment = { Environment.LOCAL }
         config.whenGetDonorKeyPair = { keyPair }
@@ -333,6 +333,7 @@ class ClientTest {
 
                     single {
                         UsecaseRunnerStub().also {
+                            it.whenRunListener = { delegatedResultListener, delegatedUsecase, delegatedParameter ->
                                 capturedListener = delegatedResultListener
                                 capturedUsecase = delegatedUsecase
                                 capturedParameter = delegatedParameter as UsecaseContract.CreateUserConsent.CreateUserConsentParameter

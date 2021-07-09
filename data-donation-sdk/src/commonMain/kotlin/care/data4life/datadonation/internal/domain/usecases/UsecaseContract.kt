@@ -22,25 +22,17 @@ import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.hl7.fhir.stu3.model.FhirResource
 
 interface UsecaseContract {
-    interface NewUsecase<Parameter : Any, ReturnType : Any> {
+    interface Usecase<Parameter : Any, ReturnType : Any> {
         suspend fun execute(parameter: Parameter): ReturnType
     }
 
-    interface Usecase<ReturnType> {
-        suspend fun execute(): ReturnType
-    }
-
-    interface UsecaseFactory<Parameter : Any, ReturnType : Any> {
-        fun withParams(parameter: Parameter): Usecase<ReturnType>
-    }
-
-    interface FetchUserConsents : NewUsecase<FetchUserConsents.FetchUserConsentsParameter, List<UserConsent>> {
+    interface FetchUserConsents : Usecase<FetchUserConsents.FetchUserConsentsParameter, List<UserConsent>> {
         interface FetchUserConsentsParameter {
             val consentKey: String?
         }
     }
 
-    interface FetchConsentDocuments : NewUsecase<FetchConsentDocuments.FetchConsentDocumentsParameter, List<ConsentDocument>> {
+    interface FetchConsentDocuments : Usecase<FetchConsentDocuments.FetchConsentDocumentsParameter, List<ConsentDocument>> {
         interface FetchConsentDocumentsParameter {
             val version: Int?
             val language: String?
@@ -48,13 +40,13 @@ interface UsecaseContract {
         }
     }
 
-    interface RevokeUserConsent : NewUsecase<RevokeUserConsent.RevokeUserConsentParameter, Unit> {
+    interface RevokeUserConsent : Usecase<RevokeUserConsent.RevokeUserConsentParameter, Unit> {
         interface RevokeUserConsentParameter {
             val consentKey: String
         }
     }
 
-    interface CreateUserConsent : NewUsecase<CreateUserConsent.CreateUserConsentParameter, UserConsent> {
+    interface CreateUserConsent : Usecase<CreateUserConsent.CreateUserConsentParameter, UserConsent> {
         interface CreateUserConsentParameter {
             val keyPair: KeyPair?
 			val consentKey: String
@@ -62,7 +54,7 @@ interface UsecaseContract {
         }
     }
 
-    interface RedactSensitiveInformation : NewUsecase<List<FhirResource>, List<FhirResource>> {
+    interface RedactSensitiveInformation : Usecase<List<FhirResource>, List<FhirResource>> {
         companion object {
             const val REDACTED = "REDACTED"
         }

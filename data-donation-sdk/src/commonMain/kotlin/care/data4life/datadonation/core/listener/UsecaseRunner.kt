@@ -24,7 +24,7 @@ internal class UsecaseRunner(
 ) : ListenerContract.TaskRunner {
     override fun <Parameter : Any, ReturnType : Any> run(
         listener: ListenerContract.ResultListener<ReturnType>,
-        usecase: UsecaseContract.NewUsecase<Parameter, ReturnType>,
+        usecase: UsecaseContract.Usecase<Parameter, ReturnType>,
         parameter: Parameter
     ) {
         scopeResolver.getCoroutineScope().launch {
@@ -38,39 +38,12 @@ internal class UsecaseRunner(
 
     override fun <Parameter : Any, ReturnType : Any> run(
         listener: ListenerContract.Callback,
-        usecase: UsecaseContract.NewUsecase<Parameter, ReturnType>,
+        usecase: UsecaseContract.Usecase<Parameter, ReturnType>,
         parameter: Parameter
     ) {
         scopeResolver.getCoroutineScope().launch {
             try {
                 usecase.execute(parameter)
-                listener.onSuccess()
-            } catch (ex: Exception) {
-                listener.onError(ex)
-            }
-        }
-    }
-
-    override fun <ReturnType : Any> run(
-        listener: ListenerContract.ResultListener<ReturnType>,
-        usecase: UsecaseContract.Usecase<ReturnType>
-    ) {
-        scopeResolver.getCoroutineScope().launch {
-            try {
-                listener.onSuccess(usecase.execute())
-            } catch (ex: Exception) {
-                listener.onError(ex)
-            }
-        }
-    }
-
-    override fun <ReturnType : Any> run(
-        listener: ListenerContract.Callback,
-        usecase: UsecaseContract.Usecase<ReturnType>
-    ) {
-        scopeResolver.getCoroutineScope().launch {
-            try {
-                usecase.execute()
                 listener.onSuccess()
             } catch (ex: Exception) {
                 listener.onError(ex)

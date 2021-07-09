@@ -21,4 +21,4 @@ import care.data4life.hl7.fhir.stu3.model.FhirResource
 
 class RedactSensitiveInformationStub :
     UsecaseContract.RedactSensitiveInformation,
-    NewUsecaseStub<List<FhirResource>, List<FhirResource>>()
+    UsecaseStub<List<FhirResource>, List<FhirResource>>()

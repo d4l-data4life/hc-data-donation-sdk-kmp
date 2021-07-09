@@ -39,148 +39,13 @@ class UsecaseRunnerTest {
     }
 
     @Test
-    fun `Given run is called with a ResultListener and a Usecase, it invokes in async context the Usecase and delegates the result to the Listener`() = runBlockingTest {
-        // Given
-        val config = ClientConfigurationStub()
-        val listener = ResultListenerStub<String>()
-        val usecase = UsecaseStub<String>()
-
-        val runner = UsecaseRunner(config)
-
-        val result = "potato"
-        val capturedResult = Channel<String>()
-
-        usecase.exec = { result }
-
-        config.whenGetCoroutineScope = { CoroutineScope(this.coroutineContext) }
-        listener.whenOnSuccess = { delegatedResult ->
-            launch {
-                capturedResult.send(delegatedResult)
-            }
-        }
-
-        // When
-        runner.run(listener, usecase)
-
-        // Then
-        assertEquals(
-            actual = capturedResult.receive(),
-            expected = result
-        )
-    }
-
-    @Test
-    fun `Given run is called with a ResultListener and a Usecase, it invokes in async context the Usecase while failing and delegates the Exception to the Listener`() = runBlockingTest {
-        // Given
-        val config = ClientConfigurationStub()
-        val listener = ResultListenerStub<String>()
-        val usecase = UsecaseStub<String>()
-
-        val runner = UsecaseRunner(config)
-
-        val exception = RuntimeException("tomato")
-        val capturedException = Channel<Exception>()
-
-        usecase.exec = { throw exception }
-
-        config.whenGetCoroutineScope = { CoroutineScope(this.coroutineContext) }
-        listener.whenOnError = { delegatedException ->
-            launch {
-                capturedException.send(delegatedException)
-            }
-        }
-
-        // When
-        runner.run(listener, usecase)
-
-        // Then
-        assertSame(
-            actual = capturedException.receive(),
-            expected = exception
-        )
-    }
-
-    @Test
-    fun `Given run is called with a Callback and a Usecase, it invokes in async context the Usecase and calls to the Callback`() = runBlockingTest {
-        // Given
-        val config = ClientConfigurationStub()
-        val listener = CallbackStub()
-        val usecase = UsecaseStub<Unit>()
-
-        val runner = UsecaseRunner(config)
-
-        val wasExecuted = Channel<Boolean>()
-        val capturedCall = Channel<Boolean>()
-
-        usecase.exec = {
-            launch {
-                wasExecuted.send(true)
-            }
-        }
-
-        config.whenGetCoroutineScope = { CoroutineScope(this.coroutineContext) }
-        listener.whenOnSuccess = {
-            launch {
-                capturedCall.send(true)
-            }
-        }
-
-        // When
-        runner.run(listener, usecase)
-
-        // Then
-        assertTrue(wasExecuted.receive())
-        assertTrue(capturedCall.receive())
-    }
-
-    @Test
-    fun `Given run is called with a Callback and a Usecase, it invokes in async context the Usecase while failing and delegates the Exception to the Callback`() = runBlockingTest {
-        // Given
-        val config = ClientConfigurationStub()
-        val listener = CallbackStub()
-        val usecase = UsecaseStub<Unit>()
-
-        val runner = UsecaseRunner(config)
-
-        val exception = RuntimeException("tomato")
-        val capturedException = Channel<Exception>()
-
-        usecase.exec = { throw exception }
-
-        config.whenGetCoroutineScope = { CoroutineScope(this.coroutineContext) }
-        listener.whenOnError = { delegatedExecption ->
-            launch {
-                capturedException.send(delegatedExecption)
-            }
-        }
-
-        // When
-        runner.run(listener, usecase)
-
-        // Then
-        assertSame(
-            actual = capturedException.receive(),
-            expected = exception
-        )
-    }
-
-    private class UsecaseStub<ReturnType> : UsecaseContract.Usecase<ReturnType> {
-        var exec: (() -> ReturnType)? = null
-
-        override suspend fun execute(): ReturnType {
-            return exec?.invoke() ?: throw MockException()
-        }
-    }
-
-    // NEW
-    @Test
     fun `Given run is called with a ResultListener, a Usecase and its corresponding Parameter, it invokes in async context the Usecase and delegates the result to the Listener`() = runBlockingTest {
         // Given
         val config = ClientConfigurationStub()
         val listener = ResultListenerStub<String>()
-        val usecase = NewUsecaseStub<String, String>()
+        val usecase = UsecaseStub<String, String>()
 
-        val runner = TaskRunner(config)
+        val runner = UsecaseRunner(config)
 
         val parameter = "potato"
         val result = "soup"
@@ -221,9 +86,9 @@ class UsecaseRunnerTest {
         // Given
         val config = ClientConfigurationStub()
         val listener = ResultListenerStub<String>()
-        val usecase = NewUsecaseStub<String, String>()
+        val usecase = UsecaseStub<String, String>()
 
-        val runner = TaskRunner(config)
+        val runner = UsecaseRunner(config)
 
         val parameter = "potato"
 
@@ -258,9 +123,9 @@ class UsecaseRunnerTest {
         // Given
         val config = ClientConfigurationStub()
         val listener = CallbackStub()
-        val usecase = NewUsecaseStub<String, Unit>()
+        val usecase = UsecaseStub<String, Unit>()
 
-        val runner = TaskRunner(config)
+        val runner = UsecaseRunner(config)
 
         val parameter = "potato"
 
@@ -300,9 +165,9 @@ class UsecaseRunnerTest {
         // Given
         val config = ClientConfigurationStub()
         val listener = CallbackStub()
-        val usecase = NewUsecaseStub<String, Unit>()
+        val usecase = UsecaseStub<String, Unit>()
 
-        val runner = TaskRunner(config)
+        val runner = UsecaseRunner(config)
 
         val parameter = "potato"
 
@@ -332,7 +197,7 @@ class UsecaseRunnerTest {
         )
     }
 
-    private class NewUsecaseStub<Parameter : Any, ReturnType : Any> : UsecaseContract.NewUsecase<Parameter, ReturnType> {
+    private class UsecaseStub<Parameter : Any, ReturnType : Any> : UsecaseContract.Usecase<Parameter, ReturnType> {
         var exec: ((Parameter) -> ReturnType)? = null
 
         override suspend fun execute(parameter: Parameter): ReturnType {
