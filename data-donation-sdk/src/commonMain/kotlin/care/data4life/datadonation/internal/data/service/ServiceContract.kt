@@ -17,11 +17,48 @@
 package care.data4life.datadonation.internal.data.service
 
 import care.data4life.datadonation.core.model.ConsentDocument
+import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.model.ConsentSignature
 import care.data4life.datadonation.internal.data.model.DonationPayload
+import io.ktor.client.HttpClient
+
+typealias Header = Map<String, String>
+typealias Parameter = Map<String, String>
+typealias AccessToken = String
+typealias Path = List<String>
 
 internal interface ServiceContract {
+    enum class Method(name: String) {
+        DELETE("delete"),
+        GET("get"),
+        POST("post"),
+        PUT("put")
+    }
+
+    interface CallBuilder {
+        fun setHeaders(header: Header): CallBuilder
+        fun setParameter(parameter: Parameter): CallBuilder
+        fun setAccessToken(token: AccessToken): CallBuilder
+        fun useJsonContentType(): CallBuilder
+        fun setBody(body: Any): CallBuilder
+
+        suspend fun execute(
+            method: Method = Method.GET,
+            path: Path = listOf(""),
+            port: Int? = null
+        ): Any
+
+        companion object {
+            const val ACCESS_TOKEN_FIELD = "Authorization"
+            const val ACCESS_TOKEN_VALUE_PREFIX = "Bearer"
+        }
+    }
+
+    interface CallBuilderFactory {
+        fun getInstance(environment: Environment, client: HttpClient): CallBuilder
+    }
+
     interface ConsentService {
         suspend fun fetchConsentDocuments(
             accessToken: String,
