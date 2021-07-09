@@ -14,16 +14,16 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.core.listener
+package care.data4life.datadonation.encryption
 
+import care.data4life.datadonation.encryption.hybrid.HybridEncryptionRegistry
 import org.koin.core.module.Module
-import org.koin.dsl.bind
 import org.koin.dsl.module
 
-internal fun resolveListenerModule(resolver: ListenerContract.ScopeResolver): Module {
+internal fun resolveEncryptionModule(): Module {
     return module {
-        single<ListenerInternalContract.UsecaseRunner> {
-            UsecaseRunner(resolver)
-        } bind ListenerInternalContract.UsecaseRunner::class
+        single<EncryptionContract.HybridEncryptionRegistry> {
+            HybridEncryptionRegistry(get())
+        }
     }
 }

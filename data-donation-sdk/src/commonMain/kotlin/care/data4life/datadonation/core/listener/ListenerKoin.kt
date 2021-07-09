@@ -14,21 +14,15 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.mock.stub
+package care.data4life.datadonation.core.listener
 
-import care.data4life.datadonation.internal.data.storage.StorageContract
-import care.data4life.datadonation.mock.MockContract
+import org.koin.core.module.Module
+import org.koin.dsl.module
 
-class CredentialsDataRemoteStorageStub : StorageContract.CredentialsDataRemoteStorage, MockContract.Stub {
-    override fun getDataDonationPublicKey(): String {
-        TODO("Not yet implemented")
-    }
-
-    override fun getAnalyticsPlatformPublicKey(): String {
-        TODO("Not yet implemented")
-    }
-
-    override fun clear() {
-        TODO("Not yet implemented")
+fun resolveListenerModule(): Module {
+    return module {
+        single<ListenerInternalContract.UsecaseRunner> {
+            UsecaseRunner(get())
+        }
     }
 }

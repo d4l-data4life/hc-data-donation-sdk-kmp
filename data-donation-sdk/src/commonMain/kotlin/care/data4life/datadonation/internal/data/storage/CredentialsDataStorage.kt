@@ -14,17 +14,18 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.encryption
+package care.data4life.datadonation.internal.data.storage
 
-import care.data4life.datadonation.encryption.hybrid.HybridEncryptionRegistry
-import org.koin.core.module.Module
-import org.koin.dsl.bind
-import org.koin.dsl.module
+import care.data4life.datadonation.Contract
 
-fun resolveEncryptionModule(): Module {
-    return module {
-        single<EncryptionContract.HybridEncryptionRegistry> {
-            HybridEncryptionRegistry(get())
-        } bind EncryptionContract.HybridEncryptionRegistry::class
+class CredentialsDataStorage(
+    private val credentialProvider: StorageContract.CredentialProvider
+) : StorageContract.CredentialsDataStorage {
+    override fun getDataDonationPublicKey(): String {
+        return credentialProvider.getServicePublicKey(Contract.Service.DD)
+    }
+
+    override fun getAnalyticsPlatformPublicKey(): String {
+        return credentialProvider.getServicePublicKey(Contract.Service.ALP)
     }
 }

@@ -33,6 +33,7 @@
 package care.data4life.datadonation.internal.di
 
 import care.data4life.datadonation.Contract
+import care.data4life.datadonation.core.listener.ListenerContract
 import care.data4life.datadonation.core.listener.resolveListenerModule
 import care.data4life.datadonation.encryption.resolveEncryptionModule
 import care.data4life.datadonation.internal.data.service.ConsentService
@@ -45,10 +46,9 @@ import io.ktor.client.*
 import io.ktor.client.features.json.*
 import io.ktor.client.features.json.serializer.*
 import io.ktor.client.features.logging.*
-import kotlinx.datetime.Clock
 import org.koin.core.KoinApplication
 import org.koin.core.module.Module
-import org.koin.dsl.bind
+import org.koin.dsl.binds
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 
@@ -57,9 +57,8 @@ internal fun initKoin(configuration: Contract.Configuration): KoinApplication {
     return koinApplication {
         modules(
             resolveRootModule(configuration),
-            resolvePlatformModule(),
             resolveCoreModule(),
-            resolveListenerModule(configuration),
+            resolveListenerModule(),
             resolveStorageModule(),
             resolveUsecaseModule(),
             resolveRepositoryModule(),
@@ -70,21 +69,14 @@ internal fun initKoin(configuration: Contract.Configuration): KoinApplication {
 
 internal fun resolveRootModule(configuration: Contract.Configuration): Module {
     return module {
-        single { configuration }
-        // TODO: Pull this out into storage
-        single<StorageContract.CredentialsDataRemoteStorage> {
-            object : StorageContract.CredentialsDataRemoteStorage {
-                override fun getDataDonationPublicKey(): String =
-                    configuration.getServicePublicKey(Contract.Service.DD)
-
-                override fun getAnalyticsPlatformPublicKey(): String =
-                    configuration.getServicePublicKey(Contract.Service.ALP)
-            }
-        }
-        // TODO: Pull this out into storage
-        single<StorageContract.UserSessionTokenDataStorage> {
-            CachedUserSessionTokenDataStore(get(), Clock.System)
-        } bind StorageContract.UserSessionTokenDataStorage::class
+        single {
+            configuration
+        } binds arrayOf(
+            Contract.Configuration::class,
+            ListenerContract.ScopeResolver::class,
+            StorageContract.CredentialProvider::class,
+            StorageContract.UserSessionTokenProvider::class
+        )
 
         single { configuration.getEnvironment() }
     }
@@ -115,14 +107,12 @@ internal fun resolveCoreModule(): Module {
         // Services
         single<ServiceContract.ConsentService> {
             ConsentService(get(), get())
-        } bind ServiceContract.ConsentService::class
+        }
         single<ServiceContract.DonationService> {
             DonationService(get(), get())
-        } bind ServiceContract.DonationService::class
+        }
     }
 }
-
-internal expect fun resolvePlatformModule(): Module
 
 private class SimpleLogger : Logger {
     override fun log(message: String) {

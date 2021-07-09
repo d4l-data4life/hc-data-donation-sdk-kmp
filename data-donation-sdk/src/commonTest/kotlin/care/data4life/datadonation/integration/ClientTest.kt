@@ -44,7 +44,6 @@ import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.encryption.resolveEncryptionModule
 import care.data4life.datadonation.internal.data.storage.resolveStorageModule
 import care.data4life.datadonation.internal.di.resolveCoreModule
-import care.data4life.datadonation.internal.di.resolvePlatformModule
 import care.data4life.datadonation.internal.di.resolveRootModule
 import care.data4life.datadonation.internal.domain.repository.resolveRepositoryModule
 import care.data4life.datadonation.internal.domain.usecases.resolveUsecaseModule
@@ -54,7 +53,6 @@ import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponseItem
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponseItemAnswer
 import care.data4life.hl7.fhir.stu3.model.Reference
-import io.ktor.utils.io.core.toByteArray
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
@@ -93,9 +91,8 @@ class ClientTest {
         val koin = koinApplication {
             modules(
                 resolveRootModule(config),
-                resolvePlatformModule(),
                 resolveCoreModule(),
-                resolveListenerModule(config),
+                resolveListenerModule(),
                 resolveStorageModule(),
                 resolveUsecaseModule(),
                 resolveRepositoryModule(),
@@ -149,9 +146,8 @@ class ClientTest {
         val koin = koinApplication {
             modules(
                 resolveRootModule(config),
-                resolvePlatformModule(),
                 resolveCoreModule(),
-                resolveListenerModule(config),
+                resolveListenerModule(),
                 resolveStorageModule(),
                 resolveUsecaseModule(),
                 resolveRepositoryModule(),
@@ -219,9 +215,8 @@ class ClientTest {
         val koin = koinApplication {
             modules(
                 resolveRootModule(config),
-                resolvePlatformModule(),
                 resolveCoreModule(),
-                resolveListenerModule(config),
+                resolveListenerModule(),
                 resolveStorageModule(),
                 resolveUsecaseModule(),
                 resolveRepositoryModule(),
@@ -268,9 +263,8 @@ class ClientTest {
         val koin = koinApplication {
             modules(
                 resolveRootModule(config),
-                resolvePlatformModule(),
                 resolveCoreModule(),
-                resolveListenerModule(config),
+                resolveListenerModule(),
                 resolveStorageModule(),
                 resolveUsecaseModule(),
                 resolveRepositoryModule(),
@@ -315,9 +309,8 @@ class ClientTest {
         val koin = koinApplication {
             modules(
                 resolveRootModule(config),
-                resolvePlatformModule(),
                 resolveCoreModule(),
-                resolveListenerModule(config),
+                resolveListenerModule(),
                 resolveStorageModule(),
                 resolveUsecaseModule(),
                 resolveRepositoryModule(),
@@ -350,10 +343,7 @@ class ClientTest {
     @Ignore
     fun donateResourcesTest() = runWithBlockingTest(GlobalScope.coroutineContext) {
         // Given
-        val keyPair = KeyPair(
-            "tomato".toByteArray(),
-            "soup".toByteArray()
-        )
+        val keyPair = DummyData.keyPair
 
         val config = object : ConfigurationBase() {
             override fun getDonorKeyPair(): KeyPair = keyPair
@@ -363,9 +353,8 @@ class ClientTest {
         val koin = koinApplication {
             modules(
                 resolveRootModule(config),
-                resolvePlatformModule(),
                 resolveCoreModule(),
-                resolveListenerModule(config),
+                resolveListenerModule(),
                 resolveStorageModule(),
                 resolveUsecaseModule(),
                 resolveRepositoryModule(),
