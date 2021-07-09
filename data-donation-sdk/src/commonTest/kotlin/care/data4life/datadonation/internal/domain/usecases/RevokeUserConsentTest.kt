@@ -32,7 +32,7 @@
 
 package care.data4life.datadonation.internal.domain.usecases
 
-import care.data4life.datadonation.mock.stub.UserConsentRepositoryStub
+import care.data4life.datadonation.mock.stub.repository.UserConsentRepositoryStub
 import care.data4life.sdk.util.test.runBlockingTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -41,7 +41,7 @@ import kotlin.test.assertTrue
 class RevokeUserConsentTest {
     @Test
     fun `It fulfils RevokeUserConsent`() {
-        val factory: Any = RevokeUserConsentFactory(UserConsentRepositoryStub())
+        val factory: Any = RevokeUserConsent(UserConsentRepositoryStub())
 
         assertTrue(factory is UsecaseContract.RevokeUserConsent)
     }
@@ -59,7 +59,7 @@ class RevokeUserConsentTest {
     }
 
     @Test
-    fun `Given a Usecase had been created and execute is called, it delegates the call to the ConsentRepository with the given language and just runs`() = runBlockingTest {
+    fun `Given a Usecase had been created and execute is called, it delegates the call to the ConsentRepository with the given ConsentKey and just runs`() = runBlockingTest {
         // Given
         val consentKey = "custom-consent-key"
         val parameter = RevokeUserConsentFactory.Parameter(consentKey)
@@ -71,10 +71,14 @@ class RevokeUserConsentTest {
         }
 
         // When
-        val usecase = RevokeUserConsentFactory(userContentRepository).withParams(parameter)
-        usecase.execute()
+        val usecase = RevokeUserConsent(userContentRepository)
+        val result = usecase.execute(parameter)
 
         // Then
+        assertEquals(
+            actual = result,
+            expected = Unit
+        )
         assertEquals(
             actual = capturedConsentKey,
             expected = consentKey

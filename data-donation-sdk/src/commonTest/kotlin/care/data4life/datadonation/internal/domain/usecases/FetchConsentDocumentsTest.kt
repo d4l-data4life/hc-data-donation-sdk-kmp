@@ -33,7 +33,7 @@
 package care.data4life.datadonation.internal.domain.usecases
 
 import care.data4life.datadonation.mock.DummyData
-import care.data4life.datadonation.mock.stub.ConsentDocumentRepositoryStub
+import care.data4life.datadonation.mock.stub.repository.ConsentDocumentRepositoryStub
 import care.data4life.sdk.util.test.runBlockingTest
 import kotlin.test.Test
 import kotlin.test.assertEquals

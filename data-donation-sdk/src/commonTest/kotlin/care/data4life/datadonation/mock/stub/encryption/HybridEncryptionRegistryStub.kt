@@ -14,21 +14,23 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.mock.stub
+package care.data4life.datadonation.mock.stub.encryption
 
 import care.data4life.datadonation.encryption.EncryptionContract
 import care.data4life.datadonation.mock.MockContract
+import care.data4life.datadonation.mock.MockException
 
-class HybridEncryptionStub : EncryptionContract.HybridEncryption, MockContract.Stub {
-    override fun encrypt(plaintext: ByteArray): ByteArray {
-        TODO("Not yet implemented")
-    }
+class HybridEncryptionRegistryStub : EncryptionContract.HybridEncryptionRegistry, MockContract.Stub {
+    var givenHybridEncryptionDD: EncryptionContract.HybridEncryption? = null
+    var givenHybridEncryptionALP: EncryptionContract.HybridEncryption? = null
 
-    override fun decrypt(ciphertext: ByteArray): Result<ByteArray> {
-        TODO("Not yet implemented")
-    }
+    override val hybridEncryptionDD: EncryptionContract.HybridEncryption
+        get() = givenHybridEncryptionDD ?: throw MockException()
+    override val hybridEncryptionALP: EncryptionContract.HybridEncryption
+        get() = givenHybridEncryptionALP ?: throw MockException()
 
     override fun clear() {
-        TODO("Not yet implemented")
+        givenHybridEncryptionDD = null
+        givenHybridEncryptionALP = null
     }
 }

@@ -17,7 +17,7 @@
 package care.data4life.datadonation.encryption
 
 import care.data4life.datadonation.internal.domain.repository.RepositoryContract
-import care.data4life.datadonation.mock.stub.CredentialsRepositoryStub
+import care.data4life.datadonation.mock.stub.repository.CredentialsRepositoryStub
 import org.koin.core.context.stopKoin
 import org.koin.dsl.bind
 import org.koin.dsl.koinApplication

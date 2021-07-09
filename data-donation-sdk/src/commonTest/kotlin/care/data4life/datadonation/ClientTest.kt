@@ -24,7 +24,7 @@ import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.domain.usecases.CreateUserConsentFactory
 import care.data4life.datadonation.internal.domain.usecases.FetchConsentDocuments
 import care.data4life.datadonation.internal.domain.usecases.FetchUserConsents
-import care.data4life.datadonation.internal.domain.usecases.RevokeUserConsentFactory
+import care.data4life.datadonation.internal.domain.usecases.RevokeUserConsent
 import care.data4life.datadonation.internal.domain.usecases.UsecaseContract
 import care.data4life.datadonation.internal.domain.usecases.UsecaseContract.Usecase
 import care.data4life.datadonation.mock.DummyData
@@ -36,7 +36,6 @@ import care.data4life.datadonation.mock.stub.FetchConsentDocumentsStub
 import care.data4life.datadonation.mock.stub.FetchUserConsentStub
 import care.data4life.datadonation.mock.stub.ResultListenerStub
 import care.data4life.datadonation.mock.stub.RevokeUserConsentStub
-import care.data4life.datadonation.mock.stub.RevokeUserConsentUsecaseStub
 import care.data4life.datadonation.mock.stub.UsecaseRunnerStub
 import org.koin.core.context.stopKoin
 import org.koin.dsl.bind
@@ -250,13 +249,13 @@ class ClientTest {
         // Given
         val config = ClientConfigurationStub()
         val listener = CallbackStub()
-        val usecase = RevokeUserConsentUsecaseStub()
+        val usecase = RevokeUserConsentStub()
 
         val consentKey = "custom-consent-key"
 
-        var capturedParameter: UsecaseContract.RevokeUserConsentParameter? = null
+        var capturedParameter: UsecaseContract.RevokeUserConsent.RevokeUserConsentParameter? = null
         var capturedListener: ListenerContract.Callback? = null
-        var capturedUsecase: Usecase<*>? = null
+        var capturedUsecase: UsecaseContract.NewUsecase<*, *>? = null
 
         config.whenGetEnvironment = { Environment.LOCAL }
 
@@ -264,19 +263,15 @@ class ClientTest {
             modules(
                 module {
                     single {
-                        RevokeUserConsentStub().also {
-                            it.whenWithParameter = { delegateParameter ->
-                                capturedParameter = delegateParameter
-                                usecase
-                            }
-                        }
+                        usecase
                     } bind UsecaseContract.RevokeUserConsent::class
 
                     single {
                         UsecaseRunnerStub().also {
-                            it.whenRunCallback = { delegatedResultListener, delegatedUsecase ->
+                            it.whenRunCallbackNew = { delegatedResultListener, delegatedUsecase, delegatedParameter ->
                                 capturedListener = delegatedResultListener
                                 capturedUsecase = delegatedUsecase
+                                capturedParameter = delegatedParameter as UsecaseContract.RevokeUserConsent.RevokeUserConsentParameter
                             }
                         }
                     } bind ListenerInternalContract.UsecaseRunner::class
@@ -287,15 +282,19 @@ class ClientTest {
         val client = Client(config, di)
 
         // When
-        client.revokeUserConsent(
+        val result = client.revokeUserConsent(
             consentKey,
             listener
         )
 
         // Then
         assertEquals(
+            actual = result,
+            expected = Unit
+        )
+        assertEquals(
             actual = capturedParameter,
-            expected = RevokeUserConsentFactory.Parameter(
+            expected = RevokeUserConsent.Parameter(
                 consentKey = consentKey,
             )
         )

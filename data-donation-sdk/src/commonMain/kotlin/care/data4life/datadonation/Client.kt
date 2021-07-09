@@ -126,11 +126,12 @@ class Client internal constructor(
         consentKey: String,
         callback: ListenerContract.Callback
     ) {
-        val parameter = RevokeUserConsentFactory.Parameter(consentKey)
+        val parameter = RevokeUserConsent.Parameter(consentKey)
 
         usecaseRunner.run(
             callback,
-            revokeUserConsent.withParams(parameter)
+            revokeUserConsent,
+            parameter
         )
     }
 

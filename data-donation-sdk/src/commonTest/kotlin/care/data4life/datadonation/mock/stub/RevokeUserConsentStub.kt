@@ -21,7 +21,5 @@ import care.data4life.datadonation.mock.MockContract
 
 class RevokeUserConsentStub :
     UsecaseContract.RevokeUserConsent,
-    UsecaseFactoryStub<UsecaseContract.RevokeUserConsentParameter, Unit>(),
+    NewUsecaseStub<UsecaseContract.RevokeUserConsent.RevokeUserConsentParameter, Unit>(),
     MockContract.Stub
-
-class RevokeUserConsentUsecaseStub : UsecaseStub<Unit>(), MockContract.Stub

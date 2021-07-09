@@ -34,22 +34,17 @@ package care.data4life.datadonation.internal.domain.usecases
 
 import care.data4life.datadonation.internal.domain.repository.RepositoryContract
 
-internal class RevokeUserConsentFactory(
+internal class RevokeUserConsent(
     private val consentRepository: RepositoryContract.UserConsentRepository,
 ) : UsecaseContract.RevokeUserConsent {
 
-    override fun withParams(
-        parameter: UsecaseContract.RevokeUserConsentParameter
-    ): UsecaseContract.Usecase<Unit> = RevokeUserConsent(consentRepository, parameter)
-
-    private class RevokeUserConsent(
-        private val consentRepository: RepositoryContract.UserConsentRepository,
-        private val parameter: UsecaseContract.RevokeUserConsentParameter
-    ) : UsecaseContract.Usecase<Unit> {
-        override suspend fun execute() = consentRepository.revokeUserConsent(parameter.consentKey)
+    override suspend fun execute(
+        parameter: UsecaseContract.RevokeUserConsent.RevokeUserConsentParameter
+    ) {
+        consentRepository.revokeUserConsent(parameter.consentKey)
     }
 
     data class Parameter(
         override val consentKey: String
-    ) : UsecaseContract.RevokeUserConsentParameter
+    ) : UsecaseContract.RevokeUserConsent.RevokeUserConsentParameter
 }

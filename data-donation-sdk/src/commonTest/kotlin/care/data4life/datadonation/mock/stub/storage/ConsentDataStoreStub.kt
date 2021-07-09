@@ -14,7 +14,7 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.mock.stub
+package care.data4life.datadonation.mock.stub.storage
 
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.storage.StorageContract

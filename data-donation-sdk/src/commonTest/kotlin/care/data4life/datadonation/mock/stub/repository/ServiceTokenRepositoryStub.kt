@@ -14,31 +14,17 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.mock.stub
+package care.data4life.datadonation.mock.stub.repository
 
-import care.data4life.datadonation.core.model.ConsentDocument
-import care.data4life.datadonation.internal.data.storage.StorageContract
+import care.data4life.datadonation.internal.domain.repository.RepositoryContract
 import care.data4life.datadonation.mock.MockContract
-import care.data4life.datadonation.mock.MockException
 
-class ConsentDocumentRemoteStorageStub : StorageContract.ConsentDocumentRemoteStorage, MockContract.Stub {
-    var whenFetchConsentDocuments: ((String, Int?, String?, String) -> List<ConsentDocument>)? = null
-
-    override suspend fun fetchConsentDocuments(
-        accessToken: String,
-        version: Int?,
-        language: String?,
-        consentKey: String
-    ): List<ConsentDocument> {
-        return whenFetchConsentDocuments?.invoke(
-            accessToken,
-            version,
-            language,
-            consentKey
-        ) ?: throw MockException()
+class ServiceTokenRepositoryStub : RepositoryContract.ServiceTokenRepository, MockContract.Stub {
+    override suspend fun requestDonationToken(): String {
+        TODO("Not yet implemented")
     }
 
     override fun clear() {
-        whenFetchConsentDocuments = null
+        TODO("Not yet implemented")
     }
 }

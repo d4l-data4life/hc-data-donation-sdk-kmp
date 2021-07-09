@@ -70,7 +70,7 @@ internal fun resolveUsecaseModule(): Module {
         }
 
         single<UsecaseContract.RevokeUserConsent> {
-            RevokeUserConsentFactory(get())
+            RevokeUserConsent(get())
         }
     }
 }

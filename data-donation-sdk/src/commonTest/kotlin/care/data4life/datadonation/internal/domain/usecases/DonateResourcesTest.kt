@@ -48,11 +48,11 @@ import care.data4life.datadonation.internal.utils.Base64Encoder
 import care.data4life.datadonation.internal.utils.toJsonString
 import care.data4life.datadonation.mock.DummyData
 import care.data4life.datadonation.mock.spy.CapturingResultListener
-import care.data4life.datadonation.mock.stub.ConsentDataStoreStub
-import care.data4life.datadonation.mock.stub.DonationDataStorageStub
 import care.data4life.datadonation.mock.stub.RedactSensitiveInformationStub
-import care.data4life.datadonation.mock.stub.ServiceTokenDataStorageStub
-import care.data4life.datadonation.mock.stub.UserConsentRepositoryStub
+import care.data4life.datadonation.mock.stub.repository.UserConsentRepositoryStub
+import care.data4life.datadonation.mock.stub.storage.ConsentDataStoreStub
+import care.data4life.datadonation.mock.stub.storage.DonationDataStorageStub
+import care.data4life.datadonation.mock.stub.storage.ServiceTokenDataStorageStub
 import care.data4life.hl7.fhir.stu3.FhirStu3Parser
 import care.data4life.hl7.fhir.stu3.codesystem.QuestionnaireResponseStatus
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse

@@ -48,11 +48,11 @@ interface UsecaseContract {
         }
     }
 
-    interface RevokeUserConsentParameter {
-        val consentKey: String
+    interface RevokeUserConsent : NewUsecase<RevokeUserConsent.RevokeUserConsentParameter, Unit> {
+        interface RevokeUserConsentParameter {
+            val consentKey: String
+        }
     }
-
-    interface RevokeUserConsent : UsecaseFactory<RevokeUserConsentParameter, Unit>
 
     interface CreateUserConsentParameter {
         val keyPair: KeyPair?
