@@ -76,76 +76,81 @@ kotlin {
         }
         commonMain {
             dependencies {
-                implementation(Dependency.Multiplatform.kotlin.stdlibCommon)
-                implementation(Dependency.Multiplatform.stately)
+                implementation(Dependency.multiplatform.kotlin.stdlibCommon)
+                implementation(Dependency.multiplatform.stately)
 
-                implementation(Dependency.Multiplatform.koin.commonCore)
+                implementation(Dependency.multiplatform.koin.commonCore)
 
-                implementation(Dependency.Multiplatform.coroutines.common)
+                implementation(Dependency.multiplatform.coroutines.common)
 
-                implementation(Dependency.Multiplatform.ktor.commonCore)
-                implementation(Dependency.Multiplatform.ktor.logger)
-                implementation(Dependency.Multiplatform.ktor.commonJson)
-                implementation(Dependency.Multiplatform.ktor.commonSerialization)
+                implementation(Dependency.multiplatform.ktor.commonCore)
+                implementation(Dependency.multiplatform.ktor.logger)
+                implementation(Dependency.multiplatform.ktor.commonJson)
+                implementation(Dependency.multiplatform.ktor.commonSerialization)
 
-                implementation(Dependency.Multiplatform.serialization.common)
-                implementation(Dependency.Multiplatform.serialization.protobuf)
+                implementation(Dependency.multiplatform.serialization.common)
+                implementation(Dependency.multiplatform.serialization.protobuf)
 
-                implementation(Dependency.Multiplatform.dateTime)
+                implementation(Dependency.multiplatform.dateTime)
 
-                implementation(Dependency.Multiplatform.Fhir.common)
+                implementation(Dependency.multiplatform.uuid)
 
-                implementation(Dependency.Multiplatform.uuid)
+                // D4L
+                implementation(Dependency.d4l.fhir.common)
+                implementation(Dependency.d4l.util.common)
             }
         }
         commonTest {
             dependencies {
-                implementation(Dependency.Multiplatform.kotlin.testCommon)
-                implementation(Dependency.Multiplatform.kotlin.testCommonAnnotations)
-                implementation(Dependency.Multiplatform.koin.test)
-                implementation(Dependency.Multiplatform.ktor.mock)
+                implementation(Dependency.multiplatform.kotlin.testCommon)
+                implementation(Dependency.multiplatform.kotlin.testCommonAnnotations)
+                implementation(Dependency.multiplatform.koin.test)
+                implementation(Dependency.multiplatform.ktor.mock)
+
+                // D4L
+                implementation(Dependency.d4l.testUtil.common)
             }
         }
 
         val androidMain by getting {
             dependencies {
                 //Kotlin
-                implementation(Dependency.Multiplatform.kotlin.stdlibAndroid)
-                implementation(Dependency.Multiplatform.coroutines.android)
+                implementation(Dependency.multiplatform.kotlin.stdlibAndroid)
+                implementation(Dependency.multiplatform.coroutines.android)
 
                 //DI
-                implementation(Dependency.Multiplatform.koin.android)
-                implementation(Dependency.Java.slf4jNop)
-                implementation(Dependency.Java.slf4jApi)
+                implementation(Dependency.multiplatform.koin.android)
+                implementation(Dependency.jvm.slf4jNop)
+                implementation(Dependency.jvm.slf4jApi)
 
                 //
                 implementation(Dependency.android.threeTenABP)
-                implementation(Dependency.Multiplatform.ktor.androidCore)
-                implementation(Dependency.Multiplatform.ktor.androidSerialization)
+                implementation(Dependency.multiplatform.ktor.androidCore)
+                implementation(Dependency.multiplatform.ktor.androidSerialization)
                 implementation(Dependency.android.bouncyCastle)
-                implementation(Dependency.Multiplatform.serialization.android)
-                implementation(Dependency.Multiplatform.serialization.protobuf)
+                implementation(Dependency.multiplatform.serialization.android)
+                implementation(Dependency.multiplatform.serialization.protobuf)
             }
         }
         val androidTest by getting {
             dependencies {
-                implementation(Dependency.Multiplatform.kotlin.testJvm)
-                implementation(Dependency.Multiplatform.kotlin.testJvmJunit)
+                implementation(Dependency.multiplatform.kotlin.testJvm)
+                implementation(Dependency.multiplatform.kotlin.testJvmJunit)
                 dependsOn(commonTest.get())
             }
         }
 
         val iosMain by getting {
             dependencies {
-                implementation(Dependency.Multiplatform.coroutines.common) {
+                implementation(Dependency.multiplatform.coroutines.common) {
                     version {
                         strictly(Version.kotlinCoroutines)
                     }
                 }
-                implementation(Dependency.Multiplatform.serialization.common)
-                implementation(Dependency.Multiplatform.serialization.protobuf)
-                implementation(Dependency.Multiplatform.ktor.iosCore)
-                implementation(Dependency.Multiplatform.ktor.ios)
+                implementation(Dependency.multiplatform.serialization.common)
+                implementation(Dependency.multiplatform.serialization.protobuf)
+                implementation(Dependency.multiplatform.ktor.iosCore)
+                implementation(Dependency.multiplatform.ktor.ios)
             }
         }
         val iosTest by getting {

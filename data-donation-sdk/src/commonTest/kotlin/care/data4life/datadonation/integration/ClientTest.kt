@@ -54,13 +54,13 @@ import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponseItem
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponseItemAnswer
 import care.data4life.hl7.fhir.stu3.model.Reference
+import care.data4life.sdk.util.test.runWithContextBlockingTest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import org.koin.core.context.stopKoin
 import org.koin.dsl.koinApplication
-import runWithBlockingTest
 import kotlin.test.BeforeTest
 import kotlin.test.Ignore
 import kotlin.test.Test
@@ -78,7 +78,7 @@ class ClientTest {
     @Ignore
     // TODO "Use MockEngine"
     // TODO: infinity loop caused by the refused connection - If so we need to figure out of setting a timeout
-    fun fetchConsentDocumentTest() = runWithBlockingTest(GlobalScope.coroutineContext) {
+    fun fetchConsentDocumentTest() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val consentKey = "custom-consent-key"
         val language = "en"
@@ -134,14 +134,14 @@ class ClientTest {
     @Ignore
     // TODO "Use MockEngine"
     // TODO: infinity loop caused by the refused connection - If so we need to figure out of setting a timeout
-    fun createUserConsentTest() = runWithBlockingTest(GlobalScope.coroutineContext) {
+    fun createUserConsentTest() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val consentKey = "custom-consent-key"
         val language = "en"
         val version = 42
 
         val config = object : ConfigurationBase() {
-            override fun getDonorKeyPair(): KeyPair? = DummyData.keyPair
+            override fun getDonorKeyPair(): KeyPair = DummyData.keyPair
             override fun getCoroutineScope(): CoroutineScope = GlobalScope
         }
 
@@ -206,7 +206,7 @@ class ClientTest {
 
     @Test
     // TODO: No API Call?
-    fun registerNewDonorTest() = runWithBlockingTest(GlobalScope.coroutineContext) {
+    fun registerNewDonorTest() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val keyPair = KeyPair(ByteArray(42), ByteArray(23))
 
@@ -255,7 +255,7 @@ class ClientTest {
     @Ignore
     // TODO "Use MockEngine"
     // TODO: infinity loop caused by the refused connection - If so we need to figure out of setting a timeout
-    fun fetchUserConsentsTest() = runWithBlockingTest(GlobalScope.coroutineContext) {
+    fun fetchUserConsentsTest() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val consentKey = "custom-consent-key"
 
@@ -302,7 +302,7 @@ class ClientTest {
     @Ignore
     // TODO: Use MockEngine
     // TODO: infinity loop caused by the refused connection - If so we need to figure out of setting a timeout
-    fun revokeUserConsentsTest() = runWithBlockingTest(GlobalScope.coroutineContext) {
+    fun revokeUserConsentsTest() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val language = "en"
 
@@ -347,7 +347,7 @@ class ClientTest {
     @Test
     // TODO: Workaround Signature Key
     @Ignore
-    fun donateResourcesTest() = runWithBlockingTest(GlobalScope.coroutineContext) {
+    fun donateResourcesTest() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val keyPair = DummyData.keyPair
 

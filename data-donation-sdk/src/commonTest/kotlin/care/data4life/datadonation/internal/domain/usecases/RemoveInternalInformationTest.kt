@@ -38,8 +38,8 @@ import care.data4life.hl7.fhir.stu3.codesystem.CarePlanStatus
 import care.data4life.hl7.fhir.stu3.codesystem.QuestionnaireResponseStatus
 import care.data4life.hl7.fhir.stu3.model.*
 import care.data4life.hl7.fhir.stu3.primitive.Integer
+import care.data4life.sdk.util.test.runBlockingTest
 import kotlinx.serialization.json.Json
-import runBlockingTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull

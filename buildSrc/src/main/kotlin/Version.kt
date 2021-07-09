@@ -90,6 +90,9 @@ object Version {
     // https://github.com/d4l-data4life/hc-fhir-sdk-kmp
     const val fhir = "0.1.0"
 
+    // https://github.com/d4l-data4life/hc-util-sdk-kmp
+    const val sdkUtil = "1.7.0-add-coroutine-test-util-SNAPSHOT"
+
     // Junit Test
     const val testJUnit = "4.13"
 }

@@ -35,8 +35,8 @@ import care.data4life.datadonation.mock.DummyData
 import care.data4life.datadonation.mock.fake.getDefaultMockClient
 import care.data4life.datadonation.mock.spy.CallBuilderSpy
 import care.data4life.datadonation.mock.stub.ClockStub
+import care.data4life.sdk.util.test.runBlockingTest
 import kotlinx.datetime.Instant
-import runBlockingTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
