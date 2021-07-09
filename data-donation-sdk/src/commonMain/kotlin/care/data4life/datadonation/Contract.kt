@@ -72,8 +72,8 @@ interface Contract {
         )
 
         fun createUserConsent(
+            consentKey: String,
             consentDocumentVersion: Int,
-            language: String?,
             listener: ListenerContract.ResultListener<UserConsent>
         )
 
@@ -90,7 +90,7 @@ interface Contract {
             listener: ListenerContract.ResultListener<List<UserConsent>>
         )
 
-        fun revokeUserConsent(language: String?, callback: ListenerContract.Callback)
+        fun revokeUserConsent(consentKey: String, callback: ListenerContract.Callback)
 
         fun <T : FhirResource> donateResources(
             resources: List<T>,

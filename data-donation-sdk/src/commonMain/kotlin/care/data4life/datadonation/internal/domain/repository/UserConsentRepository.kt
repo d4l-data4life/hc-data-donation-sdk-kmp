@@ -40,8 +40,8 @@ internal class UserConsentRepository(
     private val sessionToken: StorageContract.UserSessionTokenDataStorage
 ) : RepositoryContract.UserConsentRepository {
 
-    override suspend fun createUserConsent(version: Int, language: String?) =
-        remoteStorage.createUserConsent(sessionToken.getUserSessionToken()!!, version, language)
+    override suspend fun createUserConsent(consentKey: String, version: Int) =
+        remoteStorage.createUserConsent(sessionToken.getUserSessionToken()!!, consentKey, version)
 
     override suspend fun fetchUserConsents(consentKey: String?): List<UserConsent> =
         remoteStorage.fetchUserConsents(sessionToken.getUserSessionToken()!!, consentKey)
@@ -52,6 +52,6 @@ internal class UserConsentRepository(
     override suspend fun signUserConsentDonation(message: String): String =
         remoteStorage.signUserConsentDonation(sessionToken.getUserSessionToken()!!, message)
 
-    override suspend fun revokeUserConsent(language: String?) =
-        remoteStorage.revokeUserConsent(sessionToken.getUserSessionToken()!!, language)
+    override suspend fun revokeUserConsent(consentKey: String) =
+        remoteStorage.revokeUserConsent(sessionToken.getUserSessionToken()!!, consentKey)
 }

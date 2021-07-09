@@ -39,7 +39,7 @@ class ConsentServiceStub : ServiceContract.ConsentService {
         TODO("Not yet implemented")
     }
 
-    override suspend fun createUserConsent(accessToken: String, version: Int) {
+    override suspend fun createUserConsent(accessToken: String, consentKey: String, version: Int) {
         TODO("Not yet implemented")
     }
 
@@ -57,7 +57,7 @@ class ConsentServiceStub : ServiceContract.ConsentService {
         TODO("Not yet implemented")
     }
 
-    override suspend fun revokeUserConsent(accessToken: String) {
+    override suspend fun revokeUserConsent(accessToken: String, consentKey: String) {
         TODO("Not yet implemented")
     }
 }

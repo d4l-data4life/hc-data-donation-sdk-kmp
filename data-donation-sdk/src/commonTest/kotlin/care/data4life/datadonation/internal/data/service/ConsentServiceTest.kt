@@ -308,6 +308,7 @@ class ConsentServiceTest {
         val clock = ClockStub()
 
         val accessToken = "potato"
+        val consentKey = "custom-consent-key"
         val version = 23
 
         var capturedMethod: ServiceContract.Method? = null
@@ -330,6 +331,7 @@ class ConsentServiceTest {
         val service = ConsentService.getInstance(env, client, CallBuilderSpy, clock)
         service.createUserConsent(
             accessToken = accessToken,
+            consentKey = consentKey,
             version = version
         )
 
@@ -352,7 +354,7 @@ class ConsentServiceTest {
         assertEquals(
             actual = CallBuilderSpy.lastInstance!!.delegatedBody,
             expected = ConsentCreationPayload(
-                DEFAULT_DONATION_CONSENT_KEY,
+                consentKey,
                 version,
                 expectedTime.toString()
             )
@@ -536,6 +538,7 @@ class ConsentServiceTest {
         val env = Environment.LOCAL
 
         val accessToken = "potato"
+        val consentKey = "custom-consent-key"
 
         var capturedMethod: ServiceContract.Method? = null
         var capturedPath: Path? = null
@@ -552,7 +555,7 @@ class ConsentServiceTest {
 
         // When
         val service = ConsentService.getInstance(env, client, CallBuilderSpy, ClockStub())
-        service.revokeUserConsent(accessToken = accessToken)
+        service.revokeUserConsent(accessToken = accessToken, consentKey = consentKey)
 
         // Then
         assertEquals(
@@ -572,7 +575,7 @@ class ConsentServiceTest {
         assertTrue(CallBuilderSpy.lastInstance!!.delegatedJsonFlag)
         assertEquals(
             actual = CallBuilderSpy.lastInstance!!.delegatedBody,
-            expected = ConsentRevocationPayload(DEFAULT_DONATION_CONSENT_KEY)
+            expected = ConsentRevocationPayload(consentKey)
         )
     }
 }
