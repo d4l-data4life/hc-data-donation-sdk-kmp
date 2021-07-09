@@ -27,6 +27,44 @@ plugins {
 
 group = LibraryConfig.group
 
+android {
+    compileSdkVersion(LibraryConfig.android.compileSdkVersion)
+
+    defaultConfig {
+        minSdkVersion(LibraryConfig.android.minSdkVersion)
+        targetSdkVersion(LibraryConfig.android.targetSdkVersion)
+
+        versionCode = 1
+        versionName = "${project.version}"
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunnerArguments(
+            mapOf(
+                "clearPackageData" to "true"
+            )
+        )
+    }
+
+    resourcePrefix(LibraryConfig.android.resourcePrefix)
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    sourceSets {
+        getByName("main") {
+            manifest.srcFile("src/androidMain/AndroidManifest.xml")
+            java.setSrcDirs(setOf("src/androidMain/kotlin"))
+            res.setSrcDirs(setOf("src/androidMain/res"))
+        }
+
+        getByName("test") {
+            java.setSrcDirs(setOf("src/androidTest/kotlin"))
+            res.setSrcDirs(setOf("src/androidTest/res"))
+        }
+    }
+}
 
 kotlin {
     android("android") {
@@ -96,8 +134,8 @@ kotlin {
                 implementation(Dependency.multiplatform.uuid)
 
                 // D4L
-                implementation(Dependency.d4l.fhir.common)
-                implementation(Dependency.d4l.util.common)
+                implementation(Dependency.d4l.fhir)
+                implementation(Dependency.d4l.util)
             }
         }
         commonTest {
@@ -108,7 +146,7 @@ kotlin {
                 implementation(Dependency.multiplatform.ktor.mock)
 
                 // D4L
-                implementation(Dependency.d4l.testUtil.common)
+                implementation(Dependency.d4l.testUtil)
             }
         }
 
@@ -151,6 +189,9 @@ kotlin {
                 implementation(Dependency.multiplatform.serialization.protobuf)
                 implementation(Dependency.multiplatform.ktor.iosCore)
                 implementation(Dependency.multiplatform.ktor.ios)
+
+                // D4L
+                implementation(Dependency.d4l.util)
             }
         }
         val iosTest by getting {
@@ -165,45 +206,6 @@ kotlin {
             kotlinOptions {
                 freeCompilerArgs = freeCompilerArgs + "-Xallow-result-return-type"
             }
-        }
-    }
-}
-
-android {
-    compileSdkVersion(LibraryConfig.android.compileSdkVersion)
-
-    defaultConfig {
-        minSdkVersion(LibraryConfig.android.minSdkVersion)
-        targetSdkVersion(LibraryConfig.android.targetSdkVersion)
-
-        versionCode = 1
-        versionName = "${project.version}"
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        testInstrumentationRunnerArguments(
-            mapOf(
-                "clearPackageData" to "true"
-            )
-        )
-    }
-
-    resourcePrefix(LibraryConfig.android.resourcePrefix)
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-
-    sourceSets {
-        getByName("main") {
-            manifest.srcFile("src/androidMain/AndroidManifest.xml")
-            java.setSrcDirs(setOf("src/androidMain/kotlin"))
-            res.setSrcDirs(setOf("src/androidMain/res"))
-        }
-
-        getByName("test") {
-            java.setSrcDirs(setOf("src/androidTest/kotlin"))
-            res.setSrcDirs(setOf("src/androidTest/res"))
         }
     }
 }

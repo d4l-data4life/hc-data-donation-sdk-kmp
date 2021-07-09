@@ -34,30 +34,9 @@ object Dependency {
 
     val d4l = D4L
     object D4L {
-        val util = Util
-
-        object Util {
-            const val common = "care.data4life.hc-util-sdk-kmp:util:${Version.sdkUtil}"
-            const val android = "care.data4life.hc-util-sdk-kmp:util-android:${Version.sdkUtil}"
-            const val ios = "care.data4life.hc-util-sdk-kmp:util-ios:${Version.sdkUtil}"
-        }
-
-        val testUtil = UtilTest
-
-        object UtilTest {
-            const val common = "care.data4life.hc-util-sdk-kmp:util-test:${Version.sdkUtil}"
-            const val android = "care.data4life.hc-util-sdk-kmp:util-test-android:${Version.sdkUtil}"
-            const val ios = "care.data4life.hc-util-sdk-kmp:util-test-ios:${Version.sdkUtil}"
-        }
-
-        val fhir = Fhir
-        object Fhir {
-            const val common = "care.data4life.hc-fhir-sdk-kmp:fhir:${Version.fhir}"
-            const val jvm = "care.data4life.hc-fhir-sdk-kmp:fhir-jvm:${Version.fhir}"
-            const val android = "care.data4life.hc-fhir-sdk-kmp:fhir-android:${Version.fhir}"
-            const val iosArm64 = "care.data4life.hc-fhir-sdk-kmp:fhir-iosarm64:${Version.fhir}"
-            const val iosX64 = "care.data4life.hc-fhir-sdk-kmp:fhir-iosx64:${Version.fhir}"
-        }
+        const val util = "care.data4life.hc-util-sdk-kmp:util:${Version.sdkUtil}"
+        const val testUtil = "care.data4life.hc-util-sdk-kmp:util-test:${Version.sdkUtil}"
+        const val fhir = "care.data4life.hc-fhir-sdk-kmp:fhir:${Version.fhir}"
     }
 
     val multiplatform = Multiplatform

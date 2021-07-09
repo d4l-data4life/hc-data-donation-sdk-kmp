@@ -35,16 +35,15 @@ package care.data4life.datadonation.encryption
 import care.data4life.datadonation.encryption.signature.GeneralEncryptionException
 import care.data4life.datadonation.encryption.signature.generateKey
 import care.data4life.datadonation.encryption.signature.plusAssign
-import care.data4life.datadonation.toNSData
+import care.data4life.sdk.util.NSDataMapper
 import kotlinx.cinterop.*
+import platform.CoreFoundation.*
+import platform.Foundation.*
+import platform.Foundation.CFBridgingRelease
 import platform.Foundation.CFBridgingRetain
+import platform.Foundation.NSError
 import platform.Foundation.NSNumber
 import platform.Security.*
-import platform.CoreFoundation.*
-import platform.Foundation.CFBridgingRelease
-import platform.Foundation.NSError
-import platform.Foundation.*
-import platform.darwin.noErr
 
 abstract class KeyNative {
     protected val privateKey: SecKeyRef
@@ -67,7 +66,7 @@ abstract class KeyNative {
     companion object {
         fun buildSecKeyRef(serialized: ByteArray, algorithm: Algorithm, type: KeyType): SecKeyRef =
             memScoped {
-                val data = CFBridgingRetain(serialized.toNSData()) as CFDataRef
+                val data = CFBridgingRetain(NSDataMapper.toNSData(serialized)) as CFDataRef
                 val pubAttr = CFDictionaryCreateMutable(kCFAllocatorSystemDefault, 6, null, null)!!
                 val exhaustive = when (algorithm) {
                     is Algorithm.Signature.RsaPSS -> {
@@ -103,8 +102,8 @@ abstract class KeyNative {
                 val key = SecKeyCreateWithData(data, pubAttr, error.ptr)
 
                 val k: CFErrorRef? = error.value
-                if(key==null) {
-                    //throw GeneralEncryptionException("")
+                if (key == null) {
+                    // throw GeneralEncryptionException("")
                 }
                 if (error.value != null) {
                     val err = CFBridgingRelease(k!!) as NSError
@@ -114,10 +113,7 @@ abstract class KeyNative {
             }
     }
 
-
     enum class KeyType(val nativeType: CFStringRef) {
         Private(kSecAttrKeyClassPrivate!!), Public(kSecAttrKeyClassPublic!!), Symmetric(kSecAttrKeyClassSymmetric!!)
     }
-
 }
-
