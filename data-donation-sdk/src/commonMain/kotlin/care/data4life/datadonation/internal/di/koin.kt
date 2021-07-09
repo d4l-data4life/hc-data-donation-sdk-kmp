@@ -35,6 +35,7 @@ package care.data4life.datadonation.internal.di
 import care.data4life.datadonation.Contract
 import care.data4life.datadonation.core.listener.ListenerContract
 import care.data4life.datadonation.core.listener.resolveListenerModule
+import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.encryption.resolveEncryptionModule
 import care.data4life.datadonation.internal.data.service.DonationService
 import care.data4life.datadonation.internal.data.service.ServiceContract
@@ -80,9 +81,9 @@ internal fun resolveRootModule(configuration: Contract.Configuration): Module {
             StorageContract.UserSessionTokenProvider::class
         )
 
-        single { configuration.getEnvironment() } bind Environment::class
+        single<Environment> { configuration.getEnvironment() }
 
-        single { Clock.System } bind Clock::class
+        single<Clock> { Clock.System }
     }
 }
 
@@ -109,12 +110,6 @@ internal fun resolveCoreModule(): Module {
         }
 
         // Services
-<<<<<<< HEAD
-=======
-        single<ServiceContract.ConsentService> {
-            ConsentService(get(), get())
-        }
->>>>>>> main
         single<ServiceContract.DonationService> {
             DonationService(get(), get())
         }

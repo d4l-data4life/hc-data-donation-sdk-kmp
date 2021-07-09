@@ -27,6 +27,6 @@ internal fun resolveServiceModule(): Module {
 
         single<ServiceContract.ConsentService> {
             ConsentService.getInstance(get(), get(), get(), get())
-        } bind ServiceContract.ConsentService::class
+        }
     }
 }
