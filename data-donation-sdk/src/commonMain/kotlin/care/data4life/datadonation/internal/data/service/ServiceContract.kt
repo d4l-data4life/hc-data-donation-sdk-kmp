@@ -64,6 +64,15 @@ internal interface ServiceContract {
         ): CallBuilder
     }
 
+    interface CredentialService {
+        fun getDataDonationPublicKey(): String
+        fun getAnalyticsPlatformPublicKey(): String
+    }
+
+    interface UserSessionTokenService {
+        suspend fun getUserSessionToken(): String?
+    }
+
     interface ConsentService {
         suspend fun fetchConsentDocuments(
             accessToken: String,
@@ -100,7 +109,6 @@ internal interface ServiceContract {
             val ROOT = listOf("consent", "api", "v1")
 
             object PARAMETER {
-                const val CONSENT_DOCUMENT_KEY = "key"
                 const val USER_CONSENT_KEY = "consentDocumentKey"
                 const val LANGUAGE = "language"
                 const val VERSION = "version"
@@ -111,26 +119,6 @@ internal interface ServiceContract {
                 const val USER_CONSENTS = "userConsents"
                 const val CONSENTS_DOCUMENTS = "consentDocuments"
                 const val SIGNATURES = "signatures"
-            }
-
-            const val XSRF_VALIDITY = 23 * 60 * 60 * 1000
-
-            object Endpoints {
-                const val userConsents = "userConsents"
-                const val consentDocuments = "consentDocuments"
-                const val token = "xsrf"
-            }
-
-            object Parameters {
-                const val consentDocumentKey = "key"
-                const val userConsentDocumentKey = "consentDocumentKey"
-                const val latest = "latest"
-                const val language = "language"
-                const val version = "version"
-            }
-
-            object Headers {
-                const val XSRFToken = "X-Csrf-Token"
             }
         }
     }

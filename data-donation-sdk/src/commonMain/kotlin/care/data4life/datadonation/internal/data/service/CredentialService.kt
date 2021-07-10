@@ -14,22 +14,19 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.io
+package care.data4life.datadonation.internal.data.service
 
 import care.data4life.datadonation.Contract
-import care.data4life.datadonation.core.listener.ListenerContract
-import kotlinx.coroutines.CoroutineScope
+import care.data4life.datadonation.internal.io.IOContract
 
-interface IOContract {
-    interface ScopeProvider {
-        fun getCoroutineScope(): CoroutineScope
+class CredentialService(
+    private val credentialProvider: IOContract.CredentialProvider
+) : ServiceContract.CredentialService {
+    override fun getDataDonationPublicKey(): String {
+        return credentialProvider.getServicePublicKey(Contract.Service.DD)
     }
 
-    interface CredentialProvider {
-        fun getServicePublicKey(service: Contract.Service): String
-    }
-
-    interface UserSessionTokenProvider {
-        fun getUserSessionToken(tokenListener: ListenerContract.ResultListener<String>)
+    override fun getAnalyticsPlatformPublicKey(): String {
+        return credentialProvider.getServicePublicKey(Contract.Service.ALP)
     }
 }

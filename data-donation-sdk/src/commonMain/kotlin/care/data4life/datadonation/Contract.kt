@@ -51,6 +51,7 @@ interface Contract {
 
     interface Configuration :
         IOContract.ScopeProvider,
+        IOContract.CredentialProvider,
         StorageContract.CredentialProvider,
         StorageContract.UserSessionTokenProvider {
         override fun getServicePublicKey(service: Service): String
