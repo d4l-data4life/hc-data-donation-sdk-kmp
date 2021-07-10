@@ -36,7 +36,7 @@ import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.domain.repository.RepositoryContract
 
-internal class CreateUserConsentFactory(
+internal class CreateUserConsent(
     private val consentRepository: RepositoryContract.UserConsentRepository
 ) : UsecaseContract.CreateUserConsent {
     override suspend fun execute(

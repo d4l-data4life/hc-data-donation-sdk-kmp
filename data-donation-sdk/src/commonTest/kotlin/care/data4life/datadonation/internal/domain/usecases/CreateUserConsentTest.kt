@@ -45,7 +45,7 @@ import kotlin.test.assertTrue
 class CreateUserConsentTest {
     @Test
     fun `It fulfils CreateUserConsent`() {
-        val factory: Any = CreateUserConsentFactory(UserConsentRepositoryStub())
+        val factory: Any = CreateUserConsent(UserConsentRepositoryStub())
 
         assertTrue(factory is UsecaseContract.CreateUserConsent)
     }
@@ -75,10 +75,10 @@ class CreateUserConsentTest {
             listOf(consent, DummyData.userConsent.copy(accountId = "not expected"))
         }
 
-        val parameter = CreateUserConsentFactory.Parameter(keyPair, consentKey, version)
+        val parameter = CreateUserConsent.Parameter(keyPair, consentKey, version)
 
         // When
-        val result = CreateUserConsentFactory(repo).execute(parameter)
+        val result = CreateUserConsent(repo).execute(parameter)
 
         // Then
         assertSame(

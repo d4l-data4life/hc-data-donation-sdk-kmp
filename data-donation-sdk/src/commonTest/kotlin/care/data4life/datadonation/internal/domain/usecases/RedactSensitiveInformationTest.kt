@@ -53,7 +53,7 @@ class RedactSensitiveInformationTest {
 
     @Test
     fun `It fulfils RedactSensitiveInformation`() {
-        val factory: Any = ReactSensitiveInformationFactory()
+        val factory: Any = RedactSensitiveInformation()
 
         assertTrue(factory is UsecaseContract.RedactSensitiveInformation)
     }
@@ -64,7 +64,7 @@ class RedactSensitiveInformationTest {
         val parameter = listOf(DomainResource(), DomainResource())
 
         // When
-        val usecase = ReactSensitiveInformationFactory()
+        val usecase = RedactSensitiveInformation()
         val result = usecase.execute(parameter)
 
         // Then
@@ -88,7 +88,7 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val usecase = ReactSensitiveInformationFactory()
+        val usecase = RedactSensitiveInformation()
         val result = usecase.execute(parameter).first()
 
         // Then
@@ -106,7 +106,7 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val usecase = ReactSensitiveInformationFactory()
+        val usecase = RedactSensitiveInformation()
         val result = usecase.execute(parameter).first()
 
         // Then
@@ -124,7 +124,7 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val usecase = ReactSensitiveInformationFactory()
+        val usecase = RedactSensitiveInformation()
         val result = usecase.execute(parameter).first()
 
         // Then
@@ -146,7 +146,7 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val usecase = ReactSensitiveInformationFactory()
+        val usecase = RedactSensitiveInformation()
         val result = usecase.execute(parameter).first()
 
         // Then
@@ -168,7 +168,7 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val usecase = ReactSensitiveInformationFactory()
+        val usecase = RedactSensitiveInformation()
         val result = usecase.execute(parameter).first()
 
         // Then
@@ -190,7 +190,7 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val usecase = ReactSensitiveInformationFactory()
+        val usecase = RedactSensitiveInformation()
         val result = usecase.execute(parameter).first()
 
         // Then
@@ -221,7 +221,7 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val usecase = ReactSensitiveInformationFactory()
+        val usecase = RedactSensitiveInformation()
         val result = usecase.execute(parameter).first()
 
         // Then
@@ -246,7 +246,7 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val usecase = ReactSensitiveInformationFactory()
+        val usecase = RedactSensitiveInformation()
         val result = usecase.execute(parameter).first()
 
         // Then
@@ -268,7 +268,7 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val usecase = ReactSensitiveInformationFactory()
+        val usecase = RedactSensitiveInformation()
         val result = usecase.execute(parameter).first()
 
         // Then
@@ -290,7 +290,7 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val usecase = ReactSensitiveInformationFactory()
+        val usecase = RedactSensitiveInformation()
         val result = usecase.execute(parameter).first()
 
         // Then
@@ -312,7 +312,7 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val usecase = ReactSensitiveInformationFactory()
+        val usecase = RedactSensitiveInformation()
         val result = usecase.execute(parameter).first()
 
         // Then
@@ -338,7 +338,7 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val usecase = ReactSensitiveInformationFactory()
+        val usecase = RedactSensitiveInformation()
         val result = usecase.execute(parameter).first()
 
         // Then
@@ -364,7 +364,7 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val usecase = ReactSensitiveInformationFactory()
+        val usecase = RedactSensitiveInformation()
         val result = usecase.execute(parameter).first()
 
         // Then
@@ -390,7 +390,7 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val usecase = ReactSensitiveInformationFactory()
+        val usecase = RedactSensitiveInformation()
         val result = usecase.execute(parameter).first()
 
         // Then
@@ -416,7 +416,7 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val usecase = ReactSensitiveInformationFactory()
+        val usecase = RedactSensitiveInformation()
         val result = usecase.execute(parameter).first()
 
         // Then

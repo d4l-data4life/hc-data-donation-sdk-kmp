@@ -17,10 +17,10 @@
 package care.data4life.datadonation.di
 
 import care.data4life.datadonation.Contract
-import care.data4life.datadonation.core.listener.ListenerContract
 import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.internal.data.storage.StorageContract
 import care.data4life.datadonation.internal.di.resolveRootModule
+import care.data4life.datadonation.internal.io.IOContract
 import care.data4life.datadonation.mock.stub.ClientConfigurationStub
 import kotlinx.datetime.Clock
 import org.koin.core.context.stopKoin
@@ -56,7 +56,7 @@ class RootKoinTest {
             modules(resolveRootModule(config))
         }
         // Then
-        val instance: ListenerContract.ScopeResolver = koin.koin.get()
+        val instance: IOContract.ScopeProvider = koin.koin.get()
         assertNotNull(instance)
     }
 

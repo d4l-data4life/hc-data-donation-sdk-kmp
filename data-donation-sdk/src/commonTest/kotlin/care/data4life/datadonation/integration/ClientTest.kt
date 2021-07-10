@@ -36,7 +36,6 @@ import care.data4life.datadonation.Client
 import care.data4life.datadonation.Contract
 import care.data4life.datadonation.core.listener.ListenerContract.Callback
 import care.data4life.datadonation.core.listener.ListenerContract.ResultListener
-import care.data4life.datadonation.core.listener.resolveListenerModule
 import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.KeyPair
@@ -48,6 +47,7 @@ import care.data4life.datadonation.internal.di.resolveCoreModule
 import care.data4life.datadonation.internal.di.resolveRootModule
 import care.data4life.datadonation.internal.domain.repository.resolveRepositoryModule
 import care.data4life.datadonation.internal.domain.usecases.resolveUsecaseModule
+import care.data4life.datadonation.internal.io.resolveIOModule
 import care.data4life.datadonation.mock.DummyData
 import care.data4life.hl7.fhir.stu3.codesystem.QuestionnaireResponseStatus
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
@@ -93,7 +93,7 @@ class ClientTest {
             modules(
                 resolveRootModule(config),
                 resolveCoreModule(),
-                resolveListenerModule(),
+                resolveIOModule(),
                 resolveStorageModule(),
                 resolveUsecaseModule(),
                 resolveRepositoryModule(),
@@ -149,7 +149,7 @@ class ClientTest {
             modules(
                 resolveRootModule(config),
                 resolveCoreModule(),
-                resolveListenerModule(),
+                resolveIOModule(),
                 resolveStorageModule(),
                 resolveUsecaseModule(),
                 resolveRepositoryModule(),
@@ -219,7 +219,7 @@ class ClientTest {
             modules(
                 resolveRootModule(config),
                 resolveCoreModule(),
-                resolveListenerModule(),
+                resolveIOModule(),
                 resolveStorageModule(),
                 resolveUsecaseModule(),
                 resolveRepositoryModule(),
@@ -268,7 +268,7 @@ class ClientTest {
             modules(
                 resolveRootModule(config),
                 resolveCoreModule(),
-                resolveListenerModule(),
+                resolveIOModule(),
                 resolveStorageModule(),
                 resolveUsecaseModule(),
                 resolveRepositoryModule(),
@@ -315,7 +315,7 @@ class ClientTest {
             modules(
                 resolveRootModule(config),
                 resolveCoreModule(),
-                resolveListenerModule(),
+                resolveIOModule(),
                 resolveStorageModule(),
                 resolveUsecaseModule(),
                 resolveRepositoryModule(),
@@ -360,7 +360,7 @@ class ClientTest {
             modules(
                 resolveRootModule(config),
                 resolveCoreModule(),
-                resolveListenerModule(),
+                resolveIOModule(),
                 resolveStorageModule(),
                 resolveUsecaseModule(),
                 resolveRepositoryModule(),

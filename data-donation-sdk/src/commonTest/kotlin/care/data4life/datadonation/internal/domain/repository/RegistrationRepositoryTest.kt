@@ -16,7 +16,7 @@
 
 package care.data4life.datadonation.internal.domain.repository
 
-import care.data4life.datadonation.mock.stub.RegistrationDataStorageStub
+import care.data4life.datadonation.mock.stub.storage.RegistrationDataStorageStub
 import care.data4life.sdk.util.test.runBlockingTest
 import kotlin.test.Test
 import kotlin.test.assertSame

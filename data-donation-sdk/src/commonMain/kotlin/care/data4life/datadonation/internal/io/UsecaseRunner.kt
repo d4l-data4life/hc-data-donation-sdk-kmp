@@ -14,20 +14,21 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.core.listener
+package care.data4life.datadonation.internal.io
 
+import care.data4life.datadonation.core.listener.ListenerContract
 import care.data4life.datadonation.internal.domain.usecases.UsecaseContract
 import kotlinx.coroutines.launch
 
 internal class UsecaseRunner(
-    private val scopeResolver: ListenerContract.ScopeResolver
-) : ListenerContract.TaskRunner {
+    private val scopeProvider: IOContract.ScopeProvider
+) : IOInternalContract.UsecaseRunner {
     override fun <Parameter : Any, ReturnType : Any> run(
         listener: ListenerContract.ResultListener<ReturnType>,
         usecase: UsecaseContract.Usecase<Parameter, ReturnType>,
         parameter: Parameter
     ) {
-        scopeResolver.getCoroutineScope().launch {
+        scopeProvider.getCoroutineScope().launch {
             try {
                 listener.onSuccess(usecase.execute(parameter))
             } catch (ex: Exception) {
@@ -41,7 +42,7 @@ internal class UsecaseRunner(
         usecase: UsecaseContract.Usecase<Parameter, ReturnType>,
         parameter: Parameter
     ) {
-        scopeResolver.getCoroutineScope().launch {
+        scopeProvider.getCoroutineScope().launch {
             try {
                 usecase.execute(parameter)
                 listener.onSuccess()

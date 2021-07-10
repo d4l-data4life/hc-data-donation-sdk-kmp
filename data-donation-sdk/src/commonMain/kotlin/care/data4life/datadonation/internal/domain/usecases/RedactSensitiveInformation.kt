@@ -38,7 +38,7 @@ import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponseItem
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponseItemAnswer
 
-internal class ReactSensitiveInformationFactory : UsecaseContract.RedactSensitiveInformation {
+internal class RedactSensitiveInformation : UsecaseContract.RedactSensitiveInformation {
     private fun <T> mapOrNull(
         list: List<T>?,
         action: (T) -> T

@@ -17,8 +17,8 @@
 package care.data4life.datadonation.internal.data.storage
 
 import care.data4life.datadonation.Contract
-import care.data4life.datadonation.core.listener.ListenerContract
 import care.data4life.datadonation.internal.data.service.ServiceContract
+import care.data4life.datadonation.internal.io.IOContract
 import care.data4life.datadonation.mock.stub.ClientConfigurationStub
 import care.data4life.datadonation.mock.stub.service.ConsentServiceStub
 import care.data4life.datadonation.mock.stub.service.DonationServiceStub
@@ -141,7 +141,7 @@ class StorageKoinTest {
                         config
                     } binds arrayOf(
                         Contract.Configuration::class,
-                        ListenerContract.ScopeResolver::class,
+                        IOContract.ScopeProvider::class,
                         StorageContract.CredentialProvider::class,
                         StorageContract.UserSessionTokenProvider::class
                     )
@@ -167,7 +167,7 @@ class StorageKoinTest {
                         config
                     } binds arrayOf(
                         Contract.Configuration::class,
-                        ListenerContract.ScopeResolver::class,
+                        IOContract.ScopeProvider::class,
                         StorageContract.CredentialProvider::class,
                         StorageContract.UserSessionTokenProvider::class
                     )

@@ -43,7 +43,7 @@ internal fun resolveUsecaseModule(): Module {
         }
 
         single<UsecaseContract.RedactSensitiveInformation> {
-            ReactSensitiveInformationFactory()
+            RedactSensitiveInformation()
         }
 
         single {
@@ -58,7 +58,7 @@ internal fun resolveUsecaseModule(): Module {
         }
 
         single<UsecaseContract.CreateUserConsent> {
-            CreateUserConsentFactory(get())
+            CreateUserConsent(get())
         }
 
         single<UsecaseContract.FetchUserConsents> {

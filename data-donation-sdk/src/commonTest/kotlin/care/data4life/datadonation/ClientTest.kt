@@ -17,15 +17,15 @@
 package care.data4life.datadonation
 
 import care.data4life.datadonation.core.listener.ListenerContract
-import care.data4life.datadonation.core.listener.ListenerInternalContract
 import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.UserConsent
-import care.data4life.datadonation.internal.domain.usecases.CreateUserConsentFactory
+import care.data4life.datadonation.internal.domain.usecases.CreateUserConsent
 import care.data4life.datadonation.internal.domain.usecases.FetchConsentDocuments
 import care.data4life.datadonation.internal.domain.usecases.FetchUserConsents
 import care.data4life.datadonation.internal.domain.usecases.RevokeUserConsent
 import care.data4life.datadonation.internal.domain.usecases.UsecaseContract
+import care.data4life.datadonation.internal.io.IOInternalContract
 import care.data4life.datadonation.mock.DummyData
 import care.data4life.datadonation.mock.stub.CallbackStub
 import care.data4life.datadonation.mock.stub.ClientConfigurationStub
@@ -93,7 +93,7 @@ class ClientTest {
                                 capturedParameter = delegatedParameter as UsecaseContract.FetchUserConsents.FetchUserConsentsParameter
                             }
                         }
-                    } bind ListenerInternalContract.UsecaseRunner::class
+                    } bind IOInternalContract.UsecaseRunner::class
                 }
             )
         }
@@ -146,7 +146,7 @@ class ClientTest {
                                 capturedParameter = delegatedParameter as UsecaseContract.FetchUserConsents.FetchUserConsentsParameter
                             }
                         }
-                    } bind ListenerInternalContract.UsecaseRunner::class
+                    } bind IOInternalContract.UsecaseRunner::class
                 }
             )
         }
@@ -204,7 +204,7 @@ class ClientTest {
                                 capturedParameter = delegatedParameter as UsecaseContract.FetchConsentDocuments.FetchConsentDocumentsParameter
                             }
                         }
-                    } bind ListenerInternalContract.UsecaseRunner::class
+                    } bind IOInternalContract.UsecaseRunner::class
                 }
             )
         }
@@ -272,7 +272,7 @@ class ClientTest {
                                 capturedParameter = delegatedParameter as UsecaseContract.RevokeUserConsent.RevokeUserConsentParameter
                             }
                         }
-                    } bind ListenerInternalContract.UsecaseRunner::class
+                    } bind IOInternalContract.UsecaseRunner::class
                 }
             )
         }
@@ -339,7 +339,7 @@ class ClientTest {
                                 capturedParameter = delegatedParameter as UsecaseContract.CreateUserConsent.CreateUserConsentParameter
                             }
                         }
-                    } bind ListenerInternalContract.UsecaseRunner::class
+                    } bind IOInternalContract.UsecaseRunner::class
                 }
             )
         }
@@ -356,7 +356,7 @@ class ClientTest {
         // Then
         assertEquals(
             actual = capturedParameter,
-            expected = CreateUserConsentFactory.Parameter(
+            expected = CreateUserConsent.Parameter(
                 consentKey = consentKey,
                 version = version,
                 keyPair = keyPair

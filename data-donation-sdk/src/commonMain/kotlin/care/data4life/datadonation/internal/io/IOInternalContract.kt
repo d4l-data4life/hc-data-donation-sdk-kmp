@@ -14,20 +14,23 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.core.listener
+package care.data4life.datadonation.internal.io
 
+import care.data4life.datadonation.core.listener.ListenerContract
 import care.data4life.datadonation.internal.domain.usecases.UsecaseContract
 
-internal interface ListenerInternalContract {
+internal interface IOInternalContract {
     interface UsecaseRunner {
-        fun <ReturnType : Any> run(
+        fun <Parameter : Any, ReturnType : Any> run(
             listener: ListenerContract.ResultListener<ReturnType>,
-            usecase: UsecaseContract.Usecase<ReturnType>
+            usecase: UsecaseContract.Usecase<Parameter, ReturnType>,
+            parameter: Parameter
         )
 
-        fun <ReturnType : Any> run(
+        fun <Parameter : Any, ReturnType : Any> run(
             listener: ListenerContract.Callback,
-            usecase: UsecaseContract.Usecase<ReturnType>
+            usecase: UsecaseContract.Usecase<Parameter, ReturnType>,
+            parameter: Parameter
         )
     }
 }

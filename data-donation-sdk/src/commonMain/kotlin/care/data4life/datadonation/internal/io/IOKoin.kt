@@ -14,16 +14,15 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.core.listener
+package care.data4life.datadonation.internal.io
 
-interface ListenerContract {
-    interface Callback {
-        fun onSuccess()
-        fun onError(exception: Exception)
-    }
+import org.koin.core.module.Module
+import org.koin.dsl.module
 
-    interface ResultListener<T : Any> {
-        fun onSuccess(result: T)
-        fun onError(exception: Exception)
+internal fun resolveIOModule(): Module {
+    return module {
+        single<IOInternalContract.UsecaseRunner> {
+            UsecaseRunner(get())
+        }
     }
 }

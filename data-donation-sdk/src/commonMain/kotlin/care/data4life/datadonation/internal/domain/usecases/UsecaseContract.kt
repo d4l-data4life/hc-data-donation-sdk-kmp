@@ -49,8 +49,8 @@ interface UsecaseContract {
     interface CreateUserConsent : Usecase<CreateUserConsent.CreateUserConsentParameter, UserConsent> {
         interface CreateUserConsentParameter {
             val keyPair: KeyPair?
-			val consentKey: String
-			val version: Int
+            val consentKey: String
+            val version: Int
         }
     }
 

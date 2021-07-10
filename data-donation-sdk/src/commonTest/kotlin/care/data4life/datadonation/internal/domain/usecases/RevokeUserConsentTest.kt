@@ -47,22 +47,10 @@ class RevokeUserConsentTest {
     }
 
     @Test
-    fun `Given withParams is called with the appropriate Parameter it creates a Usecase`() {
-        // Given
-        val parameter = RevokeUserConsentFactory.Parameter("custom-consent-key")
-
-        // When
-        val usecase: Any = RevokeUserConsentFactory(UserConsentRepositoryStub()).withParams(parameter)
-
-        // Then
-        assertTrue(usecase is UsecaseContract.Usecase<*>)
-    }
-
-    @Test
     fun `Given a Usecase had been created and execute is called, it delegates the call to the ConsentRepository with the given ConsentKey and just runs`() = runBlockingTest {
         // Given
         val consentKey = "custom-consent-key"
-        val parameter = RevokeUserConsentFactory.Parameter(consentKey)
+        val parameter = RevokeUserConsent.Parameter(consentKey)
         var capturedConsentKey: String? = "NotNull"
         val userContentRepository = UserConsentRepositoryStub()
 
