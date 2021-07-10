@@ -44,7 +44,7 @@ internal fun resolveUsecaseModule(): Module {
 
         single<UsecaseContract.RedactSensitiveInformation> {
             ReactSensitiveInformationFactory()
-        } bind UsecaseContract.RedactSensitiveInformation::class
+        }
 
         single {
             RegisterNewDonor(

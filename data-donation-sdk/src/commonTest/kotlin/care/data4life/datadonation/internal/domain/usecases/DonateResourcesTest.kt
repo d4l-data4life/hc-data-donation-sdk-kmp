@@ -57,9 +57,9 @@ import care.data4life.hl7.fhir.stu3.FhirStu3Parser
 import care.data4life.hl7.fhir.stu3.codesystem.QuestionnaireResponseStatus
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
 import care.data4life.hl7.fhir.stu3.model.Reference
+import care.data4life.sdk.util.test.runBlockingTest
 import io.ktor.utils.io.charsets.Charset
 import kotlinx.serialization.json.Json
-import runBlockingTest
 import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -190,7 +190,7 @@ abstract class DonateResourcesTest {
         )
 
         // Then
-        // assertEquals(capturingListener.captured, Unit)
+        assertEquals(capturingListener.captured, Unit)
         assertTrue(result!!.request.contentEquals(dummyEncryptedSignedMessage))
         assertEquals(result!!.documents.size, dummyResourceList.size)
         assertTrue(result!!.documents[0].document.contentEquals(dummyEncryptedResourceList[0]))
