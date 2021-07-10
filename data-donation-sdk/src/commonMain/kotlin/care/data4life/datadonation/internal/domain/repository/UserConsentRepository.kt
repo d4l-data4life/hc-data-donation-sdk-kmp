@@ -40,18 +40,26 @@ internal class UserConsentRepository(
     private val sessionToken: StorageContract.UserSessionTokenDataStorage
 ) : RepositoryContract.UserConsentRepository {
 
-    override suspend fun createUserConsent(consentKey: String, version: Int) =
+    override suspend fun createUserConsent(consentKey: String, version: Int) {
         remoteStorage.createUserConsent(sessionToken.getUserSessionToken()!!, consentKey, version)
+    }
 
-    override suspend fun fetchUserConsents(consentKey: String?): List<UserConsent> =
-        remoteStorage.fetchUserConsents(sessionToken.getUserSessionToken()!!, consentKey)
+    override suspend fun fetchUserConsents(consentKey: String?): List<UserConsent> {
+        return remoteStorage.fetchUserConsents(sessionToken.getUserSessionToken()!!, consentKey)
+    }
 
-    override suspend fun signUserConsentRegistration(message: String): String =
-        remoteStorage.signUserConsentRegistration(sessionToken.getUserSessionToken()!!, message)
+    override suspend fun signUserConsentRegistration(message: String): String {
+        return remoteStorage.signUserConsentRegistration(
+            sessionToken.getUserSessionToken()!!,
+            message
+        )
+    }
 
-    override suspend fun signUserConsentDonation(message: String): String =
-        remoteStorage.signUserConsentDonation(sessionToken.getUserSessionToken()!!, message)
+    override suspend fun signUserConsentDonation(message: String): String {
+        return remoteStorage.signUserConsentDonation(sessionToken.getUserSessionToken()!!, message)
+    }
 
-    override suspend fun revokeUserConsent(consentKey: String) =
-        remoteStorage.revokeUserConsent(sessionToken.getUserSessionToken()!!, consentKey)
+    override suspend fun revokeUserConsent(consentKey: String) {
+        return remoteStorage.revokeUserConsent(sessionToken.getUserSessionToken()!!, consentKey)
+    }
 }
