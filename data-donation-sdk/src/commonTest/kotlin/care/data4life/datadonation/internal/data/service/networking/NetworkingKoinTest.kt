@@ -16,9 +16,11 @@
 
 package care.data4life.datadonation.internal.data.service.networking
 
+import care.data4life.datadonation.core.model.ModelContract
 import io.ktor.client.HttpClient
 import org.koin.core.context.stopKoin
 import org.koin.dsl.koinApplication
+import org.koin.dsl.module
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertNotNull
@@ -35,10 +37,13 @@ class NetworkingKoinTest {
         val koin = koinApplication {
             modules(
                 resolveNetworking(),
+                module {
+                    single { ModelContract.Environment.DEV }
+                }
             )
         }
         // Then
-        val builder: Networking.CallBuilderFactory = koin.koin.get()
+        val builder: Networking.CallBuilder = koin.koin.get()
         assertNotNull(builder)
     }
 

@@ -17,7 +17,6 @@
 package care.data4life.datadonation.internal.data.service
 
 import care.data4life.datadonation.core.model.ConsentDocument
-import care.data4life.datadonation.core.model.ModelContract.Environment
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.model.ConsentCreationPayload
 import care.data4life.datadonation.internal.data.model.ConsentRevocationPayload
@@ -36,10 +35,9 @@ import care.data4life.datadonation.internal.data.service.ServiceContract.Consent
 import care.data4life.datadonation.internal.data.service.networking.Networking
 import care.data4life.datadonation.internal.utils.safeCast
 import care.data4life.datadonation.internal.utils.safeListCast
-import io.ktor.client.HttpClient
 import kotlinx.datetime.Clock
 
-internal class ConsentService private constructor(
+internal class ConsentService constructor(
     private val callBuilder: Networking.CallBuilder,
     private val clock: Clock
 ) : ServiceContract.ConsentService {
@@ -192,21 +190,5 @@ internal class ConsentService private constructor(
                 Networking.Method.DELETE,
                 path
             )
-    }
-
-    companion object : ServiceContract.ConsentServiceFactory {
-        override fun getInstance(
-            environment: Environment,
-            client: HttpClient,
-            builderFactory: Networking.CallBuilderFactory,
-            clock: Clock
-        ): ServiceContract.ConsentService {
-            val callBuilder = builderFactory.getInstance(
-                environment,
-                client
-            )
-
-            return ConsentService(callBuilder, clock)
-        }
     }
 }

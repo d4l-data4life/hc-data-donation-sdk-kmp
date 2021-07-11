@@ -17,13 +17,9 @@
 package care.data4life.datadonation.internal.data.service
 
 import care.data4life.datadonation.core.model.ConsentDocument
-import care.data4life.datadonation.core.model.ModelContract.Environment
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.model.ConsentSignature
 import care.data4life.datadonation.internal.data.model.DonationPayload
-import care.data4life.datadonation.internal.data.service.networking.Networking
-import io.ktor.client.HttpClient
-import kotlinx.datetime.Clock
 
 typealias SessionToken = String
 typealias DataDonationKey = String
@@ -87,15 +83,6 @@ internal interface ServiceContract {
                 const val SIGNATURES = "signatures"
             }
         }
-    }
-
-    interface ConsentServiceFactory {
-        fun getInstance(
-            environment: Environment,
-            client: HttpClient,
-            builderFactory: Networking.CallBuilderFactory,
-            clock: Clock
-        ): ConsentService
     }
 
     interface DonationService {

@@ -48,7 +48,9 @@ class ServiceKoinTest {
                 resolveServiceModule(),
                 module {
                     single { ClockStub() } bind Clock::class
-                    single<Networking.CallBuilderFactory> { CallBuilderSpy }
+                    single<Networking.CallBuilder> {
+                        CallBuilderSpy.getInstance(Environment.DEV, createDefaultMockClient())
+                    }
                     single { createDefaultMockClient() }
                     single { Environment.DEV } bind Environment::class
                 }

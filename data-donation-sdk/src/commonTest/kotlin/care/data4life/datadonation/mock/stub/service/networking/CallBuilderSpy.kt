@@ -16,7 +16,7 @@
 
 package care.data4life.datadonation.mock.stub.service.networking
 
-import care.data4life.datadonation.core.model.ModelContract.Environment
+import care.data4life.datadonation.core.model.ModelContract
 import care.data4life.datadonation.internal.data.service.networking.AccessToken
 import care.data4life.datadonation.internal.data.service.networking.Header
 import care.data4life.datadonation.internal.data.service.networking.Networking
@@ -84,8 +84,8 @@ internal class CallBuilderSpy private constructor(
     companion object Factory : Networking.CallBuilderFactory, MockContract.Stub {
         var onExecute: ((Networking.Method, Path) -> Any)? = null
 
-        private var environment: Environment? = null
-        val delegatedEnvironment: Environment?
+        private var environment: ModelContract.Environment? = null
+        val delegatedEnvironment: ModelContract.Environment?
             get() = environment
 
         private var client: HttpClient? = null
@@ -101,7 +101,7 @@ internal class CallBuilderSpy private constructor(
             get() = instance
 
         override fun getInstance(
-            environment: Environment,
+            environment: ModelContract.Environment,
             client: HttpClient,
             port: Int?
         ): Networking.CallBuilder {
