@@ -33,33 +33,51 @@
 package care.data4life.datadonation.internal.domain.repository
 
 import care.data4life.datadonation.core.model.UserConsent
-import care.data4life.datadonation.internal.data.storage.StorageContract
+import care.data4life.datadonation.internal.data.service.ServiceContract
 
 internal class UserConsentRepository(
-    private val remoteStorage: StorageContract.UserConsentRemoteStorage,
-    private val sessionToken: StorageContract.UserSessionTokenDataStorage
+    private val consentService: ServiceContract.ConsentService,
+    private val sessionTokenService: ServiceContract.UserSessionTokenService
 ) : RepositoryContract.UserConsentRepository {
 
     override suspend fun createUserConsent(consentKey: String, version: Int) {
-        remoteStorage.createUserConsent(sessionToken.getUserSessionToken()!!, consentKey, version)
-    }
-
-    override suspend fun fetchUserConsents(consentKey: String?): List<UserConsent> {
-        return remoteStorage.fetchUserConsents(sessionToken.getUserSessionToken()!!, consentKey)
-    }
-
-    override suspend fun signUserConsentRegistration(message: String): String {
-        return remoteStorage.signUserConsentRegistration(
-            sessionToken.getUserSessionToken()!!,
-            message
+        val sessionToken = sessionTokenService.getUserSessionToken()
+        consentService.createUserConsent(
+            sessionToken,
+            consentKey,
+            version
         )
     }
 
-    override suspend fun signUserConsentDonation(message: String): String {
-        return remoteStorage.signUserConsentDonation(sessionToken.getUserSessionToken()!!, message)
+    override suspend fun fetchUserConsents(consentKey: String?): List<UserConsent> {
+        val sessionToken = sessionTokenService.getUserSessionToken()
+        return consentService.fetchUserConsents(
+            sessionToken,
+            false,
+            consentKey
+        )
+    }
+
+    override suspend fun signUserConsentRegistration(message: String): Signature {
+        val sessionToken = sessionTokenService.getUserSessionToken()
+        return consentService.requestSignatureConsentRegistration(
+            sessionToken,
+            message
+        ).signature
+    }
+
+    override suspend fun signUserConsentDonation(message: String): Signature {
+        val sessionToken = sessionTokenService.getUserSessionToken()
+
+        return consentService.requestSignatureDonation(
+            sessionToken,
+            message
+        ).signature
     }
 
     override suspend fun revokeUserConsent(consentKey: String) {
-        return remoteStorage.revokeUserConsent(sessionToken.getUserSessionToken()!!, consentKey)
+        val sessionToken = sessionTokenService.getUserSessionToken()
+
+        return consentService.revokeUserConsent(sessionToken, consentKey)
     }
 }

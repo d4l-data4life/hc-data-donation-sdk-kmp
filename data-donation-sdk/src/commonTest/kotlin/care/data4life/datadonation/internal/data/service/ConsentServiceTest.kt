@@ -378,7 +378,7 @@ class ConsentServiceTest {
         val error = assertFailsWith<InternalErrorException> {
             // When
             val service = ConsentService.getInstance(env, client, CallBuilderSpy, ClockStub())
-            service.requestSignatureRegistration(
+            service.requestSignatureConsentRegistration(
                 accessToken = accessToken,
                 message = message
             )
@@ -411,7 +411,7 @@ class ConsentServiceTest {
 
         // When
         val service = ConsentService.getInstance(env, client, CallBuilderSpy, ClockStub())
-        val result = service.requestSignatureRegistration(
+        val result = service.requestSignatureConsentRegistration(
             accessToken = accessToken,
             message = message
         )

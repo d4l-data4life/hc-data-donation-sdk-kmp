@@ -97,7 +97,7 @@ internal interface ServiceContract {
             version: Int
         )
 
-        suspend fun requestSignatureRegistration(
+        suspend fun requestSignatureConsentRegistration(
             accessToken: String,
             message: String
         ): ConsentSignature

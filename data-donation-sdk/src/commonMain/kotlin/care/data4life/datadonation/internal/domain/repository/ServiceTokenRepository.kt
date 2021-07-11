@@ -38,7 +38,7 @@ internal class ServiceTokenRepository(
     private val service: ServiceContract.DonationService
 ) : RepositoryContract.ServiceTokenRepository {
 
-    override suspend fun requestDonationToken(): String {
+    override suspend fun requestDonationToken(): DonationToken {
         return service.requestToken()
     }
 }

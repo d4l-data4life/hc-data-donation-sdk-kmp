@@ -49,7 +49,7 @@ internal class UserConsentRemoteStorage(
     ): List<UserConsent> = service.fetchUserConsents(accessToken, false, consentKey)
 
     override suspend fun signUserConsentRegistration(accessToken: String, message: String): String =
-        service.requestSignatureRegistration(accessToken, message).signature
+        service.requestSignatureConsentRegistration(accessToken, message).signature
 
     override suspend fun signUserConsentDonation(accessToken: String, message: String): String =
         service.requestSignatureDonation(accessToken, message).signature
