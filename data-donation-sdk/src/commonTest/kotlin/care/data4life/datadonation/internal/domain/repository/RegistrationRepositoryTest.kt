@@ -16,7 +16,7 @@
 
 package care.data4life.datadonation.internal.domain.repository
 
-import care.data4life.datadonation.mock.stub.storage.RegistrationDataStorageStub
+import care.data4life.datadonation.mock.stub.service.DonationServiceStub
 import care.data4life.sdk.util.test.runBlockingTest
 import kotlin.test.Test
 import kotlin.test.assertSame
@@ -26,7 +26,7 @@ class RegistrationRepositoryTest {
     @Test
     fun `It fulfils RegistrationRepository`() {
         val repo: Any = RegistrationRepository(
-            RegistrationDataStorageStub()
+            DonationServiceStub()
         )
 
         assertTrue(repo is RepositoryContract.RegistrationRepository)
@@ -35,16 +35,16 @@ class RegistrationRepositoryTest {
     @Test
     fun `Given registerNewDonor is called with Data delegates it delegates the call to its storage and just runs`() = runBlockingTest {
         // Given
-        val storage = RegistrationDataStorageStub()
+        val service = DonationServiceStub()
         val data = ByteArray(23)
 
         var capturedData: ByteArray? = null
-        storage.whenRegisterNewDonor = { delegatedData ->
+        service.whenRegisterNewDonor = { delegatedData ->
             capturedData = delegatedData
         }
 
         // When
-        val repo = RegistrationRepository(storage)
+        val repo = RegistrationRepository(service)
         val result = repo.registerNewDonor(data)
 
         // Then

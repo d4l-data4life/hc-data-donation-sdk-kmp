@@ -49,6 +49,7 @@ import care.data4life.datadonation.internal.utils.toJsonString
 import care.data4life.datadonation.mock.DummyData
 import care.data4life.datadonation.mock.spy.CapturingResultListener
 import care.data4life.datadonation.mock.stub.repository.UserConsentRepositoryStub
+import care.data4life.datadonation.mock.stub.service.DonationServiceStub
 import care.data4life.datadonation.mock.stub.storage.RegistrationDataStorageStub
 import care.data4life.datadonation.mock.stub.storage.ServiceTokenDataStorageStub
 import care.data4life.sdk.util.test.runBlockingTest
@@ -71,7 +72,7 @@ abstract class RegisterNewDonorTest {
     private val mockRegistrationDataStore = RegistrationDataStorageStub()
     private val serviceTokenRepository = ServiceTokenRepository(mockServiceTokenDataStore)
     private val mockUserConsentRepository = UserConsentRepositoryStub()
-    private val registrationRepository = RegistrationRepository(mockRegistrationDataStore)
+    private val registrationRepository = RegistrationRepository(DonationServiceStub())
 
     private val signatureKey = object : SignatureKeyPrivate {
         override fun sign(data: ByteArray) = byteArrayOf()

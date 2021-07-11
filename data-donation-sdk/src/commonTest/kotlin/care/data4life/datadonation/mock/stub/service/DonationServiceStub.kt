@@ -22,6 +22,7 @@ import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 
 class DonationServiceStub : ServiceContract.DonationService, MockContract.Stub {
+    var whenRegisterNewDonor: ((payload: ByteArray) -> Unit)? = null
     var whenDonateResources: ((payload: DonationPayload) -> Unit)? = null
 
     override suspend fun requestToken(): String {
@@ -29,7 +30,7 @@ class DonationServiceStub : ServiceContract.DonationService, MockContract.Stub {
     }
 
     override suspend fun registerNewDonor(payload: ByteArray) {
-        TODO("Not yet implemented")
+        whenRegisterNewDonor?.invoke(payload) ?: throw MockException()
     }
 
     override suspend fun donateResources(payload: DonationPayload) {
@@ -37,6 +38,7 @@ class DonationServiceStub : ServiceContract.DonationService, MockContract.Stub {
     }
 
     override fun clear() {
+        whenRegisterNewDonor = null
         whenDonateResources = null
     }
 }
