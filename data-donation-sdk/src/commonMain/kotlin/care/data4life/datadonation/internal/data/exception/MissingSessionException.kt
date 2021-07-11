@@ -14,19 +14,6 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.data.service
+package care.data4life.datadonation.internal.data.exception
 
-import care.data4life.datadonation.Contract
-import care.data4life.datadonation.internal.io.IOContract
-
-class CredentialService(
-    private val credentialProvider: IOContract.CredentialProvider
-) : ServiceContract.CredentialService {
-    override fun getDataDonationPublicKey(): DataDonationKey {
-        return credentialProvider.getServicePublicKey(Contract.Service.DD)
-    }
-
-    override fun getAnalyticsPlatformPublicKey(): DataDonationKey {
-        return credentialProvider.getServicePublicKey(Contract.Service.ALP)
-    }
-}
+class MissingSessionException(cause: Exception? = null) : IllegalStateException(cause)

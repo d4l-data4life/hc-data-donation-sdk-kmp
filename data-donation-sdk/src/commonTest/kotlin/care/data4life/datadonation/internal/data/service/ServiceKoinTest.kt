@@ -16,12 +16,16 @@
 
 package care.data4life.datadonation.internal.data.service
 
+import care.data4life.datadonation.Contract
 import care.data4life.datadonation.core.model.Environment
+import care.data4life.datadonation.internal.io.IOContract
+import care.data4life.datadonation.mock.stub.ClientConfigurationStub
 import care.data4life.datadonation.mock.stub.ClockStub
 import io.ktor.client.HttpClient
 import kotlinx.datetime.Clock
 import org.koin.core.context.stopKoin
 import org.koin.dsl.bind
+import org.koin.dsl.binds
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import kotlin.test.BeforeTest
@@ -62,6 +66,54 @@ class ServiceKoinTest {
         }
         // Then
         val builder: ServiceContract.ConsentService = koin.koin.get()
+        assertNotNull(builder)
+    }
+
+    @Test
+    fun `Given resolveServiceModule is called it creates a Module, which contains a CredentialService`() {
+        // When
+        val koin = koinApplication {
+            modules(
+                resolveServiceModule(),
+                module {
+                    single { ClockStub() } bind Clock::class
+                    single {
+                        ClientConfigurationStub()
+                    } binds arrayOf(
+                        Contract.Configuration::class,
+                        IOContract.ScopeProvider::class,
+                        IOContract.CredentialProvider::class,
+                        IOContract.UserSessionTokenProvider::class
+                    )
+                }
+            )
+        }
+        // Then
+        val builder: ServiceContract.CredentialService = koin.koin.get()
+        assertNotNull(builder)
+    }
+
+    @Test
+    fun `Given resolveServiceModule is called it creates a Module, which contains a UserSessionTokenService`() {
+        // When
+        val koin = koinApplication {
+            modules(
+                resolveServiceModule(),
+                module {
+                    single { ClockStub() } bind Clock::class
+                    single {
+                        ClientConfigurationStub()
+                    } binds arrayOf(
+                        Contract.Configuration::class,
+                        IOContract.ScopeProvider::class,
+                        IOContract.CredentialProvider::class,
+                        IOContract.UserSessionTokenProvider::class
+                    )
+                }
+            )
+        }
+        // Then
+        val builder: ServiceContract.UserSessionTokenService = koin.koin.get()
         assertNotNull(builder)
     }
 }

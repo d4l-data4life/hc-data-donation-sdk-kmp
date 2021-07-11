@@ -29,6 +29,10 @@ typealias Parameter = Map<String, Any?>
 typealias AccessToken = String
 typealias Path = List<String>
 
+typealias SessionToken = String
+typealias DataDonationKey = String
+typealias AnalyticsKey = String
+
 internal interface ServiceContract {
     enum class Method(name: String) {
         DELETE("delete"),
@@ -65,12 +69,12 @@ internal interface ServiceContract {
     }
 
     interface CredentialService {
-        fun getDataDonationPublicKey(): String
-        fun getAnalyticsPlatformPublicKey(): String
+        fun getDataDonationPublicKey(): DataDonationKey
+        fun getAnalyticsPlatformPublicKey(): AnalyticsKey
     }
 
     interface UserSessionTokenService {
-        suspend fun getUserSessionToken(): String?
+        suspend fun getUserSessionToken(): SessionToken
     }
 
     interface ConsentService {

@@ -28,5 +28,13 @@ internal fun resolveServiceModule(): Module {
         single<ServiceContract.ConsentService> {
             ConsentService.getInstance(get(), get(), get(), get())
         }
+
+        single<ServiceContract.CredentialService> {
+            CredentialService(get())
+        }
+
+        single<ServiceContract.UserSessionTokenService> {
+            CachedUserSessionTokenService(get(), get())
+        }
     }
 }
