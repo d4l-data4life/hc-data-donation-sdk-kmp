@@ -37,11 +37,11 @@ import care.data4life.datadonation.encryption.Algorithm
 import care.data4life.datadonation.encryption.EncryptionContract
 import care.data4life.datadonation.encryption.HashSize
 import care.data4life.datadonation.encryption.signature.SignatureKeyPrivate
-import care.data4life.datadonation.internal.data.exception.MissingCredentialsException
 import care.data4life.datadonation.internal.data.model.ConsentSignatureType
 import care.data4life.datadonation.internal.data.model.DocumentWithSignature
 import care.data4life.datadonation.internal.data.model.DonationPayload
 import care.data4life.datadonation.internal.domain.repository.RepositoryContract
+import care.data4life.datadonation.lang.CoreRuntimeException
 import care.data4life.hl7.fhir.stu3.model.FhirResource
 import io.ktor.utils.io.core.*
 
@@ -73,7 +73,7 @@ internal class DonateResources(
                     redactSensitiveInformation.execute(parameter.resources)
                 ).execute()
             )
-        } ?: throw MissingCredentialsException()
+        } ?: throw CoreRuntimeException.MissingCredentialsException()
     }
 
     private suspend fun donateResources(

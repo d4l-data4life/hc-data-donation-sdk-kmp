@@ -17,9 +17,9 @@
 package care.data4life.datadonation.internal.data.service
 
 import care.data4life.datadonation.core.model.Environment
-import care.data4life.datadonation.internal.data.exception.InternalErrorException
 import care.data4life.datadonation.internal.data.service.ServiceContract.CallBuilder.Companion.ACCESS_TOKEN_FIELD
 import care.data4life.datadonation.internal.data.service.ServiceContract.CallBuilder.Companion.ACCESS_TOKEN_VALUE_PREFIX
+import care.data4life.datadonation.lang.CoreRuntimeException
 import care.data4life.datadonation.mock.fake.defaultResponse
 import care.data4life.datadonation.mock.fake.getDefaultMockClient
 import care.data4life.sdk.util.test.runWithContextBlockingTest
@@ -422,7 +422,7 @@ class CallBuilderTest {
         val env = Environment.LOCAL
         val client = getDefaultMockClient()
 
-        val error = assertFailsWith<InternalErrorException> {
+        val error = assertFailsWith<CoreRuntimeException> {
             // When
             val builder = CallBuilder.getInstance(env, client)
             builder.setBody("Wups").execute(ServiceContract.Method.GET)
@@ -442,7 +442,7 @@ class CallBuilderTest {
         val client = getDefaultMockClient()
 
         // When
-        val error = assertFailsWith<InternalErrorException> {
+        val error = assertFailsWith<CoreRuntimeException> {
             // When
             val builder = CallBuilder.getInstance(env, client)
             builder.execute(ServiceContract.Method.POST)
@@ -461,7 +461,7 @@ class CallBuilderTest {
         val env = Environment.LOCAL
         val client = getDefaultMockClient()
 
-        val error = assertFailsWith<InternalErrorException> {
+        val error = assertFailsWith<CoreRuntimeException> {
             // When
             val builder = CallBuilder.getInstance(env, client)
             builder.execute(ServiceContract.Method.PUT)
@@ -480,7 +480,7 @@ class CallBuilderTest {
         val env = Environment.LOCAL
         val client = getDefaultMockClient()
 
-        val error = assertFailsWith<InternalErrorException> {
+        val error = assertFailsWith<CoreRuntimeException> {
             // When
             val builder = CallBuilder.getInstance(env, client)
             builder.execute(ServiceContract.Method.DELETE)

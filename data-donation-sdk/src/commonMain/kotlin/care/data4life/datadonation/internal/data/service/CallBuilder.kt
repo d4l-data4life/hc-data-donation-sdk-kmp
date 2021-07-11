@@ -17,9 +17,9 @@
 package care.data4life.datadonation.internal.data.service
 
 import care.data4life.datadonation.core.model.Environment
-import care.data4life.datadonation.internal.data.exception.InternalErrorException
 import care.data4life.datadonation.internal.data.service.ServiceContract.CallBuilder.Companion.ACCESS_TOKEN_FIELD
 import care.data4life.datadonation.internal.data.service.ServiceContract.CallBuilder.Companion.ACCESS_TOKEN_VALUE_PREFIX
+import care.data4life.datadonation.lang.CoreRuntimeException
 import io.ktor.client.HttpClient
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.header
@@ -67,11 +67,15 @@ internal class CallBuilder private constructor(
     private fun validateBodyAgainstMethod(method: ServiceContract.Method) {
         if (body != null) {
             if (method == ServiceContract.Method.GET) {
-                throw InternalErrorException("GET cannot be combined with a RequestBody.")
+                throw CoreRuntimeException.RequestValidationFailure(
+                    "GET cannot be combined with a RequestBody."
+                )
             }
         } else {
             if (method != ServiceContract.Method.GET) {
-                throw InternalErrorException("${method.name.toUpperCase()} must be combined with a RequestBody.")
+                throw CoreRuntimeException.RequestValidationFailure(
+                    "${method.name.toUpperCase()} must be combined with a RequestBody."
+                )
             }
         }
     }
