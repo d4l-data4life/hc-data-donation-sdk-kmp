@@ -35,7 +35,6 @@ package care.data4life.datadonation.core.model
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-
 @Serializable
 data class ConsentDocument(
     override val key: String,
@@ -49,4 +48,4 @@ data class ConsentDocument(
     @SerialName("studyID")
     override val studyId: String = "",
     override val programName: String = ""
-): ModelContract.ConsentDocument
+) : ModelContract.ConsentDocument
