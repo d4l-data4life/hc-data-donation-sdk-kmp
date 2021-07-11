@@ -33,7 +33,10 @@
 package care.data4life.datadonation.core.model
 
 // TODO: Test this
-data class KeyPair(val public: ByteArray, val private: ByteArray) {
+data class KeyPair(
+    override val public: ByteArray,
+    override val private: ByteArray
+): ModelContract.KeyPair {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false
