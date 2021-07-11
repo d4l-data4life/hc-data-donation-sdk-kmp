@@ -18,8 +18,12 @@ package care.data4life.datadonation.mock.stub.service
 
 import care.data4life.datadonation.internal.data.model.DonationPayload
 import care.data4life.datadonation.internal.data.service.ServiceContract
+import care.data4life.datadonation.mock.MockContract
+import care.data4life.datadonation.mock.MockException
 
-class DonationServiceStub : ServiceContract.DonationService {
+class DonationServiceStub : ServiceContract.DonationService, MockContract.Stub {
+    var whenDonateResources: ((payload: DonationPayload) -> Unit)? = null
+
     override suspend fun requestToken(): String {
         TODO("Not yet implemented")
     }
@@ -29,6 +33,10 @@ class DonationServiceStub : ServiceContract.DonationService {
     }
 
     override suspend fun donateResources(payload: DonationPayload) {
-        TODO("Not yet implemented")
+        whenDonateResources?.invoke(payload) ?: throw MockException()
+    }
+
+    override fun clear() {
+        whenDonateResources = null
     }
 }

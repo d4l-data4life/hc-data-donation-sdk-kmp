@@ -34,7 +34,6 @@ package care.data4life.datadonation.internal.domain.repository
 
 import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.internal.data.service.ServiceContract
-import care.data4life.datadonation.internal.data.storage.StorageContract
 
 internal class ConsentDocumentRepository(
     private val consentService: ServiceContract.ConsentService,

@@ -57,7 +57,7 @@ class ConsentDocumentRepositoryTest {
         var capturedLanguage: String? = null
         var capturedConsentKey: String? = null
 
-        sessionTokenService.sessionToken = sessionToken
+        sessionTokenService.sessionToken = { sessionToken }
 
         consentService.whenFetchConsentDocuments = { delegatedSessionToken, delegatedVersion, delegatedLanguage, delegatedConsentKey ->
             capturedSessionToken = delegatedSessionToken

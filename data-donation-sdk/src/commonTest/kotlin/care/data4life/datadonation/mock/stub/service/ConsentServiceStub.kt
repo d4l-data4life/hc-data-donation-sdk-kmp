@@ -20,9 +20,10 @@ import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.model.ConsentSignature
 import care.data4life.datadonation.internal.data.service.ServiceContract
+import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 
-class ConsentServiceStub : ServiceContract.ConsentService {
+class ConsentServiceStub : ServiceContract.ConsentService, MockContract.Stub {
     var whenFetchConsentDocuments: ((String, Int?, String?, String) -> List<ConsentDocument>)? = null
 
     override suspend fun fetchConsentDocuments(
@@ -67,5 +68,9 @@ class ConsentServiceStub : ServiceContract.ConsentService {
 
     override suspend fun revokeUserConsent(accessToken: String, consentKey: String) {
         TODO("Not yet implemented")
+    }
+
+    override fun clear() {
+        whenFetchConsentDocuments = null
     }
 }

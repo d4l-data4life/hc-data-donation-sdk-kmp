@@ -21,10 +21,10 @@ import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 
 class UserSessionTokenServiceStub : ServiceContract.UserSessionTokenService, MockContract.Stub {
-    var sessionToken: String? = null
+    var sessionToken: (() -> String)? = null
 
     override suspend fun getUserSessionToken(): String {
-        return sessionToken ?: throw MockException()
+        return sessionToken?.invoke() ?: throw MockException()
     }
 
     override fun clear() {
