@@ -16,6 +16,7 @@
 
 package care.data4life.datadonation.internal.data.service.networking
 
+import io.ktor.client.HttpClient
 import org.koin.core.context.stopKoin
 import org.koin.dsl.koinApplication
 import kotlin.test.BeforeTest
@@ -38,6 +39,19 @@ class NetworkingKoinTest {
         }
         // Then
         val builder: Networking.CallBuilderFactory = koin.koin.get()
+        assertNotNull(builder)
+    }
+
+    @Test
+    fun `Given resolveServiceModule is called it creates a Module, which contains a HTTPClient`() {
+        // When
+        val koin = koinApplication {
+            modules(
+                resolveNetworking(),
+            )
+        }
+        // Then
+        val builder: HttpClient = koin.koin.get()
         assertNotNull(builder)
     }
 }

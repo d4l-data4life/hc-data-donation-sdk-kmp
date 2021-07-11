@@ -89,35 +89,9 @@ internal fun resolveRootModule(configuration: Contract.Configuration): Module {
 
 internal fun resolveCoreModule(): Module {
     return module {
-        single {
-            HttpClient {
-                install(JsonFeature) {
-                    serializer =
-                        KotlinxSerializer(
-                            kotlinx.serialization.json.Json {
-                                isLenient = true
-                                ignoreUnknownKeys = true
-                                allowSpecialFloatingPointValues = true
-                                useArrayPolymorphism = false
-                            }
-                        )
-                }
-                install(Logging) {
-                    logger = SimpleLogger()
-                    level = LogLevel.ALL
-                }
-            }
-        }
-
         // Services
         single<ServiceContract.DonationService> {
             DonationService(get(), get())
         }
-    }
-}
-
-private class SimpleLogger : Logger {
-    override fun log(message: String) {
-        println("HttpClient: $message")
     }
 }
