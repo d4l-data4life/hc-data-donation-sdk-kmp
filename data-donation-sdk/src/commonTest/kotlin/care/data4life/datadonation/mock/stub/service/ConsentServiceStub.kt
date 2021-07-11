@@ -20,15 +20,23 @@ import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.model.ConsentSignature
 import care.data4life.datadonation.internal.data.service.ServiceContract
+import care.data4life.datadonation.mock.MockException
 
 class ConsentServiceStub : ServiceContract.ConsentService {
+    var whenFetchConsentDocuments: ((String, Int?, String?, String) -> List<ConsentDocument>)? = null
+
     override suspend fun fetchConsentDocuments(
         accessToken: String,
         version: Int?,
         language: String?,
         consentKey: String
     ): List<ConsentDocument> {
-        TODO("Not yet implemented")
+        return whenFetchConsentDocuments?.invoke(
+            accessToken,
+            version,
+            language,
+            consentKey
+        ) ?: throw MockException()
     }
 
     override suspend fun fetchUserConsents(
