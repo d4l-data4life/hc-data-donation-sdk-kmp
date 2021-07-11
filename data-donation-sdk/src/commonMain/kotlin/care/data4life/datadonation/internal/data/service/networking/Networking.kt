@@ -18,6 +18,9 @@ package care.data4life.datadonation.internal.data.service.networking
 
 import care.data4life.datadonation.core.model.Environment
 import io.ktor.client.HttpClient
+import io.ktor.client.features.json.JsonFeature
+import io.ktor.client.features.logging.Logging
+import kotlinx.serialization.json.JsonBuilder
 
 typealias Header = Map<String, String>
 typealias Parameter = Map<String, Any?>
@@ -25,6 +28,21 @@ typealias AccessToken = String
 typealias Path = List<String>
 
 internal interface Networking {
+    interface Logger : io.ktor.client.features.logging.Logger {
+        override fun log(message: String)
+    }
+
+    fun interface Configurator<Config, Util> {
+        fun configure(pluginConfig: Config, util: Util)
+    }
+
+    fun interface JsonConfigurator {
+        fun configure(jsonBuild: JsonBuilder): JsonBuilder
+    }
+
+    fun interface SerializerConfigurator : Configurator<JsonFeature.Config, JsonConfigurator>
+    fun interface LoggingConfigurator : Configurator<Logging.Config, Nothing>
+
     enum class Method(name: String) {
         DELETE("delete"),
         GET("get"),
@@ -32,7 +50,6 @@ internal interface Networking {
         PUT("put")
     }
 
-    // TODO Add a new package with potential HTTP Interceptor
     interface CallBuilder {
         fun setHeaders(header: Header): CallBuilder
         fun setParameter(parameter: Parameter): CallBuilder
