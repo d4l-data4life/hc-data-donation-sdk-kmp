@@ -37,6 +37,7 @@ import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.encryption.resolveEncryptionModule
 import care.data4life.datadonation.internal.data.service.DonationService
 import care.data4life.datadonation.internal.data.service.ServiceContract
+import care.data4life.datadonation.internal.data.service.networking.resolveNetworking
 import care.data4life.datadonation.internal.data.service.resolveServiceModule
 import care.data4life.datadonation.internal.domain.repository.resolveRepositoryModule
 import care.data4life.datadonation.internal.domain.usecases.*
@@ -60,6 +61,7 @@ internal fun initKoin(configuration: Contract.Configuration): KoinApplication {
             resolveRootModule(configuration),
             resolveCoreModule(),
             resolveIOModule(),
+            resolveNetworking(),
             resolveUsecaseModule(),
             resolveRepositoryModule(),
             resolveEncryptionModule(),

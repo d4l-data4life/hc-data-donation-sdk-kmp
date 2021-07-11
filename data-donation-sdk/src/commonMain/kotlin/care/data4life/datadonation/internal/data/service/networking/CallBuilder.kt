@@ -14,11 +14,11 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.data.service
+package care.data4life.datadonation.internal.data.service.networking
 
 import care.data4life.datadonation.core.model.Environment
-import care.data4life.datadonation.internal.data.service.ServiceContract.CallBuilder.Companion.ACCESS_TOKEN_FIELD
-import care.data4life.datadonation.internal.data.service.ServiceContract.CallBuilder.Companion.ACCESS_TOKEN_VALUE_PREFIX
+import care.data4life.datadonation.internal.data.service.networking.Networking.CallBuilder.Companion.ACCESS_TOKEN_FIELD
+import care.data4life.datadonation.internal.data.service.networking.Networking.CallBuilder.Companion.ACCESS_TOKEN_VALUE_PREFIX
 import care.data4life.datadonation.lang.CoreRuntimeException
 import io.ktor.client.HttpClient
 import io.ktor.client.request.HttpRequestBuilder
@@ -37,42 +37,42 @@ internal class CallBuilder private constructor(
     private val host: String,
     private val protocol: URLProtocol,
     private val port: Int?
-) : ServiceContract.CallBuilder {
+) : Networking.CallBuilder {
     private var headers: Header = mapOf()
     private var parameter: Parameter = mapOf()
     private var accessToken: AccessToken? = null
     private var useJson: Boolean = false
     private var body: Any? = null
 
-    override fun setHeaders(header: Header): ServiceContract.CallBuilder {
+    override fun setHeaders(header: Header): Networking.CallBuilder {
         return this.also { this.headers = header }
     }
 
-    override fun setParameter(parameter: Parameter): ServiceContract.CallBuilder {
+    override fun setParameter(parameter: Parameter): Networking.CallBuilder {
         return this.also { this.parameter = parameter }
     }
 
-    override fun setAccessToken(token: AccessToken): ServiceContract.CallBuilder {
+    override fun setAccessToken(token: AccessToken): Networking.CallBuilder {
         return this.also { this.accessToken = token }
     }
 
-    override fun useJsonContentType(): ServiceContract.CallBuilder {
+    override fun useJsonContentType(): Networking.CallBuilder {
         return this.also { this.useJson = true }
     }
 
-    override fun setBody(body: Any): ServiceContract.CallBuilder {
+    override fun setBody(body: Any): Networking.CallBuilder {
         return this.also { this.body = body }
     }
 
-    private fun validateBodyAgainstMethod(method: ServiceContract.Method) {
+    private fun validateBodyAgainstMethod(method: Networking.Method) {
         if (body != null) {
-            if (method == ServiceContract.Method.GET) {
+            if (method == Networking.Method.GET) {
                 throw CoreRuntimeException.RequestValidationFailure(
                     "GET cannot be combined with a RequestBody."
                 )
             }
         } else {
-            if (method != ServiceContract.Method.GET) {
+            if (method != Networking.Method.GET) {
                 throw CoreRuntimeException.RequestValidationFailure(
                     "${method.name.toUpperCase()} must be combined with a RequestBody."
                 )
@@ -88,7 +88,7 @@ internal class CallBuilder private constructor(
 
     private fun setMandatoryFields(
         builder: HttpRequestBuilder,
-        method: ServiceContract.Method,
+        method: Networking.Method,
         path: Path
     ) {
         validateBodyAgainstMethod(method)
@@ -135,7 +135,7 @@ internal class CallBuilder private constructor(
 
     private fun buildQuery(
         builder: HttpRequestBuilder,
-        method: ServiceContract.Method,
+        method: Networking.Method,
         path: Path
     ) {
         setMandatoryFields(builder, method, path)
@@ -147,11 +147,11 @@ internal class CallBuilder private constructor(
     }
 
     override suspend fun execute(
-        method: ServiceContract.Method,
+        method: Networking.Method,
         path: Path
     ): Any = client.request { buildQuery(this, method, path) }
 
-    companion object : ServiceContract.CallBuilderFactory {
+    companion object : Networking.CallBuilderFactory {
         private fun resolveProtocol(environment: Environment): URLProtocol {
             return if (environment == Environment.LOCAL) {
                 URLProtocol.HTTP
@@ -164,7 +164,7 @@ internal class CallBuilder private constructor(
             environment: Environment,
             client: HttpClient,
             port: Int?
-        ): ServiceContract.CallBuilder {
+        ): Networking.CallBuilder {
             return CallBuilder(
                 client,
                 environment.url,

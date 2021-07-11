@@ -18,10 +18,12 @@ package care.data4life.datadonation.internal.data.service
 
 import care.data4life.datadonation.Contract
 import care.data4life.datadonation.core.model.Environment
+import care.data4life.datadonation.internal.data.service.networking.Networking
 import care.data4life.datadonation.internal.io.IOContract
+import care.data4life.datadonation.mock.fake.createDefaultMockClient
 import care.data4life.datadonation.mock.stub.ClientConfigurationStub
 import care.data4life.datadonation.mock.stub.ClockStub
-import io.ktor.client.HttpClient
+import care.data4life.datadonation.mock.stub.service.networking.CallBuilderSpy
 import kotlinx.datetime.Clock
 import org.koin.core.context.stopKoin
 import org.koin.dsl.bind
@@ -39,19 +41,6 @@ class ServiceKoinTest {
     }
 
     @Test
-    fun `Given resolveServiceModule is called it creates a Module, which contains a CallBuilderFactory`() {
-        // When
-        val koin = koinApplication {
-            modules(
-                resolveServiceModule(),
-            )
-        }
-        // Then
-        val builder: ServiceContract.CallBuilderFactory = koin.koin.get()
-        assertNotNull(builder)
-    }
-
-    @Test
     fun `Given resolveServiceModule is called it creates a Module, which contains a ConsentService`() {
         // When
         val koin = koinApplication {
@@ -59,7 +48,8 @@ class ServiceKoinTest {
                 resolveServiceModule(),
                 module {
                     single { ClockStub() } bind Clock::class
-                    single { HttpClient() }
+                    single<Networking.CallBuilderFactory> { CallBuilderSpy }
+                    single { createDefaultMockClient() }
                     single { Environment.LOCAL } bind Environment::class
                 }
             )

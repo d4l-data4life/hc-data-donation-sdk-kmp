@@ -14,22 +14,22 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.mock.spy
+package care.data4life.datadonation.mock.stub.service.networking
 
 import care.data4life.datadonation.core.model.Environment
-import care.data4life.datadonation.internal.data.service.AccessToken
-import care.data4life.datadonation.internal.data.service.Header
-import care.data4life.datadonation.internal.data.service.Parameter
-import care.data4life.datadonation.internal.data.service.Path
-import care.data4life.datadonation.internal.data.service.ServiceContract
+import care.data4life.datadonation.internal.data.service.networking.AccessToken
+import care.data4life.datadonation.internal.data.service.networking.Header
+import care.data4life.datadonation.internal.data.service.networking.Networking
+import care.data4life.datadonation.internal.data.service.networking.Parameter
+import care.data4life.datadonation.internal.data.service.networking.Path
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 import io.ktor.client.HttpClient
 import kotlin.native.concurrent.ThreadLocal
 
 internal class CallBuilderSpy private constructor(
-    private val onExecute: ((ServiceContract.Method, Path) -> Any)?
-) : ServiceContract.CallBuilder {
+    private val onExecute: ((Networking.Method, Path) -> Any)?
+) : Networking.CallBuilder {
     private var headers: Header? = null
     val delegatedHeaders: Header?
         get() = headers
@@ -50,28 +50,28 @@ internal class CallBuilderSpy private constructor(
     val delegatedBody: Any?
         get() = body
 
-    override fun setHeaders(header: Header): ServiceContract.CallBuilder {
+    override fun setHeaders(header: Header): Networking.CallBuilder {
         return this.also { this.headers = header }
     }
 
-    override fun setParameter(parameter: Parameter): ServiceContract.CallBuilder {
+    override fun setParameter(parameter: Parameter): Networking.CallBuilder {
         return this.also { this.parameter = parameter }
     }
 
-    override fun setAccessToken(token: AccessToken): ServiceContract.CallBuilder {
+    override fun setAccessToken(token: AccessToken): Networking.CallBuilder {
         return this.also { this.token = token }
     }
 
-    override fun useJsonContentType(): ServiceContract.CallBuilder {
+    override fun useJsonContentType(): Networking.CallBuilder {
         return this.also { json = true }
     }
 
-    override fun setBody(body: Any): ServiceContract.CallBuilder {
+    override fun setBody(body: Any): Networking.CallBuilder {
         return this.also { this.body = body }
     }
 
     override suspend fun execute(
-        method: ServiceContract.Method,
+        method: Networking.Method,
         path: Path
     ): Any {
         return onExecute?.invoke(
@@ -81,8 +81,8 @@ internal class CallBuilderSpy private constructor(
     }
 
     @ThreadLocal
-    companion object Factory : ServiceContract.CallBuilderFactory, MockContract.Spy {
-        var onExecute: ((ServiceContract.Method, Path) -> Any)? = null
+    companion object Factory : Networking.CallBuilderFactory, MockContract.Stub {
+        var onExecute: ((Networking.Method, Path) -> Any)? = null
 
         private var environment: Environment? = null
         val delegatedEnvironment: Environment?
@@ -104,12 +104,12 @@ internal class CallBuilderSpy private constructor(
             environment: Environment,
             client: HttpClient,
             port: Int?
-        ): ServiceContract.CallBuilder {
+        ): Networking.CallBuilder {
             return CallBuilderSpy(onExecute).also {
-                this.environment = environment
-                this.client = client
-                this.port = port
-                this.instance = it
+                Factory.environment = environment
+                Factory.client = client
+                Factory.port = port
+                instance = it
             }
         }
 

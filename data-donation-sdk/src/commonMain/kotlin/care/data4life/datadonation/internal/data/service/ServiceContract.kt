@@ -21,53 +21,15 @@ import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.model.ConsentSignature
 import care.data4life.datadonation.internal.data.model.DonationPayload
+import care.data4life.datadonation.internal.data.service.networking.Networking
 import io.ktor.client.HttpClient
 import kotlinx.datetime.Clock
-
-typealias Header = Map<String, String>
-typealias Parameter = Map<String, Any?>
-typealias AccessToken = String
-typealias Path = List<String>
 
 typealias SessionToken = String
 typealias DataDonationKey = String
 typealias AnalyticsKey = String
 
 internal interface ServiceContract {
-    enum class Method(name: String) {
-        DELETE("delete"),
-        GET("get"),
-        POST("post"),
-        PUT("put")
-    }
-
-    // TODO Add a new package with potential HTTP Interceptor
-    interface CallBuilder {
-        fun setHeaders(header: Header): CallBuilder
-        fun setParameter(parameter: Parameter): CallBuilder
-        fun setAccessToken(token: AccessToken): CallBuilder
-        fun useJsonContentType(): CallBuilder
-        fun setBody(body: Any): CallBuilder
-
-        suspend fun execute(
-            method: Method = Method.GET,
-            path: Path = listOf("")
-        ): Any
-
-        companion object {
-            const val ACCESS_TOKEN_FIELD = "Authorization"
-            const val ACCESS_TOKEN_VALUE_PREFIX = "Bearer"
-        }
-    }
-
-    interface CallBuilderFactory {
-        fun getInstance(
-            environment: Environment,
-            client: HttpClient,
-            port: Int? = null
-        ): CallBuilder
-    }
-
     interface CredentialService {
         fun getDataDonationPublicKey(): DataDonationKey
         fun getAnalyticsPlatformPublicKey(): AnalyticsKey
@@ -131,7 +93,7 @@ internal interface ServiceContract {
         fun getInstance(
             environment: Environment,
             client: HttpClient,
-            builderFactory: CallBuilderFactory,
+            builderFactory: Networking.CallBuilderFactory,
             clock: Clock
         ): ConsentService
     }

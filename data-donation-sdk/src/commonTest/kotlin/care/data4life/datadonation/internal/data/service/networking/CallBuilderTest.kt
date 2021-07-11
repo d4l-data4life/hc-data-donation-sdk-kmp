@@ -14,14 +14,14 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.data.service
+package care.data4life.datadonation.internal.data.service.networking
 
 import care.data4life.datadonation.core.model.Environment
-import care.data4life.datadonation.internal.data.service.ServiceContract.CallBuilder.Companion.ACCESS_TOKEN_FIELD
-import care.data4life.datadonation.internal.data.service.ServiceContract.CallBuilder.Companion.ACCESS_TOKEN_VALUE_PREFIX
+import care.data4life.datadonation.internal.data.service.networking.Networking.CallBuilder.Companion.ACCESS_TOKEN_FIELD
+import care.data4life.datadonation.internal.data.service.networking.Networking.CallBuilder.Companion.ACCESS_TOKEN_VALUE_PREFIX
 import care.data4life.datadonation.lang.CoreRuntimeException
+import care.data4life.datadonation.mock.fake.createDefaultMockClient
 import care.data4life.datadonation.mock.fake.defaultResponse
-import care.data4life.datadonation.mock.fake.getDefaultMockClient
 import care.data4life.sdk.util.test.runWithContextBlockingTest
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
@@ -58,20 +58,20 @@ class CallBuilderTest {
     fun `It fulfils CallBuilderFactory`() {
         val factory: Any = CallBuilder
 
-        assertTrue(factory is ServiceContract.CallBuilderFactory)
+        assertTrue(factory is Networking.CallBuilderFactory)
     }
 
     @Test
     fun `Given getInstance is called with a Environment and a HttpClient it returns a CallBuilder`() {
         // Given
         val env = Environment.LOCAL
-        val client = getDefaultMockClient()
+        val client = createDefaultMockClient()
 
         // When
         val builder: Any = CallBuilder.getInstance(env, client)
 
         // Then
-        assertTrue(builder is ServiceContract.CallBuilder)
+        assertTrue(builder is Networking.CallBuilder)
     }
 
     @Test
@@ -420,12 +420,12 @@ class CallBuilderTest {
     fun `Given a instance was create with a Environment, setBody is called with a Payload and it was executed with GET, it fails`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val env = Environment.LOCAL
-        val client = getDefaultMockClient()
+        val client = createDefaultMockClient()
 
         val error = assertFailsWith<CoreRuntimeException> {
             // When
             val builder = CallBuilder.getInstance(env, client)
-            builder.setBody("Wups").execute(ServiceContract.Method.GET)
+            builder.setBody("Wups").execute(Networking.Method.GET)
         }
 
         // Then
@@ -439,13 +439,13 @@ class CallBuilderTest {
     fun `Given a instance was create with a Environment, setBody was not called and it was executed with POST, it fails`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val env = Environment.LOCAL
-        val client = getDefaultMockClient()
+        val client = createDefaultMockClient()
 
         // When
         val error = assertFailsWith<CoreRuntimeException> {
             // When
             val builder = CallBuilder.getInstance(env, client)
-            builder.execute(ServiceContract.Method.POST)
+            builder.execute(Networking.Method.POST)
         }
 
         // Then
@@ -459,12 +459,12 @@ class CallBuilderTest {
     fun `Given a instance was create with a Environment, setBody was not called and it was executed with PUT, it fails`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val env = Environment.LOCAL
-        val client = getDefaultMockClient()
+        val client = createDefaultMockClient()
 
         val error = assertFailsWith<CoreRuntimeException> {
             // When
             val builder = CallBuilder.getInstance(env, client)
-            builder.execute(ServiceContract.Method.PUT)
+            builder.execute(Networking.Method.PUT)
         }
 
         // Then
@@ -478,12 +478,12 @@ class CallBuilderTest {
     fun `Given a instance was create with a Environment, setBody was not called and it was executed with DELETE, it fails`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val env = Environment.LOCAL
-        val client = getDefaultMockClient()
+        val client = createDefaultMockClient()
 
         val error = assertFailsWith<CoreRuntimeException> {
             // When
             val builder = CallBuilder.getInstance(env, client)
-            builder.execute(ServiceContract.Method.DELETE)
+            builder.execute(Networking.Method.DELETE)
         }
 
         // Then
@@ -509,7 +509,7 @@ class CallBuilderTest {
 
         // When
         val builder = CallBuilder.getInstance(env, client)
-        builder.setBody(payload).execute(ServiceContract.Method.POST)
+        builder.setBody(payload).execute(Networking.Method.POST)
     }
 
     @KtorExperimentalAPI
@@ -534,7 +534,7 @@ class CallBuilderTest {
 
         // When
         val builder = CallBuilder.getInstance(env, client)
-        builder.setBody(payload).execute(ServiceContract.Method.POST)
+        builder.setBody(payload).execute(Networking.Method.POST)
     }
 
     @Test
@@ -553,7 +553,7 @@ class CallBuilderTest {
 
         // When
         val builder = CallBuilder.getInstance(env, client)
-        builder.setBody(payload).execute(ServiceContract.Method.PUT)
+        builder.setBody(payload).execute(Networking.Method.PUT)
     }
 
     @KtorExperimentalAPI
@@ -579,7 +579,7 @@ class CallBuilderTest {
 
         // When
         val builder = CallBuilder.getInstance(env, client)
-        builder.setBody(payload).execute(ServiceContract.Method.PUT)
+        builder.setBody(payload).execute(Networking.Method.PUT)
     }
 
     @Test
@@ -598,7 +598,7 @@ class CallBuilderTest {
 
         // When
         val builder = CallBuilder.getInstance(env, client)
-        builder.setBody(payload).execute(ServiceContract.Method.DELETE)
+        builder.setBody(payload).execute(Networking.Method.DELETE)
     }
 
     @KtorExperimentalAPI
@@ -624,6 +624,6 @@ class CallBuilderTest {
 
         // When
         val builder = CallBuilder.getInstance(env, client)
-        builder.setBody(payload).execute(ServiceContract.Method.DELETE)
+        builder.setBody(payload).execute(Networking.Method.DELETE)
     }
 }

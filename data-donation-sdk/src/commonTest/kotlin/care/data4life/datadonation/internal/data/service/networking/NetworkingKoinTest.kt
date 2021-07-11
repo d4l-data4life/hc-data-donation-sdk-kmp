@@ -14,33 +14,30 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.mock.fake
+package care.data4life.datadonation.internal.data.service.networking
 
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.mock.MockEngine
-import io.ktor.client.engine.mock.MockRequestHandleScope
-import io.ktor.client.engine.mock.respond
-import io.ktor.client.request.HttpResponseData
-import io.ktor.http.ContentType
-import io.ktor.http.headersOf
+import org.koin.core.context.stopKoin
+import org.koin.dsl.koinApplication
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertNotNull
 
-fun createDefaultMockClient(): HttpClient {
-    return HttpClient(MockEngine) {
-        engine {
-            addHandler {
-                defaultResponse(this)
-            }
-        }
+class NetworkingKoinTest {
+    @BeforeTest
+    fun setUp() {
+        stopKoin()
     }
-}
 
-fun defaultResponse(scope: MockRequestHandleScope): HttpResponseData {
-    return scope.respond(
-        "Hello, world",
-        headers = headersOf(
-            "Content-Type" to listOf(
-                ContentType.Text.Plain.toString()
+    @Test
+    fun `Given resolveServiceModule is called it creates a Module, which contains a CallBuilderFactory`() {
+        // When
+        val koin = koinApplication {
+            modules(
+                resolveNetworking(),
             )
-        )
-    )
+        }
+        // Then
+        val builder: Networking.CallBuilderFactory = koin.koin.get()
+        assertNotNull(builder)
+    }
 }
