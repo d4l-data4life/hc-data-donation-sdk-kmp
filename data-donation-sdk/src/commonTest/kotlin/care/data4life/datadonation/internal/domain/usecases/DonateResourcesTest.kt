@@ -98,7 +98,7 @@ abstract class DonateResourcesTest {
     private val mapSensitiveInformation = RedactSensitiveInformationStub()
     private val mockRemoveInternalInformation = MockRemoveInternalInformation(jsonParser)
     private val mockUserConsentRepository = UserConsentRepositoryStub()
-    private val serviceTokenRepository = ServiceTokenRepository(mockServiceTokenDataStore)
+    private val serviceTokenRepository = ServiceTokenRepository(DonationServiceStub())
     private val donationRepository = DonationRepository(DonationServiceStub())
 
     private val fhirParser = FhirStu3Parser.defaultJsonParser()

@@ -34,7 +34,7 @@ class DonationRepositoryTest {
     }
 
     @Test
-    fun `Given donateResources is called with DonationPayload it delegates the call to its storage and just runs`() = runBlockingTest {
+    fun `Given donateResources is called with DonationPayload it delegates the call to the DonationService and just runs`() = runBlockingTest {
         // Given
         val service = DonationServiceStub()
         val payload = DonationPayload(ByteArray(23), emptyList())

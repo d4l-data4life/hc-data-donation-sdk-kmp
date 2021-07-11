@@ -33,7 +33,7 @@ class RegistrationRepositoryTest {
     }
 
     @Test
-    fun `Given registerNewDonor is called with Data delegates it delegates the call to its storage and just runs`() = runBlockingTest {
+    fun `Given registerNewDonor is called with Data delegates it delegates the call to the DonationService and just runs`() = runBlockingTest {
         // Given
         val service = DonationServiceStub()
         val data = ByteArray(23)

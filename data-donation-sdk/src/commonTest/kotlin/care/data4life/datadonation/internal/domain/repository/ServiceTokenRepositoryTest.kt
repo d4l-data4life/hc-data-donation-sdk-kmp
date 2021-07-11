@@ -16,7 +16,7 @@
 
 package care.data4life.datadonation.internal.domain.repository
 
-import care.data4life.datadonation.mock.stub.storage.ServiceTokenDataStorageStub
+import care.data4life.datadonation.mock.stub.service.DonationServiceStub
 import care.data4life.sdk.util.test.runBlockingTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -26,22 +26,22 @@ class ServiceTokenRepositoryTest {
     @Test
     fun `It fulfils ServiceTokenRepository`() {
         val repo: Any = ServiceTokenRepository(
-            ServiceTokenDataStorageStub()
+            DonationServiceStub()
         )
 
         assertTrue(repo is RepositoryContract.ServiceTokenRepository)
     }
 
     @Test
-    fun `Given requestDonationToken is called it delegates the call to its storage and returns its result`() = runBlockingTest {
+    fun `Given requestDonationToken is called it delegates the call to its DonationService and returns its result`() = runBlockingTest {
         // Given
-        val storage = ServiceTokenDataStorageStub()
+        val service = DonationServiceStub()
         val token = "token"
 
-        storage.whenRequestDonationToken = { token }
+        service.whenRequestToken = { token }
 
         // When
-        val repo = ServiceTokenRepository(storage)
+        val repo = ServiceTokenRepository(service)
         val result = repo.requestDonationToken()
 
         // Then

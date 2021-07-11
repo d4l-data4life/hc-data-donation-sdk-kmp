@@ -32,13 +32,13 @@
 
 package care.data4life.datadonation.internal.domain.repository
 
-import care.data4life.datadonation.internal.data.storage.StorageContract
+import care.data4life.datadonation.internal.data.service.ServiceContract
 
-class ServiceTokenRepository(
-    private val remoteStorage: StorageContract.ServiceTokenRemoteStorage
+internal class ServiceTokenRepository(
+    private val service: ServiceContract.DonationService
 ) : RepositoryContract.ServiceTokenRepository {
 
     override suspend fun requestDonationToken(): String {
-        return remoteStorage.requestDonationToken()
+        return service.requestToken()
     }
 }

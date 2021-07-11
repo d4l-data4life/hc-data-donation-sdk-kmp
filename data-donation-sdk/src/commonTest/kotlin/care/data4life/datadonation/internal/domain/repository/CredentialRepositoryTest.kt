@@ -32,7 +32,7 @@ class CredentialRepositoryTest {
     }
 
     @Test
-    fun `Given getDataDonationPublicKey is called it delegates the call to its storage and returns its result`() {
+    fun `Given getDataDonationPublicKey is called it delegates the call to the CredentialService and returns its result`() {
         // Given
         val service = CredentialServiceStub()
         val key = "KEY"

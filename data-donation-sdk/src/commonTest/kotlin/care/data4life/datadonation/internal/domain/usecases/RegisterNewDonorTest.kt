@@ -70,7 +70,7 @@ abstract class RegisterNewDonorTest {
 
     private val mockServiceTokenDataStore = ServiceTokenDataStorageStub()
     private val mockRegistrationDataStore = RegistrationDataStorageStub()
-    private val serviceTokenRepository = ServiceTokenRepository(mockServiceTokenDataStore)
+    private val serviceTokenRepository = ServiceTokenRepository(DonationServiceStub())
     private val mockUserConsentRepository = UserConsentRepositoryStub()
     private val registrationRepository = RegistrationRepository(DonationServiceStub())
 
