@@ -16,7 +16,7 @@
 
 package care.data4life.datadonation.internal.domain.repository
 
-import care.data4life.datadonation.mock.stub.storage.CredentialsDataStorageStub
+import care.data4life.datadonation.mock.stub.service.CredentialServiceStub
 import kotlin.test.Test
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
@@ -25,7 +25,7 @@ class CredentialRepositoryTest {
     @Test
     fun `It fulfils CredentialsRepository`() {
         val repo: Any = CredentialsRepository(
-            CredentialsDataStorageStub()
+            CredentialServiceStub()
         )
 
         assertTrue(repo is RepositoryContract.CredentialsRepository)
@@ -34,13 +34,13 @@ class CredentialRepositoryTest {
     @Test
     fun `Given getDataDonationPublicKey is called it delegates the call to its storage and returns its result`() {
         // Given
-        val storage = CredentialsDataStorageStub()
+        val service = CredentialServiceStub()
         val key = "KEY"
 
-        storage.whenGetDataDonationPublicKey = { key }
+        service.whenGetDataDonationPublicKey = { key }
 
         // When
-        val repo = CredentialsRepository(storage)
+        val repo = CredentialsRepository(service)
         val result = repo.getDataDonationPublicKey()
 
         // Then
@@ -53,13 +53,13 @@ class CredentialRepositoryTest {
     @Test
     fun `Given getAnalyticsPlatformPublicKey is called it delegates the call to its storage and returns its result`() {
         // Given
-        val storage = CredentialsDataStorageStub()
+        val service = CredentialServiceStub()
         val key = "KEY"
 
-        storage.whenGetAnalyticsPlatformPublicKey = { key }
+        service.whenGetAnalyticsPlatformPublicKey = { key }
 
         // When
-        val repo = CredentialsRepository(storage)
+        val repo = CredentialsRepository(service)
         val result = repo.getAnalyticsPlatformPublicKey()
 
         // Then
