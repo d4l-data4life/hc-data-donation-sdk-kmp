@@ -18,7 +18,6 @@ package care.data4life.datadonation.di
 
 import care.data4life.datadonation.Contract
 import care.data4life.datadonation.core.model.Environment
-import care.data4life.datadonation.internal.data.storage.StorageContract
 import care.data4life.datadonation.internal.di.resolveRootModule
 import care.data4life.datadonation.internal.io.IOContract
 import care.data4life.datadonation.mock.stub.ClientConfigurationStub
@@ -67,7 +66,7 @@ class RootKoinTest {
             modules(resolveRootModule(config))
         }
         // Then
-        val instance: StorageContract.CredentialProvider = koin.koin.get()
+        val instance: IOContract.CredentialProvider = koin.koin.get()
         assertNotNull(instance)
     }
 
@@ -78,7 +77,7 @@ class RootKoinTest {
             modules(resolveRootModule(config))
         }
         // Then
-        val instance: StorageContract.UserSessionTokenProvider = koin.koin.get()
+        val instance: IOContract.UserSessionTokenProvider = koin.koin.get()
         assertNotNull(instance)
     }
 
@@ -92,7 +91,7 @@ class RootKoinTest {
             modules(resolveRootModule(config))
         }
         // Then
-        val instance: StorageContract.UserSessionTokenProvider = koin.koin.get()
+        val instance: IOContract.UserSessionTokenProvider = koin.koin.get()
         assertNotNull(instance)
     }
 

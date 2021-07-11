@@ -37,7 +37,6 @@ import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.UserConsent
-import care.data4life.datadonation.internal.data.storage.StorageContract
 import care.data4life.datadonation.internal.io.IOContract
 import care.data4life.hl7.fhir.stu3.model.FhirResource
 import kotlinx.coroutines.CoroutineScope
@@ -52,9 +51,7 @@ interface Contract {
     interface Configuration :
         IOContract.ScopeProvider,
         IOContract.CredentialProvider,
-        IOContract.UserSessionTokenProvider,
-        StorageContract.CredentialProvider,
-        StorageContract.UserSessionTokenProvider {
+        IOContract.UserSessionTokenProvider {
         override fun getServicePublicKey(service: Service): String
 
         fun getDonorKeyPair(): KeyPair?

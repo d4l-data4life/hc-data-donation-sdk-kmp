@@ -38,7 +38,6 @@ import care.data4life.datadonation.encryption.resolveEncryptionModule
 import care.data4life.datadonation.internal.data.service.DonationService
 import care.data4life.datadonation.internal.data.service.ServiceContract
 import care.data4life.datadonation.internal.data.service.resolveServiceModule
-import care.data4life.datadonation.internal.data.storage.*
 import care.data4life.datadonation.internal.domain.repository.resolveRepositoryModule
 import care.data4life.datadonation.internal.domain.usecases.*
 import care.data4life.datadonation.internal.io.IOContract
@@ -61,7 +60,6 @@ internal fun initKoin(configuration: Contract.Configuration): KoinApplication {
             resolveRootModule(configuration),
             resolveCoreModule(),
             resolveIOModule(),
-            resolveStorageModule(),
             resolveUsecaseModule(),
             resolveRepositoryModule(),
             resolveEncryptionModule(),
@@ -78,9 +76,7 @@ internal fun resolveRootModule(configuration: Contract.Configuration): Module {
             Contract.Configuration::class,
             IOContract.ScopeProvider::class,
             IOContract.CredentialProvider::class,
-            IOContract.UserSessionTokenProvider::class,
-            StorageContract.CredentialProvider::class,
-            StorageContract.UserSessionTokenProvider::class
+            IOContract.UserSessionTokenProvider::class
         )
 
         single<Environment> { configuration.getEnvironment() }
