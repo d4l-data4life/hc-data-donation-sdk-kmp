@@ -16,16 +16,12 @@
 
 package care.data4life.datadonation.internal.domain.repository
 
-import care.data4life.datadonation.internal.data.storage.StorageContract
-import care.data4life.datadonation.mock.stub.storage.ConsentDocumentRemoteStorageStub
-import care.data4life.datadonation.mock.stub.storage.CredentialsDataStorageStub
-import care.data4life.datadonation.mock.stub.storage.DonationDataStorageStub
-import care.data4life.datadonation.mock.stub.storage.RegistrationDataStorageStub
-import care.data4life.datadonation.mock.stub.storage.ServiceTokenDataStorageStub
-import care.data4life.datadonation.mock.stub.storage.UserConsentRemoteStorageStub
-import care.data4life.datadonation.mock.stub.storage.UserSessionTokenDataStorageStub
+import care.data4life.datadonation.internal.data.service.ServiceContract
+import care.data4life.datadonation.mock.stub.service.ConsentServiceStub
+import care.data4life.datadonation.mock.stub.service.CredentialServiceStub
+import care.data4life.datadonation.mock.stub.service.DonationServiceStub
+import care.data4life.datadonation.mock.stub.service.UserSessionTokenServiceStub
 import org.koin.core.context.stopKoin
-import org.koin.dsl.bind
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import kotlin.test.BeforeTest
@@ -45,13 +41,13 @@ class RepositoryKoinTest {
             modules(
                 resolveRepositoryModule(),
                 module {
-                    single<StorageContract.UserConsentRemoteStorage> {
-                        UserConsentRemoteStorageStub()
-                    } bind StorageContract.UserConsentRemoteStorage::class
+                    single<ServiceContract.ConsentService> {
+                        ConsentServiceStub()
+                    }
 
-                    single<StorageContract.UserSessionTokenDataStorage> {
-                        UserSessionTokenDataStorageStub()
-                    } bind StorageContract.UserSessionTokenDataStorage::class
+                    single<ServiceContract.UserSessionTokenService> {
+                        UserSessionTokenServiceStub()
+                    }
                 }
             )
         }
@@ -68,9 +64,9 @@ class RepositoryKoinTest {
             modules(
                 resolveRepositoryModule(),
                 module {
-                    single<StorageContract.RegistrationRemoteStorage> {
-                        RegistrationDataStorageStub()
-                    } bind StorageContract.RegistrationRemoteStorage::class
+                    single<ServiceContract.DonationService> {
+                        DonationServiceStub()
+                    }
                 }
             )
         }
@@ -87,13 +83,13 @@ class RepositoryKoinTest {
             modules(
                 resolveRepositoryModule(),
                 module {
-                    single<StorageContract.ConsentDocumentRemoteStorage> {
-                        ConsentDocumentRemoteStorageStub()
-                    } bind StorageContract.ConsentDocumentRemoteStorage::class
+                    single<ServiceContract.ConsentService> {
+                        ConsentServiceStub()
+                    }
 
-                    single<StorageContract.UserSessionTokenDataStorage> {
-                        UserSessionTokenDataStorageStub()
-                    } bind StorageContract.UserSessionTokenDataStorage::class
+                    single<ServiceContract.UserSessionTokenService> {
+                        UserSessionTokenServiceStub()
+                    }
                 }
             )
         }
@@ -110,9 +106,9 @@ class RepositoryKoinTest {
             modules(
                 resolveRepositoryModule(),
                 module {
-                    single<StorageContract.CredentialsDataStorage> {
-                        CredentialsDataStorageStub()
-                    } bind StorageContract.CredentialsDataStorage::class
+                    single<ServiceContract.CredentialService> {
+                        CredentialServiceStub()
+                    }
                 }
             )
         }
@@ -129,9 +125,9 @@ class RepositoryKoinTest {
             modules(
                 resolveRepositoryModule(),
                 module {
-                    single<StorageContract.DonationRemoteStorage> {
-                        DonationDataStorageStub()
-                    } bind StorageContract.DonationRemoteStorage::class
+                    single<ServiceContract.DonationService> {
+                        DonationServiceStub()
+                    }
                 }
             )
         }
@@ -148,9 +144,9 @@ class RepositoryKoinTest {
             modules(
                 resolveRepositoryModule(),
                 module {
-                    single<StorageContract.ServiceTokenRemoteStorage> {
-                        ServiceTokenDataStorageStub()
-                    } bind StorageContract.ServiceTokenRemoteStorage::class
+                    single<ServiceContract.DonationService> {
+                        DonationServiceStub()
+                    }
                 }
             )
         }

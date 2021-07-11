@@ -77,6 +77,8 @@ internal fun resolveRootModule(configuration: Contract.Configuration): Module {
         } binds arrayOf(
             Contract.Configuration::class,
             IOContract.ScopeProvider::class,
+            IOContract.CredentialProvider::class,
+            IOContract.UserSessionTokenProvider::class,
             StorageContract.CredentialProvider::class,
             StorageContract.UserSessionTokenProvider::class
         )
