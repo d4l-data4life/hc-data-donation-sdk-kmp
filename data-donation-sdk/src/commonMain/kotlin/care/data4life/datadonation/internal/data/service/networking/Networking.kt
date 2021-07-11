@@ -41,7 +41,7 @@ internal interface Networking {
     }
 
     fun interface SerializerConfigurator : Configurator<JsonFeature.Config, JsonConfigurator>
-    fun interface LoggingConfigurator : Configurator<Logging.Config, Nothing>
+    fun interface LoggingConfigurator : Configurator<Logging.Config, Unit>
 
     enum class Method(name: String) {
         DELETE("delete"),
