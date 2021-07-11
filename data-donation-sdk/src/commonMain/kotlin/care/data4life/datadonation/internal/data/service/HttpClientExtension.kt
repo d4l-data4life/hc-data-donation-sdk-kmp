@@ -32,7 +32,7 @@
 
 package care.data4life.datadonation.internal.data.service
 
-import care.data4life.datadonation.core.model.Environment
+import care.data4life.datadonation.core.model.ModelContract.Environment
 import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.http.*
@@ -45,7 +45,7 @@ suspend inline fun <reified T> HttpClient.getWithQuery(
     block: HttpRequestBuilder.() -> Unit = {}
 ): T =
     get(
-        scheme = if (environment == Environment.LOCAL) "http" else "https",
+        scheme = "https",
         host = baseUrl, path = path
     ) {
         if (accessToken != null) {
@@ -66,7 +66,7 @@ suspend inline fun <reified T> HttpClient.putWithBody(
     contentType: ContentType = ContentType.Application.Json,
     block: HttpRequestBuilder.() -> Unit = {}
 ): T = put(
-    scheme = if (environment == Environment.LOCAL) "http" else "https",
+    scheme = "https",
     host = baseUrl, path = path
 ) {
     if (accessToken != null) {
@@ -87,7 +87,7 @@ suspend inline fun <reified T> HttpClient.putWithoutHeader(
     body: Any,
     block: HttpRequestBuilder.() -> Unit = {}
 ): T = put(
-    scheme = if (environment == Environment.LOCAL) "http" else "https",
+    scheme = "https",
     host = baseUrl, path = path
 ) {
     if (accessToken != null) {
@@ -107,7 +107,7 @@ suspend inline fun <reified T> HttpClient.postWithJsonBody(
     body: Any,
     block: HttpRequestBuilder.() -> Unit = {}
 ): T = post(
-    scheme = if (environment == Environment.LOCAL) "http" else "https",
+    scheme = "https",
     host = baseUrl, path = path
 ) {
     header("Authorization", "Bearer $accessToken")
@@ -123,7 +123,7 @@ suspend inline fun <reified T> HttpClient.postWithBody(
     body: Any,
     block: HttpRequestBuilder.() -> Unit = {}
 ): T = post(
-    scheme = if (environment == Environment.LOCAL) "http" else "https",
+    scheme = "https",
     host = baseUrl, path = path, body = body
 ) {
     this.body = body
@@ -138,7 +138,7 @@ suspend inline fun <reified T> HttpClient.deleteWithBody(
     body: Any,
     block: HttpRequestBuilder.() -> Unit = {}
 ): T = delete(
-    scheme = if (environment == Environment.LOCAL) "http" else "https",
+    scheme = "https",
     host = baseUrl, path = path
 ) {
     header("Authorization", "Bearer $accessToken")

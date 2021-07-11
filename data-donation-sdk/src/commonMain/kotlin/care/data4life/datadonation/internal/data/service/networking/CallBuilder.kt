@@ -16,7 +16,7 @@
 
 package care.data4life.datadonation.internal.data.service.networking
 
-import care.data4life.datadonation.core.model.Environment
+import care.data4life.datadonation.core.model.ModelContract.Environment
 import care.data4life.datadonation.internal.data.service.networking.Networking.CallBuilder.Companion.ACCESS_TOKEN_FIELD
 import care.data4life.datadonation.internal.data.service.networking.Networking.CallBuilder.Companion.ACCESS_TOKEN_VALUE_PREFIX
 import care.data4life.datadonation.lang.CoreRuntimeException
@@ -152,14 +152,6 @@ internal class CallBuilder private constructor(
     ): Any = client.request { buildQuery(this, method, path) }
 
     companion object : Networking.CallBuilderFactory {
-        private fun resolveProtocol(environment: Environment): URLProtocol {
-            return if (environment == Environment.LOCAL) {
-                URLProtocol.HTTP
-            } else {
-                URLProtocol.HTTPS
-            }
-        }
-
         override fun getInstance(
             environment: Environment,
             client: HttpClient,
@@ -168,7 +160,7 @@ internal class CallBuilder private constructor(
             return CallBuilder(
                 client,
                 environment.url,
-                resolveProtocol(environment),
+                URLProtocol.HTTPS,
                 port
             )
         }

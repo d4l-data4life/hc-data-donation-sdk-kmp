@@ -18,7 +18,7 @@ package care.data4life.datadonation
 
 import care.data4life.datadonation.core.listener.ListenerContract
 import care.data4life.datadonation.core.model.ConsentDocument
-import care.data4life.datadonation.core.model.Environment
+import care.data4life.datadonation.core.model.ModelContract.Environment
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.domain.usecases.CreateUserConsent
 import care.data4life.datadonation.internal.domain.usecases.FetchConsentDocuments
@@ -76,7 +76,7 @@ class ClientTest {
         var capturedListener: ListenerContract.ResultListener<*>? = null
         var capturedUsecase: UsecaseContract.Usecase<*, *>? = null
 
-        config.whenGetEnvironment = { Environment.LOCAL }
+        config.whenGetEnvironment = { Environment.DEV }
 
         val di = koinApplication {
             modules(
@@ -129,7 +129,7 @@ class ClientTest {
         var capturedListener: ListenerContract.ResultListener<*>? = null
         var capturedUsecase: UsecaseContract.Usecase<*, *>? = null
 
-        config.whenGetEnvironment = { Environment.LOCAL }
+        config.whenGetEnvironment = { Environment.DEV }
 
         val di = koinApplication {
             modules(
@@ -187,7 +187,7 @@ class ClientTest {
         var capturedListener: ListenerContract.ResultListener<*>? = null
         var capturedUsecase: UsecaseContract.Usecase<*, *>? = null
 
-        config.whenGetEnvironment = { Environment.LOCAL }
+        config.whenGetEnvironment = { Environment.DEV }
 
         val di = koinApplication {
             modules(
@@ -255,7 +255,7 @@ class ClientTest {
         var capturedListener: ListenerContract.Callback? = null
         var capturedUsecase: UsecaseContract.Usecase<*, *>? = null
 
-        config.whenGetEnvironment = { Environment.LOCAL }
+        config.whenGetEnvironment = { Environment.DEV }
 
         val di = koinApplication {
             modules(
@@ -321,7 +321,7 @@ class ClientTest {
         var capturedListener: ListenerContract.ResultListener<*>? = null
         var capturedUsecase: UsecaseContract.Usecase<*, *>? = null
 
-        config.whenGetEnvironment = { Environment.LOCAL }
+        config.whenGetEnvironment = { Environment.DEV }
         config.whenGetDonorKeyPair = { keyPair }
 
         val di = koinApplication {

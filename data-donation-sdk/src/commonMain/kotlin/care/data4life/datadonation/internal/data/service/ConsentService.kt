@@ -17,7 +17,7 @@
 package care.data4life.datadonation.internal.data.service
 
 import care.data4life.datadonation.core.model.ConsentDocument
-import care.data4life.datadonation.core.model.Environment
+import care.data4life.datadonation.core.model.ModelContract.Environment
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.model.ConsentCreationPayload
 import care.data4life.datadonation.internal.data.model.ConsentRevocationPayload
@@ -25,7 +25,6 @@ import care.data4life.datadonation.internal.data.model.ConsentSignature
 import care.data4life.datadonation.internal.data.model.ConsentSignatureType
 import care.data4life.datadonation.internal.data.model.ConsentSigningRequest
 import care.data4life.datadonation.internal.data.service.ServiceContract.Companion.DEFAULT_DONATION_CONSENT_KEY
-import care.data4life.datadonation.internal.data.service.ServiceContract.Companion.LOCAL_PORT
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PARAMETER.LANGUAGE
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PARAMETER.LATEST_CONSENT
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PARAMETER.USER_CONSENT_KEY
@@ -196,14 +195,6 @@ internal class ConsentService private constructor(
     }
 
     companion object : ServiceContract.ConsentServiceFactory {
-        private fun determinePort(environment: Environment): Int? {
-            return if (environment == Environment.LOCAL) {
-                LOCAL_PORT
-            } else {
-                null
-            }
-        }
-
         override fun getInstance(
             environment: Environment,
             client: HttpClient,
@@ -212,8 +203,7 @@ internal class ConsentService private constructor(
         ): ServiceContract.ConsentService {
             val callBuilder = builderFactory.getInstance(
                 environment,
-                client,
-                determinePort(environment),
+                client
             )
 
             return ConsentService(callBuilder, clock)

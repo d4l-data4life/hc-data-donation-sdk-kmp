@@ -21,7 +21,6 @@ import kotlinx.serialization.Serializable
 
 interface ModelContract {
     enum class Environment(val url: String) {
-        LOCAL("localhost"), // TODO -> remove or make a proper Docker container
         DEV("api-phdp-dev.hpsgc.de"),
         SANDBOX("api-phdp-sandbox.hpsgc.de"),
         STAGING("api-staging.data4life.care"),

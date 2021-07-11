@@ -18,8 +18,8 @@ package care.data4life.datadonation.mock.stub
 
 import care.data4life.datadonation.Contract
 import care.data4life.datadonation.core.listener.ListenerContract
-import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.KeyPair
+import care.data4life.datadonation.core.model.ModelContract.Environment
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 import kotlinx.coroutines.CoroutineScope

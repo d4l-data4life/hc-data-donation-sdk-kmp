@@ -37,8 +37,8 @@ import care.data4life.datadonation.Contract
 import care.data4life.datadonation.core.listener.ListenerContract.Callback
 import care.data4life.datadonation.core.listener.ListenerContract.ResultListener
 import care.data4life.datadonation.core.model.ConsentDocument
-import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.KeyPair
+import care.data4life.datadonation.core.model.ModelContract.Environment
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.encryption.resolveEncryptionModule
 import care.data4life.datadonation.internal.data.service.networking.resolveNetworking
@@ -433,6 +433,6 @@ class ClientTest {
             )
         }
 
-        override fun getEnvironment() = Environment.LOCAL
+        override fun getEnvironment() = Environment.DEV
     }
 }

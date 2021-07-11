@@ -17,7 +17,7 @@
 package care.data4life.datadonation.internal.data.service
 
 import care.data4life.datadonation.Contract
-import care.data4life.datadonation.core.model.Environment
+import care.data4life.datadonation.core.model.ModelContract.Environment
 import care.data4life.datadonation.internal.data.service.networking.Networking
 import care.data4life.datadonation.internal.io.IOContract
 import care.data4life.datadonation.mock.fake.createDefaultMockClient
@@ -50,7 +50,7 @@ class ServiceKoinTest {
                     single { ClockStub() } bind Clock::class
                     single<Networking.CallBuilderFactory> { CallBuilderSpy }
                     single { createDefaultMockClient() }
-                    single { Environment.LOCAL } bind Environment::class
+                    single { Environment.DEV } bind Environment::class
                 }
             )
         }

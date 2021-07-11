@@ -16,7 +16,7 @@
 
 package care.data4life.datadonation.mock.stub.service.networking
 
-import care.data4life.datadonation.core.model.Environment
+import care.data4life.datadonation.core.model.ModelContract.Environment
 import care.data4life.datadonation.internal.data.service.networking.AccessToken
 import care.data4life.datadonation.internal.data.service.networking.Header
 import care.data4life.datadonation.internal.data.service.networking.Networking
