@@ -19,12 +19,12 @@ package care.data4life.datadonation.internal.data.service.networking
 import kotlinx.serialization.json.JsonBuilder
 
 internal object JsonConfigurator : Networking.JsonConfigurator {
-    override fun configure(builder: JsonBuilder): JsonBuilder {
-        builder.isLenient = true
-        builder.ignoreUnknownKeys = true
-        builder.allowSpecialFloatingPointValues = true
-        builder.useArrayPolymorphism = false
+    override fun configure(jsonBuild: JsonBuilder): JsonBuilder {
+        jsonBuild.isLenient = true
+        jsonBuild.ignoreUnknownKeys = true
+        jsonBuild.allowSpecialFloatingPointValues = true
+        jsonBuild.useArrayPolymorphism = false
 
-        return builder
+        return jsonBuild
     }
 }
