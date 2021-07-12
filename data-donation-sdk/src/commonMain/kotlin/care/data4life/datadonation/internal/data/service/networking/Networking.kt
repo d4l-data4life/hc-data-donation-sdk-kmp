@@ -17,10 +17,13 @@
 package care.data4life.datadonation.internal.data.service.networking
 
 import care.data4life.datadonation.core.model.ModelContract.Environment
+import care.data4life.sdk.lang.D4LRuntimeException
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
+import io.ktor.client.features.HttpCallValidator
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.logging.Logging
+import io.ktor.client.statement.HttpResponse
 import kotlinx.serialization.json.JsonBuilder
 
 typealias Header = Map<String, String>
@@ -41,8 +44,19 @@ internal interface Networking {
         fun configure(jsonBuild: JsonBuilder): JsonBuilder
     }
 
+    fun interface ResponseValidator {
+        @Throws(D4LRuntimeException::class)
+        fun validate(response: HttpResponse)
+    }
+
+    fun interface ErrorPropagator {
+        @Throws(D4LRuntimeException::class)
+        fun propagate(error: Throwable)
+    }
+
     fun interface SerializerConfigurator : Configurator<JsonFeature.Config, JsonConfigurator>
     fun interface LoggingConfigurator : Configurator<Logging.Config, Unit>
+    fun interface ResponseConfigurator : Configurator<HttpCallValidator.Config, Pair<ResponseValidator?, ErrorPropagator?>>
 
     fun interface ClientConfigurator {
         fun configure(
