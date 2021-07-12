@@ -18,6 +18,7 @@ package care.data4life.datadonation.internal.data.service.networking
 
 import care.data4life.datadonation.core.model.Environment
 import io.ktor.client.HttpClient
+import io.ktor.client.HttpClientConfig
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.logging.Logging
 import kotlinx.serialization.json.JsonBuilder
@@ -42,6 +43,14 @@ internal interface Networking {
 
     fun interface SerializerConfigurator : Configurator<JsonFeature.Config, JsonConfigurator>
     fun interface LoggingConfigurator : Configurator<Logging.Config, Unit>
+
+    fun interface ClientConfigurator {
+        fun configure(
+            config: HttpClientConfig<*>,
+            jsonConfigurator: JsonConfigurator,
+            vararg installers: Configurator<*, *>
+        )
+    }
 
     enum class Method(name: String) {
         DELETE("delete"),

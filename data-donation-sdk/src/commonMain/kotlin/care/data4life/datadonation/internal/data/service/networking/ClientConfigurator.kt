@@ -16,24 +16,27 @@
 
 package care.data4life.datadonation.internal.data.service.networking
 
-import io.ktor.client.HttpClient
-import org.koin.core.module.Module
-import org.koin.dsl.module
+import io.ktor.client.HttpClientConfig
+import io.ktor.client.features.json.JsonFeature
+import io.ktor.client.features.logging.Logging
 
-internal fun resolveNetworking(): Module {
-    return module {
-        single<Networking.CallBuilderFactory> {
-            CallBuilder
-        }
+internal object ClientConfigurator : Networking.ClientConfigurator {
+    override fun configure(
+        config: HttpClientConfig<*>,
+        jsonConfigurator: Networking.JsonConfigurator,
+        vararg installers: Networking.Configurator<*, *>
+    ) {
+        installers.forEach { configurator ->
+            if (configurator is Networking.SerializerConfigurator) {
+                config.install(JsonFeature) {
+                    configurator.configure(this, jsonConfigurator)
+                }
+            }
 
-        single {
-            HttpClient {
-                ClientConfigurator.configure(
-                    this,
-                    JsonConfigurator,
-                    SerializerConfigurator,
-                    LoggerConfigurator
-                )
+            if (configurator is Networking.LoggingConfigurator) {
+                config.install(Logging) {
+                    configurator.configure(this, Unit)
+                }
             }
         }
     }
