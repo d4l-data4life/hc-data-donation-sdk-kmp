@@ -38,7 +38,7 @@ class ServiceTokenRepository(
     private val remoteStorage: StorageContract.ServiceTokenRemoteStorage
 ) : RepositoryContract.ServiceTokenRepository {
 
-    override suspend fun requestDonationToken() : String {
+    override suspend fun requestDonationToken(): String {
         return remoteStorage.requestDonationToken()
     }
 }
