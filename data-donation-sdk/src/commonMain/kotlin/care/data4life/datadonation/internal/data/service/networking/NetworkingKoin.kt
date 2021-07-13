@@ -42,7 +42,7 @@ internal fun resolveNetworking(): Module {
                             Unit
                         )
                     ),
-                    Pair(ResponseValidatorConfigurator, Pair(null, ErrorPropagator))
+                    Pair(ResponseValidatorConfigurator, Pair(ResponseValidator, ErrorPropagator))
                 )
             }
         }
