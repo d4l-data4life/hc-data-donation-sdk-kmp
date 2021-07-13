@@ -19,7 +19,7 @@ package care.data4life.datadonation.internal.data.service.networking
 import care.data4life.datadonation.core.model.ModelContract.Environment
 import care.data4life.datadonation.internal.data.service.networking.Networking.CallBuilder.Companion.ACCESS_TOKEN_FIELD
 import care.data4life.datadonation.internal.data.service.networking.Networking.CallBuilder.Companion.ACCESS_TOKEN_VALUE_PREFIX
-import care.data4life.datadonation.lang.CoreRuntimeException
+import care.data4life.datadonation.lang.CoreRuntimeError
 import care.data4life.datadonation.mock.fake.createDefaultMockClient
 import care.data4life.datadonation.mock.fake.defaultResponse
 import care.data4life.sdk.util.test.runWithContextBlockingTest
@@ -405,7 +405,7 @@ class CallBuilderTest {
         val env = Environment.DEV
         val client = createDefaultMockClient()
 
-        val error = assertFailsWith<CoreRuntimeException> {
+        val error = assertFailsWith<CoreRuntimeError> {
             // When
             val builder = CallBuilder.getInstance(env, client)
             builder.setBody("Wups").execute(Networking.Method.GET)
@@ -425,7 +425,7 @@ class CallBuilderTest {
         val client = createDefaultMockClient()
 
         // When
-        val error = assertFailsWith<CoreRuntimeException> {
+        val error = assertFailsWith<CoreRuntimeError> {
             // When
             val builder = CallBuilder.getInstance(env, client)
             builder.execute(Networking.Method.POST)
@@ -444,7 +444,7 @@ class CallBuilderTest {
         val env = Environment.DEV
         val client = createDefaultMockClient()
 
-        val error = assertFailsWith<CoreRuntimeException> {
+        val error = assertFailsWith<CoreRuntimeError> {
             // When
             val builder = CallBuilder.getInstance(env, client)
             builder.execute(Networking.Method.PUT)
@@ -463,7 +463,7 @@ class CallBuilderTest {
         val env = Environment.DEV
         val client = createDefaultMockClient()
 
-        val error = assertFailsWith<CoreRuntimeException> {
+        val error = assertFailsWith<CoreRuntimeError> {
             // When
             val builder = CallBuilder.getInstance(env, client)
             builder.execute(Networking.Method.DELETE)

@@ -24,7 +24,7 @@ internal object ClientConfigurator : Networking.ClientConfigurator {
     override fun configure(
         config: HttpClientConfig<*>,
         installers: Map<HttpClientFeature<*, *>, Pair<Networking.Configurator<Any, Any>, Any>>,
-        // responseValidation: Networking.ResponseConfigurator
+        responseValidator: Pair<Networking.ResponseValidatorConfigurator, Pair<Networking.ResponseValidator?, Networking.ErrorPropagator?>>
     ) {
         installers.forEach { (plugin, configurator) ->
             config.install(plugin) {
@@ -34,5 +34,8 @@ internal object ClientConfigurator : Networking.ClientConfigurator {
                 )
             }
         }
+
+        val (configurator, auxiliary) = responseValidator
+        config.HttpResponseValidator { configurator.configure(this, auxiliary) }
     }
 }

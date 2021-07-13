@@ -18,14 +18,17 @@ package care.data4life.datadonation.lang
 
 import care.data4life.sdk.lang.D4LRuntimeException
 
-sealed class CoreRuntimeException(
-    message: String?,
-    cause: Throwable?
-) : D4LRuntimeException(message = message, cause = cause) {
+sealed class ConsentServiceError(
+    open val httpStatus: Int
+) : D4LRuntimeException() {
 
-    class InternalFailure : CoreRuntimeException(message = "Internal failure", cause = null)
-    class RequestValidationFailure(message: String) : CoreRuntimeException(message = message, cause = null)
-    class ResponseCastFailure : CoreRuntimeException(message = "Unexpected Response", cause = null)
-    class MissingCredentialsException(cause: Throwable? = null) : CoreRuntimeException(cause = cause, message = null)
-    class MissingSessionException(cause: Throwable? = null) : CoreRuntimeException(cause = cause, message = null)
+    class UnexpectedError(override val httpStatus: Int) : ConsentServiceError(httpStatus)
+    class BadRequestError : ConsentServiceError(400)
+    class UnauthorizedError : ConsentServiceError(401)
+    class ForbiddenError : ConsentServiceError(403)
+    class NotFoundError : ConsentServiceError(404)
+    class DocumentConflictError : ConsentServiceError(409)
+    class UnprocessableEntityError : ConsentServiceError(422)
+    class TooManyRequestsError : ConsentServiceError(429)
+    class InternalServerError : ConsentServiceError(500)
 }

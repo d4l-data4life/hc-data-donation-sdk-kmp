@@ -37,7 +37,7 @@ internal interface Networking {
         override fun log(message: String)
     }
 
-    fun interface Configurator<Config: Any, AuxiliaryConfigurator: Any> {
+    fun interface Configurator<Config : Any, AuxiliaryConfigurator : Any> {
         fun configure(pluginConfig: Config, auxiliaryConfigurator: AuxiliaryConfigurator)
     }
 
@@ -57,13 +57,13 @@ internal interface Networking {
 
     fun interface SerializerConfigurator : Configurator<JsonFeature.Config, JsonConfigurator>
     fun interface LoggingConfigurator : Configurator<Logging.Config, Unit>
-    fun interface ResponseConfigurator : Configurator<HttpCallValidator.Config, Pair<ResponseValidator?, ErrorPropagator?>>
+    fun interface ResponseValidatorConfigurator : Configurator<HttpCallValidator.Config, Pair<ResponseValidator?, ErrorPropagator?>>
 
     fun interface ClientConfigurator {
         fun configure(
             config: HttpClientConfig<*>,
             installers: Map<HttpClientFeature<*, *>, Pair<Configurator<Any, Any>, Any>>,
-            // responseValidation: ResponseConfigurator
+            responseValidator: Pair<ResponseValidatorConfigurator, Pair<ResponseValidator?, ErrorPropagator?>>
         )
     }
 

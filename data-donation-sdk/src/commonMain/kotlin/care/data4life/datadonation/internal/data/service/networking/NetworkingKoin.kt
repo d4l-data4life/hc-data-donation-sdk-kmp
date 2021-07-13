@@ -41,7 +41,8 @@ internal fun resolveNetworking(): Module {
                             LoggerConfigurator as Networking.Configurator<Any, Any>,
                             Unit
                         )
-                    )
+                    ),
+                    Pair(ResponseValidatorConfigurator, Pair(null, ErrorPropagator))
                 )
             }
         }

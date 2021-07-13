@@ -18,6 +18,7 @@ package care.data4life.datadonation.internal.data.service.networking
 
 import care.data4life.sdk.util.test.runWithContextBlockingTest
 import io.ktor.client.HttpClient
+import io.ktor.client.features.HttpCallValidator
 import io.ktor.client.features.json.JsonFeature
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
@@ -38,8 +39,8 @@ class ClientConfiguratorTest {
     fun `Given configure is called with a HttpClientConfig, which supports Features, and a Configurator and its AuxiliaryConfigurator, it calls the Configurator with its appropriate parameter`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val serializer = object : Networking.SerializerConfigurator {
-            var capturedPluginConfig = Channel<JsonFeature.Config>()
-            var capturedUtil = Channel<Networking.JsonConfigurator>()
+            val capturedPluginConfig = Channel<JsonFeature.Config>()
+            val capturedAuxiliaryConfigurator = Channel<Networking.JsonConfigurator>()
 
             override fun configure(
                 pluginConfig: JsonFeature.Config,
@@ -47,7 +48,7 @@ class ClientConfiguratorTest {
             ) {
                 launch {
                     capturedPluginConfig.send(pluginConfig)
-                    capturedUtil.send(auxiliaryConfigurator)
+                    capturedAuxiliaryConfigurator.send(auxiliaryConfigurator)
                 }
             }
         }
@@ -61,7 +62,8 @@ class ClientConfiguratorTest {
                         serializer as Networking.Configurator<Any, Any>,
                         JsonConfigurator
                     )
-                )
+                ),
+                Pair(ResponseValidatorConfigurator, Pair(null, null))
             )
         }
 
@@ -69,13 +71,46 @@ class ClientConfiguratorTest {
         val pluginConfig: Any = serializer.capturedPluginConfig.receive()
         assertTrue(pluginConfig is JsonFeature.Config)
         assertSame(
-            actual = serializer.capturedUtil.receive(),
+            actual = serializer.capturedAuxiliaryConfigurator.receive(),
             expected = JsonConfigurator
         )
     }
 
     @Test
-    fun `Test`() {
+    fun `Given configure is called with a HttpClientConfig and a ResponseValidatorConfigurator, it calls the Configurator with its appropriate parameter`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+        // Given
+        val auxiliary = Pair(null, null)
 
+        val responseValidator = object : Networking.ResponseValidatorConfigurator {
+            val capturedPluginConfig = Channel<HttpCallValidator.Config>()
+            val capturedAuxiliaryConfigurator = Channel<Pair<*, *>>()
+
+            override fun configure(
+                pluginConfig: HttpCallValidator.Config,
+                auxiliaryConfigurator: Pair<Networking.ResponseValidator?, Networking.ErrorPropagator?>
+            ) {
+                launch {
+                    capturedPluginConfig.send(pluginConfig)
+                    capturedAuxiliaryConfigurator.send(auxiliaryConfigurator)
+                }
+            }
+        }
+
+        // When
+        HttpClient {
+            ClientConfigurator.configure(
+                this,
+                emptyMap(),
+                Pair(responseValidator, auxiliary)
+            )
+        }
+
+        // Then
+        val pluginConfig: Any = responseValidator.capturedPluginConfig.receive()
+        assertTrue(pluginConfig is HttpCallValidator.Config)
+        assertSame(
+            actual = responseValidator.capturedAuxiliaryConfigurator.receive(),
+            expected = auxiliary
+        )
     }
 }

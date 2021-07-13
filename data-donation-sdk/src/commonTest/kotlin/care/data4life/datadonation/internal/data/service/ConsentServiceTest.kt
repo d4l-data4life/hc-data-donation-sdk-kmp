@@ -31,7 +31,7 @@ import care.data4life.datadonation.internal.data.service.ServiceContract.Consent
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PATH.USER_CONSENTS
 import care.data4life.datadonation.internal.data.service.networking.Networking
 import care.data4life.datadonation.internal.data.service.networking.Path
-import care.data4life.datadonation.lang.CoreRuntimeException
+import care.data4life.datadonation.lang.CoreRuntimeError
 import care.data4life.datadonation.mock.DummyData
 import care.data4life.datadonation.mock.fake.createDefaultMockClient
 import care.data4life.datadonation.mock.stub.ClockStub
@@ -77,7 +77,7 @@ class ConsentServiceTest {
         }
 
         // Then
-        val error = assertFailsWith<CoreRuntimeException.ResponseCastFailure> {
+        val error = assertFailsWith<CoreRuntimeError.ResponseCastFailure> {
             // When
             val service = ConsentService(
                 CallBuilderSpy.getInstance(
@@ -176,7 +176,7 @@ class ConsentServiceTest {
         }
 
         // Then
-        val error = assertFailsWith<CoreRuntimeException.ResponseCastFailure> {
+        val error = assertFailsWith<CoreRuntimeError.ResponseCastFailure> {
             // When
             val service = ConsentService(
                 CallBuilderSpy.getInstance(
@@ -336,7 +336,7 @@ class ConsentServiceTest {
         }
 
         // Then
-        val error = assertFailsWith<CoreRuntimeException.ResponseCastFailure> {
+        val error = assertFailsWith<CoreRuntimeError.ResponseCastFailure> {
             // When
             val service = ConsentService(
                 CallBuilderSpy.getInstance(
@@ -427,7 +427,7 @@ class ConsentServiceTest {
         }
 
         // Then
-        val error = assertFailsWith<CoreRuntimeException.ResponseCastFailure> {
+        val error = assertFailsWith<CoreRuntimeError.ResponseCastFailure> {
             // When
             val service = ConsentService(
                 CallBuilderSpy.getInstance(

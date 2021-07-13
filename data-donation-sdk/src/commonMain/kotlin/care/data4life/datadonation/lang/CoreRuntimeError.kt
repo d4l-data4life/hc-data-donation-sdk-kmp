@@ -14,26 +14,18 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.utils
+package care.data4life.datadonation.lang
 
-import care.data4life.datadonation.lang.CoreRuntimeError
+import care.data4life.sdk.lang.D4LRuntimeException
 
-internal inline fun <reified T> safeCast(item: Any): T {
-    return if (item !is T) {
-        throw CoreRuntimeError.ResponseCastFailure()
-    } else {
-        item
-    }
-}
+sealed class CoreRuntimeError(
+    message: String?,
+    cause: Throwable?
+) : D4LRuntimeException(message = message, cause = cause) {
 
-internal inline fun <reified T> safeListCast(list: Any): List<T> {
-    val castedList = safeCast<List<*>>(list)
-
-    castedList.forEach { item ->
-        if (item !is T) {
-            throw CoreRuntimeError.ResponseCastFailure()
-        }
-    }
-
-    return castedList as List<T>
+    class InternalFailure : CoreRuntimeError(message = "Internal failure", cause = null)
+    class RequestValidationFailure(message: String) : CoreRuntimeError(message = message, cause = null)
+    class ResponseCastFailure : CoreRuntimeError(message = "Unexpected Response", cause = null)
+    class MissingCredentialsError(cause: Throwable? = null) : CoreRuntimeError(cause = cause, message = null)
+    class MissingSessionError(cause: Throwable? = null) : CoreRuntimeError(cause = cause, message = null)
 }

@@ -34,7 +34,7 @@ package care.data4life.datadonation.internal.data.service
 
 import care.data4life.datadonation.core.listener.ListenerContract
 import care.data4life.datadonation.internal.io.IOContract
-import care.data4life.datadonation.lang.CoreRuntimeException
+import care.data4life.datadonation.lang.CoreRuntimeError
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlin.coroutines.resume
@@ -54,7 +54,7 @@ class CachedUserSessionTokenService(
 
             if (cachedAt > clock.now().minus(1.minutes)) {
                 if (cachedValue.isEmpty()) {
-                    throw CoreRuntimeException.MissingSessionException()
+                    throw CoreRuntimeError.MissingSessionError()
                 }
 
                 continuation.resume(cachedValue)
@@ -67,7 +67,7 @@ class CachedUserSessionTokenService(
                     }
 
                     override fun onError(exception: Exception) {
-                        throw CoreRuntimeException.MissingSessionException(exception)
+                        throw CoreRuntimeError.MissingSessionError(exception)
                     }
                 })
             }

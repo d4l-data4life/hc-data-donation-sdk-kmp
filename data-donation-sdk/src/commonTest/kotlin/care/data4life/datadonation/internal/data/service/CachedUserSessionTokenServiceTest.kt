@@ -16,7 +16,7 @@
 
 package care.data4life.datadonation.internal.data.service
 
-import care.data4life.datadonation.lang.CoreRuntimeException
+import care.data4life.datadonation.lang.CoreRuntimeError
 import care.data4life.datadonation.mock.stub.ClientConfigurationStub
 import care.data4life.datadonation.mock.stub.ClockStub
 import care.data4life.sdk.util.test.runWithContextBlockingTest
@@ -56,7 +56,7 @@ class CachedUserSessionTokenServiceTest {
         val service = CachedUserSessionTokenService(provider, time)
 
         // Then
-        val result = assertFailsWith<CoreRuntimeException.MissingSessionException> {
+        val result = assertFailsWith<CoreRuntimeError.MissingSessionError> {
             // When
             service.getUserSessionToken()
         }
@@ -107,7 +107,7 @@ class CachedUserSessionTokenServiceTest {
         val service = CachedUserSessionTokenService(provider, time)
 
         // Then
-        val result = assertFailsWith<CoreRuntimeException.MissingSessionException> {
+        val result = assertFailsWith<CoreRuntimeError.MissingSessionError> {
             // When
             service.getUserSessionToken()
         }

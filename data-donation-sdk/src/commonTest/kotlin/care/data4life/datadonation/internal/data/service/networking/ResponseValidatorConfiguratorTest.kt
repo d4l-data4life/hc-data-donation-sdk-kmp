@@ -37,7 +37,7 @@ class ResponseValidatorConfiguratorTest {
     fun `It fulfils ResponseValidatorConfigurator`() {
         val configurator: Any = ResponseValidatorConfigurator
 
-        assertTrue(configurator is Networking.ResponseConfigurator)
+        assertTrue(configurator is Networking.ResponseValidatorConfigurator)
     }
 
     @Test

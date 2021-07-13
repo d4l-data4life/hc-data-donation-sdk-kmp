@@ -25,7 +25,7 @@ import io.ktor.util.date.GMTDate
 import io.ktor.utils.io.ByteReadChannel
 import kotlin.coroutines.CoroutineContext
 
-fun createFakeResponse(statusCode: HttpStatusCode) : HttpResponse {
+fun createFakeResponse(statusCode: HttpStatusCode): HttpResponse {
     return object : HttpResponse() {
         override val call: HttpClientCall
             get() = TODO("Not yet implemented")

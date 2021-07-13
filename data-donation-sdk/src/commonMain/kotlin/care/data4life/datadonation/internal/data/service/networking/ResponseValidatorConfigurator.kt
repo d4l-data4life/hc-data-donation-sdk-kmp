@@ -18,20 +18,21 @@ package care.data4life.datadonation.internal.data.service.networking
 
 import io.ktor.client.features.HttpCallValidator
 
-internal object ResponseValidatorConfigurator : Networking.ResponseConfigurator {
+internal object ResponseValidatorConfigurator :
+    Networking.ResponseValidatorConfigurator {
     override fun configure(
         pluginConfig: HttpCallValidator.Config,
         auxiliaryConfigurator: Pair<Networking.ResponseValidator?, Networking.ErrorPropagator?>
     ) {
         val(responseValidator, errorPropagator) = auxiliaryConfigurator
 
-        if(responseValidator is Networking.ResponseValidator) {
+        if (responseValidator is Networking.ResponseValidator) {
             pluginConfig.validateResponse { response ->
                 responseValidator.validate(response)
             }
         }
 
-        if(errorPropagator is Networking.ErrorPropagator) {
+        if (errorPropagator is Networking.ErrorPropagator) {
             pluginConfig.handleResponseException { error ->
                 errorPropagator.propagate(error)
             }
