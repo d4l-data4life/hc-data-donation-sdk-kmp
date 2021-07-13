@@ -17,15 +17,9 @@
 package care.data4life.datadonation.internal.data.service.networking
 
 import care.data4life.datadonation.lang.HttpRuntimeError
-import io.ktor.client.call.HttpClientCall
+import care.data4life.datadonation.mock.fake.createFakeResponse
 import io.ktor.client.features.ResponseException
-import io.ktor.client.statement.HttpResponse
-import io.ktor.http.Headers
-import io.ktor.http.HttpProtocolVersion
 import io.ktor.http.HttpStatusCode
-import io.ktor.util.date.GMTDate
-import io.ktor.utils.io.ByteReadChannel
-import kotlin.coroutines.CoroutineContext
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -61,26 +55,7 @@ class ErrorPropagatorTest {
     fun `Given propagate is called with a Throwable, it rethrows it as HTTPRuntimeError, which contains the HTTP_CODE`() {
         // Given
         val throwable = ResponseException(
-            object : HttpResponse() {
-                override val call: HttpClientCall
-                    get() = TODO("Not yet implemented")
-                override val status: HttpStatusCode
-                    get() = HttpStatusCode.Unauthorized
-                override val version: HttpProtocolVersion
-                    get() = TODO("Not yet implemented")
-                override val requestTime: GMTDate
-                    get() = TODO("Not yet implemented")
-                override val responseTime: GMTDate
-                    get() = TODO("Not yet implemented")
-                override val content: ByteReadChannel
-                    get() = TODO("Not yet implemented")
-                override val headers: Headers
-                    get() = TODO("Not yet implemented")
-                override val coroutineContext: CoroutineContext
-                    get() = TODO("Not yet implemented")
-
-                override fun toString(): String = "FakeCall"
-            },
+            createFakeResponse(HttpStatusCode.Unauthorized),
             cachedResponseText = "Fake text"
         )
 

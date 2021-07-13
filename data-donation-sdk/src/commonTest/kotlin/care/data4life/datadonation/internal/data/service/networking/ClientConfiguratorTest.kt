@@ -43,11 +43,11 @@ class ClientConfiguratorTest {
 
             override fun configure(
                 pluginConfig: JsonFeature.Config,
-                util: Networking.JsonConfigurator
+                auxiliaryConfigurator: Networking.JsonConfigurator
             ) {
                 launch {
                     capturedPluginConfig.send(pluginConfig)
-                    capturedUtil.send(util)
+                    capturedUtil.send(auxiliaryConfigurator)
                 }
             }
         }
@@ -72,5 +72,10 @@ class ClientConfiguratorTest {
             actual = serializer.capturedUtil.receive(),
             expected = JsonConfigurator
         )
+    }
+
+    @Test
+    fun `Test`() {
+
     }
 }

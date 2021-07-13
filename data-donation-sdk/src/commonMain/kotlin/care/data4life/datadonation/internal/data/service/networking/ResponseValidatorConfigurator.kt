@@ -16,12 +16,25 @@
 
 package care.data4life.datadonation.internal.data.service.networking
 
-import io.ktor.client.features.logging.LogLevel
-import io.ktor.client.features.logging.Logging
+import io.ktor.client.features.HttpCallValidator
 
-internal object LoggerConfigurator : Networking.LoggingConfigurator {
-    override fun configure(pluginConfig: Logging.Config, auxiliaryConfigurator: Unit) {
-        pluginConfig.logger = SimpleLogger()
-        pluginConfig.level = LogLevel.ALL
+internal object ResponseValidatorConfigurator : Networking.ResponseConfigurator {
+    override fun configure(
+        pluginConfig: HttpCallValidator.Config,
+        auxiliaryConfigurator: Pair<Networking.ResponseValidator?, Networking.ErrorPropagator?>
+    ) {
+        val(responseValidator, errorPropagator) = auxiliaryConfigurator
+
+        if(responseValidator is Networking.ResponseValidator) {
+            pluginConfig.validateResponse { response ->
+                responseValidator.validate(response)
+            }
+        }
+
+        if(errorPropagator is Networking.ErrorPropagator) {
+            pluginConfig.handleResponseException { error ->
+                errorPropagator.propagate(error)
+            }
+        }
     }
 }

@@ -18,13 +18,13 @@ package care.data4life.datadonation.internal.data.service.networking
 
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.features.HttpClientFeature
-import io.ktor.client.features.json.JsonFeature
-import io.ktor.client.features.logging.Logging
+import io.ktor.client.features.HttpResponseValidator
 
 internal object ClientConfigurator : Networking.ClientConfigurator {
     override fun configure(
         config: HttpClientConfig<*>,
         installers: Map<HttpClientFeature<*, *>, Pair<Networking.Configurator<Any, Any>, Any>>,
+        // responseValidation: Networking.ResponseConfigurator
     ) {
         installers.forEach { (plugin, configurator) ->
             config.install(plugin) {

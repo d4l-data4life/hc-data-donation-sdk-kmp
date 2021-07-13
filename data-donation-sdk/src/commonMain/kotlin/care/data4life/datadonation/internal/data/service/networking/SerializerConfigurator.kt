@@ -21,9 +21,9 @@ import io.ktor.client.features.json.serializer.KotlinxSerializer
 import kotlinx.serialization.json.Json
 
 internal object SerializerConfigurator : Networking.SerializerConfigurator {
-    override fun configure(pluginConfig: JsonFeature.Config, util: Networking.JsonConfigurator) {
+    override fun configure(pluginConfig: JsonFeature.Config, auxiliaryConfigurator: Networking.JsonConfigurator) {
         pluginConfig.serializer = KotlinxSerializer(
-            Json { util.configure(this) }
+            Json { auxiliaryConfigurator.configure(this) }
         )
     }
 }

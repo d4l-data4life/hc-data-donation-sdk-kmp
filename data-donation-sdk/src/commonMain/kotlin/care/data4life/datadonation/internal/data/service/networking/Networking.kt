@@ -38,7 +38,7 @@ internal interface Networking {
     }
 
     fun interface Configurator<Config: Any, AuxiliaryConfigurator: Any> {
-        fun configure(pluginConfig: Config, util: AuxiliaryConfigurator)
+        fun configure(pluginConfig: Config, auxiliaryConfigurator: AuxiliaryConfigurator)
     }
 
     fun interface JsonConfigurator {
@@ -63,7 +63,7 @@ internal interface Networking {
         fun configure(
             config: HttpClientConfig<*>,
             installers: Map<HttpClientFeature<*, *>, Pair<Configurator<Any, Any>, Any>>,
-
+            // responseValidation: ResponseConfigurator
         )
     }
 
