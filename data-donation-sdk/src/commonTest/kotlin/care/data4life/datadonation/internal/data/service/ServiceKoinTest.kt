@@ -41,6 +41,17 @@ class ServiceKoinTest {
     }
 
     @Test
+    fun `Given resolveServiceModule is called it creates a Module, which contains a ConsentErrorHandler`() {
+        // When
+        val koin = koinApplication {
+            modules(resolveServiceModule())
+        }
+        // Then
+        val builder: ServiceContract.ConsentService.ConsentErrorHandler = koin.koin.get()
+        assertNotNull(builder)
+    }
+
+    @Test
     fun `Given resolveServiceModule is called it creates a Module, which contains a ConsentService`() {
         // When
         val koin = koinApplication {

@@ -32,4 +32,4 @@
 
 package care.data4life.datadonation.mock
 
-class MockException : IllegalStateException()
+class MockException : Exception()

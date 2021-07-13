@@ -32,11 +32,14 @@ import care.data4life.datadonation.internal.data.service.ServiceContract.Consent
 import care.data4life.datadonation.internal.data.service.networking.Networking
 import care.data4life.datadonation.internal.data.service.networking.Path
 import care.data4life.datadonation.lang.CoreRuntimeError
+import care.data4life.datadonation.lang.HttpRuntimeError
 import care.data4life.datadonation.mock.DummyData
 import care.data4life.datadonation.mock.fake.createDefaultMockClient
 import care.data4life.datadonation.mock.stub.ClockStub
+import care.data4life.datadonation.mock.stub.service.ConsentErrorHandlerStub
 import care.data4life.datadonation.mock.stub.service.networking.CallBuilderSpy
 import care.data4life.sdk.util.test.runBlockingTest
+import io.ktor.http.HttpStatusCode
 import kotlinx.datetime.Instant
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -58,6 +61,7 @@ class ConsentServiceTest {
                 Environment.DEV,
                 createDefaultMockClient()
             ),
+            ConsentErrorHandlerStub(),
             ClockStub()
         )
 
@@ -65,7 +69,59 @@ class ConsentServiceTest {
     }
 
     @Test
-    fun `Given a instance had been created and fetchConsentDocuments was called with a AccessToken, Version, Language and a ConsentKey it fails due to unexpected response`() = runBlockingTest {
+    fun `Given fetchConsentDocuments was called with a AccessToken, Version, Language and a ConsentKey it delegates HttpRequestErrors to its ErrorHandler`() = runBlockingTest {
+        // Given
+        val accessToken = "potato"
+        val version = 23
+        val language = "zh-TW-hans-de-informal-x-old"
+        val consentKey = "tomato"
+
+        val error = HttpRuntimeError(HttpStatusCode.TooManyRequests)
+        val outgoingError = RuntimeException("Test")
+        var capturedError: HttpRuntimeError? = null
+
+        val errorHandler = ConsentErrorHandlerStub()
+
+        errorHandler.whenHandleFetchConsentDocuments = { delegatedError ->
+            capturedError = delegatedError
+            throw outgoingError
+        }
+
+        CallBuilderSpy.onExecute = { _, _ ->
+            throw error
+        }
+
+        // Then
+        val result = assertFailsWith<RuntimeException> {
+            val service = ConsentService(
+                CallBuilderSpy.getInstance(
+                    Environment.DEV,
+                    createDefaultMockClient()
+                ),
+                errorHandler,
+                ClockStub()
+            )
+            service.fetchConsentDocuments(
+                accessToken = accessToken,
+                version = version,
+                language = language,
+                consentKey = consentKey
+            )
+        }
+
+        // Then
+        assertSame(
+            actual = capturedError,
+            expected = error
+        )
+        assertSame(
+            actual = result,
+            expected = outgoingError
+        )
+    }
+
+    @Test
+    fun `Given fetchConsentDocuments was called with a AccessToken, Version, Language and a ConsentKey it fails due to unexpected response`() = runBlockingTest {
         // Given
         val accessToken = "potato"
         val version = 23
@@ -84,6 +140,7 @@ class ConsentServiceTest {
                     Environment.DEV,
                     createDefaultMockClient()
                 ),
+                ConsentErrorHandlerStub(),
                 ClockStub()
             )
             service.fetchConsentDocuments(
@@ -101,7 +158,7 @@ class ConsentServiceTest {
     }
 
     @Test
-    fun `Given a instance had been created and fetchConsentDocuments was called with a AccessToken, Version, Language and a ConsentKey it returns a List of ConsentDocument`() = runBlockingTest {
+    fun `Given fetchConsentDocuments was called with a AccessToken, Version, Language and a ConsentKey it returns a List of ConsentDocument`() = runBlockingTest {
         // Given
         val accessToken = "potato"
         val version = 23
@@ -127,6 +184,7 @@ class ConsentServiceTest {
                 Environment.DEV,
                 createDefaultMockClient()
             ),
+            ConsentErrorHandlerStub(),
             ClockStub()
         )
         val result = service.fetchConsentDocuments(
@@ -166,7 +224,57 @@ class ConsentServiceTest {
     }
 
     @Test
-    fun `Given a instance had been created and fetchUserConsents was called with a AccessToken, Latest and a ConsentKey it fails due to unexpected response`() = runBlockingTest {
+    fun `Given fetchUserConsents was called with a AccessToken, Latest and a ConsentKey it delegates HttpRequestErrors to its ErrorHandler`() = runBlockingTest {
+        // Given
+        val accessToken = "potato"
+        val consentKey = "tomato"
+
+        val error = HttpRuntimeError(HttpStatusCode.TooManyRequests)
+        val outgoingError = RuntimeException()
+        var capturedError: HttpRuntimeError? = null
+
+        val errorHandler = ConsentErrorHandlerStub()
+
+        errorHandler.whenHandleFetchUserConsents = { delegatedError ->
+            capturedError = delegatedError
+            throw outgoingError
+        }
+
+        CallBuilderSpy.onExecute = { _, _ ->
+            throw error
+        }
+
+        // Then
+        val result = assertFailsWith<RuntimeException> {
+            // When
+            val service = ConsentService(
+                CallBuilderSpy.getInstance(
+                    Environment.DEV,
+                    createDefaultMockClient()
+                ),
+                errorHandler,
+                ClockStub()
+            )
+            service.fetchUserConsents(
+                accessToken = accessToken,
+                latestConsent = false,
+                consentKey = consentKey
+            )
+        }
+
+        // Then
+        assertSame(
+            actual = capturedError,
+            expected = error
+        )
+        assertSame(
+            actual = result,
+            expected = outgoingError
+        )
+    }
+
+    @Test
+    fun `Given fetchUserConsents was called with a AccessToken, Latest and a ConsentKey it fails due to unexpected response`() = runBlockingTest {
         // Given
         val accessToken = "potato"
         val consentKey = "tomato"
@@ -183,6 +291,7 @@ class ConsentServiceTest {
                     Environment.DEV,
                     createDefaultMockClient()
                 ),
+                ConsentErrorHandlerStub(),
                 ClockStub()
             )
             service.fetchUserConsents(
@@ -199,7 +308,7 @@ class ConsentServiceTest {
     }
 
     @Test
-    fun `Given a instance had been created and fetchUserConsents was called with a AccessToken, LatestConsent and a ConsentKey it returns a List of UserConsents`() = runBlockingTest {
+    fun `Given fetchUserConsents was called with a AccessToken, LatestConsent and a ConsentKey it returns a List of UserConsents`() = runBlockingTest {
         // Given
         val accessToken = "potato"
         val lastedConsent = true
@@ -224,6 +333,7 @@ class ConsentServiceTest {
                 Environment.DEV,
                 createDefaultMockClient()
             ),
+            ConsentErrorHandlerStub(),
             ClockStub()
         )
         val result = service.fetchUserConsents(
@@ -261,7 +371,61 @@ class ConsentServiceTest {
     }
 
     @Test
-    fun `Given a instance had been created and createUserConsent was called with a AccessToken and a Version it just runs`() = runBlockingTest {
+    fun `Given createUserConsent was called with a AccessToken and a Version it delegates HttpRequestErrors to its ErrorHandler`() = runBlockingTest {
+        // Given
+        val clock = ClockStub()
+        val accessToken = "potato"
+        val consentKey = "custom-consent-key"
+        val version = 23
+
+        val error = HttpRuntimeError(HttpStatusCode.TooManyRequests)
+        val outgoingError = RuntimeException()
+        var capturedError: HttpRuntimeError? = null
+
+        val errorHandler = ConsentErrorHandlerStub()
+
+        errorHandler.whenHandleCreateUserConsent = { delegatedError ->
+            capturedError = delegatedError
+            throw outgoingError
+        }
+
+        CallBuilderSpy.onExecute = { _, _ ->
+            throw error
+        }
+
+        clock.whenNow = { Instant.DISTANT_FUTURE }
+
+        // Then
+        val result = assertFailsWith<RuntimeException> {
+            // When
+            val service = ConsentService(
+                CallBuilderSpy.getInstance(
+                    Environment.DEV,
+                    createDefaultMockClient()
+                ),
+                errorHandler,
+                clock
+            )
+            service.createUserConsent(
+                accessToken = accessToken,
+                consentKey = consentKey,
+                version = version
+            )
+        }
+
+        // Then
+        assertSame(
+            actual = capturedError,
+            expected = error
+        )
+        assertSame(
+            actual = result,
+            expected = outgoingError
+        )
+    }
+
+    @Test
+    fun `Given createUserConsent was called with a AccessToken and a Version it just runs`() = runBlockingTest {
         // Given
         val clock = ClockStub()
 
@@ -291,15 +455,20 @@ class ConsentServiceTest {
                 Environment.DEV,
                 createDefaultMockClient()
             ),
+            ConsentErrorHandlerStub(),
             clock
         )
-        service.createUserConsent(
+        val result = service.createUserConsent(
             accessToken = accessToken,
             consentKey = consentKey,
             version = version
         )
 
         // Then
+        assertSame(
+            actual = result,
+            expected = Unit
+        )
         assertEquals(
             actual = capturedMethod,
             expected = Networking.Method.POST
@@ -326,7 +495,55 @@ class ConsentServiceTest {
     }
 
     @Test
-    fun `Given a instance had been created and requestSignatureRegistration was called with a AccessToken and a Message it fails due to a unexpected response`() = runBlockingTest {
+    fun `Given requestSignatureRegistration was called with a AccessToken and a Message it delegates HttpRequestErrors to its ErrorHandler`() = runBlockingTest {
+        // Given
+        val accessToken = "potato"
+        val message = "tomato"
+
+        val error = HttpRuntimeError(HttpStatusCode.TooManyRequests)
+        val outgoingError = RuntimeException()
+        var capturedError: HttpRuntimeError? = null
+
+        val errorHandler = ConsentErrorHandlerStub()
+
+        errorHandler.whenHandleRequestSignatureConsentRegistration = { delegatedError ->
+            capturedError = delegatedError
+            throw outgoingError
+        }
+
+        CallBuilderSpy.onExecute = { _, _ ->
+            throw error
+        }
+
+        // Then
+        val result = assertFailsWith<RuntimeException> {
+            val service = ConsentService(
+                CallBuilderSpy.getInstance(
+                    Environment.DEV,
+                    createDefaultMockClient()
+                ),
+                errorHandler,
+                ClockStub()
+            )
+            service.requestSignatureConsentRegistration(
+                accessToken = accessToken,
+                message = message
+            )
+        }
+
+        // Then
+        assertSame(
+            actual = capturedError,
+            expected = error
+        )
+        assertSame(
+            actual = result,
+            expected = outgoingError
+        )
+    }
+
+    @Test
+    fun `Given requestSignatureConsentRegistration was called with a AccessToken and a Message it fails due to a unexpected response`() = runBlockingTest {
         // Given
         val accessToken = "potato"
         val message = "tomato"
@@ -343,6 +560,7 @@ class ConsentServiceTest {
                     Environment.DEV,
                     createDefaultMockClient()
                 ),
+                ConsentErrorHandlerStub(),
                 ClockStub()
             )
             service.requestSignatureConsentRegistration(
@@ -358,7 +576,7 @@ class ConsentServiceTest {
     }
 
     @Test
-    fun `Given a instance had been created and requestSignatureRegistration was called with a AccessToken and a Message it returns a ConsentSignature`() = runBlockingTest {
+    fun `Given requestSignatureConsentRegistration was called with a AccessToken and a Message it returns a ConsentSignature`() = runBlockingTest {
         // Given
         val accessToken = "potato"
         val message = "tomato"
@@ -379,6 +597,7 @@ class ConsentServiceTest {
                 Environment.DEV,
                 createDefaultMockClient()
             ),
+            ConsentErrorHandlerStub(),
             ClockStub()
         )
         val result = service.requestSignatureConsentRegistration(
@@ -417,7 +636,56 @@ class ConsentServiceTest {
     }
 
     @Test
-    fun `Given a instance had been created and requestSignatureDonation was called with a AccessToken and a Message it fails due to a unexpected response`() = runBlockingTest {
+    fun `Given requestSignatureDonation was called with a AccessToken and a Message it delegates HttpRequestErrors to its ErrorHandler`() = runBlockingTest {
+        // Given
+        val accessToken = "potato"
+        val message = "tomato"
+
+        val error = HttpRuntimeError(HttpStatusCode.TooManyRequests)
+        val outgoingError = RuntimeException()
+        var capturedError: HttpRuntimeError? = null
+
+        val errorHandler = ConsentErrorHandlerStub()
+
+        errorHandler.whenHandleRequestSignatureDonation = { delegatedError ->
+            capturedError = delegatedError
+            throw outgoingError
+        }
+
+        CallBuilderSpy.onExecute = { _, _ ->
+            throw error
+        }
+
+        // Then
+        val result = assertFailsWith<RuntimeException> {
+            // When
+            val service = ConsentService(
+                CallBuilderSpy.getInstance(
+                    Environment.DEV,
+                    createDefaultMockClient()
+                ),
+                errorHandler,
+                ClockStub()
+            )
+            service.requestSignatureDonation(
+                accessToken = accessToken,
+                message = message
+            )
+        }
+
+        // Then
+        assertSame(
+            actual = capturedError,
+            expected = error
+        )
+        assertSame(
+            actual = result,
+            expected = outgoingError
+        )
+    }
+
+    @Test
+    fun `Given requestSignatureDonation was called with a AccessToken and a Message it fails due to a unexpected response`() = runBlockingTest {
         // Given
         val accessToken = "potato"
         val message = "tomato"
@@ -434,6 +702,7 @@ class ConsentServiceTest {
                     Environment.DEV,
                     createDefaultMockClient()
                 ),
+                ConsentErrorHandlerStub(),
                 ClockStub()
             )
             service.requestSignatureDonation(
@@ -449,7 +718,7 @@ class ConsentServiceTest {
     }
 
     @Test
-    fun `Given a instance had been created and requestSignatureDonation was called with a AccessToken and a Message it returns a ConsentSignature`() = runBlockingTest {
+    fun `Given requestSignatureDonation was called with a AccessToken and a Message it returns a ConsentSignature`() = runBlockingTest {
         // Given
         val accessToken = "potato"
         val message = "tomato"
@@ -470,6 +739,7 @@ class ConsentServiceTest {
                 Environment.DEV,
                 createDefaultMockClient()
             ),
+            ConsentErrorHandlerStub(),
             ClockStub()
         )
         val result = service.requestSignatureDonation(
@@ -508,7 +778,56 @@ class ConsentServiceTest {
     }
 
     @Test
-    fun `Given a instance had been created and revokeUserConsent was called with a AccessToken it just runs`() = runBlockingTest {
+    fun `Given revokeUserConsent was called with a AccessToken it delegates HttpRequestErrors to its ErrorHandler`() = runBlockingTest {
+        // Given
+        val accessToken = "potato"
+        val consentKey = "custom-consent-key"
+
+        val error = HttpRuntimeError(HttpStatusCode.TooManyRequests)
+        val outgoingError = RuntimeException()
+        var capturedError: HttpRuntimeError? = null
+
+        val errorHandler = ConsentErrorHandlerStub()
+
+        errorHandler.whenHandleRevokeUserConsent = { delegatedError ->
+            capturedError = delegatedError
+            throw outgoingError
+        }
+
+        CallBuilderSpy.onExecute = { _, _ ->
+            throw error
+        }
+
+        // Then
+        val result = assertFailsWith<RuntimeException> {
+            // When
+            val service = ConsentService(
+                CallBuilderSpy.getInstance(
+                    Environment.DEV,
+                    createDefaultMockClient()
+                ),
+                errorHandler,
+                ClockStub()
+            )
+            service.revokeUserConsent(
+                accessToken = accessToken,
+                consentKey = consentKey
+            )
+        }
+
+        // Then
+        assertSame(
+            actual = capturedError,
+            expected = error
+        )
+        assertSame(
+            actual = result,
+            expected = outgoingError
+        )
+    }
+
+    @Test
+    fun `Given revokeUserConsent was called with a AccessToken it just runs`() = runBlockingTest {
         // Given
         val accessToken = "potato"
         val consentKey = "custom-consent-key"
@@ -532,11 +851,16 @@ class ConsentServiceTest {
                 Environment.DEV,
                 createDefaultMockClient()
             ),
+            ConsentErrorHandlerStub(),
             ClockStub()
         )
-        service.revokeUserConsent(accessToken = accessToken, consentKey = consentKey)
+        val result = service.revokeUserConsent(accessToken = accessToken, consentKey = consentKey)
 
         // Then
+        assertSame(
+            actual = result,
+            expected = Unit
+        )
         assertEquals(
             actual = capturedMethod,
             expected = Networking.Method.DELETE

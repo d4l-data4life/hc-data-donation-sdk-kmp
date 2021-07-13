@@ -22,7 +22,11 @@ import org.koin.dsl.module
 internal fun resolveServiceModule(): Module {
     return module {
         single<ServiceContract.ConsentService> {
-            ConsentService(get(), get())
+            ConsentService(get(), get(), get())
+        }
+
+        single<ServiceContract.ConsentService.ConsentErrorHandler> {
+            ConsentErrorHandler
         }
 
         single<ServiceContract.CredentialService> {

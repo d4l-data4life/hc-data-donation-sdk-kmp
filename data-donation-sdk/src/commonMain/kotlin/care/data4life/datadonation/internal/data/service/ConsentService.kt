@@ -35,10 +35,12 @@ import care.data4life.datadonation.internal.data.service.ServiceContract.Consent
 import care.data4life.datadonation.internal.data.service.networking.Networking
 import care.data4life.datadonation.internal.utils.safeCast
 import care.data4life.datadonation.internal.utils.safeListCast
+import care.data4life.datadonation.lang.HttpRuntimeError
 import kotlinx.datetime.Clock
 
 internal class ConsentService constructor(
     private val callBuilder: Networking.CallBuilder,
+    private val errorHandler: ServiceContract.ConsentService.ConsentErrorHandler,
     private val clock: Clock
 ) : ServiceContract.ConsentService {
     private fun buildPath(
@@ -66,13 +68,17 @@ internal class ConsentService constructor(
             LANGUAGE to language
         )
 
-        val response = callBuilder
-            .setAccessToken(accessToken)
-            .setParameter(parameter)
-            .execute(
-                Networking.Method.GET,
-                path
-            )
+        val response = try {
+            callBuilder
+                .setAccessToken(accessToken)
+                .setParameter(parameter)
+                .execute(
+                    Networking.Method.GET,
+                    path
+                )
+        } catch (error: HttpRuntimeError) {
+            errorHandler.handleFetchConsentDocuments(error)
+        }
 
         return safeListCast(response)
     }
@@ -88,13 +94,17 @@ internal class ConsentService constructor(
             USER_CONSENT_KEY to consentKey,
         )
 
-        val response = callBuilder
-            .setAccessToken(accessToken)
-            .setParameter(parameter)
-            .execute(
-                Networking.Method.GET,
-                path
-            )
+        val response = try {
+            callBuilder
+                .setAccessToken(accessToken)
+                .setParameter(parameter)
+                .execute(
+                    Networking.Method.GET,
+                    path
+                )
+        } catch (error: HttpRuntimeError) {
+            errorHandler.handleFetchUserConsents(error)
+        }
 
         return safeListCast(response)
     }
@@ -111,14 +121,18 @@ internal class ConsentService constructor(
             clock.now().toString()
         )
 
-        callBuilder
-            .setAccessToken(accessToken)
-            .useJsonContentType()
-            .setBody(payload)
-            .execute(
-                Networking.Method.POST,
-                path
-            )
+        try {
+            callBuilder
+                .setAccessToken(accessToken)
+                .useJsonContentType()
+                .setBody(payload)
+                .execute(
+                    Networking.Method.POST,
+                    path
+                )
+        } catch (error: HttpRuntimeError) {
+            errorHandler.handleCreateUserConsent(error)
+        }
     }
 
     // see: https://github.com/gesundheitscloud/consent-management/blob/master/swagger/api.yml#L356
@@ -138,14 +152,18 @@ internal class ConsentService constructor(
             ConsentSignatureType.CONSENT_ONCE.apiValue
         )
 
-        val response = callBuilder
-            .setAccessToken(accessToken)
-            .useJsonContentType()
-            .setBody(payload)
-            .execute(
-                Networking.Method.POST,
-                path
-            )
+        val response = try {
+            callBuilder
+                .setAccessToken(accessToken)
+                .useJsonContentType()
+                .setBody(payload)
+                .execute(
+                    Networking.Method.POST,
+                    path
+                )
+        } catch (error: HttpRuntimeError) {
+            errorHandler.handleRequestSignatureConsentRegistration(error)
+        }
 
         return safeCast(response)
     }
@@ -166,14 +184,18 @@ internal class ConsentService constructor(
             ConsentSignatureType.NORMAL_USE.apiValue
         )
 
-        val response = callBuilder
-            .setAccessToken(accessToken)
-            .useJsonContentType()
-            .setBody(payload)
-            .execute(
-                Networking.Method.PUT,
-                path
-            )
+        val response = try {
+            callBuilder
+                .setAccessToken(accessToken)
+                .useJsonContentType()
+                .setBody(payload)
+                .execute(
+                    Networking.Method.PUT,
+                    path
+                )
+        } catch (error: HttpRuntimeError) {
+            errorHandler.handleRequestSignatureDonation(error)
+        }
 
         return safeCast(response)
     }
@@ -182,13 +204,17 @@ internal class ConsentService constructor(
         val path = buildPath(USER_CONSENTS)
         val payload = ConsentRevocationPayload(consentKey)
 
-        callBuilder
-            .setAccessToken(accessToken)
-            .useJsonContentType()
-            .setBody(payload)
-            .execute(
-                Networking.Method.DELETE,
-                path
-            )
+        try {
+            callBuilder
+                .setAccessToken(accessToken)
+                .useJsonContentType()
+                .setBody(payload)
+                .execute(
+                    Networking.Method.DELETE,
+                    path
+                )
+        } catch (error: HttpRuntimeError) {
+            errorHandler.handleRevokeUserConsent(error)
+        }
     }
 }
