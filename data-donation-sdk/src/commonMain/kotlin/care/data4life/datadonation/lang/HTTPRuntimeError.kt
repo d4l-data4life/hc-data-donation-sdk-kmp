@@ -19,6 +19,6 @@ package care.data4life.datadonation.lang
 import care.data4life.sdk.lang.D4LRuntimeException
 import io.ktor.http.HttpStatusCode
 
-class HttpRuntimeError(
+internal class HttpRuntimeError(
     val statusCode: HttpStatusCode
 ) : D4LRuntimeException()
