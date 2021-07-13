@@ -21,6 +21,7 @@ import care.data4life.sdk.lang.D4LRuntimeException
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.features.HttpCallValidator
+import io.ktor.client.features.HttpClientFeature
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.logging.Logging
 import io.ktor.client.statement.HttpResponse
@@ -36,8 +37,8 @@ internal interface Networking {
         override fun log(message: String)
     }
 
-    fun interface Configurator<Config, Util> {
-        fun configure(pluginConfig: Config, util: Util)
+    fun interface Configurator<Config: Any, AuxiliaryConfigurator: Any> {
+        fun configure(pluginConfig: Config, util: AuxiliaryConfigurator)
     }
 
     fun interface JsonConfigurator {
@@ -61,8 +62,8 @@ internal interface Networking {
     fun interface ClientConfigurator {
         fun configure(
             config: HttpClientConfig<*>,
-            jsonConfigurator: JsonConfigurator,
-            vararg installers: Configurator<*, *>
+            installers: Map<HttpClientFeature<*, *>, Pair<Configurator<Any, Any>, Any>>,
+
         )
     }
 

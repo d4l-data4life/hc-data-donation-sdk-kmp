@@ -19,7 +19,6 @@ package care.data4life.datadonation.internal.data.service.networking
 import care.data4life.sdk.util.test.runWithContextBlockingTest
 import io.ktor.client.HttpClient
 import io.ktor.client.features.json.JsonFeature
-import io.ktor.client.features.logging.Logging
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
@@ -36,7 +35,7 @@ class ClientConfiguratorTest {
     }
 
     @Test
-    fun `Given configure is called with a HttpClientConfig, which supports Features and a SerializerConfigurator, it calls it with the appropriate parameter`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+    fun `Given configure is called with a HttpClientConfig, which supports Features, and a Configurator and its AuxiliaryConfigurator, it calls the Configurator with its appropriate parameter`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val serializer = object : Networking.SerializerConfigurator {
             var capturedPluginConfig = Channel<JsonFeature.Config>()
@@ -57,8 +56,12 @@ class ClientConfiguratorTest {
         HttpClient {
             ClientConfigurator.configure(
                 this,
-                JsonConfigurator,
-                serializer
+                mapOf(
+                    JsonFeature to Pair(
+                        serializer as Networking.Configurator<Any, Any>,
+                        JsonConfigurator
+                    )
+                )
             )
         }
 
@@ -68,42 +71,6 @@ class ClientConfiguratorTest {
         assertSame(
             actual = serializer.capturedUtil.receive(),
             expected = JsonConfigurator
-        )
-    }
-
-    @Test
-    fun `Given configure is called with a HttpClientConfig, which supports Features and a LoggingConfigurator, it calls it with the appropriate parameter`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
-        // Given
-        val logging = object : Networking.LoggingConfigurator {
-            var capturedPluginConfig = Channel<Logging.Config>()
-            var capturedUtil = Channel<Unit>()
-
-            override fun configure(
-                pluginConfig: Logging.Config,
-                util: Unit
-            ) {
-                launch {
-                    capturedPluginConfig.send(pluginConfig)
-                    capturedUtil.send(util)
-                }
-            }
-        }
-
-        // When
-        HttpClient {
-            ClientConfigurator.configure(
-                this,
-                JsonConfigurator,
-                logging
-            )
-        }
-
-        // Then
-        val pluginConfig: Any = logging.capturedPluginConfig.receive()
-        assertTrue(pluginConfig is Logging.Config)
-        assertSame(
-            actual = logging.capturedUtil.receive(),
-            expected = Unit
         )
     }
 }

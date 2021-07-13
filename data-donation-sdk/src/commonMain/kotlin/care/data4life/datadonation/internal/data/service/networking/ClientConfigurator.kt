@@ -17,26 +17,21 @@
 package care.data4life.datadonation.internal.data.service.networking
 
 import io.ktor.client.HttpClientConfig
+import io.ktor.client.features.HttpClientFeature
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.logging.Logging
 
 internal object ClientConfigurator : Networking.ClientConfigurator {
     override fun configure(
         config: HttpClientConfig<*>,
-        jsonConfigurator: Networking.JsonConfigurator,
-        vararg installers: Networking.Configurator<*, *>
+        installers: Map<HttpClientFeature<*, *>, Pair<Networking.Configurator<Any, Any>, Any>>,
     ) {
-        installers.forEach { configurator ->
-            if (configurator is Networking.SerializerConfigurator) {
-                config.install(JsonFeature) {
-                    configurator.configure(this, jsonConfigurator)
-                }
-            }
-
-            if (configurator is Networking.LoggingConfigurator) {
-                config.install(Logging) {
-                    configurator.configure(this, Unit)
-                }
+        installers.forEach { (plugin, configurator) ->
+            config.install(plugin) {
+                configurator.first.configure(
+                    this,
+                    configurator.second
+                )
             }
         }
     }

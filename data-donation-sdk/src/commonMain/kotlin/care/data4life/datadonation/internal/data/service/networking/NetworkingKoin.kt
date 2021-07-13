@@ -17,6 +17,8 @@
 package care.data4life.datadonation.internal.data.service.networking
 
 import io.ktor.client.HttpClient
+import io.ktor.client.features.json.JsonFeature
+import io.ktor.client.features.logging.Logging
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
@@ -30,9 +32,16 @@ internal fun resolveNetworking(): Module {
             HttpClient {
                 ClientConfigurator.configure(
                     this,
-                    JsonConfigurator,
-                    SerializerConfigurator,
-                    LoggerConfigurator
+                    mapOf(
+                        JsonFeature to Pair(
+                            SerializerConfigurator as Networking.Configurator<Any, Any>,
+                            JsonConfigurator
+                        ),
+                        Logging to Pair(
+                            LoggerConfigurator as Networking.Configurator<Any, Any>,
+                            Unit
+                        )
+                    )
                 )
             }
         }
