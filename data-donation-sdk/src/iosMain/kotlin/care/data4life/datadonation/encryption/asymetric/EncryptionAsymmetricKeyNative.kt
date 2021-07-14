@@ -34,8 +34,7 @@ package care.data4life.datadonation.encryption.asymetric
 
 import care.data4life.datadonation.encryption.KeyNative
 import care.data4life.datadonation.encryption.sequence
-import care.data4life.datadonation.toByteArray
-import care.data4life.datadonation.toNSData
+import care.data4life.sdk.util.NSDataMapper
 import platform.CoreFoundation.CFDataRef
 import platform.Foundation.*
 import platform.Security.*
@@ -54,27 +53,36 @@ class EncryptionAsymmetricKeyNative :
     constructor(private: SecKeyRef, public: SecKeyRef, algoType: SecKeyAlgorithm) :
         super(private, public, algoType)
 
-    override fun decrypt(data: ByteArray): Result<ByteArray> = runCatching {
-        val input = CFBridgingRetain(data.toNSData()) as CFDataRef
-        val decrypted = SecKeyCreateDecryptedData(privateKey, algoType, input, null)!!
-        CFBridgingRelease(input)
-        return@runCatching(CFBridgingRelease(decrypted) as NSData).toByteArray()
-    }
-
     override fun encrypt(data: ByteArray): ByteArray {
-        val input = CFBridgingRetain(data.toNSData()) as CFDataRef
+        val input = CFBridgingRetain(NSDataMapper.toNSData(data)) as CFDataRef
         val encrypted = SecKeyCreateEncryptedData(publicKey, algoType, input, null)!!
         CFBridgingRelease(input)
-        return (CFBridgingRelease(encrypted) as NSData).toByteArray()
+        return NSDataMapper.toByteArray(CFBridgingRelease(encrypted) as NSData)
     }
 
-    override fun serializedPublic(): ByteArray =
-        (CFBridgingRelease(SecKeyCopyExternalRepresentation(publicKey, null)) as NSData)
-            .toByteArray()
+    // TODO: DRY that with SignatureKey
+    override fun decrypt(data: ByteArray): Result<ByteArray> = runCatching {
+        val input = CFBridgingRetain(NSDataMapper.toNSData(data)) as CFDataRef
+        val decrypted = SecKeyCreateDecryptedData(privateKey, algoType, input, null)!!
+        CFBridgingRelease(input)
+        return@runCatching NSDataMapper.toByteArray(CFBridgingRelease(decrypted) as NSData)
+    }
 
-    override fun serializedPrivate(): ByteArray =
-        (CFBridgingRelease(SecKeyCopyExternalRepresentation(privateKey, null)) as NSData)
-            .toByteArray()
+    override fun serializedPublic(): ByteArray {
+        return NSDataMapper.toByteArray(
+            CFBridgingRelease(
+                SecKeyCopyExternalRepresentation(publicKey, null)
+            ) as NSData
+        )
+    }
+
+    override fun serializedPrivate(): ByteArray {
+        return NSDataMapper.toByteArray(
+            CFBridgingRelease(
+                SecKeyCopyExternalRepresentation(privateKey, null)
+            ) as NSData
+        )
+    }
 
     fun toPkcs8Private(privateKey: ByteArray) =
         (
@@ -85,7 +93,7 @@ class EncryptionAsymmetricKeyNative :
                 }
                 "PrivateKey" octet_string { raw(privateKey) }
             }
-            ).encoded
+            ).encoded.asByteArray()
 
     fun toPkcs8Public(publicKey: ByteArray) = (
         "PublicKeyInfo" sequence {
@@ -94,19 +102,33 @@ class EncryptionAsymmetricKeyNative :
             }
             "PublicKey" bit_string { raw(publicKey) }
         }
-        ).encoded
+        ).encoded.asByteArray()
+
+    private fun encodeWithLineFeed(data: ByteArray): String {
+        return NSDataMapper.toNSData(data)
+            .base64EncodedStringWithOptions(NSDataBase64EncodingEndLineWithLineFeed)
+    }
 
     override val pkcs8Private: String
-        get() = (CFBridgingRelease(SecKeyCopyExternalRepresentation(privateKey, null)) as NSData)
-            .toByteArray()
-            .let(::toPkcs8Private)
-            .toNSData()
-            .base64EncodedStringWithOptions(NSDataBase64EncodingEndLineWithLineFeed)
+        get() {
+            return NSDataMapper.toByteArray(
+                CFBridgingRelease(
+                    SecKeyCopyExternalRepresentation(privateKey, null)
+                ) as NSData
+            )
+                .let(::toPkcs8Private)
+                .let(::encodeWithLineFeed)
+        }
 
     override val pkcs8Public: String
-        get() = (CFBridgingRelease(SecKeyCopyExternalRepresentation(publicKey, null)) as NSData)
-            .toByteArray()
-            .let(::toPkcs8Public)
-            .toNSData()
-            .base64EncodedStringWithOptions(NSDataBase64EncodingEndLineWithLineFeed)
+        get() {
+            return NSDataMapper.toByteArray(
+                CFBridgingRelease(
+                    SecKeyCopyExternalRepresentation(publicKey, null)
+                ) as NSData
+            )
+                .let(::toPkcs8Public)
+                .let(::encodeWithLineFeed)
+        }
+    // regionend
 }

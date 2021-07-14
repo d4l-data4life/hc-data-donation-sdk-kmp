@@ -32,8 +32,7 @@
 
 package care.data4life.datadonation.encryption.symmetric
 
-import care.data4life.datadonation.toByteArray
-import care.data4life.datadonation.toNSData
+import care.data4life.sdk.util.NSDataMapper
 import kotlinx.cinterop.addressOf
 import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.usePinned
@@ -50,25 +49,25 @@ class EncryptionSymmetricKeyNative : EncryptionSymmetricKey {
     constructor(size: Int) {
         val randomByteArray = secureRandomByteArray(size / 8)
         this.key = randomByteArray
-        this.cryptoWrapper = CryptoAES(randomByteArray.toNSData())
+        this.cryptoWrapper = CryptoAES(NSDataMapper.toNSData(randomByteArray))
     }
 
     constructor(key: ByteArray) {
         this.key = key
-        this.cryptoWrapper = CryptoAES(key.toNSData())
+        this.cryptoWrapper = CryptoAES(NSDataMapper.toNSData(key))
     }
 
     override fun decrypt(encrypted: ByteArray, associatedData: ByteArray): Result<ByteArray> {
         return runCatching {
             val iv = encrypted.sliceArray(0..15)
             val encrypted = encrypted.sliceArray(16..encrypted.lastIndex)
-            return@runCatching (
+            return@runCatching NSDataMapper.toByteArray(
                 cryptoWrapper.decryptWithEncrypted(
-                    encrypted.toNSData(),
-                    iv.toNSData(),
-                    associatedData.toNSData()
+                    NSDataMapper.toNSData(encrypted),
+                    NSDataMapper.toNSData(iv),
+                    NSDataMapper.toNSData(associatedData)
                 ) as NSData
-                ).toByteArray()
+            )
         }
     }
 
@@ -79,17 +78,19 @@ class EncryptionSymmetricKeyNative : EncryptionSymmetricKey {
 
     override fun encrypt(plainText: ByteArray, associatedData: ByteArray): ByteArray = memScoped {
         val iv = secureRandomByteArray(16)
-        val encrypted = (
+        val encrypted = NSDataMapper.toByteArray(
             cryptoWrapper.encryptWithPlainText(
-                plainText.toNSData(),
-                iv.toNSData(),
-                associatedData.toNSData()
+                NSDataMapper.toNSData(plainText),
+                NSDataMapper.toNSData(iv),
+                NSDataMapper.toNSData(associatedData)
             ) as NSData
-            ).toByteArray()
+        )
+
         if (encrypted.isEmpty()) {
             throw Throwable("Unknown encryption error")
         }
-        return iv + encrypted
+
+        return@memScoped iv + encrypted
     }
 }
 

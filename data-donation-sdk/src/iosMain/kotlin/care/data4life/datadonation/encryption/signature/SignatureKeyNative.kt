@@ -35,8 +35,7 @@ package care.data4life.datadonation.encryption.signature
 import care.data4life.datadonation.encryption.KeyNative
 import care.data4life.datadonation.encryption.asymetric.rsaPkcsIDENTIFIER
 import care.data4life.datadonation.encryption.sequence
-import care.data4life.datadonation.toByteArray
-import care.data4life.datadonation.toNSData
+import care.data4life.sdk.util.NSDataMapper
 import kotlinx.cinterop.*
 import platform.CoreFoundation.*
 import platform.Foundation.*
@@ -55,47 +54,77 @@ class SignatureKeyNative : KeyNative, SignatureKeyPrivate {
     constructor(private: SecKeyRef, public: SecKeyRef, algoType: SecKeyAlgorithm) :
         super(private, public, algoType)
 
+    // TODO: DRY that with AsymKey
     override fun sign(data: ByteArray): ByteArray {
-        val inputCfDataRef = CFBridgingRetain(data.toNSData()) as CFDataRef
+        val inputCfDataRef = CFBridgingRetain(NSDataMapper.toNSData(data)) as CFDataRef
         val k = SecKeyCreateSignature(privateKey, algoType, inputCfDataRef, null)!!
         CFBridgingRelease(inputCfDataRef)
-        return (CFBridgingRelease(k) as NSData).toByteArray()
+        return NSDataMapper.toByteArray(CFBridgingRelease(k) as NSData)
+    }
+    private fun encodeWithLineFeed(data: ByteArray): String {
+        return NSDataMapper.toNSData(data)
+            .base64EncodedStringWithOptions(NSDataBase64EncodingEndLineWithLineFeed)
     }
 
     override val pkcs8Private: String
-        get() = (CFBridgingRelease(SecKeyCopyExternalRepresentation(privateKey, null)) as NSData)
-            .toByteArray()
-            .let(::toPkcs8Private)
-            .toNSData()
-            .base64EncodedStringWithOptions(NSDataBase64EncodingEndLineWithLineFeed)
+        get() {
+            return NSDataMapper.toByteArray(
+                CFBridgingRelease(
+                    SecKeyCopyExternalRepresentation(privateKey, null)
+                ) as NSData
+            )
+                .let(::toPkcs8Private)
+                .let(::encodeWithLineFeed)
+        }
 
     override val pkcs8Public: String
-        get() = (CFBridgingRelease(SecKeyCopyExternalRepresentation(publicKey, null)) as NSData)
-            .toByteArray()
-            .let(::toPkcs8Public)
-            .toNSData()
-            .base64EncodedStringWithOptions(NSDataBase64EncodingEndLineWithLineFeed)
+        get() {
+            return NSDataMapper.toByteArray(
+                CFBridgingRelease(
+                    SecKeyCopyExternalRepresentation(publicKey, null)
+                ) as NSData
+            )
+                .let(::toPkcs8Public)
+                .let(::encodeWithLineFeed)
+        }
+    // regionend
 
-    override fun verify(data: ByteArray, signature: ByteArray): Boolean =
-        memScoped {
+    override fun verify(data: ByteArray, signature: ByteArray): Boolean {
+        return memScoped {
             val error = alloc<CFErrorRefVar>()
-            val inputCfDataRef = CFBridgingRetain(data.toNSData()) as CFDataRef
-            val signatureCfDataRef = CFBridgingRetain(signature.toNSData()) as CFDataRef
-            val k = SecKeyVerifySignature(publicKey, algoType, inputCfDataRef, signatureCfDataRef, error.ptr)
+            val inputCfDataRef = CFBridgingRetain(NSDataMapper.toNSData(data)) as CFDataRef
+            val signatureCfDataRef = CFBridgingRetain(NSDataMapper.toNSData(signature)) as CFDataRef
+            val k = SecKeyVerifySignature(
+                publicKey,
+                algoType,
+                inputCfDataRef,
+                signatureCfDataRef,
+                error.ptr
+            )
             if (error.value != null) {
                 val err = CFBridgingRelease(error.value) as NSError
                 throw Throwable(err.localizedDescription)
             }
             return@memScoped k
         }
+    }
 
-    override fun serializedPublic(): ByteArray =
-        (CFBridgingRelease(SecKeyCopyExternalRepresentation(publicKey, null)) as NSData)
-            .toByteArray()
+    // TODO: DRY that with AsymKey
+    override fun serializedPublic(): ByteArray {
+        return NSDataMapper.toByteArray(
+            CFBridgingRelease(
+                SecKeyCopyExternalRepresentation(publicKey, null)
+            ) as NSData
+        )
+    }
 
-    override fun serializedPrivate(): ByteArray =
-        (CFBridgingRelease(SecKeyCopyExternalRepresentation(privateKey, null)) as NSData)
-            .toByteArray()
+    override fun serializedPrivate(): ByteArray {
+        return NSDataMapper.toByteArray(
+            CFBridgingRelease(
+                SecKeyCopyExternalRepresentation(privateKey, null)
+            ) as NSData
+        )
+    }
 
     fun toPkcs8Private(privateKey: ByteArray) =
         (
@@ -106,7 +135,7 @@ class SignatureKeyNative : KeyNative, SignatureKeyPrivate {
                 }
                 "PrivateKey" octet_string { raw(privateKey) }
             }
-            ).encoded
+            ).encoded.asByteArray()
 
     fun toPkcs8Public(publicKey: ByteArray) = (
         "PublicKeyInfo" sequence {
@@ -115,11 +144,12 @@ class SignatureKeyNative : KeyNative, SignatureKeyPrivate {
             }
             "PublicKey" bit_string { raw(publicKey) }
         }
-        ).encoded
+        ).encoded.asByteArray()
+    // regionend
 }
 
 fun generateKey(type: SecKeyAlgorithm, size: Int): Pair<SecKeyRef, SecKeyRef> {
-    memScoped {
+    return memScoped {
         val publicKeyAttr = CFDictionaryCreateMutable(kCFAllocatorSystemDefault, 3, null, null)!!
         publicKeyAttr += kSecAttrIsPermanent to CFBridgingRetain(NSNumber(bool = false))
         publicKeyAttr += kSecAttrApplicationTag to CFBridgingRetain(
@@ -155,7 +185,7 @@ fun generateKey(type: SecKeyAlgorithm, size: Int): Pair<SecKeyRef, SecKeyRef> {
         CFBridgingRelease(privateKeyAttr)
         CFBridgingRelease(keyPairAttr)
 
-        return if (statusCode == noErr.toInt() && publicKey.value != null && privateKey.value != null) {
+        return@memScoped if (statusCode == noErr.toInt() && publicKey.value != null && privateKey.value != null) {
             privateKey.value!! to publicKey.value!!
         } else {
             throw GeneralEncryptionException("Cannot generate keypair: $statusCode")

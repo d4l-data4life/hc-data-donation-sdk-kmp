@@ -19,7 +19,7 @@ package care.data4life.datadonation.internal.domain.repository
 import care.data4life.datadonation.mock.DummyData
 import care.data4life.datadonation.mock.stub.UserConsentRemoteStorageStub
 import care.data4life.datadonation.mock.stub.UserSessionTokenDataStorageStub
-import runBlockingTest
+import care.data4life.sdk.util.test.runBlockingTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull

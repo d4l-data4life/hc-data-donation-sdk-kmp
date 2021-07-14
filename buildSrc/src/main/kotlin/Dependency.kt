@@ -25,11 +25,21 @@ object Dependency {
         val serialization = "org.jetbrains.kotlin:kotlin-serialization:${Version.kotlin}"
     }
 
-    object Java {
+    val jvm = JVM
+
+    object JVM {
         val slf4jApi = "org.slf4j:slf4j-api:${Version.slf4j}"
         val slf4jNop = "org.slf4j:slf4j-nop:${Version.slf4j}"
     }
 
+    val d4l = D4L
+    object D4L {
+        const val util = "care.data4life.hc-util-sdk-kmp:util:${Version.sdkUtil}"
+        const val testUtil = "care.data4life.hc-util-sdk-kmp:util-test:${Version.sdkUtil}"
+        const val fhir = "care.data4life.hc-fhir-sdk-kmp:fhir:${Version.fhir}"
+    }
+
+    val multiplatform = Multiplatform
     object Multiplatform {
         val kotlin = Kotlin
 
@@ -110,14 +120,6 @@ object Dependency {
         val stately = "co.touchlab:stately-common:${Version.stately}"
 
         val dateTime = "org.jetbrains.kotlinx:kotlinx-datetime:${Version.dateTime}"
-
-        object Fhir {
-            const val common = "care.data4life.hc-fhir-sdk-kmp:fhir:${Version.fhir}"
-            const val jvm = "care.data4life.hc-fhir-sdk-kmp:fhir-jvm:${Version.fhir}"
-            const val android = "care.data4life.hc-fhir-sdk-kmp:fhir-android:${Version.fhir}"
-            const val iosArm64 = "care.data4life.hc-fhir-sdk-kmp:fhir-iosarm64:${Version.fhir}"
-            const val iosX64 = "care.data4life.hc-fhir-sdk-kmp:fhir-iosx64:${Version.fhir}"
-        }
 
         val uuid = "com.benasher44:uuid:${Version.uuid}"
     }

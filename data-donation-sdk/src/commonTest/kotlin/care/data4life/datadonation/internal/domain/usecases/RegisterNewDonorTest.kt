@@ -51,8 +51,8 @@ import care.data4life.datadonation.mock.spy.CapturingResultListener
 import care.data4life.datadonation.mock.stub.RegistrationDataStorageStub
 import care.data4life.datadonation.mock.stub.ServiceTokenDataStorageStub
 import care.data4life.datadonation.mock.stub.UserConsentRepositoryStub
+import care.data4life.sdk.util.test.runBlockingTest
 import io.ktor.utils.io.charsets.Charset
-import runBlockingTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
