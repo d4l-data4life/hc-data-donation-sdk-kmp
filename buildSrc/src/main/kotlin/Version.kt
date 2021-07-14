@@ -45,11 +45,6 @@ object Version {
     // https://developer.android.com/studio/write/java8-support
     const val androidDesugar = "1.0.4"
 
-    const val hcSDKAndroid = "8c5268e858"
-    const val hcSdkHelperAndroid = "1.2.2"
-    const val hcSdkUtilsAndroid = "1.3.1"
-    const val fhirAndroid = "0.3.0"
-
     // https://github.com/JakeWharton/ThreeTenABP/
     const val threeTenABP = "1.1.1"
 
@@ -91,7 +86,7 @@ object Version {
     const val fhir = "0.1.0"
 
     // https://github.com/d4l-data4life/hc-util-sdk-kmp
-    const val sdkUtil = "1.7.0-add-coroutine-test-util-SNAPSHOT"
+    const val sdkUtil = "1.8.0"
 
     // Junit Test
     const val testJUnit = "4.13"
