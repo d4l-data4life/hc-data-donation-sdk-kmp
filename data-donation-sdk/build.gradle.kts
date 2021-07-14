@@ -27,45 +27,6 @@ plugins {
 
 group = LibraryConfig.group
 
-android {
-    compileSdkVersion(LibraryConfig.android.compileSdkVersion)
-
-    defaultConfig {
-        minSdkVersion(LibraryConfig.android.minSdkVersion)
-        targetSdkVersion(LibraryConfig.android.targetSdkVersion)
-
-        versionCode = 1
-        versionName = "${project.version}"
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        testInstrumentationRunnerArguments(
-            mapOf(
-                "clearPackageData" to "true"
-            )
-        )
-    }
-
-    resourcePrefix(LibraryConfig.android.resourcePrefix)
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-
-    sourceSets {
-        getByName("main") {
-            manifest.srcFile("src/androidMain/AndroidManifest.xml")
-            java.setSrcDirs(setOf("src/androidMain/kotlin"))
-            res.setSrcDirs(setOf("src/androidMain/res"))
-        }
-
-        getByName("test") {
-            java.setSrcDirs(setOf("src/androidTest/kotlin"))
-            res.setSrcDirs(setOf("src/androidTest/res"))
-        }
-    }
-}
-
 kotlin {
     android("android") {
         publishLibraryVariants("release", "debug")
@@ -206,6 +167,45 @@ kotlin {
             kotlinOptions {
                 freeCompilerArgs = freeCompilerArgs + "-Xallow-result-return-type"
             }
+        }
+    }
+}
+
+android {
+    compileSdkVersion(LibraryConfig.android.compileSdkVersion)
+
+    defaultConfig {
+        minSdkVersion(LibraryConfig.android.minSdkVersion)
+        targetSdkVersion(LibraryConfig.android.targetSdkVersion)
+
+        versionCode = 1
+        versionName = "${project.version}"
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunnerArguments(
+            mapOf(
+                "clearPackageData" to "true"
+            )
+        )
+    }
+
+    resourcePrefix(LibraryConfig.android.resourcePrefix)
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    sourceSets {
+        getByName("main") {
+            manifest.srcFile("src/androidMain/AndroidManifest.xml")
+            java.setSrcDirs(setOf("src/androidMain/kotlin"))
+            res.setSrcDirs(setOf("src/androidMain/res"))
+        }
+
+        getByName("test") {
+            java.setSrcDirs(setOf("src/androidTest/kotlin"))
+            res.setSrcDirs(setOf("src/androidTest/res"))
         }
     }
 }
