@@ -32,45 +32,20 @@
 
 package care.data4life.datadonation.internal.data.model
 
-data class DonationPayload(val request: ByteArray, val documents: List<DocumentWithSignature>) {
+data class DonationPayload(
+    val request: ByteArray,
+    val documents: List<DocumentWithSignature>
+) {
     override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || this::class != other::class) return false
-
-        other as DonationPayload
-
-        if (!request.contentEquals(other.request)) return false
-        if (documents != other.documents) return false
-
-        return true
+        return when (other) {
+            !is DonationPayload -> false
+            else -> request.contentEquals(other.request) && documents == other.documents
+        }
     }
 
     override fun hashCode(): Int {
         var result = request.contentHashCode()
         result = 31 * result + documents.hashCode()
         return result
-
-    }
-
-}
-
-data class DocumentWithSignature(val document: ByteArray, val signature: ByteArray) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || this::class != other::class) return false
-
-        other as DocumentWithSignature
-
-        if (!document.contentEquals(other.document)) return false
-        if (!signature.contentEquals(other.signature)) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = document.contentHashCode()
-        result = 31 * result + signature.contentHashCode()
-        return result
-
     }
 }
