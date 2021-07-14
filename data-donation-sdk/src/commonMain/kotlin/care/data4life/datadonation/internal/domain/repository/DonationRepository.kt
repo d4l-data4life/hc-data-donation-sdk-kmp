@@ -38,5 +38,8 @@ import care.data4life.datadonation.internal.data.storage.StorageContract
 internal class DonationRepository(
     private val remoteStorage: StorageContract.DonationRemoteStorage
 ) : RepositoryContract.DonationRepository {
-    override suspend fun donateResources(payload: DonationPayload) = remoteStorage.donateResources(payload)
+
+    override suspend fun donateResources(payload: DonationPayload) {
+        remoteStorage.donateResources(payload)
+    }
 }

@@ -28,7 +28,7 @@ class UserConsentRepositoryStub : RepositoryContract.UserConsentRepository, Mock
     var whenRevokeUserConsent: ((consentKey: String) -> Unit)? = null
 
     override suspend fun createUserConsent(consentKey: String, version: Int) {
-        whenCreateUserConsent?.invoke(consentKey, version)
+        whenCreateUserConsent?.invoke(consentKey, version) ?: throw MockException()
     }
 
     override suspend fun fetchUserConsents(consentKey: String?): List<UserConsent> {
@@ -44,7 +44,7 @@ class UserConsentRepositoryStub : RepositoryContract.UserConsentRepository, Mock
     }
 
     override suspend fun revokeUserConsent(consentKey: String) {
-        whenRevokeUserConsent?.invoke(consentKey)
+        whenRevokeUserConsent?.invoke(consentKey) ?: throw MockException()
     }
 
     override fun clear() {

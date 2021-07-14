@@ -18,12 +18,13 @@ package care.data4life.datadonation.mock.stub
 
 import care.data4life.datadonation.internal.data.model.DonationPayload
 import care.data4life.datadonation.internal.data.storage.StorageContract
+import care.data4life.datadonation.mock.MockException
 
 class DonationDataStorageStub : StorageContract.DonationRemoteStorage {
 
     var whenDonateResources: ((payload: DonationPayload) -> Unit)? = null
 
     override suspend fun donateResources(payload: DonationPayload) {
-        whenDonateResources?.invoke(payload)
+        whenDonateResources?.invoke(payload) ?: throw MockException()
     }
 }

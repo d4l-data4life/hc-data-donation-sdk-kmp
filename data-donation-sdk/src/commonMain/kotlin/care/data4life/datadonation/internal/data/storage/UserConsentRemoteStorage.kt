@@ -35,7 +35,7 @@ package care.data4life.datadonation.internal.data.storage
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.service.ServiceContract
 
-internal class UserConsentDataStore(
+internal class UserConsentRemoteStorage(
     private val service: ServiceContract.ConsentService
 ) : StorageContract.UserConsentRemoteStorage {
 

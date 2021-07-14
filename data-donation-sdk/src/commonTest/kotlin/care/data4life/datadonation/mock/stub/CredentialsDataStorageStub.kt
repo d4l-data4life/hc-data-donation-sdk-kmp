@@ -18,17 +18,22 @@ package care.data4life.datadonation.mock.stub
 
 import care.data4life.datadonation.internal.data.storage.StorageContract
 import care.data4life.datadonation.mock.MockContract
+import care.data4life.datadonation.mock.MockException
 
 class CredentialsDataStorageStub : StorageContract.CredentialsDataStorage, MockContract.Stub {
+    var whenGetDataDonationPublicKey: (() -> String)? = null
+    var whenGetAnalyticsPlatformPublicKey: (() -> String)? = null
+
     override fun getDataDonationPublicKey(): String {
-        TODO("Not yet implemented")
+        return whenGetDataDonationPublicKey?.invoke() ?: throw MockException()
     }
 
     override fun getAnalyticsPlatformPublicKey(): String {
-        TODO("Not yet implemented")
+        return whenGetAnalyticsPlatformPublicKey?.invoke() ?: throw MockException()
     }
 
     override fun clear() {
-        TODO("Not yet implemented")
+        whenGetAnalyticsPlatformPublicKey = null
+        whenGetDataDonationPublicKey = null
     }
 }
