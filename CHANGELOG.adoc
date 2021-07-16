@@ -32,7 +32,6 @@ See link:{link-repository}/compare/v0.0.1...main[changeset]
 === Added
 
 * slf4j for Koin (1.7.31).
-* sdk-util (1.8.1).
 * sdk-util-test (1.8.1).
 
 === Changed
