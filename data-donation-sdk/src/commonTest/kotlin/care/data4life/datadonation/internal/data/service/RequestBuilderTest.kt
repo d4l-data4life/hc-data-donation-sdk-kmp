@@ -42,7 +42,7 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class requestBuilderTest {
+class RequestBuilderTest {
     private fun createMockClientWithAssertion(assert: (HttpRequestData) -> Unit): HttpClient {
         return HttpClient(MockEngine) {
             engine {

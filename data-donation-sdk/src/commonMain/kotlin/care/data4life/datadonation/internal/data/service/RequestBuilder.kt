@@ -21,7 +21,6 @@ import care.data4life.datadonation.internal.data.exception.InternalErrorExceptio
 import care.data4life.datadonation.internal.data.service.ServiceContract.RequestBuilder.Companion.ACCESS_TOKEN_FIELD
 import care.data4life.datadonation.internal.data.service.ServiceContract.RequestBuilder.Companion.ACCESS_TOKEN_VALUE_PREFIX
 import io.ktor.client.HttpClient
-import io.ktor.client.call.NoTransformationFoundException
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.header
 import io.ktor.client.request.host
@@ -188,13 +187,5 @@ internal class RequestBuilder private constructor(
                 port
             )
         }
-    }
-}
-
-internal suspend inline fun <reified T> receive(request: HttpStatement): T {
-    return try {
-        request.receive()
-    } catch (exception: NoTransformationFoundException) {
-        throw InternalErrorException("Unexpected Response.")
     }
 }
