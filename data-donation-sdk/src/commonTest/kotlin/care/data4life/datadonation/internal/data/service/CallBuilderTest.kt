@@ -18,8 +18,8 @@ package care.data4life.datadonation.internal.data.service
 
 import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.internal.data.exception.InternalErrorException
-import care.data4life.datadonation.internal.data.service.ServiceContract.CallBuilder.Companion.ACCESS_TOKEN_FIELD
-import care.data4life.datadonation.internal.data.service.ServiceContract.CallBuilder.Companion.ACCESS_TOKEN_VALUE_PREFIX
+import care.data4life.datadonation.internal.data.service.ServiceContract.RequestBuilder.Companion.ACCESS_TOKEN_FIELD
+import care.data4life.datadonation.internal.data.service.ServiceContract.RequestBuilder.Companion.ACCESS_TOKEN_VALUE_PREFIX
 import care.data4life.datadonation.mock.fake.defaultResponse
 import care.data4life.datadonation.mock.fake.getDefaultMockClient
 import care.data4life.sdk.util.test.runWithContextBlockingTest
@@ -40,10 +40,9 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
-import kotlin.test.assertNotSame
 import kotlin.test.assertTrue
 
-class CallBuilderTest {
+class requestBuilderTest {
     private fun createMockClientWithAssertion(assert: (HttpRequestData) -> Unit): HttpClient {
         return HttpClient(MockEngine) {
             engine {
@@ -56,27 +55,40 @@ class CallBuilderTest {
     }
 
     @Test
-    fun `It fulfils CallBuilderFactory`() {
-        val factory: Any = CallBuilder
+    fun `It fulfils RequestBuilderTemplateFactory`() {
+        val factory: Any = RequestBuilder
 
-        assertTrue(factory is ServiceContract.CallBuilderFactory)
+        assertTrue(factory is ServiceContract.RequestBuilderTemplateFactory)
     }
 
     @Test
-    fun `Given getInstance is called with a Environment and a HttpClient it returns a CallBuilder`() {
+    fun `Given getInstance is called with a Environment and a HttpClient it returns a RequestBuilderTemplate`() {
         // Given
         val env = Environment.LOCAL
         val client = getDefaultMockClient()
 
         // When
-        val builder: Any = CallBuilder.getInstance(env, client)
+        val builder: Any = RequestBuilder.getInstance(env, client).create()
 
         // Then
-        assertTrue(builder is ServiceContract.CallBuilder)
+        assertTrue(builder is ServiceContract.RequestBuilderTemplate)
     }
 
     @Test
-    fun `Given a instance was create with an Environment and it was prepared and executed ituses GET by default`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+    fun `Given create is called with a Environment and a HttpClient it returns a RequestBuilder`() {
+        // Given
+        val env = Environment.LOCAL
+        val client = getDefaultMockClient()
+
+        // When
+        val builder: Any = RequestBuilder.getInstance(env, client).create()
+
+        // Then
+        assertTrue(builder is ServiceContract.RequestBuilder)
+    }
+
+    @Test
+    fun `Given a instance was create with an Environment and it was prepared and executed it uses GET by default`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val env = Environment.LOCAL
         val client = createMockClientWithAssertion { request ->
@@ -88,7 +100,7 @@ class CallBuilderTest {
         }
 
         // When
-        val builder = CallBuilder.getInstance(env, client)
+        val builder = RequestBuilder.getInstance(env, client).create()
         builder.prepare().receive()
     }
 
@@ -105,7 +117,7 @@ class CallBuilderTest {
         }
 
         // When
-        val builder = CallBuilder.getInstance(env, client)
+        val builder = RequestBuilder.getInstance(env, client).create()
         builder.prepare().receive()
     }
 
@@ -122,7 +134,7 @@ class CallBuilderTest {
         }
 
         // When
-        val builder = CallBuilder.getInstance(env, client)
+        val builder = RequestBuilder.getInstance(env, client).create()
         builder.prepare().receive()
     }
 
@@ -141,7 +153,7 @@ class CallBuilderTest {
         }
 
         // When
-        val builder = CallBuilder.getInstance(env, client)
+        val builder = RequestBuilder.getInstance(env, client).create()
         builder.prepare(path = path)
     }
 
@@ -158,7 +170,7 @@ class CallBuilderTest {
         }
 
         // When
-        val builder = CallBuilder.getInstance(env, client)
+        val builder = RequestBuilder.getInstance(env, client).create()
         builder.prepare().receive()
     }
 
@@ -175,12 +187,12 @@ class CallBuilderTest {
         }
 
         // When
-        val builder = CallBuilder.getInstance(env, client)
+        val builder = RequestBuilder.getInstance(env, client).create()
         builder.prepare().receive()
     }
 
     @Test
-    fun `Given a instance was create with a Environment and it was prepared and executed ituses the default Port`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+    fun `Given a instance was create with a Environment and it was prepared and executed it uses the default Port`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val env = Environment.LOCAL
         val client = createMockClientWithAssertion { request ->
@@ -192,12 +204,12 @@ class CallBuilderTest {
         }
 
         // When
-        val builder = CallBuilder.getInstance(env, client)
+        val builder = RequestBuilder.getInstance(env, client).create()
         builder.prepare().receive()
     }
 
     @Test
-    fun `Given a instance was create with a Environment and a Port and it was prepared and executed ituses the given Port`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+    fun `Given a instance was create with a Environment and a Port and it was prepared and executed it uses the given Port`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val port = 17
 
@@ -211,7 +223,7 @@ class CallBuilderTest {
         }
 
         // When
-        val builder = CallBuilder.getInstance(env, client, port)
+        val builder = RequestBuilder.getInstance(env, client, port).create()
         builder.prepare().receive()
     }
 
@@ -231,7 +243,7 @@ class CallBuilderTest {
         }
 
         // When
-        val builder = CallBuilder.getInstance(env, client)
+        val builder = RequestBuilder.getInstance(env, client).create()
         builder.prepare().receive()
     }
 
@@ -258,7 +270,7 @@ class CallBuilderTest {
         }
 
         // When
-        val builder = CallBuilder.getInstance(env, client)
+        val builder = RequestBuilder.getInstance(env, client).create()
         builder.setHeaders(headers).prepare().receive()
     }
 
@@ -275,7 +287,7 @@ class CallBuilderTest {
         }
 
         // When
-        val builder = CallBuilder.getInstance(env, client)
+        val builder = RequestBuilder.getInstance(env, client).create()
         builder.prepare().receive()
     }
 
@@ -300,7 +312,7 @@ class CallBuilderTest {
         }
 
         // When
-        val builder = CallBuilder.getInstance(env, client)
+        val builder = RequestBuilder.getInstance(env, client).create()
         builder.setParameter(parameter).prepare().receive()
     }
 
@@ -314,7 +326,7 @@ class CallBuilderTest {
         }
 
         // When
-        val builder = CallBuilder.getInstance(env, client)
+        val builder = RequestBuilder.getInstance(env, client).create()
         builder.prepare().receive()
     }
 
@@ -338,7 +350,7 @@ class CallBuilderTest {
         }
 
         // When
-        val builder = CallBuilder.getInstance(env, client)
+        val builder = RequestBuilder.getInstance(env, client).create()
         builder.setAccessToken(token).prepare().receive()
     }
 
@@ -358,7 +370,7 @@ class CallBuilderTest {
         }
 
         // When
-        val builder = CallBuilder.getInstance(env, client)
+        val builder = RequestBuilder.getInstance(env, client).create()
         builder.prepare().receive()
     }
 
@@ -395,7 +407,7 @@ class CallBuilderTest {
         }
 
         // When
-        val builder = CallBuilder.getInstance(env, client)
+        val builder = RequestBuilder.getInstance(env, client).create()
         builder.useJsonContentType().prepare().receive()
     }
 
@@ -413,7 +425,7 @@ class CallBuilderTest {
         }
 
         // When
-        val builder = CallBuilder.getInstance(env, client)
+        val builder = RequestBuilder.getInstance(env, client).create()
         builder.prepare().receive()
     }
 
@@ -425,7 +437,7 @@ class CallBuilderTest {
 
         val error = assertFailsWith<InternalErrorException> {
             // When
-            val builder = CallBuilder.getInstance(env, client)
+            val builder = RequestBuilder.getInstance(env, client).create()
             builder.setBody("Wups").prepare(ServiceContract.Method.GET)
         }
 
@@ -445,7 +457,7 @@ class CallBuilderTest {
         // When
         val error = assertFailsWith<InternalErrorException> {
             // When
-            val builder = CallBuilder.getInstance(env, client)
+            val builder = RequestBuilder.getInstance(env, client).create()
             builder.prepare(ServiceContract.Method.POST)
         }
 
@@ -464,7 +476,7 @@ class CallBuilderTest {
 
         val error = assertFailsWith<InternalErrorException> {
             // When
-            val builder = CallBuilder.getInstance(env, client)
+            val builder = RequestBuilder.getInstance(env, client).create()
             builder.prepare(ServiceContract.Method.PUT)
         }
 
@@ -483,7 +495,7 @@ class CallBuilderTest {
 
         val error = assertFailsWith<InternalErrorException> {
             // When
-            val builder = CallBuilder.getInstance(env, client)
+            val builder = RequestBuilder.getInstance(env, client).create()
             builder.prepare(ServiceContract.Method.DELETE)
         }
 
@@ -509,7 +521,7 @@ class CallBuilderTest {
         }
 
         // When
-        val builder = CallBuilder.getInstance(env, client)
+        val builder = RequestBuilder.getInstance(env, client).create()
         builder.setBody(payload).prepare(ServiceContract.Method.POST)
     }
 
@@ -534,7 +546,7 @@ class CallBuilderTest {
         }
 
         // When
-        val builder = CallBuilder.getInstance(env, client)
+        val builder = RequestBuilder.getInstance(env, client).create()
         builder.setBody(payload).prepare(ServiceContract.Method.POST)
     }
 
@@ -553,7 +565,7 @@ class CallBuilderTest {
         }
 
         // When
-        val builder = CallBuilder.getInstance(env, client)
+        val builder = RequestBuilder.getInstance(env, client).create()
         builder.setBody(payload).prepare(ServiceContract.Method.PUT)
     }
 
@@ -579,7 +591,7 @@ class CallBuilderTest {
         }
 
         // When
-        val builder = CallBuilder.getInstance(env, client)
+        val builder = RequestBuilder.getInstance(env, client).create()
         builder.setBody(payload).prepare(ServiceContract.Method.PUT)
     }
 
@@ -598,7 +610,7 @@ class CallBuilderTest {
         }
 
         // When
-        val builder = CallBuilder.getInstance(env, client)
+        val builder = RequestBuilder.getInstance(env, client).create()
         builder.setBody(payload).prepare(ServiceContract.Method.DELETE)
     }
 
@@ -624,42 +636,7 @@ class CallBuilderTest {
         }
 
         // When
-        val builder = CallBuilder.getInstance(env, client)
+        val builder = RequestBuilder.getInstance(env, client).create()
         builder.setBody(payload).prepare(ServiceContract.Method.DELETE)
-    }
-
-    @Test
-    fun `Given a instance was create with a Environment, newBuilder was it creates a new instance with the same initial parameter`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
-        // Given
-        val port = 23
-        val env = Environment.DEV
-        val client = createMockClientWithAssertion { request ->
-            // Then
-            assertEquals(
-                actual = request.url.host,
-                expected = env.url
-            )
-            assertEquals(
-                actual = request.url.port,
-                expected = port
-            )
-            assertEquals(
-                actual = request.url.protocol,
-                expected = URLProtocol.HTTPS
-            )
-        }
-
-        // When
-        val builder = CallBuilder.getInstance(env, client, port)
-        val newBuilder: Any = builder.newBuilder()
-
-        // Then
-        assertTrue(newBuilder is ServiceContract.CallBuilder)
-        assertNotSame(
-            actual = builder,
-            illegal = newBuilder
-        )
-        builder.prepare().receive<Any>()
-        newBuilder.prepare().receive<Any>()
     }
 }

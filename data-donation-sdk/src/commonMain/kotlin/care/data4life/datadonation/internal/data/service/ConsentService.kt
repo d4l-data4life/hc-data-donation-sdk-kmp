@@ -34,12 +34,11 @@ import care.data4life.datadonation.internal.data.service.ServiceContract.Consent
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PATH.SIGNATURES
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PATH.USER_CONSENTS
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.ROOT
-import care.data4life.datadonation.internal.utils.scopedKtorDelegation
 import io.ktor.client.HttpClient
 import kotlinx.datetime.Clock
 
 internal class ConsentService private constructor(
-    private val callBuilder: ServiceContract.CallBuilder,
+    private val requestBuilderTemplate: ServiceContract.RequestBuilderTemplate,
     private val clock: Clock
 ) : ServiceContract.ConsentService {
     private fun buildPath(
@@ -67,8 +66,8 @@ internal class ConsentService private constructor(
             LANGUAGE to language
         )
 
-        val request = callBuilder
-            .newBuilder()
+        val request = requestBuilderTemplate
+            .create()
             .setAccessToken(accessToken)
             .setParameter(parameter)
             .prepare(
@@ -76,7 +75,7 @@ internal class ConsentService private constructor(
                 path
             )
 
-        return scopedKtorDelegation(request)
+        return receive(request)
     }
 
     override suspend fun fetchUserConsents(
@@ -90,8 +89,8 @@ internal class ConsentService private constructor(
             USER_CONSENT_KEY to consentKey,
         )
 
-        val request = callBuilder
-            .newBuilder()
+        val request = requestBuilderTemplate
+            .create()
             .setAccessToken(accessToken)
             .setParameter(parameter)
             .prepare(
@@ -99,7 +98,7 @@ internal class ConsentService private constructor(
                 path
             )
 
-        return scopedKtorDelegation(request)
+        return receive(request)
     }
 
     override suspend fun createUserConsent(
@@ -114,8 +113,8 @@ internal class ConsentService private constructor(
             clock.now().toString()
         )
 
-        val request = callBuilder
-            .newBuilder()
+        val request = requestBuilderTemplate
+            .create()
             .setAccessToken(accessToken)
             .useJsonContentType()
             .setBody(payload)
@@ -124,7 +123,7 @@ internal class ConsentService private constructor(
                 path
             )
 
-        return scopedKtorDelegation(request)
+        return receive(request)
     }
 
     // see: https://github.com/gesundheitscloud/consent-management/blob/master/swagger/api.yml#L356
@@ -144,8 +143,8 @@ internal class ConsentService private constructor(
             ConsentSignatureType.CONSENT_ONCE.apiValue
         )
 
-        val request = callBuilder
-            .newBuilder()
+        val request = requestBuilderTemplate
+            .create()
             .setAccessToken(accessToken)
             .useJsonContentType()
             .setBody(payload)
@@ -154,7 +153,7 @@ internal class ConsentService private constructor(
                 path
             )
 
-        return scopedKtorDelegation(request)
+        return receive(request)
     }
 
     override suspend fun requestSignatureDonation(
@@ -173,8 +172,8 @@ internal class ConsentService private constructor(
             ConsentSignatureType.NORMAL_USE.apiValue
         )
 
-        val request = callBuilder
-            .newBuilder()
+        val request = requestBuilderTemplate
+            .create()
             .setAccessToken(accessToken)
             .useJsonContentType()
             .setBody(payload)
@@ -183,15 +182,15 @@ internal class ConsentService private constructor(
                 path
             )
 
-        return scopedKtorDelegation(request)
+        return receive(request)
     }
 
     override suspend fun revokeUserConsent(accessToken: String, consentKey: String) {
         val path = buildPath(USER_CONSENTS)
         val payload = ConsentRevocationPayload(consentKey)
 
-        val request = callBuilder
-            .newBuilder()
+        val request = requestBuilderTemplate
+            .create()
             .setAccessToken(accessToken)
             .useJsonContentType()
             .setBody(payload)
@@ -200,7 +199,7 @@ internal class ConsentService private constructor(
                 path
             )
 
-        return scopedKtorDelegation(request)
+        return receive(request)
     }
 
     companion object : ServiceContract.ConsentServiceFactory {
@@ -215,16 +214,16 @@ internal class ConsentService private constructor(
         override fun getInstance(
             environment: Environment,
             client: HttpClient,
-            builderFactory: ServiceContract.CallBuilderFactory,
+            builderTemplateFactory: ServiceContract.RequestBuilderTemplateFactory,
             clock: Clock
         ): ServiceContract.ConsentService {
-            val callBuilder = builderFactory.getInstance(
+            val requestBuilder = builderTemplateFactory.getInstance(
                 environment,
                 client,
                 determinePort(environment),
             )
 
-            return ConsentService(callBuilder, clock)
+            return ConsentService(requestBuilder, clock)
         }
     }
 }

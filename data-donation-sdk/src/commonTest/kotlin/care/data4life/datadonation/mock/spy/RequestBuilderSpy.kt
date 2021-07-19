@@ -28,9 +28,9 @@ import io.ktor.client.HttpClient
 import io.ktor.client.statement.HttpStatement
 import kotlin.native.concurrent.ThreadLocal
 
-internal class CallBuilderSpy private constructor(
+internal class RequestBuilderSpy private constructor(
     private val onPrepare: ((ServiceContract.Method, Path) -> HttpStatement)?
-) : ServiceContract.CallBuilder {
+) : ServiceContract.RequestBuilder, ServiceContract.RequestBuilderTemplate {
     private var headers: Header? = null
     val delegatedHeaders: Header?
         get() = headers
@@ -55,23 +55,23 @@ internal class CallBuilderSpy private constructor(
     val createdInstances: Int
         get() = instanceCounter
 
-    override fun setHeaders(header: Header): ServiceContract.CallBuilder {
+    override fun setHeaders(header: Header): ServiceContract.RequestBuilder {
         return this.also { this.headers = header }
     }
 
-    override fun setParameter(parameter: Parameter): ServiceContract.CallBuilder {
+    override fun setParameter(parameter: Parameter): ServiceContract.RequestBuilder {
         return this.also { this.parameter = parameter }
     }
 
-    override fun setAccessToken(token: AccessToken): ServiceContract.CallBuilder {
+    override fun setAccessToken(token: AccessToken): ServiceContract.RequestBuilder {
         return this.also { this.token = token }
     }
 
-    override fun useJsonContentType(): ServiceContract.CallBuilder {
+    override fun useJsonContentType(): ServiceContract.RequestBuilder {
         return this.also { json = true }
     }
 
-    override fun setBody(body: Any): ServiceContract.CallBuilder {
+    override fun setBody(body: Any): ServiceContract.RequestBuilder {
         return this.also { this.body = body }
     }
 
@@ -83,7 +83,7 @@ internal class CallBuilderSpy private constructor(
         body = null
     }
 
-    override fun newBuilder(): ServiceContract.CallBuilder {
+    override fun create(): ServiceContract.RequestBuilder {
         return this.also {
             clear()
             instanceCounter++
@@ -101,7 +101,7 @@ internal class CallBuilderSpy private constructor(
     }
 
     @ThreadLocal
-    companion object Factory : ServiceContract.CallBuilderFactory, MockContract.Spy {
+    companion object TemplateFactory : ServiceContract.RequestBuilderTemplateFactory, MockContract.Spy {
         var onPrepare: ((ServiceContract.Method, Path) -> HttpStatement)? = null
 
         private var environment: Environment? = null
@@ -116,16 +116,16 @@ internal class CallBuilderSpy private constructor(
         val delegatedPort: Int?
             get() = port
 
-        private var instance: CallBuilderSpy? = null
-        val lastInstance: CallBuilderSpy?
+        private var instance: RequestBuilderSpy? = null
+        val lastInstance: RequestBuilderSpy?
             get() = instance
 
         override fun getInstance(
             environment: Environment,
             client: HttpClient,
             port: Int?
-        ): ServiceContract.CallBuilder {
-            return CallBuilderSpy(onPrepare).also {
+        ): ServiceContract.RequestBuilderTemplate {
+            return RequestBuilderSpy(onPrepare).also {
                 this.environment = environment
                 this.client = client
                 this.port = port

@@ -18,9 +18,10 @@ package care.data4life.datadonation.internal.data.service
 
 import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.internal.data.exception.InternalErrorException
-import care.data4life.datadonation.internal.data.service.ServiceContract.CallBuilder.Companion.ACCESS_TOKEN_FIELD
-import care.data4life.datadonation.internal.data.service.ServiceContract.CallBuilder.Companion.ACCESS_TOKEN_VALUE_PREFIX
+import care.data4life.datadonation.internal.data.service.ServiceContract.RequestBuilder.Companion.ACCESS_TOKEN_FIELD
+import care.data4life.datadonation.internal.data.service.ServiceContract.RequestBuilder.Companion.ACCESS_TOKEN_VALUE_PREFIX
 import io.ktor.client.HttpClient
+import io.ktor.client.call.NoTransformationFoundException
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.header
 import io.ktor.client.request.host
@@ -32,35 +33,35 @@ import io.ktor.http.HttpMethod
 import io.ktor.http.URLProtocol
 import io.ktor.http.contentType
 
-internal class CallBuilder private constructor(
+internal class RequestBuilder private constructor(
     private val client: HttpClient,
     private val host: String,
     private val protocol: URLProtocol,
     private val port: Int?
-) : ServiceContract.CallBuilder {
+) : ServiceContract.RequestBuilder, ServiceContract.RequestBuilderTemplate {
     private var headers: Header = emptyMap()
     private var parameter: Parameter = emptyMap()
     private var accessToken: AccessToken? = null
     private var useJson: Boolean = false
     private var body: Any? = null
 
-    override fun setHeaders(header: Header): ServiceContract.CallBuilder {
+    override fun setHeaders(header: Header): ServiceContract.RequestBuilder {
         return this.also { this.headers = header }
     }
 
-    override fun setParameter(parameter: Parameter): ServiceContract.CallBuilder {
+    override fun setParameter(parameter: Parameter): ServiceContract.RequestBuilder {
         return this.also { this.parameter = parameter }
     }
 
-    override fun setAccessToken(token: AccessToken): ServiceContract.CallBuilder {
+    override fun setAccessToken(token: AccessToken): ServiceContract.RequestBuilder {
         return this.also { this.accessToken = token }
     }
 
-    override fun useJsonContentType(): ServiceContract.CallBuilder {
+    override fun useJsonContentType(): ServiceContract.RequestBuilder {
         return this.also { this.useJson = true }
     }
 
-    override fun setBody(body: Any): ServiceContract.CallBuilder {
+    override fun setBody(body: Any): ServiceContract.RequestBuilder {
         return this.also { this.body = body }
     }
 
@@ -157,8 +158,8 @@ internal class CallBuilder private constructor(
         )
     }
 
-    override fun newBuilder(): ServiceContract.CallBuilder {
-        return CallBuilder(
+    override fun create(): ServiceContract.RequestBuilder {
+        return RequestBuilder(
             client,
             host,
             protocol,
@@ -166,7 +167,7 @@ internal class CallBuilder private constructor(
         )
     }
 
-    companion object : ServiceContract.CallBuilderFactory {
+    companion object : ServiceContract.RequestBuilderTemplateFactory {
         private fun resolveProtocol(environment: Environment): URLProtocol {
             return if (environment == Environment.LOCAL) {
                 URLProtocol.HTTP
@@ -179,13 +180,21 @@ internal class CallBuilder private constructor(
             environment: Environment,
             client: HttpClient,
             port: Int?
-        ): ServiceContract.CallBuilder {
-            return CallBuilder(
+        ): ServiceContract.RequestBuilderTemplate {
+            return RequestBuilder(
                 client,
                 environment.url,
                 resolveProtocol(environment),
                 port
             )
         }
+    }
+}
+
+internal suspend inline fun <reified T> receive(request: HttpStatement): T {
+    return try {
+        request.receive()
+    } catch (exception: NoTransformationFoundException) {
+        throw InternalErrorException("Unexpected Response.")
     }
 }

@@ -39,14 +39,14 @@ internal interface ServiceContract {
     }
 
     // TODO Add a new package with potential HTTP Interceptor
-    interface CallBuilder {
-        fun setHeaders(header: Header): CallBuilder
-        fun setParameter(parameter: Parameter): CallBuilder
-        fun setAccessToken(token: AccessToken): CallBuilder
-        fun useJsonContentType(): CallBuilder
-        fun setBody(body: Any): CallBuilder
+    interface RequestBuilder {
+        fun setHeaders(header: Header): RequestBuilder
+        fun setParameter(parameter: Parameter): RequestBuilder
+        fun setAccessToken(token: AccessToken): RequestBuilder
+        fun useJsonContentType(): RequestBuilder
+        fun setBody(body: Any): RequestBuilder
 
-        fun newBuilder(): CallBuilder
+        fun create(): RequestBuilder
 
         fun prepare(
             method: Method = Method.GET,
@@ -59,12 +59,16 @@ internal interface ServiceContract {
         }
     }
 
-    interface CallBuilderFactory {
+    interface RequestBuilderTemplate {
+        fun create(): RequestBuilder
+    }
+
+    interface RequestBuilderTemplateFactory {
         fun getInstance(
             environment: Environment,
             client: HttpClient,
             port: Int? = null
-        ): CallBuilder
+        ): RequestBuilderTemplate
     }
 
     interface ConsentService {
@@ -142,7 +146,7 @@ internal interface ServiceContract {
         fun getInstance(
             environment: Environment,
             client: HttpClient,
-            builderFactory: CallBuilderFactory,
+            builderTemplateFactory: RequestBuilderTemplateFactory,
             clock: Clock
         ): ConsentService
     }
