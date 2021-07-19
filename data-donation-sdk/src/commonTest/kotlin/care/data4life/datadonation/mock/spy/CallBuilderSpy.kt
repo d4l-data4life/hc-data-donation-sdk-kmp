@@ -25,10 +25,11 @@ import care.data4life.datadonation.internal.data.service.ServiceContract
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 import io.ktor.client.HttpClient
+import io.ktor.client.statement.HttpStatement
 import kotlin.native.concurrent.ThreadLocal
 
 internal class CallBuilderSpy private constructor(
-    private val onExecute: ((ServiceContract.Method, Path) -> Any)?
+    private val onPrepare: ((ServiceContract.Method, Path) -> HttpStatement)?
 ) : ServiceContract.CallBuilder {
     private var headers: Header? = null
     val delegatedHeaders: Header?
@@ -50,6 +51,10 @@ internal class CallBuilderSpy private constructor(
     val delegatedBody: Any?
         get() = body
 
+    private var instanceCounter = 0
+    val createdInstances: Int
+        get() = instanceCounter
+
     override fun setHeaders(header: Header): ServiceContract.CallBuilder {
         return this.also { this.headers = header }
     }
@@ -70,11 +75,26 @@ internal class CallBuilderSpy private constructor(
         return this.also { this.body = body }
     }
 
-    override suspend fun execute(
+    private fun clear() {
+        headers = null
+        parameter = null
+        token = null
+        json = false
+        body = null
+    }
+
+    override fun newBuilder(): ServiceContract.CallBuilder {
+        return this.also {
+            clear()
+            instanceCounter++
+        }
+    }
+
+    override fun prepare (
         method: ServiceContract.Method,
         path: Path
-    ): Any {
-        return onExecute?.invoke(
+    ): HttpStatement {
+        return onPrepare?.invoke(
             method,
             path
         ) ?: throw MockException()
@@ -82,7 +102,7 @@ internal class CallBuilderSpy private constructor(
 
     @ThreadLocal
     companion object Factory : ServiceContract.CallBuilderFactory, MockContract.Spy {
-        var onExecute: ((ServiceContract.Method, Path) -> Any)? = null
+        var onPrepare: ((ServiceContract.Method, Path) -> HttpStatement)? = null
 
         private var environment: Environment? = null
         val delegatedEnvironment: Environment?
@@ -105,7 +125,7 @@ internal class CallBuilderSpy private constructor(
             client: HttpClient,
             port: Int?
         ): ServiceContract.CallBuilder {
-            return CallBuilderSpy(onExecute).also {
+            return CallBuilderSpy(onPrepare).also {
                 this.environment = environment
                 this.client = client
                 this.port = port
@@ -114,7 +134,7 @@ internal class CallBuilderSpy private constructor(
         }
 
         override fun clear() {
-            onExecute = null
+            onPrepare = null
             environment = null
             client = null
             port = null

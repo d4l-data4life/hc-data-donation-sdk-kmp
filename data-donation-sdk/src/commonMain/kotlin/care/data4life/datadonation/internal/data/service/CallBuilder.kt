@@ -26,7 +26,7 @@ import io.ktor.client.request.header
 import io.ktor.client.request.host
 import io.ktor.client.request.parameter
 import io.ktor.client.request.port
-import io.ktor.client.request.request
+import io.ktor.client.statement.HttpStatement
 import io.ktor.http.ContentType
 import io.ktor.http.HttpMethod
 import io.ktor.http.URLProtocol
@@ -38,8 +38,8 @@ internal class CallBuilder private constructor(
     private val protocol: URLProtocol,
     private val port: Int?
 ) : ServiceContract.CallBuilder {
-    private var headers: Header = mapOf()
-    private var parameter: Parameter = mapOf()
+    private var headers: Header = emptyMap()
+    private var parameter: Parameter = emptyMap()
     private var accessToken: AccessToken? = null
     private var useJson: Boolean = false
     private var body: Any? = null
@@ -133,19 +133,38 @@ internal class CallBuilder private constructor(
         builder: HttpRequestBuilder,
         method: ServiceContract.Method,
         path: Path
-    ) {
+    ) : HttpRequestBuilder {
         setMandatoryFields(builder, method, path)
         setPort(builder)
         addHeader(builder)
         setParameter(builder)
         setAccessToken(builder)
         setContentType(builder)
+        return builder
     }
 
-    override suspend fun execute(
+    override fun prepare(
         method: ServiceContract.Method,
         path: Path
-    ): Any = client.request { buildQuery(this, method, path) }
+    ): HttpStatement {
+        return HttpStatement(
+            buildQuery(
+                HttpRequestBuilder(),
+                method,
+                path,
+            ),
+            client
+        )
+    }
+
+    override fun newBuilder(): ServiceContract.CallBuilder {
+        return CallBuilder(
+            client,
+            host,
+            protocol,
+            port
+        )
+    }
 
     companion object : ServiceContract.CallBuilderFactory {
         private fun resolveProtocol(environment: Environment): URLProtocol {

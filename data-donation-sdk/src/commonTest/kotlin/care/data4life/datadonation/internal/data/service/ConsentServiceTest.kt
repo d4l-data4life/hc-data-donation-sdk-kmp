@@ -127,9 +127,9 @@ class ConsentServiceTest {
         val language = "zh-TW-hans-de-informal-x-old"
         val consentKey = "tomato"
 
-        CallBuilderSpy.onExecute = { _, _ ->
+        /*CallBuilderSpy.onPrepare = { _, _ ->
             listOf("something")
-        }
+        }*/
 
         // Then
         val error = assertFailsWith<InternalErrorException> {
@@ -167,11 +167,11 @@ class ConsentServiceTest {
             DummyData.consentDocument.copy(key = "soup")
         )
 
-        CallBuilderSpy.onExecute = { method, path ->
+        /*CallBuilderSpy.onPrepare = { method, path ->
             capturedMethod = method
             capturedPath = path
             response
-        }
+        }*/
 
         // When
         val service = ConsentService.getInstance(env, client, CallBuilderSpy, ClockStub())
@@ -220,9 +220,9 @@ class ConsentServiceTest {
         val accessToken = "potato"
         val consentKey = "tomato"
 
-        CallBuilderSpy.onExecute = { _, _ ->
+        /*CallBuilderSpy.onPrepare = { _, _ ->
             listOf("something")
-        }
+        }*/
 
         // Then
         val error = assertFailsWith<InternalErrorException> {
@@ -258,11 +258,11 @@ class ConsentServiceTest {
             DummyData.userConsent.copy(accountId = "potato")
         )
 
-        CallBuilderSpy.onExecute = { method, path ->
+        /*CallBuilderSpy.onPrepare = { method, path ->
             capturedMethod = method
             capturedPath = path
             response
-        }
+        }*/
 
         // When
         val service = ConsentService.getInstance(env, client, CallBuilderSpy, ClockStub())
@@ -321,11 +321,11 @@ class ConsentServiceTest {
 
         clock.whenNow = { expectedTime }
 
-        CallBuilderSpy.onExecute = { method, path ->
+        /*CallBuilderSpy.onPrepare = { method, path ->
             capturedMethod = method
             capturedPath = path
             response
-        }
+        }*/
 
         // When
         val service = ConsentService.getInstance(env, client, CallBuilderSpy, clock)
@@ -370,9 +370,9 @@ class ConsentServiceTest {
         val accessToken = "potato"
         val message = "tomato"
 
-        CallBuilderSpy.onExecute = { _, _ ->
+        /*CallBuilderSpy.onPrepare = { _, _ ->
             listOf("something")
-        }
+        }*/
 
         // Then
         val error = assertFailsWith<InternalErrorException> {
@@ -403,11 +403,11 @@ class ConsentServiceTest {
         var capturedPath: Path? = null
         val response = DummyData.consentSignature
 
-        CallBuilderSpy.onExecute = { method, path ->
+        /*CallBuilderSpy.onPrepare = { method, path ->
             capturedMethod = method
             capturedPath = path
             response
-        }
+        }*/
 
         // When
         val service = ConsentService.getInstance(env, client, CallBuilderSpy, ClockStub())
@@ -455,9 +455,9 @@ class ConsentServiceTest {
         val accessToken = "potato"
         val message = "tomato"
 
-        CallBuilderSpy.onExecute = { _, _ ->
+        /*CallBuilderSpy.onPrepare = { _, _ ->
             listOf("something")
-        }
+        }*/
 
         // Then
         val error = assertFailsWith<InternalErrorException> {
@@ -488,11 +488,11 @@ class ConsentServiceTest {
         var capturedPath: Path? = null
         val response = DummyData.consentSignature
 
-        CallBuilderSpy.onExecute = { method, path ->
+        /*CallBuilderSpy.onPrepare = { method, path ->
             capturedMethod = method
             capturedPath = path
             response
-        }
+        }*/
 
         // When
         val service = ConsentService.getInstance(env, client, CallBuilderSpy, ClockStub())
@@ -547,11 +547,11 @@ class ConsentServiceTest {
             DummyData.userConsent.copy(accountId = "potato")
         )
 
-        CallBuilderSpy.onExecute = { method, path ->
+        /*CallBuilderSpy.onPrepare = { method, path ->
             capturedMethod = method
             capturedPath = path
             response
-        }
+        }*/
 
         // When
         val service = ConsentService.getInstance(env, client, CallBuilderSpy, ClockStub())

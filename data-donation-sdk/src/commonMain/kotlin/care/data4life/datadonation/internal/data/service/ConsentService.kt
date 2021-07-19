@@ -69,9 +69,10 @@ internal class ConsentService private constructor(
         )
 
         val response = callBuilder
+            .newBuilder()
             .setAccessToken(accessToken)
             .setParameter(parameter)
-            .execute(
+            .prepare(
                 ServiceContract.Method.GET,
                 path
             )
@@ -91,9 +92,10 @@ internal class ConsentService private constructor(
         )
 
         val response = callBuilder
+            .newBuilder()
             .setAccessToken(accessToken)
             .setParameter(parameter)
-            .execute(
+            .prepare(
                 ServiceContract.Method.GET,
                 path
             )
@@ -114,10 +116,11 @@ internal class ConsentService private constructor(
         )
 
         callBuilder
+            .newBuilder()
             .setAccessToken(accessToken)
             .useJsonContentType()
             .setBody(payload)
-            .execute(
+            .prepare(
                 ServiceContract.Method.POST,
                 path
             )
@@ -141,10 +144,11 @@ internal class ConsentService private constructor(
         )
 
         val response = callBuilder
+            .newBuilder()
             .setAccessToken(accessToken)
             .useJsonContentType()
             .setBody(payload)
-            .execute(
+            .prepare(
                 ServiceContract.Method.POST,
                 path
             )
@@ -169,10 +173,11 @@ internal class ConsentService private constructor(
         )
 
         val response = callBuilder
+            .newBuilder()
             .setAccessToken(accessToken)
             .useJsonContentType()
             .setBody(payload)
-            .execute(
+            .prepare(
                 ServiceContract.Method.PUT,
                 path
             )
@@ -185,10 +190,11 @@ internal class ConsentService private constructor(
         val payload = ConsentRevocationPayload(consentKey)
 
         callBuilder
+            .newBuilder()
             .setAccessToken(accessToken)
             .useJsonContentType()
             .setBody(payload)
-            .execute(
+            .prepare(
                 ServiceContract.Method.DELETE,
                 path
             )

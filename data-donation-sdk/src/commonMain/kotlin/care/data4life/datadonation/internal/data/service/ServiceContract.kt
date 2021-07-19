@@ -22,6 +22,7 @@ import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.model.ConsentSignature
 import care.data4life.datadonation.internal.data.model.DonationPayload
 import io.ktor.client.HttpClient
+import io.ktor.client.statement.HttpStatement
 import kotlinx.datetime.Clock
 
 typealias Header = Map<String, String>
@@ -45,10 +46,12 @@ internal interface ServiceContract {
         fun useJsonContentType(): CallBuilder
         fun setBody(body: Any): CallBuilder
 
-        suspend fun execute(
+        fun newBuilder(): CallBuilder
+
+        fun prepare(
             method: Method = Method.GET,
             path: Path = listOf("")
-        ): Any
+        ): HttpStatement
 
         companion object {
             const val ACCESS_TOKEN_FIELD = "Authorization"
