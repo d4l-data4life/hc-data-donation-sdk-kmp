@@ -16,6 +16,7 @@
 
 package care.data4life.datadonation.internal.data.service.networking
 
+import care.data4life.sdk.log.Log
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.logging.Logging
@@ -35,7 +36,7 @@ internal object ClientConfigurator : Networking.ClientConfigurator {
 
             if (configurator is Networking.LoggingConfigurator) {
                 config.install(Logging) {
-                    configurator.configure(this, Unit)
+                    configurator.configure(this, Log.logger)
                 }
             }
         }

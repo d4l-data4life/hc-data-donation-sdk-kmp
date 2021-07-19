@@ -17,6 +17,7 @@
 package care.data4life.datadonation.internal.data.service.networking
 
 import care.data4life.datadonation.core.model.Environment
+import care.data4life.sdk.log.Logger
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.features.json.JsonFeature
@@ -32,6 +33,10 @@ typealias Path = List<String>
 internal interface Networking {
     interface Logger : io.ktor.client.features.logging.Logger {
         override fun log(message: String)
+
+        companion object {
+            const val PREFIX = "DD-SDK-HTTP:"
+        }
     }
 
     fun interface Configurator<Config, Util> {
@@ -43,7 +48,7 @@ internal interface Networking {
     }
 
     fun interface SerializerConfigurator : Configurator<JsonFeature.Config, JsonConfigurator>
-    fun interface LoggingConfigurator : Configurator<Logging.Config, Unit>
+    fun interface LoggingConfigurator : Configurator<Logging.Config, care.data4life.sdk.log.Logger>
 
     fun interface ClientConfigurator {
         fun configure(
