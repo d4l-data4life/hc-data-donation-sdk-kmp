@@ -21,8 +21,8 @@ import org.koin.dsl.module
 
 internal fun resolveServiceModule(): Module {
     return module {
-        single<ServiceContract.CallBuilderFactory> {
-            CallBuilder
+        single<ServiceContract.RequestBuilderTemplateFactory> {
+            RequestBuilder
         }
 
         single<ServiceContract.ConsentService> {

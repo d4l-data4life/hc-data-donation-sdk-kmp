@@ -17,8 +17,8 @@
 package care.data4life.datadonation.internal.data.service
 
 import care.data4life.datadonation.core.model.Environment
-import care.data4life.datadonation.internal.data.service.ServiceContract.CallBuilder.Companion.ACCESS_TOKEN_FIELD
-import care.data4life.datadonation.internal.data.service.ServiceContract.CallBuilder.Companion.ACCESS_TOKEN_VALUE_PREFIX
+import care.data4life.datadonation.internal.data.service.ServiceContract.RequestBuilder.Companion.ACCESS_TOKEN_FIELD
+import care.data4life.datadonation.internal.data.service.ServiceContract.RequestBuilder.Companion.ACCESS_TOKEN_VALUE_PREFIX
 import care.data4life.datadonation.lang.CoreRuntimeException
 import care.data4life.datadonation.mock.fake.defaultResponse
 import care.data4life.datadonation.mock.fake.getDefaultMockClient
@@ -42,7 +42,7 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class CallBuilderTest {
+class RequestBuilderTest {
     private fun createMockClientWithAssertion(assert: (HttpRequestData) -> Unit): HttpClient {
         return HttpClient(MockEngine) {
             engine {
@@ -55,27 +55,40 @@ class CallBuilderTest {
     }
 
     @Test
-    fun `It fulfils CallBuilderFactory`() {
-        val factory: Any = CallBuilder
+    fun `It fulfils RequestBuilderTemplateFactory`() {
+        val factory: Any = RequestBuilder
 
-        assertTrue(factory is ServiceContract.CallBuilderFactory)
+        assertTrue(factory is ServiceContract.RequestBuilderTemplateFactory)
     }
 
     @Test
-    fun `Given getInstance is called with a Environment and a HttpClient it returns a CallBuilder`() {
+    fun `Given getInstance is called with a Environment and a HttpClient it returns a RequestBuilderTemplate`() {
         // Given
         val env = Environment.LOCAL
         val client = getDefaultMockClient()
 
         // When
-        val builder: Any = CallBuilder.getInstance(env, client)
+        val builder: Any = RequestBuilder.getInstance(env, client).create()
 
         // Then
-        assertTrue(builder is ServiceContract.CallBuilder)
+        assertTrue(builder is ServiceContract.RequestBuilderTemplate)
     }
 
     @Test
-    fun `Given a instance was create with an Environment and it was executed it uses GET by default`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+    fun `Given create is called with a Environment and a HttpClient it returns a RequestBuilder`() {
+        // Given
+        val env = Environment.LOCAL
+        val client = getDefaultMockClient()
+
+        // When
+        val builder: Any = RequestBuilder.getInstance(env, client).create()
+
+        // Then
+        assertTrue(builder is ServiceContract.RequestBuilder)
+    }
+
+    @Test
+    fun `Given a instance was create with an Environment and it was prepared and executed it uses GET by default`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val env = Environment.LOCAL
         val client = createMockClientWithAssertion { request ->
@@ -87,12 +100,12 @@ class CallBuilderTest {
         }
 
         // When
-        val builder = CallBuilder.getInstance(env, client)
-        builder.execute()
+        val builder = RequestBuilder.getInstance(env, client).create()
+        builder.prepare().receive()
     }
 
     @Test
-    fun `Given a instance was create with a Environment and it was executed it calls the given Host`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+    fun `Given a instance was create with a Environment and it was prepared and executed itcalls the given Host`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val env = Environment.LOCAL
         val client = createMockClientWithAssertion { request ->
@@ -104,12 +117,12 @@ class CallBuilderTest {
         }
 
         // When
-        val builder = CallBuilder.getInstance(env, client)
-        builder.execute()
+        val builder = RequestBuilder.getInstance(env, client).create()
+        builder.prepare().receive()
     }
 
     @Test
-    fun `Given a instance was create with a Environment and it was executed it calls the root by default`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+    fun `Given a instance was create with a Environment and it was prepared and executed itcalls the root by default`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val env = Environment.LOCAL
         val client = createMockClientWithAssertion { request ->
@@ -121,12 +134,12 @@ class CallBuilderTest {
         }
 
         // When
-        val builder = CallBuilder.getInstance(env, client)
-        builder.execute()
+        val builder = RequestBuilder.getInstance(env, client).create()
+        builder.prepare().receive()
     }
 
     @Test
-    fun `Given a instance was create with a Environment and it was executed with a Path it calls the given path`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+    fun `Given a instance was create with a Environment and it was prepared and executed with a Path it calls the given path`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val path = listOf("somewhere", "in", "the", "FileTree")
 
@@ -140,12 +153,12 @@ class CallBuilderTest {
         }
 
         // When
-        val builder = CallBuilder.getInstance(env, client)
-        builder.execute(path = path)
+        val builder = RequestBuilder.getInstance(env, client).create()
+        builder.prepare(path = path)
     }
 
     @Test
-    fun `Given a instance was create with a LOCAL Environment and it was executed it calls the given Host via HTTP`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+    fun `Given a instance was create with a LOCAL Environment and it was prepared and executed itcalls the given Host via HTTP`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val env = Environment.LOCAL
         val client = createMockClientWithAssertion { request ->
@@ -157,12 +170,12 @@ class CallBuilderTest {
         }
 
         // When
-        val builder = CallBuilder.getInstance(env, client)
-        builder.execute()
+        val builder = RequestBuilder.getInstance(env, client).create()
+        builder.prepare().receive()
     }
 
     @Test
-    fun `Given a instance was create with a non LOCAL Environment and it was executed it calls the given Host via HTTP`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+    fun `Given a instance was create with a non LOCAL Environment and it was prepared and executed itcalls the given Host via HTTP`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val env = Environment.STAGING
         val client = createMockClientWithAssertion { request ->
@@ -174,12 +187,12 @@ class CallBuilderTest {
         }
 
         // When
-        val builder = CallBuilder.getInstance(env, client)
-        builder.execute()
+        val builder = RequestBuilder.getInstance(env, client).create()
+        builder.prepare().receive()
     }
 
     @Test
-    fun `Given a instance was create with a Environment and it was executed it uses the default Port`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+    fun `Given a instance was create with a Environment and it was prepared and executed it uses the default Port`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val env = Environment.LOCAL
         val client = createMockClientWithAssertion { request ->
@@ -191,12 +204,12 @@ class CallBuilderTest {
         }
 
         // When
-        val builder = CallBuilder.getInstance(env, client)
-        builder.execute()
+        val builder = RequestBuilder.getInstance(env, client).create()
+        builder.prepare().receive()
     }
 
     @Test
-    fun `Given a instance was create with a Environment and a Port and it was executed it uses the given Port`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+    fun `Given a instance was create with a Environment and a Port and it was prepared and executed it uses the given Port`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val port = 17
 
@@ -210,12 +223,12 @@ class CallBuilderTest {
         }
 
         // When
-        val builder = CallBuilder.getInstance(env, client, port)
-        builder.execute()
+        val builder = RequestBuilder.getInstance(env, client, port).create()
+        builder.prepare().receive()
     }
 
     @Test
-    fun `Given a instance was create with a Environment and it was executed it sets no custom headers to the request by default`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+    fun `Given a instance was create with a Environment and it was prepared and executed itsets no custom headers to the request by default`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val env = Environment.LOCAL
         val client = createMockClientWithAssertion { request ->
@@ -230,12 +243,12 @@ class CallBuilderTest {
         }
 
         // When
-        val builder = CallBuilder.getInstance(env, client)
-        builder.execute()
+        val builder = RequestBuilder.getInstance(env, client).create()
+        builder.prepare().receive()
     }
 
     @Test
-    fun `Given a instance was create with a Environment, setHeaders was called with Headers and it was executed it sets the given headers to the request`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+    fun `Given a instance was create with a Environment, setHeaders was called with Headers and it was prepared and executed itsets the given headers to the request`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val headers = mapOf(
             "HEADER" to "head",
@@ -257,12 +270,12 @@ class CallBuilderTest {
         }
 
         // When
-        val builder = CallBuilder.getInstance(env, client)
-        builder.setHeaders(headers).execute()
+        val builder = RequestBuilder.getInstance(env, client).create()
+        builder.setHeaders(headers).prepare().receive()
     }
 
     @Test
-    fun `Given a instance was create with a Environment and it was executed it sets no custom parameter to the request by default`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+    fun `Given a instance was create with a Environment and it was prepared and executed itsets no custom parameter to the request by default`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val env = Environment.LOCAL
         val client = createMockClientWithAssertion { request ->
@@ -274,12 +287,12 @@ class CallBuilderTest {
         }
 
         // When
-        val builder = CallBuilder.getInstance(env, client)
-        builder.execute()
+        val builder = RequestBuilder.getInstance(env, client).create()
+        builder.prepare().receive()
     }
 
     @Test
-    fun `Given a instance was create with a Environment, setParameter was called with parameter and it was executed it sets custom parameter to the request`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+    fun `Given a instance was create with a Environment, setParameter was called with parameter and it was prepared and executed itsets custom parameter to the request`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val parameter = mapOf(
             "PARAM" to "par",
@@ -299,12 +312,12 @@ class CallBuilderTest {
         }
 
         // When
-        val builder = CallBuilder.getInstance(env, client)
-        builder.setParameter(parameter).execute()
+        val builder = RequestBuilder.getInstance(env, client).create()
+        builder.setParameter(parameter).prepare().receive()
     }
 
     @Test
-    fun `Given a instance was create with a Environment and it was executed it has no AccessToken by default`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+    fun `Given a instance was create with a Environment and it was prepared and executed ithas no AccessToken by default`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val env = Environment.LOCAL
         val client = createMockClientWithAssertion { request ->
@@ -313,12 +326,12 @@ class CallBuilderTest {
         }
 
         // When
-        val builder = CallBuilder.getInstance(env, client)
-        builder.execute()
+        val builder = RequestBuilder.getInstance(env, client).create()
+        builder.prepare().receive()
     }
 
     @Test
-    fun `Given a instance was create with a Environment, setParameter was called with an AccessToken and it was executed it attaches the to toke to the request`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+    fun `Given a instance was create with a Environment, setParameter was called with an AccessToken and it was prepared and executed itattaches the to toke to the request`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val token = "TOKEN"
 
@@ -337,12 +350,12 @@ class CallBuilderTest {
         }
 
         // When
-        val builder = CallBuilder.getInstance(env, client)
-        builder.setAccessToken(token).execute()
+        val builder = RequestBuilder.getInstance(env, client).create()
+        builder.setAccessToken(token).prepare().receive()
     }
 
     @Test
-    fun `Given a instance was create with a Environment and it was executed it sets no custom ContentType by default`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+    fun `Given a instance was create with a Environment and it was prepared and executed itsets no custom ContentType by default`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val env = Environment.LOCAL
         val client = createMockClientWithAssertion { request ->
@@ -357,12 +370,12 @@ class CallBuilderTest {
         }
 
         // When
-        val builder = CallBuilder.getInstance(env, client)
-        builder.execute()
+        val builder = RequestBuilder.getInstance(env, client).create()
+        builder.prepare().receive()
     }
 
     @Test
-    fun `Given a instance was create with a Environment, useJsonContentType is called and it was executed it sets the ContentType for JSON to the request`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+    fun `Given a instance was create with a Environment, useJsonContentType is called and it was prepared and executed itsets the ContentType for JSON to the request`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val env = Environment.LOCAL
         val client = HttpClient(MockEngine) {
@@ -394,12 +407,12 @@ class CallBuilderTest {
         }
 
         // When
-        val builder = CallBuilder.getInstance(env, client)
-        builder.useJsonContentType().execute()
+        val builder = RequestBuilder.getInstance(env, client).create()
+        builder.useJsonContentType().prepare().receive()
     }
 
     @Test
-    fun `Given a instance was create with a Environment and it was executed it has no Body by default`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+    fun `Given a instance was create with a Environment and it was prepared and executed ithas no Body by default`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
 
         val env = Environment.LOCAL
@@ -412,20 +425,20 @@ class CallBuilderTest {
         }
 
         // When
-        val builder = CallBuilder.getInstance(env, client)
-        builder.execute()
+        val builder = RequestBuilder.getInstance(env, client).create()
+        builder.prepare().receive()
     }
 
     @Test
-    fun `Given a instance was create with a Environment, setBody is called with a Payload and it was executed with GET, it fails`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+    fun `Given a instance was create with a Environment, setBody is called with a Payload and it was prepared and executed with GET, it fails`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val env = Environment.LOCAL
         val client = getDefaultMockClient()
 
-        val error = assertFailsWith<CoreRuntimeException> {
+        val error = assertFailsWith<CoreRuntimeException.RequestValidationFailure> {
             // When
-            val builder = CallBuilder.getInstance(env, client)
-            builder.setBody("Wups").execute(ServiceContract.Method.GET)
+            val builder = RequestBuilder.getInstance(env, client).create()
+            builder.setBody("Wups").prepare(ServiceContract.Method.GET)
         }
 
         // Then
@@ -436,16 +449,16 @@ class CallBuilderTest {
     }
 
     @Test
-    fun `Given a instance was create with a Environment, setBody was not called and it was executed with POST, it fails`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+    fun `Given a instance was create with a Environment, setBody was not called and it was prepared and executed with POST, it fails`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val env = Environment.LOCAL
         val client = getDefaultMockClient()
 
         // When
-        val error = assertFailsWith<CoreRuntimeException> {
+        val error = assertFailsWith<CoreRuntimeException.RequestValidationFailure> {
             // When
-            val builder = CallBuilder.getInstance(env, client)
-            builder.execute(ServiceContract.Method.POST)
+            val builder = RequestBuilder.getInstance(env, client).create()
+            builder.prepare(ServiceContract.Method.POST)
         }
 
         // Then
@@ -456,15 +469,15 @@ class CallBuilderTest {
     }
 
     @Test
-    fun `Given a instance was create with a Environment, setBody was not called and it was executed with PUT, it fails`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+    fun `Given a instance was create with a Environment, setBody was not called and it was prepared and executed with PUT, it fails`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val env = Environment.LOCAL
         val client = getDefaultMockClient()
 
-        val error = assertFailsWith<CoreRuntimeException> {
+        val error = assertFailsWith<CoreRuntimeException.RequestValidationFailure> {
             // When
-            val builder = CallBuilder.getInstance(env, client)
-            builder.execute(ServiceContract.Method.PUT)
+            val builder = RequestBuilder.getInstance(env, client).create()
+            builder.prepare(ServiceContract.Method.PUT)
         }
 
         // Then
@@ -475,15 +488,15 @@ class CallBuilderTest {
     }
 
     @Test
-    fun `Given a instance was create with a Environment, setBody was not called and it was executed with DELETE, it fails`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+    fun `Given a instance was create with a Environment, setBody was not called and it was prepared and executed with DELETE, it fails`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val env = Environment.LOCAL
         val client = getDefaultMockClient()
 
-        val error = assertFailsWith<CoreRuntimeException> {
+        val error = assertFailsWith<CoreRuntimeException.RequestValidationFailure> {
             // When
-            val builder = CallBuilder.getInstance(env, client)
-            builder.execute(ServiceContract.Method.DELETE)
+            val builder = RequestBuilder.getInstance(env, client).create()
+            builder.prepare(ServiceContract.Method.DELETE)
         }
 
         // Then
@@ -494,7 +507,7 @@ class CallBuilderTest {
     }
 
     @Test
-    fun `Given a instance was create with a Environment, setBody was called with a Payload and it was executed with POST it uses post`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+    fun `Given a instance was create with a Environment, setBody was called with a Payload and it was prepared and executed with POST it uses post`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val payload = "蕃茄湯"
 
@@ -508,13 +521,13 @@ class CallBuilderTest {
         }
 
         // When
-        val builder = CallBuilder.getInstance(env, client)
-        builder.setBody(payload).execute(ServiceContract.Method.POST)
+        val builder = RequestBuilder.getInstance(env, client).create()
+        builder.setBody(payload).prepare(ServiceContract.Method.POST)
     }
 
     @KtorExperimentalAPI
     @Test
-    fun `Given a instance was create with a Environment, setBody was called with a Payload and it was executed with POST it attaches the body to the request`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+    fun `Given a instance was create with a Environment, setBody was called with a Payload and it was prepared and executed with POST it attaches the body to the request`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val payload = "蕃茄湯"
 
@@ -533,12 +546,12 @@ class CallBuilderTest {
         }
 
         // When
-        val builder = CallBuilder.getInstance(env, client)
-        builder.setBody(payload).execute(ServiceContract.Method.POST)
+        val builder = RequestBuilder.getInstance(env, client).create()
+        builder.setBody(payload).prepare(ServiceContract.Method.POST)
     }
 
     @Test
-    fun `Given a instance was create with a Environment, setBody was called with a Payload and it was executed with PUT it uses put`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+    fun `Given a instance was create with a Environment, setBody was called with a Payload and it was prepared and executed with PUT it uses put`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val payload = "蕃茄湯"
 
@@ -552,13 +565,13 @@ class CallBuilderTest {
         }
 
         // When
-        val builder = CallBuilder.getInstance(env, client)
-        builder.setBody(payload).execute(ServiceContract.Method.PUT)
+        val builder = RequestBuilder.getInstance(env, client).create()
+        builder.setBody(payload).prepare(ServiceContract.Method.PUT)
     }
 
     @KtorExperimentalAPI
     @Test
-    fun `Given a instance was create with a Environment, setBody was called with a Payload and it was executed with PUT it attaches the body to the request`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+    fun `Given a instance was create with a Environment, setBody was called with a Payload and it was prepared and executed with PUT it attaches the body to the request`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val payload = "蕃茄湯"
 
@@ -578,12 +591,12 @@ class CallBuilderTest {
         }
 
         // When
-        val builder = CallBuilder.getInstance(env, client)
-        builder.setBody(payload).execute(ServiceContract.Method.PUT)
+        val builder = RequestBuilder.getInstance(env, client).create()
+        builder.setBody(payload).prepare(ServiceContract.Method.PUT)
     }
 
     @Test
-    fun `Given a instance was create with a Environment, setBody was called with a Payload and it was executed with DELETE it uses delete`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+    fun `Given a instance was create with a Environment, setBody was called with a Payload and it was prepared and executed with DELETE it uses delete`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val payload = "蕃茄湯"
 
@@ -597,13 +610,13 @@ class CallBuilderTest {
         }
 
         // When
-        val builder = CallBuilder.getInstance(env, client)
-        builder.setBody(payload).execute(ServiceContract.Method.DELETE)
+        val builder = RequestBuilder.getInstance(env, client).create()
+        builder.setBody(payload).prepare(ServiceContract.Method.DELETE)
     }
 
     @KtorExperimentalAPI
     @Test
-    fun `Given a instance was create with a Environment, setBody was called with a Payload and it was executed with DELETE it attaches the body to the request`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+    fun `Given a instance was create with a Environment, setBody was called with a Payload and it was prepared and executed with DELETE it attaches the body to the request`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val payload = "蕃茄湯"
 
@@ -623,7 +636,7 @@ class CallBuilderTest {
         }
 
         // When
-        val builder = CallBuilder.getInstance(env, client)
-        builder.setBody(payload).execute(ServiceContract.Method.DELETE)
+        val builder = RequestBuilder.getInstance(env, client).create()
+        builder.setBody(payload).prepare(ServiceContract.Method.DELETE)
     }
 }

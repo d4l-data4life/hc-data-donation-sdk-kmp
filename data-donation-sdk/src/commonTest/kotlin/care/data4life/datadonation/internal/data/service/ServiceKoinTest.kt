@@ -39,7 +39,7 @@ class ServiceKoinTest {
     }
 
     @Test
-    fun `Given resolveServiceModule is called it creates a Module, which contains a CallBuilderFactory`() {
+    fun `Given resolveServiceModule is called it creates a Module, which contains a requestBuilderFactory`() {
         // When
         val koin = koinApplication {
             modules(
@@ -47,8 +47,8 @@ class ServiceKoinTest {
             )
         }
         // Then
-        val builder: ServiceContract.CallBuilderFactory = koin.koin.get()
-        assertNotNull(builder)
+        val builderTemplate: ServiceContract.RequestBuilderTemplateFactory = koin.koin.get()
+        assertNotNull(builderTemplate)
     }
 
     @Test
