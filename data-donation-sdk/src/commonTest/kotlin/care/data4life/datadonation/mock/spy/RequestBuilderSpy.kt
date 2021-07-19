@@ -25,11 +25,12 @@ import care.data4life.datadonation.internal.data.service.ServiceContract
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 import io.ktor.client.HttpClient
+import io.ktor.client.statement.HttpStatement
 import kotlin.native.concurrent.ThreadLocal
 
-internal class CallBuilderSpy private constructor(
-    private val onExecute: ((ServiceContract.Method, Path) -> Any)?
-) : ServiceContract.CallBuilder {
+internal class RequestBuilderSpy private constructor(
+    private val onPrepare: ((ServiceContract.Method, Path) -> HttpStatement)?
+) : ServiceContract.RequestBuilder, ServiceContract.RequestBuilderTemplate {
     private var headers: Header? = null
     val delegatedHeaders: Header?
         get() = headers
@@ -50,39 +51,58 @@ internal class CallBuilderSpy private constructor(
     val delegatedBody: Any?
         get() = body
 
-    override fun setHeaders(header: Header): ServiceContract.CallBuilder {
+    private var instanceCounter = 0
+    val createdInstances: Int
+        get() = instanceCounter
+
+    override fun setHeaders(header: Header): ServiceContract.RequestBuilder {
         return this.also { this.headers = header }
     }
 
-    override fun setParameter(parameter: Parameter): ServiceContract.CallBuilder {
+    override fun setParameter(parameter: Parameter): ServiceContract.RequestBuilder {
         return this.also { this.parameter = parameter }
     }
 
-    override fun setAccessToken(token: AccessToken): ServiceContract.CallBuilder {
+    override fun setAccessToken(token: AccessToken): ServiceContract.RequestBuilder {
         return this.also { this.token = token }
     }
 
-    override fun useJsonContentType(): ServiceContract.CallBuilder {
+    override fun useJsonContentType(): ServiceContract.RequestBuilder {
         return this.also { json = true }
     }
 
-    override fun setBody(body: Any): ServiceContract.CallBuilder {
+    override fun setBody(body: Any): ServiceContract.RequestBuilder {
         return this.also { this.body = body }
     }
 
-    override suspend fun execute(
+    private fun clear() {
+        headers = null
+        parameter = null
+        token = null
+        json = false
+        body = null
+    }
+
+    override fun create(): ServiceContract.RequestBuilder {
+        return this.also {
+            clear()
+            instanceCounter++
+        }
+    }
+
+    override fun prepare(
         method: ServiceContract.Method,
         path: Path
-    ): Any {
-        return onExecute?.invoke(
+    ): HttpStatement {
+        return onPrepare?.invoke(
             method,
             path
         ) ?: throw MockException()
     }
 
     @ThreadLocal
-    companion object Factory : ServiceContract.CallBuilderFactory, MockContract.Spy {
-        var onExecute: ((ServiceContract.Method, Path) -> Any)? = null
+    companion object TemplateFactory : ServiceContract.RequestBuilderTemplateFactory, MockContract.Spy {
+        var onPrepare: ((ServiceContract.Method, Path) -> HttpStatement)? = null
 
         private var environment: Environment? = null
         val delegatedEnvironment: Environment?
@@ -96,16 +116,16 @@ internal class CallBuilderSpy private constructor(
         val delegatedPort: Int?
             get() = port
 
-        private var instance: CallBuilderSpy? = null
-        val lastInstance: CallBuilderSpy?
+        private var instance: RequestBuilderSpy? = null
+        val lastInstance: RequestBuilderSpy?
             get() = instance
 
         override fun getInstance(
             environment: Environment,
             client: HttpClient,
             port: Int?
-        ): ServiceContract.CallBuilder {
-            return CallBuilderSpy(onExecute).also {
+        ): ServiceContract.RequestBuilderTemplate {
+            return RequestBuilderSpy(onPrepare).also {
                 this.environment = environment
                 this.client = client
                 this.port = port
@@ -114,7 +134,7 @@ internal class CallBuilderSpy private constructor(
         }
 
         override fun clear() {
-            onExecute = null
+            onPrepare = null
             environment = null
             client = null
             port = null

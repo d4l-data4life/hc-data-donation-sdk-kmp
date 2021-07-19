@@ -18,49 +18,49 @@ package care.data4life.datadonation.internal.data.service
 
 import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.internal.data.exception.InternalErrorException
-import care.data4life.datadonation.internal.data.service.ServiceContract.CallBuilder.Companion.ACCESS_TOKEN_FIELD
-import care.data4life.datadonation.internal.data.service.ServiceContract.CallBuilder.Companion.ACCESS_TOKEN_VALUE_PREFIX
+import care.data4life.datadonation.internal.data.service.ServiceContract.RequestBuilder.Companion.ACCESS_TOKEN_FIELD
+import care.data4life.datadonation.internal.data.service.ServiceContract.RequestBuilder.Companion.ACCESS_TOKEN_VALUE_PREFIX
 import io.ktor.client.HttpClient
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.header
 import io.ktor.client.request.host
 import io.ktor.client.request.parameter
 import io.ktor.client.request.port
-import io.ktor.client.request.request
+import io.ktor.client.statement.HttpStatement
 import io.ktor.http.ContentType
 import io.ktor.http.HttpMethod
 import io.ktor.http.URLProtocol
 import io.ktor.http.contentType
 
-internal class CallBuilder private constructor(
+internal class RequestBuilder private constructor(
     private val client: HttpClient,
     private val host: String,
     private val protocol: URLProtocol,
     private val port: Int?
-) : ServiceContract.CallBuilder {
-    private var headers: Header = mapOf()
-    private var parameter: Parameter = mapOf()
+) : ServiceContract.RequestBuilder, ServiceContract.RequestBuilderTemplate {
+    private var headers: Header = emptyMap()
+    private var parameter: Parameter = emptyMap()
     private var accessToken: AccessToken? = null
     private var useJson: Boolean = false
     private var body: Any? = null
 
-    override fun setHeaders(header: Header): ServiceContract.CallBuilder {
+    override fun setHeaders(header: Header): ServiceContract.RequestBuilder {
         return this.also { this.headers = header }
     }
 
-    override fun setParameter(parameter: Parameter): ServiceContract.CallBuilder {
+    override fun setParameter(parameter: Parameter): ServiceContract.RequestBuilder {
         return this.also { this.parameter = parameter }
     }
 
-    override fun setAccessToken(token: AccessToken): ServiceContract.CallBuilder {
+    override fun setAccessToken(token: AccessToken): ServiceContract.RequestBuilder {
         return this.also { this.accessToken = token }
     }
 
-    override fun useJsonContentType(): ServiceContract.CallBuilder {
+    override fun useJsonContentType(): ServiceContract.RequestBuilder {
         return this.also { this.useJson = true }
     }
 
-    override fun setBody(body: Any): ServiceContract.CallBuilder {
+    override fun setBody(body: Any): ServiceContract.RequestBuilder {
         return this.also { this.body = body }
     }
 
@@ -133,21 +133,40 @@ internal class CallBuilder private constructor(
         builder: HttpRequestBuilder,
         method: ServiceContract.Method,
         path: Path
-    ) {
+    ): HttpRequestBuilder {
         setMandatoryFields(builder, method, path)
         setPort(builder)
         addHeader(builder)
         setParameter(builder)
         setAccessToken(builder)
         setContentType(builder)
+        return builder
     }
 
-    override suspend fun execute(
+    override fun prepare(
         method: ServiceContract.Method,
         path: Path
-    ): Any = client.request { buildQuery(this, method, path) }
+    ): HttpStatement {
+        return HttpStatement(
+            buildQuery(
+                HttpRequestBuilder(),
+                method,
+                path,
+            ),
+            client
+        )
+    }
 
-    companion object : ServiceContract.CallBuilderFactory {
+    override fun create(): ServiceContract.RequestBuilder {
+        return RequestBuilder(
+            client,
+            host,
+            protocol,
+            port
+        )
+    }
+
+    companion object : ServiceContract.RequestBuilderTemplateFactory {
         private fun resolveProtocol(environment: Environment): URLProtocol {
             return if (environment == Environment.LOCAL) {
                 URLProtocol.HTTP
@@ -160,8 +179,8 @@ internal class CallBuilder private constructor(
             environment: Environment,
             client: HttpClient,
             port: Int?
-        ): ServiceContract.CallBuilder {
-            return CallBuilder(
+        ): ServiceContract.RequestBuilderTemplate {
+            return RequestBuilder(
                 client,
                 environment.url,
                 resolveProtocol(environment),

@@ -20,15 +20,83 @@ import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.MockRequestHandleScope
 import io.ktor.client.engine.mock.respond
+import io.ktor.client.features.HttpClientFeature
 import io.ktor.client.request.HttpResponseData
+import io.ktor.client.statement.HttpResponseContainer
+import io.ktor.client.statement.HttpResponsePipeline
 import io.ktor.http.ContentType
 import io.ktor.http.headersOf
+import io.ktor.util.AttributeKey
 
 fun getDefaultMockClient(): HttpClient {
     return HttpClient(MockEngine) {
         engine {
             addHandler {
                 defaultResponse(this)
+            }
+        }
+    }
+}
+
+fun createMockClientWithResponse(
+    responseObjects: List<Any>? = null,
+    response: (scope: MockRequestHandleScope) -> HttpResponseData,
+): HttpClient {
+    return HttpClient(MockEngine) {
+        if (responseObjects != null) {
+            install(HttpMockObjectResponse) {
+                addResponses(responseObjects)
+            }
+        }
+
+        engine {
+            addHandler {
+                response(this)
+            }
+        }
+    }
+}
+
+class HttpMockObjectResponse(
+    internal val responses: MutableList<Any>
+) {
+    class Config {
+        internal val responses: MutableList<Any> = mutableListOf()
+
+        fun addResponse(response: Any) {
+            responses.add(response)
+        }
+
+        fun addResponses(responses: List<Any>) {
+            this.responses.addAll(responses)
+        }
+    }
+
+    companion object Feature : HttpClientFeature<Config, HttpMockObjectResponse> {
+        override val key: AttributeKey<HttpMockObjectResponse> = AttributeKey("HttpMockObjectResponse")
+
+        override fun prepare(block: Config.() -> Unit): HttpMockObjectResponse {
+            val config = Config().apply(block)
+
+            with(config) {
+                return HttpMockObjectResponse(responses)
+            }
+        }
+
+        override fun install(feature: HttpMockObjectResponse, scope: HttpClient) {
+            scope.responsePipeline.intercept(HttpResponsePipeline.After) { (info, _) ->
+                val value = if (feature.responses.size == 1) {
+                    feature.responses[0]
+                } else {
+                    feature.responses.removeAt(0)
+                }
+
+                proceedWith(
+                    HttpResponseContainer(
+                        info,
+                        value
+                    )
+                )
             }
         }
     }
