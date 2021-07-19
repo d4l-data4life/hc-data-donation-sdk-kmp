@@ -5,7 +5,7 @@
 :toc-title:
 :icons: font
 :imagesdir: assets/images
-:link-repository: https://github.com/d4l-data4life/hc-gradle-scripts
+:link-repository: https://github.com/gesundheitscloud/data-donation-sdk-native
 ifdef::env-github[]
 :warning-caption: :warning:
 :caution-caption: :fire:
@@ -31,7 +31,8 @@ See link:{link-repository}/compare/v0.0.1...main[changeset]
 
 === Added
 
-* slf4j for Koin.
+* slf4j for Koin (1.7.31).
+* sdk-util-test (1.8.1).
 
 === Changed
 
@@ -53,6 +54,9 @@ See link:{link-repository}/compare/v0.0.1...main[changeset]
 
 * Kotlin Coroutines 1.4.2 -> 1.4.3.
 * Ktor 1.4.2 -> 1.5.4.
+* JUnit 4.13 -> 4.13.2
+* sdkUtil 1.7.0 -> 1.8.1
+* fhir-sdk-kmp 0.1.0 -> 0.2.0
 
 === Migration
 
