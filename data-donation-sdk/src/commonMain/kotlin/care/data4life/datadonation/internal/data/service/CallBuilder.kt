@@ -133,7 +133,7 @@ internal class CallBuilder private constructor(
         builder: HttpRequestBuilder,
         method: ServiceContract.Method,
         path: Path
-    ) : HttpRequestBuilder {
+    ): HttpRequestBuilder {
         setMandatoryFields(builder, method, path)
         setPort(builder)
         addHeader(builder)

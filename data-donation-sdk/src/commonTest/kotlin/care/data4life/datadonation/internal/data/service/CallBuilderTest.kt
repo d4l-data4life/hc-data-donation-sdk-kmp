@@ -627,7 +627,7 @@ class CallBuilderTest {
         val builder = CallBuilder.getInstance(env, client)
         builder.setBody(payload).prepare(ServiceContract.Method.DELETE)
     }
-    
+
     @Test
     fun `Given a instance was create with a Environment, newBuilder was it creates a new instance with the same initial parameter`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given

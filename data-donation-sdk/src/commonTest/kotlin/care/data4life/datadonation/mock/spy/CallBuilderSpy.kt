@@ -90,7 +90,7 @@ internal class CallBuilderSpy private constructor(
         }
     }
 
-    override fun prepare (
+    override fun prepare(
         method: ServiceContract.Method,
         path: Path
     ): HttpStatement {

@@ -34,8 +34,7 @@ import care.data4life.datadonation.internal.data.service.ServiceContract.Consent
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PATH.SIGNATURES
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PATH.USER_CONSENTS
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.ROOT
-import care.data4life.datadonation.internal.utils.safeCast
-import care.data4life.datadonation.internal.utils.safeListCast
+import care.data4life.datadonation.internal.utils.scopedKtorDelegation
 import io.ktor.client.HttpClient
 import kotlinx.datetime.Clock
 
@@ -68,7 +67,7 @@ internal class ConsentService private constructor(
             LANGUAGE to language
         )
 
-        val response = callBuilder
+        val request = callBuilder
             .newBuilder()
             .setAccessToken(accessToken)
             .setParameter(parameter)
@@ -77,7 +76,7 @@ internal class ConsentService private constructor(
                 path
             )
 
-        return safeListCast(response)
+        return scopedKtorDelegation(request)
     }
 
     override suspend fun fetchUserConsents(
@@ -91,7 +90,7 @@ internal class ConsentService private constructor(
             USER_CONSENT_KEY to consentKey,
         )
 
-        val response = callBuilder
+        val request = callBuilder
             .newBuilder()
             .setAccessToken(accessToken)
             .setParameter(parameter)
@@ -100,7 +99,7 @@ internal class ConsentService private constructor(
                 path
             )
 
-        return safeListCast(response)
+        return scopedKtorDelegation(request)
     }
 
     override suspend fun createUserConsent(
@@ -115,7 +114,7 @@ internal class ConsentService private constructor(
             clock.now().toString()
         )
 
-        callBuilder
+        val request = callBuilder
             .newBuilder()
             .setAccessToken(accessToken)
             .useJsonContentType()
@@ -124,6 +123,8 @@ internal class ConsentService private constructor(
                 ServiceContract.Method.POST,
                 path
             )
+
+        return scopedKtorDelegation(request)
     }
 
     // see: https://github.com/gesundheitscloud/consent-management/blob/master/swagger/api.yml#L356
@@ -143,7 +144,7 @@ internal class ConsentService private constructor(
             ConsentSignatureType.CONSENT_ONCE.apiValue
         )
 
-        val response = callBuilder
+        val request = callBuilder
             .newBuilder()
             .setAccessToken(accessToken)
             .useJsonContentType()
@@ -153,7 +154,7 @@ internal class ConsentService private constructor(
                 path
             )
 
-        return safeCast(response)
+        return scopedKtorDelegation(request)
     }
 
     override suspend fun requestSignatureDonation(
@@ -172,7 +173,7 @@ internal class ConsentService private constructor(
             ConsentSignatureType.NORMAL_USE.apiValue
         )
 
-        val response = callBuilder
+        val request = callBuilder
             .newBuilder()
             .setAccessToken(accessToken)
             .useJsonContentType()
@@ -182,14 +183,14 @@ internal class ConsentService private constructor(
                 path
             )
 
-        return safeCast(response)
+        return scopedKtorDelegation(request)
     }
 
     override suspend fun revokeUserConsent(accessToken: String, consentKey: String) {
         val path = buildPath(USER_CONSENTS)
         val payload = ConsentRevocationPayload(consentKey)
 
-        callBuilder
+        val request = callBuilder
             .newBuilder()
             .setAccessToken(accessToken)
             .useJsonContentType()
@@ -198,6 +199,8 @@ internal class ConsentService private constructor(
                 ServiceContract.Method.DELETE,
                 path
             )
+
+        return scopedKtorDelegation(request)
     }
 
     companion object : ServiceContract.ConsentServiceFactory {

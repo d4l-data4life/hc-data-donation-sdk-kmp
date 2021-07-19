@@ -17,23 +17,13 @@
 package care.data4life.datadonation.internal.utils
 
 import care.data4life.datadonation.internal.data.exception.InternalErrorException
+import io.ktor.client.call.NoTransformationFoundException
+import io.ktor.client.statement.HttpStatement
 
-internal inline fun <reified T> safeCast(item: Any): T {
-    return if (item !is T) {
+internal suspend inline fun <reified T> scopedKtorDelegation(call: HttpStatement): T {
+    return try {
+        call.receive()
+    } catch (exception: NoTransformationFoundException) {
         throw InternalErrorException("Unexpected Response.")
-    } else {
-        item
     }
-}
-
-internal inline fun <reified T> safeListCast(list: Any): List<T> {
-    val castedList = safeCast<List<*>>(list)
-
-    castedList.forEach { item ->
-        if (item !is T) {
-            throw InternalErrorException("Unexpected Response.")
-        }
-    }
-
-    return castedList as List<T>
 }
