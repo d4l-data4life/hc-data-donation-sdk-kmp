@@ -23,7 +23,7 @@ import org.koin.dsl.module
 internal fun resolveNetworking(): Module {
     return module {
         single<Networking.RequestBuilderTemplate> {
-            RequestBuilder.getInstance(get(), get())
+            RequestBuilder.Template(get(), get())
         }
 
         single {

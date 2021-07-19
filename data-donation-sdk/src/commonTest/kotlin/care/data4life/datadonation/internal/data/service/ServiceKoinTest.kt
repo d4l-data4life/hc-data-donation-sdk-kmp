@@ -49,7 +49,7 @@ class ServiceKoinTest {
                 module {
                     single { ClockStub() } bind Clock::class
                     single<Networking.RequestBuilderTemplate> {
-                        RequestBuilderSpy.getInstance(Environment.DEV, createDefaultMockClient())
+                        RequestBuilderSpy.Template()
                     }
                     single { createDefaultMockClient() }
                     single { Environment.DEV } bind Environment::class

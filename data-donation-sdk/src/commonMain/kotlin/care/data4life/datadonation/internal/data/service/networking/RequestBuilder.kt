@@ -37,7 +37,7 @@ internal class RequestBuilder private constructor(
     private val host: String,
     private val protocol: URLProtocol,
     private val port: Int?
-) : Networking.RequestBuilder, Networking.RequestBuilderTemplate {
+) : Networking.RequestBuilder {
     private var headers: Header = emptyMap()
     private var parameter: Parameter = emptyMap()
     private var accessToken: AccessToken? = null
@@ -161,21 +161,12 @@ internal class RequestBuilder private constructor(
         )
     }
 
-    override fun create(): Networking.RequestBuilder {
-        return RequestBuilder(
-            client,
-            host,
-            protocol,
-            port
-        )
-    }
-
-    companion object : Networking.RequestBuilderTemplateFactory {
-        override fun getInstance(
-            environment: Environment,
-            client: HttpClient,
-            port: Int?
-        ): Networking.RequestBuilderTemplate {
+    class Template(
+        private val environment: Environment,
+        private val client: HttpClient,
+        private val port: Int? = null
+    ) : Networking.RequestBuilderTemplate {
+        override fun create(): Networking.RequestBuilder {
             return RequestBuilder(
                 client,
                 environment.url,
