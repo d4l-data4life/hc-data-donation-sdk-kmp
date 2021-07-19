@@ -21,6 +21,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.logging.Logging
+import io.ktor.client.statement.HttpStatement
 import kotlinx.serialization.json.JsonBuilder
 
 typealias Header = Map<String, String>
@@ -59,17 +60,20 @@ internal interface Networking {
         PUT("put")
     }
 
-    interface CallBuilder {
-        fun setHeaders(header: Header): CallBuilder
-        fun setParameter(parameter: Parameter): CallBuilder
-        fun setAccessToken(token: AccessToken): CallBuilder
-        fun useJsonContentType(): CallBuilder
-        fun setBody(body: Any): CallBuilder
+    // TODO Add a new package with potential HTTP Interceptor
+    interface RequestBuilder {
+        fun setHeaders(header: Header): RequestBuilder
+        fun setParameter(parameter: Parameter): RequestBuilder
+        fun setAccessToken(token: AccessToken): RequestBuilder
+        fun useJsonContentType(): RequestBuilder
+        fun setBody(body: Any): RequestBuilder
 
-        suspend fun execute(
+        fun create(): RequestBuilder
+
+        fun prepare(
             method: Method = Method.GET,
             path: Path = listOf("")
-        ): Any
+        ): HttpStatement
 
         companion object {
             const val ACCESS_TOKEN_FIELD = "Authorization"
@@ -77,11 +81,15 @@ internal interface Networking {
         }
     }
 
-    interface CallBuilderFactory {
+    interface RequestBuilderTemplate {
+        fun create(): RequestBuilder
+    }
+
+    interface RequestBuilderTemplateFactory {
         fun getInstance(
             environment: Environment,
             client: HttpClient,
             port: Int? = null
-        ): CallBuilder
+        ): RequestBuilderTemplate
     }
 }

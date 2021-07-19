@@ -93,7 +93,7 @@ internal interface ServiceContract {
         fun getInstance(
             environment: Environment,
             client: HttpClient,
-            builderFactory: Networking.CallBuilderFactory,
+            builderTemplateFactory: Networking.RequestBuilderTemplateFactory,
             clock: Clock
         ): ConsentService
     }

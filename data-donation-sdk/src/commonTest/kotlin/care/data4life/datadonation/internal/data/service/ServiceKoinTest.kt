@@ -23,7 +23,7 @@ import care.data4life.datadonation.internal.io.IOContract
 import care.data4life.datadonation.mock.fake.createDefaultMockClient
 import care.data4life.datadonation.mock.stub.ClientConfigurationStub
 import care.data4life.datadonation.mock.stub.ClockStub
-import care.data4life.datadonation.mock.stub.service.networking.CallBuilderSpy
+import care.data4life.datadonation.mock.stub.service.networking.RequestBuilderSpy
 import kotlinx.datetime.Clock
 import org.koin.core.context.stopKoin
 import org.koin.dsl.bind
@@ -48,7 +48,7 @@ class ServiceKoinTest {
                 resolveServiceModule(),
                 module {
                     single { ClockStub() } bind Clock::class
-                    single<Networking.CallBuilderFactory> { CallBuilderSpy }
+                    single<Networking.RequestBuilderTemplateFactory> { RequestBuilderSpy }
                     single { createDefaultMockClient() }
                     single { Environment.LOCAL } bind Environment::class
                 }

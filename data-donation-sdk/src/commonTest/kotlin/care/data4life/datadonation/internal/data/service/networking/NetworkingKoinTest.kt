@@ -38,7 +38,7 @@ class NetworkingKoinTest {
             )
         }
         // Then
-        val builder: Networking.CallBuilderFactory = koin.koin.get()
+        val builder: Networking.RequestBuilderTemplateFactory = koin.koin.get()
         assertNotNull(builder)
     }
 
