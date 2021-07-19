@@ -16,8 +16,13 @@
 
 package care.data4life.datadonation.internal.data.service.networking
 
-internal class SimpleLogger : Networking.Logger {
+import care.data4life.datadonation.internal.data.service.networking.Networking.Logger.Companion.PREFIX
+import care.data4life.sdk.log.Logger
+
+internal class SimpleLogger(
+    private val logger: Logger
+) : Networking.Logger {
     override fun log(message: String) {
-        println("DD-SDK-HTTP: $message")
+        logger.info("$PREFIX $message")
     }
 }

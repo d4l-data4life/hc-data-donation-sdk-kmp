@@ -16,6 +16,8 @@
 
 package care.data4life.datadonation.internal.data.service.networking
 
+import care.data4life.sdk.log.Log
+import care.data4life.sdk.log.Logger
 import care.data4life.sdk.util.test.runWithContextBlockingTest
 import io.ktor.client.HttpClient
 import io.ktor.client.features.json.JsonFeature
@@ -76,11 +78,11 @@ class ClientConfiguratorTest {
         // Given
         val logging = object : Networking.LoggingConfigurator {
             var capturedPluginConfig = Channel<Logging.Config>()
-            var capturedUtil = Channel<Unit>()
+            var capturedUtil = Channel<Logger>()
 
             override fun configure(
                 pluginConfig: Logging.Config,
-                util: Unit
+                util: Logger
             ) {
                 launch {
                     capturedPluginConfig.send(pluginConfig)
@@ -103,7 +105,7 @@ class ClientConfiguratorTest {
         assertTrue(pluginConfig is Logging.Config)
         assertSame(
             actual = logging.capturedUtil.receive(),
-            expected = Unit
+            expected = Log.logger
         )
     }
 }

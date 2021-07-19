@@ -16,14 +16,43 @@
 
 package care.data4life.datadonation.internal.data.service.networking
 
+import care.data4life.datadonation.mock.stub.service.networking.LoggerStub
+import care.data4life.sdk.log.Log
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class SimpleLoggerTest {
     @Test
     fun `It fulfils logger`() {
-        val logger: Any = SimpleLogger()
+        val logger: Any = SimpleLogger(Log.logger)
 
         assertTrue(logger is Networking.Logger)
+    }
+
+    @Test
+    fun `Given log is called, it delegates the entry with a prefix to the SDK Logger`() {
+        // Given
+        val internalLogger = LoggerStub()
+        var capturedMessage: String? = null
+        val message = "Test123"
+
+        internalLogger.whenInfo = { delegatedMessage ->
+            capturedMessage = delegatedMessage
+        }
+
+        // When
+        val logger = SimpleLogger(internalLogger)
+        logger.log(message)
+
+        // Then
+        assertTrue(
+            capturedMessage!!.startsWith("DD-SDK-HTTP:")
+        )
+
+        assertEquals(
+            actual = capturedMessage!!.substring(startIndex = "DD-SDK-HTTP:".length + 1),
+            expected = message
+        )
     }
 }

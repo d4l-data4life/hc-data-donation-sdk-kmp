@@ -111,6 +111,5 @@ internal interface ServiceContract {
 
     companion object {
         const val DEFAULT_DONATION_CONSENT_KEY = "d4l.data-donation.broad"
-        const val LOCAL_PORT = 8080 // TODO -> Do we need a local env?
     }
 }

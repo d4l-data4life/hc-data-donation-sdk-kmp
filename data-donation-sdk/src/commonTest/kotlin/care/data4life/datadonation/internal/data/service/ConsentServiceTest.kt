@@ -34,9 +34,14 @@ import care.data4life.datadonation.internal.data.service.networking.Path
 import care.data4life.datadonation.lang.CoreRuntimeException
 import care.data4life.datadonation.mock.DummyData
 import care.data4life.datadonation.mock.fake.createDefaultMockClient
+import care.data4life.datadonation.mock.fake.createMockClientWithResponse
 import care.data4life.datadonation.mock.stub.ClockStub
-import care.data4life.datadonation.mock.stub.service.networking.CallBuilderSpy
+import care.data4life.datadonation.mock.stub.service.networking.RequestBuilderSpy
 import care.data4life.sdk.util.test.runBlockingTest
+import io.ktor.client.engine.mock.respond
+import io.ktor.client.request.HttpRequestBuilder
+import io.ktor.client.statement.HttpStatement
+import io.ktor.http.HttpStatusCode
 import kotlinx.datetime.Instant
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -46,15 +51,17 @@ import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 class ConsentServiceTest {
+    private val dummyKtor = HttpRequestBuilder()
+
     @BeforeTest
     fun setUp() {
-        CallBuilderSpy.clear()
+        RequestBuilderSpy.clear()
     }
 
     @Test
     fun `It fulfils ConsentService`() {
         val service: Any = ConsentService(
-            CallBuilderSpy.getInstance(
+            RequestBuilderSpy.getInstance(
                 Environment.DEV,
                 createDefaultMockClient()
             ),
@@ -67,22 +74,31 @@ class ConsentServiceTest {
     @Test
     fun `Given a instance had been created and fetchConsentDocuments was called with a AccessToken, Version, Language and a ConsentKey it fails due to unexpected response`() = runBlockingTest {
         // Given
+        val client = createMockClientWithResponse { scope ->
+            return@createMockClientWithResponse scope.respond(
+                content = "something"
+            )
+        }
+
         val accessToken = "potato"
         val version = 23
         val language = "zh-TW-hans-de-informal-x-old"
         val consentKey = "tomato"
 
-        CallBuilderSpy.onExecute = { _, _ ->
-            listOf("something")
+        RequestBuilderSpy.onPrepare = { _, _ ->
+            HttpStatement(
+                dummyKtor,
+                client
+            )
         }
 
         // Then
-        val error = assertFailsWith<CoreRuntimeException.ResponseCastFailure> {
+        val error = assertFailsWith<CoreRuntimeException.ResponseTransformFailure> {
             // When
             val service = ConsentService(
-                CallBuilderSpy.getInstance(
+                RequestBuilderSpy.getInstance(
                     Environment.DEV,
-                    createDefaultMockClient()
+                    client
                 ),
                 ClockStub()
             )
@@ -115,17 +131,23 @@ class ConsentServiceTest {
             DummyData.consentDocument.copy(key = "soup")
         )
 
-        CallBuilderSpy.onExecute = { method, path ->
+        val client = createMockClientWithResponse(listOf(response)) { scope ->
+            return@createMockClientWithResponse scope.respond(
+                content = "something"
+            )
+        }
+
+        RequestBuilderSpy.onPrepare = { method, path ->
             capturedMethod = method
             capturedPath = path
-            response
+            HttpStatement(dummyKtor, client)
         }
 
         // When
         val service = ConsentService(
-            CallBuilderSpy.getInstance(
+            RequestBuilderSpy.getInstance(
                 Environment.DEV,
-                createDefaultMockClient()
+                client
             ),
             ClockStub()
         )
@@ -151,12 +173,17 @@ class ConsentServiceTest {
                 it.add(CONSENTS_DOCUMENTS)
             }
         )
+
         assertEquals(
-            actual = CallBuilderSpy.lastInstance!!.delegatedAccessToken,
+            actual = RequestBuilderSpy.lastInstance!!.createdInstances,
+            expected = 1
+        )
+        assertEquals(
+            actual = RequestBuilderSpy.lastInstance!!.delegatedAccessToken,
             expected = accessToken
         )
         assertEquals(
-            actual = CallBuilderSpy.lastInstance!!.delegatedParameter,
+            actual = RequestBuilderSpy.lastInstance!!.delegatedParameter,
             expected = mapOf(
                 USER_CONSENT_KEY to consentKey,
                 VERSION to version,
@@ -168,20 +195,28 @@ class ConsentServiceTest {
     @Test
     fun `Given a instance had been created and fetchUserConsents was called with a AccessToken, Latest and a ConsentKey it fails due to unexpected response`() = runBlockingTest {
         // Given
+        val client = createMockClientWithResponse { scope ->
+            return@createMockClientWithResponse scope.respond(
+                content = "something"
+            )
+        }
         val accessToken = "potato"
         val consentKey = "tomato"
 
-        CallBuilderSpy.onExecute = { _, _ ->
-            listOf("something")
+        RequestBuilderSpy.onPrepare = { _, _ ->
+            HttpStatement(
+                dummyKtor,
+                client
+            )
         }
 
         // Then
-        val error = assertFailsWith<CoreRuntimeException.ResponseCastFailure> {
+        val error = assertFailsWith<CoreRuntimeException.ResponseTransformFailure> {
             // When
             val service = ConsentService(
-                CallBuilderSpy.getInstance(
+                RequestBuilderSpy.getInstance(
                     Environment.DEV,
-                    createDefaultMockClient()
+                    client
                 ),
                 ClockStub()
             )
@@ -212,17 +247,26 @@ class ConsentServiceTest {
             DummyData.userConsent.copy(accountId = "potato")
         )
 
-        CallBuilderSpy.onExecute = { method, path ->
+        val client = createMockClientWithResponse(listOf(response)) { scope ->
+            return@createMockClientWithResponse scope.respond(
+                content = "something"
+            )
+        }
+
+        RequestBuilderSpy.onPrepare = { method, path ->
             capturedMethod = method
             capturedPath = path
-            response
+            HttpStatement(
+                dummyKtor,
+                client
+            )
         }
 
         // When
         val service = ConsentService(
-            CallBuilderSpy.getInstance(
+            RequestBuilderSpy.getInstance(
                 Environment.DEV,
-                createDefaultMockClient()
+                client
             ),
             ClockStub()
         )
@@ -247,12 +291,17 @@ class ConsentServiceTest {
                 it.add(USER_CONSENTS)
             }
         )
+
         assertEquals(
-            actual = CallBuilderSpy.lastInstance!!.delegatedAccessToken,
+            actual = RequestBuilderSpy.lastInstance!!.createdInstances,
+            expected = 1
+        )
+        assertEquals(
+            actual = RequestBuilderSpy.lastInstance!!.delegatedAccessToken,
             expected = accessToken
         )
         assertEquals(
-            actual = CallBuilderSpy.lastInstance!!.delegatedParameter,
+            actual = RequestBuilderSpy.lastInstance!!.delegatedParameter,
             expected = mapOf(
                 LATEST_CONSENT to lastedConsent,
                 USER_CONSENT_KEY to consentKey
@@ -272,34 +321,45 @@ class ConsentServiceTest {
         var capturedMethod: Networking.Method? = null
         var capturedPath: Path? = null
         val expectedTime = Instant.DISTANT_PAST
-        val response = listOf(
-            DummyData.userConsent,
-            DummyData.userConsent.copy(accountId = "potato")
-        )
 
         clock.whenNow = { expectedTime }
 
-        CallBuilderSpy.onExecute = { method, path ->
+        val client = createMockClientWithResponse { scope ->
+            return@createMockClientWithResponse scope.respond(
+                content = "",
+                status = HttpStatusCode.NoContent
+            )
+        }
+
+        RequestBuilderSpy.onPrepare = { method, path ->
             capturedMethod = method
             capturedPath = path
-            response
+            HttpStatement(
+                dummyKtor,
+                client
+            )
         }
 
         // When
         val service = ConsentService(
-            CallBuilderSpy.getInstance(
+            RequestBuilderSpy.getInstance(
                 Environment.DEV,
-                createDefaultMockClient()
+                client
             ),
             clock
         )
-        service.createUserConsent(
+        val result = service.createUserConsent(
             accessToken = accessToken,
             consentKey = consentKey,
             version = version
         )
 
         // Then
+        assertEquals(
+            actual = result,
+            expected = Unit
+        )
+
         assertEquals(
             actual = capturedMethod,
             expected = Networking.Method.POST
@@ -310,13 +370,18 @@ class ConsentServiceTest {
                 it.add(USER_CONSENTS)
             }
         )
+
         assertEquals(
-            actual = CallBuilderSpy.lastInstance!!.delegatedAccessToken,
+            actual = RequestBuilderSpy.lastInstance!!.createdInstances,
+            expected = 1
+        )
+        assertEquals(
+            actual = RequestBuilderSpy.lastInstance!!.delegatedAccessToken,
             expected = accessToken
         )
-        assertTrue(CallBuilderSpy.lastInstance!!.delegatedJsonFlag)
+        assertTrue(RequestBuilderSpy.lastInstance!!.delegatedJsonFlag)
         assertEquals(
-            actual = CallBuilderSpy.lastInstance!!.delegatedBody,
+            actual = RequestBuilderSpy.lastInstance!!.delegatedBody,
             expected = ConsentCreationPayload(
                 consentKey,
                 version,
@@ -326,22 +391,31 @@ class ConsentServiceTest {
     }
 
     @Test
-    fun `Given a instance had been created and requestSignatureRegistration was called with a AccessToken and a Message it fails due to a unexpected response`() = runBlockingTest {
+    fun `Given a instance had been created and requestSignatureConsentRegistration was called with a AccessToken and a Message it fails due to a unexpected response`() = runBlockingTest {
         // Given
+        val client = createMockClientWithResponse { scope ->
+            return@createMockClientWithResponse scope.respond(
+                content = "something"
+            )
+        }
+
         val accessToken = "potato"
         val message = "tomato"
 
-        CallBuilderSpy.onExecute = { _, _ ->
-            listOf("something")
+        RequestBuilderSpy.onPrepare = { _, _ ->
+            HttpStatement(
+                dummyKtor,
+                client
+            )
         }
 
         // Then
-        val error = assertFailsWith<CoreRuntimeException.ResponseCastFailure> {
+        val error = assertFailsWith<CoreRuntimeException.ResponseTransformFailure> {
             // When
             val service = ConsentService(
-                CallBuilderSpy.getInstance(
+                RequestBuilderSpy.getInstance(
                     Environment.DEV,
-                    createDefaultMockClient()
+                    client
                 ),
                 ClockStub()
             )
@@ -358,7 +432,7 @@ class ConsentServiceTest {
     }
 
     @Test
-    fun `Given a instance had been created and requestSignatureRegistration was called with a AccessToken and a Message it returns a ConsentSignature`() = runBlockingTest {
+    fun `Given a instance had been created and requestSignatureConsentRegistration was called with a AccessToken and a Message it returns a ConsentSignature`() = runBlockingTest {
         // Given
         val accessToken = "potato"
         val message = "tomato"
@@ -367,17 +441,26 @@ class ConsentServiceTest {
         var capturedPath: Path? = null
         val response = DummyData.consentSignature
 
-        CallBuilderSpy.onExecute = { method, path ->
+        val client = createMockClientWithResponse(listOf(response)) { scope ->
+            return@createMockClientWithResponse scope.respond(
+                content = "something"
+            )
+        }
+
+        RequestBuilderSpy.onPrepare = { method, path ->
             capturedMethod = method
             capturedPath = path
-            response
+            HttpStatement(
+                dummyKtor,
+                client
+            )
         }
 
         // When
         val service = ConsentService(
-            CallBuilderSpy.getInstance(
+            RequestBuilderSpy.getInstance(
                 Environment.DEV,
-                createDefaultMockClient()
+                client
             ),
             ClockStub()
         )
@@ -397,13 +480,18 @@ class ConsentServiceTest {
                 it.addAll(listOf(USER_CONSENTS, DEFAULT_DONATION_CONSENT_KEY, SIGNATURES))
             }
         )
+
         assertEquals(
-            actual = CallBuilderSpy.lastInstance!!.delegatedAccessToken,
+            actual = RequestBuilderSpy.lastInstance!!.createdInstances,
+            expected = 1
+        )
+        assertEquals(
+            actual = RequestBuilderSpy.lastInstance!!.delegatedAccessToken,
             expected = accessToken
         )
-        assertTrue(CallBuilderSpy.lastInstance!!.delegatedJsonFlag)
+        assertTrue(RequestBuilderSpy.lastInstance!!.delegatedJsonFlag)
         assertEquals(
-            actual = CallBuilderSpy.lastInstance!!.delegatedBody,
+            actual = RequestBuilderSpy.lastInstance!!.delegatedBody,
             expected = ConsentSigningRequest(
                 DEFAULT_DONATION_CONSENT_KEY,
                 message,
@@ -419,20 +507,28 @@ class ConsentServiceTest {
     @Test
     fun `Given a instance had been created and requestSignatureDonation was called with a AccessToken and a Message it fails due to a unexpected response`() = runBlockingTest {
         // Given
+        val client = createMockClientWithResponse { scope ->
+            return@createMockClientWithResponse scope.respond(
+                content = "something"
+            )
+        }
         val accessToken = "potato"
         val message = "tomato"
 
-        CallBuilderSpy.onExecute = { _, _ ->
-            listOf("something")
+        RequestBuilderSpy.onPrepare = { _, _ ->
+            HttpStatement(
+                dummyKtor,
+                client
+            )
         }
 
         // Then
-        val error = assertFailsWith<CoreRuntimeException.ResponseCastFailure> {
+        val error = assertFailsWith<CoreRuntimeException.ResponseTransformFailure> {
             // When
             val service = ConsentService(
-                CallBuilderSpy.getInstance(
+                RequestBuilderSpy.getInstance(
                     Environment.DEV,
-                    createDefaultMockClient()
+                    client
                 ),
                 ClockStub()
             )
@@ -458,17 +554,26 @@ class ConsentServiceTest {
         var capturedPath: Path? = null
         val response = DummyData.consentSignature
 
-        CallBuilderSpy.onExecute = { method, path ->
+        val client = createMockClientWithResponse(listOf(response)) { scope ->
+            return@createMockClientWithResponse scope.respond(
+                content = "something"
+            )
+        }
+
+        RequestBuilderSpy.onPrepare = { method, path ->
             capturedMethod = method
             capturedPath = path
-            response
+            HttpStatement(
+                dummyKtor,
+                client
+            )
         }
 
         // When
         val service = ConsentService(
-            CallBuilderSpy.getInstance(
+            RequestBuilderSpy.getInstance(
                 Environment.DEV,
-                createDefaultMockClient()
+                client
             ),
             ClockStub()
         )
@@ -488,13 +593,18 @@ class ConsentServiceTest {
                 it.addAll(listOf(USER_CONSENTS, DEFAULT_DONATION_CONSENT_KEY, SIGNATURES))
             }
         )
+
         assertEquals(
-            actual = CallBuilderSpy.lastInstance!!.delegatedAccessToken,
+            actual = RequestBuilderSpy.lastInstance!!.createdInstances,
+            expected = 1
+        )
+        assertEquals(
+            actual = RequestBuilderSpy.lastInstance!!.delegatedAccessToken,
             expected = accessToken
         )
-        assertTrue(CallBuilderSpy.lastInstance!!.delegatedJsonFlag)
+        assertTrue(RequestBuilderSpy.lastInstance!!.delegatedJsonFlag)
         assertEquals(
-            actual = CallBuilderSpy.lastInstance!!.delegatedBody,
+            actual = RequestBuilderSpy.lastInstance!!.delegatedBody,
             expected = ConsentSigningRequest(
                 DEFAULT_DONATION_CONSENT_KEY,
                 message,
@@ -515,28 +625,39 @@ class ConsentServiceTest {
 
         var capturedMethod: Networking.Method? = null
         var capturedPath: Path? = null
-        val response = listOf(
-            DummyData.userConsent,
-            DummyData.userConsent.copy(accountId = "potato")
-        )
 
-        CallBuilderSpy.onExecute = { method, path ->
+        val client = createMockClientWithResponse { scope ->
+            return@createMockClientWithResponse scope.respond(
+                content = "",
+                status = HttpStatusCode.NoContent
+            )
+        }
+
+        RequestBuilderSpy.onPrepare = { method, path ->
             capturedMethod = method
             capturedPath = path
-            response
+            HttpStatement(
+                dummyKtor,
+                client
+            )
         }
 
         // When
         val service = ConsentService(
-            CallBuilderSpy.getInstance(
+            RequestBuilderSpy.getInstance(
                 Environment.DEV,
-                createDefaultMockClient()
+                client
             ),
             ClockStub()
         )
-        service.revokeUserConsent(accessToken = accessToken, consentKey = consentKey)
+        val result = service.revokeUserConsent(accessToken = accessToken, consentKey = consentKey)
 
         // Then
+        assertEquals(
+            actual = result,
+            expected = Unit
+        )
+
         assertEquals(
             actual = capturedMethod,
             expected = Networking.Method.DELETE
@@ -547,13 +668,18 @@ class ConsentServiceTest {
                 it.add(USER_CONSENTS)
             }
         )
+
         assertEquals(
-            actual = CallBuilderSpy.lastInstance!!.delegatedAccessToken,
+            actual = RequestBuilderSpy.lastInstance!!.createdInstances,
+            expected = 1
+        )
+        assertEquals(
+            actual = RequestBuilderSpy.lastInstance!!.delegatedAccessToken,
             expected = accessToken
         )
-        assertTrue(CallBuilderSpy.lastInstance!!.delegatedJsonFlag)
+        assertTrue(RequestBuilderSpy.lastInstance!!.delegatedJsonFlag)
         assertEquals(
-            actual = CallBuilderSpy.lastInstance!!.delegatedBody,
+            actual = RequestBuilderSpy.lastInstance!!.delegatedBody,
             expected = ConsentRevocationPayload(consentKey)
         )
     }

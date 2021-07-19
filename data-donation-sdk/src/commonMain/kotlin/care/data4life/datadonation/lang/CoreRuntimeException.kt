@@ -25,7 +25,7 @@ sealed class CoreRuntimeException(
 
     class InternalFailure : CoreRuntimeException(message = "Internal failure", cause = null)
     class RequestValidationFailure(message: String) : CoreRuntimeException(message = message, cause = null)
-    class ResponseCastFailure : CoreRuntimeException(message = "Unexpected Response", cause = null)
+    class ResponseTransformFailure : CoreRuntimeException(message = "Unexpected Response", cause = null)
     class MissingCredentialsException(cause: Throwable? = null) : CoreRuntimeException(cause = cause, message = null)
     class MissingSessionException(cause: Throwable? = null) : CoreRuntimeException(cause = cause, message = null)
 }

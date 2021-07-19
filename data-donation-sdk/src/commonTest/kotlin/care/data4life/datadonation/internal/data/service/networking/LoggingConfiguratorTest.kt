@@ -16,6 +16,7 @@
 
 package care.data4life.datadonation.internal.data.service.networking
 
+import care.data4life.datadonation.mock.stub.service.networking.LoggerStub
 import io.ktor.client.features.logging.LogLevel
 import io.ktor.client.features.logging.Logging
 import kotlin.test.Test
@@ -35,9 +36,16 @@ class LoggingConfiguratorTest {
     fun `Given configure is called with a LoggingConfig, it sets it up and just runs`() {
         // Given
         val config = Logging.Config()
+        val internalLogger = LoggerStub()
+        var wasCalled = false
+
+        internalLogger.whenInfo = { _ ->
+            wasCalled = true
+        }
 
         // When
-        val result = LoggerConfigurator.configure(config, Unit)
+        val result = LoggerConfigurator.configure(config, internalLogger)
+        config.logger.log("test")
 
         // Then
         assertSame(
@@ -50,5 +58,6 @@ class LoggingConfiguratorTest {
         )
 
         assertTrue(config.logger is Networking.Logger)
+        assertTrue(wasCalled)
     }
 }
