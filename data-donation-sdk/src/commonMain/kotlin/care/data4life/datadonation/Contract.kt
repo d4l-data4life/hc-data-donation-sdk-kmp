@@ -38,7 +38,6 @@ import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.ModelContract.Environment
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.io.IOContract
-import care.data4life.hl7.fhir.stu3.model.FhirResource
 import kotlinx.coroutines.CoroutineScope
 
 interface Contract {
@@ -77,10 +76,6 @@ interface Contract {
             listener: ListenerContract.ResultListener<UserConsent>
         )
 
-        fun registerDonor(
-            listener: ListenerContract.ResultListener<KeyPair>
-        )
-
         fun fetchUserConsents(
             consentKey: String,
             listener: ListenerContract.ResultListener<List<UserConsent>>
@@ -91,11 +86,6 @@ interface Contract {
         )
 
         fun revokeUserConsent(consentKey: String, callback: ListenerContract.Callback)
-
-        fun <T : FhirResource> donateResources(
-            resources: List<T>,
-            callback: ListenerContract.Callback
-        )
     }
 
     interface DataDonationFactory {

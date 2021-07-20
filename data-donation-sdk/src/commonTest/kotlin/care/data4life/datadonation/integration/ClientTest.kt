@@ -49,11 +49,6 @@ import care.data4life.datadonation.internal.domain.repository.resolveRepositoryM
 import care.data4life.datadonation.internal.domain.usecases.resolveUsecaseModule
 import care.data4life.datadonation.internal.io.resolveIOModule
 import care.data4life.datadonation.mock.DummyData
-import care.data4life.hl7.fhir.stu3.codesystem.QuestionnaireResponseStatus
-import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
-import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponseItem
-import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponseItemAnswer
-import care.data4life.hl7.fhir.stu3.model.Reference
 import care.data4life.sdk.util.test.runWithContextBlockingTest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
@@ -201,53 +196,6 @@ class ClientTest {
     }
 
     @Test
-    // TODO: No API Call?
-    fun registerNewDonorTest() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
-        // Given
-        val keyPair = KeyPair(ByteArray(42), ByteArray(23))
-
-        val config = object : ConfigurationBase() {
-            override fun getDonorKeyPair(): KeyPair = keyPair
-            override fun getCoroutineScope(): CoroutineScope = GlobalScope
-        }
-
-        val koin = koinApplication {
-            modules(
-                resolveRootModule(config),
-                resolveCoreModule(),
-                resolveIOModule(),
-                resolveNetworking(),
-                resolveUsecaseModule(),
-                resolveRepositoryModule(),
-                resolveEncryptionModule(),
-                resolveServiceModule()
-            )
-        }
-
-        val client = Client(config, koin)
-        val capturedRegistrationKey = Channel<KeyPair>()
-        val consentRegistrationKeyListener = object : ResultListener<KeyPair> {
-            override fun onSuccess(result: KeyPair) {
-                launch {
-                    capturedRegistrationKey.send(result)
-                }
-            }
-
-            override fun onError(exception: Exception) = throw exception
-        }
-
-        // When
-        client.registerDonor(consentRegistrationKeyListener)
-        val result = capturedRegistrationKey.receive()
-
-        // Then
-        assertEquals(
-            actual = result,
-            expected = keyPair
-        )
-    }
-
-    @Test
     @Ignore
     fun fetchUserConsentsTest() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
@@ -332,68 +280,6 @@ class ClientTest {
         client.revokeUserConsent(language, callback)
         val result = capturedResult.receive()
 
-        // Then
-        assertTrue(result)
-    }
-
-    @Test
-    // TODO: Workaround Signature Key
-    @Ignore
-    fun donateResourcesTest() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
-        // Given
-        val keyPair = DummyData.keyPair
-
-        val config = object : ConfigurationBase() {
-            override fun getDonorKeyPair(): KeyPair = keyPair
-            override fun getCoroutineScope(): CoroutineScope = GlobalScope
-        }
-
-        val koin = koinApplication {
-            modules(
-                resolveRootModule(config),
-                resolveCoreModule(),
-                resolveIOModule(),
-                resolveNetworking(),
-                resolveUsecaseModule(),
-                resolveRepositoryModule(),
-                resolveEncryptionModule(),
-                resolveServiceModule()
-            )
-        }
-
-        val client = Client(config, koin)
-
-        val capturedResult = Channel<Boolean>()
-        val callback = object : Callback {
-            override fun onSuccess() {
-                launch {
-                    capturedResult.send(true)
-                }
-            }
-
-            override fun onError(exception: Exception) = throw exception
-        }
-
-        val donation = QuestionnaireResponse(
-            status = QuestionnaireResponseStatus.COMPLETED,
-            id = "id",
-            language = "en",
-            questionnaire = Reference(id = "questionnaire_id"),
-            item = listOf(
-                QuestionnaireResponseItem(
-                    linkId = "linkId",
-                    text = "dummy text question",
-                    answer = listOf(QuestionnaireResponseItemAnswer(valueString = "dummy answer"))
-                )
-            )
-        )
-
-        // When
-        client.donateResources(
-            listOf(donation),
-            callback
-        )
-        val result = capturedResult.receive()
         // Then
         assertTrue(result)
     }
