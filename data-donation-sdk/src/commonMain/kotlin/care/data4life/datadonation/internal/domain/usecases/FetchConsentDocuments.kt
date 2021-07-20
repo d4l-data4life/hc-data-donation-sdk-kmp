@@ -39,7 +39,7 @@ internal class FetchConsentDocuments(
     private val consentDocumentRepository: RepositoryContract.ConsentDocumentRepository
 ) : UsecaseContract.FetchConsentDocuments {
     override suspend fun execute(
-        parameter: UsecaseContract.FetchConsentDocuments.FetchConsentDocumentsParameter
+        parameter: UsecaseContract.FetchConsentDocuments.Parameter
     ): List<ConsentDocument> {
         return consentDocumentRepository.fetchConsentDocuments(
             parameter.language,
@@ -52,5 +52,5 @@ internal class FetchConsentDocuments(
         override val version: Int?,
         override val language: String?,
         override val consentKey: String
-    ) : UsecaseContract.FetchConsentDocuments.FetchConsentDocumentsParameter
+    ) : UsecaseContract.FetchConsentDocuments.Parameter
 }

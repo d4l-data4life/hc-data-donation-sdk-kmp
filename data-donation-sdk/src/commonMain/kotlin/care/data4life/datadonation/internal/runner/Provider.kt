@@ -14,15 +14,20 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.io
+package care.data4life.datadonation.internal.runner
 
-import org.koin.core.module.Module
-import org.koin.dsl.module
+import care.data4life.datadonation.Contract
+import care.data4life.datadonation.core.listener.ListenerContract
+import kotlinx.coroutines.CoroutineScope
 
-internal fun resolveIOModule(): Module {
-    return module {
-        single<IOInternalContract.UsecaseRunner> {
-            UsecaseRunner(get())
-        }
-    }
+interface ScopeProvider {
+    fun getCoroutineScope(): CoroutineScope
+}
+
+interface CredentialProvider {
+    fun getServicePublicKey(service: Contract.Service): String
+}
+
+interface UserSessionTokenProvider {
+    fun getUserSessionToken(tokenListener: ListenerContract.ResultListener<String>)
 }
