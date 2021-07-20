@@ -14,15 +14,21 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.io
+package care.data4life.datadonation.internal.runner
 
-import org.koin.core.module.Module
-import org.koin.dsl.module
+import care.data4life.datadonation.core.listener.ListenerContract
+import care.data4life.datadonation.internal.domain.usecases.UsecaseContract
 
-internal fun resolveIOModule(): Module {
-    return module {
-        single<IOInternalContract.UsecaseRunner> {
-            UsecaseRunner(get())
-        }
-    }
+interface UsecaseRunnerContract {
+    fun <Parameter : Any, ReturnType : Any> run(
+        listener: ListenerContract.ResultListener<ReturnType>,
+        usecase: UsecaseContract.Usecase<Parameter, ReturnType>,
+        parameter: Parameter
+    )
+
+    fun <Parameter : Any, ReturnType : Any> run(
+        listener: ListenerContract.Callback,
+        usecase: UsecaseContract.Usecase<Parameter, ReturnType>,
+        parameter: Parameter
+    )
 }

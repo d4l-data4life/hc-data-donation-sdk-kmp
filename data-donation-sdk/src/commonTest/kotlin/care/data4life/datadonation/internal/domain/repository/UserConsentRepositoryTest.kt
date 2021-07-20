@@ -38,7 +38,7 @@ class UserConsentRepositoryTest {
     }
 
     @Test
-    fun `Given createUserConsent is called with a Version and a ConstentKey, it resolves the SessionToken and delegates everything to the UserConsentRemote and just runs`() = runBlockingTest {
+    fun `Given createUserConsent is called with a Version and a ConsentKey, it resolves the SessionToken and delegates everything to the UserConsentRemote and just runs`() = runBlockingTest {
         // Given
         val remote = UserConsentRemoteStorageStub()
         val session = UserSessionTokenDataStorageStub()

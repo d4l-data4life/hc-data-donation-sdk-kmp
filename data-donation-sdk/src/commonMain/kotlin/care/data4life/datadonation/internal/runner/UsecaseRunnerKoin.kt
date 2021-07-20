@@ -14,12 +14,15 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.io
+package care.data4life.datadonation.internal.runner
 
-import kotlinx.coroutines.CoroutineScope
+import org.koin.core.module.Module
+import org.koin.dsl.module
 
-interface IOContract {
-    interface ScopeProvider {
-        fun getCoroutineScope(): CoroutineScope
+internal fun resolveUsecaseRunnerModule(): Module {
+    return module {
+        single<UsecaseRunnerContract> {
+            UsecaseRunner(get())
+        }
     }
 }
