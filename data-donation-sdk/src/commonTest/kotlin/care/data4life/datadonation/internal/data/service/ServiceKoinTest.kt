@@ -18,7 +18,9 @@ package care.data4life.datadonation.internal.data.service
 
 import care.data4life.datadonation.Contract
 import care.data4life.datadonation.core.model.Environment
-import care.data4life.datadonation.internal.io.IOContract
+import care.data4life.datadonation.internal.runner.CredentialProvider
+import care.data4life.datadonation.internal.runner.ScopeProvider
+import care.data4life.datadonation.internal.runner.UserSessionTokenProvider
 import care.data4life.datadonation.mock.stub.ClientConfigurationStub
 import care.data4life.datadonation.mock.stub.ClockStub
 import io.ktor.client.HttpClient
@@ -81,9 +83,9 @@ class ServiceKoinTest {
                         ClientConfigurationStub()
                     } binds arrayOf(
                         Contract.Configuration::class,
-                        IOContract.ScopeProvider::class,
-                        IOContract.CredentialProvider::class,
-                        IOContract.UserSessionTokenProvider::class
+                        ScopeProvider::class,
+                        CredentialProvider::class,
+                        UserSessionTokenProvider::class
                     )
                 }
             )
@@ -105,9 +107,9 @@ class ServiceKoinTest {
                         ClientConfigurationStub()
                     } binds arrayOf(
                         Contract.Configuration::class,
-                        IOContract.ScopeProvider::class,
-                        IOContract.CredentialProvider::class,
-                        IOContract.UserSessionTokenProvider::class
+                        ScopeProvider::class,
+                        CredentialProvider::class,
+                        UserSessionTokenProvider::class
                     )
                 }
             )

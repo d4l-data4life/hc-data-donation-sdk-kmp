@@ -39,12 +39,12 @@ internal class RevokeUserConsent(
 ) : UsecaseContract.RevokeUserConsent {
 
     override suspend fun execute(
-        parameter: UsecaseContract.RevokeUserConsent.RevokeUserConsentParameter
+        parameter: UsecaseContract.RevokeUserConsent.Parameter
     ) {
         consentRepository.revokeUserConsent(parameter.consentKey)
     }
 
     data class Parameter(
         override val consentKey: String
-    ) : UsecaseContract.RevokeUserConsent.RevokeUserConsentParameter
+    ) : UsecaseContract.RevokeUserConsent.Parameter
 }

@@ -40,8 +40,10 @@ import care.data4life.datadonation.internal.data.service.ServiceContract
 import care.data4life.datadonation.internal.data.service.resolveServiceModule
 import care.data4life.datadonation.internal.domain.repository.resolveRepositoryModule
 import care.data4life.datadonation.internal.domain.usecases.*
-import care.data4life.datadonation.internal.io.IOContract
-import care.data4life.datadonation.internal.io.resolveIOModule
+import care.data4life.datadonation.internal.runner.CredentialProvider
+import care.data4life.datadonation.internal.runner.ScopeProvider
+import care.data4life.datadonation.internal.runner.UserSessionTokenProvider
+import care.data4life.datadonation.internal.runner.resolveUsecaseRunnerModule
 import io.ktor.client.*
 import io.ktor.client.features.json.*
 import io.ktor.client.features.json.serializer.*
@@ -59,7 +61,7 @@ internal fun initKoin(configuration: Contract.Configuration): KoinApplication {
         modules(
             resolveRootModule(configuration),
             resolveCoreModule(),
-            resolveIOModule(),
+            resolveUsecaseRunnerModule(),
             resolveUsecaseModule(),
             resolveRepositoryModule(),
             resolveEncryptionModule(),
@@ -74,9 +76,9 @@ internal fun resolveRootModule(configuration: Contract.Configuration): Module {
             configuration
         } binds arrayOf(
             Contract.Configuration::class,
-            IOContract.ScopeProvider::class,
-            IOContract.CredentialProvider::class,
-            IOContract.UserSessionTokenProvider::class
+            ScopeProvider::class,
+            CredentialProvider::class,
+            UserSessionTokenProvider::class
         )
 
         single<Environment> { configuration.getEnvironment() }
