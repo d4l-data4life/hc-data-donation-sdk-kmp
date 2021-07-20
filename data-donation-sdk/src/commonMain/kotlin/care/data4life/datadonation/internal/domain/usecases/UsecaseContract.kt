@@ -26,28 +26,28 @@ interface UsecaseContract {
         suspend fun execute(parameter: Parameter): ReturnType
     }
 
-    interface FetchUserConsents : Usecase<FetchUserConsents.FetchUserConsentsParameter, List<UserConsent>> {
-        interface FetchUserConsentsParameter {
+    interface FetchUserConsents : Usecase<FetchUserConsents.Parameter, List<UserConsent>> {
+        interface Parameter {
             val consentKey: String?
         }
     }
 
-    interface FetchConsentDocuments : Usecase<FetchConsentDocuments.FetchConsentDocumentsParameter, List<ConsentDocument>> {
-        interface FetchConsentDocumentsParameter {
+    interface FetchConsentDocuments : Usecase<FetchConsentDocuments.Parameter, List<ConsentDocument>> {
+        interface Parameter {
             val version: Int?
             val language: String?
             val consentKey: String
         }
     }
 
-    interface RevokeUserConsent : Usecase<RevokeUserConsent.RevokeUserConsentParameter, Unit> {
-        interface RevokeUserConsentParameter {
+    interface RevokeUserConsent : Usecase<RevokeUserConsent.Parameter, Unit> {
+        interface Parameter {
             val consentKey: String
         }
     }
 
-    interface CreateUserConsent : Usecase<CreateUserConsent.CreateUserConsentParameter, UserConsent> {
-        interface CreateUserConsentParameter {
+    interface CreateUserConsent : Usecase<CreateUserConsent.Parameter, UserConsent> {
+        interface Parameter {
             val keyPair: KeyPair?
             val consentKey: String
             val version: Int
