@@ -97,22 +97,12 @@ class ClientTest {
 
         val client = Client(config, koin)
         val capturedResult = Channel<List<ConsentDocument>>()
-        val listener = object : ResultListener<List<ConsentDocument>> {
-            override fun onSuccess(result: List<ConsentDocument>) {
-                launch {
-                    capturedResult.send(result)
-                }
-            }
-
-            override fun onError(exception: Exception) = throw exception
-        }
 
         // When
         client.fetchConsentDocuments(
             version,
             language,
-            consentKey,
-            listener
+            consentKey
         )
 
         // Then
@@ -128,7 +118,6 @@ class ClientTest {
     fun createUserConsentTest() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val consentKey = "custom-consent-key"
-        val language = "en"
         val version = 42
 
         val config = object : ConfigurationBase() {
@@ -151,15 +140,6 @@ class ClientTest {
 
         val client = Client(config, koin)
         val capturedConsentDoc = Channel<List<ConsentDocument>>()
-        val consentDocListener = object : ResultListener<List<ConsentDocument>> {
-            override fun onSuccess(result: List<ConsentDocument>) {
-                launch {
-                    capturedConsentDoc.send(result)
-                }
-            }
-
-            override fun onError(exception: Exception) = throw exception
-        }
 
         val capturedConsent = Channel<UserConsent>()
         val consentListener = object : ResultListener<UserConsent> {
@@ -173,11 +153,10 @@ class ClientTest {
         }
 
         // When
-        client.fetchConsentDocuments(
-            version,
-            language,
+        client.createUserConsent(
             consentKey,
-            consentDocListener
+            version,
+            consentListener
         )
 
         val consentDoc = capturedConsentDoc.receive().first()

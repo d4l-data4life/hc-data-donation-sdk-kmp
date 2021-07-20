@@ -38,6 +38,8 @@ import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.di.initKoin
 import care.data4life.datadonation.internal.domain.usecases.*
 import care.data4life.datadonation.internal.runner.UsecaseRunnerContract
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import org.koin.core.KoinApplication
 
 class Client internal constructor(
@@ -53,20 +55,15 @@ class Client internal constructor(
     override fun fetchConsentDocuments(
         consentDocumentVersion: Int?,
         language: String?,
-        consentKey: String,
-        listener: ListenerContract.ResultListener<List<ConsentDocument>>
-    ) {
+        consentKey: String
+    ) : Flow<List<ConsentDocument>> = flow {
         val parameter = FetchConsentDocuments.Parameter(
             version = consentDocumentVersion,
             language = language,
             consentKey = consentKey
         )
 
-        usecaseRunner.run(
-            listener,
-            fetchConsentDocuments,
-            parameter
-        )
+        emit(fetchConsentDocuments.execute(parameter))
     }
 
     override fun createUserConsent(

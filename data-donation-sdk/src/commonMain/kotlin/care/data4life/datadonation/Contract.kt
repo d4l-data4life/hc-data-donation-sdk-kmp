@@ -41,9 +41,9 @@ import care.data4life.datadonation.internal.runner.CredentialProvider
 import care.data4life.datadonation.internal.runner.ScopeProvider
 import care.data4life.datadonation.internal.runner.UserSessionTokenProvider
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
 
 interface Contract {
-
     enum class Service(name: String) {
         DD("DataDonation"),
         ALP("AnalyticsPlatform")
@@ -68,9 +68,8 @@ interface Contract {
         fun fetchConsentDocuments(
             consentDocumentVersion: Int?,
             language: String?,
-            consentKey: String,
-            listener: ListenerContract.ResultListener<List<ConsentDocument>>
-        )
+            consentKey: String
+        ) : Flow<List<ConsentDocument>>
 
         fun createUserConsent(
             consentKey: String,

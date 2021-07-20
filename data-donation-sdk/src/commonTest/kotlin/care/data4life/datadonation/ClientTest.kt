@@ -17,7 +17,6 @@
 package care.data4life.datadonation
 
 import care.data4life.datadonation.core.listener.ListenerContract
-import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.ModelContract.Environment
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.domain.usecases.CreateUserConsent
@@ -35,6 +34,11 @@ import care.data4life.datadonation.mock.stub.FetchUserConsentStub
 import care.data4life.datadonation.mock.stub.ResultListenerStub
 import care.data4life.datadonation.mock.stub.RevokeUserConsentStub
 import care.data4life.datadonation.mock.stub.UsecaseRunnerStub
+import care.data4life.sdk.util.test.runWithContextBlockingTest
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.collect
 import org.koin.core.context.stopKoin
 import org.koin.dsl.bind
 import org.koin.dsl.koinApplication
@@ -63,6 +67,62 @@ class ClientTest {
         val client: Any = Client.getInstance(ClientConfigurationStub())
 
         assertTrue(client is Contract.DataDonation)
+    }
+
+    @Test
+    fun `Given fetchConsentDocuments is called with a ConsentKey it resolves the Usecase returns a runnable Flow which emits a List of ConsentDocument`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+        // Given
+        val config = ClientConfigurationStub()
+        val usecase = FetchConsentDocumentsStub()
+        val documents = listOf(DummyData.consentDocument)
+
+        val version = 23
+        val language = "de-j-old-n-kotlin-x-done"
+        val consentKey = "abc"
+
+        val capturedParameter = Channel<UsecaseContract.FetchConsentDocuments.Parameter>()
+
+        config.whenGetEnvironment = { Environment.DEV }
+        usecase.whenExecute = { delegatedParameter ->
+            launch {
+                capturedParameter.send(delegatedParameter)
+            }
+            documents
+        }
+
+        val di = koinApplication {
+            modules(
+                module {
+                    single<UsecaseContract.FetchConsentDocuments> {
+                        usecase
+                    }
+                }
+            )
+        }
+
+        val client = Client(config, di)
+
+        // When
+        client.fetchConsentDocuments(
+            version,
+            language,
+            consentKey,
+        ).collect { result ->
+            // Then
+            assertSame(
+                expected = documents,
+                actual = result
+            )
+        }
+
+        assertEquals(
+            actual = capturedParameter.receive(),
+            expected = FetchConsentDocuments.Parameter(
+                version = version,
+                language = language,
+                consentKey = consentKey
+            )
+        )
     }
 
     @Test
@@ -161,76 +221,6 @@ class ClientTest {
         assertEquals(
             actual = capturedParameter,
             expected = FetchUserConsents.Parameter(consentKey)
-        )
-        assertSame(
-            actual = capturedListener,
-            expected = listener
-        )
-        assertSame(
-            actual = capturedUsecase,
-            expected = usecase
-        )
-    }
-
-    @Test
-    fun `Given fetchConsentDocuments is called with a ConsentKey and with a ResultListener it resolves the Usecase with wraps the given Parameter and delegates that to the UsecaseRunner`() {
-        // Given
-        val config = ClientConfigurationStub()
-        val listener = ResultListenerStub<List<ConsentDocument>>()
-        val usecase = FetchConsentDocumentsStub()
-
-        val version = 23
-        val language = "de-j-old-n-kotlin-x-done"
-        val consentKey = "abc"
-
-        var capturedParameter: UsecaseContract.FetchConsentDocuments.Parameter? = null
-        var capturedListener: ListenerContract.ResultListener<*>? = null
-        var capturedUsecase: UsecaseContract.Usecase<*, *>? = null
-
-        config.whenGetEnvironment = { Environment.DEV }
-
-        val di = koinApplication {
-            modules(
-                module {
-                    single<UsecaseContract.FetchConsentDocuments> {
-                        usecase
-                    }
-
-                    single {
-                        UsecaseRunnerStub().also {
-                            it.whenRunListener = { delegatedResultListener, delegatedUsecase, delegatedParameter ->
-                                capturedListener = delegatedResultListener
-                                capturedUsecase = delegatedUsecase
-                                capturedParameter = delegatedParameter as UsecaseContract.FetchConsentDocuments.Parameter
-                            }
-                        }
-                    } bind UsecaseRunnerContract::class
-                }
-            )
-        }
-
-        val client = Client(config, di)
-
-        // When
-        val result = client.fetchConsentDocuments(
-            version,
-            language,
-            consentKey,
-            listener
-        )
-
-        // Then
-        assertSame(
-            actual = result,
-            expected = Unit
-        )
-        assertEquals(
-            actual = capturedParameter,
-            expected = FetchConsentDocuments.Parameter(
-                version = version,
-                language = language,
-                consentKey = consentKey
-            )
         )
         assertSame(
             actual = capturedListener,
