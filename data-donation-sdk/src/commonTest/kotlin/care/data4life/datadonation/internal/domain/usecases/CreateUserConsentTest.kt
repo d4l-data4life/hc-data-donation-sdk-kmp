@@ -45,9 +45,9 @@ import kotlin.test.assertTrue
 class CreateUserConsentTest {
     @Test
     fun `It fulfils CreateUserConsent`() {
-        val factory: Any = CreateUserConsent(UserConsentRepositoryStub())
+        val useCase: Any = CreateUserConsent(UserConsentRepositoryStub())
 
-        assertTrue(factory is UsecaseContract.CreateUserConsent)
+        assertTrue(useCase is UsecaseContract.CreateUserConsent)
     }
 
     @Test

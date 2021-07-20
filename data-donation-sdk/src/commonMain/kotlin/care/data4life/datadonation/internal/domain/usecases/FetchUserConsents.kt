@@ -40,12 +40,12 @@ internal class FetchUserConsents(
 ) : UsecaseContract.FetchUserConsents {
 
     override suspend fun execute(
-        parameter: UsecaseContract.FetchUserConsents.FetchUserConsentsParameter
+        parameter: UsecaseContract.FetchUserConsents.Parameter
     ): List<UserConsent> {
         return consentRepository.fetchUserConsents(parameter.consentKey)
     }
 
     data class Parameter(
         override val consentKey: String? = null
-    ) : UsecaseContract.FetchUserConsents.FetchUserConsentsParameter
+    ) : UsecaseContract.FetchUserConsents.Parameter
 }

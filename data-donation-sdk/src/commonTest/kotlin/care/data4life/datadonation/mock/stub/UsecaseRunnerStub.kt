@@ -19,11 +19,11 @@ package care.data4life.datadonation.mock.stub
 import care.data4life.datadonation.core.listener.ListenerContract.Callback
 import care.data4life.datadonation.core.listener.ListenerContract.ResultListener
 import care.data4life.datadonation.internal.domain.usecases.UsecaseContract
-import care.data4life.datadonation.internal.io.IOInternalContract
+import care.data4life.datadonation.internal.runner.UsecaseRunnerContract
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 
-class UsecaseRunnerStub : IOInternalContract.UsecaseRunner, MockContract.Stub {
+class UsecaseRunnerStub : UsecaseRunnerContract, MockContract.Stub {
     var whenRunListener: ((ResultListener<*>, UsecaseContract.Usecase<*, *>, Any) -> Unit)? = null
     var whenRunCallback: ((Callback, UsecaseContract.Usecase<*, *>, Any) -> Unit)? = null
 
