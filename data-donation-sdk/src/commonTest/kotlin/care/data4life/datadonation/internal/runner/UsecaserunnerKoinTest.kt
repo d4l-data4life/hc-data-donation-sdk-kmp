@@ -14,7 +14,7 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.core.listener
+package care.data4life.datadonation.internal.runner
 
 import care.data4life.datadonation.mock.stub.ClientConfigurationStub
 import org.koin.core.context.stopKoin
@@ -25,28 +25,28 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 
-class ListenerKoinTest {
+class UsecaserunnerKoinTest {
     @BeforeTest
     fun setUp() {
         stopKoin()
     }
 
     @Test
-    fun `Given resolveListenerModule is called with a ScopeResolver it creates a Module, which contains a TaskRunner`() {
+    fun `Given resolveIOModule is called with a ScopeResolver it creates a Module, which contains a TaskRunner`() {
         // Given
         val config = ClientConfigurationStub()
 
         // When
         val koin = koinApplication {
             modules(
-                resolveListenerModule(),
+                resolveUsecaseRunnerModule(),
                 module {
-                    single { config } bind ListenerContract.ScopeResolver::class
+                    single { config } bind ScopeProvider::class
                 }
             )
         }
         // Then
-        val runner: ListenerInternalContract.UsecaseRunner = koin.koin.get()
+        val runner: UsecaseRunnerContract = koin.koin.get()
         assertNotNull(runner)
     }
 }

@@ -16,7 +16,7 @@
 
 package care.data4life.datadonation.internal.domain.repository
 
-import care.data4life.datadonation.mock.stub.CredentialsDataStorageStub
+import care.data4life.datadonation.mock.stub.storage.CredentialsDataStorageStub
 import kotlin.test.Test
 import kotlin.test.assertSame
 import kotlin.test.assertTrue

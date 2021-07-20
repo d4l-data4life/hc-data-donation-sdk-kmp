@@ -42,7 +42,9 @@ internal fun resolveUsecaseModule(): Module {
             )
         }
 
-        single { FilterSensitiveInformation() }
+        single<UsecaseContract.RedactSensitiveInformation> {
+            RedactSensitiveInformation()
+        }
 
         single {
             RegisterNewDonor(
@@ -52,15 +54,15 @@ internal fun resolveUsecaseModule(): Module {
         }
 
         single<UsecaseContract.FetchConsentDocuments> {
-            FetchConsentDocumentsFactory(get())
+            FetchConsentDocuments(get())
         }
 
         single<UsecaseContract.CreateUserConsent> {
-            CreateUserConsentFactory(get())
+            CreateUserConsent(get())
         }
 
         single<UsecaseContract.FetchUserConsents> {
-            FetchUserConsentsFactory(get())
+            FetchUserConsents(get())
         }
 
         single {
@@ -68,7 +70,7 @@ internal fun resolveUsecaseModule(): Module {
         }
 
         single<UsecaseContract.RevokeUserConsent> {
-            RevokeUserConsentFactory(get())
+            RevokeUserConsent(get())
         }
     }
 }

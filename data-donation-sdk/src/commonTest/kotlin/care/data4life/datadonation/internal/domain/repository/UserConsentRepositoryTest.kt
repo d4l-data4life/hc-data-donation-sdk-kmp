@@ -17,8 +17,8 @@
 package care.data4life.datadonation.internal.domain.repository
 
 import care.data4life.datadonation.mock.DummyData
-import care.data4life.datadonation.mock.stub.UserConsentRemoteStorageStub
-import care.data4life.datadonation.mock.stub.UserSessionTokenDataStorageStub
+import care.data4life.datadonation.mock.stub.storage.UserConsentRemoteStorageStub
+import care.data4life.datadonation.mock.stub.storage.UserSessionTokenDataStorageStub
 import care.data4life.sdk.util.test.runBlockingTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -38,7 +38,7 @@ class UserConsentRepositoryTest {
     }
 
     @Test
-    fun `Given createUserConsent is called with a Version and a Language, it resolves the SessionToken and delegates everything to the UserConsentRemote and just runs`() = runBlockingTest {
+    fun `Given createUserConsent is called with a Version and a ConsentKey, it resolves the SessionToken and delegates everything to the UserConsentRemote and just runs`() = runBlockingTest {
         // Given
         val remote = UserConsentRemoteStorageStub()
         val session = UserSessionTokenDataStorageStub()
@@ -240,7 +240,7 @@ class UserConsentRepositoryTest {
     }
 
     @Test
-    fun `Given revokeUserConsent is called with a Language, it resolves the SessionToken and delegates that to the UserConsentRemote and just runs`() = runBlockingTest {
+    fun `Given revokeUserConsent is called with a ConsentKey, it resolves the SessionToken and delegates that to the UserConsentRemote and just runs`() = runBlockingTest {
         // Given
         val remote = UserConsentRemoteStorageStub()
         val session = UserSessionTokenDataStorageStub()

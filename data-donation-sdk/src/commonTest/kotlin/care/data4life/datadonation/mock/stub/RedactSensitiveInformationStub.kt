@@ -14,20 +14,11 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.core.listener
+package care.data4life.datadonation.mock.stub
 
 import care.data4life.datadonation.internal.domain.usecases.UsecaseContract
+import care.data4life.hl7.fhir.stu3.model.FhirResource
 
-internal interface ListenerInternalContract {
-    interface UsecaseRunner {
-        fun <ReturnType : Any> run(
-            listener: ListenerContract.ResultListener<ReturnType>,
-            usecase: UsecaseContract.Usecase<ReturnType>
-        )
-
-        fun <ReturnType : Any> run(
-            listener: ListenerContract.Callback,
-            usecase: UsecaseContract.Usecase<ReturnType>
-        )
-    }
-}
+class RedactSensitiveInformationStub :
+    UsecaseContract.RedactSensitiveInformation,
+    UsecaseStub<List<FhirResource>, List<FhirResource>>()

@@ -33,8 +33,6 @@
 package care.data4life.datadonation.internal.di
 
 import care.data4life.datadonation.Contract
-import care.data4life.datadonation.core.listener.ListenerContract
-import care.data4life.datadonation.core.listener.resolveListenerModule
 import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.encryption.resolveEncryptionModule
 import care.data4life.datadonation.internal.data.service.DonationService
@@ -43,6 +41,8 @@ import care.data4life.datadonation.internal.data.service.resolveServiceModule
 import care.data4life.datadonation.internal.data.storage.*
 import care.data4life.datadonation.internal.domain.repository.resolveRepositoryModule
 import care.data4life.datadonation.internal.domain.usecases.*
+import care.data4life.datadonation.internal.runner.ScopeProvider
+import care.data4life.datadonation.internal.runner.resolveUsecaseRunnerModule
 import io.ktor.client.*
 import io.ktor.client.features.json.*
 import io.ktor.client.features.json.serializer.*
@@ -60,7 +60,7 @@ internal fun initKoin(configuration: Contract.Configuration): KoinApplication {
         modules(
             resolveRootModule(configuration),
             resolveCoreModule(),
-            resolveListenerModule(),
+            resolveUsecaseRunnerModule(),
             resolveStorageModule(),
             resolveUsecaseModule(),
             resolveRepositoryModule(),
@@ -76,7 +76,7 @@ internal fun resolveRootModule(configuration: Contract.Configuration): Module {
             configuration
         } binds arrayOf(
             Contract.Configuration::class,
-            ListenerContract.ScopeResolver::class,
+            ScopeProvider::class,
             StorageContract.CredentialProvider::class,
             StorageContract.UserSessionTokenProvider::class
         )

@@ -33,7 +33,7 @@
 package care.data4life.datadonation.internal.domain.usecases
 
 import care.data4life.datadonation.mock.DummyData
-import care.data4life.datadonation.mock.stub.ConsentDocumentRepositoryStub
+import care.data4life.datadonation.mock.stub.repository.ConsentDocumentRepositoryStub
 import care.data4life.sdk.util.test.runBlockingTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -43,25 +43,9 @@ import kotlin.test.assertTrue
 class FetchConsentDocumentsTest {
     @Test
     fun `It fulfils FetchConsentDocuments`() {
-        val factory: Any = FetchConsentDocumentsFactory(ConsentDocumentRepositoryStub())
+        val factory: Any = FetchConsentDocuments(ConsentDocumentRepositoryStub())
 
         assertTrue(factory is UsecaseContract.FetchConsentDocuments)
-    }
-
-    @Test
-    fun `Given withParams is called with the appropriate Parameter it creates a Usecase`() {
-        // Given
-        val parameter = FetchConsentDocumentsFactory.Parameter(
-            23,
-            "b",
-            "c"
-        )
-
-        // When
-        val usecase: Any = FetchConsentDocumentsFactory(ConsentDocumentRepositoryStub()).withParams(parameter)
-
-        // Then
-        assertTrue(usecase is UsecaseContract.Usecase<*>)
     }
 
     @Test
@@ -86,10 +70,10 @@ class FetchConsentDocumentsTest {
             consentDocuments
         }
 
-        val parameter = FetchConsentDocumentsFactory.Parameter(version, language, consentKey)
+        val parameter = FetchConsentDocuments.Parameter(version, language, consentKey)
 
         // When
-        val result = FetchConsentDocumentsFactory(repo).withParams(parameter).execute()
+        val result = FetchConsentDocuments(repo).execute(parameter)
 
         // Then
         assertSame(

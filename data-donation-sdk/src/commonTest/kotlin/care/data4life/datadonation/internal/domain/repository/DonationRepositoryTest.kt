@@ -17,7 +17,7 @@
 package care.data4life.datadonation.internal.domain.repository
 
 import care.data4life.datadonation.internal.data.model.DonationPayload
-import care.data4life.datadonation.mock.stub.DonationDataStorageStub
+import care.data4life.datadonation.mock.stub.storage.DonationDataStorageStub
 import care.data4life.sdk.util.test.runBlockingTest
 import kotlin.test.Test
 import kotlin.test.assertSame

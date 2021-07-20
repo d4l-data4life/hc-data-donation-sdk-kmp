@@ -14,21 +14,10 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.mock.stub
+package care.data4life.datadonation.internal.runner
 
-import care.data4life.datadonation.encryption.EncryptionContract
-import care.data4life.datadonation.mock.MockContract
+import kotlinx.coroutines.CoroutineScope
 
-class HybridEncryptionStub : EncryptionContract.HybridEncryption, MockContract.Stub {
-    override fun encrypt(plaintext: ByteArray): ByteArray {
-        TODO("Not yet implemented")
-    }
-
-    override fun decrypt(ciphertext: ByteArray): Result<ByteArray> {
-        TODO("Not yet implemented")
-    }
-
-    override fun clear() {
-        TODO("Not yet implemented")
-    }
+interface ScopeProvider {
+    fun getCoroutineScope(): CoroutineScope
 }

@@ -18,13 +18,13 @@ package care.data4life.datadonation.internal.domain.usecases
 
 import care.data4life.datadonation.encryption.EncryptionContract
 import care.data4life.datadonation.internal.domain.repository.RepositoryContract
-import care.data4life.datadonation.mock.stub.ConsentDocumentRepositoryStub
-import care.data4life.datadonation.mock.stub.DonationRepositoryStub
-import care.data4life.datadonation.mock.stub.HybridEncryptionRegistryStub
-import care.data4life.datadonation.mock.stub.HybridEncryptionStub
-import care.data4life.datadonation.mock.stub.RegistrationRepositoryStub
-import care.data4life.datadonation.mock.stub.ServiceTokenRepositoryStub
-import care.data4life.datadonation.mock.stub.UserConsentRepositoryStub
+import care.data4life.datadonation.mock.stub.encryption.HybridEncryptionRegistryStub
+import care.data4life.datadonation.mock.stub.encryption.HybridEncryptionStub
+import care.data4life.datadonation.mock.stub.repository.ConsentDocumentRepositoryStub
+import care.data4life.datadonation.mock.stub.repository.DonationRepositoryStub
+import care.data4life.datadonation.mock.stub.repository.RegistrationRepositoryStub
+import care.data4life.datadonation.mock.stub.repository.ServiceTokenRepositoryStub
+import care.data4life.datadonation.mock.stub.repository.UserConsentRepositoryStub
 import org.koin.core.context.stopKoin
 import org.koin.dsl.bind
 import org.koin.dsl.koinApplication
@@ -106,7 +106,7 @@ class UsecaseKoinTest {
             modules(resolveUsecaseModule())
         }
         // Then
-        val instance: FilterSensitiveInformation = koin.koin.get()
+        val instance: UsecaseContract.RedactSensitiveInformation = koin.koin.get()
         assertNotNull(instance)
     }
 

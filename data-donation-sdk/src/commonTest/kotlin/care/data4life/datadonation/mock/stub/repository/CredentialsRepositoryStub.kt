@@ -14,21 +14,21 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.mock.stub
+package care.data4life.datadonation.mock.stub.repository
 
-import care.data4life.datadonation.internal.data.storage.StorageContract
+import care.data4life.datadonation.internal.domain.repository.RepositoryContract
 import care.data4life.datadonation.mock.MockContract
-import care.data4life.datadonation.mock.MockException
 
-class RegistrationDataStorageStub : StorageContract.RegistrationRemoteStorage, MockContract.Stub {
+class CredentialsRepositoryStub : RepositoryContract.CredentialsRepository, MockContract.Stub {
+    override fun getDataDonationPublicKey(): String {
+        TODO("Not yet implemented")
+    }
 
-    var whenRegisterNewDonor: ((data: ByteArray) -> Unit)? = null
-
-    override suspend fun registerNewDonor(data: ByteArray) {
-        whenRegisterNewDonor?.invoke(data) ?: throw MockException()
+    override fun getAnalyticsPlatformPublicKey(): String {
+        TODO("Not yet implemented")
     }
 
     override fun clear() {
-        whenRegisterNewDonor = null
+        TODO("Not yet implemented")
     }
 }

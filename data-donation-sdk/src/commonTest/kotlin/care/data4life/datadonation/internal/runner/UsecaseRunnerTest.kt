@@ -14,7 +14,7 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.core.listener
+package care.data4life.datadonation.internal.runner
 
 import care.data4life.datadonation.internal.domain.usecases.UsecaseContract
 import care.data4life.datadonation.mock.MockException
@@ -35,34 +35,46 @@ class UsecaseRunnerTest {
     fun `It fulfils UsecaseRunner`() {
         val runner: Any = UsecaseRunner(ClientConfigurationStub())
 
-        assertTrue(runner is ListenerInternalContract.UsecaseRunner)
+        assertTrue(runner is UsecaseRunnerContract)
     }
 
     @Test
-    fun `Given run is called with a ResultListener and a Usecase, it invokes in async context the Usecase and delegates the result to the Listener`() = runBlockingTest {
+    fun `Given run is called with a ResultListener, a Usecase and its corresponding Parameter, it invokes in async context the Usecase and delegates the result to the Listener`() = runBlockingTest {
         // Given
         val config = ClientConfigurationStub()
         val listener = ResultListenerStub<String>()
-        val usecase = UsecaseStub<String>()
+        val usecase = UsecaseStub<String, String>()
 
         val runner = UsecaseRunner(config)
 
-        val result = "potato"
+        val parameter = "potato"
+        val result = "soup"
+
+        val capturedParameter = Channel<String>()
         val capturedResult = Channel<String>()
 
-        usecase.exec = { result }
+        usecase.exec = { delegatedParameter ->
+            launch { capturedParameter.send(delegatedParameter) }
+            result
+        }
 
         config.whenGetCoroutineScope = { CoroutineScope(this.coroutineContext) }
         listener.whenOnSuccess = { delegatedResult ->
-            launch {
-                capturedResult.send(delegatedResult)
-            }
+            launch { capturedResult.send(delegatedResult) }
         }
 
         // When
-        runner.run(listener, usecase)
+        val runnerResult = runner.run(listener, usecase, parameter)
 
         // Then
+        assertEquals(
+            expected = Unit,
+            actual = runnerResult
+        )
+        assertEquals(
+            actual = capturedParameter.receive(),
+            expected = parameter
+        )
         assertEquals(
             actual = capturedResult.receive(),
             expected = result
@@ -70,13 +82,15 @@ class UsecaseRunnerTest {
     }
 
     @Test
-    fun `Given run is called with a ResultListener and a Usecase, it invokes in async context the Usecase while failing and delegates the Exception to the Listener`() = runBlockingTest {
+    fun `Given run is called with a ResultListener, a Usecase and its corresponding Parameter, it invokes in async context the Usecase while failing and delegates the Exception to the Listener`() = runBlockingTest {
         // Given
         val config = ClientConfigurationStub()
         val listener = ResultListenerStub<String>()
-        val usecase = UsecaseStub<String>()
+        val usecase = UsecaseStub<String, String>()
 
         val runner = UsecaseRunner(config)
+
+        val parameter = "potato"
 
         val exception = RuntimeException("tomato")
         val capturedException = Channel<Exception>()
@@ -91,9 +105,13 @@ class UsecaseRunnerTest {
         }
 
         // When
-        runner.run(listener, usecase)
+        val result = runner.run(listener, usecase, parameter)
 
         // Then
+        assertEquals(
+            expected = Unit,
+            actual = result
+        )
         assertSame(
             actual = capturedException.receive(),
             expected = exception
@@ -101,20 +119,22 @@ class UsecaseRunnerTest {
     }
 
     @Test
-    fun `Given run is called with a Callback and a Usecase, it invokes in async context the Usecase and calls to the Callback`() = runBlockingTest {
+    fun `Given run is called with a Callback, a Usecase and its corresponding Parameter, it invokes in async context the Usecase and calls to the Callback`() = runBlockingTest {
         // Given
         val config = ClientConfigurationStub()
         val listener = CallbackStub()
-        val usecase = UsecaseStub<Unit>()
+        val usecase = UsecaseStub<String, Unit>()
 
         val runner = UsecaseRunner(config)
 
-        val wasExecuted = Channel<Boolean>()
+        val parameter = "potato"
+
+        val capturedParameter = Channel<String>()
         val capturedCall = Channel<Boolean>()
 
-        usecase.exec = {
+        usecase.exec = { delegatedParameter ->
             launch {
-                wasExecuted.send(true)
+                capturedParameter.send(delegatedParameter)
             }
         }
 
@@ -126,21 +146,30 @@ class UsecaseRunnerTest {
         }
 
         // When
-        runner.run(listener, usecase)
+        val result = runner.run(listener, usecase, parameter)
 
         // Then
-        assertTrue(wasExecuted.receive())
+        assertEquals(
+            expected = Unit,
+            actual = result
+        )
+        assertEquals(
+            actual = capturedParameter.receive(),
+            expected = parameter
+        )
         assertTrue(capturedCall.receive())
     }
 
     @Test
-    fun `Given run is called with a Callback and a Usecase, it invokes in async context the Usecase while failing and delegates the Exception to the Callback`() = runBlockingTest {
+    fun `Given run is called with a Callback and, a Usecase and its corresponding Parameter, it invokes in async context the Usecase while failing and delegates the Exception to the Callback`() = runBlockingTest {
         // Given
         val config = ClientConfigurationStub()
         val listener = CallbackStub()
-        val usecase = UsecaseStub<Unit>()
+        val usecase = UsecaseStub<String, Unit>()
 
         val runner = UsecaseRunner(config)
+
+        val parameter = "potato"
 
         val exception = RuntimeException("tomato")
         val capturedException = Channel<Exception>()
@@ -155,20 +184,24 @@ class UsecaseRunnerTest {
         }
 
         // When
-        runner.run(listener, usecase)
+        val result = runner.run(listener, usecase, parameter)
 
         // Then
+        assertEquals(
+            expected = Unit,
+            actual = result
+        )
         assertSame(
             actual = capturedException.receive(),
             expected = exception
         )
     }
 
-    private class UsecaseStub<ReturnType> : UsecaseContract.Usecase<ReturnType> {
-        var exec: (() -> ReturnType)? = null
+    private class UsecaseStub<Parameter : Any, ReturnType : Any> : UsecaseContract.Usecase<Parameter, ReturnType> {
+        var exec: ((Parameter) -> ReturnType)? = null
 
-        override suspend fun execute(): ReturnType {
-            return exec?.invoke() ?: throw MockException()
+        override suspend fun execute(parameter: Parameter): ReturnType {
+            return exec?.invoke(parameter) ?: throw MockException()
         }
     }
 }

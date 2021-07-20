@@ -20,28 +20,13 @@ import care.data4life.datadonation.internal.domain.usecases.UsecaseContract
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 
-abstract class UsecaseFactoryStub<Parameter : Any, ReturnType : Any> :
-    UsecaseContract.UsecaseFactory<Parameter, ReturnType>,
+abstract class UsecaseStub<Parameter : Any, ReturnType : Any> :
+    UsecaseContract.Usecase<Parameter, ReturnType>,
     MockContract.Stub {
+    var whenExecute: ((Parameter) -> ReturnType)? = null
 
-    var whenWithParameter: ((Parameter) -> UsecaseContract.Usecase<ReturnType>)? = null
-
-    override fun withParams(
-        parameter: Parameter
-    ): UsecaseContract.Usecase<ReturnType> {
-        return whenWithParameter?.invoke(parameter) ?: throw MockException()
-    }
-
-    override fun clear() {
-        whenWithParameter = null
-    }
-}
-
-abstract class UsecaseStub<ReturnType> : UsecaseContract.Usecase<ReturnType>, MockContract.Stub {
-    var whenExecute: (() -> ReturnType)? = null
-
-    override suspend fun execute(): ReturnType {
-        return whenExecute?.invoke() ?: throw MockException()
+    override suspend fun execute(parameter: Parameter): ReturnType {
+        return whenExecute?.invoke(parameter) ?: throw MockException()
     }
 
     override fun clear() {

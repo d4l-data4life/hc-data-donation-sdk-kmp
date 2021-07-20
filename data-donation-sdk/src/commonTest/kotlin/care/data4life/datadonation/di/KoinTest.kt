@@ -17,12 +17,12 @@
 package care.data4life.datadonation.di
 
 import care.data4life.datadonation.Contract
-import care.data4life.datadonation.core.listener.ListenerInternalContract
 import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.internal.di.initKoin
 import care.data4life.datadonation.internal.domain.usecases.DonateResources
 import care.data4life.datadonation.internal.domain.usecases.RegisterNewDonor
 import care.data4life.datadonation.internal.domain.usecases.UsecaseContract
+import care.data4life.datadonation.internal.runner.UsecaseRunnerContract
 import care.data4life.datadonation.mock.stub.ClientConfigurationStub
 import org.koin.core.context.stopKoin
 import kotlin.test.BeforeTest
@@ -149,7 +149,7 @@ class KoinTest {
         // When
         val app = initKoin(config)
         // Then
-        val usecase: ListenerInternalContract.UsecaseRunner by app.koin.inject()
+        val usecase: UsecaseRunnerContract by app.koin.inject()
         assertNotNull(usecase)
     }
 }

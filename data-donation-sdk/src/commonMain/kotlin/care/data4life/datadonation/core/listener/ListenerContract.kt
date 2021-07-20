@@ -16,8 +16,6 @@
 
 package care.data4life.datadonation.core.listener
 
-import kotlinx.coroutines.CoroutineScope
-
 interface ListenerContract {
     interface Callback {
         fun onSuccess()
@@ -27,9 +25,5 @@ interface ListenerContract {
     interface ResultListener<T : Any> {
         fun onSuccess(result: T)
         fun onError(exception: Exception)
-    }
-
-    interface ScopeResolver {
-        fun getCoroutineScope(): CoroutineScope
     }
 }

@@ -14,15 +14,21 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.core.listener
+package care.data4life.datadonation.mock.stub.storage
 
-import org.koin.core.module.Module
-import org.koin.dsl.module
+import care.data4life.datadonation.internal.data.storage.StorageContract
+import care.data4life.datadonation.mock.MockContract
+import care.data4life.datadonation.mock.MockException
 
-fun resolveListenerModule(): Module {
-    return module {
-        single<ListenerInternalContract.UsecaseRunner> {
-            UsecaseRunner(get())
-        }
+class RegistrationDataStorageStub : StorageContract.RegistrationRemoteStorage, MockContract.Stub {
+
+    var whenRegisterNewDonor: ((data: ByteArray) -> Unit)? = null
+
+    override suspend fun registerNewDonor(data: ByteArray) {
+        whenRegisterNewDonor?.invoke(data) ?: throw MockException()
+    }
+
+    override fun clear() {
+        whenRegisterNewDonor = null
     }
 }

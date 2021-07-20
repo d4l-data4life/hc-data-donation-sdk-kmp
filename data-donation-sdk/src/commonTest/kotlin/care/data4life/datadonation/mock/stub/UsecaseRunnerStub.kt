@@ -18,27 +18,29 @@ package care.data4life.datadonation.mock.stub
 
 import care.data4life.datadonation.core.listener.ListenerContract.Callback
 import care.data4life.datadonation.core.listener.ListenerContract.ResultListener
-import care.data4life.datadonation.core.listener.ListenerInternalContract
-import care.data4life.datadonation.internal.domain.usecases.UsecaseContract.Usecase
+import care.data4life.datadonation.internal.domain.usecases.UsecaseContract
+import care.data4life.datadonation.internal.runner.UsecaseRunnerContract
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 
-class UsecaseRunnerStub : ListenerInternalContract.UsecaseRunner, MockContract.Stub {
-    var whenRunListener: ((ResultListener<*>, Usecase<*>) -> Unit)? = null
-    var whenRunCallback: ((Callback, Usecase<*>) -> Unit)? = null
+class UsecaseRunnerStub : UsecaseRunnerContract, MockContract.Stub {
+    var whenRunListener: ((ResultListener<*>, UsecaseContract.Usecase<*, *>, Any) -> Unit)? = null
+    var whenRunCallback: ((Callback, UsecaseContract.Usecase<*, *>, Any) -> Unit)? = null
 
-    override fun <ReturnType : Any> run(
+    override fun <Parameter : Any, ReturnType : Any> run(
         listener: ResultListener<ReturnType>,
-        usecase: Usecase<ReturnType>
+        usecase: UsecaseContract.Usecase<Parameter, ReturnType>,
+        parameter: Parameter
     ) {
-        whenRunListener?.invoke(listener, usecase as Usecase<*>) ?: throw MockException()
+        whenRunListener?.invoke(listener, usecase as UsecaseContract.Usecase<*, *>, parameter as Any) ?: throw MockException()
     }
 
-    override fun <ReturnType : Any> run(
+    override fun <Parameter : Any, ReturnType : Any> run(
         listener: Callback,
-        usecase: Usecase<ReturnType>
+        usecase: UsecaseContract.Usecase<Parameter, ReturnType>,
+        parameter: Parameter
     ) {
-        whenRunCallback?.invoke(listener, usecase as Usecase<*>) ?: throw MockException()
+        whenRunCallback?.invoke(listener, usecase as UsecaseContract.Usecase<*, *>, parameter as Any) ?: throw MockException()
     }
 
     override fun clear() {

@@ -18,12 +18,9 @@ package care.data4life.datadonation.mock.stub
 
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.domain.usecases.UsecaseContract.FetchUserConsents
-import care.data4life.datadonation.internal.domain.usecases.UsecaseContract.FetchUserConsentsParameter
 import care.data4life.datadonation.mock.MockContract
 
 class FetchUserConsentStub :
     FetchUserConsents,
-    UsecaseFactoryStub<FetchUserConsentsParameter, List<UserConsent>>(),
+    UsecaseStub<FetchUserConsents.Parameter, List<UserConsent>>(),
     MockContract.Stub
-
-class FetchUserUsecaseStub : UsecaseStub<List<UserConsent>>(), MockContract.Stub

@@ -14,14 +14,13 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.mock.stub
+package care.data4life.datadonation.mock.stub.repository
 
-import care.data4life.datadonation.internal.data.model.DonationPayload
 import care.data4life.datadonation.internal.domain.repository.RepositoryContract
 import care.data4life.datadonation.mock.MockContract
 
-class DonationRepositoryStub : RepositoryContract.DonationRepository, MockContract.Stub {
-    override suspend fun donateResources(payload: DonationPayload) {
+class ServiceTokenRepositoryStub : RepositoryContract.ServiceTokenRepository, MockContract.Stub {
+    override suspend fun requestDonationToken(): String {
         TODO("Not yet implemented")
     }
 

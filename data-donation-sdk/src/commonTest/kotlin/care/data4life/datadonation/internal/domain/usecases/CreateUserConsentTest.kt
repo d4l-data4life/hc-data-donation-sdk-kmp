@@ -34,7 +34,7 @@ package care.data4life.datadonation.internal.domain.usecases
 
 import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.mock.DummyData
-import care.data4life.datadonation.mock.stub.UserConsentRepositoryStub
+import care.data4life.datadonation.mock.stub.repository.UserConsentRepositoryStub
 import care.data4life.sdk.util.test.runBlockingTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -45,25 +45,9 @@ import kotlin.test.assertTrue
 class CreateUserConsentTest {
     @Test
     fun `It fulfils CreateUserConsent`() {
-        val factory: Any = CreateUserConsentFactory(UserConsentRepositoryStub())
+        val useCase: Any = CreateUserConsent(UserConsentRepositoryStub())
 
-        assertTrue(factory is UsecaseContract.CreateUserConsent)
-    }
-
-    @Test
-    fun `Given withParams is called with the appropriate Parameter it creates a Usecase`() {
-        // Given
-        val parameter = CreateUserConsentFactory.Parameter(
-            KeyPair(ByteArray(23), ByteArray(42)),
-            "custom-consent-key",
-            23
-        )
-
-        // When
-        val usecase: Any = CreateUserConsentFactory(UserConsentRepositoryStub()).withParams(parameter)
-
-        // Then
-        assertTrue(usecase is UsecaseContract.Usecase<*>)
+        assertTrue(useCase is UsecaseContract.CreateUserConsent)
     }
 
     @Test
@@ -91,10 +75,10 @@ class CreateUserConsentTest {
             listOf(consent, DummyData.userConsent.copy(accountId = "not expected"))
         }
 
-        val parameter = CreateUserConsentFactory.Parameter(keyPair, consentKey, version)
+        val parameter = CreateUserConsent.Parameter(keyPair, consentKey, version)
 
         // When
-        val result = CreateUserConsentFactory(repo).withParams(parameter).execute()
+        val result = CreateUserConsent(repo).execute(parameter)
 
         // Then
         assertSame(

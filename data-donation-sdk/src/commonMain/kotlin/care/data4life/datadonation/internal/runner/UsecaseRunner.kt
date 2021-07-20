@@ -14,34 +14,37 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.core.listener
+package care.data4life.datadonation.internal.runner
 
+import care.data4life.datadonation.core.listener.ListenerContract
 import care.data4life.datadonation.internal.domain.usecases.UsecaseContract
 import kotlinx.coroutines.launch
 
 internal class UsecaseRunner(
-    private val scopeResolver: ListenerContract.ScopeResolver
-) : ListenerInternalContract.UsecaseRunner {
-    override fun <ReturnType : Any> run(
+    private val scopeProvider: ScopeProvider
+) : UsecaseRunnerContract {
+    override fun <Parameter : Any, ReturnType : Any> run(
         listener: ListenerContract.ResultListener<ReturnType>,
-        usecase: UsecaseContract.Usecase<ReturnType>
+        usecase: UsecaseContract.Usecase<Parameter, ReturnType>,
+        parameter: Parameter
     ) {
-        scopeResolver.getCoroutineScope().launch {
+        scopeProvider.getCoroutineScope().launch {
             try {
-                listener.onSuccess(usecase.execute())
+                listener.onSuccess(usecase.execute(parameter))
             } catch (ex: Exception) {
                 listener.onError(ex)
             }
         }
     }
 
-    override fun <ReturnType : Any> run(
+    override fun <Parameter : Any, ReturnType : Any> run(
         listener: ListenerContract.Callback,
-        usecase: UsecaseContract.Usecase<ReturnType>
+        usecase: UsecaseContract.Usecase<Parameter, ReturnType>,
+        parameter: Parameter
     ) {
-        scopeResolver.getCoroutineScope().launch {
+        scopeProvider.getCoroutineScope().launch {
             try {
-                usecase.execute()
+                usecase.execute(parameter)
                 listener.onSuccess()
             } catch (ex: Exception) {
                 listener.onError(ex)

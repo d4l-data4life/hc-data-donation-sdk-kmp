@@ -19,41 +19,44 @@ package care.data4life.datadonation.internal.domain.usecases
 import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.UserConsent
+import care.data4life.hl7.fhir.stu3.model.FhirResource
 
 interface UsecaseContract {
-    interface Usecase<ReturnType> {
-        suspend fun execute(): ReturnType
+    interface Usecase<Parameter : Any, ReturnType : Any> {
+        suspend fun execute(parameter: Parameter): ReturnType
     }
 
-    interface UsecaseFactory<Parameter : Any, ReturnType : Any> {
-        fun withParams(parameter: Parameter): Usecase<ReturnType>
+    interface FetchUserConsents : Usecase<FetchUserConsents.Parameter, List<UserConsent>> {
+        interface Parameter {
+            val consentKey: String?
+        }
     }
 
-    interface FetchUserConsentsParameter {
-        val consentKey: String?
+    interface FetchConsentDocuments : Usecase<FetchConsentDocuments.Parameter, List<ConsentDocument>> {
+        interface Parameter {
+            val version: Int?
+            val language: String?
+            val consentKey: String
+        }
     }
 
-    interface FetchUserConsents : UsecaseFactory<FetchUserConsentsParameter, List<UserConsent>>
-
-    interface FetchConsentDocumentsParameter {
-        val version: Int?
-        val language: String?
-        val consentKey: String
+    interface RevokeUserConsent : Usecase<RevokeUserConsent.Parameter, Unit> {
+        interface Parameter {
+            val consentKey: String
+        }
     }
 
-    interface FetchConsentDocuments : UsecaseFactory<FetchConsentDocumentsParameter, List<ConsentDocument>>
-
-    interface RevokeUserConsentParameter {
-        val consentKey: String
+    interface CreateUserConsent : Usecase<CreateUserConsent.Parameter, UserConsent> {
+        interface Parameter {
+            val keyPair: KeyPair?
+            val consentKey: String
+            val version: Int
+        }
     }
 
-    interface RevokeUserConsent : UsecaseFactory<RevokeUserConsentParameter, Unit>
-
-    interface CreateUserConsentParameter {
-        val keyPair: KeyPair?
-        val consentKey: String
-        val version: Int
+    interface RedactSensitiveInformation : Usecase<List<FhirResource>, List<FhirResource>> {
+        companion object {
+            const val REDACTED = "REDACTED"
+        }
     }
-
-    interface CreateUserConsent : UsecaseFactory<CreateUserConsentParameter, UserConsent>
 }
