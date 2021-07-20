@@ -38,7 +38,6 @@ import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.di.initKoin
 import care.data4life.datadonation.internal.domain.usecases.*
 import care.data4life.datadonation.internal.io.IOInternalContract
-import kotlinx.coroutines.launch
 import org.koin.core.KoinApplication
 
 class Client internal constructor(
@@ -124,33 +123,6 @@ class Client internal constructor(
             revokeUserConsent,
             parameter
         )
-    }
-
-    // TODO: Remove -> Wrong level of abstraction
-    private fun <ReturnType : Any> Usecase<ReturnType>.runForListener(
-        listener: ListenerContract.ResultListener<ReturnType>
-    ) {
-        configuration.getCoroutineScope().launch {
-            try {
-                listener.onSuccess(this@runForListener.execute())
-            } catch (ex: Exception) {
-                listener.onError(ex)
-            }
-        }
-    }
-
-    // TODO: Remove -> Wrong level of abstraction
-    private fun <ReturnType : Any> Usecase<ReturnType>.runForListener(
-        listener: ListenerContract.Callback
-    ) {
-        configuration.getCoroutineScope().launch {
-            try {
-                execute()
-                listener.onSuccess()
-            } catch (ex: Exception) {
-                listener.onError(ex)
-            }
-        }
     }
 
     companion object Factory : Contract.DataDonationFactory {
