@@ -16,7 +16,6 @@
 
 package care.data4life.datadonation.mock.stub.service.networking
 
-import care.data4life.datadonation.core.model.ModelContract
 import care.data4life.datadonation.internal.data.service.networking.AccessToken
 import care.data4life.datadonation.internal.data.service.networking.Header
 import care.data4life.datadonation.internal.data.service.networking.Networking
@@ -24,12 +23,11 @@ import care.data4life.datadonation.internal.data.service.networking.Parameter
 import care.data4life.datadonation.internal.data.service.networking.Path
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
-import io.ktor.client.HttpClient
-import kotlin.native.concurrent.ThreadLocal
+import io.ktor.client.statement.HttpStatement
 
-internal class CallBuilderSpy private constructor(
-    private val onExecute: ((Networking.Method, Path) -> Any)?
-) : Networking.CallBuilder {
+internal class RequestBuilderSpy private constructor(
+    private val onPrepare: ((Networking.Method, Path) -> HttpStatement)?
+) : Networking.RequestBuilder {
     private var headers: Header? = null
     val delegatedHeaders: Header?
         get() = headers
@@ -50,75 +48,66 @@ internal class CallBuilderSpy private constructor(
     val delegatedBody: Any?
         get() = body
 
-    override fun setHeaders(header: Header): Networking.CallBuilder {
+    override fun setHeaders(header: Header): Networking.RequestBuilder {
         return this.also { this.headers = header }
     }
 
-    override fun setParameter(parameter: Parameter): Networking.CallBuilder {
+    override fun setParameter(parameter: Parameter): Networking.RequestBuilder {
         return this.also { this.parameter = parameter }
     }
 
-    override fun setAccessToken(token: AccessToken): Networking.CallBuilder {
+    override fun setAccessToken(token: AccessToken): Networking.RequestBuilder {
         return this.also { this.token = token }
     }
 
-    override fun useJsonContentType(): Networking.CallBuilder {
+    override fun useJsonContentType(): Networking.RequestBuilder {
         return this.also { json = true }
     }
 
-    override fun setBody(body: Any): Networking.CallBuilder {
+    override fun setBody(body: Any): Networking.RequestBuilder {
         return this.also { this.body = body }
     }
 
-    override suspend fun execute(
+    private fun clear() {
+        headers = null
+        parameter = null
+        token = null
+        json = false
+        body = null
+    }
+
+    override fun prepare(
         method: Networking.Method,
         path: Path
-    ): Any {
-        return onExecute?.invoke(
+    ): HttpStatement {
+        return onPrepare?.invoke(
             method,
             path
         ) ?: throw MockException()
     }
 
-    @ThreadLocal
-    companion object Factory : Networking.CallBuilderFactory, MockContract.Stub {
-        var onExecute: ((Networking.Method, Path) -> Any)? = null
+    class Template : Networking.RequestBuilderTemplate, MockContract.Spy {
+        var onPrepare: ((Networking.Method, Path) -> HttpStatement)? = null
 
-        private var environment: ModelContract.Environment? = null
-        val delegatedEnvironment: ModelContract.Environment?
-            get() = environment
-
-        private var client: HttpClient? = null
-        val delegatedClient: HttpClient?
-            get() = client
-
-        private var port: Int? = null
-        val delegatedPort: Int?
-            get() = port
-
-        private var instance: CallBuilderSpy? = null
-        val lastInstance: CallBuilderSpy?
+        private var instance: RequestBuilderSpy? = null
+        val lastInstance: RequestBuilderSpy?
             get() = instance
 
-        override fun getInstance(
-            environment: ModelContract.Environment,
-            client: HttpClient,
-            port: Int?
-        ): Networking.CallBuilder {
-            return CallBuilderSpy(onExecute).also {
-                Factory.environment = environment
-                Factory.client = client
-                Factory.port = port
-                instance = it
+        private var instanceCounter = 0
+        val createdInstances: Int
+            get() = instanceCounter
+
+        override fun create(): Networking.RequestBuilder {
+            return RequestBuilderSpy(onPrepare).also {
+                this.instance = it
+                this.instanceCounter++
             }
         }
 
         override fun clear() {
-            onExecute = null
-            environment = null
-            client = null
-            port = null
+            onPrepare = null
             instance = null
+            instanceCounter = 0
         }
     }
 }

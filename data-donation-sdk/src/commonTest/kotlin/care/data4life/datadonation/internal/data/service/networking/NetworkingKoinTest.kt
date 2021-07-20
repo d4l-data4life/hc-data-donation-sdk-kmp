@@ -32,7 +32,7 @@ class NetworkingKoinTest {
     }
 
     @Test
-    fun `Given resolveServiceModule is called it creates a Module, which contains a CallBuilderFactory`() {
+    fun `Given resolveServiceModule is called it creates a Module, which contains a RequestBuilderTemplate`() {
         // When
         val koin = koinApplication {
             modules(
@@ -43,7 +43,7 @@ class NetworkingKoinTest {
             )
         }
         // Then
-        val builder: Networking.CallBuilder = koin.koin.get()
+        val builder: Networking.RequestBuilderTemplate = koin.koin.get()
         assertNotNull(builder)
     }
 

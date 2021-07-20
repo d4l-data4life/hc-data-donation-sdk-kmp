@@ -17,50 +17,50 @@
 package care.data4life.datadonation.internal.data.service.networking
 
 import care.data4life.datadonation.core.model.ModelContract.Environment
-import care.data4life.datadonation.internal.data.service.networking.Networking.CallBuilder.Companion.ACCESS_TOKEN_FIELD
-import care.data4life.datadonation.internal.data.service.networking.Networking.CallBuilder.Companion.ACCESS_TOKEN_VALUE_PREFIX
 import care.data4life.datadonation.lang.CoreRuntimeError
+import care.data4life.datadonation.internal.data.service.networking.Networking.RequestBuilder.Companion.ACCESS_TOKEN_FIELD
+import care.data4life.datadonation.internal.data.service.networking.Networking.RequestBuilder.Companion.ACCESS_TOKEN_VALUE_PREFIX
 import io.ktor.client.HttpClient
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.header
 import io.ktor.client.request.host
 import io.ktor.client.request.parameter
 import io.ktor.client.request.port
-import io.ktor.client.request.request
+import io.ktor.client.statement.HttpStatement
 import io.ktor.http.ContentType
 import io.ktor.http.HttpMethod
 import io.ktor.http.URLProtocol
 import io.ktor.http.contentType
 
-internal class CallBuilder private constructor(
+internal class RequestBuilder private constructor(
     private val client: HttpClient,
     private val host: String,
     private val protocol: URLProtocol,
     private val port: Int?
-) : Networking.CallBuilder {
-    private var headers: Header = mapOf()
-    private var parameter: Parameter = mapOf()
+) : Networking.RequestBuilder {
+    private var headers: Header = emptyMap()
+    private var parameter: Parameter = emptyMap()
     private var accessToken: AccessToken? = null
     private var useJson: Boolean = false
     private var body: Any? = null
 
-    override fun setHeaders(header: Header): Networking.CallBuilder {
+    override fun setHeaders(header: Header): Networking.RequestBuilder {
         return this.also { this.headers = header }
     }
 
-    override fun setParameter(parameter: Parameter): Networking.CallBuilder {
+    override fun setParameter(parameter: Parameter): Networking.RequestBuilder {
         return this.also { this.parameter = parameter }
     }
 
-    override fun setAccessToken(token: AccessToken): Networking.CallBuilder {
+    override fun setAccessToken(token: AccessToken): Networking.RequestBuilder {
         return this.also { this.accessToken = token }
     }
 
-    override fun useJsonContentType(): Networking.CallBuilder {
+    override fun useJsonContentType(): Networking.RequestBuilder {
         return this.also { this.useJson = true }
     }
 
-    override fun setBody(body: Any): Networking.CallBuilder {
+    override fun setBody(body: Any): Networking.RequestBuilder {
         return this.also { this.body = body }
     }
 
@@ -137,27 +137,37 @@ internal class CallBuilder private constructor(
         builder: HttpRequestBuilder,
         method: Networking.Method,
         path: Path
-    ) {
+    ): HttpRequestBuilder {
         setMandatoryFields(builder, method, path)
         setPort(builder)
         addHeader(builder)
         setParameter(builder)
         setAccessToken(builder)
         setContentType(builder)
+        return builder
     }
 
-    override suspend fun execute(
+    override fun prepare(
         method: Networking.Method,
         path: Path
-    ): Any = client.request { buildQuery(this, method, path) }
+    ): HttpStatement {
+        return HttpStatement(
+            buildQuery(
+                HttpRequestBuilder(),
+                method,
+                path,
+            ),
+            client
+        )
+    }
 
-    companion object : Networking.CallBuilderFactory {
-        override fun getInstance(
-            environment: Environment,
-            client: HttpClient,
-            port: Int?
-        ): Networking.CallBuilder {
-            return CallBuilder(
+    class Template(
+        private val environment: Environment,
+        private val client: HttpClient,
+        private val port: Int? = null
+    ) : Networking.RequestBuilderTemplate {
+        override fun create(): Networking.RequestBuilder {
+            return RequestBuilder(
                 client,
                 environment.url,
                 URLProtocol.HTTPS,

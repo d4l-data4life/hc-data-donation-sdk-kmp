@@ -22,10 +22,9 @@ sealed class CoreRuntimeError(
     message: String?,
     cause: Throwable?
 ) : D4LRuntimeException(message = message, cause = cause) {
-
     class InternalFailure : CoreRuntimeError(message = "Internal failure", cause = null)
     class RequestValidationFailure(message: String) : CoreRuntimeError(message = message, cause = null)
-    class ResponseCastFailure : CoreRuntimeError(message = "Unexpected Response", cause = null)
+    class ResponseTransformFailure : CoreRuntimeError(message = "Unexpected Response", cause = null)
     class MissingCredentialsError(cause: Throwable? = null) : CoreRuntimeError(cause = cause, message = null)
     class MissingSessionError(cause: Throwable? = null) : CoreRuntimeError(cause = cause, message = null)
 }

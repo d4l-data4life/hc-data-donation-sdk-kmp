@@ -16,15 +16,14 @@
 
 package care.data4life.datadonation.internal.data.service.networking
 
-import care.data4life.datadonation.core.model.ModelContract.Environment
 import care.data4life.sdk.lang.D4LRuntimeException
-import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.features.HttpCallValidator
 import io.ktor.client.features.HttpClientFeature
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.logging.Logging
 import io.ktor.client.statement.HttpResponse
+import io.ktor.client.statement.HttpStatement
 import kotlinx.serialization.json.JsonBuilder
 
 typealias Header = Map<String, String>
@@ -35,6 +34,10 @@ typealias Path = List<String>
 internal interface Networking {
     interface Logger : io.ktor.client.features.logging.Logger {
         override fun log(message: String)
+
+        companion object {
+            const val PREFIX = "DD-SDK-HTTP:"
+        }
     }
 
     fun interface Configurator<Config : Any, AuxiliaryConfigurator : Any> {
@@ -56,7 +59,7 @@ internal interface Networking {
     }
 
     fun interface SerializerConfigurator : Configurator<JsonFeature.Config, JsonConfigurator>
-    fun interface LoggingConfigurator : Configurator<Logging.Config, Unit>
+    fun interface LoggingConfigurator : Configurator<Logging.Config, care.data4life.sdk.log.Logger>
     fun interface ResponseValidatorConfigurator : Configurator<HttpCallValidator.Config, Pair<ResponseValidator?, ErrorPropagator?>>
 
     fun interface ClientConfigurator {
@@ -74,17 +77,18 @@ internal interface Networking {
         PUT("put")
     }
 
-    interface CallBuilder {
-        fun setHeaders(header: Header): CallBuilder
-        fun setParameter(parameter: Parameter): CallBuilder
-        fun setAccessToken(token: AccessToken): CallBuilder
-        fun useJsonContentType(): CallBuilder
-        fun setBody(body: Any): CallBuilder
+    // TODO Add a new package with potential HTTP Interceptor
+    interface RequestBuilder {
+        fun setHeaders(header: Header): RequestBuilder
+        fun setParameter(parameter: Parameter): RequestBuilder
+        fun setAccessToken(token: AccessToken): RequestBuilder
+        fun useJsonContentType(): RequestBuilder
+        fun setBody(body: Any): RequestBuilder
 
-        suspend fun execute(
+        fun prepare(
             method: Method = Method.GET,
             path: Path = listOf("")
-        ): Any
+        ): HttpStatement
 
         companion object {
             const val ACCESS_TOKEN_FIELD = "Authorization"
@@ -92,11 +96,7 @@ internal interface Networking {
         }
     }
 
-    interface CallBuilderFactory {
-        fun getInstance(
-            environment: Environment,
-            client: HttpClient,
-            port: Int? = null
-        ): CallBuilder
+    interface RequestBuilderTemplate {
+        fun create(): RequestBuilder
     }
 }

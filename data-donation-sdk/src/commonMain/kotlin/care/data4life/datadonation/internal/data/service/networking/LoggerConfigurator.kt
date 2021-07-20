@@ -16,12 +16,13 @@
 
 package care.data4life.datadonation.internal.data.service.networking
 
+import care.data4life.sdk.log.Logger
 import io.ktor.client.features.logging.LogLevel
 import io.ktor.client.features.logging.Logging
 
 internal object LoggerConfigurator : Networking.LoggingConfigurator {
-    override fun configure(pluginConfig: Logging.Config, auxiliaryConfigurator: Unit) {
-        pluginConfig.logger = SimpleLogger()
+    override fun configure(pluginConfig: Logging.Config, auxiliaryConfigurator: Logger) {
+        pluginConfig.logger = SimpleLogger(auxiliaryConfigurator)
         pluginConfig.level = LogLevel.ALL
     }
 }

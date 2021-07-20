@@ -33,13 +33,12 @@ import care.data4life.datadonation.internal.data.service.ServiceContract.Consent
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PATH.USER_CONSENTS
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.ROOT
 import care.data4life.datadonation.internal.data.service.networking.Networking
-import care.data4life.datadonation.internal.utils.safeCast
-import care.data4life.datadonation.internal.utils.safeListCast
+import care.data4life.datadonation.internal.data.service.networking.receive
 import care.data4life.datadonation.lang.HttpRuntimeError
 import kotlinx.datetime.Clock
 
 internal class ConsentService constructor(
-    private val callBuilder: Networking.CallBuilder,
+    private val requestBuilderTemplate: Networking.RequestBuilderTemplate,
     private val errorHandler: ServiceContract.ConsentService.ConsentErrorHandler,
     private val clock: Clock
 ) : ServiceContract.ConsentService {
@@ -68,19 +67,20 @@ internal class ConsentService constructor(
             LANGUAGE to language
         )
 
-        val response = try {
-            callBuilder
-                .setAccessToken(accessToken)
-                .setParameter(parameter)
-                .execute(
-                    Networking.Method.GET,
-                    path
-                )
-        } catch (error: HttpRuntimeError) {
-            errorHandler.handleFetchConsentDocuments(error)
-        }
+        val request = requestBuilderTemplate
+            .create()
+            .setAccessToken(accessToken)
+            .setParameter(parameter)
+            .prepare(
+                Networking.Method.GET,
+                path
+            )
 
-        return safeListCast(response)
+        return try {
+            receive(request)
+        } catch (error: HttpRuntimeError) {
+            errorHandler.handleFetchConsentDocuments(kotlin.error)
+        }
     }
 
     override suspend fun fetchUserConsents(
@@ -94,19 +94,20 @@ internal class ConsentService constructor(
             USER_CONSENT_KEY to consentKey,
         )
 
-        val response = try {
-            callBuilder
-                .setAccessToken(accessToken)
-                .setParameter(parameter)
-                .execute(
-                    Networking.Method.GET,
-                    path
-                )
+        val request = requestBuilderTemplate
+            .create()
+            .setAccessToken(accessToken)
+            .setParameter(parameter)
+            .prepare(
+                Networking.Method.GET,
+                path
+            )
+
+        return try {
+            receive(request)
         } catch (error: HttpRuntimeError) {
             errorHandler.handleFetchUserConsents(error)
         }
-
-        return safeListCast(response)
     }
 
     override suspend fun createUserConsent(
@@ -121,15 +122,18 @@ internal class ConsentService constructor(
             clock.now().toString()
         )
 
-        try {
-            callBuilder
-                .setAccessToken(accessToken)
-                .useJsonContentType()
-                .setBody(payload)
-                .execute(
-                    Networking.Method.POST,
-                    path
-                )
+        val request = requestBuilderTemplate
+            .create()
+            .setAccessToken(accessToken)
+            .useJsonContentType()
+            .setBody(payload)
+            .prepare(
+                Networking.Method.POST,
+                path
+            )
+
+        return try {
+            receive(request)
         } catch (error: HttpRuntimeError) {
             errorHandler.handleCreateUserConsent(error)
         }
@@ -152,20 +156,21 @@ internal class ConsentService constructor(
             ConsentSignatureType.CONSENT_ONCE.apiValue
         )
 
-        val response = try {
-            callBuilder
-                .setAccessToken(accessToken)
-                .useJsonContentType()
-                .setBody(payload)
-                .execute(
-                    Networking.Method.POST,
-                    path
-                )
+        val request = requestBuilderTemplate
+            .create()
+            .setAccessToken(accessToken)
+            .useJsonContentType()
+            .setBody(payload)
+            .prepare(
+                Networking.Method.POST,
+                path
+            )
+
+        return try {
+            receive(request)
         } catch (error: HttpRuntimeError) {
             errorHandler.handleRequestSignatureConsentRegistration(error)
         }
-
-        return safeCast(response)
     }
 
     override suspend fun requestSignatureDonation(
@@ -184,35 +189,39 @@ internal class ConsentService constructor(
             ConsentSignatureType.NORMAL_USE.apiValue
         )
 
-        val response = try {
-            callBuilder
-                .setAccessToken(accessToken)
-                .useJsonContentType()
-                .setBody(payload)
-                .execute(
-                    Networking.Method.PUT,
-                    path
-                )
+        val request = requestBuilderTemplate
+            .create()
+            .setAccessToken(accessToken)
+            .useJsonContentType()
+            .setBody(payload)
+            .prepare(
+                Networking.Method.PUT,
+                path
+            )
+
+        return try {
+            receive(request)
         } catch (error: HttpRuntimeError) {
             errorHandler.handleRequestSignatureDonation(error)
         }
-
-        return safeCast(response)
     }
 
     override suspend fun revokeUserConsent(accessToken: String, consentKey: String) {
         val path = buildPath(USER_CONSENTS)
         val payload = ConsentRevocationPayload(consentKey)
 
-        try {
-            callBuilder
-                .setAccessToken(accessToken)
-                .useJsonContentType()
-                .setBody(payload)
-                .execute(
-                    Networking.Method.DELETE,
-                    path
-                )
+        val request = requestBuilderTemplate
+            .create()
+            .setAccessToken(accessToken)
+            .useJsonContentType()
+            .setBody(payload)
+            .prepare(
+                Networking.Method.DELETE,
+                path
+            )
+
+        return try {
+            receive(request)
         } catch (error: HttpRuntimeError) {
             errorHandler.handleRevokeUserConsent(error)
         }
