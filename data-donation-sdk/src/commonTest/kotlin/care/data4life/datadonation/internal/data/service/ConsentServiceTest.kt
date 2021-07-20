@@ -30,22 +30,19 @@ import care.data4life.datadonation.internal.data.service.ServiceContract.Consent
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PATH.USER_CONSENTS
 import care.data4life.datadonation.internal.data.service.networking.Networking
 import care.data4life.datadonation.internal.data.service.networking.Path
+import care.data4life.datadonation.lang.ConsentServiceError
 import care.data4life.datadonation.lang.CoreRuntimeError
 import care.data4life.datadonation.lang.HttpRuntimeError
 import care.data4life.datadonation.mock.DummyData
+import care.data4life.datadonation.mock.fake.createErrorMockClient
 import care.data4life.datadonation.mock.fake.createMockClientWithResponse
 import care.data4life.datadonation.mock.stub.ClockStub
-<<<<<<< HEAD
 import care.data4life.datadonation.mock.stub.service.ConsentErrorHandlerStub
-import care.data4life.datadonation.mock.stub.service.networking.CallBuilderSpy
-import care.data4life.sdk.util.test.runBlockingTest
-=======
 import care.data4life.datadonation.mock.stub.service.networking.RequestBuilderSpy
 import care.data4life.sdk.util.test.runBlockingTest
 import io.ktor.client.engine.mock.respond
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.statement.HttpStatement
->>>>>>> feature/NAT-1066/remove-local-env
 import io.ktor.http.HttpStatusCode
 import kotlinx.datetime.Instant
 import kotlin.test.Test
@@ -78,22 +75,27 @@ class ConsentServiceTest {
 
         val requestTemplate = RequestBuilderSpy.Template()
         val error = HttpRuntimeError(HttpStatusCode.TooManyRequests)
-        val outgoingError = RuntimeException("Test")
+        val outgoingError = ConsentServiceError.ForbiddenError()
         var capturedError: HttpRuntimeError? = null
+
+        val client = createErrorMockClient(error)
 
         val errorHandler = ConsentErrorHandlerStub()
 
         errorHandler.whenHandleFetchConsentDocuments = { delegatedError ->
             capturedError = delegatedError
-            throw outgoingError
+            outgoingError
         }
 
         requestTemplate.onPrepare = { _, _ ->
-            throw error
+            HttpStatement(
+                dummyKtor,
+                client
+            )
         }
 
         // Then
-        val result = assertFailsWith<RuntimeException> {
+        val result = assertFailsWith<ConsentServiceError.ForbiddenError> {
             val service = ConsentService(
                 requestTemplate,
                 errorHandler,
@@ -240,32 +242,35 @@ class ConsentServiceTest {
     @Test
     fun `Given fetchUserConsents was called with a AccessToken, Latest and a ConsentKey it delegates HttpRequestErrors to its ErrorHandler`() = runBlockingTest {
         // Given
+        val requestTemplate = RequestBuilderSpy.Template()
         val accessToken = "potato"
         val consentKey = "tomato"
 
         val error = HttpRuntimeError(HttpStatusCode.TooManyRequests)
-        val outgoingError = RuntimeException()
+        val outgoingError = ConsentServiceError.ForbiddenError()
         var capturedError: HttpRuntimeError? = null
+
+        val client = createErrorMockClient(error)
 
         val errorHandler = ConsentErrorHandlerStub()
 
         errorHandler.whenHandleFetchUserConsents = { delegatedError ->
             capturedError = delegatedError
-            throw outgoingError
+            outgoingError
         }
 
-        CallBuilderSpy.onExecute = { _, _ ->
-            throw error
+        requestTemplate.onPrepare = { _, _ ->
+            HttpStatement(
+                dummyKtor,
+                client
+            )
         }
 
         // Then
-        val result = assertFailsWith<RuntimeException> {
+        val result = assertFailsWith<ConsentServiceError.ForbiddenError> {
             // When
             val service = ConsentService(
-                CallBuilderSpy.getInstance(
-                    Environment.DEV,
-                    createDefaultMockClient()
-                ),
+                requestTemplate,
                 errorHandler,
                 ClockStub()
             )
@@ -405,36 +410,39 @@ class ConsentServiceTest {
     @Test
     fun `Given createUserConsent was called with a AccessToken and a Version it delegates HttpRequestErrors to its ErrorHandler`() = runBlockingTest {
         // Given
+        val requestTemplate = RequestBuilderSpy.Template()
         val clock = ClockStub()
         val accessToken = "potato"
         val consentKey = "custom-consent-key"
         val version = 23
 
         val error = HttpRuntimeError(HttpStatusCode.TooManyRequests)
-        val outgoingError = RuntimeException()
+        val outgoingError = ConsentServiceError.ForbiddenError()
         var capturedError: HttpRuntimeError? = null
+
+        val client = createErrorMockClient(error)
 
         val errorHandler = ConsentErrorHandlerStub()
 
         errorHandler.whenHandleCreateUserConsent = { delegatedError ->
             capturedError = delegatedError
-            throw outgoingError
+            outgoingError
         }
 
-        CallBuilderSpy.onExecute = { _, _ ->
-            throw error
+        requestTemplate.onPrepare = { _, _ ->
+            HttpStatement(
+                dummyKtor,
+                client
+            )
         }
 
         clock.whenNow = { Instant.DISTANT_FUTURE }
 
         // Then
-        val result = assertFailsWith<RuntimeException> {
+        val result = assertFailsWith<ConsentServiceError.ForbiddenError> {
             // When
             val service = ConsentService(
-                CallBuilderSpy.getInstance(
-                    Environment.DEV,
-                    createDefaultMockClient()
-                ),
+                requestTemplate,
                 errorHandler,
                 clock
             )
@@ -543,31 +551,34 @@ class ConsentServiceTest {
     @Test
     fun `Given requestSignatureRegistration was called with a AccessToken and a Message it delegates HttpRequestErrors to its ErrorHandler`() = runBlockingTest {
         // Given
+        val requestTemplate = RequestBuilderSpy.Template()
         val accessToken = "potato"
         val message = "tomato"
 
         val error = HttpRuntimeError(HttpStatusCode.TooManyRequests)
-        val outgoingError = RuntimeException()
+        val outgoingError = ConsentServiceError.ForbiddenError()
         var capturedError: HttpRuntimeError? = null
+
+        val client = createErrorMockClient(error)
 
         val errorHandler = ConsentErrorHandlerStub()
 
         errorHandler.whenHandleRequestSignatureConsentRegistration = { delegatedError ->
             capturedError = delegatedError
-            throw outgoingError
+            outgoingError
         }
 
-        CallBuilderSpy.onExecute = { _, _ ->
-            throw error
+        requestTemplate.onPrepare = { _, _ ->
+            HttpStatement(
+                dummyKtor,
+                client
+            )
         }
 
         // Then
-        val result = assertFailsWith<RuntimeException> {
+        val result = assertFailsWith<ConsentServiceError.ForbiddenError> {
             val service = ConsentService(
-                CallBuilderSpy.getInstance(
-                    Environment.DEV,
-                    createDefaultMockClient()
-                ),
+                requestTemplate,
                 errorHandler,
                 ClockStub()
             )
@@ -703,32 +714,35 @@ class ConsentServiceTest {
     @Test
     fun `Given requestSignatureDonation was called with a AccessToken and a Message it delegates HttpRequestErrors to its ErrorHandler`() = runBlockingTest {
         // Given
+        val requestTemplate = RequestBuilderSpy.Template()
         val accessToken = "potato"
         val message = "tomato"
 
         val error = HttpRuntimeError(HttpStatusCode.TooManyRequests)
-        val outgoingError = RuntimeException()
+        val outgoingError = ConsentServiceError.ForbiddenError()
         var capturedError: HttpRuntimeError? = null
+
+        val client = createErrorMockClient(error)
 
         val errorHandler = ConsentErrorHandlerStub()
 
         errorHandler.whenHandleRequestSignatureDonation = { delegatedError ->
             capturedError = delegatedError
-            throw outgoingError
+            outgoingError
         }
 
-        CallBuilderSpy.onExecute = { _, _ ->
-            throw error
+        requestTemplate.onPrepare = { _, _ ->
+            HttpStatement(
+                dummyKtor,
+                client
+            )
         }
 
         // Then
-        val result = assertFailsWith<RuntimeException> {
+        val result = assertFailsWith<ConsentServiceError.ForbiddenError> {
             // When
             val service = ConsentService(
-                CallBuilderSpy.getInstance(
-                    Environment.DEV,
-                    createDefaultMockClient()
-                ),
+                requestTemplate,
                 errorHandler,
                 ClockStub()
             )
@@ -863,32 +877,35 @@ class ConsentServiceTest {
     @Test
     fun `Given revokeUserConsent was called with a AccessToken it delegates HttpRequestErrors to its ErrorHandler`() = runBlockingTest {
         // Given
+        val requestTemplate = RequestBuilderSpy.Template()
         val accessToken = "potato"
         val consentKey = "custom-consent-key"
 
         val error = HttpRuntimeError(HttpStatusCode.TooManyRequests)
-        val outgoingError = RuntimeException()
+        val outgoingError = ConsentServiceError.ForbiddenError()
         var capturedError: HttpRuntimeError? = null
+
+        val client = createErrorMockClient(error)
 
         val errorHandler = ConsentErrorHandlerStub()
 
         errorHandler.whenHandleRevokeUserConsent = { delegatedError ->
             capturedError = delegatedError
-            throw outgoingError
+            outgoingError
         }
 
-        CallBuilderSpy.onExecute = { _, _ ->
-            throw error
+        requestTemplate.onPrepare = { _, _ ->
+            HttpStatement(
+                dummyKtor,
+                client
+            )
         }
 
         // Then
-        val result = assertFailsWith<RuntimeException> {
+        val result = assertFailsWith<ConsentServiceError.ForbiddenError> {
             // When
             val service = ConsentService(
-                CallBuilderSpy.getInstance(
-                    Environment.DEV,
-                    createDefaultMockClient()
-                ),
+                requestTemplate,
                 errorHandler,
                 ClockStub()
             )

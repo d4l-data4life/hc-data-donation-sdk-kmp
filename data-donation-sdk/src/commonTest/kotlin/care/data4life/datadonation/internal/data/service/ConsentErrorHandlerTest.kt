@@ -21,7 +21,6 @@ import care.data4life.datadonation.lang.HttpRuntimeError
 import io.ktor.http.HttpStatusCode
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
 class ConsentErrorHandlerTest {
@@ -37,12 +36,11 @@ class ConsentErrorHandlerTest {
         // Given
         val error = HttpRuntimeError(HttpStatusCode.ServiceUnavailable)
 
-        // Then
-        val result = assertFailsWith<ConsentServiceError.UnexpectedError> {
-            // When
-            ConsentErrorHandler.handleFetchConsentDocuments(error)
-        }
+        // When
+        val result = ConsentErrorHandler.handleFetchConsentDocuments(error)
 
+        // Then
+        assertTrue(result is ConsentServiceError.UnexpectedError)
         assertEquals(
             actual = result.httpStatus,
             expected = 503
@@ -54,11 +52,11 @@ class ConsentErrorHandlerTest {
         // Given
         val error = HttpRuntimeError(HttpStatusCode.InternalServerError)
 
+        // When
+        val result = ConsentErrorHandler.handleFetchConsentDocuments(error)
+
         // Then
-        assertFailsWith<ConsentServiceError.InternalServerError> {
-            // When
-            ConsentErrorHandler.handleFetchConsentDocuments(error)
-        }
+        assertTrue(result is ConsentServiceError.InternalServerError)
     }
 
     @Test
@@ -66,12 +64,11 @@ class ConsentErrorHandlerTest {
         // Given
         val error = HttpRuntimeError(HttpStatusCode.ServiceUnavailable)
 
-        // Then
-        val result = assertFailsWith<ConsentServiceError.UnexpectedError> {
-            // When
-            ConsentErrorHandler.handleFetchUserConsents(error)
-        }
+        // When
+        val result = ConsentErrorHandler.handleFetchUserConsents(error)
 
+        // Then
+        assertTrue(result is ConsentServiceError.UnexpectedError)
         assertEquals(
             actual = result.httpStatus,
             expected = 503
@@ -83,11 +80,11 @@ class ConsentErrorHandlerTest {
         // Given
         val error = HttpRuntimeError(HttpStatusCode.InternalServerError)
 
+        // When
+        val result = ConsentErrorHandler.handleFetchUserConsents(error)
+
         // Then
-        assertFailsWith<ConsentServiceError.InternalServerError> {
-            // When
-            ConsentErrorHandler.handleFetchUserConsents(error)
-        }
+        assertTrue(result is ConsentServiceError.InternalServerError)
     }
 
     @Test
@@ -95,12 +92,11 @@ class ConsentErrorHandlerTest {
         // Given
         val error = HttpRuntimeError(HttpStatusCode.ServiceUnavailable)
 
-        // Then
-        val result = assertFailsWith<ConsentServiceError.UnexpectedError> {
-            // When
-            ConsentErrorHandler.handleCreateUserConsent(error)
-        }
+        // When
+        val result = ConsentErrorHandler.handleCreateUserConsent(error)
 
+        // Then
+        assertTrue(result is ConsentServiceError.UnexpectedError)
         assertEquals(
             actual = result.httpStatus,
             expected = 503
@@ -112,11 +108,11 @@ class ConsentErrorHandlerTest {
         // Given
         val error = HttpRuntimeError(HttpStatusCode.BadRequest)
 
+        // When
+        val result = ConsentErrorHandler.handleCreateUserConsent(error)
+
         // Then
-        assertFailsWith<ConsentServiceError.BadRequestError> {
-            // When
-            ConsentErrorHandler.handleCreateUserConsent(error)
-        }
+        assertTrue(result is ConsentServiceError.BadRequestError)
     }
 
     @Test
@@ -124,11 +120,11 @@ class ConsentErrorHandlerTest {
         // Given
         val error = HttpRuntimeError(HttpStatusCode.NotFound)
 
+        // When
+        val result = ConsentErrorHandler.handleCreateUserConsent(error)
+
         // Then
-        assertFailsWith<ConsentServiceError.NotFoundError> {
-            // When
-            ConsentErrorHandler.handleCreateUserConsent(error)
-        }
+        assertTrue(result is ConsentServiceError.NotFoundError)
     }
 
     @Test
@@ -136,11 +132,11 @@ class ConsentErrorHandlerTest {
         // Given
         val error = HttpRuntimeError(HttpStatusCode.UnprocessableEntity)
 
+        // When
+        val result = ConsentErrorHandler.handleCreateUserConsent(error)
+
         // Then
-        assertFailsWith<ConsentServiceError.UnprocessableEntityError> {
-            // When
-            ConsentErrorHandler.handleCreateUserConsent(error)
-        }
+        assertTrue(result is ConsentServiceError.UnprocessableEntityError)
     }
 
     @Test
@@ -148,11 +144,11 @@ class ConsentErrorHandlerTest {
         // Given
         val error = HttpRuntimeError(HttpStatusCode.InternalServerError)
 
+        // When
+        val result = ConsentErrorHandler.handleCreateUserConsent(error)
+
         // Then
-        assertFailsWith<ConsentServiceError.InternalServerError> {
-            // When
-            ConsentErrorHandler.handleFetchUserConsents(error)
-        }
+        assertTrue(result is ConsentServiceError.InternalServerError)
     }
 
     @Test
@@ -160,12 +156,11 @@ class ConsentErrorHandlerTest {
         // Given
         val error = HttpRuntimeError(HttpStatusCode.ServiceUnavailable)
 
-        // Then
-        val result = assertFailsWith<ConsentServiceError.UnexpectedError> {
-            // When
-            ConsentErrorHandler.handleRequestSignatureConsentRegistration(error)
-        }
+        // When
+        val result = ConsentErrorHandler.handleRequestSignatureConsentRegistration(error)
 
+        // Then
+        assertTrue(result is ConsentServiceError.UnexpectedError)
         assertEquals(
             actual = result.httpStatus,
             expected = 503
@@ -177,11 +172,11 @@ class ConsentErrorHandlerTest {
         // Given
         val error = HttpRuntimeError(HttpStatusCode.Unauthorized)
 
+        // / When
+        val result = ConsentErrorHandler.handleRequestSignatureConsentRegistration(error)
+
         // Then
-        assertFailsWith<ConsentServiceError.UnauthorizedError> {
-            // When
-            ConsentErrorHandler.handleRequestSignatureConsentRegistration(error)
-        }
+        assertTrue(result is ConsentServiceError.UnauthorizedError)
     }
 
     @Test
@@ -189,11 +184,11 @@ class ConsentErrorHandlerTest {
         // Given
         val error = HttpRuntimeError(HttpStatusCode.Forbidden)
 
+        // When
+        val result = ConsentErrorHandler.handleRequestSignatureConsentRegistration(error)
+
         // Then
-        assertFailsWith<ConsentServiceError.ForbiddenError> {
-            // When
-            ConsentErrorHandler.handleRequestSignatureConsentRegistration(error)
-        }
+        assertTrue(result is ConsentServiceError.ForbiddenError)
     }
 
     @Test
@@ -201,11 +196,11 @@ class ConsentErrorHandlerTest {
         // Given
         val error = HttpRuntimeError(HttpStatusCode.NotFound)
 
+        // When
+        val result = ConsentErrorHandler.handleRequestSignatureConsentRegistration(error)
+
         // Then
-        assertFailsWith<ConsentServiceError.NotFoundError> {
-            // When
-            ConsentErrorHandler.handleRequestSignatureConsentRegistration(error)
-        }
+        assertTrue(result is ConsentServiceError.NotFoundError)
     }
 
     @Test
@@ -213,11 +208,11 @@ class ConsentErrorHandlerTest {
         // Given
         val error = HttpRuntimeError(HttpStatusCode.Conflict)
 
+        // When
+        val result = ConsentErrorHandler.handleRequestSignatureConsentRegistration(error)
+
         // Then
-        assertFailsWith<ConsentServiceError.DocumentConflictError> {
-            // When
-            ConsentErrorHandler.handleRequestSignatureConsentRegistration(error)
-        }
+        assertTrue(result is ConsentServiceError.DocumentConflictError)
     }
 
     @Test
@@ -225,11 +220,11 @@ class ConsentErrorHandlerTest {
         // Given
         val error = HttpRuntimeError(HttpStatusCode.UnprocessableEntity)
 
+        // When
+        val result = ConsentErrorHandler.handleRequestSignatureConsentRegistration(error)
+
         // Then
-        assertFailsWith<ConsentServiceError.UnprocessableEntityError> {
-            // When
-            ConsentErrorHandler.handleRequestSignatureConsentRegistration(error)
-        }
+        assertTrue(result is ConsentServiceError.UnprocessableEntityError)
     }
 
     @Test
@@ -237,11 +232,11 @@ class ConsentErrorHandlerTest {
         // Given
         val error = HttpRuntimeError(HttpStatusCode.TooManyRequests)
 
+        // When
+        val result = ConsentErrorHandler.handleRequestSignatureConsentRegistration(error)
+
         // Then
-        assertFailsWith<ConsentServiceError.TooManyRequestsError> {
-            // When
-            ConsentErrorHandler.handleRequestSignatureConsentRegistration(error)
-        }
+        assertTrue(result is ConsentServiceError.TooManyRequestsError)
     }
 
     @Test
@@ -249,11 +244,11 @@ class ConsentErrorHandlerTest {
         // Given
         val error = HttpRuntimeError(HttpStatusCode.InternalServerError)
 
+        // When
+        val result = ConsentErrorHandler.handleRequestSignatureConsentRegistration(error)
+
         // Then
-        assertFailsWith<ConsentServiceError.InternalServerError> {
-            // When
-            ConsentErrorHandler.handleRequestSignatureConsentRegistration(error)
-        }
+        assertTrue(result is ConsentServiceError.InternalServerError)
     }
 
     @Test
@@ -261,12 +256,11 @@ class ConsentErrorHandlerTest {
         // Given
         val error = HttpRuntimeError(HttpStatusCode.ServiceUnavailable)
 
-        // Then
-        val result = assertFailsWith<ConsentServiceError.UnexpectedError> {
-            // When
-            ConsentErrorHandler.handleRequestSignatureDonation(error)
-        }
+        // When
+        val result = ConsentErrorHandler.handleRequestSignatureDonation(error)
 
+        // Then
+        assertTrue(result is ConsentServiceError.UnexpectedError)
         assertEquals(
             actual = result.httpStatus,
             expected = 503
@@ -278,11 +272,11 @@ class ConsentErrorHandlerTest {
         // Given
         val error = HttpRuntimeError(HttpStatusCode.Unauthorized)
 
+        // When
+        val result = ConsentErrorHandler.handleRequestSignatureDonation(error)
+
         // Then
-        assertFailsWith<ConsentServiceError.UnauthorizedError> {
-            // When
-            ConsentErrorHandler.handleRequestSignatureDonation(error)
-        }
+        assertTrue(result is ConsentServiceError.UnauthorizedError)
     }
 
     @Test
@@ -290,11 +284,11 @@ class ConsentErrorHandlerTest {
         // Given
         val error = HttpRuntimeError(HttpStatusCode.Conflict)
 
+        // When
+        val result = ConsentErrorHandler.handleRequestSignatureDonation(error)
+
         // Then
-        assertFailsWith<ConsentServiceError.DocumentConflictError> {
-            // When
-            ConsentErrorHandler.handleRequestSignatureDonation(error)
-        }
+        assertTrue(result is ConsentServiceError.DocumentConflictError)
     }
 
     @Test
@@ -302,11 +296,11 @@ class ConsentErrorHandlerTest {
         // Given
         val error = HttpRuntimeError(HttpStatusCode.UnprocessableEntity)
 
+        // When
+        val result = ConsentErrorHandler.handleRequestSignatureDonation(error)
+
         // Then
-        assertFailsWith<ConsentServiceError.UnprocessableEntityError> {
-            // When
-            ConsentErrorHandler.handleRequestSignatureDonation(error)
-        }
+        assertTrue(result is ConsentServiceError.UnprocessableEntityError)
     }
 
     @Test
@@ -314,11 +308,11 @@ class ConsentErrorHandlerTest {
         // Given
         val error = HttpRuntimeError(HttpStatusCode.InternalServerError)
 
+        // When
+        val result = ConsentErrorHandler.handleRequestSignatureDonation(error)
+
         // Then
-        assertFailsWith<ConsentServiceError.InternalServerError> {
-            // When
-            ConsentErrorHandler.handleRequestSignatureDonation(error)
-        }
+        assertTrue(result is ConsentServiceError.InternalServerError)
     }
 
     @Test
@@ -326,12 +320,11 @@ class ConsentErrorHandlerTest {
         // Given
         val error = HttpRuntimeError(HttpStatusCode.ServiceUnavailable)
 
-        // Then
-        val result = assertFailsWith<ConsentServiceError.UnexpectedError> {
-            // When
-            ConsentErrorHandler.handleRevokeUserConsent(error)
-        }
+        // When
+        val result = ConsentErrorHandler.handleRevokeUserConsent(error)
 
+        // Then
+        assertTrue(result is ConsentServiceError.UnexpectedError)
         assertEquals(
             actual = result.httpStatus,
             expected = 503
@@ -343,11 +336,11 @@ class ConsentErrorHandlerTest {
         // Given
         val error = HttpRuntimeError(HttpStatusCode.Unauthorized)
 
+        // When
+        val result = ConsentErrorHandler.handleRevokeUserConsent(error)
+
         // Then
-        assertFailsWith<ConsentServiceError.UnauthorizedError> {
-            // When
-            ConsentErrorHandler.handleRevokeUserConsent(error)
-        }
+        assertTrue(result is ConsentServiceError.UnauthorizedError)
     }
 
     @Test
@@ -355,11 +348,11 @@ class ConsentErrorHandlerTest {
         // Given
         val error = HttpRuntimeError(HttpStatusCode.Forbidden)
 
+        // When
+        val result = ConsentErrorHandler.handleRevokeUserConsent(error)
+
         // Then
-        assertFailsWith<ConsentServiceError.ForbiddenError> {
-            // When
-            ConsentErrorHandler.handleRevokeUserConsent(error)
-        }
+        assertTrue(result is ConsentServiceError.ForbiddenError)
     }
 
     @Test
@@ -367,11 +360,11 @@ class ConsentErrorHandlerTest {
         // Given
         val error = HttpRuntimeError(HttpStatusCode.NotFound)
 
+        // When
+        val result = ConsentErrorHandler.handleRevokeUserConsent(error)
+
         // Then
-        assertFailsWith<ConsentServiceError.NotFoundError> {
-            // When
-            ConsentErrorHandler.handleRevokeUserConsent(error)
-        }
+        assertTrue(result is ConsentServiceError.NotFoundError)
     }
 
     @Test
@@ -379,11 +372,11 @@ class ConsentErrorHandlerTest {
         // Given
         val error = HttpRuntimeError(HttpStatusCode.Conflict)
 
+        // When
+        val result = ConsentErrorHandler.handleRevokeUserConsent(error)
+
         // Then
-        assertFailsWith<ConsentServiceError.DocumentConflictError> {
-            // When
-            ConsentErrorHandler.handleRevokeUserConsent(error)
-        }
+        assertTrue(result is ConsentServiceError.DocumentConflictError)
     }
 
     @Test
@@ -391,11 +384,11 @@ class ConsentErrorHandlerTest {
         // Given
         val error = HttpRuntimeError(HttpStatusCode.UnprocessableEntity)
 
+        // When
+        val result = ConsentErrorHandler.handleRevokeUserConsent(error)
+
         // Then
-        assertFailsWith<ConsentServiceError.UnprocessableEntityError> {
-            // When
-            ConsentErrorHandler.handleRevokeUserConsent(error)
-        }
+        assertTrue(result is ConsentServiceError.UnprocessableEntityError)
     }
 
     @Test
@@ -403,10 +396,10 @@ class ConsentErrorHandlerTest {
         // Given
         val error = HttpRuntimeError(HttpStatusCode.InternalServerError)
 
+        // When
+        val result = ConsentErrorHandler.handleRevokeUserConsent(error)
+
         // Then
-        assertFailsWith<ConsentServiceError.InternalServerError> {
-            // When
-            ConsentErrorHandler.handleRevokeUserConsent(error)
-        }
+        assertTrue(result is ConsentServiceError.InternalServerError)
     }
 }

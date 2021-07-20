@@ -20,11 +20,14 @@ import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.MockRequestHandleScope
 import io.ktor.client.engine.mock.respond
+import io.ktor.client.engine.mock.respondError
 import io.ktor.client.features.HttpClientFeature
+import io.ktor.client.features.HttpResponseValidator
 import io.ktor.client.request.HttpResponseData
 import io.ktor.client.statement.HttpResponseContainer
 import io.ktor.client.statement.HttpResponsePipeline
 import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
 import io.ktor.util.AttributeKey
 
@@ -52,6 +55,24 @@ fun createMockClientWithResponse(
         engine {
             addHandler {
                 response(this)
+            }
+        }
+    }
+}
+
+fun createErrorMockClient(error: Throwable): HttpClient {
+    return HttpClient(MockEngine) {
+        engine {
+            addHandler {
+                respondError(
+                    status = HttpStatusCode.InternalServerError
+                )
+            }
+        }
+
+        HttpResponseValidator {
+            handleResponseException {
+                throw error
             }
         }
     }

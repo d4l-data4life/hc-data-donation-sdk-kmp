@@ -79,7 +79,7 @@ internal class ConsentService constructor(
         return try {
             receive(request)
         } catch (error: HttpRuntimeError) {
-            errorHandler.handleFetchConsentDocuments(kotlin.error)
+            throw errorHandler.handleFetchConsentDocuments(error)
         }
     }
 
@@ -106,7 +106,7 @@ internal class ConsentService constructor(
         return try {
             receive(request)
         } catch (error: HttpRuntimeError) {
-            errorHandler.handleFetchUserConsents(error)
+            throw errorHandler.handleFetchUserConsents(error)
         }
     }
 
@@ -135,7 +135,7 @@ internal class ConsentService constructor(
         return try {
             receive(request)
         } catch (error: HttpRuntimeError) {
-            errorHandler.handleCreateUserConsent(error)
+            throw errorHandler.handleCreateUserConsent(error)
         }
     }
 
@@ -169,7 +169,7 @@ internal class ConsentService constructor(
         return try {
             receive(request)
         } catch (error: HttpRuntimeError) {
-            errorHandler.handleRequestSignatureConsentRegistration(error)
+            throw errorHandler.handleRequestSignatureConsentRegistration(error)
         }
     }
 
@@ -202,7 +202,7 @@ internal class ConsentService constructor(
         return try {
             receive(request)
         } catch (error: HttpRuntimeError) {
-            errorHandler.handleRequestSignatureDonation(error)
+            throw errorHandler.handleRequestSignatureDonation(error)
         }
     }
 
@@ -223,7 +223,7 @@ internal class ConsentService constructor(
         return try {
             receive(request)
         } catch (error: HttpRuntimeError) {
-            errorHandler.handleRevokeUserConsent(error)
+            throw errorHandler.handleRevokeUserConsent(error)
         }
     }
 }

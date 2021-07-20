@@ -20,7 +20,9 @@ import care.data4life.datadonation.lang.CoreRuntimeError
 import io.ktor.client.call.NoTransformationFoundException
 import io.ktor.client.statement.HttpStatement
 
-internal suspend inline fun <reified T> receive(request: HttpStatement): T {
+internal suspend inline fun <reified T> receive(
+    request: HttpStatement,
+): T {
     return try {
         request.receive()
     } catch (exception: NoTransformationFoundException) {

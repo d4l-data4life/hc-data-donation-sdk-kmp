@@ -16,7 +16,9 @@
 
 package care.data4life.datadonation.internal.data.service.networking
 
+import care.data4life.sdk.log.Log
 import io.ktor.client.HttpClient
+import io.ktor.client.features.HttpClientFeature
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.logging.Logging
 import org.koin.core.module.Module
@@ -29,22 +31,33 @@ internal fun resolveNetworking(): Module {
         }
 
         single {
+            val plugins = get<Map<HttpClientFeature<*, *>, Pair<Networking.Configurator<Any, Any>, Any>>>()
+            val validators = get<Pair<Networking.ResponseValidatorConfigurator, Pair<Networking.ResponseValidator?, Networking.ErrorPropagator?>>>()
+
             HttpClient {
                 ClientConfigurator.configure(
                     this,
-                    mapOf(
-                        JsonFeature to Pair(
-                            SerializerConfigurator as Networking.Configurator<Any, Any>,
-                            JsonConfigurator
-                        ),
-                        Logging to Pair(
-                            LoggerConfigurator as Networking.Configurator<Any, Any>,
-                            Unit
-                        )
-                    ),
-                    Pair(ResponseValidatorConfigurator, Pair(ResponseValidator, ErrorPropagator))
+                    plugins,
+                    validators
                 )
             }
+        }
+
+        single<Map<HttpClientFeature<*, *>, Pair<Networking.Configurator<Any, Any>, Any>>> {
+            mapOf(
+                JsonFeature to Pair(
+                    SerializerConfigurator as Networking.Configurator<Any, Any>,
+                    JsonConfigurator
+                ),
+                Logging to Pair(
+                    LoggerConfigurator as Networking.Configurator<Any, Any>,
+                    Log.logger
+                )
+            )
+        }
+
+        single<Pair<Networking.ResponseValidatorConfigurator, Pair<Networking.ResponseValidator?, Networking.ErrorPropagator?>>> {
+            Pair(ResponseValidatorConfigurator, Pair(ResponseValidator, ErrorPropagator))
         }
     }
 }

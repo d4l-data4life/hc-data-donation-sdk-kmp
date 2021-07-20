@@ -17,40 +17,41 @@
 package care.data4life.datadonation.mock.stub.service
 
 import care.data4life.datadonation.internal.data.service.ServiceContract
+import care.data4life.datadonation.lang.ConsentServiceError
 import care.data4life.datadonation.lang.HttpRuntimeError
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 
 internal class ConsentErrorHandlerStub : ServiceContract.ConsentService.ConsentErrorHandler, MockContract.Stub {
-    var whenHandleFetchConsentDocuments: ((HttpRuntimeError) -> Unit)? = null
-    var whenHandleFetchUserConsents: ((HttpRuntimeError) -> Unit)? = null
-    var whenHandleCreateUserConsent: ((HttpRuntimeError) -> Unit)? = null
-    var whenHandleRequestSignatureConsentRegistration: ((HttpRuntimeError) -> Unit)? = null
-    var whenHandleRequestSignatureDonation: ((HttpRuntimeError) -> Unit)? = null
-    var whenHandleRevokeUserConsent: ((HttpRuntimeError) -> Unit)? = null
+    var whenHandleFetchConsentDocuments: ((HttpRuntimeError) -> ConsentServiceError)? = null
+    var whenHandleFetchUserConsents: ((HttpRuntimeError) -> ConsentServiceError)? = null
+    var whenHandleCreateUserConsent: ((HttpRuntimeError) -> ConsentServiceError)? = null
+    var whenHandleRequestSignatureConsentRegistration: ((HttpRuntimeError) -> ConsentServiceError)? = null
+    var whenHandleRequestSignatureDonation: ((HttpRuntimeError) -> ConsentServiceError)? = null
+    var whenHandleRevokeUserConsent: ((HttpRuntimeError) -> ConsentServiceError)? = null
 
-    override fun handleFetchConsentDocuments(error: HttpRuntimeError) {
-        whenHandleFetchConsentDocuments?.invoke(error) ?: throw MockException()
+    override fun handleFetchConsentDocuments(error: HttpRuntimeError): ConsentServiceError {
+        return whenHandleFetchConsentDocuments?.invoke(error) ?: throw MockException()
     }
 
-    override fun handleFetchUserConsents(error: HttpRuntimeError) {
-        whenHandleFetchUserConsents?.invoke(error) ?: throw MockException()
+    override fun handleFetchUserConsents(error: HttpRuntimeError): ConsentServiceError {
+        return whenHandleFetchUserConsents?.invoke(error) ?: throw MockException()
     }
 
-    override fun handleCreateUserConsent(error: HttpRuntimeError) {
-        whenHandleCreateUserConsent?.invoke(error) ?: throw MockException()
+    override fun handleCreateUserConsent(error: HttpRuntimeError): ConsentServiceError {
+        return whenHandleCreateUserConsent?.invoke(error) ?: throw MockException()
     }
 
-    override fun handleRequestSignatureConsentRegistration(error: HttpRuntimeError) {
-        whenHandleRequestSignatureConsentRegistration?.invoke(error) ?: throw MockException()
+    override fun handleRequestSignatureConsentRegistration(error: HttpRuntimeError): ConsentServiceError {
+        return whenHandleRequestSignatureConsentRegistration?.invoke(error) ?: throw MockException()
     }
 
-    override fun handleRequestSignatureDonation(error: HttpRuntimeError) {
-        whenHandleRequestSignatureDonation?.invoke(error) ?: throw MockException()
+    override fun handleRequestSignatureDonation(error: HttpRuntimeError): ConsentServiceError {
+        return whenHandleRequestSignatureDonation?.invoke(error) ?: throw MockException()
     }
 
-    override fun handleRevokeUserConsent(error: HttpRuntimeError) {
-        whenHandleRevokeUserConsent?.invoke(error) ?: throw MockException()
+    override fun handleRevokeUserConsent(error: HttpRuntimeError): ConsentServiceError {
+        return whenHandleRevokeUserConsent?.invoke(error) ?: throw MockException()
     }
 
     override fun clear() {
