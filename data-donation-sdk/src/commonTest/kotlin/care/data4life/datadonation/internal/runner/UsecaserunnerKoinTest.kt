@@ -14,7 +14,7 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.io
+package care.data4life.datadonation.internal.runner
 
 import care.data4life.datadonation.mock.stub.ClientConfigurationStub
 import org.koin.core.context.stopKoin
@@ -25,7 +25,7 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 
-class IOKoinTest {
+class UsecaserunnerKoinTest {
     @BeforeTest
     fun setUp() {
         stopKoin()
@@ -39,14 +39,14 @@ class IOKoinTest {
         // When
         val koin = koinApplication {
             modules(
-                resolveIOModule(),
+                resolveUsecaseRunnerModule(),
                 module {
-                    single { config } bind IOContract.ScopeProvider::class
+                    single { config } bind ScopeProvider::class
                 }
             )
         }
         // Then
-        val runner: IOInternalContract.UsecaseRunner = koin.koin.get()
+        val runner: UsecaseRunnerContract = koin.koin.get()
         assertNotNull(runner)
     }
 }

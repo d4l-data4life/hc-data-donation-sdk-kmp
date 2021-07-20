@@ -47,7 +47,7 @@ import care.data4life.datadonation.internal.di.resolveCoreModule
 import care.data4life.datadonation.internal.di.resolveRootModule
 import care.data4life.datadonation.internal.domain.repository.resolveRepositoryModule
 import care.data4life.datadonation.internal.domain.usecases.resolveUsecaseModule
-import care.data4life.datadonation.internal.io.resolveIOModule
+import care.data4life.datadonation.internal.runner.resolveUsecaseRunnerModule
 import care.data4life.datadonation.mock.DummyData
 import care.data4life.hl7.fhir.stu3.codesystem.QuestionnaireResponseStatus
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
@@ -91,8 +91,8 @@ class ClientTest {
             modules(
                 resolveRootModule(config),
                 resolveCoreModule(),
-                resolveIOModule(),
                 resolveNetworking(),
+                resolveUsecaseRunnerModule(),
                 resolveUsecaseModule(),
                 resolveRepositoryModule(),
                 resolveEncryptionModule(),
@@ -145,8 +145,8 @@ class ClientTest {
             modules(
                 resolveRootModule(config),
                 resolveCoreModule(),
-                resolveIOModule(),
                 resolveNetworking(),
+                resolveUsecaseRunnerModule(),
                 resolveUsecaseModule(),
                 resolveRepositoryModule(),
                 resolveEncryptionModule(),
@@ -215,8 +215,8 @@ class ClientTest {
             modules(
                 resolveRootModule(config),
                 resolveCoreModule(),
-                resolveIOModule(),
                 resolveNetworking(),
+                resolveUsecaseRunnerModule(),
                 resolveUsecaseModule(),
                 resolveRepositoryModule(),
                 resolveEncryptionModule(),
@@ -262,8 +262,8 @@ class ClientTest {
             modules(
                 resolveRootModule(config),
                 resolveCoreModule(),
-                resolveIOModule(),
                 resolveNetworking(),
+                resolveUsecaseRunnerModule(),
                 resolveUsecaseModule(),
                 resolveRepositoryModule(),
                 resolveEncryptionModule(),
@@ -307,8 +307,8 @@ class ClientTest {
             modules(
                 resolveRootModule(config),
                 resolveCoreModule(),
-                resolveIOModule(),
                 resolveNetworking(),
+                resolveUsecaseRunnerModule(),
                 resolveUsecaseModule(),
                 resolveRepositoryModule(),
                 resolveEncryptionModule(),
@@ -352,8 +352,8 @@ class ClientTest {
             modules(
                 resolveRootModule(config),
                 resolveCoreModule(),
-                resolveIOModule(),
                 resolveNetworking(),
+                resolveUsecaseRunnerModule(),
                 resolveUsecaseModule(),
                 resolveRepositoryModule(),
                 resolveEncryptionModule(),

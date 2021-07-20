@@ -17,10 +17,10 @@
 package care.data4life.datadonation.internal.data.service
 
 import care.data4life.datadonation.Contract
-import care.data4life.datadonation.internal.io.IOContract
+import care.data4life.datadonation.internal.runner.CredentialProvider
 
 class CredentialService(
-    private val credentialProvider: IOContract.CredentialProvider
+    private val credentialProvider: CredentialProvider
 ) : ServiceContract.CredentialService {
     override fun getDataDonationPublicKey(): DataDonationKey {
         return credentialProvider.getServicePublicKey(Contract.Service.DD)

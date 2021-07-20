@@ -14,7 +14,7 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.io
+package care.data4life.datadonation.internal.runner
 
 import care.data4life.datadonation.internal.domain.usecases.UsecaseContract
 import care.data4life.datadonation.mock.MockException
@@ -35,7 +35,7 @@ class UsecaseRunnerTest {
     fun `It fulfils UsecaseRunner`() {
         val runner: Any = UsecaseRunner(ClientConfigurationStub())
 
-        assertTrue(runner is IOInternalContract.UsecaseRunner)
+        assertTrue(runner is UsecaseRunnerContract)
     }
 
     @Test

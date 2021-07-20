@@ -25,7 +25,7 @@ import care.data4life.datadonation.internal.domain.usecases.FetchConsentDocument
 import care.data4life.datadonation.internal.domain.usecases.FetchUserConsents
 import care.data4life.datadonation.internal.domain.usecases.RevokeUserConsent
 import care.data4life.datadonation.internal.domain.usecases.UsecaseContract
-import care.data4life.datadonation.internal.io.IOInternalContract
+import care.data4life.datadonation.internal.runner.UsecaseRunnerContract
 import care.data4life.datadonation.mock.DummyData
 import care.data4life.datadonation.mock.stub.CallbackStub
 import care.data4life.datadonation.mock.stub.ClientConfigurationStub
@@ -72,7 +72,7 @@ class ClientTest {
         val listener = ResultListenerStub<List<UserConsent>>()
         val usecase = FetchUserConsentStub()
 
-        var capturedParameter: UsecaseContract.FetchUserConsents.FetchUserConsentsParameter? = null
+        var capturedParameter: UsecaseContract.FetchUserConsents.Parameter? = null
         var capturedListener: ListenerContract.ResultListener<*>? = null
         var capturedUsecase: UsecaseContract.Usecase<*, *>? = null
 
@@ -90,10 +90,10 @@ class ClientTest {
                             it.whenRunListener = { delegatedResultListener, delegatedUsecase, delegatedParameter ->
                                 capturedListener = delegatedResultListener
                                 capturedUsecase = delegatedUsecase
-                                capturedParameter = delegatedParameter as UsecaseContract.FetchUserConsents.FetchUserConsentsParameter
+                                capturedParameter = delegatedParameter as UsecaseContract.FetchUserConsents.Parameter
                             }
                         }
-                    } bind IOInternalContract.UsecaseRunner::class
+                    } bind UsecaseRunnerContract::class
                 }
             )
         }
@@ -125,7 +125,7 @@ class ClientTest {
         val listener = ResultListenerStub<List<UserConsent>>()
         val usecase = FetchUserConsentStub()
 
-        var capturedParameter: UsecaseContract.FetchUserConsents.FetchUserConsentsParameter? = null
+        var capturedParameter: UsecaseContract.FetchUserConsents.Parameter? = null
         var capturedListener: ListenerContract.ResultListener<*>? = null
         var capturedUsecase: UsecaseContract.Usecase<*, *>? = null
 
@@ -143,10 +143,10 @@ class ClientTest {
                             it.whenRunListener = { delegatedResultListener, delegatedUsecase, delegatedParameter ->
                                 capturedListener = delegatedResultListener
                                 capturedUsecase = delegatedUsecase
-                                capturedParameter = delegatedParameter as UsecaseContract.FetchUserConsents.FetchUserConsentsParameter
+                                capturedParameter = delegatedParameter as UsecaseContract.FetchUserConsents.Parameter
                             }
                         }
-                    } bind IOInternalContract.UsecaseRunner::class
+                    } bind UsecaseRunnerContract::class
                 }
             )
         }
@@ -183,7 +183,7 @@ class ClientTest {
         val language = "de-j-old-n-kotlin-x-done"
         val consentKey = "abc"
 
-        var capturedParameter: UsecaseContract.FetchConsentDocuments.FetchConsentDocumentsParameter? = null
+        var capturedParameter: UsecaseContract.FetchConsentDocuments.Parameter? = null
         var capturedListener: ListenerContract.ResultListener<*>? = null
         var capturedUsecase: UsecaseContract.Usecase<*, *>? = null
 
@@ -201,10 +201,10 @@ class ClientTest {
                             it.whenRunListener = { delegatedResultListener, delegatedUsecase, delegatedParameter ->
                                 capturedListener = delegatedResultListener
                                 capturedUsecase = delegatedUsecase
-                                capturedParameter = delegatedParameter as UsecaseContract.FetchConsentDocuments.FetchConsentDocumentsParameter
+                                capturedParameter = delegatedParameter as UsecaseContract.FetchConsentDocuments.Parameter
                             }
                         }
-                    } bind IOInternalContract.UsecaseRunner::class
+                    } bind UsecaseRunnerContract::class
                 }
             )
         }
@@ -220,7 +220,7 @@ class ClientTest {
         )
 
         // Then
-        assertEquals(
+        assertSame(
             actual = result,
             expected = Unit
         )
@@ -251,7 +251,7 @@ class ClientTest {
 
         val consentKey = "custom-consent-key"
 
-        var capturedParameter: UsecaseContract.RevokeUserConsent.RevokeUserConsentParameter? = null
+        var capturedParameter: UsecaseContract.RevokeUserConsent.Parameter? = null
         var capturedListener: ListenerContract.Callback? = null
         var capturedUsecase: UsecaseContract.Usecase<*, *>? = null
 
@@ -269,10 +269,10 @@ class ClientTest {
                             it.whenRunCallback = { delegatedResultListener, delegatedUsecase, delegatedParameter ->
                                 capturedListener = delegatedResultListener
                                 capturedUsecase = delegatedUsecase
-                                capturedParameter = delegatedParameter as UsecaseContract.RevokeUserConsent.RevokeUserConsentParameter
+                                capturedParameter = delegatedParameter as UsecaseContract.RevokeUserConsent.Parameter
                             }
                         }
-                    } bind IOInternalContract.UsecaseRunner::class
+                    } bind UsecaseRunnerContract::class
                 }
             )
         }
@@ -286,7 +286,7 @@ class ClientTest {
         )
 
         // Then
-        assertEquals(
+        assertSame(
             actual = result,
             expected = Unit
         )
@@ -317,7 +317,7 @@ class ClientTest {
         val consentKey = "custom-consent-key"
         val keyPair = DummyData.keyPair
 
-        var capturedParameter: UsecaseContract.CreateUserConsent.CreateUserConsentParameter? = null
+        var capturedParameter: UsecaseContract.CreateUserConsent.Parameter? = null
         var capturedListener: ListenerContract.ResultListener<*>? = null
         var capturedUsecase: UsecaseContract.Usecase<*, *>? = null
 
@@ -336,10 +336,10 @@ class ClientTest {
                             it.whenRunListener = { delegatedResultListener, delegatedUsecase, delegatedParameter ->
                                 capturedListener = delegatedResultListener
                                 capturedUsecase = delegatedUsecase
-                                capturedParameter = delegatedParameter as UsecaseContract.CreateUserConsent.CreateUserConsentParameter
+                                capturedParameter = delegatedParameter as UsecaseContract.CreateUserConsent.Parameter
                             }
                         }
-                    } bind IOInternalContract.UsecaseRunner::class
+                    } bind UsecaseRunnerContract::class
                 }
             )
         }
