@@ -40,7 +40,7 @@ internal class CreateUserConsent(
     private val consentRepository: RepositoryContract.UserConsentRepository
 ) : UsecaseContract.CreateUserConsent {
     override suspend fun execute(
-        parameter: UsecaseContract.CreateUserConsent.CreateUserConsentParameter
+        parameter: UsecaseContract.CreateUserConsent.Parameter
     ): UserConsent {
         consentRepository.createUserConsent(parameter.consentKey, parameter.version)
         return consentRepository.fetchUserConsents().first()
@@ -50,5 +50,5 @@ internal class CreateUserConsent(
         override val keyPair: KeyPair?,
         override val consentKey: String,
         override val version: Int
-    ) : UsecaseContract.CreateUserConsent.CreateUserConsentParameter
+    ) : UsecaseContract.CreateUserConsent.Parameter
 }

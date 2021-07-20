@@ -37,7 +37,7 @@ import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.di.initKoin
 import care.data4life.datadonation.internal.domain.usecases.*
-import care.data4life.datadonation.internal.io.IOInternalContract
+import care.data4life.datadonation.internal.runner.UsecaseRunnerContract
 import org.koin.core.KoinApplication
 
 class Client internal constructor(
@@ -48,7 +48,7 @@ class Client internal constructor(
     private val fetchConsentDocuments: UsecaseContract.FetchConsentDocuments by koinApplication.koin.inject()
     private val fetchUserConsents: UsecaseContract.FetchUserConsents by koinApplication.koin.inject()
     private val revokeUserConsent: UsecaseContract.RevokeUserConsent by koinApplication.koin.inject()
-    private val usecaseRunner: IOInternalContract.UsecaseRunner by koinApplication.koin.inject()
+    private val usecaseRunner: UsecaseRunnerContract by koinApplication.koin.inject()
 
     override fun fetchConsentDocuments(
         consentDocumentVersion: Int?,
