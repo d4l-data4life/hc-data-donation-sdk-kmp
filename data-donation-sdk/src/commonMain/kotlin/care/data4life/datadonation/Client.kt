@@ -79,29 +79,16 @@ class Client internal constructor(
         emit(createUserContent.execute(parameter))
     }
 
-    override fun fetchUserConsents(
-        consentKey: String,
-        listener: ListenerContract.ResultListener<List<UserConsent>>
-    ) {
+    override fun fetchUserConsents(consentKey: String) : Flow<List<UserConsent>> = flow {
         val parameter = FetchUserConsents.Parameter(consentKey)
 
-        usecaseRunner.run(
-            listener,
-            fetchUserConsents,
-            parameter
-        )
+        emit(fetchUserConsents.execute(parameter))
     }
 
-    override fun fetchAllUserConsents(
-        listener: ListenerContract.ResultListener<List<UserConsent>>
-    ) {
+    override fun fetchAllUserConsents() : Flow<List<UserConsent>> = flow {
         val parameter = FetchUserConsents.Parameter()
 
-        usecaseRunner.run(
-            listener,
-            fetchUserConsents,
-            parameter
-        )
+        emit(fetchUserConsents.execute(parameter))
     }
 
     override fun revokeUserConsent(

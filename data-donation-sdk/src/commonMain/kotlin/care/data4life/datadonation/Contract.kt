@@ -65,6 +65,7 @@ interface Contract {
     }
 
     interface DataDonation {
+        // TODO
         fun fetchConsentDocuments(
             consentDocumentVersion: Int?,
             language: String?,
@@ -76,14 +77,9 @@ interface Contract {
             consentDocumentVersion: Int
         ) : Flow<UserConsent>
 
-        fun fetchUserConsents(
-            consentKey: String,
-            listener: ListenerContract.ResultListener<List<UserConsent>>
-        )
+        fun fetchUserConsents(consentKey: String) : Flow<List<UserConsent>>
 
-        fun fetchAllUserConsents(
-            listener: ListenerContract.ResultListener<List<UserConsent>>
-        )
+        fun fetchAllUserConsents() : Flow<List<UserConsent>>
 
         fun revokeUserConsent(consentKey: String, callback: ListenerContract.Callback)
     }

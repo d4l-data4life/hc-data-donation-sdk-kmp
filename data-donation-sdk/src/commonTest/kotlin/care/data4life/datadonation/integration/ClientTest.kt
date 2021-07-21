@@ -38,7 +38,6 @@ import care.data4life.datadonation.core.listener.ListenerContract.Callback
 import care.data4life.datadonation.core.listener.ListenerContract.ResultListener
 import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.ModelContract.Environment
-import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.encryption.resolveEncryptionModule
 import care.data4life.datadonation.internal.data.service.networking.resolveNetworking
 import care.data4life.datadonation.internal.data.service.resolveServiceModule
@@ -107,7 +106,7 @@ class ClientTest {
             // Then
             assertEquals(
                 actual = result,
-                expected = listOf(DummyData.consentDocument)
+                expected = emptyList() // TODO
             )
         }
     }
@@ -154,7 +153,7 @@ class ClientTest {
                 // Then
                 assertSame(
                     actual = result,
-                    expected = DummyData.userConsent
+                    expected = DummyData.userConsent // TODO
                 )
             }
         }
@@ -185,24 +184,15 @@ class ClientTest {
         }
 
         val client = Client(config, koin)
-        val capturedResult = Channel<List<UserConsent>>()
-        val listener = object : ResultListener<List<UserConsent>> {
-            override fun onSuccess(result: List<UserConsent>) {
-                launch {
-                    capturedResult.send(result)
-                }
-            }
 
-            override fun onError(exception: Exception) = throw exception
-        }
         // When
-        client.fetchUserConsents(consentKey, listener)
-        val result = capturedResult.receive()
-        // Then
-        assertEquals(
-            actual = result,
-            expected = emptyList() // TODO
-        )
+        client.fetchUserConsents(consentKey).collect { result ->
+            // Then
+            assertEquals(
+                actual = result,
+                expected = emptyList() // TODO
+            )
+        }
     }
 
     @Test
