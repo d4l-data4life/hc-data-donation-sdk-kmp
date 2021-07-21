@@ -62,16 +62,16 @@ internal interface Networking {
     fun interface HttpLoggingConfigurator : HttpFeatureConfigurator<Logging.Config, care.data4life.sdk.log.Logger>
     fun interface ResponseValidatorConfigurator : HttpFeatureConfigurator<HttpCallValidator.Config, Pair<ResponseValidator?, ErrorPropagator?>>
 
-    data class HttpFeatureInstaller<SubConfiguration>(
+    data class HttpFeatureInstaller<FeatureConfiguration : Any, SubConfiguration>(
         val feature: HttpClientFeature<*, *>,
-        val featureConfigurator: HttpFeatureConfigurator<Any, SubConfiguration>,
+        val featureConfigurator: HttpFeatureConfigurator<FeatureConfiguration, SubConfiguration>,
         val subConfiguration: SubConfiguration
     )
 
     fun interface HttpClientConfigurator {
         fun configure(
             httpConfig: HttpClientConfig<*>,
-            installers: List<HttpFeatureInstaller<in Any?>>,
+            installers: List<HttpFeatureInstaller<in Any, in Any?>>,
             responseValidator: Pair<ResponseValidatorConfigurator, Pair<ResponseValidator?, ErrorPropagator?>>
         )
     }
