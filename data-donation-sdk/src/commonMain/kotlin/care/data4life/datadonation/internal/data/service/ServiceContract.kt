@@ -21,9 +21,9 @@ import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.model.ConsentSignature
 import care.data4life.datadonation.internal.data.model.DonationPayload
 
-typealias SessionToken = String
-typealias DataDonationKey = String
-typealias AnalyticsKey = String
+internal typealias SessionToken = String
+internal typealias DataDonationKey = String
+internal typealias AnalyticsKey = String
 
 internal interface ServiceContract {
     interface CredentialService {

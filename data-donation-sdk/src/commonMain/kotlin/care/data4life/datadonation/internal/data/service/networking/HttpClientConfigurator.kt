@@ -16,14 +16,21 @@
 
 package care.data4life.datadonation.internal.data.service.networking
 
-import io.ktor.client.features.json.JsonFeature
-import io.ktor.client.features.json.serializer.KotlinxSerializer
-import kotlinx.serialization.json.Json
+import io.ktor.client.HttpClientConfig
 
-internal object SerializerConfigurator : Networking.SerializerConfigurator {
-    override fun configure(pluginConfig: JsonFeature.Config, util: Networking.JsonConfigurator) {
-        pluginConfig.serializer = KotlinxSerializer(
-            Json { util.configure(this) }
-        )
+internal object HttpClientConfigurator :
+    Networking.HttpClientConfigurator {
+    override fun configure(
+        httpConfig: HttpClientConfig<*>,
+        installers: List<Networking.HttpFeatureInstaller<in Any?>>
+    ) {
+        installers.forEach { (plugin, configurator, subConfig) ->
+            httpConfig.install(plugin) {
+                configurator.configure(
+                    this,
+                    subConfig
+                )
+            }
+        }
     }
 }

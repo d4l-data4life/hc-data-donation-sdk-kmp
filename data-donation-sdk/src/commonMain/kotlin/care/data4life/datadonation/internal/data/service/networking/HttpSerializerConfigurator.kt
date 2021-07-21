@@ -16,13 +16,15 @@
 
 package care.data4life.datadonation.internal.data.service.networking
 
-import care.data4life.sdk.log.Logger
-import io.ktor.client.features.logging.LogLevel
-import io.ktor.client.features.logging.Logging
+import io.ktor.client.features.json.JsonFeature
+import io.ktor.client.features.json.serializer.KotlinxSerializer
+import kotlinx.serialization.json.Json
 
-internal object LoggerConfigurator : Networking.LoggingConfigurator {
-    override fun configure(pluginConfig: Logging.Config, util: Logger) {
-        pluginConfig.logger = SimpleLogger(util)
-        pluginConfig.level = LogLevel.ALL
+internal object HttpSerializerConfigurator :
+    Networking.HttpSerializerConfigurator {
+    override fun configure(pluginConfig: JsonFeature.Config, subConfiguration: Networking.JsonConfigurator) {
+        pluginConfig.serializer = KotlinxSerializer(
+            Json { subConfiguration.configure(this) }
+        )
     }
 }

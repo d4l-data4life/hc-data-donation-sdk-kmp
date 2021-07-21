@@ -56,7 +56,7 @@ class CachedUserSessionTokenServiceTest {
         val service = CachedUserSessionTokenService(provider, time)
 
         // Then
-        val result = assertFailsWith<CoreRuntimeException.MissingSessionException> {
+        val result = assertFailsWith<CoreRuntimeException.MissingSession> {
             // When
             service.getUserSessionToken()
         }
@@ -107,7 +107,7 @@ class CachedUserSessionTokenServiceTest {
         val service = CachedUserSessionTokenService(provider, time)
 
         // Then
-        val result = assertFailsWith<CoreRuntimeException.MissingSessionException> {
+        val result = assertFailsWith<CoreRuntimeException.MissingSession> {
             // When
             service.getUserSessionToken()
         }
