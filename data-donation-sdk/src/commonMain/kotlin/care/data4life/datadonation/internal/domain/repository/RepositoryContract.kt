@@ -20,8 +20,8 @@ import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.model.DonationPayload
 
-typealias Signature = String
-typealias DonationToken = String
+internal typealias Signature = String
+internal typealias DonationToken = String
 
 internal interface RepositoryContract {
     interface UserConsentRepository {

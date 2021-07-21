@@ -52,7 +52,7 @@ class UserConsentRepositoryTest {
         var capturedVersion: Int? = null
         var capturedConsentKey: String? = "NotNull"
 
-        sessionService.sessionToken = { sessionToken }
+        sessionService.whenSessionToken = { sessionToken }
         consentService.whenCreateUserConsent = { delegatedToken, delegatedConsentKey, delegatedVersion ->
             capturedToken = delegatedToken
             capturedConsentKey = delegatedConsentKey
@@ -99,7 +99,7 @@ class UserConsentRepositoryTest {
         var capturedFlag: Boolean? = null
         var capturedConsentKey: String? = "NotNull"
 
-        sessionService.sessionToken = { sessionToken }
+        sessionService.whenSessionToken = { sessionToken }
         consentService.whenFetchUserConsents = { delegatedToken, delegatedFlag, delegatedConsentKey ->
             capturedToken = delegatedToken
             capturedFlag = delegatedFlag
@@ -142,7 +142,7 @@ class UserConsentRepositoryTest {
         var capturedFlag: Boolean? = null
         var capturedConsentKey: String? = null
 
-        sessionService.sessionToken = { sessionToken }
+        sessionService.whenSessionToken = { sessionToken }
         consentService.whenFetchUserConsents = { delegatedToken, delegatedFlag, delegatedConsentKey ->
             capturedToken = delegatedToken
             capturedFlag = delegatedFlag
@@ -164,6 +164,7 @@ class UserConsentRepositoryTest {
             actual = capturedToken,
             expected = sessionToken
         )
+
         assertFalse(capturedFlag!!)
         assertEquals(
             actual = capturedConsentKey,
@@ -184,7 +185,7 @@ class UserConsentRepositoryTest {
         var capturedToken: String? = null
         var capturedMessage: String? = null
 
-        sessionService.sessionToken = { sessionToken }
+        sessionService.whenSessionToken = { sessionToken }
         consentService.whenRequestSignatureConsentRegistration = { delegatedToken, delegatedMessage ->
             capturedToken = delegatedToken
             capturedMessage = delegatedMessage
@@ -224,7 +225,7 @@ class UserConsentRepositoryTest {
         var capturedToken: String? = null
         var capturedMessage: String? = null
 
-        sessionService.sessionToken = { sessionToken }
+        sessionService.whenSessionToken = { sessionToken }
         consentService.whenRequestSignatureDonation = { delegatedToken, delegatedMessage ->
             capturedToken = delegatedToken
             capturedMessage = delegatedMessage
@@ -263,7 +264,7 @@ class UserConsentRepositoryTest {
         var capturedToken: String? = null
         var capturedConsentKey: String? = "NotNull"
 
-        sessionService.sessionToken = { sessionToken }
+        sessionService.whenSessionToken = { sessionToken }
         consentService.whenRevokeUserConsent = { delegatedToken, delegatedConsentKey ->
             capturedToken = delegatedToken
             capturedConsentKey = delegatedConsentKey

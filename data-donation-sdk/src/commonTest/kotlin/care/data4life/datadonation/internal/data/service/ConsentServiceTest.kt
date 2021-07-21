@@ -354,10 +354,6 @@ class ConsentServiceTest {
         var capturedMethod: ServiceContract.Method? = null
         var capturedPath: Path? = null
         val expectedTime = Instant.DISTANT_PAST
-        val response = listOf(
-            DummyData.userConsent,
-            DummyData.userConsent.copy(accountId = "potato")
-        )
 
         clock.whenNow = { expectedTime }
 
