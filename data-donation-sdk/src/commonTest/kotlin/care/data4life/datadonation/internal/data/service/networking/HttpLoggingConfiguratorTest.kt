@@ -16,41 +16,48 @@
 
 package care.data4life.datadonation.internal.data.service.networking
 
-import care.data4life.datadonation.mock.stub.service.networking.JsonConfiguratorStub
-import io.ktor.client.features.json.JsonFeature
-import kotlinx.serialization.json.JsonBuilder
+import care.data4life.datadonation.mock.stub.service.networking.LoggerStub
+import io.ktor.client.features.logging.LogLevel
+import io.ktor.client.features.logging.Logging
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
-class SerializerConfiguratorTest {
+class HttpLoggingConfiguratorTest {
     @Test
-    fun `It fulfils SerializerConfigurator`() {
-        val configurator: Any = HttpSerializerConfigurator
+    fun `It fulfils HttpLoggingConfigurator`() {
+        val configurator: Any = HttpLoggingConfigurator
 
-        assertTrue(configurator is Networking.HttpFeatureConfigurator<*, *>)
+        assertTrue(configurator is Networking.HttpLoggingConfigurator)
     }
 
     @Test
-    fun `Given configure is called with a JsonFeatureConfig it just runs while configuring the serializer`() {
+    fun `Given configure is called with a LoggingConfig, it sets it up and just runs`() {
         // Given
-        val pluginConfig = JsonFeature.Config()
-        val jsonConfigurator = JsonConfiguratorStub()
+        val config = Logging.Config()
+        val internalLogger = LoggerStub()
+        var wasCalled = false
 
-        var capturedBuilder: JsonBuilder? = null
-        jsonConfigurator.whenConfigure = { delegatedBuilder ->
-            capturedBuilder = delegatedBuilder
-            delegatedBuilder
+        internalLogger.whenInfo = { _ ->
+            wasCalled = true
         }
 
         // When
-        val result = HttpSerializerConfigurator.configure(pluginConfig, jsonConfigurator)
+        val result = HttpLoggingConfigurator.configure(config, internalLogger)
+        config.logger.log("test")
 
         // Then
-        assertEquals(
+        assertSame(
             actual = result,
             expected = Unit
         )
-        assertTrue(capturedBuilder is JsonBuilder)
+        assertEquals(
+            actual = config.level,
+            expected = LogLevel.ALL
+        )
+
+        assertTrue(config.logger is Networking.Logger)
+        assertTrue(wasCalled)
     }
 }

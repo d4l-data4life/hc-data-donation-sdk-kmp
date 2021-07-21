@@ -17,6 +17,7 @@
 package care.data4life.datadonation.internal.data.service.networking
 
 import care.data4life.datadonation.mock.fake.defaultResponse
+import care.data4life.datadonation.mock.stub.service.networking.HttpFeatureConfiguratorStub
 import care.data4life.sdk.util.test.runWithContextBlockingTest
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
@@ -51,14 +52,16 @@ class HttpClientConfiguratorTest {
         val capturedSubConfig = Channel<String>()
 
         val subConfig = "something"
-        val stubFeatureConfigurator = Networking.HttpFeatureConfigurator<FeatureStub.Config, String> { pluginConfig, subConfiguration ->
+        val stubFeatureConfigurator = HttpFeatureConfiguratorStub<FeatureStub.Config, String>()
+
+        stubFeatureConfigurator.whenConfigure = { pluginConfig, subConfiguration ->
             launch {
                 capturedPluginConfig.send(pluginConfig)
                 capturedSubConfig.send(subConfiguration)
             }
         }
 
-        val features = listOf<Networking.HttpFeatureInstaller<in Any?>>(
+        val features = listOf(
             Networking.HttpFeatureInstaller(
                 FeatureStub,
                 stubFeatureConfigurator as Networking.HttpFeatureConfigurator<Any, Any?>,
@@ -92,11 +95,13 @@ class HttpClientConfiguratorTest {
     fun `Given configure is called with a HttpClientConfig and a List of HttpFeatureInstaller it installs a arbitrary number of Features`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val subConfig = "something"
-        val stubFeatureConfigurator = Networking.HttpFeatureConfigurator<FeatureStub.Config, String> { pluginConfig, subConfiguration ->
+        val stubFeatureConfigurator = HttpFeatureConfiguratorStub<FeatureStub.Config, String>()
+
+        stubFeatureConfigurator.whenConfigure = { _, _ ->
             Counter.amount++
         }
 
-        val features = listOf<Networking.HttpFeatureInstaller<in Any?>>(
+        val features = listOf(
             Networking.HttpFeatureInstaller(
                 FeatureStub,
                 stubFeatureConfigurator as Networking.HttpFeatureConfigurator<Any, Any?>,
