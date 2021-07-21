@@ -45,7 +45,6 @@ import care.data4life.datadonation.internal.di.resolveCoreModule
 import care.data4life.datadonation.internal.di.resolveRootModule
 import care.data4life.datadonation.internal.domain.repository.resolveRepositoryModule
 import care.data4life.datadonation.internal.domain.usecases.resolveUsecaseModule
-import care.data4life.datadonation.internal.runner.resolveUsecaseRunnerModule
 import care.data4life.datadonation.mock.DummyData
 import care.data4life.sdk.util.test.runWithContextBlockingTest
 import kotlinx.coroutines.CoroutineScope
@@ -87,7 +86,6 @@ class ClientTest {
                 resolveRootModule(config),
                 resolveCoreModule(),
                 resolveNetworking(),
-                resolveUsecaseRunnerModule(),
                 resolveUsecaseModule(),
                 resolveRepositoryModule(),
                 resolveEncryptionModule(),
@@ -129,7 +127,6 @@ class ClientTest {
                 resolveRootModule(config),
                 resolveCoreModule(),
                 resolveNetworking(),
-                resolveUsecaseRunnerModule(),
                 resolveUsecaseModule(),
                 resolveRepositoryModule(),
                 resolveEncryptionModule(),
@@ -175,7 +172,6 @@ class ClientTest {
                 resolveRootModule(config),
                 resolveCoreModule(),
                 resolveNetworking(),
-                resolveUsecaseRunnerModule(),
                 resolveUsecaseModule(),
                 resolveRepositoryModule(),
                 resolveEncryptionModule(),
@@ -211,7 +207,6 @@ class ClientTest {
                 resolveRootModule(config),
                 resolveCoreModule(),
                 resolveNetworking(),
-                resolveUsecaseRunnerModule(),
                 resolveUsecaseModule(),
                 resolveRepositoryModule(),
                 resolveEncryptionModule(),

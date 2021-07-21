@@ -33,7 +33,7 @@
 package care.data4life.datadonation.internal.data.service
 
 import care.data4life.datadonation.core.listener.ListenerContract
-import care.data4life.datadonation.internal.runner.UserSessionTokenProvider
+import care.data4life.datadonation.internal.provider.UserSessionTokenProvider
 import care.data4life.datadonation.lang.CoreRuntimeError
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant

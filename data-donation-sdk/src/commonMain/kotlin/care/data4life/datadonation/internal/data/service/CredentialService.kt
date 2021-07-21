@@ -17,7 +17,7 @@
 package care.data4life.datadonation.internal.data.service
 
 import care.data4life.datadonation.Contract
-import care.data4life.datadonation.internal.runner.CredentialProvider
+import care.data4life.datadonation.internal.provider.CredentialProvider
 
 class CredentialService(
     private val credentialProvider: CredentialProvider

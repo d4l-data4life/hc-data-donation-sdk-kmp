@@ -22,7 +22,6 @@ import care.data4life.datadonation.internal.di.initKoin
 import care.data4life.datadonation.internal.domain.usecases.DonateResources
 import care.data4life.datadonation.internal.domain.usecases.RegisterNewDonor
 import care.data4life.datadonation.internal.domain.usecases.UsecaseContract
-import care.data4life.datadonation.internal.runner.UsecaseRunnerContract
 import care.data4life.datadonation.mock.stub.ClientConfigurationStub
 import org.koin.core.context.stopKoin
 import kotlin.test.BeforeTest
@@ -139,17 +138,6 @@ class KoinTest {
         val app = initKoin(config)
         // Then
         val usecase: DonateResources by app.koin.inject()
-        assertNotNull(usecase)
-    }
-
-    @Test
-    fun `Given initKoin is called with a Configuration, the resulting KoinApplication contains a UseCaseRunner`() {
-        // Given
-        config.whenGetEnvironment = { Environment.DEV }
-        // When
-        val app = initKoin(config)
-        // Then
-        val usecase: UsecaseRunnerContract by app.koin.inject()
         assertNotNull(usecase)
     }
 }

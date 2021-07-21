@@ -37,9 +37,9 @@ import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.ModelContract.Environment
 import care.data4life.datadonation.core.model.UserConsent
-import care.data4life.datadonation.internal.runner.CredentialProvider
-import care.data4life.datadonation.internal.runner.ScopeProvider
-import care.data4life.datadonation.internal.runner.UserSessionTokenProvider
+import care.data4life.datadonation.internal.provider.CredentialProvider
+import care.data4life.datadonation.internal.provider.ScopeProvider
+import care.data4life.datadonation.internal.provider.UserSessionTokenProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 

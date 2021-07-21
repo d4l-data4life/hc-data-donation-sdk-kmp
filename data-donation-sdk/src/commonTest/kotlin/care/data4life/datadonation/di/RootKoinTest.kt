@@ -19,9 +19,9 @@ package care.data4life.datadonation.di
 import care.data4life.datadonation.Contract
 import care.data4life.datadonation.core.model.ModelContract.Environment
 import care.data4life.datadonation.internal.di.resolveRootModule
-import care.data4life.datadonation.internal.runner.CredentialProvider
-import care.data4life.datadonation.internal.runner.ScopeProvider
-import care.data4life.datadonation.internal.runner.UserSessionTokenProvider
+import care.data4life.datadonation.internal.provider.CredentialProvider
+import care.data4life.datadonation.internal.provider.ScopeProvider
+import care.data4life.datadonation.internal.provider.UserSessionTokenProvider
 import care.data4life.datadonation.mock.stub.ClientConfigurationStub
 import kotlinx.datetime.Clock
 import org.koin.core.context.stopKoin
