@@ -127,7 +127,7 @@ internal class ConsentService private constructor(
     }
 
     // see: https://github.com/gesundheitscloud/consent-management/blob/master/swagger/api.yml#L356
-    override suspend fun requestSignatureRegistration(
+    override suspend fun requestSignatureConsentRegistration(
         accessToken: String,
         message: String
     ): ConsentSignature {

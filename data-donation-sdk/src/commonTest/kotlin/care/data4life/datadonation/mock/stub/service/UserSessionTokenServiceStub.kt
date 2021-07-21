@@ -14,17 +14,20 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.mock.stub.storage
+package care.data4life.datadonation.mock.stub.service
 
-import care.data4life.datadonation.internal.data.model.DonationPayload
-import care.data4life.datadonation.internal.data.storage.StorageContract
+import care.data4life.datadonation.internal.data.service.ServiceContract
+import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 
-class DonationDataStorageStub : StorageContract.DonationRemoteStorage {
+class UserSessionTokenServiceStub : ServiceContract.UserSessionTokenService, MockContract.Stub {
+    var whenSessionToken: (() -> String)? = null
 
-    var whenDonateResources: ((payload: DonationPayload) -> Unit)? = null
+    override suspend fun getUserSessionToken(): String {
+        return whenSessionToken?.invoke() ?: throw MockException()
+    }
 
-    override suspend fun donateResources(payload: DonationPayload) {
-        whenDonateResources?.invoke(payload) ?: throw MockException()
+    override fun clear() {
+        whenSessionToken = null
     }
 }

@@ -49,8 +49,7 @@ import care.data4life.datadonation.internal.utils.toJsonString
 import care.data4life.datadonation.mock.DummyData
 import care.data4life.datadonation.mock.spy.CapturingResultListener
 import care.data4life.datadonation.mock.stub.repository.UserConsentRepositoryStub
-import care.data4life.datadonation.mock.stub.storage.RegistrationDataStorageStub
-import care.data4life.datadonation.mock.stub.storage.ServiceTokenDataStorageStub
+import care.data4life.datadonation.mock.stub.service.DonationServiceStub
 import care.data4life.sdk.util.test.runBlockingTest
 import io.ktor.utils.io.charsets.Charset
 import kotlin.test.Ignore
@@ -67,11 +66,10 @@ abstract class RegisterNewDonorTest {
     private val dummyEncryptedRequest64Encoded = "encryptedRequest64Encoded"
     private val dummyEncryptedSignedMessage = byteArrayOf(4, 5)
 
-    private val mockServiceTokenDataStore = ServiceTokenDataStorageStub()
-    private val mockRegistrationDataStore = RegistrationDataStorageStub()
-    private val serviceTokenRepository = ServiceTokenRepository(mockServiceTokenDataStore)
+    private val donationService = DonationServiceStub()
+    private val serviceTokenRepository = ServiceTokenRepository(donationService)
     private val mockUserConsentRepository = UserConsentRepositoryStub()
-    private val registrationRepository = RegistrationRepository(mockRegistrationDataStore)
+    private val registrationRepository = RegistrationRepository(donationService)
 
     private val signatureKey = object : SignatureKeyPrivate {
         override fun sign(data: ByteArray) = byteArrayOf()
@@ -131,11 +129,11 @@ abstract class RegisterNewDonorTest {
 
     private val capturingListener = RegisterNewDonorListener()
 
-    @Ignore // Due to tight coupling
+    @Ignore // due to coupling
     @Test
     fun registerNewDonorTestWithoutKey() = runBlockingTest {
         // Given
-        mockServiceTokenDataStore.whenRequestDonationToken = { dummyNonce }
+        donationService.whenRequestToken = { dummyNonce }
         mockUserConsentRepository.whenSignUserConsent = { _ -> dummySignature }
 
         // When

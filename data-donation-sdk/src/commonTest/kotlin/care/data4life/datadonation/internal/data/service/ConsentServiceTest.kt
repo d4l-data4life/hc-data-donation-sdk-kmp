@@ -354,10 +354,6 @@ class ConsentServiceTest {
         var capturedMethod: ServiceContract.Method? = null
         var capturedPath: Path? = null
         val expectedTime = Instant.DISTANT_PAST
-        val response = listOf(
-            DummyData.userConsent,
-            DummyData.userConsent.copy(accountId = "potato")
-        )
 
         clock.whenNow = { expectedTime }
 
@@ -423,7 +419,7 @@ class ConsentServiceTest {
     }
 
     @Test
-    fun `Given a instance had been created and requestSignatureRegistration was called with a AccessToken and a Message it fails due to a unexpected response`() = runBlockingTest {
+    fun `Given a instance had been created and requestSignatureConsentRegistration was called with a AccessToken and a Message it fails due to a unexpected response`() = runBlockingTest {
         // Given
         val client = createMockClientWithResponse { scope ->
             return@createMockClientWithResponse scope.respond(
@@ -446,7 +442,7 @@ class ConsentServiceTest {
         val error = assertFailsWith<InternalErrorException> {
             // When
             val service = ConsentService.getInstance(env, client, RequestBuilderSpy, ClockStub())
-            service.requestSignatureRegistration(
+            service.requestSignatureConsentRegistration(
                 accessToken = accessToken,
                 message = message
             )
@@ -459,7 +455,7 @@ class ConsentServiceTest {
     }
 
     @Test
-    fun `Given a instance had been created and requestSignatureRegistration was called with a AccessToken and a Message it returns a ConsentSignature`() = runBlockingTest {
+    fun `Given a instance had been created and requestSignatureConsentRegistration was called with a AccessToken and a Message it returns a ConsentSignature`() = runBlockingTest {
         // Given
         val accessToken = "potato"
         val message = "tomato"
@@ -486,7 +482,7 @@ class ConsentServiceTest {
 
         // When
         val service = ConsentService.getInstance(env, client, RequestBuilderSpy, ClockStub())
-        val result = service.requestSignatureRegistration(
+        val result = service.requestSignatureConsentRegistration(
             accessToken = accessToken,
             message = message
         )

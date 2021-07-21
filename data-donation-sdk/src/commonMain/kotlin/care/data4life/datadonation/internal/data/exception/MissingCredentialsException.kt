@@ -32,4 +32,4 @@
 
 package care.data4life.datadonation.internal.data.exception
 
-class MissingCredentialsException: IllegalStateException()
+class MissingCredentialsException(cause: Exception? = null) : IllegalStateException(cause)

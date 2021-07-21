@@ -39,7 +39,7 @@ class KoinTest {
     }
 
     @Test
-    fun `Given initKoin is called with a Configuration, the resultin KoinApplication contains a CreateUserConsent`() {
+    fun `Given initKoin is called with a Configuration, the resulting KoinApplication contains a CreateUserConsent`() {
         // Given
         config.whenGetEnvironment = { Environment.LOCAL }
         // When
@@ -50,7 +50,7 @@ class KoinTest {
     }
 
     @Test
-    fun `Given initKoin is called with a Configuration, the resultin KoinApplication contains a RegisterNewDonor`() {
+    fun `Given initKoin is called with a Configuration, the resulting KoinApplication contains a RegisterNewDonor`() {
         // Given
         config.whenGetEnvironment = { Environment.LOCAL }
         config.whenGetServicePublicKey = { service ->
@@ -80,7 +80,7 @@ class KoinTest {
     }
 
     @Test
-    fun `Given initKoin is called with a Configuration, the resultin KoinApplication contains a FetchConsentDocuments`() {
+    fun `Given initKoin is called with a Configuration, the resulting KoinApplication contains a FetchConsentDocuments`() {
         // Given
         config.whenGetEnvironment = { Environment.LOCAL }
         // When
@@ -91,7 +91,7 @@ class KoinTest {
     }
 
     @Test
-    fun `Given initKoin is called with a Configuration, the resultin KoinApplication contains a FetchUserConsents`() {
+    fun `Given initKoin is called with a Configuration, the resulting KoinApplication contains a FetchUserConsents`() {
         // Given
         config.whenGetEnvironment = { Environment.LOCAL }
         // When
@@ -102,7 +102,7 @@ class KoinTest {
     }
 
     @Test
-    fun `Given initKoin is called with a Configuration, the resultin KoinApplication contains a RevokeUserConsent`() {
+    fun `Given initKoin is called with a Configuration, the resulting KoinApplication contains a RevokeUserConsent`() {
         // Given
         config.whenGetEnvironment = { Environment.LOCAL }
         // When
@@ -113,7 +113,7 @@ class KoinTest {
     }
 
     @Test
-    fun `Given initKoin is called with a Configuration, the resultin KoinApplication contains a DonateResources`() {
+    fun `Given initKoin is called with a Configuration, the resulting KoinApplication contains a DonateResources`() {
         // Given
         config.whenGetEnvironment = { Environment.LOCAL }
         config.whenGetServicePublicKey = { service ->
@@ -143,7 +143,7 @@ class KoinTest {
     }
 
     @Test
-    fun `Given initKoin is called with a Configuration, the resultin KoinApplication contains a TaskRunner`() {
+    fun `Given initKoin is called with a Configuration, the resulting KoinApplication contains a TaskRunner`() {
         // Given
         config.whenGetEnvironment = { Environment.LOCAL }
         // When

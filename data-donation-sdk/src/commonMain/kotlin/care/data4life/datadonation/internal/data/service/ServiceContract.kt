@@ -25,10 +25,14 @@ import io.ktor.client.HttpClient
 import io.ktor.client.statement.HttpStatement
 import kotlinx.datetime.Clock
 
-typealias Header = Map<String, String>
-typealias Parameter = Map<String, Any?>
-typealias AccessToken = String
-typealias Path = List<String>
+internal typealias Header = Map<String, String>
+internal typealias Parameter = Map<String, Any?>
+internal typealias AccessToken = String
+internal typealias Path = List<String>
+
+internal typealias SessionToken = String
+internal typealias DataDonationKey = String
+internal typealias AnalyticsKey = String
 
 internal interface ServiceContract {
     enum class Method(name: String) {
@@ -71,6 +75,15 @@ internal interface ServiceContract {
         ): RequestBuilderTemplate
     }
 
+    interface CredentialService {
+        fun getDataDonationPublicKey(): DataDonationKey
+        fun getAnalyticsPlatformPublicKey(): AnalyticsKey
+    }
+
+    interface UserSessionTokenService {
+        suspend fun getUserSessionToken(): SessionToken
+    }
+
     interface ConsentService {
         suspend fun fetchConsentDocuments(
             accessToken: String,
@@ -91,7 +104,7 @@ internal interface ServiceContract {
             version: Int
         )
 
-        suspend fun requestSignatureRegistration(
+        suspend fun requestSignatureConsentRegistration(
             accessToken: String,
             message: String
         ): ConsentSignature
@@ -107,7 +120,6 @@ internal interface ServiceContract {
             val ROOT = listOf("consent", "api", "v1")
 
             object PARAMETER {
-                const val CONSENT_DOCUMENT_KEY = "key"
                 const val USER_CONSENT_KEY = "consentDocumentKey"
                 const val LANGUAGE = "language"
                 const val VERSION = "version"
@@ -118,26 +130,6 @@ internal interface ServiceContract {
                 const val USER_CONSENTS = "userConsents"
                 const val CONSENTS_DOCUMENTS = "consentDocuments"
                 const val SIGNATURES = "signatures"
-            }
-
-            const val XSRF_VALIDITY = 23 * 60 * 60 * 1000
-
-            object Endpoints {
-                const val userConsents = "userConsents"
-                const val consentDocuments = "consentDocuments"
-                const val token = "xsrf"
-            }
-
-            object Parameters {
-                const val consentDocumentKey = "key"
-                const val userConsentDocumentKey = "consentDocumentKey"
-                const val latest = "latest"
-                const val language = "language"
-                const val version = "version"
-            }
-
-            object Headers {
-                const val XSRFToken = "X-Csrf-Token"
             }
         }
     }

@@ -14,7 +14,7 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.data.storage
+package care.data4life.datadonation.internal.data.service
 
 import care.data4life.datadonation.Contract
 import care.data4life.datadonation.mock.stub.ClientConfigurationStub
@@ -23,7 +23,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class CredentialsDataStorageTest {
+class CredentialServiceTest {
     private val provider = ClientConfigurationStub()
 
     @BeforeTest
@@ -32,10 +32,10 @@ class CredentialsDataStorageTest {
     }
 
     @Test
-    fun `It fulfils CredentialsDataStorage`() {
-        val store: Any = CredentialsDataStorage(ClientConfigurationStub())
+    fun `It fulfils CredentialService`() {
+        val service: Any = CredentialService(ClientConfigurationStub())
 
-        assertTrue(store is StorageContract.CredentialsDataStorage)
+        assertTrue(service is ServiceContract.CredentialService)
     }
 
     @Test
@@ -52,10 +52,10 @@ class CredentialsDataStorageTest {
             }
         }
 
-        val store = CredentialsDataStorage(provider)
+        val service = CredentialService(provider)
 
         // When
-        val result = store.getDataDonationPublicKey()
+        val result = service.getDataDonationPublicKey()
 
         // Then
         assertEquals(
@@ -78,10 +78,10 @@ class CredentialsDataStorageTest {
             }
         }
 
-        val store = CredentialsDataStorage(provider)
+        val service = CredentialService(provider)
 
         // When
-        val result = store.getAnalyticsPlatformPublicKey()
+        val result = service.getAnalyticsPlatformPublicKey()
 
         // Then
         assertEquals(

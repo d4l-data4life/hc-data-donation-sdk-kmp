@@ -20,12 +20,15 @@ import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.model.DonationPayload
 
+internal typealias Signature = String
+internal typealias DonationToken = String
+
 internal interface RepositoryContract {
     interface UserConsentRepository {
         suspend fun createUserConsent(consentKey: String, version: Int)
         suspend fun fetchUserConsents(consentKey: String? = null): List<UserConsent>
-        suspend fun signUserConsentRegistration(message: String): String
-        suspend fun signUserConsentDonation(message: String): String
+        suspend fun signUserConsentRegistration(message: String): Signature
+        suspend fun signUserConsentDonation(message: String): Signature
         suspend fun revokeUserConsent(consentKey: String)
     }
 
@@ -38,7 +41,7 @@ internal interface RepositoryContract {
     }
 
     interface ServiceTokenRepository {
-        suspend fun requestDonationToken(): String
+        suspend fun requestDonationToken(): DonationToken
     }
 
     interface DonationRepository {

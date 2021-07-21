@@ -32,12 +32,12 @@
 
 package care.data4life.datadonation.internal.domain.repository
 
-import care.data4life.datadonation.internal.data.storage.StorageContract
+import care.data4life.datadonation.internal.data.service.ServiceContract
 
 internal class CredentialsRepository(
-    private val dataStore: StorageContract.CredentialsDataStorage
+    private val credentialService: ServiceContract.CredentialService
 ) : RepositoryContract.CredentialsRepository {
-    override fun getDataDonationPublicKey(): String = dataStore.getDataDonationPublicKey()
+    override fun getDataDonationPublicKey(): String = credentialService.getDataDonationPublicKey()
 
-    override fun getAnalyticsPlatformPublicKey(): String = dataStore.getAnalyticsPlatformPublicKey()
+    override fun getAnalyticsPlatformPublicKey(): String = credentialService.getAnalyticsPlatformPublicKey()
 }

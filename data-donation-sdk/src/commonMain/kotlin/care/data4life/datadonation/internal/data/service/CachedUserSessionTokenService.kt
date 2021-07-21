@@ -30,13 +30,47 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.data.storage
+package care.data4life.datadonation.internal.data.service
 
-import care.data4life.datadonation.internal.data.service.ServiceContract
+import care.data4life.datadonation.core.listener.ListenerContract
+import care.data4life.datadonation.internal.data.exception.MissingSessionException
+import care.data4life.datadonation.internal.runner.UserSessionTokenProvider
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
+import kotlin.time.minutes
 
-internal class RegistrationDataStore(
-    private val donationService: ServiceContract.DonationService
-) : StorageContract.RegistrationRemoteStorage {
+class CachedUserSessionTokenService(
+    private val provider: UserSessionTokenProvider,
+    private val clock: Clock
+) : ServiceContract.UserSessionTokenService {
 
-    override suspend fun registerNewDonor(data: ByteArray) = donationService.registerNewDonor(data)
+    private var cachedValue: String = ""
+    private var cachedAt = Instant.fromEpochSeconds(0)
+
+    override suspend fun getUserSessionToken(): SessionToken {
+        return suspendCoroutine { continuation ->
+
+            if (cachedAt > clock.now().minus(1.minutes)) {
+                if (cachedValue.isEmpty()) {
+                    throw MissingSessionException()
+                }
+
+                continuation.resume(cachedValue)
+            } else {
+                provider.getUserSessionToken(object : ListenerContract.ResultListener<String> {
+                    override fun onSuccess(result: String) {
+                        cachedValue = result
+                        cachedAt = clock.now()
+                        continuation.resume(result)
+                    }
+
+                    override fun onError(exception: Exception) {
+                        throw MissingSessionException(exception)
+                    }
+                })
+            }
+        }
+    }
 }

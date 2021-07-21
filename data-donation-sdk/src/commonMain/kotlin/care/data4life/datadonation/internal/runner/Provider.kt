@@ -16,8 +16,18 @@
 
 package care.data4life.datadonation.internal.runner
 
+import care.data4life.datadonation.Contract
+import care.data4life.datadonation.core.listener.ListenerContract
 import kotlinx.coroutines.CoroutineScope
 
 interface ScopeProvider {
     fun getCoroutineScope(): CoroutineScope
+}
+
+interface CredentialProvider {
+    fun getServicePublicKey(service: Contract.Service): String
+}
+
+interface UserSessionTokenProvider {
+    fun getUserSessionToken(tokenListener: ListenerContract.ResultListener<String>)
 }

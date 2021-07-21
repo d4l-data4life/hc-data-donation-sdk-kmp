@@ -50,9 +50,9 @@ import care.data4life.datadonation.mock.DummyData
 import care.data4life.datadonation.mock.spy.CapturingResultListener
 import care.data4life.datadonation.mock.stub.RedactSensitiveInformationStub
 import care.data4life.datadonation.mock.stub.repository.UserConsentRepositoryStub
-import care.data4life.datadonation.mock.stub.storage.ConsentDataStoreStub
-import care.data4life.datadonation.mock.stub.storage.DonationDataStorageStub
-import care.data4life.datadonation.mock.stub.storage.ServiceTokenDataStorageStub
+import care.data4life.datadonation.mock.stub.service.ConsentServiceStub
+import care.data4life.datadonation.mock.stub.service.CredentialServiceStub
+import care.data4life.datadonation.mock.stub.service.DonationServiceStub
 import care.data4life.hl7.fhir.stu3.FhirStu3Parser
 import care.data4life.hl7.fhir.stu3.codesystem.QuestionnaireResponseStatus
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
@@ -91,14 +91,14 @@ abstract class DonateResourcesTest {
 
     private val jsonParser = Json {}
 
-    private val mockUserConsentDataStore = ConsentDataStoreStub()
-    private val mockDonationDataStore = DonationDataStorageStub()
-    private val mockServiceTokenDataStore = ServiceTokenDataStorageStub()
+    private val consentService = ConsentServiceStub()
+    private val donationService = DonationServiceStub()
+    private val credentialService = CredentialServiceStub()
     private val mapSensitiveInformation = RedactSensitiveInformationStub()
     private val mockRemoveInternalInformation = MockRemoveInternalInformation(jsonParser)
     private val mockUserConsentRepository = UserConsentRepositoryStub()
-    private val serviceTokenRepository = ServiceTokenRepository(mockServiceTokenDataStore)
-    private val donationRepository = DonationRepository(mockDonationDataStore)
+    private val serviceTokenRepository = ServiceTokenRepository(donationService)
+    private val donationRepository = DonationRepository(donationService)
 
     private val fhirParser = FhirStu3Parser.defaultJsonParser()
 
@@ -179,9 +179,9 @@ abstract class DonateResourcesTest {
     fun donateResourcesTest() = runBlockingTest {
         // Given
         var result: DonationPayload? = null
-        mockServiceTokenDataStore.whenRequestDonationToken = { dummyNonce }
+        donationService.whenRequestToken = { dummyNonce }
         mockUserConsentRepository.whenSignUserConsent = { _ -> dummySignature }
-        mockDonationDataStore.whenDonateResources = { payload -> result = payload }
+        donationService.whenDonateResources = { payload -> result = payload }
 
         // When
         donateResources.runWithParams(
@@ -201,7 +201,7 @@ abstract class DonateResourcesTest {
     @Test
     fun donateResourcesTestWithoutKeyFails() = runBlockingTest {
         // Given
-        mockServiceTokenDataStore.whenRequestDonationToken = { dummyNonce }
+        donationService.whenRequestToken = { dummyNonce }
         mockUserConsentRepository.whenSignUserConsent = { _ -> dummySignature }
 
         // When

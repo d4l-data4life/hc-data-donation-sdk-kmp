@@ -17,8 +17,8 @@
 package care.data4life.datadonation.internal.domain.repository
 
 import care.data4life.datadonation.mock.DummyData
-import care.data4life.datadonation.mock.stub.storage.ConsentDocumentRemoteStorageStub
-import care.data4life.datadonation.mock.stub.storage.UserSessionTokenDataStorageStub
+import care.data4life.datadonation.mock.stub.service.ConsentServiceStub
+import care.data4life.datadonation.mock.stub.service.UserSessionTokenServiceStub
 import care.data4life.sdk.util.test.runBlockingTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -29,18 +29,18 @@ class ConsentDocumentRepositoryTest {
     @Test
     fun `It fulfils ConsentDocumentRepository`() {
         val repo: Any = ConsentDocumentRepository(
-            ConsentDocumentRemoteStorageStub(),
-            UserSessionTokenDataStorageStub()
+            ConsentServiceStub(),
+            UserSessionTokenServiceStub()
         )
 
         assertTrue(repo is RepositoryContract.ConsentDocumentRepository)
     }
 
     @Test
-    fun `Given fetchConsentDocuments is called with a AccessToken, a Version and a ConsentKey, it resolves the SessionToken and delegates that to the ConsentDocumentRemote and returns a List of ConsentDocuments`() = runBlockingTest {
+    fun `Given fetchConsentDocuments is called with a AccessToken, a Version and a ConsentKey, it resolves the SessionToken and delegates that to the ConsentService and returns a List of ConsentDocuments`() = runBlockingTest {
         // Given
-        val remote = ConsentDocumentRemoteStorageStub()
-        val session = UserSessionTokenDataStorageStub()
+        val consentService = ConsentServiceStub()
+        val sessionTokenService = UserSessionTokenServiceStub()
 
         val consentKey = "tomato"
         val version = 23
@@ -57,9 +57,9 @@ class ConsentDocumentRepositoryTest {
         var capturedLanguage: String? = null
         var capturedConsentKey: String? = null
 
-        session.sessionToken = sessionToken
+        sessionTokenService.whenSessionToken = { sessionToken }
 
-        remote.whenFetchConsentDocuments = { delegatedSessionToken, delegatedVersion, delegatedLanguage, delegatedConsentKey ->
+        consentService.whenFetchConsentDocuments = { delegatedSessionToken, delegatedVersion, delegatedLanguage, delegatedConsentKey ->
             capturedSessionToken = delegatedSessionToken
             capturedLanguage = delegatedLanguage
             capturedVersion = delegatedVersion
@@ -67,7 +67,7 @@ class ConsentDocumentRepositoryTest {
             consentDocuments
         }
 
-        val repo = ConsentDocumentRepository(remote, session)
+        val repo = ConsentDocumentRepository(consentService, sessionTokenService)
 
         // When
         val result = repo.fetchConsentDocuments(language, version, consentKey)

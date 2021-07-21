@@ -14,13 +14,13 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.mock.stub.storage
+package care.data4life.datadonation.mock.stub.service
 
-import care.data4life.datadonation.internal.data.storage.StorageContract
+import care.data4life.datadonation.internal.data.service.ServiceContract
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 
-class CredentialsDataStorageStub : StorageContract.CredentialsDataStorage, MockContract.Stub {
+class CredentialServiceStub : ServiceContract.CredentialService, MockContract.Stub {
     var whenGetDataDonationPublicKey: (() -> String)? = null
     var whenGetAnalyticsPlatformPublicKey: (() -> String)? = null
 

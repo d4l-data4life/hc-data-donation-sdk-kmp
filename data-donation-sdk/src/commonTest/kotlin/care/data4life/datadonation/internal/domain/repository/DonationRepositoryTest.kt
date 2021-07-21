@@ -17,7 +17,7 @@
 package care.data4life.datadonation.internal.domain.repository
 
 import care.data4life.datadonation.internal.data.model.DonationPayload
-import care.data4life.datadonation.mock.stub.storage.DonationDataStorageStub
+import care.data4life.datadonation.mock.stub.service.DonationServiceStub
 import care.data4life.sdk.util.test.runBlockingTest
 import kotlin.test.Test
 import kotlin.test.assertSame
@@ -27,25 +27,25 @@ class DonationRepositoryTest {
     @Test
     fun `It fulfils DonationRepository`() {
         val repo: Any = DonationRepository(
-            DonationDataStorageStub()
+            DonationServiceStub()
         )
 
         assertTrue(repo is RepositoryContract.DonationRepository)
     }
 
     @Test
-    fun `Given donateResources is called with DonationPayload it delegates the call to its storage and just runs`() = runBlockingTest {
+    fun `Given donateResources is called with DonationPayload it delegates the call to the DonationService and just runs`() = runBlockingTest {
         // Given
-        val storage = DonationDataStorageStub()
+        val service = DonationServiceStub()
         val payload = DonationPayload(ByteArray(23), emptyList())
 
         var capturedPayload: DonationPayload? = null
-        storage.whenDonateResources = { delegatedPayload ->
+        service.whenDonateResources = { delegatedPayload ->
             capturedPayload = delegatedPayload
         }
 
         // When
-        val repo = DonationRepository(storage)
+        val repo = DonationRepository(service)
         val result = repo.donateResources(payload)
 
         // Then
