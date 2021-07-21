@@ -55,7 +55,7 @@ interface Contract {
         UserSessionTokenProvider {
         override fun getServicePublicKey(service: Service): String
 
-        fun getDonorKeyPair(): KeyPair?
+        fun getDonorKeyPair(): KeyPair? // TODO
 
         override fun getUserSessionToken(tokenListener: ListenerContract.ResultListener<String>)
 
@@ -70,18 +70,18 @@ interface Contract {
             consentDocumentVersion: Int?,
             language: String?,
             consentKey: String
-        ) : Flow<List<ConsentDocument>>
+        ): Flow<List<ConsentDocument>>
 
         fun createUserConsent(
             consentKey: String,
             consentDocumentVersion: Int
-        ) : Flow<UserConsent>
+        ): Flow<UserConsent>
 
-        fun fetchUserConsents(consentKey: String) : Flow<List<UserConsent>>
+        fun fetchUserConsents(consentKey: String): Flow<List<UserConsent>>
 
-        fun fetchAllUserConsents() : Flow<List<UserConsent>>
+        fun fetchAllUserConsents(): Flow<List<UserConsent>>
 
-        fun revokeUserConsent(consentKey: String, callback: ListenerContract.Callback)
+        fun revokeUserConsent(consentKey: String): Flow<Unit>
     }
 
     interface DataDonationFactory {

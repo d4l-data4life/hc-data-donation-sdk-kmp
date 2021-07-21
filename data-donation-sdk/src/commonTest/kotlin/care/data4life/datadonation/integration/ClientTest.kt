@@ -232,7 +232,8 @@ class ClientTest {
         }
 
         // When
-        client.revokeUserConsent(language, callback)
+        client.revokeUserConsent(language).collect { result ->
+        }
         val result = capturedResult.receive()
 
         // Then

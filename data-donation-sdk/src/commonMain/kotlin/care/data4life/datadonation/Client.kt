@@ -32,12 +32,10 @@
 
 package care.data4life.datadonation
 
-import care.data4life.datadonation.core.listener.ListenerContract
 import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.di.initKoin
 import care.data4life.datadonation.internal.domain.usecases.*
-import care.data4life.datadonation.internal.runner.UsecaseRunnerContract
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import org.koin.core.KoinApplication
@@ -50,13 +48,12 @@ class Client internal constructor(
     private val fetchConsentDocuments: UsecaseContract.FetchConsentDocuments by koinApplication.koin.inject()
     private val fetchUserConsents: UsecaseContract.FetchUserConsents by koinApplication.koin.inject()
     private val revokeUserConsent: UsecaseContract.RevokeUserConsent by koinApplication.koin.inject()
-    private val usecaseRunner: UsecaseRunnerContract by koinApplication.koin.inject()
 
     override fun fetchConsentDocuments(
         consentDocumentVersion: Int?,
         language: String?,
         consentKey: String
-    ) : Flow<List<ConsentDocument>> = flow {
+    ): Flow<List<ConsentDocument>> = flow {
         val parameter = FetchConsentDocuments.Parameter(
             version = consentDocumentVersion,
             language = language,
@@ -69,7 +66,7 @@ class Client internal constructor(
     override fun createUserConsent(
         consentKey: String,
         consentDocumentVersion: Int
-    ) : Flow<UserConsent> = flow {
+    ): Flow<UserConsent> = flow {
         val parameter = CreateUserConsent.Parameter(
             configuration.getDonorKeyPair(), // TODO: Fix this
             consentKey,
@@ -79,29 +76,22 @@ class Client internal constructor(
         emit(createUserContent.execute(parameter))
     }
 
-    override fun fetchUserConsents(consentKey: String) : Flow<List<UserConsent>> = flow {
+    override fun fetchUserConsents(consentKey: String): Flow<List<UserConsent>> = flow {
         val parameter = FetchUserConsents.Parameter(consentKey)
 
         emit(fetchUserConsents.execute(parameter))
     }
 
-    override fun fetchAllUserConsents() : Flow<List<UserConsent>> = flow {
+    override fun fetchAllUserConsents(): Flow<List<UserConsent>> = flow {
         val parameter = FetchUserConsents.Parameter()
 
         emit(fetchUserConsents.execute(parameter))
     }
 
-    override fun revokeUserConsent(
-        consentKey: String,
-        callback: ListenerContract.Callback
-    ) {
+    override fun revokeUserConsent(consentKey: String): Flow<Unit> = flow {
         val parameter = RevokeUserConsent.Parameter(consentKey)
 
-        usecaseRunner.run(
-            callback,
-            revokeUserConsent,
-            parameter
-        )
+        emit(revokeUserConsent.execute(parameter))
     }
 
     companion object Factory : Contract.DataDonationFactory {

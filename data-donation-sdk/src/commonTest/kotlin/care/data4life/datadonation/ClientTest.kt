@@ -16,27 +16,23 @@
 
 package care.data4life.datadonation
 
-import care.data4life.datadonation.core.listener.ListenerContract
 import care.data4life.datadonation.core.model.ModelContract.Environment
 import care.data4life.datadonation.internal.domain.usecases.CreateUserConsent
 import care.data4life.datadonation.internal.domain.usecases.FetchConsentDocuments
 import care.data4life.datadonation.internal.domain.usecases.FetchUserConsents
 import care.data4life.datadonation.internal.domain.usecases.RevokeUserConsent
 import care.data4life.datadonation.internal.domain.usecases.UsecaseContract
-import care.data4life.datadonation.internal.runner.UsecaseRunnerContract
 import care.data4life.datadonation.mock.DummyData
-import care.data4life.datadonation.mock.stub.CallbackStub
 import care.data4life.datadonation.mock.stub.ClientConfigurationStub
 import care.data4life.datadonation.mock.stub.CreateUserConsentStub
 import care.data4life.datadonation.mock.stub.FetchConsentDocumentsStub
 import care.data4life.datadonation.mock.stub.FetchUserConsentStub
 import care.data4life.datadonation.mock.stub.RevokeUserConsentStub
-import care.data4life.datadonation.mock.stub.UsecaseRunnerStub
 import care.data4life.sdk.util.test.runWithContextBlockingTest
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import org.koin.core.context.stopKoin
 import org.koin.dsl.bind
 import org.koin.dsl.koinApplication
@@ -213,7 +209,7 @@ class ClientTest {
         // When
         client.fetchUserConsents(
             consentKey
-        ).collect{ result ->
+        ).collect { result ->
             // Then
             assertSame(
                 actual = result,
@@ -259,7 +255,7 @@ class ClientTest {
         val client = Client(config, di)
 
         // When
-        client.fetchAllUserConsents().collect{ result ->
+        client.fetchAllUserConsents().collect { result ->
             // Then
             assertSame(
                 actual = result,
@@ -274,19 +270,23 @@ class ClientTest {
     }
 
     @Test
-    fun `Given revokeUserConsent is called with a ConsentKey and with a Callback it resolves the Usecase with wraps the given Parameter and delegates that to the TaskRunner`() {
+    fun `Given revokeUserConsent is called with a ConsentKey it builds and delegates its Parameter to the Usecase and returns a runnable Flow which just runs`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val config = ClientConfigurationStub()
-        val listener = CallbackStub()
         val usecase = RevokeUserConsentStub()
 
         val consentKey = "custom-consent-key"
 
-        var capturedParameter: UsecaseContract.RevokeUserConsent.Parameter? = null
-        var capturedListener: ListenerContract.Callback? = null
-        var capturedUsecase: UsecaseContract.Usecase<*, *>? = null
+        val capturedParameter = Channel<UsecaseContract.RevokeUserConsent.Parameter>()
 
         config.whenGetEnvironment = { Environment.DEV }
+
+        usecase.whenExecute = { delegatedParameter ->
+            launch {
+                capturedParameter.send(delegatedParameter)
+            }
+            Unit
+        }
 
         val di = koinApplication {
             modules(
@@ -294,16 +294,6 @@ class ClientTest {
                     single {
                         usecase
                     } bind UsecaseContract.RevokeUserConsent::class
-
-                    single {
-                        UsecaseRunnerStub().also {
-                            it.whenRunCallback = { delegatedResultListener, delegatedUsecase, delegatedParameter ->
-                                capturedListener = delegatedResultListener
-                                capturedUsecase = delegatedUsecase
-                                capturedParameter = delegatedParameter as UsecaseContract.RevokeUserConsent.Parameter
-                            }
-                        }
-                    } bind UsecaseRunnerContract::class
                 }
             )
         }
@@ -311,29 +301,19 @@ class ClientTest {
         val client = Client(config, di)
 
         // When
-        val result = client.revokeUserConsent(
-            consentKey,
-            listener
-        )
+        client.revokeUserConsent(consentKey).collect { result ->
+            // Then
+            assertSame(
+                actual = result,
+                expected = Unit
+            )
+        }
 
-        // Then
-        assertSame(
-            actual = result,
-            expected = Unit
-        )
         assertEquals(
-            actual = capturedParameter,
+            actual = capturedParameter.receive(),
             expected = RevokeUserConsent.Parameter(
                 consentKey = consentKey,
             )
-        )
-        assertSame(
-            actual = capturedListener,
-            expected = listener
-        )
-        assertSame(
-            actual = capturedUsecase,
-            expected = usecase
         )
     }
 }
