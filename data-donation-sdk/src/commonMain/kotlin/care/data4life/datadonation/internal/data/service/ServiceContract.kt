@@ -25,14 +25,14 @@ import io.ktor.client.HttpClient
 import io.ktor.client.statement.HttpStatement
 import kotlinx.datetime.Clock
 
-typealias Header = Map<String, String>
-typealias Parameter = Map<String, Any?>
-typealias AccessToken = String
-typealias Path = List<String>
+internal typealias Header = Map<String, String>
+internal typealias Parameter = Map<String, Any?>
+internal typealias AccessToken = String
+internal typealias Path = List<String>
 
-typealias SessionToken = String
-typealias DataDonationKey = String
-typealias AnalyticsKey = String
+internal typealias SessionToken = String
+internal typealias DataDonationKey = String
+internal typealias AnalyticsKey = String
 
 internal interface ServiceContract {
     enum class Method(name: String) {
