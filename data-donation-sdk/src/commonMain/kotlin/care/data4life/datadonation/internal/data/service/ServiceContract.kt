@@ -25,9 +25,9 @@ import care.data4life.datadonation.internal.data.service.networking.Networking
 import io.ktor.client.HttpClient
 import kotlinx.datetime.Clock
 
-typealias SessionToken = String
-typealias DataDonationKey = String
-typealias AnalyticsKey = String
+internal typealias SessionToken = String
+internal typealias DataDonationKey = String
+internal typealias AnalyticsKey = String
 
 internal interface ServiceContract {
     interface CredentialService {

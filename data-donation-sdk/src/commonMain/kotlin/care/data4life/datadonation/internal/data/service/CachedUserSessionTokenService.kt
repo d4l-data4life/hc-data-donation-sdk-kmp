@@ -54,7 +54,7 @@ class CachedUserSessionTokenService(
 
             if (cachedAt > clock.now().minus(1.minutes)) {
                 if (cachedValue.isEmpty()) {
-                    throw CoreRuntimeException.MissingSessionException()
+                    throw CoreRuntimeException.MissingSession()
                 }
 
                 continuation.resume(cachedValue)
@@ -67,7 +67,7 @@ class CachedUserSessionTokenService(
                     }
 
                     override fun onError(exception: Exception) {
-                        throw CoreRuntimeException.MissingSessionException(exception)
+                        throw CoreRuntimeException.MissingSession(exception)
                     }
                 })
             }

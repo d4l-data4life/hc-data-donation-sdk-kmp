@@ -212,7 +212,7 @@ abstract class DonateResourcesTest {
 
         // Then
         assertNull(capturingListener.captured)
-        assertTrue(capturingListener.error is CoreRuntimeException.MissingCredentialsException)
+        assertTrue(capturingListener.error is CoreRuntimeException.MissingCredentials)
     }
 
     class DonateResourcesListener : CapturingResultListener<Unit>()
