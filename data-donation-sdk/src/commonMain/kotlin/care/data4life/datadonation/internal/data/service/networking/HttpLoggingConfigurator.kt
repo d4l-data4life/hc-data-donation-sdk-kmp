@@ -16,29 +16,14 @@
 
 package care.data4life.datadonation.internal.data.service.networking
 
-import care.data4life.sdk.log.Log
-import io.ktor.client.HttpClientConfig
-import io.ktor.client.features.json.JsonFeature
+import care.data4life.sdk.log.Logger
+import io.ktor.client.features.logging.LogLevel
 import io.ktor.client.features.logging.Logging
 
-internal object ClientConfigurator : Networking.ClientConfigurator {
-    override fun configure(
-        config: HttpClientConfig<*>,
-        jsonConfigurator: Networking.JsonConfigurator,
-        vararg installers: Networking.Configurator<*, *>
-    ) {
-        installers.forEach { configurator ->
-            if (configurator is Networking.SerializerConfigurator) {
-                config.install(JsonFeature) {
-                    configurator.configure(this, jsonConfigurator)
-                }
-            }
-
-            if (configurator is Networking.LoggingConfigurator) {
-                config.install(Logging) {
-                    configurator.configure(this, Log.logger)
-                }
-            }
-        }
+internal object HttpLoggingConfigurator :
+    Networking.HttpLoggingConfigurator {
+    override fun configure(pluginConfig: Logging.Config, subConfiguration: Logger) {
+        pluginConfig.logger = SimpleLogger(subConfiguration)
+        pluginConfig.level = LogLevel.ALL
     }
 }

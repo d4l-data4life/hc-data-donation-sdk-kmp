@@ -16,11 +16,16 @@
 
 package care.data4life.datadonation.internal.data.service.networking
 
+import care.data4life.sdk.log.Log
+import care.data4life.sdk.log.Logger
 import io.ktor.client.HttpClient
+import io.ktor.client.features.json.JsonFeature
+import io.ktor.client.features.logging.Logging
 import org.koin.core.context.stopKoin
 import org.koin.dsl.koinApplication
 import kotlin.test.BeforeTest
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
 class NetworkingKoinTest {
@@ -53,5 +58,39 @@ class NetworkingKoinTest {
         // Then
         val builder: HttpClient = koin.koin.get()
         assertNotNull(builder)
+    }
+
+    @Test
+    fun `Given resolveServiceModule is called it creates a Module, which contains the HttpClientConfiguration`() {
+        // When
+        val koin = koinApplication {
+            modules(
+                resolveNetworking()
+            )
+        }
+
+        val configuration = koin.koin.get<List<Networking.HttpFeatureInstaller<in Any?>>>()
+
+        // Then
+        assertEquals(
+            actual = configuration.size,
+            expected = 2
+        )
+        assertEquals(
+            actual = configuration[0],
+            expected = Networking.HttpFeatureInstaller(
+                JsonFeature,
+                HttpSerializerConfigurator as Networking.HttpFeatureConfigurator<Any, Networking.JsonConfigurator>,
+                JsonConfigurator
+            )
+        )
+        assertEquals(
+            actual = configuration[1],
+            expected = Networking.HttpFeatureInstaller(
+                Logging,
+                HttpLoggingConfigurator as Networking.HttpFeatureConfigurator<Any, Logger>,
+                Log.logger
+            )
+        )
     }
 }

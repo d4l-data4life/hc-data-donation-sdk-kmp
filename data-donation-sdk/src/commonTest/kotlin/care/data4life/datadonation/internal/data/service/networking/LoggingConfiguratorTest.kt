@@ -27,9 +27,9 @@ import kotlin.test.assertTrue
 class LoggingConfiguratorTest {
     @Test
     fun `It fulfils LoggingConfigurator`() {
-        val configurator: Any = LoggerConfigurator
+        val configurator: Any = HttpLoggingConfigurator
 
-        assertTrue(configurator is Networking.LoggingConfigurator)
+        assertTrue(configurator is Networking.HttpLoggingConfigurator)
     }
 
     @Test
@@ -44,7 +44,7 @@ class LoggingConfiguratorTest {
         }
 
         // When
-        val result = LoggerConfigurator.configure(config, internalLogger)
+        val result = HttpLoggingConfigurator.configure(config, internalLogger)
         config.logger.log("test")
 
         // Then

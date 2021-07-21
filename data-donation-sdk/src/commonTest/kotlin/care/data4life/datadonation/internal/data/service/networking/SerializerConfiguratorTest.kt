@@ -26,9 +26,9 @@ import kotlin.test.assertTrue
 class SerializerConfiguratorTest {
     @Test
     fun `It fulfils SerializerConfigurator`() {
-        val configurator: Any = SerializerConfigurator
+        val configurator: Any = HttpSerializerConfigurator
 
-        assertTrue(configurator is Networking.Configurator<*, *>)
+        assertTrue(configurator is Networking.HttpFeatureConfigurator<*, *>)
     }
 
     @Test
@@ -44,7 +44,7 @@ class SerializerConfiguratorTest {
         }
 
         // When
-        val result = SerializerConfigurator.configure(pluginConfig, jsonConfigurator)
+        val result = HttpSerializerConfigurator.configure(pluginConfig, jsonConfigurator)
 
         // Then
         assertEquals(

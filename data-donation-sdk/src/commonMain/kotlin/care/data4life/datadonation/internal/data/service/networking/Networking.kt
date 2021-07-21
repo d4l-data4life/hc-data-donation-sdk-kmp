@@ -19,6 +19,7 @@ package care.data4life.datadonation.internal.data.service.networking
 import care.data4life.datadonation.core.model.Environment
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
+import io.ktor.client.features.HttpClientFeature
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.logging.Logging
 import io.ktor.client.statement.HttpStatement
@@ -38,22 +39,27 @@ internal interface Networking {
         }
     }
 
-    fun interface Configurator<Config, Util> {
-        fun configure(pluginConfig: Config, util: Util)
+    fun interface HttpFeatureConfigurator<FeatureConfiguration : Any, SubConfiguration> {
+        fun configure(pluginConfig: FeatureConfiguration, subConfiguration: SubConfiguration)
     }
 
     fun interface JsonConfigurator {
         fun configure(jsonBuild: JsonBuilder): JsonBuilder
     }
 
-    fun interface SerializerConfigurator : Configurator<JsonFeature.Config, JsonConfigurator>
-    fun interface LoggingConfigurator : Configurator<Logging.Config, care.data4life.sdk.log.Logger>
+    fun interface HttpSerializerConfigurator : HttpFeatureConfigurator<JsonFeature.Config, JsonConfigurator>
+    fun interface HttpLoggingConfigurator : HttpFeatureConfigurator<Logging.Config, care.data4life.sdk.log.Logger>
 
-    fun interface ClientConfigurator {
+    data class HttpFeatureInstaller<SubConfiguration>(
+        val feature: HttpClientFeature<*, *>,
+        val featureConfigurator: HttpFeatureConfigurator<Any, SubConfiguration>,
+        val subConfiguration: SubConfiguration
+    )
+
+    fun interface HttpClientConfigurator {
         fun configure(
-            config: HttpClientConfig<*>,
-            jsonConfigurator: JsonConfigurator,
-            vararg installers: Configurator<*, *>
+            httpConfig: HttpClientConfig<*>,
+            installers: List<HttpFeatureInstaller<in Any?>>
         )
     }
 
@@ -64,7 +70,6 @@ internal interface Networking {
         PUT("put")
     }
 
-    // TODO Add a new package with potential HTTP Interceptor
     interface RequestBuilder {
         fun setHeaders(header: Header): RequestBuilder
         fun setParameter(parameter: Parameter): RequestBuilder
