@@ -14,6 +14,18 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.data.exception
+package care.data4life.datadonation.lang
 
-class MissingSessionException(cause: Exception? = null) : IllegalStateException(cause)
+import care.data4life.sdk.lang.D4LRuntimeException
+
+sealed class CoreRuntimeException(
+    message: String?,
+    cause: Throwable?
+) : D4LRuntimeException(message = message, cause = cause) {
+
+    class InternalFailure : CoreRuntimeException(message = "Internal failure", cause = null)
+    class RequestValidationFailure(message: String) : CoreRuntimeException(message = message, cause = null)
+    class ResponseTransformFailure : CoreRuntimeException(message = "Unexpected Response", cause = null)
+    class MissingCredentials(cause: Throwable? = null) : CoreRuntimeException(cause = cause, message = null)
+    class MissingSession(cause: Throwable? = null) : CoreRuntimeException(cause = cause, message = null)
+}

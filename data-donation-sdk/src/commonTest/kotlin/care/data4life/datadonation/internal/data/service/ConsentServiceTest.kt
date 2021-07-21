@@ -17,7 +17,6 @@
 package care.data4life.datadonation.internal.data.service
 
 import care.data4life.datadonation.core.model.Environment
-import care.data4life.datadonation.internal.data.exception.InternalErrorException
 import care.data4life.datadonation.internal.data.model.ConsentCreationPayload
 import care.data4life.datadonation.internal.data.model.ConsentRevocationPayload
 import care.data4life.datadonation.internal.data.model.ConsentSignatureType
@@ -31,6 +30,7 @@ import care.data4life.datadonation.internal.data.service.ServiceContract.Consent
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PATH.CONSENTS_DOCUMENTS
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PATH.SIGNATURES
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PATH.USER_CONSENTS
+import care.data4life.datadonation.lang.CoreRuntimeException
 import care.data4life.datadonation.mock.DummyData
 import care.data4life.datadonation.mock.fake.createMockClientWithResponse
 import care.data4life.datadonation.mock.fake.getDefaultMockClient
@@ -146,7 +146,7 @@ class ConsentServiceTest {
         }
 
         // Then
-        val error = assertFailsWith<InternalErrorException> {
+        val error = assertFailsWith<CoreRuntimeException.ResponseTransformFailure> {
             // When
             val service = ConsentService.getInstance(env, client, RequestBuilderSpy, ClockStub())
             service.fetchConsentDocuments(
@@ -159,7 +159,7 @@ class ConsentServiceTest {
 
         assertEquals(
             actual = error.message,
-            expected = "Unexpected Response."
+            expected = "Unexpected Response"
         )
     }
 
@@ -255,7 +255,7 @@ class ConsentServiceTest {
         }
 
         // Then
-        val error = assertFailsWith<InternalErrorException> {
+        val error = assertFailsWith<CoreRuntimeException.ResponseTransformFailure> {
             // When
             val service = ConsentService.getInstance(env, client, RequestBuilderSpy, ClockStub())
             service.fetchUserConsents(
@@ -267,7 +267,7 @@ class ConsentServiceTest {
 
         assertEquals(
             actual = error.message,
-            expected = "Unexpected Response."
+            expected = "Unexpected Response"
         )
     }
 
@@ -439,7 +439,7 @@ class ConsentServiceTest {
         }
 
         // Then
-        val error = assertFailsWith<InternalErrorException> {
+        val error = assertFailsWith<CoreRuntimeException.ResponseTransformFailure> {
             // When
             val service = ConsentService.getInstance(env, client, RequestBuilderSpy, ClockStub())
             service.requestSignatureConsentRegistration(
@@ -450,7 +450,7 @@ class ConsentServiceTest {
 
         assertEquals(
             actual = error.message,
-            expected = "Unexpected Response."
+            expected = "Unexpected Response"
         )
     }
 
@@ -543,7 +543,7 @@ class ConsentServiceTest {
         }
 
         // Then
-        val error = assertFailsWith<InternalErrorException> {
+        val error = assertFailsWith<CoreRuntimeException.ResponseTransformFailure> {
             // When
             val service = ConsentService.getInstance(env, client, RequestBuilderSpy, ClockStub())
             service.requestSignatureDonation(
@@ -554,7 +554,7 @@ class ConsentServiceTest {
 
         assertEquals(
             actual = error.message,
-            expected = "Unexpected Response."
+            expected = "Unexpected Response"
         )
     }
 

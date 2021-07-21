@@ -34,7 +34,6 @@ package care.data4life.datadonation.internal.domain.usecases
 
 import care.data4life.datadonation.encryption.EncryptionContract
 import care.data4life.datadonation.encryption.signature.SignatureKeyPrivate
-import care.data4life.datadonation.internal.data.exception.MissingCredentialsException
 import care.data4life.datadonation.internal.data.model.ConsentMessage
 import care.data4life.datadonation.internal.data.model.ConsentRequest
 import care.data4life.datadonation.internal.data.model.ConsentSignatureType
@@ -46,6 +45,7 @@ import care.data4life.datadonation.internal.domain.repository.DonationRepository
 import care.data4life.datadonation.internal.domain.repository.ServiceTokenRepository
 import care.data4life.datadonation.internal.utils.Base64Encoder
 import care.data4life.datadonation.internal.utils.toJsonString
+import care.data4life.datadonation.lang.CoreRuntimeException
 import care.data4life.datadonation.mock.DummyData
 import care.data4life.datadonation.mock.spy.CapturingResultListener
 import care.data4life.datadonation.mock.stub.RedactSensitiveInformationStub
@@ -212,7 +212,7 @@ abstract class DonateResourcesTest {
 
         // Then
         assertNull(capturingListener.captured)
-        assertTrue(capturingListener.error is MissingCredentialsException)
+        assertTrue(capturingListener.error is CoreRuntimeException.MissingCredentials)
     }
 
     class DonateResourcesListener : CapturingResultListener<Unit>()

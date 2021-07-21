@@ -16,7 +16,7 @@
 
 package care.data4life.datadonation.internal.data.service
 
-import care.data4life.datadonation.internal.data.exception.InternalErrorException
+import care.data4life.datadonation.lang.CoreRuntimeException
 import io.ktor.client.call.NoTransformationFoundException
 import io.ktor.client.statement.HttpStatement
 
@@ -24,6 +24,6 @@ internal suspend inline fun <reified T> receive(request: HttpStatement): T {
     return try {
         request.receive()
     } catch (exception: NoTransformationFoundException) {
-        throw InternalErrorException("Unexpected Response.")
+        throw CoreRuntimeException.ResponseTransformFailure()
     }
 }

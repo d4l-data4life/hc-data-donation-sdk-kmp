@@ -17,9 +17,9 @@
 package care.data4life.datadonation.internal.data.service
 
 import care.data4life.datadonation.core.model.Environment
-import care.data4life.datadonation.internal.data.exception.InternalErrorException
 import care.data4life.datadonation.internal.data.service.ServiceContract.RequestBuilder.Companion.ACCESS_TOKEN_FIELD
 import care.data4life.datadonation.internal.data.service.ServiceContract.RequestBuilder.Companion.ACCESS_TOKEN_VALUE_PREFIX
+import care.data4life.datadonation.lang.CoreRuntimeException
 import care.data4life.datadonation.mock.fake.defaultResponse
 import care.data4life.datadonation.mock.fake.getDefaultMockClient
 import care.data4life.sdk.util.test.runWithContextBlockingTest
@@ -435,7 +435,7 @@ class RequestBuilderTest {
         val env = Environment.LOCAL
         val client = getDefaultMockClient()
 
-        val error = assertFailsWith<InternalErrorException> {
+        val error = assertFailsWith<CoreRuntimeException.RequestValidationFailure> {
             // When
             val builder = RequestBuilder.getInstance(env, client).create()
             builder.setBody("Wups").prepare(ServiceContract.Method.GET)
@@ -455,7 +455,7 @@ class RequestBuilderTest {
         val client = getDefaultMockClient()
 
         // When
-        val error = assertFailsWith<InternalErrorException> {
+        val error = assertFailsWith<CoreRuntimeException.RequestValidationFailure> {
             // When
             val builder = RequestBuilder.getInstance(env, client).create()
             builder.prepare(ServiceContract.Method.POST)
@@ -474,7 +474,7 @@ class RequestBuilderTest {
         val env = Environment.LOCAL
         val client = getDefaultMockClient()
 
-        val error = assertFailsWith<InternalErrorException> {
+        val error = assertFailsWith<CoreRuntimeException.RequestValidationFailure> {
             // When
             val builder = RequestBuilder.getInstance(env, client).create()
             builder.prepare(ServiceContract.Method.PUT)
@@ -493,7 +493,7 @@ class RequestBuilderTest {
         val env = Environment.LOCAL
         val client = getDefaultMockClient()
 
-        val error = assertFailsWith<InternalErrorException> {
+        val error = assertFailsWith<CoreRuntimeException.RequestValidationFailure> {
             // When
             val builder = RequestBuilder.getInstance(env, client).create()
             builder.prepare(ServiceContract.Method.DELETE)
