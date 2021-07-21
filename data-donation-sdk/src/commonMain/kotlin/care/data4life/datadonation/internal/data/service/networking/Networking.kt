@@ -17,7 +17,6 @@
 package care.data4life.datadonation.internal.data.service.networking
 
 import care.data4life.datadonation.core.model.Environment
-import care.data4life.sdk.log.Logger
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.features.json.JsonFeature
@@ -25,10 +24,10 @@ import io.ktor.client.features.logging.Logging
 import io.ktor.client.statement.HttpStatement
 import kotlinx.serialization.json.JsonBuilder
 
-typealias Header = Map<String, String>
-typealias Parameter = Map<String, Any?>
-typealias AccessToken = String
-typealias Path = List<String>
+internal typealias Header = Map<String, String>
+internal typealias Parameter = Map<String, Any?>
+internal typealias AccessToken = String
+internal typealias Path = List<String>
 
 internal interface Networking {
     interface Logger : io.ktor.client.features.logging.Logger {
