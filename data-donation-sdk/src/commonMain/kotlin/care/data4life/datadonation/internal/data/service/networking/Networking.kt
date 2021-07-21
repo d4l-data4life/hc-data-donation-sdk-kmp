@@ -26,10 +26,10 @@ import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.HttpStatement
 import kotlinx.serialization.json.JsonBuilder
 
-typealias Header = Map<String, String>
-typealias Parameter = Map<String, Any?>
-typealias AccessToken = String
-typealias Path = List<String>
+internal typealias Header = Map<String, String>
+internal typealias Parameter = Map<String, Any?>
+internal typealias AccessToken = String
+internal typealias Path = List<String>
 
 internal interface Networking {
     interface Logger : io.ktor.client.features.logging.Logger {
@@ -40,8 +40,8 @@ internal interface Networking {
         }
     }
 
-    fun interface Configurator<Config : Any, AuxiliaryConfigurator : Any> {
-        fun configure(pluginConfig: Config, auxiliaryConfigurator: AuxiliaryConfigurator)
+    fun interface HttpFeatureConfigurator<FeatureConfiguration : Any, SubConfiguration> {
+        fun configure(pluginConfig: FeatureConfiguration, subConfiguration: SubConfiguration)
     }
 
     fun interface JsonConfigurator {
@@ -58,14 +58,20 @@ internal interface Networking {
         fun propagate(error: Throwable)
     }
 
-    fun interface SerializerConfigurator : Configurator<JsonFeature.Config, JsonConfigurator>
-    fun interface LoggingConfigurator : Configurator<Logging.Config, care.data4life.sdk.log.Logger>
-    fun interface ResponseValidatorConfigurator : Configurator<HttpCallValidator.Config, Pair<ResponseValidator?, ErrorPropagator?>>
+    fun interface HttpSerializerConfigurator : HttpFeatureConfigurator<JsonFeature.Config, JsonConfigurator>
+    fun interface HttpLoggingConfigurator : HttpFeatureConfigurator<Logging.Config, care.data4life.sdk.log.Logger>
+    fun interface ResponseValidatorConfigurator : HttpFeatureConfigurator<HttpCallValidator.Config, Pair<ResponseValidator?, ErrorPropagator?>>
 
-    fun interface ClientConfigurator {
+    data class HttpFeatureInstaller<SubConfiguration>(
+        val feature: HttpClientFeature<*, *>,
+        val featureConfigurator: HttpFeatureConfigurator<Any, SubConfiguration>,
+        val subConfiguration: SubConfiguration
+    )
+
+    fun interface HttpClientConfigurator {
         fun configure(
-            config: HttpClientConfig<*>,
-            installers: Map<HttpClientFeature<*, *>, Pair<Configurator<Any, Any>, Any>>,
+            httpConfig: HttpClientConfig<*>,
+            installers: List<HttpFeatureInstaller<in Any?>>,
             responseValidator: Pair<ResponseValidatorConfigurator, Pair<ResponseValidator?, ErrorPropagator?>>
         )
     }
@@ -77,7 +83,6 @@ internal interface Networking {
         PUT("put")
     }
 
-    // TODO Add a new package with potential HTTP Interceptor
     interface RequestBuilder {
         fun setHeaders(header: Header): RequestBuilder
         fun setParameter(parameter: Parameter): RequestBuilder

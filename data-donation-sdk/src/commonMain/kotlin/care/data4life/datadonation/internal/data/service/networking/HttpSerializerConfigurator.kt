@@ -20,10 +20,11 @@ import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.json.serializer.KotlinxSerializer
 import kotlinx.serialization.json.Json
 
-internal object SerializerConfigurator : Networking.SerializerConfigurator {
-    override fun configure(pluginConfig: JsonFeature.Config, auxiliaryConfigurator: Networking.JsonConfigurator) {
+internal object HttpSerializerConfigurator :
+    Networking.HttpSerializerConfigurator {
+    override fun configure(pluginConfig: JsonFeature.Config, subConfiguration: Networking.JsonConfigurator) {
         pluginConfig.serializer = KotlinxSerializer(
-            Json { auxiliaryConfigurator.configure(this) }
+            Json { subConfiguration.configure(this) }
         )
     }
 }

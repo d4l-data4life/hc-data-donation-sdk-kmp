@@ -73,7 +73,7 @@ internal class DonateResources(
                     redactSensitiveInformation.execute(parameter.resources)
                 ).execute()
             )
-        } ?: throw CoreRuntimeError.MissingCredentialsError()
+        } ?: throw CoreRuntimeError.MissingCredentials()
     }
 
     private suspend fun donateResources(

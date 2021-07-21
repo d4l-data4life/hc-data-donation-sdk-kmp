@@ -18,7 +18,7 @@ package care.data4life.datadonation.internal.data.service.networking
 
 import care.data4life.sdk.log.Log
 import io.ktor.client.HttpClient
-import io.ktor.client.features.HttpClientFeature
+import care.data4life.sdk.log.Logger
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.logging.Logging
 import org.koin.core.module.Module
@@ -31,26 +31,25 @@ internal fun resolveNetworking(): Module {
         }
 
         single {
-            val plugins = get<Map<HttpClientFeature<*, *>, Pair<Networking.Configurator<Any, Any>, Any>>>()
-            val validators = get<Pair<Networking.ResponseValidatorConfigurator, Pair<Networking.ResponseValidator?, Networking.ErrorPropagator?>>>()
-
             HttpClient {
-                ClientConfigurator.configure(
+                HttpClientConfigurator.configure(
                     this,
-                    plugins,
-                    validators
+                    get(),
+                    get()
                 )
             }
         }
 
-        single<Map<HttpClientFeature<*, *>, Pair<Networking.Configurator<Any, Any>, Any>>> {
-            mapOf(
-                JsonFeature to Pair(
-                    SerializerConfigurator as Networking.Configurator<Any, Any>,
+        single {
+            listOf(
+                Networking.HttpFeatureInstaller(
+                    JsonFeature,
+                    HttpSerializerConfigurator as Networking.HttpFeatureConfigurator<Any, Networking.JsonConfigurator>,
                     JsonConfigurator
                 ),
-                Logging to Pair(
-                    LoggerConfigurator as Networking.Configurator<Any, Any>,
+                Networking.HttpFeatureInstaller(
+                    Logging,
+                    HttpLoggingConfigurator as Networking.HttpFeatureConfigurator<Any, Logger>,
                     Log.logger
                 )
             )

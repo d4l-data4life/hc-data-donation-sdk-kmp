@@ -23,9 +23,9 @@ import care.data4life.datadonation.internal.data.model.DonationPayload
 import care.data4life.datadonation.lang.ConsentServiceError
 import care.data4life.datadonation.lang.HttpRuntimeError
 
-typealias SessionToken = String
-typealias DataDonationKey = String
-typealias AnalyticsKey = String
+internal typealias SessionToken = String
+internal typealias DataDonationKey = String
+internal typealias AnalyticsKey = String
 
 internal interface ServiceContract {
     interface CredentialService {

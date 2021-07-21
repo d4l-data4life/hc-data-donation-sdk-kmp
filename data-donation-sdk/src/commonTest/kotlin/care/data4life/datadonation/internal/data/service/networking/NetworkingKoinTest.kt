@@ -19,7 +19,7 @@ package care.data4life.datadonation.internal.data.service.networking
 import care.data4life.datadonation.core.model.ModelContract
 import care.data4life.sdk.log.Log
 import io.ktor.client.HttpClient
-import io.ktor.client.features.HttpClientFeature
+import care.data4life.sdk.log.Logger
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.logging.Logging
 import org.koin.core.context.stopKoin
@@ -30,7 +30,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertSame
-import kotlin.test.assertTrue
 
 class NetworkingKoinTest {
     @BeforeTest
@@ -67,44 +66,39 @@ class NetworkingKoinTest {
         assertNotNull(client)
     }
 
+
+
     @Test
-    fun `Given resolveServiceModule is called it creates a Module, which contains the HTTPClient plugin configuration`() {
+    fun `Given resolveServiceModule is called it creates a Module, which contains the HttpClientConfiguration`() {
         // When
         val koin = koinApplication {
             modules(
-                resolveNetworking(),
+                resolveNetworking()
             )
         }
-        // Then
-        val config: Map<HttpClientFeature<*, *>, Pair<Networking.Configurator<Any, Any>, Any>> = koin.koin.get()
-        assertNotNull(config)
 
+        val configuration = koin.koin.get<List<Networking.HttpFeatureInstaller<in Any?>>>()
+
+        // Then
         assertEquals(
-            actual = config.size,
+            actual = configuration.size,
             expected = 2
         )
-
-        assertTrue(config.containsKey(JsonFeature))
-        assertTrue(config.containsKey(Logging))
-
-        val (serializerConfig, jsonConfigurator) = config[JsonFeature]!!
-        assertSame<Any>(
-            actual = serializerConfig,
-            expected = SerializerConfigurator
+        assertEquals(
+            actual = configuration[0],
+            expected = Networking.HttpFeatureInstaller(
+                JsonFeature,
+                HttpSerializerConfigurator as Networking.HttpFeatureConfigurator<Any, Networking.JsonConfigurator>,
+                JsonConfigurator
+            )
         )
-        assertSame(
-            actual = jsonConfigurator,
-            expected = JsonConfigurator
-        )
-
-        val (loggingConfig, logger) = config[Logging]!!
-        assertSame<Any>(
-            actual = loggingConfig,
-            expected = LoggerConfigurator
-        )
-        assertSame(
-            actual = logger,
-            expected = Log.logger
+        assertEquals(
+            actual = configuration[1],
+            expected = Networking.HttpFeatureInstaller(
+                Logging,
+                HttpLoggingConfigurator as Networking.HttpFeatureConfigurator<Any, Logger>,
+                Log.logger
+            )
         )
     }
 
