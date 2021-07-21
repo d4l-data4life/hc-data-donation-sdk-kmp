@@ -36,7 +36,6 @@ import care.data4life.datadonation.Client
 import care.data4life.datadonation.Contract
 import care.data4life.datadonation.core.listener.ListenerContract.Callback
 import care.data4life.datadonation.core.listener.ListenerContract.ResultListener
-import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.ModelContract.Environment
 import care.data4life.datadonation.core.model.UserConsent
@@ -53,6 +52,7 @@ import care.data4life.sdk.util.test.runWithContextBlockingTest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.koin.core.context.stopKoin
 import org.koin.dsl.koinApplication
@@ -60,6 +60,7 @@ import kotlin.test.BeforeTest
 import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 // TODO: use MockEngine and make separated E2E tests
@@ -96,21 +97,19 @@ class ClientTest {
         }
 
         val client = Client(config, koin)
-        val capturedResult = Channel<List<ConsentDocument>>()
 
         // When
         client.fetchConsentDocuments(
             version,
             language,
             consentKey
-        )
-
-        // Then
-        val result = capturedResult.receive()
-        assertEquals(
-            actual = result,
-            expected = emptyList() // TODO use a actual response
-        )
+        ).collect { result ->
+            // Then
+            assertEquals(
+                actual = result,
+                expected = listOf(DummyData.consentDocument)
+            )
+        }
     }
 
     @Test
@@ -118,6 +117,7 @@ class ClientTest {
     fun createUserConsentTest() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val consentKey = "custom-consent-key"
+        val language = "en"
         val version = 42
 
         val config = object : ConfigurationBase() {
@@ -139,39 +139,25 @@ class ClientTest {
         }
 
         val client = Client(config, koin)
-        val capturedConsentDoc = Channel<List<ConsentDocument>>()
-
-        val capturedConsent = Channel<UserConsent>()
-        val consentListener = object : ResultListener<UserConsent> {
-            override fun onSuccess(result: UserConsent) {
-                launch {
-                    capturedConsent.send(result)
-                }
-            }
-
-            override fun onError(exception: Exception) = throw exception
-        }
 
         // When
-        client.createUserConsent(
-            consentKey,
+        client.fetchConsentDocuments(
             version,
-            consentListener
-        )
-
-        val consentDoc = capturedConsentDoc.receive().first()
-        client.createUserConsent(
-            consentDoc.key,
-            consentDoc.version,
-            consentListener
-        )
-        val result = capturedConsent.receive()
-
-        // Then
-        assertEquals(
-            actual = result,
-            expected = DummyData.userConsent // TODO
-        )
+            language,
+            consentKey,
+        ).collect { consentDocuments ->
+            val consentDoc = consentDocuments.first()
+            client.createUserConsent(
+                consentDoc.key,
+                consentDoc.version
+            ).collect { result ->
+                // Then
+                assertSame(
+                    actual = result,
+                    expected = DummyData.userConsent
+                )
+            }
+        }
     }
 
     @Test

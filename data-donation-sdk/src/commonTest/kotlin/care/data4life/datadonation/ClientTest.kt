@@ -70,7 +70,7 @@ class ClientTest {
     }
 
     @Test
-    fun `Given fetchConsentDocuments is called with a ConsentKey it resolves the Usecase returns a runnable Flow which emits a List of ConsentDocument`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+    fun `Given fetchConsentDocuments is called with a ConsentKey it builds and delegates its Parameter to the Usecase and returns a runnable Flow which emits a List of ConsentDocument`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val config = ClientConfigurationStub()
         val usecase = FetchConsentDocumentsStub()
@@ -121,6 +121,64 @@ class ClientTest {
                 version = version,
                 language = language,
                 consentKey = consentKey
+            )
+        )
+    }
+
+    @Test
+    fun `Given createUserConsent is called with a ConsentDocumentVersion and a Language it builds and delegates its Parameter to the Usecase and returns a runnable Flow which emits a UserConsent`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+        // Given
+        val config = ClientConfigurationStub()
+        val usecase = CreateUserConsentStub()
+        val consent = DummyData.userConsent
+
+        val version = 23
+        val consentKey = "custom-consent-key"
+        val keyPair = DummyData.keyPair
+
+        val capturedParameter = Channel<UsecaseContract.CreateUserConsent.Parameter>()
+
+        config.whenGetEnvironment = { Environment.DEV }
+        config.whenGetDonorKeyPair = { keyPair }
+
+        usecase.whenExecute = { delegatedParameter ->
+            launch {
+                capturedParameter.send(delegatedParameter)
+            }
+            consent
+        }
+
+        val di = koinApplication {
+            modules(
+                module {
+                    single {
+                        usecase
+                    } bind UsecaseContract.CreateUserConsent::class
+                }
+            )
+        }
+
+        val client = Client(config, di)
+
+        // When
+        client.createUserConsent(
+            consentKey,
+            version
+        ).collect { result ->
+            // Then
+            assertSame(
+                actual = result,
+                expected = consent
+            )
+        }
+
+        // Then
+        assertEquals(
+            actual = capturedParameter.receive(),
+            expected = CreateUserConsent.Parameter(
+                consentKey = consentKey,
+                version = version,
+                keyPair = keyPair
             )
         )
     }
@@ -284,72 +342,6 @@ class ClientTest {
             actual = capturedParameter,
             expected = RevokeUserConsent.Parameter(
                 consentKey = consentKey,
-            )
-        )
-        assertSame(
-            actual = capturedListener,
-            expected = listener
-        )
-        assertSame(
-            actual = capturedUsecase,
-            expected = usecase
-        )
-    }
-
-    @Test
-    fun `Given createUserConsent is called with a ConsentDocumentVersion, a Language and with a ResultListener it resolves the Usecase with wraps the given Parameter and delegates that to the TaskRunner`() {
-        // Given
-        val config = ClientConfigurationStub()
-        val listener = ResultListenerStub<UserConsent>()
-        val usecase = CreateUserConsentStub()
-
-        val version = 23
-        val consentKey = "custom-consent-key"
-        val keyPair = DummyData.keyPair
-
-        var capturedParameter: UsecaseContract.CreateUserConsent.Parameter? = null
-        var capturedListener: ListenerContract.ResultListener<*>? = null
-        var capturedUsecase: UsecaseContract.Usecase<*, *>? = null
-
-        config.whenGetEnvironment = { Environment.DEV }
-        config.whenGetDonorKeyPair = { keyPair }
-
-        val di = koinApplication {
-            modules(
-                module {
-                    single {
-                        usecase
-                    } bind UsecaseContract.CreateUserConsent::class
-
-                    single {
-                        UsecaseRunnerStub().also {
-                            it.whenRunListener = { delegatedResultListener, delegatedUsecase, delegatedParameter ->
-                                capturedListener = delegatedResultListener
-                                capturedUsecase = delegatedUsecase
-                                capturedParameter = delegatedParameter as UsecaseContract.CreateUserConsent.Parameter
-                            }
-                        }
-                    } bind UsecaseRunnerContract::class
-                }
-            )
-        }
-
-        val client = Client(config, di)
-
-        // When
-        client.createUserConsent(
-            consentKey,
-            version,
-            listener
-        )
-
-        // Then
-        assertEquals(
-            actual = capturedParameter,
-            expected = CreateUserConsent.Parameter(
-                consentKey = consentKey,
-                version = version,
-                keyPair = keyPair
             )
         )
         assertSame(

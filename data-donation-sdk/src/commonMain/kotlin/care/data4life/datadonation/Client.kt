@@ -68,20 +68,15 @@ class Client internal constructor(
 
     override fun createUserConsent(
         consentKey: String,
-        consentDocumentVersion: Int,
-        listener: ListenerContract.ResultListener<UserConsent>
-    ) {
+        consentDocumentVersion: Int
+    ) : Flow<UserConsent> = flow {
         val parameter = CreateUserConsent.Parameter(
-            configuration.getDonorKeyPair(),
+            configuration.getDonorKeyPair(), // TODO: Fix this
             consentKey,
             consentDocumentVersion
         )
 
-        usecaseRunner.run(
-            listener,
-            createUserContent,
-            parameter
-        )
+        emit(createUserContent.execute(parameter))
     }
 
     override fun fetchUserConsents(

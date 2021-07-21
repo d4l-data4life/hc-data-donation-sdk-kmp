@@ -73,9 +73,8 @@ interface Contract {
 
         fun createUserConsent(
             consentKey: String,
-            consentDocumentVersion: Int,
-            listener: ListenerContract.ResultListener<UserConsent>
-        )
+            consentDocumentVersion: Int
+        ) : Flow<UserConsent>
 
         fun fetchUserConsents(
             consentKey: String,
