@@ -8,7 +8,7 @@ gen/
 # IDEA/Android Studio ignores
 *iml
 .idea/*
-
+.idea/compiler.xml
 
 # IDEA/Android Studio includes
 !.idea/vcs.xml

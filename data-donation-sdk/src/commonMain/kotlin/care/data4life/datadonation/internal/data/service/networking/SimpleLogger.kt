@@ -14,16 +14,15 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.data.service
+package care.data4life.datadonation.internal.data.service.networking
 
-import care.data4life.datadonation.lang.CoreRuntimeException
-import io.ktor.client.call.NoTransformationFoundException
-import io.ktor.client.statement.HttpStatement
+import care.data4life.datadonation.internal.data.service.networking.Networking.Logger.Companion.PREFIX
+import care.data4life.sdk.log.Logger
 
-internal suspend inline fun <reified T> receive(request: HttpStatement): T {
-    return try {
-        request.receive()
-    } catch (exception: NoTransformationFoundException) {
-        throw CoreRuntimeException.ResponseTransformFailure()
+internal class SimpleLogger(
+    private val logger: Logger
+) : Networking.Logger {
+    override fun log(message: String) {
+        logger.info("$PREFIX $message")
     }
 }

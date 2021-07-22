@@ -34,11 +34,13 @@ import care.data4life.datadonation.internal.data.service.ServiceContract.Consent
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PATH.SIGNATURES
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PATH.USER_CONSENTS
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.ROOT
+import care.data4life.datadonation.internal.data.service.networking.Networking
+import care.data4life.datadonation.internal.data.service.networking.receive
 import io.ktor.client.HttpClient
 import kotlinx.datetime.Clock
 
 internal class ConsentService private constructor(
-    private val requestBuilderTemplate: ServiceContract.RequestBuilderTemplate,
+    private val requestBuilderTemplate: Networking.RequestBuilderTemplate,
     private val clock: Clock
 ) : ServiceContract.ConsentService {
     private fun buildPath(
@@ -71,7 +73,7 @@ internal class ConsentService private constructor(
             .setAccessToken(accessToken)
             .setParameter(parameter)
             .prepare(
-                ServiceContract.Method.GET,
+                Networking.Method.GET,
                 path
             )
 
@@ -94,7 +96,7 @@ internal class ConsentService private constructor(
             .setAccessToken(accessToken)
             .setParameter(parameter)
             .prepare(
-                ServiceContract.Method.GET,
+                Networking.Method.GET,
                 path
             )
 
@@ -119,7 +121,7 @@ internal class ConsentService private constructor(
             .useJsonContentType()
             .setBody(payload)
             .prepare(
-                ServiceContract.Method.POST,
+                Networking.Method.POST,
                 path
             )
 
@@ -149,7 +151,7 @@ internal class ConsentService private constructor(
             .useJsonContentType()
             .setBody(payload)
             .prepare(
-                ServiceContract.Method.POST,
+                Networking.Method.POST,
                 path
             )
 
@@ -178,7 +180,7 @@ internal class ConsentService private constructor(
             .useJsonContentType()
             .setBody(payload)
             .prepare(
-                ServiceContract.Method.PUT,
+                Networking.Method.PUT,
                 path
             )
 
@@ -195,7 +197,7 @@ internal class ConsentService private constructor(
             .useJsonContentType()
             .setBody(payload)
             .prepare(
-                ServiceContract.Method.DELETE,
+                Networking.Method.DELETE,
                 path
             )
 
@@ -214,7 +216,7 @@ internal class ConsentService private constructor(
         override fun getInstance(
             environment: Environment,
             client: HttpClient,
-            builderTemplateFactory: ServiceContract.RequestBuilderTemplateFactory,
+            builderTemplateFactory: Networking.RequestBuilderTemplateFactory,
             clock: Clock
         ): ServiceContract.ConsentService {
             val requestBuilder = builderTemplateFactory.getInstance(

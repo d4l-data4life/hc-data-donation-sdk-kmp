@@ -14,14 +14,14 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.mock.spy
+package care.data4life.datadonation.mock.stub.service.networking
 
 import care.data4life.datadonation.core.model.Environment
-import care.data4life.datadonation.internal.data.service.AccessToken
-import care.data4life.datadonation.internal.data.service.Header
-import care.data4life.datadonation.internal.data.service.Parameter
-import care.data4life.datadonation.internal.data.service.Path
-import care.data4life.datadonation.internal.data.service.ServiceContract
+import care.data4life.datadonation.internal.data.service.networking.AccessToken
+import care.data4life.datadonation.internal.data.service.networking.Header
+import care.data4life.datadonation.internal.data.service.networking.Networking
+import care.data4life.datadonation.internal.data.service.networking.Parameter
+import care.data4life.datadonation.internal.data.service.networking.Path
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 import io.ktor.client.HttpClient
@@ -29,8 +29,8 @@ import io.ktor.client.statement.HttpStatement
 import kotlin.native.concurrent.ThreadLocal
 
 internal class RequestBuilderSpy private constructor(
-    private val onPrepare: ((ServiceContract.Method, Path) -> HttpStatement)?
-) : ServiceContract.RequestBuilder, ServiceContract.RequestBuilderTemplate {
+    private val onPrepare: ((Networking.Method, Path) -> HttpStatement)?
+) : Networking.RequestBuilder, Networking.RequestBuilderTemplate {
     private var headers: Header? = null
     val delegatedHeaders: Header?
         get() = headers
@@ -55,23 +55,23 @@ internal class RequestBuilderSpy private constructor(
     val createdInstances: Int
         get() = instanceCounter
 
-    override fun setHeaders(header: Header): ServiceContract.RequestBuilder {
+    override fun setHeaders(header: Header): Networking.RequestBuilder {
         return this.also { this.headers = header }
     }
 
-    override fun setParameter(parameter: Parameter): ServiceContract.RequestBuilder {
+    override fun setParameter(parameter: Parameter): Networking.RequestBuilder {
         return this.also { this.parameter = parameter }
     }
 
-    override fun setAccessToken(token: AccessToken): ServiceContract.RequestBuilder {
+    override fun setAccessToken(token: AccessToken): Networking.RequestBuilder {
         return this.also { this.token = token }
     }
 
-    override fun useJsonContentType(): ServiceContract.RequestBuilder {
+    override fun useJsonContentType(): Networking.RequestBuilder {
         return this.also { json = true }
     }
 
-    override fun setBody(body: Any): ServiceContract.RequestBuilder {
+    override fun setBody(body: Any): Networking.RequestBuilder {
         return this.also { this.body = body }
     }
 
@@ -83,7 +83,7 @@ internal class RequestBuilderSpy private constructor(
         body = null
     }
 
-    override fun create(): ServiceContract.RequestBuilder {
+    override fun create(): Networking.RequestBuilder {
         return this.also {
             clear()
             instanceCounter++
@@ -91,7 +91,7 @@ internal class RequestBuilderSpy private constructor(
     }
 
     override fun prepare(
-        method: ServiceContract.Method,
+        method: Networking.Method,
         path: Path
     ): HttpStatement {
         return onPrepare?.invoke(
@@ -101,8 +101,8 @@ internal class RequestBuilderSpy private constructor(
     }
 
     @ThreadLocal
-    companion object TemplateFactory : ServiceContract.RequestBuilderTemplateFactory, MockContract.Spy {
-        var onPrepare: ((ServiceContract.Method, Path) -> HttpStatement)? = null
+    companion object TemplateFactory : Networking.RequestBuilderTemplateFactory, MockContract.Spy {
+        var onPrepare: ((Networking.Method, Path) -> HttpStatement)? = null
 
         private var environment: Environment? = null
         val delegatedEnvironment: Environment?
@@ -124,7 +124,7 @@ internal class RequestBuilderSpy private constructor(
             environment: Environment,
             client: HttpClient,
             port: Int?
-        ): ServiceContract.RequestBuilderTemplate {
+        ): Networking.RequestBuilderTemplate {
             return RequestBuilderSpy(onPrepare).also {
                 this.environment = environment
                 this.client = client

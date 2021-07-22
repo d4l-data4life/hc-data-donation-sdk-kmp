@@ -14,14 +14,14 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.data.service
+package care.data4life.datadonation.internal.data.service.networking
 
 import care.data4life.datadonation.core.model.Environment
-import care.data4life.datadonation.internal.data.service.ServiceContract.RequestBuilder.Companion.ACCESS_TOKEN_FIELD
-import care.data4life.datadonation.internal.data.service.ServiceContract.RequestBuilder.Companion.ACCESS_TOKEN_VALUE_PREFIX
+import care.data4life.datadonation.internal.data.service.networking.Networking.RequestBuilder.Companion.ACCESS_TOKEN_FIELD
+import care.data4life.datadonation.internal.data.service.networking.Networking.RequestBuilder.Companion.ACCESS_TOKEN_VALUE_PREFIX
 import care.data4life.datadonation.lang.CoreRuntimeException
+import care.data4life.datadonation.mock.fake.createDefaultMockClient
 import care.data4life.datadonation.mock.fake.defaultResponse
-import care.data4life.datadonation.mock.fake.getDefaultMockClient
 import care.data4life.sdk.util.test.runWithContextBlockingTest
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
@@ -58,33 +58,33 @@ class RequestBuilderTest {
     fun `It fulfils RequestBuilderTemplateFactory`() {
         val factory: Any = RequestBuilder
 
-        assertTrue(factory is ServiceContract.RequestBuilderTemplateFactory)
+        assertTrue(factory is Networking.RequestBuilderTemplateFactory)
     }
 
     @Test
     fun `Given getInstance is called with a Environment and a HttpClient it returns a RequestBuilderTemplate`() {
         // Given
         val env = Environment.LOCAL
-        val client = getDefaultMockClient()
+        val client = createDefaultMockClient()
 
         // When
         val builder: Any = RequestBuilder.getInstance(env, client).create()
 
         // Then
-        assertTrue(builder is ServiceContract.RequestBuilderTemplate)
+        assertTrue(builder is Networking.RequestBuilderTemplate)
     }
 
     @Test
     fun `Given create is called with a Environment and a HttpClient it returns a RequestBuilder`() {
         // Given
         val env = Environment.LOCAL
-        val client = getDefaultMockClient()
+        val client = createDefaultMockClient()
 
         // When
         val builder: Any = RequestBuilder.getInstance(env, client).create()
 
         // Then
-        assertTrue(builder is ServiceContract.RequestBuilder)
+        assertTrue(builder is Networking.RequestBuilder)
     }
 
     @Test
@@ -433,12 +433,12 @@ class RequestBuilderTest {
     fun `Given a instance was create with a Environment, setBody is called with a Payload and it was prepared and executed with GET, it fails`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val env = Environment.LOCAL
-        val client = getDefaultMockClient()
+        val client = createDefaultMockClient()
 
         val error = assertFailsWith<CoreRuntimeException.RequestValidationFailure> {
             // When
             val builder = RequestBuilder.getInstance(env, client).create()
-            builder.setBody("Wups").prepare(ServiceContract.Method.GET)
+            builder.setBody("Wups").prepare(Networking.Method.GET)
         }
 
         // Then
@@ -452,13 +452,13 @@ class RequestBuilderTest {
     fun `Given a instance was create with a Environment, setBody was not called and it was prepared and executed with POST, it fails`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val env = Environment.LOCAL
-        val client = getDefaultMockClient()
+        val client = createDefaultMockClient()
 
         // When
         val error = assertFailsWith<CoreRuntimeException.RequestValidationFailure> {
             // When
             val builder = RequestBuilder.getInstance(env, client).create()
-            builder.prepare(ServiceContract.Method.POST)
+            builder.prepare(Networking.Method.POST)
         }
 
         // Then
@@ -472,12 +472,12 @@ class RequestBuilderTest {
     fun `Given a instance was create with a Environment, setBody was not called and it was prepared and executed with PUT, it fails`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val env = Environment.LOCAL
-        val client = getDefaultMockClient()
+        val client = createDefaultMockClient()
 
         val error = assertFailsWith<CoreRuntimeException.RequestValidationFailure> {
             // When
             val builder = RequestBuilder.getInstance(env, client).create()
-            builder.prepare(ServiceContract.Method.PUT)
+            builder.prepare(Networking.Method.PUT)
         }
 
         // Then
@@ -491,12 +491,12 @@ class RequestBuilderTest {
     fun `Given a instance was create with a Environment, setBody was not called and it was prepared and executed with DELETE, it fails`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val env = Environment.LOCAL
-        val client = getDefaultMockClient()
+        val client = createDefaultMockClient()
 
         val error = assertFailsWith<CoreRuntimeException.RequestValidationFailure> {
             // When
             val builder = RequestBuilder.getInstance(env, client).create()
-            builder.prepare(ServiceContract.Method.DELETE)
+            builder.prepare(Networking.Method.DELETE)
         }
 
         // Then
@@ -522,7 +522,7 @@ class RequestBuilderTest {
 
         // When
         val builder = RequestBuilder.getInstance(env, client).create()
-        builder.setBody(payload).prepare(ServiceContract.Method.POST)
+        builder.setBody(payload).prepare(Networking.Method.POST)
     }
 
     @KtorExperimentalAPI
@@ -547,7 +547,7 @@ class RequestBuilderTest {
 
         // When
         val builder = RequestBuilder.getInstance(env, client).create()
-        builder.setBody(payload).prepare(ServiceContract.Method.POST)
+        builder.setBody(payload).prepare(Networking.Method.POST)
     }
 
     @Test
@@ -566,7 +566,7 @@ class RequestBuilderTest {
 
         // When
         val builder = RequestBuilder.getInstance(env, client).create()
-        builder.setBody(payload).prepare(ServiceContract.Method.PUT)
+        builder.setBody(payload).prepare(Networking.Method.PUT)
     }
 
     @KtorExperimentalAPI
@@ -592,7 +592,7 @@ class RequestBuilderTest {
 
         // When
         val builder = RequestBuilder.getInstance(env, client).create()
-        builder.setBody(payload).prepare(ServiceContract.Method.PUT)
+        builder.setBody(payload).prepare(Networking.Method.PUT)
     }
 
     @Test
@@ -611,7 +611,7 @@ class RequestBuilderTest {
 
         // When
         val builder = RequestBuilder.getInstance(env, client).create()
-        builder.setBody(payload).prepare(ServiceContract.Method.DELETE)
+        builder.setBody(payload).prepare(Networking.Method.DELETE)
     }
 
     @KtorExperimentalAPI
@@ -637,6 +637,6 @@ class RequestBuilderTest {
 
         // When
         val builder = RequestBuilder.getInstance(env, client).create()
-        builder.setBody(payload).prepare(ServiceContract.Method.DELETE)
+        builder.setBody(payload).prepare(Networking.Method.DELETE)
     }
 }

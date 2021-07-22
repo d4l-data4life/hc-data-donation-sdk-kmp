@@ -21,60 +21,15 @@ import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.model.ConsentSignature
 import care.data4life.datadonation.internal.data.model.DonationPayload
+import care.data4life.datadonation.internal.data.service.networking.Networking
 import io.ktor.client.HttpClient
-import io.ktor.client.statement.HttpStatement
 import kotlinx.datetime.Clock
-
-internal typealias Header = Map<String, String>
-internal typealias Parameter = Map<String, Any?>
-internal typealias AccessToken = String
-internal typealias Path = List<String>
 
 internal typealias SessionToken = String
 internal typealias DataDonationKey = String
 internal typealias AnalyticsKey = String
 
 internal interface ServiceContract {
-    enum class Method(name: String) {
-        DELETE("delete"),
-        GET("get"),
-        POST("post"),
-        PUT("put")
-    }
-
-    // TODO Add a new package with potential HTTP Interceptor
-    interface RequestBuilder {
-        fun setHeaders(header: Header): RequestBuilder
-        fun setParameter(parameter: Parameter): RequestBuilder
-        fun setAccessToken(token: AccessToken): RequestBuilder
-        fun useJsonContentType(): RequestBuilder
-        fun setBody(body: Any): RequestBuilder
-
-        fun create(): RequestBuilder
-
-        fun prepare(
-            method: Method = Method.GET,
-            path: Path = listOf("")
-        ): HttpStatement
-
-        companion object {
-            const val ACCESS_TOKEN_FIELD = "Authorization"
-            const val ACCESS_TOKEN_VALUE_PREFIX = "Bearer"
-        }
-    }
-
-    interface RequestBuilderTemplate {
-        fun create(): RequestBuilder
-    }
-
-    interface RequestBuilderTemplateFactory {
-        fun getInstance(
-            environment: Environment,
-            client: HttpClient,
-            port: Int? = null
-        ): RequestBuilderTemplate
-    }
-
     interface CredentialService {
         fun getDataDonationPublicKey(): DataDonationKey
         fun getAnalyticsPlatformPublicKey(): AnalyticsKey
@@ -138,7 +93,7 @@ internal interface ServiceContract {
         fun getInstance(
             environment: Environment,
             client: HttpClient,
-            builderTemplateFactory: RequestBuilderTemplateFactory,
+            builderTemplateFactory: Networking.RequestBuilderTemplateFactory,
             clock: Clock
         ): ConsentService
     }

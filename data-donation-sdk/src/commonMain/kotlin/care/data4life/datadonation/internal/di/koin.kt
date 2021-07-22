@@ -37,6 +37,7 @@ import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.encryption.resolveEncryptionModule
 import care.data4life.datadonation.internal.data.service.DonationService
 import care.data4life.datadonation.internal.data.service.ServiceContract
+import care.data4life.datadonation.internal.data.service.networking.resolveNetworking
 import care.data4life.datadonation.internal.data.service.resolveServiceModule
 import care.data4life.datadonation.internal.domain.repository.resolveRepositoryModule
 import care.data4life.datadonation.internal.domain.usecases.*
@@ -44,10 +45,6 @@ import care.data4life.datadonation.internal.runner.CredentialProvider
 import care.data4life.datadonation.internal.runner.ScopeProvider
 import care.data4life.datadonation.internal.runner.UserSessionTokenProvider
 import care.data4life.datadonation.internal.runner.resolveUsecaseRunnerModule
-import io.ktor.client.*
-import io.ktor.client.features.json.*
-import io.ktor.client.features.json.serializer.*
-import io.ktor.client.features.logging.*
 import kotlinx.datetime.Clock
 import org.koin.core.KoinApplication
 import org.koin.core.module.Module
@@ -61,6 +58,7 @@ internal fun initKoin(configuration: Contract.Configuration): KoinApplication {
         modules(
             resolveRootModule(configuration),
             resolveCoreModule(),
+            resolveNetworking(),
             resolveUsecaseRunnerModule(),
             resolveUsecaseModule(),
             resolveRepositoryModule(),
@@ -89,35 +87,9 @@ internal fun resolveRootModule(configuration: Contract.Configuration): Module {
 
 internal fun resolveCoreModule(): Module {
     return module {
-        single {
-            HttpClient {
-                install(JsonFeature) {
-                    serializer =
-                        KotlinxSerializer(
-                            kotlinx.serialization.json.Json {
-                                isLenient = true
-                                ignoreUnknownKeys = true
-                                allowSpecialFloatingPointValues = true
-                                useArrayPolymorphism = false
-                            }
-                        )
-                }
-                install(Logging) {
-                    logger = SimpleLogger()
-                    level = LogLevel.ALL
-                }
-            }
-        }
-
         // Services
         single<ServiceContract.DonationService> {
             DonationService(get(), get())
         }
-    }
-}
-
-private class SimpleLogger : Logger {
-    override fun log(message: String) {
-        println("HttpClient: $message")
     }
 }

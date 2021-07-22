@@ -14,23 +14,21 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.data.service
+package care.data4life.datadonation.mock.stub.service.networking
 
-import org.koin.core.module.Module
-import org.koin.dsl.module
+import care.data4life.datadonation.internal.data.service.networking.Networking
+import care.data4life.datadonation.mock.MockContract
+import care.data4life.datadonation.mock.MockException
+import kotlinx.serialization.json.JsonBuilder
 
-internal fun resolveServiceModule(): Module {
-    return module {
-        single<ServiceContract.ConsentService> {
-            ConsentService.getInstance(get(), get(), get(), get())
-        }
+class JsonConfiguratorStub : Networking.JsonConfigurator, MockContract.Stub {
+    var whenConfigure: ((JsonBuilder) -> JsonBuilder)? = null
 
-        single<ServiceContract.CredentialService> {
-            CredentialService(get())
-        }
+    override fun configure(jsonBuild: JsonBuilder): JsonBuilder {
+        return whenConfigure?.invoke(jsonBuild) ?: throw MockException()
+    }
 
-        single<ServiceContract.UserSessionTokenService> {
-            CachedUserSessionTokenService(get(), get())
-        }
+    override fun clear() {
+        whenConfigure = null
     }
 }

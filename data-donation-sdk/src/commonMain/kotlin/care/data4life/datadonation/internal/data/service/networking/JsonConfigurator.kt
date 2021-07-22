@@ -14,23 +14,17 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.data.service
+package care.data4life.datadonation.internal.data.service.networking
 
-import org.koin.core.module.Module
-import org.koin.dsl.module
+import kotlinx.serialization.json.JsonBuilder
 
-internal fun resolveServiceModule(): Module {
-    return module {
-        single<ServiceContract.ConsentService> {
-            ConsentService.getInstance(get(), get(), get(), get())
-        }
+internal object JsonConfigurator : Networking.JsonConfigurator {
+    override fun configure(jsonBuild: JsonBuilder): JsonBuilder {
+        jsonBuild.isLenient = true
+        jsonBuild.ignoreUnknownKeys = true
+        jsonBuild.allowSpecialFloatingPointValues = true
+        jsonBuild.useArrayPolymorphism = false
 
-        single<ServiceContract.CredentialService> {
-            CredentialService(get())
-        }
-
-        single<ServiceContract.UserSessionTokenService> {
-            CachedUserSessionTokenService(get(), get())
-        }
+        return jsonBuild
     }
 }

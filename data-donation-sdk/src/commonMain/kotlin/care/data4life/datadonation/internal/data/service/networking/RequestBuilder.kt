@@ -14,11 +14,11 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.data.service
+package care.data4life.datadonation.internal.data.service.networking
 
 import care.data4life.datadonation.core.model.Environment
-import care.data4life.datadonation.internal.data.service.ServiceContract.RequestBuilder.Companion.ACCESS_TOKEN_FIELD
-import care.data4life.datadonation.internal.data.service.ServiceContract.RequestBuilder.Companion.ACCESS_TOKEN_VALUE_PREFIX
+import care.data4life.datadonation.internal.data.service.networking.Networking.RequestBuilder.Companion.ACCESS_TOKEN_FIELD
+import care.data4life.datadonation.internal.data.service.networking.Networking.RequestBuilder.Companion.ACCESS_TOKEN_VALUE_PREFIX
 import care.data4life.datadonation.lang.CoreRuntimeException
 import io.ktor.client.HttpClient
 import io.ktor.client.request.HttpRequestBuilder
@@ -37,42 +37,42 @@ internal class RequestBuilder private constructor(
     private val host: String,
     private val protocol: URLProtocol,
     private val port: Int?
-) : ServiceContract.RequestBuilder, ServiceContract.RequestBuilderTemplate {
+) : Networking.RequestBuilder, Networking.RequestBuilderTemplate {
     private var headers: Header = emptyMap()
     private var parameter: Parameter = emptyMap()
     private var accessToken: AccessToken? = null
     private var useJson: Boolean = false
     private var body: Any? = null
 
-    override fun setHeaders(header: Header): ServiceContract.RequestBuilder {
+    override fun setHeaders(header: Header): Networking.RequestBuilder {
         return this.also { this.headers = header }
     }
 
-    override fun setParameter(parameter: Parameter): ServiceContract.RequestBuilder {
+    override fun setParameter(parameter: Parameter): Networking.RequestBuilder {
         return this.also { this.parameter = parameter }
     }
 
-    override fun setAccessToken(token: AccessToken): ServiceContract.RequestBuilder {
+    override fun setAccessToken(token: AccessToken): Networking.RequestBuilder {
         return this.also { this.accessToken = token }
     }
 
-    override fun useJsonContentType(): ServiceContract.RequestBuilder {
+    override fun useJsonContentType(): Networking.RequestBuilder {
         return this.also { this.useJson = true }
     }
 
-    override fun setBody(body: Any): ServiceContract.RequestBuilder {
+    override fun setBody(body: Any): Networking.RequestBuilder {
         return this.also { this.body = body }
     }
 
-    private fun validateBodyAgainstMethod(method: ServiceContract.Method) {
+    private fun validateBodyAgainstMethod(method: Networking.Method) {
         if (body != null) {
-            if (method == ServiceContract.Method.GET) {
+            if (method == Networking.Method.GET) {
                 throw CoreRuntimeException.RequestValidationFailure(
                     "GET cannot be combined with a RequestBody."
                 )
             }
         } else {
-            if (method != ServiceContract.Method.GET) {
+            if (method != Networking.Method.GET) {
                 throw CoreRuntimeException.RequestValidationFailure(
                     "${method.name.toUpperCase()} must be combined with a RequestBody."
                 )
@@ -88,7 +88,7 @@ internal class RequestBuilder private constructor(
 
     private fun setMandatoryFields(
         builder: HttpRequestBuilder,
-        method: ServiceContract.Method,
+        method: Networking.Method,
         path: Path
     ) {
         validateBodyAgainstMethod(method)
@@ -135,7 +135,7 @@ internal class RequestBuilder private constructor(
 
     private fun buildQuery(
         builder: HttpRequestBuilder,
-        method: ServiceContract.Method,
+        method: Networking.Method,
         path: Path
     ): HttpRequestBuilder {
         setMandatoryFields(builder, method, path)
@@ -148,7 +148,7 @@ internal class RequestBuilder private constructor(
     }
 
     override fun prepare(
-        method: ServiceContract.Method,
+        method: Networking.Method,
         path: Path
     ): HttpStatement {
         return HttpStatement(
@@ -161,7 +161,7 @@ internal class RequestBuilder private constructor(
         )
     }
 
-    override fun create(): ServiceContract.RequestBuilder {
+    override fun create(): Networking.RequestBuilder {
         return RequestBuilder(
             client,
             host,
@@ -170,7 +170,7 @@ internal class RequestBuilder private constructor(
         )
     }
 
-    companion object : ServiceContract.RequestBuilderTemplateFactory {
+    companion object : Networking.RequestBuilderTemplateFactory {
         private fun resolveProtocol(environment: Environment): URLProtocol {
             return if (environment == Environment.LOCAL) {
                 URLProtocol.HTTP
@@ -183,7 +183,7 @@ internal class RequestBuilder private constructor(
             environment: Environment,
             client: HttpClient,
             port: Int?
-        ): ServiceContract.RequestBuilderTemplate {
+        ): Networking.RequestBuilderTemplate {
             return RequestBuilder(
                 client,
                 environment.url,

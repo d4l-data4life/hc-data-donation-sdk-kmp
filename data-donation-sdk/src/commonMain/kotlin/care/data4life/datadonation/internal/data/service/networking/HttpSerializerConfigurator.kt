@@ -14,23 +14,17 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.data.service
+package care.data4life.datadonation.internal.data.service.networking
 
-import org.koin.core.module.Module
-import org.koin.dsl.module
+import io.ktor.client.features.json.JsonFeature
+import io.ktor.client.features.json.serializer.KotlinxSerializer
+import kotlinx.serialization.json.Json
 
-internal fun resolveServiceModule(): Module {
-    return module {
-        single<ServiceContract.ConsentService> {
-            ConsentService.getInstance(get(), get(), get(), get())
-        }
-
-        single<ServiceContract.CredentialService> {
-            CredentialService(get())
-        }
-
-        single<ServiceContract.UserSessionTokenService> {
-            CachedUserSessionTokenService(get(), get())
-        }
+internal object HttpSerializerConfigurator :
+    Networking.HttpSerializerConfigurator {
+    override fun configure(pluginConfiguration: JsonFeature.Config, subConfiguration: Networking.JsonConfigurator) {
+        pluginConfiguration.serializer = KotlinxSerializer(
+            Json { subConfiguration.configure(this) }
+        )
     }
 }

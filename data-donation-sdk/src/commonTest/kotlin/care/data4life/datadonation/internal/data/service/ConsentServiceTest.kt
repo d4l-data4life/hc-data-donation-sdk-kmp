@@ -30,12 +30,14 @@ import care.data4life.datadonation.internal.data.service.ServiceContract.Consent
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PATH.CONSENTS_DOCUMENTS
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PATH.SIGNATURES
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PATH.USER_CONSENTS
+import care.data4life.datadonation.internal.data.service.networking.Networking
+import care.data4life.datadonation.internal.data.service.networking.Path
 import care.data4life.datadonation.lang.CoreRuntimeException
 import care.data4life.datadonation.mock.DummyData
+import care.data4life.datadonation.mock.fake.createDefaultMockClient
 import care.data4life.datadonation.mock.fake.createMockClientWithResponse
-import care.data4life.datadonation.mock.fake.getDefaultMockClient
-import care.data4life.datadonation.mock.spy.RequestBuilderSpy
 import care.data4life.datadonation.mock.stub.ClockStub
+import care.data4life.datadonation.mock.stub.service.networking.RequestBuilderSpy
 import care.data4life.sdk.util.test.runBlockingTest
 import io.ktor.client.engine.mock.respond
 import io.ktor.client.request.HttpRequestBuilder
@@ -68,7 +70,7 @@ class ConsentServiceTest {
     @Test
     fun `Given getInstance is called with a Environment, a HTTPClient, Clock and a requestBuilderFactory it returns a ConsentService`() {
         // Given
-        val client = getDefaultMockClient()
+        val client = createDefaultMockClient()
         val env = Environment.LOCAL
 
         // When
@@ -81,7 +83,7 @@ class ConsentServiceTest {
     @Test
     fun `Given getInstance is called with a non LOCAL Environment, a HTTPClient, Clock and a requestBuilderFactory it initialises a requestBuilder, while delegating the HTTPClient and Environment`() {
         // Given
-        val client = getDefaultMockClient()
+        val client = createDefaultMockClient()
         val env = Environment.STAGING
 
         // When
@@ -102,7 +104,7 @@ class ConsentServiceTest {
     @Test
     fun `Given getInstance is called with a LOCAL Environment, a HTTPClient, Clock and a requestBuilderFactory it initialises a requestBuilder, while delegating the HTTPClient, LOCAL_PORT and Environment`() {
         // Given
-        val client = getDefaultMockClient()
+        val client = createDefaultMockClient()
         val env = Environment.LOCAL
 
         // When
@@ -171,7 +173,7 @@ class ConsentServiceTest {
         val language = "zh-TW-hans-de-informal-x-old"
         val consentKey = "tomato"
 
-        var capturedMethod: ServiceContract.Method? = null
+        var capturedMethod: Networking.Method? = null
         var capturedPath: Path? = null
         val response = listOf(
             DummyData.consentDocument,
@@ -207,7 +209,7 @@ class ConsentServiceTest {
         )
         assertEquals(
             actual = capturedMethod,
-            expected = ServiceContract.Method.GET
+            expected = Networking.Method.GET
         )
         assertEquals(
             actual = capturedPath,
@@ -278,7 +280,7 @@ class ConsentServiceTest {
         val lastedConsent = true
         val consentKey = "tomato"
 
-        var capturedMethod: ServiceContract.Method? = null
+        var capturedMethod: Networking.Method? = null
         var capturedPath: Path? = null
         val response = listOf(
             DummyData.userConsent,
@@ -316,7 +318,7 @@ class ConsentServiceTest {
         )
         assertEquals(
             actual = capturedMethod,
-            expected = ServiceContract.Method.GET
+            expected = Networking.Method.GET
         )
         assertEquals(
             actual = capturedPath,
@@ -351,7 +353,7 @@ class ConsentServiceTest {
         val consentKey = "custom-consent-key"
         val version = 23
 
-        var capturedMethod: ServiceContract.Method? = null
+        var capturedMethod: Networking.Method? = null
         var capturedPath: Path? = null
         val expectedTime = Instant.DISTANT_PAST
 
@@ -390,7 +392,7 @@ class ConsentServiceTest {
 
         assertEquals(
             actual = capturedMethod,
-            expected = ServiceContract.Method.POST
+            expected = Networking.Method.POST
         )
         assertEquals(
             actual = capturedPath,
@@ -460,7 +462,7 @@ class ConsentServiceTest {
         val accessToken = "potato"
         val message = "tomato"
 
-        var capturedMethod: ServiceContract.Method? = null
+        var capturedMethod: Networking.Method? = null
         var capturedPath: Path? = null
         val response = DummyData.consentSignature
 
@@ -490,7 +492,7 @@ class ConsentServiceTest {
         // Then
         assertEquals(
             actual = capturedMethod,
-            expected = ServiceContract.Method.POST
+            expected = Networking.Method.POST
         )
         assertEquals(
             actual = capturedPath,
@@ -564,7 +566,7 @@ class ConsentServiceTest {
         val accessToken = "potato"
         val message = "tomato"
 
-        var capturedMethod: ServiceContract.Method? = null
+        var capturedMethod: Networking.Method? = null
         var capturedPath: Path? = null
         val response = DummyData.consentSignature
 
@@ -594,7 +596,7 @@ class ConsentServiceTest {
         // Then
         assertEquals(
             actual = capturedMethod,
-            expected = ServiceContract.Method.PUT
+            expected = Networking.Method.PUT
         )
         assertEquals(
             actual = capturedPath,
@@ -632,7 +634,7 @@ class ConsentServiceTest {
         val accessToken = "potato"
         val consentKey = "custom-consent-key"
 
-        var capturedMethod: ServiceContract.Method? = null
+        var capturedMethod: Networking.Method? = null
         var capturedPath: Path? = null
 
         val client = createMockClientWithResponse { scope ->
@@ -664,7 +666,7 @@ class ConsentServiceTest {
 
         assertEquals(
             actual = capturedMethod,
-            expected = ServiceContract.Method.DELETE
+            expected = Networking.Method.DELETE
         )
         assertEquals(
             actual = capturedPath,

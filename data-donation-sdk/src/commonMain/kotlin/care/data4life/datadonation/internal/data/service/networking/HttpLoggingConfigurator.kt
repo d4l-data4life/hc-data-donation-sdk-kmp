@@ -14,23 +14,16 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.data.service
+package care.data4life.datadonation.internal.data.service.networking
 
-import org.koin.core.module.Module
-import org.koin.dsl.module
+import care.data4life.sdk.log.Logger
+import io.ktor.client.features.logging.LogLevel
+import io.ktor.client.features.logging.Logging
 
-internal fun resolveServiceModule(): Module {
-    return module {
-        single<ServiceContract.ConsentService> {
-            ConsentService.getInstance(get(), get(), get(), get())
-        }
-
-        single<ServiceContract.CredentialService> {
-            CredentialService(get())
-        }
-
-        single<ServiceContract.UserSessionTokenService> {
-            CachedUserSessionTokenService(get(), get())
-        }
+internal object HttpLoggingConfigurator :
+    Networking.HttpLoggingConfigurator {
+    override fun configure(pluginConfiguration: Logging.Config, subConfiguration: Logger) {
+        pluginConfiguration.logger = SimpleLogger(subConfiguration)
+        pluginConfiguration.level = LogLevel.ALL
     }
 }

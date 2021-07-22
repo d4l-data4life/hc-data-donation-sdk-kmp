@@ -14,23 +14,16 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.data.service
+package care.data4life.datadonation.internal.data.service.networking
 
-import org.koin.core.module.Module
-import org.koin.dsl.module
+import care.data4life.datadonation.lang.CoreRuntimeException
+import io.ktor.client.call.NoTransformationFoundException
+import io.ktor.client.statement.HttpStatement
 
-internal fun resolveServiceModule(): Module {
-    return module {
-        single<ServiceContract.ConsentService> {
-            ConsentService.getInstance(get(), get(), get(), get())
-        }
-
-        single<ServiceContract.CredentialService> {
-            CredentialService(get())
-        }
-
-        single<ServiceContract.UserSessionTokenService> {
-            CachedUserSessionTokenService(get(), get())
-        }
+internal suspend inline fun <reified T> receive(request: HttpStatement): T {
+    return try {
+        request.receive()
+    } catch (exception: NoTransformationFoundException) {
+        throw CoreRuntimeException.ResponseTransformFailure()
     }
 }

@@ -28,7 +28,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.headersOf
 import io.ktor.util.AttributeKey
 
-fun getDefaultMockClient(): HttpClient {
+fun createDefaultMockClient(): HttpClient {
     return HttpClient(MockEngine) {
         engine {
             addHandler {

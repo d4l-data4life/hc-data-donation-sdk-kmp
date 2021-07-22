@@ -143,7 +143,7 @@ class KoinTest {
     }
 
     @Test
-    fun `Given initKoin is called with a Configuration, the resulting KoinApplication contains a TaskRunner`() {
+    fun `Given initKoin is called with a Configuration, the resulting KoinApplication contains a UseCaseRunner`() {
         // Given
         config.whenGetEnvironment = { Environment.LOCAL }
         // When
