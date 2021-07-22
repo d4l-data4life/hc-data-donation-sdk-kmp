@@ -42,11 +42,11 @@ internal fun resolveUsecaseModule(): Module {
             )
         }
 
-        single<UsecaseContract.RedactSensitiveInformation> {
+        factory<UsecaseContract.RedactSensitiveInformation> {
             RedactSensitiveInformation()
         }
 
-        single {
+        factory {
             RegisterNewDonor(
                 get(),
                 get()
@@ -65,7 +65,7 @@ internal fun resolveUsecaseModule(): Module {
             FetchUserConsents(get())
         }
 
-        single {
+        factory {
             RemoveInternalInformation(kotlinx.serialization.json.Json {})
         }
 

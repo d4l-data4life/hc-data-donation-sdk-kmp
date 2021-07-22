@@ -20,6 +20,8 @@ import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.model.ConsentSignature
 import care.data4life.datadonation.internal.data.model.DonationPayload
+import care.data4life.datadonation.lang.ConsentServiceError
+import care.data4life.datadonation.lang.HttpRuntimeError
 
 internal typealias SessionToken = String
 internal typealias DataDonationKey = String
@@ -82,6 +84,15 @@ internal interface ServiceContract {
                 const val CONSENTS_DOCUMENTS = "consentDocuments"
                 const val SIGNATURES = "signatures"
             }
+        }
+
+        interface ConsentErrorHandler {
+            fun handleFetchConsentDocuments(error: HttpRuntimeError): ConsentServiceError
+            fun handleFetchUserConsents(error: HttpRuntimeError): ConsentServiceError
+            fun handleCreateUserConsent(error: HttpRuntimeError): ConsentServiceError
+            fun handleRequestSignatureConsentRegistration(error: HttpRuntimeError): ConsentServiceError
+            fun handleRequestSignatureDonation(error: HttpRuntimeError): ConsentServiceError
+            fun handleRevokeUserConsent(error: HttpRuntimeError): ConsentServiceError
         }
     }
 

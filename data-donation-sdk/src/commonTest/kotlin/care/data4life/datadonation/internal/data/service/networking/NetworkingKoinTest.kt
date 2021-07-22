@@ -17,21 +17,18 @@
 package care.data4life.datadonation.internal.data.service.networking
 
 import care.data4life.datadonation.core.model.ModelContract
+import care.data4life.datadonation.mock.fake.createDefaultMockClient
 import care.data4life.datadonation.mock.stub.service.networking.HttpClientConfiguratorStub
 import care.data4life.datadonation.mock.stub.service.networking.HttpPluginConfiguratorStub
-import care.data4life.sdk.log.Log
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.features.HttpClientFeature
-import io.ktor.client.features.json.JsonFeature
-import io.ktor.client.features.logging.Logging
 import io.ktor.util.AttributeKey
 import org.koin.core.context.stopKoin
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import kotlin.test.BeforeTest
 import kotlin.test.Test
-import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
@@ -48,61 +45,15 @@ class NetworkingKoinTest {
         val koin = koinApplication {
             modules(
                 resolveNetworking(),
-                module {
+                module(override = true) {
+                    single { createDefaultMockClient() }
                     single { ModelContract.Environment.DEV }
                 }
             )
         }
         // Then
-        val builder: Networking.RequestBuilderTemplate = koin.koin.get()
+        val builder: Networking.RequestBuilderFactory = koin.koin.get()
         assertNotNull(builder)
-    }
-
-    @Test
-    fun `Given resolveServiceModule is called it creates a Module, which contains a HttpClient`() {
-        // When
-        val koin = koinApplication {
-            modules(
-                resolveNetworking()
-            )
-        }
-        // Then
-        val client: HttpClient = koin.koin.get()
-        assertNotNull(client)
-    }
-
-    @Test
-    fun `Given resolveServiceModule is called it creates a Module, which contains a List of HttpPluginInstaller`() {
-        // When
-        val koin = koinApplication {
-            modules(
-                resolveNetworking()
-            )
-        }
-
-        val configuration = koin.koin.get<List<Networking.HttpPluginInstaller<in Any, in Any?>>>()
-
-        // Then
-        assertEquals(
-            actual = configuration.size,
-            expected = 2
-        )
-        assertEquals<Any>(
-            actual = configuration[0],
-            expected = Networking.HttpPluginInstaller(
-                JsonFeature,
-                HttpSerializerConfigurator,
-                JsonConfigurator
-            )
-        )
-        assertEquals<Any>(
-            actual = configuration[1],
-            expected = Networking.HttpPluginInstaller(
-                Logging,
-                HttpLoggingConfigurator,
-                Log.logger
-            )
-        )
     }
 
     @Test
@@ -110,7 +61,11 @@ class NetworkingKoinTest {
         // When
         val koin = koinApplication {
             modules(
-                resolveNetworking()
+                resolveNetworking(),
+                module(override = true) {
+                    single { createDefaultMockClient() }
+                    single { ModelContract.Environment.DEV }
+                }
             )
         }
 
@@ -130,13 +85,12 @@ class NetworkingKoinTest {
                 "something"
             )
         )
-
         var capturedHttpConfig: HttpClientConfig<*>? = null
         var capturedPlugins: List<Networking.HttpPluginInstaller<in Any, in Any>>? = null
 
-        clientConfigurator.whenConfigure = { delegatedHttpConfig, delegatedFeatures ->
+        clientConfigurator.whenConfigure = { delegatedHttpConfig, delegatedPlugins ->
             capturedHttpConfig = delegatedHttpConfig
-            capturedPlugins = delegatedFeatures
+            capturedPlugins = delegatedPlugins
         }
 
         // When
@@ -144,17 +98,20 @@ class NetworkingKoinTest {
             modules(
                 resolveNetworking(),
                 module(override = true) {
-                    factory<Networking.HttpClientConfigurator> {
+                    single<Networking.HttpClientConfigurator> {
                         clientConfigurator
                     }
-                    factory<List<Networking.HttpPluginInstaller<out Any, out Any?>>> {
+                    single<List<Networking.HttpPluginInstaller<out Any, out Any?>>> {
                         features
                     }
+                    single { ModelContract.Environment.DEV }
                 }
             )
         }
         // Then
-        koin.koin.get<HttpClient>()
+        val client: HttpClient = koin.koin.get()
+        assertNotNull(client)
+
         assertTrue(capturedHttpConfig is HttpClientConfig<*>)
         assertSame(
             actual = capturedPlugins,

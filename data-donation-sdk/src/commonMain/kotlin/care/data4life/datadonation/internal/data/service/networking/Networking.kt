@@ -18,10 +18,7 @@ package care.data4life.datadonation.internal.data.service.networking
 
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.features.HttpClientFeature
-import io.ktor.client.features.json.JsonFeature
-import io.ktor.client.features.logging.Logging
 import io.ktor.client.statement.HttpStatement
-import kotlinx.serialization.json.JsonBuilder
 
 internal typealias Header = Map<String, String>
 internal typealias Parameter = Map<String, Any?>
@@ -29,24 +26,9 @@ internal typealias AccessToken = String
 internal typealias Path = List<String>
 
 internal interface Networking {
-    interface Logger : io.ktor.client.features.logging.Logger {
-        override fun log(message: String)
-
-        companion object {
-            const val PREFIX = "DD-SDK-HTTP:"
-        }
-    }
-
     fun interface HttpPluginConfigurator<PluginConfiguration : Any, SubConfiguration> {
         fun configure(pluginConfiguration: PluginConfiguration, subConfiguration: SubConfiguration)
     }
-
-    fun interface JsonConfigurator {
-        fun configure(jsonBuild: JsonBuilder): JsonBuilder
-    }
-
-    fun interface HttpSerializerConfigurator : HttpPluginConfigurator<JsonFeature.Config, JsonConfigurator>
-    fun interface HttpLoggingConfigurator : HttpPluginConfigurator<Logging.Config, care.data4life.sdk.log.Logger>
 
     data class HttpPluginInstaller<PluginConfiguration : Any, SubConfiguration>(
         val feature: HttpClientFeature<*, *>,
@@ -54,10 +36,10 @@ internal interface Networking {
         val subConfiguration: SubConfiguration
     )
 
-    fun interface HttpClientConfigurator {
+    interface HttpClientConfigurator {
         fun configure(
             httpConfig: HttpClientConfig<*>,
-            installers: List<HttpPluginInstaller<in Any, in Any?>>
+            installers: List<HttpPluginInstaller<in Any, in Any?>>? = null
         )
     }
 
@@ -86,7 +68,7 @@ internal interface Networking {
         }
     }
 
-    interface RequestBuilderTemplate {
+    interface RequestBuilderFactory {
         fun create(): RequestBuilder
     }
 }

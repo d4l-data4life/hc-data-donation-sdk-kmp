@@ -14,17 +14,21 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.data.service.networking
+package care.data4life.datadonation.internal.data.service.networking.plugin
 
-import kotlinx.serialization.json.JsonBuilder
+import care.data4life.datadonation.lang.HttpRuntimeError
+import io.ktor.client.features.ResponseException
 
-internal object JsonConfigurator : Networking.JsonConfigurator {
-    override fun configure(jsonBuild: JsonBuilder): JsonBuilder {
-        jsonBuild.isLenient = true
-        jsonBuild.ignoreUnknownKeys = true
-        jsonBuild.allowSpecialFloatingPointValues = true
-        jsonBuild.useArrayPolymorphism = false
+internal object HttpErrorMapper : KtorPluginsContract.HttpErrorMapper {
+    private fun wrapError(error: Throwable): Throwable {
+        return if (error is ResponseException) {
+            HttpRuntimeError(error.response.status)
+        } else {
+            error
+        }
+    }
 
-        return jsonBuild
+    override fun mapAndThrow(error: Throwable) {
+        throw wrapError(error)
     }
 }

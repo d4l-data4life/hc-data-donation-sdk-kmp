@@ -49,22 +49,22 @@ class HttpClientConfiguratorTest {
     fun `Given configure is called with a HttpClientConfig and a List of HttpFeatureInstaller it installs a given Plugin`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val capturedPluginConfig = Channel<Any>()
-        val capturedSubConfig = Channel<String>()
+        val capturedSubConfig = Channel<Any>()
 
         val subConfig = "something"
-        val stubPluginConfigurator = HttpPluginConfiguratorStub<PluginStub.Config, String>()
+        val stubPluginConfigurator = HttpPluginConfiguratorStub<Any, Any?>()
 
         stubPluginConfigurator.whenConfigure = { pluginConfig, subConfiguration ->
             launch {
                 capturedPluginConfig.send(pluginConfig)
-                capturedSubConfig.send(subConfiguration)
+                capturedSubConfig.send(subConfiguration!!)
             }
         }
 
         val features = listOf(
             Networking.HttpPluginInstaller(
                 PluginStub,
-                stubPluginConfigurator as Networking.HttpPluginConfigurator<Any, Any?>,
+                stubPluginConfigurator,
                 subConfig,
             )
         )
@@ -94,8 +94,8 @@ class HttpClientConfiguratorTest {
     @Test
     fun `Given configure is called with a HttpClientConfig and a List of HttpFeatureInstaller it installs a arbitrary number of Plugins`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
-        val subConfig = "something"
-        val stubPluginConfigurator = HttpPluginConfiguratorStub<PluginStub.Config, String>()
+        val subConfig = object {}
+        val stubPluginConfigurator = HttpPluginConfiguratorStub<Any, Any?>()
 
         stubPluginConfigurator.whenConfigure = { _, _ ->
             Counter.amount++
@@ -104,17 +104,17 @@ class HttpClientConfiguratorTest {
         val features = listOf(
             Networking.HttpPluginInstaller(
                 PluginStub,
-                stubPluginConfigurator as Networking.HttpPluginConfigurator<Any, Any?>,
+                stubPluginConfigurator,
                 subConfig,
             ),
             Networking.HttpPluginInstaller(
                 PluginStub,
-                stubPluginConfigurator as Networking.HttpPluginConfigurator<Any, Any?>,
+                stubPluginConfigurator,
                 subConfig,
             ),
             Networking.HttpPluginInstaller(
                 PluginStub,
-                stubPluginConfigurator as Networking.HttpPluginConfigurator<Any, Any?>,
+                stubPluginConfigurator,
                 subConfig,
             )
         )

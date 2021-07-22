@@ -34,10 +34,12 @@ import care.data4life.datadonation.internal.data.service.ServiceContract.Consent
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.ROOT
 import care.data4life.datadonation.internal.data.service.networking.Networking
 import care.data4life.datadonation.internal.data.service.networking.receive
+import care.data4life.datadonation.lang.HttpRuntimeError
 import kotlinx.datetime.Clock
 
 internal class ConsentService constructor(
-    private val requestBuilderTemplate: Networking.RequestBuilderTemplate,
+    private val requestBuilderFactory: Networking.RequestBuilderFactory,
+    private val errorHandler: ServiceContract.ConsentService.ConsentErrorHandler,
     private val clock: Clock
 ) : ServiceContract.ConsentService {
     private fun buildPath(
@@ -65,7 +67,7 @@ internal class ConsentService constructor(
             LANGUAGE to language
         )
 
-        val request = requestBuilderTemplate
+        val request = requestBuilderFactory
             .create()
             .setAccessToken(accessToken)
             .setParameter(parameter)
@@ -74,7 +76,11 @@ internal class ConsentService constructor(
                 path
             )
 
-        return receive(request)
+        return try {
+            receive(request)
+        } catch (error: HttpRuntimeError) {
+            throw errorHandler.handleFetchConsentDocuments(error)
+        }
     }
 
     override suspend fun fetchUserConsents(
@@ -88,7 +94,7 @@ internal class ConsentService constructor(
             USER_CONSENT_KEY to consentKey,
         )
 
-        val request = requestBuilderTemplate
+        val request = requestBuilderFactory
             .create()
             .setAccessToken(accessToken)
             .setParameter(parameter)
@@ -97,7 +103,11 @@ internal class ConsentService constructor(
                 path
             )
 
-        return receive(request)
+        return try {
+            receive(request)
+        } catch (error: HttpRuntimeError) {
+            throw errorHandler.handleFetchUserConsents(error)
+        }
     }
 
     override suspend fun createUserConsent(
@@ -112,7 +122,7 @@ internal class ConsentService constructor(
             clock.now().toString()
         )
 
-        val request = requestBuilderTemplate
+        val request = requestBuilderFactory
             .create()
             .setAccessToken(accessToken)
             .useJsonContentType()
@@ -122,7 +132,11 @@ internal class ConsentService constructor(
                 path
             )
 
-        return receive(request)
+        return try {
+            receive(request)
+        } catch (error: HttpRuntimeError) {
+            throw errorHandler.handleCreateUserConsent(error)
+        }
     }
 
     // see: https://github.com/gesundheitscloud/consent-management/blob/master/swagger/api.yml#L356
@@ -142,7 +156,7 @@ internal class ConsentService constructor(
             ConsentSignatureType.CONSENT_ONCE.apiValue
         )
 
-        val request = requestBuilderTemplate
+        val request = requestBuilderFactory
             .create()
             .setAccessToken(accessToken)
             .useJsonContentType()
@@ -152,7 +166,11 @@ internal class ConsentService constructor(
                 path
             )
 
-        return receive(request)
+        return try {
+            receive(request)
+        } catch (error: HttpRuntimeError) {
+            throw errorHandler.handleRequestSignatureConsentRegistration(error)
+        }
     }
 
     override suspend fun requestSignatureDonation(
@@ -171,7 +189,7 @@ internal class ConsentService constructor(
             ConsentSignatureType.NORMAL_USE.apiValue
         )
 
-        val request = requestBuilderTemplate
+        val request = requestBuilderFactory
             .create()
             .setAccessToken(accessToken)
             .useJsonContentType()
@@ -181,14 +199,18 @@ internal class ConsentService constructor(
                 path
             )
 
-        return receive(request)
+        return try {
+            receive(request)
+        } catch (error: HttpRuntimeError) {
+            throw errorHandler.handleRequestSignatureDonation(error)
+        }
     }
 
     override suspend fun revokeUserConsent(accessToken: String, consentKey: String) {
         val path = buildPath(USER_CONSENTS)
         val payload = ConsentRevocationPayload(consentKey)
 
-        val request = requestBuilderTemplate
+        val request = requestBuilderFactory
             .create()
             .setAccessToken(accessToken)
             .useJsonContentType()
@@ -198,6 +220,10 @@ internal class ConsentService constructor(
                 path
             )
 
-        return receive(request)
+        return try {
+            receive(request)
+        } catch (error: HttpRuntimeError) {
+            throw errorHandler.handleRevokeUserConsent(error)
+        }
     }
 }

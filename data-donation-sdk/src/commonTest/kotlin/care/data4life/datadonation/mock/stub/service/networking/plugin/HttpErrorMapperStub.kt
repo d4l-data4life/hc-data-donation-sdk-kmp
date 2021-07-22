@@ -14,18 +14,20 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.data.service.networking
+package care.data4life.datadonation.mock.stub.service.networking.plugin
 
-import care.data4life.datadonation.lang.CoreRuntimeError
-import io.ktor.client.call.NoTransformationFoundException
-import io.ktor.client.statement.HttpStatement
+import care.data4life.datadonation.internal.data.service.networking.plugin.KtorPluginsContract
+import care.data4life.datadonation.mock.MockContract
+import care.data4life.datadonation.mock.MockException
 
-internal suspend inline fun <reified T> receive(
-    request: HttpStatement,
-): T {
-    return try {
-        request.receive()
-    } catch (exception: NoTransformationFoundException) {
-        throw CoreRuntimeError.ResponseTransformFailure()
+internal class HttpErrorMapperStub : KtorPluginsContract.HttpErrorMapper, MockContract.Stub {
+    var whenPropagate: ((error: Throwable) -> Unit)? = null
+
+    override fun mapAndThrow(error: Throwable) {
+        whenPropagate?.invoke(error) ?: throw MockException()
+    }
+
+    override fun clear() {
+        whenPropagate = null
     }
 }

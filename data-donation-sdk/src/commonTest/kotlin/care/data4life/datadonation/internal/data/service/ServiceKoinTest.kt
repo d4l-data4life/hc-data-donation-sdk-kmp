@@ -43,6 +43,17 @@ class ServiceKoinTest {
     }
 
     @Test
+    fun `Given resolveServiceModule is called it creates a Module, which contains a ConsentErrorHandler`() {
+        // When
+        val koin = koinApplication {
+            modules(resolveServiceModule())
+        }
+        // Then
+        val builder: ServiceContract.ConsentService.ConsentErrorHandler = koin.koin.get()
+        assertNotNull(builder)
+    }
+
+    @Test
     fun `Given resolveServiceModule is called it creates a Module, which contains a ConsentService`() {
         // When
         val koin = koinApplication {
@@ -50,8 +61,8 @@ class ServiceKoinTest {
                 resolveServiceModule(),
                 module {
                     single { ClockStub() } bind Clock::class
-                    single<Networking.RequestBuilderTemplate> {
-                        RequestBuilderSpy.Template()
+                    single<Networking.RequestBuilderFactory> {
+                        RequestBuilderSpy.Factory()
                     }
                     single { createDefaultMockClient() }
                     single { Environment.DEV } bind Environment::class

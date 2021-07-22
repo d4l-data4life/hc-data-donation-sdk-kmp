@@ -41,6 +41,7 @@ import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.ModelContract.Environment
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.encryption.resolveEncryptionModule
+import care.data4life.datadonation.internal.data.service.networking.plugin.resolveKtorPlugins
 import care.data4life.datadonation.internal.data.service.networking.resolveNetworking
 import care.data4life.datadonation.internal.data.service.resolveServiceModule
 import care.data4life.datadonation.internal.di.resolveCoreModule
@@ -76,8 +77,6 @@ class ClientTest {
 
     @Test
     @Ignore
-    // TODO "Use MockEngine"
-    // TODO: infinity loop caused by the refused connection - If so we need to figure out of setting a timeout
     fun fetchConsentDocumentTest() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val consentKey = "custom-consent-key"
@@ -94,6 +93,7 @@ class ClientTest {
                 resolveRootModule(config),
                 resolveCoreModule(),
                 resolveNetworking(),
+                resolveKtorPlugins(),
                 resolveUsecaseRunnerModule(),
                 resolveUsecaseModule(),
                 resolveRepositoryModule(),
@@ -132,8 +132,6 @@ class ClientTest {
 
     @Test
     @Ignore
-    // TODO "Use MockEngine"
-    // TODO: infinity loop caused by the refused connection - If so we need to figure out of setting a timeout
     fun createUserConsentTest() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val consentKey = "custom-consent-key"
@@ -150,6 +148,7 @@ class ClientTest {
                 resolveRootModule(config),
                 resolveCoreModule(),
                 resolveNetworking(),
+                resolveKtorPlugins(),
                 resolveUsecaseRunnerModule(),
                 resolveUsecaseModule(),
                 resolveRepositoryModule(),
@@ -220,6 +219,7 @@ class ClientTest {
                 resolveRootModule(config),
                 resolveCoreModule(),
                 resolveNetworking(),
+                resolveKtorPlugins(),
                 resolveUsecaseRunnerModule(),
                 resolveUsecaseModule(),
                 resolveRepositoryModule(),
@@ -253,8 +253,6 @@ class ClientTest {
 
     @Test
     @Ignore
-    // TODO "Use MockEngine"
-    // TODO: infinity loop caused by the refused connection - If so we need to figure out of setting a timeout
     fun fetchUserConsentsTest() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val consentKey = "custom-consent-key"
@@ -269,6 +267,7 @@ class ClientTest {
                 resolveRootModule(config),
                 resolveCoreModule(),
                 resolveNetworking(),
+                resolveKtorPlugins(),
                 resolveUsecaseRunnerModule(),
                 resolveUsecaseModule(),
                 resolveRepositoryModule(),
@@ -300,8 +299,6 @@ class ClientTest {
 
     @Test
     @Ignore
-    // TODO: Use MockEngine
-    // TODO: infinity loop caused by the refused connection - If so we need to figure out of setting a timeout
     fun revokeUserConsentsTest() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val language = "en"
@@ -316,6 +313,7 @@ class ClientTest {
                 resolveRootModule(config),
                 resolveCoreModule(),
                 resolveNetworking(),
+                resolveKtorPlugins(),
                 resolveUsecaseRunnerModule(),
                 resolveUsecaseModule(),
                 resolveRepositoryModule(),
@@ -361,6 +359,7 @@ class ClientTest {
                 resolveRootModule(config),
                 resolveCoreModule(),
                 resolveNetworking(),
+                resolveKtorPlugins(),
                 resolveUsecaseRunnerModule(),
                 resolveUsecaseModule(),
                 resolveRepositoryModule(),

@@ -16,30 +16,21 @@
 
 package care.data4life.datadonation.mock.stub.service.networking
 
+import care.data4life.datadonation.internal.data.service.networking.plugin.KtorPluginsContract
 import care.data4life.datadonation.mock.MockContract
-import care.data4life.datadonation.mock.MockException
-import care.data4life.sdk.log.Logger
+import io.ktor.client.features.HttpCallValidator
 
-class LoggerStub : Logger, MockContract.Stub {
-    var whenInfo: ((String) -> Unit)? = null
-    var whenError: ((Throwable, String?) -> Unit)? = null
-    var whenDebug: ((String) -> Unit)? = null
+internal class HttpResponseValidatorConfiguratorStub : KtorPluginsContract.HttpResponseValidatorConfigurator, MockContract.Stub {
+    var whenConfigure: ((HttpCallValidator.Config, KtorPluginsContract.HttpResponseValidationConfiguration?) -> Unit)? = null
 
-    override fun debug(message: String) {
-        whenDebug?.invoke(message) ?: throw MockException()
-    }
-
-    override fun error(t: Throwable, message: String?) {
-        whenError?.invoke(t, message) ?: throw MockException()
-    }
-
-    override fun info(message: String) {
-        whenInfo?.invoke(message) ?: throw MockException()
+    override fun configure(
+        pluginConfiguration: HttpCallValidator.Config,
+        subConfiguration: KtorPluginsContract.HttpResponseValidationConfiguration
+    ) {
+        whenConfigure?.invoke(pluginConfiguration, subConfiguration)
     }
 
     override fun clear() {
-        whenDebug = null
-        whenError = null
-        whenInfo = null
+        whenConfigure = null
     }
 }

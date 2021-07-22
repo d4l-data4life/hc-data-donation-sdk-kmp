@@ -16,45 +16,27 @@
 
 package care.data4life.datadonation.internal.data.service.networking
 
-import care.data4life.sdk.log.Log
 import io.ktor.client.HttpClient
-import io.ktor.client.features.json.JsonFeature
-import io.ktor.client.features.logging.Logging
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
 internal fun resolveNetworking(): Module {
     return module {
-        single<Networking.RequestBuilderTemplate> {
-            RequestBuilder.Template(get(), get())
+        single<Networking.RequestBuilderFactory> {
+            RequestBuilder.Factory(get(), get())
+        }
+
+        single<Networking.HttpClientConfigurator> {
+            HttpClientConfigurator
         }
 
         single {
             HttpClient {
                 get<Networking.HttpClientConfigurator>().configure(
                     this,
-                    get()
+                    installers = getOrNull()
                 )
             }
-        }
-
-        factory<Networking.HttpClientConfigurator> {
-            HttpClientConfigurator
-        }
-
-        factory<List<Networking.HttpPluginInstaller<out Any, out Any?>>> {
-            listOf(
-                Networking.HttpPluginInstaller(
-                    JsonFeature,
-                    HttpSerializerConfigurator,
-                    JsonConfigurator
-                ),
-                Networking.HttpPluginInstaller(
-                    Logging,
-                    HttpLoggingConfigurator,
-                    Log.logger
-                )
-            )
         }
     }
 }

@@ -14,16 +14,21 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.data.service.networking
+package care.data4life.datadonation.lang
 
-import care.data4life.sdk.log.Logger
-import io.ktor.client.features.logging.LogLevel
-import io.ktor.client.features.logging.Logging
+import care.data4life.sdk.lang.D4LRuntimeException
 
-internal object HttpLoggingConfigurator :
-    Networking.HttpLoggingConfigurator {
-    override fun configure(pluginConfiguration: Logging.Config, subConfiguration: Logger) {
-        pluginConfiguration.logger = SimpleLogger(subConfiguration)
-        pluginConfiguration.level = LogLevel.ALL
-    }
+sealed class ConsentServiceError(
+    open val httpStatus: Int
+) : D4LRuntimeException() {
+
+    class UnexpectedFailure(override val httpStatus: Int) : ConsentServiceError(httpStatus)
+    class BadRequest : ConsentServiceError(400)
+    class Unauthorized : ConsentServiceError(401)
+    class Forbidden : ConsentServiceError(403)
+    class NotFound : ConsentServiceError(404)
+    class DocumentConflict : ConsentServiceError(409)
+    class UnprocessableEntity : ConsentServiceError(422)
+    class TooManyRequests : ConsentServiceError(429)
+    class InternalServer : ConsentServiceError(500)
 }

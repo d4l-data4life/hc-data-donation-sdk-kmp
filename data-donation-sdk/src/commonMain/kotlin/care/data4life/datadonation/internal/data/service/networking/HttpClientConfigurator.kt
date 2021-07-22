@@ -18,18 +18,19 @@ package care.data4life.datadonation.internal.data.service.networking
 
 import io.ktor.client.HttpClientConfig
 
-internal object HttpClientConfigurator :
-    Networking.HttpClientConfigurator {
+internal object HttpClientConfigurator : Networking.HttpClientConfigurator {
     override fun configure(
         httpConfig: HttpClientConfig<*>,
-        installers: List<Networking.HttpPluginInstaller<in Any, in Any?>>
+        installers: List<Networking.HttpPluginInstaller<in Any, in Any?>>?
     ) {
-        installers.forEach { (plugin, configurator, subConfig) ->
-            httpConfig.install(plugin) {
-                configurator.configure(
-                    this,
-                    subConfig
-                )
+        if (installers is List<*>) {
+            installers.forEach { (plugin, configurator, subConfig) ->
+                httpConfig.install(plugin) {
+                    configurator.configure(
+                        this,
+                        subConfig
+                    )
+                }
             }
         }
     }

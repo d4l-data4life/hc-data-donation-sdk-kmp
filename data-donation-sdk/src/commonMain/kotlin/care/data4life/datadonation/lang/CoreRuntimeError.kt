@@ -18,14 +18,13 @@ package care.data4life.datadonation.lang
 
 import care.data4life.sdk.lang.D4LRuntimeException
 
-sealed class CoreRuntimeException(
+sealed class CoreRuntimeError(
     message: String?,
     cause: Throwable?
 ) : D4LRuntimeException(message = message, cause = cause) {
-
-    class InternalFailure : CoreRuntimeException(message = "Internal failure", cause = null)
-    class RequestValidationFailure(message: String) : CoreRuntimeException(message = message, cause = null)
-    class ResponseTransformFailure : CoreRuntimeException(message = "Unexpected Response", cause = null)
-    class MissingCredentials(cause: Throwable? = null) : CoreRuntimeException(cause = cause, message = null)
-    class MissingSession(cause: Throwable? = null) : CoreRuntimeException(cause = cause, message = null)
+    class InternalFailure : CoreRuntimeError(message = "Internal failure", cause = null)
+    class RequestValidationFailure(message: String) : CoreRuntimeError(message = message, cause = null)
+    class ResponseTransformFailure : CoreRuntimeError(message = "Unexpected Response", cause = null)
+    class MissingCredentials(cause: Throwable? = null) : CoreRuntimeError(cause = cause, message = null)
+    class MissingSession(cause: Throwable? = null) : CoreRuntimeError(cause = cause, message = null)
 }

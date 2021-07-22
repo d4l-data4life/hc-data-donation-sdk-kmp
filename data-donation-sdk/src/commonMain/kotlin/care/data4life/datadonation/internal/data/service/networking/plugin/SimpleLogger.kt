@@ -14,21 +14,15 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.mock.stub.service.networking
+package care.data4life.datadonation.internal.data.service.networking.plugin
 
-import care.data4life.datadonation.internal.data.service.networking.Networking
-import care.data4life.datadonation.mock.MockContract
-import care.data4life.datadonation.mock.MockException
-import kotlinx.serialization.json.JsonBuilder
+import care.data4life.datadonation.internal.data.service.networking.plugin.KtorPluginsContract.Logger.Companion.PREFIX
+import care.data4life.sdk.log.Logger
 
-class JsonConfiguratorStub : Networking.JsonConfigurator, MockContract.Stub {
-    var whenConfigure: ((JsonBuilder) -> JsonBuilder)? = null
-
-    override fun configure(jsonBuild: JsonBuilder): JsonBuilder {
-        return whenConfigure?.invoke(jsonBuild) ?: throw MockException()
-    }
-
-    override fun clear() {
-        whenConfigure = null
+internal class SimpleLogger(
+    private val logger: Logger
+) : KtorPluginsContract.Logger {
+    override fun log(message: String) {
+        logger.info("$PREFIX $message")
     }
 }
