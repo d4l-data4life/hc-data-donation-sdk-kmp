@@ -18,7 +18,7 @@ package care.data4life.datadonation.internal.data.service.networking
 
 import care.data4life.datadonation.core.model.ModelContract
 import care.data4life.datadonation.mock.stub.service.networking.HttpClientConfiguratorStub
-import care.data4life.datadonation.mock.stub.service.networking.HttpFeatureConfiguratorStub
+import care.data4life.datadonation.mock.stub.service.networking.HttpPluginConfiguratorStub
 import care.data4life.sdk.log.Log
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
@@ -72,7 +72,7 @@ class NetworkingKoinTest {
     }
 
     @Test
-    fun `Given resolveServiceModule is called it creates a Module, which contains a List of HttpFeatureInstaller`() {
+    fun `Given resolveServiceModule is called it creates a Module, which contains a List of HttpPluginInstaller`() {
         // When
         val koin = koinApplication {
             modules(
@@ -80,24 +80,24 @@ class NetworkingKoinTest {
             )
         }
 
-        val configuration = koin.koin.get<List<Networking.HttpFeatureInstaller<in Any, in Any?>>>()
+        val configuration = koin.koin.get<List<Networking.HttpPluginInstaller<in Any, in Any?>>>()
 
         // Then
         assertEquals(
             actual = configuration.size,
             expected = 2
         )
-        assertEquals(
+        assertEquals<Any>(
             actual = configuration[0],
-            expected = Networking.HttpFeatureInstaller(
+            expected = Networking.HttpPluginInstaller(
                 JsonFeature,
                 HttpSerializerConfigurator,
                 JsonConfigurator
             )
         )
-        assertEquals(
+        assertEquals<Any>(
             actual = configuration[1],
-            expected = Networking.HttpFeatureInstaller(
+            expected = Networking.HttpPluginInstaller(
                 Logging,
                 HttpLoggingConfigurator,
                 Log.logger
@@ -124,19 +124,19 @@ class NetworkingKoinTest {
         // Given
         val clientConfigurator = HttpClientConfiguratorStub()
         val features = listOf(
-            Networking.HttpFeatureInstaller(
-                FeatureStub,
-                HttpFeatureConfiguratorStub<Any, Any>(),
+            Networking.HttpPluginInstaller(
+                PluginStub,
+                HttpPluginConfiguratorStub<Any, Any>(),
                 "something"
             )
         )
 
         var capturedHttpConfig: HttpClientConfig<*>? = null
-        var capturedFeatures: List<Networking.HttpFeatureInstaller<in Any, in Any>>? = null
+        var capturedPlugins: List<Networking.HttpPluginInstaller<in Any, in Any>>? = null
 
         clientConfigurator.whenConfigure = { delegatedHttpConfig, delegatedFeatures ->
             capturedHttpConfig = delegatedHttpConfig
-            capturedFeatures = delegatedFeatures
+            capturedPlugins = delegatedFeatures
         }
 
         // When
@@ -147,7 +147,7 @@ class NetworkingKoinTest {
                     factory<Networking.HttpClientConfigurator> {
                         clientConfigurator
                     }
-                    factory<List<Networking.HttpFeatureInstaller<out Any, out Any?>>> {
+                    factory<List<Networking.HttpPluginInstaller<out Any, out Any?>>> {
                         features
                     }
                 }
@@ -157,22 +157,22 @@ class NetworkingKoinTest {
         koin.koin.get<HttpClient>()
         assertTrue(capturedHttpConfig is HttpClientConfig<*>)
         assertSame(
-            actual = capturedFeatures,
+            actual = capturedPlugins,
             expected = features
         )
     }
 
-    private class FeatureStub {
+    private class PluginStub {
         class Config
 
-        companion object Feature : HttpClientFeature<Config, FeatureStub> {
-            override val key: AttributeKey<FeatureStub> = AttributeKey("FeatureStub")
+        companion object Feature : HttpClientFeature<Config, PluginStub> {
+            override val key: AttributeKey<PluginStub> = AttributeKey("PluginStub")
 
-            override fun install(feature: FeatureStub, scope: HttpClient) = Unit
+            override fun install(feature: PluginStub, scope: HttpClient) = Unit
 
-            override fun prepare(block: Config.() -> Unit): FeatureStub {
+            override fun prepare(block: Config.() -> Unit): PluginStub {
                 Config().apply(block)
-                return FeatureStub()
+                return PluginStub()
             }
         }
     }

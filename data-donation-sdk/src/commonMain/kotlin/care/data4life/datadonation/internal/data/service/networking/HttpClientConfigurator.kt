@@ -22,7 +22,7 @@ internal object HttpClientConfigurator :
     Networking.HttpClientConfigurator {
     override fun configure(
         httpConfig: HttpClientConfig<*>,
-        installers: List<Networking.HttpFeatureInstaller<in Any, in Any?>>
+        installers: List<Networking.HttpPluginInstaller<in Any, in Any?>>
     ) {
         installers.forEach { (plugin, configurator, subConfig) ->
             httpConfig.install(plugin) {

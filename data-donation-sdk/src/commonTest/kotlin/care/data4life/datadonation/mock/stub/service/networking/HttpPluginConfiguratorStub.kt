@@ -20,13 +20,13 @@ import care.data4life.datadonation.internal.data.service.networking.Networking
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 
-internal class HttpFeatureConfiguratorStub<FeatureConfiguration : Any, SubConfiguration> :
-    Networking.HttpFeatureConfigurator<FeatureConfiguration, SubConfiguration>,
+internal class HttpPluginConfiguratorStub<FeatureConfiguration : Any, SubConfiguration> :
+    Networking.HttpPluginConfigurator<FeatureConfiguration, SubConfiguration>,
     MockContract.Stub {
     var whenConfigure: ((FeatureConfiguration, SubConfiguration) -> Unit)? = null
 
-    override fun configure(pluginConfig: FeatureConfiguration, subConfiguration: SubConfiguration) {
-        whenConfigure?.invoke(pluginConfig, subConfiguration) ?: throw MockException()
+    override fun configure(pluginConfiguration: FeatureConfiguration, subConfiguration: SubConfiguration) {
+        whenConfigure?.invoke(pluginConfiguration, subConfiguration) ?: throw MockException()
     }
 
     override fun clear() {

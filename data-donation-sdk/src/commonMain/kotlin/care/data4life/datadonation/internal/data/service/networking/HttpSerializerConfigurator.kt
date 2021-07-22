@@ -22,8 +22,8 @@ import kotlinx.serialization.json.Json
 
 internal object HttpSerializerConfigurator :
     Networking.HttpSerializerConfigurator {
-    override fun configure(pluginConfig: JsonFeature.Config, subConfiguration: Networking.JsonConfigurator) {
-        pluginConfig.serializer = KotlinxSerializer(
+    override fun configure(pluginConfiguration: JsonFeature.Config, subConfiguration: Networking.JsonConfigurator) {
+        pluginConfiguration.serializer = KotlinxSerializer(
             Json { subConfiguration.configure(this) }
         )
     }
