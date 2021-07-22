@@ -29,23 +29,23 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
-class HttpErrorPropagatorTest {
+class HttpErrorMapperTest {
     @Test
-    fun `It fulfils HttpErrorPropagator`() {
-        val propagator: Any = HttpErrorPropagator
+    fun `It fulfils HttpErrorMapper`() {
+        val propagator: Any = HttpErrorMapper
 
-        assertTrue(propagator is KtorPluginsContract.HttpErrorPropagator)
+        assertTrue(propagator is KtorPluginsContract.HttpErrorMapper)
     }
 
     @Test
-    fun `Given propagate is called with a Throwable, it rethrows non ResponseException unwrapped and just runs`() {
+    fun `Given mapAndThrow is called with a Throwable, it rethrows non ResponseException unwrapped and just runs`() {
         // Given
         val throwable = RuntimeException("abc")
 
         // Then
         val error = assertFailsWith<RuntimeException> {
             // When
-            HttpErrorPropagator.propagate(throwable)
+            HttpErrorMapper.mapAndThrow(throwable)
         }
 
         // Then
@@ -56,12 +56,12 @@ class HttpErrorPropagatorTest {
     }
 
     @Test
-    fun `Given propagate is called with a Throwable, it rethrows it as HttpRuntimeError, which contains a HttpStatusCode`() = runBlockingTest {
+    fun `Given mapAndThrow is called with a Throwable, it rethrows it as HttpRuntimeError, which contains a HttpStatusCode`() = runBlockingTest {
         // Given
         val client = HttpClient(MockEngine) {
             HttpResponseValidator {
                 handleResponseException { response ->
-                    HttpErrorPropagator.propagate(response)
+                    HttpErrorMapper.mapAndThrow(response)
                 }
             }
 

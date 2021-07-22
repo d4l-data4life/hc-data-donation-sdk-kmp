@@ -20,10 +20,10 @@ import care.data4life.datadonation.internal.data.service.networking.plugin.KtorP
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 
-internal class HttpErrorPropagatorStub : KtorPluginsContract.HttpErrorPropagator, MockContract.Stub {
+internal class HttpErrorMapperStub : KtorPluginsContract.HttpErrorMapper, MockContract.Stub {
     var whenPropagate: ((error: Throwable) -> Unit)? = null
 
-    override fun propagate(error: Throwable) {
+    override fun mapAndThrow(error: Throwable) {
         whenPropagate?.invoke(error) ?: throw MockException()
     }
 

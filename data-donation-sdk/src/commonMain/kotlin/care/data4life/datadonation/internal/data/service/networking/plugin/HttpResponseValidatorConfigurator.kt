@@ -31,9 +31,9 @@ internal object HttpResponseValidatorConfigurator : KtorPluginsContract.HttpResp
             }
         }
 
-        if (errorPropagator is KtorPluginsContract.HttpErrorPropagator) {
+        if (errorPropagator is KtorPluginsContract.HttpErrorMapper) {
             pluginConfiguration.handleResponseException { error ->
-                errorPropagator.propagate(error)
+                errorPropagator.mapAndThrow(error)
             }
         }
     }

@@ -17,7 +17,7 @@
 package care.data4life.datadonation.internal.data.service.networking.plugin
 
 import care.data4life.datadonation.mock.fake.defaultResponse
-import care.data4life.datadonation.mock.stub.service.networking.plugin.HttpErrorPropagatorStub
+import care.data4life.datadonation.mock.stub.service.networking.plugin.HttpErrorMapperStub
 import care.data4life.datadonation.mock.stub.service.networking.plugin.HttpSuccessfulResponseValidatorStub
 import care.data4life.sdk.lang.D4LException
 import care.data4life.sdk.util.test.runBlockingTest
@@ -26,7 +26,6 @@ import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
 import io.ktor.client.features.ClientRequestException
 import io.ktor.client.features.HttpCallValidator
-import io.ktor.client.features.HttpResponseValidator
 import io.ktor.client.request.request
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpStatusCode
@@ -89,17 +88,14 @@ class HttpResponseValidatorConfiguratorTest {
                     defaultResponse(this)
                 }
             }
-
-            HttpResponseValidator {
-                install(HttpCallValidator) {
-                    HttpResponseValidatorConfigurator.configure(
-                        this,
-                        KtorPluginsContract.HttpResponseValidationConfiguration(
-                            successfulResponseValidator,
-                            null
-                        )
+            install(HttpCallValidator) {
+                HttpResponseValidatorConfigurator.configure(
+                    this,
+                    KtorPluginsContract.HttpResponseValidationConfiguration(
+                        successfulResponseValidator,
+                        null
                     )
-                }
+                )
             }
         }
 
@@ -142,7 +138,7 @@ class HttpResponseValidatorConfiguratorTest {
     @Test
     fun `Given configure is called  with a Pair of Validators, it configures a HttpErrorPropagator if it is not null`() = runBlockingTest {
         // Given
-        val propagator = HttpErrorPropagatorStub()
+        val propagator = HttpErrorMapperStub()
 
         propagator.whenPropagate = {
             throw D4LException()

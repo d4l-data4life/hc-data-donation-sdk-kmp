@@ -43,7 +43,7 @@ fun resolveKtorPlugins(): Module {
                     HttpResponseValidatorConfigurator,
                     KtorPluginsContract.HttpResponseValidationConfiguration(
                         HttpSuccessfulResponseValidator,
-                        HttpErrorPropagator
+                        HttpErrorMapper
                     )
                 )
             )

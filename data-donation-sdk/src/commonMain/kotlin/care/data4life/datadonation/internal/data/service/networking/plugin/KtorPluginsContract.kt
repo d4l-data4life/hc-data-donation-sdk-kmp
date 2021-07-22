@@ -42,14 +42,14 @@ internal interface KtorPluginsContract {
         fun validate(response: HttpResponse)
     }
 
-    fun interface HttpErrorPropagator {
+    fun interface HttpErrorMapper {
         @Throws(D4LRuntimeException::class)
-        fun propagate(error: Throwable)
+        fun mapAndThrow(error: Throwable)
     }
 
     data class HttpResponseValidationConfiguration(
         val successfulResponseValidator: HttpSuccessfulResponseValidator? = null,
-        val errorPropagator: HttpErrorPropagator? = null
+        val errorMapper: HttpErrorMapper? = null
     )
 
     fun interface HttpSerializerConfigurator : Networking.HttpPluginConfigurator<JsonFeature.Config, JsonConfigurator>

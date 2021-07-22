@@ -19,7 +19,7 @@ package care.data4life.datadonation.internal.data.service.networking.plugin
 import care.data4life.datadonation.lang.HttpRuntimeError
 import io.ktor.client.features.ResponseException
 
-internal object HttpErrorPropagator : KtorPluginsContract.HttpErrorPropagator {
+internal object HttpErrorMapper : KtorPluginsContract.HttpErrorMapper {
     private fun wrapError(error: Throwable): Throwable {
         return if (error is ResponseException) {
             HttpRuntimeError(error.response.status)
@@ -28,7 +28,7 @@ internal object HttpErrorPropagator : KtorPluginsContract.HttpErrorPropagator {
         }
     }
 
-    override fun propagate(error: Throwable) {
+    override fun mapAndThrow(error: Throwable) {
         throw wrapError(error)
     }
 }

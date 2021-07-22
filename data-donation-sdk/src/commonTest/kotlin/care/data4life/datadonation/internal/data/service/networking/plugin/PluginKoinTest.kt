@@ -65,7 +65,7 @@ class PluginKoinTest {
                 HttpResponseValidatorConfigurator,
                 KtorPluginsContract.HttpResponseValidationConfiguration(
                     HttpSuccessfulResponseValidator,
-                    HttpErrorPropagator
+                    HttpErrorMapper
                 )
             )
         )
