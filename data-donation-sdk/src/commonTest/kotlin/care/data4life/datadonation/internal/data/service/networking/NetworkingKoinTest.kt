@@ -46,7 +46,7 @@ class NetworkingKoinTest {
         // When
         val koin = koinApplication {
             modules(
-                resolveNetworking(),
+                resolveNetworking()
             )
         }
         // Then
@@ -59,7 +59,7 @@ class NetworkingKoinTest {
         // When
         val koin = koinApplication {
             modules(
-                resolveNetworking(),
+                resolveNetworking()
             )
         }
         // Then
@@ -111,7 +111,7 @@ class NetworkingKoinTest {
         }
 
         // Then
-        val configuration = koin.koin.get<List<Networking.HttpClientConfigurator>>()
+        val configuration = koin.koin.get<Networking.HttpClientConfigurator>()
         assertNotNull(configuration)
     }
 
