@@ -17,7 +17,6 @@
 package care.data4life.datadonation.internal.data.service
 
 import care.data4life.datadonation.core.model.ConsentDocument
-import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.model.ConsentCreationPayload
 import care.data4life.datadonation.internal.data.model.ConsentRevocationPayload
@@ -25,7 +24,6 @@ import care.data4life.datadonation.internal.data.model.ConsentSignature
 import care.data4life.datadonation.internal.data.model.ConsentSignatureType
 import care.data4life.datadonation.internal.data.model.ConsentSigningRequest
 import care.data4life.datadonation.internal.data.service.ServiceContract.Companion.DEFAULT_DONATION_CONSENT_KEY
-import care.data4life.datadonation.internal.data.service.ServiceContract.Companion.LOCAL_PORT
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PARAMETER.LANGUAGE
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PARAMETER.LATEST_CONSENT
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PARAMETER.USER_CONSENT_KEY
@@ -36,10 +34,9 @@ import care.data4life.datadonation.internal.data.service.ServiceContract.Consent
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.ROOT
 import care.data4life.datadonation.internal.data.service.networking.Networking
 import care.data4life.datadonation.internal.data.service.networking.receive
-import io.ktor.client.HttpClient
 import kotlinx.datetime.Clock
 
-internal class ConsentService private constructor(
+internal class ConsentService constructor(
     private val requestBuilderTemplate: Networking.RequestBuilderTemplate,
     private val clock: Clock
 ) : ServiceContract.ConsentService {
@@ -202,30 +199,5 @@ internal class ConsentService private constructor(
             )
 
         return receive(request)
-    }
-
-    companion object : ServiceContract.ConsentServiceFactory {
-        private fun determinePort(environment: Environment): Int? {
-            return if (environment == Environment.LOCAL) {
-                LOCAL_PORT
-            } else {
-                null
-            }
-        }
-
-        override fun getInstance(
-            environment: Environment,
-            client: HttpClient,
-            builderTemplateFactory: Networking.RequestBuilderTemplateFactory,
-            clock: Clock
-        ): ServiceContract.ConsentService {
-            val requestBuilder = builderTemplateFactory.getInstance(
-                environment,
-                client,
-                determinePort(environment),
-            )
-
-            return ConsentService(requestBuilder, clock)
-        }
     }
 }

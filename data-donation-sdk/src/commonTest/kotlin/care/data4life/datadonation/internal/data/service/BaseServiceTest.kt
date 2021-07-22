@@ -32,7 +32,7 @@
 
 package care.data4life.datadonation.internal.data.service
 
-import care.data4life.datadonation.core.model.Environment
+import care.data4life.datadonation.core.model.ModelContract.Environment
 import io.ktor.client.*
 import io.ktor.client.engine.*
 import io.ktor.client.engine.mock.*
@@ -115,11 +115,13 @@ abstract class BaseServiceTest<R : Any> {
     private fun buildMockService(
         engine: HttpClientEngineFactory<MockEngineConfig>,
         vararg contentType: ContentType
-    ) = getService(HttpClient(engine) {
-        install(JsonFeature) {
-            serializer = KotlinxSerializer()
-            accept(ContentType.Application.Json, *contentType)
-        }
-    }, Environment.LOCAL)
-
+    ) = getService(
+        HttpClient(engine) {
+            install(JsonFeature) {
+                serializer = KotlinxSerializer()
+                accept(ContentType.Application.Json, *contentType)
+            }
+        },
+        Environment.DEV
+    )
 }

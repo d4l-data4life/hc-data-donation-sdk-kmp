@@ -16,7 +16,6 @@
 
 package care.data4life.datadonation.mock.stub.service.networking
 
-import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.internal.data.service.networking.AccessToken
 import care.data4life.datadonation.internal.data.service.networking.Header
 import care.data4life.datadonation.internal.data.service.networking.Networking
@@ -24,13 +23,11 @@ import care.data4life.datadonation.internal.data.service.networking.Parameter
 import care.data4life.datadonation.internal.data.service.networking.Path
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
-import io.ktor.client.HttpClient
 import io.ktor.client.statement.HttpStatement
-import kotlin.native.concurrent.ThreadLocal
 
 internal class RequestBuilderSpy private constructor(
     private val onPrepare: ((Networking.Method, Path) -> HttpStatement)?
-) : Networking.RequestBuilder, Networking.RequestBuilderTemplate {
+) : Networking.RequestBuilder {
     private var headers: Header? = null
     val delegatedHeaders: Header?
         get() = headers
@@ -50,10 +47,6 @@ internal class RequestBuilderSpy private constructor(
     private var body: Any? = null
     val delegatedBody: Any?
         get() = body
-
-    private var instanceCounter = 0
-    val createdInstances: Int
-        get() = instanceCounter
 
     override fun setHeaders(header: Header): Networking.RequestBuilder {
         return this.also { this.headers = header }
@@ -83,13 +76,6 @@ internal class RequestBuilderSpy private constructor(
         body = null
     }
 
-    override fun create(): Networking.RequestBuilder {
-        return this.also {
-            clear()
-            instanceCounter++
-        }
-    }
-
     override fun prepare(
         method: Networking.Method,
         path: Path
@@ -100,45 +86,28 @@ internal class RequestBuilderSpy private constructor(
         ) ?: throw MockException()
     }
 
-    @ThreadLocal
-    companion object TemplateFactory : Networking.RequestBuilderTemplateFactory, MockContract.Spy {
+    class Template : Networking.RequestBuilderTemplate, MockContract.Spy {
         var onPrepare: ((Networking.Method, Path) -> HttpStatement)? = null
-
-        private var environment: Environment? = null
-        val delegatedEnvironment: Environment?
-            get() = environment
-
-        private var client: HttpClient? = null
-        val delegatedClient: HttpClient?
-            get() = client
-
-        private var port: Int? = null
-        val delegatedPort: Int?
-            get() = port
 
         private var instance: RequestBuilderSpy? = null
         val lastInstance: RequestBuilderSpy?
             get() = instance
 
-        override fun getInstance(
-            environment: Environment,
-            client: HttpClient,
-            port: Int?
-        ): Networking.RequestBuilderTemplate {
+        private var instanceCounter = 0
+        val createdInstances: Int
+            get() = instanceCounter
+
+        override fun create(): Networking.RequestBuilder {
             return RequestBuilderSpy(onPrepare).also {
-                this.environment = environment
-                this.client = client
-                this.port = port
                 this.instance = it
+                this.instanceCounter++
             }
         }
 
         override fun clear() {
             onPrepare = null
-            environment = null
-            client = null
-            port = null
             instance = null
+            instanceCounter = 0
         }
     }
 }

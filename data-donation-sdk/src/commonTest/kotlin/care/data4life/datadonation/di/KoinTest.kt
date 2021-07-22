@@ -17,7 +17,7 @@
 package care.data4life.datadonation.di
 
 import care.data4life.datadonation.Contract
-import care.data4life.datadonation.core.model.Environment
+import care.data4life.datadonation.core.model.ModelContract.Environment
 import care.data4life.datadonation.internal.di.initKoin
 import care.data4life.datadonation.internal.domain.usecases.DonateResources
 import care.data4life.datadonation.internal.domain.usecases.RegisterNewDonor
@@ -41,7 +41,7 @@ class KoinTest {
     @Test
     fun `Given initKoin is called with a Configuration, the resulting KoinApplication contains a CreateUserConsent`() {
         // Given
-        config.whenGetEnvironment = { Environment.LOCAL }
+        config.whenGetEnvironment = { Environment.DEV }
         // When
         val app = initKoin(config)
         // Then
@@ -52,7 +52,7 @@ class KoinTest {
     @Test
     fun `Given initKoin is called with a Configuration, the resulting KoinApplication contains a RegisterNewDonor`() {
         // Given
-        config.whenGetEnvironment = { Environment.LOCAL }
+        config.whenGetEnvironment = { Environment.DEV }
         config.whenGetServicePublicKey = { service ->
             if (service == Contract.Service.DD) {
                 "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwWYsUPv7etCQYYhMtwkP" +
@@ -82,7 +82,7 @@ class KoinTest {
     @Test
     fun `Given initKoin is called with a Configuration, the resulting KoinApplication contains a FetchConsentDocuments`() {
         // Given
-        config.whenGetEnvironment = { Environment.LOCAL }
+        config.whenGetEnvironment = { Environment.DEV }
         // When
         val app = initKoin(config)
         // Then
@@ -93,7 +93,7 @@ class KoinTest {
     @Test
     fun `Given initKoin is called with a Configuration, the resulting KoinApplication contains a FetchUserConsents`() {
         // Given
-        config.whenGetEnvironment = { Environment.LOCAL }
+        config.whenGetEnvironment = { Environment.DEV }
         // When
         val app = initKoin(config)
         // Then
@@ -104,7 +104,7 @@ class KoinTest {
     @Test
     fun `Given initKoin is called with a Configuration, the resulting KoinApplication contains a RevokeUserConsent`() {
         // Given
-        config.whenGetEnvironment = { Environment.LOCAL }
+        config.whenGetEnvironment = { Environment.DEV }
         // When
         val app = initKoin(config)
         // Then
@@ -115,7 +115,7 @@ class KoinTest {
     @Test
     fun `Given initKoin is called with a Configuration, the resulting KoinApplication contains a DonateResources`() {
         // Given
-        config.whenGetEnvironment = { Environment.LOCAL }
+        config.whenGetEnvironment = { Environment.DEV }
         config.whenGetServicePublicKey = { service ->
             if (service == Contract.Service.DD) {
                 "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwWYsUPv7etCQYYhMtwkP" +
@@ -145,7 +145,7 @@ class KoinTest {
     @Test
     fun `Given initKoin is called with a Configuration, the resulting KoinApplication contains a UseCaseRunner`() {
         // Given
-        config.whenGetEnvironment = { Environment.LOCAL }
+        config.whenGetEnvironment = { Environment.DEV }
         // When
         val app = initKoin(config)
         // Then

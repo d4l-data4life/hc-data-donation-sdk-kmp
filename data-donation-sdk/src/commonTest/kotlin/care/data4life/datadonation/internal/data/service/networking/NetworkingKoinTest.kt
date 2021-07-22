@@ -16,6 +16,7 @@
 
 package care.data4life.datadonation.internal.data.service.networking
 
+import care.data4life.datadonation.core.model.ModelContract
 import care.data4life.datadonation.mock.stub.service.networking.HttpClientConfiguratorStub
 import care.data4life.datadonation.mock.stub.service.networking.HttpPluginConfiguratorStub
 import care.data4life.sdk.log.Log
@@ -42,15 +43,18 @@ class NetworkingKoinTest {
     }
 
     @Test
-    fun `Given resolveServiceModule is called it creates a Module, which contains a CallBuilderFactory`() {
+    fun `Given resolveServiceModule is called it creates a Module, which contains a RequestBuilderTemplate`() {
         // When
         val koin = koinApplication {
             modules(
-                resolveNetworking()
+                resolveNetworking(),
+                module {
+                    single { ModelContract.Environment.DEV }
+                }
             )
         }
         // Then
-        val builder: Networking.RequestBuilderTemplateFactory = koin.koin.get()
+        val builder: Networking.RequestBuilderTemplate = koin.koin.get()
         assertNotNull(builder)
     }
 

@@ -32,7 +32,7 @@
 
 package care.data4life.datadonation.internal.data.service
 
-import care.data4life.datadonation.core.model.Environment
+import care.data4life.datadonation.core.model.ModelContract.Environment
 import care.data4life.datadonation.internal.data.model.DonationPayload
 import care.data4life.datadonation.internal.data.service.ServiceContract.DonationService.Companion.Endpoints.donate
 import care.data4life.datadonation.internal.data.service.ServiceContract.DonationService.Companion.Endpoints.register
@@ -55,11 +55,7 @@ internal class DonationService(
 ) : ServiceContract.DonationService {
 
     // TODO: DRY this out
-    private val baseUrl = if (environment == Environment.LOCAL) {
-        "${environment.url}:9090/api/v1"
-    } else {
-        "${environment.url}/donation/api/v1"
-    }
+    private val baseUrl = "${environment.url}/donation/api/v1"
 
     override suspend fun requestToken(): String {
         return client.getWithQuery<String>(environment, baseUrl = baseUrl, path = token)

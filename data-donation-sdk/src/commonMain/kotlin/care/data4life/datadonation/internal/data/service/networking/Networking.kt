@@ -16,8 +16,6 @@
 
 package care.data4life.datadonation.internal.data.service.networking
 
-import care.data4life.datadonation.core.model.Environment
-import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.features.HttpClientFeature
 import io.ktor.client.features.json.JsonFeature
@@ -77,8 +75,6 @@ internal interface Networking {
         fun useJsonContentType(): RequestBuilder
         fun setBody(body: Any): RequestBuilder
 
-        fun create(): RequestBuilder
-
         fun prepare(
             method: Method = Method.GET,
             path: Path = listOf("")
@@ -92,13 +88,5 @@ internal interface Networking {
 
     interface RequestBuilderTemplate {
         fun create(): RequestBuilder
-    }
-
-    interface RequestBuilderTemplateFactory {
-        fun getInstance(
-            environment: Environment,
-            client: HttpClient,
-            port: Int? = null
-        ): RequestBuilderTemplate
     }
 }

@@ -34,8 +34,8 @@ package care.data4life.datadonation
 
 import care.data4life.datadonation.core.listener.ListenerContract
 import care.data4life.datadonation.core.model.ConsentDocument
-import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.KeyPair
+import care.data4life.datadonation.core.model.ModelContract.Environment
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.runner.CredentialProvider
 import care.data4life.datadonation.internal.runner.ScopeProvider

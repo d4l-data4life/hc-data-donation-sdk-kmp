@@ -17,13 +17,9 @@
 package care.data4life.datadonation.internal.data.service
 
 import care.data4life.datadonation.core.model.ConsentDocument
-import care.data4life.datadonation.core.model.Environment
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.model.ConsentSignature
 import care.data4life.datadonation.internal.data.model.DonationPayload
-import care.data4life.datadonation.internal.data.service.networking.Networking
-import io.ktor.client.HttpClient
-import kotlinx.datetime.Clock
 
 internal typealias SessionToken = String
 internal typealias DataDonationKey = String
@@ -89,15 +85,6 @@ internal interface ServiceContract {
         }
     }
 
-    interface ConsentServiceFactory {
-        fun getInstance(
-            environment: Environment,
-            client: HttpClient,
-            builderTemplateFactory: Networking.RequestBuilderTemplateFactory,
-            clock: Clock
-        ): ConsentService
-    }
-
     interface DonationService {
         suspend fun requestToken(): String
         suspend fun registerNewDonor(payload: ByteArray)
@@ -124,6 +111,5 @@ internal interface ServiceContract {
 
     companion object {
         const val DEFAULT_DONATION_CONSENT_KEY = "d4l.data-donation.broad"
-        const val LOCAL_PORT = 8080 // TODO -> Do we need a local env?
     }
 }

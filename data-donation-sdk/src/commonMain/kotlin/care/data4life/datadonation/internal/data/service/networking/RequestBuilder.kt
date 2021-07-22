@@ -16,7 +16,7 @@
 
 package care.data4life.datadonation.internal.data.service.networking
 
-import care.data4life.datadonation.core.model.Environment
+import care.data4life.datadonation.core.model.ModelContract.Environment
 import care.data4life.datadonation.internal.data.service.networking.Networking.RequestBuilder.Companion.ACCESS_TOKEN_FIELD
 import care.data4life.datadonation.internal.data.service.networking.Networking.RequestBuilder.Companion.ACCESS_TOKEN_VALUE_PREFIX
 import care.data4life.datadonation.lang.CoreRuntimeException
@@ -37,7 +37,7 @@ internal class RequestBuilder private constructor(
     private val host: String,
     private val protocol: URLProtocol,
     private val port: Int?
-) : Networking.RequestBuilder, Networking.RequestBuilderTemplate {
+) : Networking.RequestBuilder {
     private var headers: Header = emptyMap()
     private var parameter: Parameter = emptyMap()
     private var accessToken: AccessToken? = null
@@ -161,33 +161,16 @@ internal class RequestBuilder private constructor(
         )
     }
 
-    override fun create(): Networking.RequestBuilder {
-        return RequestBuilder(
-            client,
-            host,
-            protocol,
-            port
-        )
-    }
-
-    companion object : Networking.RequestBuilderTemplateFactory {
-        private fun resolveProtocol(environment: Environment): URLProtocol {
-            return if (environment == Environment.LOCAL) {
-                URLProtocol.HTTP
-            } else {
-                URLProtocol.HTTPS
-            }
-        }
-
-        override fun getInstance(
-            environment: Environment,
-            client: HttpClient,
-            port: Int?
-        ): Networking.RequestBuilderTemplate {
+    class Template(
+        private val environment: Environment,
+        private val client: HttpClient,
+        private val port: Int? = null
+    ) : Networking.RequestBuilderTemplate {
+        override fun create(): Networking.RequestBuilder {
             return RequestBuilder(
                 client,
                 environment.url,
-                resolveProtocol(environment),
+                URLProtocol.HTTPS,
                 port
             )
         }

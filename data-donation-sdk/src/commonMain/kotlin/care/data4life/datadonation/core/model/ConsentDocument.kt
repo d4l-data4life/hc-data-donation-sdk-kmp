@@ -35,17 +35,17 @@ package care.data4life.datadonation.core.model
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-
 @Serializable
 data class ConsentDocument(
-    val key: String,
-    val version: Int,
-    val processor: String,
-    val description: String,
-    val recipient: String,
-    val language: String,
-    val text: String,
-    val requiresToken: Boolean = false,
-    @SerialName("studyID") val studyId: String = "",
-    val programName: String = ""
- )
+    override val key: String,
+    override val version: Int,
+    override val processor: String,
+    override val description: String,
+    override val recipient: String,
+    override val language: String,
+    override val text: String,
+    override val requiresToken: Boolean = false,
+    @SerialName("studyID")
+    override val studyId: String = "",
+    override val programName: String = ""
+) : ModelContract.ConsentDocument

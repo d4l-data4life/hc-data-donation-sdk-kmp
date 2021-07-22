@@ -17,7 +17,7 @@
 package care.data4life.datadonation.di
 
 import care.data4life.datadonation.Contract
-import care.data4life.datadonation.core.model.Environment
+import care.data4life.datadonation.core.model.ModelContract.Environment
 import care.data4life.datadonation.internal.di.resolveRootModule
 import care.data4life.datadonation.internal.runner.CredentialProvider
 import care.data4life.datadonation.internal.runner.ScopeProvider
@@ -86,7 +86,7 @@ class RootKoinTest {
     @Test
     fun `Given resolveRootModule is called with a Configuration it creates a Module which contains a Environment`() {
         // Given
-        config.whenGetEnvironment = { Environment.LOCAL }
+        config.whenGetEnvironment = { Environment.DEV }
 
         // When
         val koin = koinApplication {
@@ -100,7 +100,7 @@ class RootKoinTest {
     @Test
     fun `Given resolveRootModule is called with a Configuration it creates a Module which contains a Clock`() {
         // Given
-        config.whenGetEnvironment = { Environment.LOCAL }
+        config.whenGetEnvironment = { Environment.DEV }
 
         // When
         val koin = koinApplication {
