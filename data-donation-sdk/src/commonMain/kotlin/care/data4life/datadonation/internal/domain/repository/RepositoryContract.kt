@@ -18,10 +18,8 @@ package care.data4life.datadonation.internal.domain.repository
 
 import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.UserConsent
-import care.data4life.datadonation.internal.data.model.DonationPayload
 
-typealias Signature = String
-typealias DonationToken = String
+internal typealias Signature = String
 
 internal interface RepositoryContract {
     interface UserConsentRepository {
@@ -38,18 +36,6 @@ internal interface RepositoryContract {
             version: Int?,
             consentKey: String
         ): List<ConsentDocument>
-    }
-
-    interface ServiceTokenRepository {
-        suspend fun requestDonationToken(): DonationToken
-    }
-
-    interface DonationRepository {
-        suspend fun donateResources(payload: DonationPayload)
-    }
-
-    interface RegistrationRepository {
-        suspend fun registerNewDonor(data: ByteArray)
     }
 
     interface CredentialsRepository {

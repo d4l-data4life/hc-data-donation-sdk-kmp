@@ -20,53 +20,54 @@ import care.data4life.sdk.lang.D4LRuntimeException
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.features.HttpCallValidator
 import io.ktor.client.features.HttpClientFeature
-import io.ktor.client.features.json.JsonFeature
-import io.ktor.client.features.logging.Logging
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.HttpStatement
-import kotlinx.serialization.json.JsonBuilder
 
-typealias Header = Map<String, String>
-typealias Parameter = Map<String, Any?>
-typealias AccessToken = String
-typealias Path = List<String>
+internal typealias Header = Map<String, String>
+internal typealias Parameter = Map<String, Any?>
+internal typealias AccessToken = String
+internal typealias Path = List<String>
 
 internal interface Networking {
-    interface Logger : io.ktor.client.features.logging.Logger {
-        override fun log(message: String)
-
-        companion object {
-            const val PREFIX = "DD-SDK-HTTP:"
-        }
+    fun interface HttpFeatureConfigurator<FeatureConfiguration : Any, SubConfiguration> {
+        fun configure(pluginConfig: FeatureConfiguration, subConfiguration: SubConfiguration)
     }
 
-    fun interface Configurator<Config : Any, AuxiliaryConfigurator : Any> {
-        fun configure(pluginConfig: Config, auxiliaryConfigurator: AuxiliaryConfigurator)
-    }
-
-    fun interface JsonConfigurator {
-        fun configure(jsonBuild: JsonBuilder): JsonBuilder
-    }
-
-    fun interface ResponseValidator {
+    fun interface HttpSuccessfulResponseValidator {
         @Throws(D4LRuntimeException::class)
         fun validate(response: HttpResponse)
     }
 
-    fun interface ErrorPropagator {
+    fun interface HttpErrorPropagator {
         @Throws(D4LRuntimeException::class)
         fun propagate(error: Throwable)
     }
 
-    fun interface SerializerConfigurator : Configurator<JsonFeature.Config, JsonConfigurator>
-    fun interface LoggingConfigurator : Configurator<Logging.Config, care.data4life.sdk.log.Logger>
-    fun interface ResponseValidatorConfigurator : Configurator<HttpCallValidator.Config, Pair<ResponseValidator?, ErrorPropagator?>>
-
-    fun interface ClientConfigurator {
+    fun interface HttpResponseValidatorConfigurator {
         fun configure(
-            config: HttpClientConfig<*>,
-            installers: Map<HttpClientFeature<*, *>, Pair<Configurator<Any, Any>, Any>>,
-            responseValidator: Pair<ResponseValidatorConfigurator, Pair<ResponseValidator?, ErrorPropagator?>>
+            httpResponseConfiguration: HttpCallValidator.Config,
+            successfulResponseValidation: HttpSuccessfulResponseValidator?,
+            errorPropagation: HttpErrorPropagator?
+        )
+    }
+
+    data class HttpFeatureInstaller<FeatureConfiguration : Any, SubConfiguration>(
+        val feature: HttpClientFeature<*, *>,
+        val featureConfigurator: HttpFeatureConfigurator<FeatureConfiguration, SubConfiguration>,
+        val subConfiguration: SubConfiguration
+    )
+
+    data class HttpResponseValidation(
+        val validationConfigurator: HttpResponseValidatorConfigurator,
+        val successfulResponseValidation: HttpSuccessfulResponseValidator? = null,
+        val errorPropagation: HttpErrorPropagator? = null
+    )
+
+    interface HttpClientConfigurator {
+        fun configure(
+            httpConfig: HttpClientConfig<*>,
+            installers: List<HttpFeatureInstaller<in Any, in Any?>>? = null,
+            responseValidator: HttpResponseValidation? = null
         )
     }
 
@@ -77,7 +78,6 @@ internal interface Networking {
         PUT("put")
     }
 
-    // TODO Add a new package with potential HTTP Interceptor
     interface RequestBuilder {
         fun setHeaders(header: Header): RequestBuilder
         fun setParameter(parameter: Parameter): RequestBuilder

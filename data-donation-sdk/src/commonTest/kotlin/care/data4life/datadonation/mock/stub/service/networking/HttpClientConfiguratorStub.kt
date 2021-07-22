@@ -14,20 +14,25 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.mock.stub.service
+package care.data4life.datadonation.mock.stub.service.networking
 
-import care.data4life.datadonation.internal.data.service.ServiceContract
+import care.data4life.datadonation.internal.data.service.networking.Networking
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
+import io.ktor.client.HttpClientConfig
 
-class UserSessionTokenServiceStub : ServiceContract.UserSessionTokenService, MockContract.Stub {
-    var whenSessionToken: (() -> String)? = null
+internal class HttpClientConfiguratorStub : Networking.HttpClientConfigurator, MockContract.Stub {
+    var whenConfigure: ((HttpClientConfig<*>, List<Networking.HttpFeatureInstaller<in Any, in Any?>>?, Networking.HttpResponseValidation?) -> Unit)? = null
 
-    override suspend fun getUserSessionToken(): String {
-        return whenSessionToken?.invoke() ?: throw MockException()
+    override fun configure(
+        httpConfig: HttpClientConfig<*>,
+        installers: List<Networking.HttpFeatureInstaller<in Any, in Any?>>?,
+        responseValidator: Networking.HttpResponseValidation?
+    ) {
+        whenConfigure?.invoke(httpConfig, installers, responseValidator) ?: throw MockException()
     }
 
     override fun clear() {
-        whenSessionToken = null
+        whenConfigure = null
     }
 }

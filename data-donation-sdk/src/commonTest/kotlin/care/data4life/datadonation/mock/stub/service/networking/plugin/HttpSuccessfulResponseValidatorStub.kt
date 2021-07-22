@@ -14,17 +14,21 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.lang
+package care.data4life.datadonation.mock.stub.service.networking.plugin
 
-import care.data4life.sdk.lang.D4LRuntimeException
+import care.data4life.datadonation.internal.data.service.networking.Networking
+import care.data4life.datadonation.mock.MockContract
+import care.data4life.datadonation.mock.MockException
+import io.ktor.client.statement.HttpResponse
 
-sealed class CoreRuntimeError(
-    message: String?,
-    cause: Throwable?
-) : D4LRuntimeException(message = message, cause = cause) {
-    class InternalFailure : CoreRuntimeError(message = "Internal failure", cause = null)
-    class RequestValidationFailure(message: String) : CoreRuntimeError(message = message, cause = null)
-    class ResponseTransformFailure : CoreRuntimeError(message = "Unexpected Response", cause = null)
-    class MissingCredentials(cause: Throwable? = null) : CoreRuntimeError(cause = cause, message = null)
-    class MissingSession(cause: Throwable? = null) : CoreRuntimeError(cause = cause, message = null)
+internal class HttpSuccessfulResponseValidatorStub : Networking.HttpSuccessfulResponseValidator, MockContract.Stub {
+    var whenValidate: ((response: HttpResponse) -> Unit)? = null
+
+    override fun validate(response: HttpResponse) {
+        whenValidate?.invoke(response) ?: throw MockException()
+    }
+
+    override fun clear() {
+        whenValidate = null
+    }
 }

@@ -38,10 +38,9 @@ import care.data4life.datadonation.core.listener.ListenerContract.Callback
 import care.data4life.datadonation.core.listener.ListenerContract.ResultListener
 import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.ModelContract.Environment
-import care.data4life.datadonation.encryption.resolveEncryptionModule
+import care.data4life.datadonation.internal.data.service.networking.plugin.resolveKtorPlugins
 import care.data4life.datadonation.internal.data.service.networking.resolveNetworking
 import care.data4life.datadonation.internal.data.service.resolveServiceModule
-import care.data4life.datadonation.internal.di.resolveCoreModule
 import care.data4life.datadonation.internal.di.resolveRootModule
 import care.data4life.datadonation.internal.domain.repository.resolveRepositoryModule
 import care.data4life.datadonation.internal.domain.usecases.resolveUsecaseModule
@@ -84,11 +83,10 @@ class ClientTest {
         val koin = koinApplication {
             modules(
                 resolveRootModule(config),
-                resolveCoreModule(),
                 resolveNetworking(),
+                resolveKtorPlugins(),
                 resolveUsecaseModule(),
                 resolveRepositoryModule(),
-                resolveEncryptionModule(),
                 resolveServiceModule()
             )
         }
@@ -125,11 +123,10 @@ class ClientTest {
         val koin = koinApplication {
             modules(
                 resolveRootModule(config),
-                resolveCoreModule(),
                 resolveNetworking(),
+                resolveKtorPlugins(),
                 resolveUsecaseModule(),
                 resolveRepositoryModule(),
-                resolveEncryptionModule(),
                 resolveServiceModule()
             )
         }
@@ -170,11 +167,10 @@ class ClientTest {
         val koin = koinApplication {
             modules(
                 resolveRootModule(config),
-                resolveCoreModule(),
                 resolveNetworking(),
+                resolveKtorPlugins(),
                 resolveUsecaseModule(),
                 resolveRepositoryModule(),
-                resolveEncryptionModule(),
                 resolveServiceModule()
             )
         }
@@ -205,11 +201,10 @@ class ClientTest {
         val koin = koinApplication {
             modules(
                 resolveRootModule(config),
-                resolveCoreModule(),
                 resolveNetworking(),
+                resolveKtorPlugins(),
                 resolveUsecaseModule(),
                 resolveRepositoryModule(),
-                resolveEncryptionModule(),
                 resolveServiceModule()
             )
         }
