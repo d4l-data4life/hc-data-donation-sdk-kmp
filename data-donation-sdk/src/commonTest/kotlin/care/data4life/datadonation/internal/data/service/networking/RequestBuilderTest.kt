@@ -234,7 +234,7 @@ class RequestBuilderTest {
         val env = Environment.DEV
         val client = createMockClientWithAssertion { request ->
             // Then
-            assertEquals(
+            assertEquals<Any>(
                 actual = request.headers.toMap(),
                 expected = mapOf(
                     "Accept-Charset" to listOf("UTF-8"),
@@ -278,7 +278,7 @@ class RequestBuilderTest {
         val env = Environment.DEV
         val client = createMockClientWithAssertion { request ->
             // Then
-            assertEquals(
+            assertEquals<Any>(
                 actual = request.url.parameters.toMap(),
                 expected = mapOf(
                     "PARAM" to listOf(parameter["PARAM"]),
