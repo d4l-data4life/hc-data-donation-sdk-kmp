@@ -37,9 +37,4 @@ internal interface RepositoryContract {
             consentKey: String
         ): List<ConsentDocument>
     }
-
-    interface CredentialsRepository {
-        fun getDataDonationPublicKey(): String
-        fun getAnalyticsPlatformPublicKey(): String
-    }
 }

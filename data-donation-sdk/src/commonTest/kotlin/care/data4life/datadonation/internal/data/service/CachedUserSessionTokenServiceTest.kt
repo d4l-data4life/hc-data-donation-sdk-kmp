@@ -17,8 +17,8 @@
 package care.data4life.datadonation.internal.data.service
 
 import care.data4life.datadonation.lang.CoreRuntimeError
-import care.data4life.datadonation.mock.stub.ClientConfigurationStub
 import care.data4life.datadonation.mock.stub.ClockStub
+import care.data4life.datadonation.mock.stub.UserSessionTokenProviderStub
 import care.data4life.sdk.util.test.runWithContextBlockingTest
 import kotlinx.coroutines.GlobalScope
 import kotlin.test.Test
@@ -33,7 +33,7 @@ import kotlin.time.seconds
 class CachedUserSessionTokenServiceTest {
     @Test
     fun `It fulfils UserSessionTokenService`() {
-        val service: Any = CachedUserSessionTokenService(ClientConfigurationStub(), ClockStub())
+        val service: Any = CachedUserSessionTokenService(UserSessionTokenProviderStub(), ClockStub())
 
         assertTrue(service is ServiceContract.UserSessionTokenService)
     }
@@ -42,7 +42,7 @@ class CachedUserSessionTokenServiceTest {
     fun `Given getUserSessionToken is called, it fails, if it has no valid cached Token and the Provider delegates an Exception`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val error = RuntimeException("error")
-        val provider = ClientConfigurationStub()
+        val provider = UserSessionTokenProviderStub()
         val time = ClockStub()
 
         provider.whenGetUserSessionToken = { givenListener ->
@@ -71,7 +71,7 @@ class CachedUserSessionTokenServiceTest {
     fun `Given getUserSessionToken is called, returns a new Token, if it has no valid cached Token and the Provider delegates a String`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val token = "tomato"
-        val provider = ClientConfigurationStub()
+        val provider = UserSessionTokenProviderStub()
         val time = ClockStub()
 
         provider.whenGetUserSessionToken = { givenListener ->
@@ -97,7 +97,7 @@ class CachedUserSessionTokenServiceTest {
     @Test
     fun `Given getUserSessionToken is called, it fails, if an internal error happens`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
-        val provider = ClientConfigurationStub()
+        val provider = UserSessionTokenProviderStub()
         val time = ClockStub()
 
         time.whenNow = {
@@ -123,7 +123,7 @@ class CachedUserSessionTokenServiceTest {
             expectedToken,
             "tomato"
         )
-        val provider = ClientConfigurationStub()
+        val provider = UserSessionTokenProviderStub()
         val time = ClockStub()
         val lifeTime = mutableListOf(
             kotlinx.datetime.Instant.fromEpochMilliseconds(1.minutes.toLongMilliseconds()),

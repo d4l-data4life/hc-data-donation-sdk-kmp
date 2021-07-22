@@ -16,18 +16,18 @@
 
 package care.data4life.datadonation
 
-import care.data4life.datadonation.core.model.ModelContract.Environment
+import care.data4life.datadonation.Contract.Environment
 import care.data4life.datadonation.internal.domain.usecases.CreateUserConsent
 import care.data4life.datadonation.internal.domain.usecases.FetchConsentDocuments
 import care.data4life.datadonation.internal.domain.usecases.FetchUserConsents
 import care.data4life.datadonation.internal.domain.usecases.RevokeUserConsent
 import care.data4life.datadonation.internal.domain.usecases.UsecaseContract
 import care.data4life.datadonation.mock.DummyData
-import care.data4life.datadonation.mock.stub.ClientConfigurationStub
 import care.data4life.datadonation.mock.stub.CreateUserConsentStub
 import care.data4life.datadonation.mock.stub.FetchConsentDocumentsStub
 import care.data4life.datadonation.mock.stub.FetchUserConsentStub
 import care.data4life.datadonation.mock.stub.RevokeUserConsentStub
+import care.data4life.datadonation.mock.stub.UserSessionTokenProviderStub
 import care.data4life.sdk.util.test.runWithContextBlockingTest
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
@@ -58,7 +58,10 @@ class ClientTest {
 
     @Test
     fun `Given getInstance is called with a Configuration it returns a DataDonation`() {
-        val client: Any = Client.getInstance(ClientConfigurationStub())
+        val client: Any = Client.getInstance(
+            Environment.DEV,
+            UserSessionTokenProviderStub()
+        )
 
         assertTrue(client is Contract.DataDonation)
     }
@@ -66,7 +69,6 @@ class ClientTest {
     @Test
     fun `Given fetchConsentDocuments is called with a ConsentKey it builds and delegates its Parameter to the Usecase and returns a runnable Flow which emits a List of ConsentDocument`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
-        val config = ClientConfigurationStub()
         val usecase = FetchConsentDocumentsStub()
         val documents = listOf(DummyData.consentDocument)
 
@@ -76,7 +78,6 @@ class ClientTest {
 
         val capturedParameter = Channel<UsecaseContract.FetchConsentDocuments.Parameter>()
 
-        config.whenGetEnvironment = { Environment.DEV }
         usecase.whenExecute = { delegatedParameter ->
             launch {
                 capturedParameter.send(delegatedParameter)
@@ -94,7 +95,7 @@ class ClientTest {
             )
         }
 
-        val client = Client(config, di)
+        val client = Client(di)
 
         // When
         client.fetchConsentDocuments(
@@ -122,7 +123,6 @@ class ClientTest {
     @Test
     fun `Given createUserConsent is called with a ConsentDocumentVersion and a Language it builds and delegates its Parameter to the Usecase and returns a runnable Flow which emits a UserConsent`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
-        val config = ClientConfigurationStub()
         val usecase = CreateUserConsentStub()
         val consent = DummyData.userConsent
 
@@ -130,8 +130,6 @@ class ClientTest {
         val consentKey = "custom-consent-key"
 
         val capturedParameter = Channel<UsecaseContract.CreateUserConsent.Parameter>()
-
-        config.whenGetEnvironment = { Environment.DEV }
 
         usecase.whenExecute = { delegatedParameter ->
             launch {
@@ -150,7 +148,7 @@ class ClientTest {
             )
         }
 
-        val client = Client(config, di)
+        val client = Client(di)
 
         // When
         client.createUserConsent(
@@ -176,13 +174,11 @@ class ClientTest {
     @Test
     fun `Given fetchUserConsents is called with a ConsentKey it builds and delegates its Parameter to the Usecase and returns a runnable Flow which emits a List of UserConsent`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
-        val config = ClientConfigurationStub()
         val usecase = FetchUserConsentStub()
         val consents = listOf(DummyData.userConsent)
 
         val capturedParameter = Channel<UsecaseContract.FetchUserConsents.Parameter>()
 
-        config.whenGetEnvironment = { Environment.DEV }
         usecase.whenExecute = { delegatedParameter ->
             launch {
                 capturedParameter.send(delegatedParameter)
@@ -201,7 +197,7 @@ class ClientTest {
         }
 
         val consentKey = "key"
-        val client = Client(config, di)
+        val client = Client(di)
 
         // When
         client.fetchUserConsents(
@@ -225,13 +221,11 @@ class ClientTest {
     @Test
     fun `Given fetchAllUserConsents is called it builds and delegates its Parameter to the Usecase and returns a runnable Flow which emits a List of UserConsent`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
-        val config = ClientConfigurationStub()
         val usecase = FetchUserConsentStub()
         val consents = listOf(DummyData.userConsent)
 
         val capturedParameter = Channel<UsecaseContract.FetchUserConsents.Parameter>()
 
-        config.whenGetEnvironment = { Environment.DEV }
         usecase.whenExecute = { delegatedParameter ->
             launch {
                 capturedParameter.send(delegatedParameter)
@@ -249,7 +243,7 @@ class ClientTest {
             )
         }
 
-        val client = Client(config, di)
+        val client = Client(di)
 
         // When
         client.fetchAllUserConsents().collect { result ->
@@ -269,14 +263,11 @@ class ClientTest {
     @Test
     fun `Given revokeUserConsent is called with a ConsentKey it builds and delegates its Parameter to the Usecase and returns a runnable Flow which just runs`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
-        val config = ClientConfigurationStub()
         val usecase = RevokeUserConsentStub()
 
         val consentKey = "custom-consent-key"
 
         val capturedParameter = Channel<UsecaseContract.RevokeUserConsent.Parameter>()
-
-        config.whenGetEnvironment = { Environment.DEV }
 
         usecase.whenExecute = { delegatedParameter ->
             launch {
@@ -295,7 +286,7 @@ class ClientTest {
             )
         }
 
-        val client = Client(config, di)
+        val client = Client(di)
 
         // When
         client.revokeUserConsent(consentKey).collect { result ->

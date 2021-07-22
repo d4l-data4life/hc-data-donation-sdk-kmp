@@ -33,14 +33,15 @@
 package care.data4life.datadonation
 
 import care.data4life.datadonation.core.model.ConsentDocument
-import care.data4life.datadonation.core.model.ModelContract.Environment
 import care.data4life.datadonation.core.model.UserConsent
 import kotlinx.coroutines.flow.Flow
 
 interface Contract {
-    enum class Service(name: String) {
-        DD("DataDonation"),
-        ALP("AnalyticsPlatform")
+    enum class Environment(val url: String) {
+        DEV("api-phdp-dev.hpsgc.de"),
+        SANDBOX("api-phdp-sandbox.hpsgc.de"),
+        STAGING("api-staging.data4life.care"),
+        PRODUCTION("api.data4life.care")
     }
 
     interface ResultListener<T : Any> {
@@ -74,8 +75,6 @@ interface Contract {
     interface DataDonationFactory {
         fun getInstance(
             environment: Environment,
-            donationPublicKey: String,
-            alpPublicKey: String,
             userSession: UserSessionTokenProvider
         ): DataDonation
     }

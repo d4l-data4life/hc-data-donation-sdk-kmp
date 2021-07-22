@@ -33,7 +33,6 @@
 package care.data4life.datadonation
 
 import care.data4life.datadonation.core.model.ConsentDocument
-import care.data4life.datadonation.core.model.ModelContract
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.di.initKoin
 import care.data4life.datadonation.internal.domain.usecases.*
@@ -95,16 +94,12 @@ class Client internal constructor(
 
     companion object Factory : Contract.DataDonationFactory {
         override fun getInstance(
-            environment: ModelContract.Environment,
-            donationPublicKey: String,
-            alpPublicKey: String,
+            environment: Contract.Environment,
             userSession: Contract.UserSessionTokenProvider
         ): Contract.DataDonation {
             return Client(
                 initKoin(
                     environment,
-                    donationPublicKey,
-                    alpPublicKey,
                     userSession
                 )
             )

@@ -34,7 +34,6 @@ package care.data4life.datadonation.integration
 
 import care.data4life.datadonation.Client
 import care.data4life.datadonation.Contract
-import care.data4life.datadonation.core.model.ModelContract.Environment
 import care.data4life.datadonation.internal.data.service.networking.plugin.resolveKtorPlugins
 import care.data4life.datadonation.internal.data.service.networking.resolveNetworking
 import care.data4life.datadonation.internal.data.service.resolveServiceModule
@@ -70,11 +69,12 @@ class ClientTest {
         val language = "en"
         val version = 42
 
-        val config = object : ConfigurationBase() {}
-
         val koin = koinApplication {
             modules(
-                resolveRootModule(config),
+                resolveRootModule(
+                    Contract.Environment.DEV,
+                    UserSessionTokenProvider
+                ),
                 resolveNetworking(),
                 resolveKtorPlugins(),
                 resolveUsecaseModule(),
@@ -83,7 +83,7 @@ class ClientTest {
             )
         }
 
-        val client = Client(config, koin)
+        val client = Client(koin)
 
         // When
         client.fetchConsentDocuments(
@@ -107,11 +107,12 @@ class ClientTest {
         val language = "en"
         val version = 42
 
-        val config = object : ConfigurationBase() {}
-
         val koin = koinApplication {
             modules(
-                resolveRootModule(config),
+                resolveRootModule(
+                    Contract.Environment.DEV,
+                    UserSessionTokenProvider
+                ),
                 resolveNetworking(),
                 resolveKtorPlugins(),
                 resolveUsecaseModule(),
@@ -120,7 +121,7 @@ class ClientTest {
             )
         }
 
-        val client = Client(config, koin)
+        val client = Client(koin)
 
         // When
         client.fetchConsentDocuments(
@@ -148,11 +149,12 @@ class ClientTest {
         // Given
         val consentKey = "custom-consent-key"
 
-        val config = object : ConfigurationBase() {}
-
         val koin = koinApplication {
             modules(
-                resolveRootModule(config),
+                resolveRootModule(
+                    Contract.Environment.DEV,
+                    UserSessionTokenProvider
+                ),
                 resolveNetworking(),
                 resolveKtorPlugins(),
                 resolveUsecaseModule(),
@@ -161,7 +163,7 @@ class ClientTest {
             )
         }
 
-        val client = Client(config, koin)
+        val client = Client(koin)
 
         // When
         client.fetchUserConsents(consentKey).collect { result ->
@@ -179,11 +181,12 @@ class ClientTest {
         // Given
         val language = "en"
 
-        val config = object : ConfigurationBase() {}
-
         val koin = koinApplication {
             modules(
-                resolveRootModule(config),
+                resolveRootModule(
+                    Contract.Environment.DEV,
+                    UserSessionTokenProvider
+                ),
                 resolveNetworking(),
                 resolveKtorPlugins(),
                 resolveUsecaseModule(),
@@ -192,7 +195,7 @@ class ClientTest {
             )
         }
 
-        val client = Client(config, koin)
+        val client = Client(koin)
         val capturedResult = Channel<Boolean>()
 
         // When
@@ -203,33 +206,11 @@ class ClientTest {
         assertTrue(result)
     }
 
-    private abstract class ConfigurationBase : Contract.Configuration {
-        override fun getServicePublicKey(service: Contract.Service): String = when (service) {
-            Contract.Service.DD ->
-                "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwWYsUPv7etCQYYhMtwkP" +
-                    "xGH7144My0yUnqCmF38w40S7CCd54fa1zhijyvAEU67gMgxesyi2bMHPQJp2E63f" +
-                    "g/0IcY4kY//9NrtWY7QovOJaFa8ov+wiIbKa3Y5zy4sxq8VoBJlr1EBYaQNX6I9f" +
-                    "NG+IcQlkoTTqL+qt7lYsW0P4H3vR/92HHaJjA+yvSbXhePMh2IN4ESTqbBSSwWfd" +
-                    "AHtFlH63hV65EB0pUudPumWpUrJWYczveoUO3XUU4qmJ7lZU0kTUFBwwfdeprZtG" +
-                    "nEgS+ZIQAp4Y9BId1Ris5XgZDwmMYF8mB1sqGEnbQkmkaMPoboeherMio0Z/PD6J" +
-                    "rQIDAQAB"
-
-            Contract.Service.ALP ->
-                "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvemFxDHLfwTWztqu+M5t" +
-                    "+becNfUvJpYBqRYsRFKxoUe2s+9WZjwPMzIvJ43DlCK2dqtZelomGhVpi53AqbG7" +
-                    "/Nm3dMH1nNSacfz20tZclshimJuHF1d126tbGn/3WdAxYfTq9DN8GZmqgRf1iunl" +
-                    "+DwE/sP3Dm8I1y4BG3RyQcD/K66s0PWvpX71UlvoVdWmWA5rGkfzi4msdZz7wfwV" +
-                    "I1cGnAX+YrBGTfkwJtHuHXCcLuR3zdNnG/ZB87O0Etl2bFHjCsDbAIRDggjXW+t0" +
-                    "0G+OALY8BMdU1cYKb8GBdqQW11BhRttGvFKFFt3i/8KH0b9ff80whY0bbeTAo51/" +
-                    "1QIDAQAB"
-        }
-
-        override fun getUserSessionToken(tokenListener: Contract.ResultListener<String>) {
-            tokenListener.onSuccess(
+    private object UserSessionTokenProvider : Contract.UserSessionTokenProvider {
+        override fun getUserSessionToken(listener: Contract.ResultListener<String>) {
+            listener.onSuccess(
                 "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJvd25lcjpmMmNiNDBhZS1lOGQxLTQzOTctOGIzZC1hMjRmODgwZTRjYmQiLCJpc3MiOiJ1cm46Z2hjIiwiZXhwIjoxNjExMTY3ODA3LCJuYmYiOjE2MTExNjczODcsImlhdCI6MTYxMTE2NzQ0NywianRpIjoiMWMxZjVhMmItZjA0Ny00NTc5LWE0YWItZDBjY2ZmOTVkMDEwIiwiZ2hjOmFpZCI6ImVmZGRiOTVhLWFkMTktNDczMS1iOWM5LThjZWMwOTg3MzQzZSIsImdoYzpjaWQiOiI4OWRiYzg3Ni1hYzdjLTQzYjctODc0MS0yNWIxNDA2NWZiOTEjYW5kcm9pZF9odWIiLCJnaGM6dWlkIjoiZjJjYjQwYWUtZThkMS00Mzk3LThiM2QtYTI0Zjg4MGU0Y2JkIiwiZ2hjOnRpZCI6ImQ0bCIsImdoYzpzY29wZSI6InBlcm06ciByZWM6ciByZWM6dyBhdHRhY2htZW50OnIgYXR0YWNobWVudDp3IHVzZXI6ciB1c2VyOnEifQ.JpjUvgAk-wCJAY8xu5J9CT93655lXqyy3dki0Gr0sWtU4PpCZePmeGHPABmBKdg3Bj8kdnbz2463OMfeGELigOLe1Mx8nPPPiGV2SPliCZp-rOOOodxscAd1OTT1AnCPmwJXlXHuNj4CUnR_Urr0dvpNt8a3CdwsezhgDwoyDQpKYPbMN-IrI1WcHaG8SCOPhiX-6zMVrnwpS6fBAtAtUbpvVQZXraKjdbiB3ZCoCWAMKG3_2TtamklOYFCPm1rladkptIFPVXR4y_6LoR_ILN77SERxrEERASvm1ZJXwd2EjLHKkabJ1EgIYiqntiCrRNawtYs0sjo4g_5il4nzUHZbrNWHo0c0m9Qzjahj3vJAQEddJcTZdJyM7_Ootmqwo3DTcn4w_xfIDoTArW5tHJ27TRBIo73PoOCAF4iZA4TGE9NassegeEtLl9jtKBDUr3MZVZkZEPZip8XWvX8E3UtIAVx-cji1hHK6P-jOzTZOCYJNCFx2C5ZK7zhVN9oWsImeiagViEe5OuxXWcFc38QE5eHBGjbOAKEGLchkuxk6zX2HhycJEW6JT73Vcf8iYytLF596SQ_uY4O2m1cr8HshFc10mAhGgnMhqHhe1QUIWlwFe5HHz7P4LTeK7zP8iAAVgEqlx7X1ryvpw5ekz7p1hbLYB9hKvvJ-vx13HkI"
             )
         }
-
-        override fun getEnvironment() = Environment.DEV
     }
 }

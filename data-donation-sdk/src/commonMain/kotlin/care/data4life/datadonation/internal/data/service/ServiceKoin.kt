@@ -29,10 +29,6 @@ internal fun resolveServiceModule(): Module {
             ConsentErrorHandler
         }
 
-        single<ServiceContract.CredentialService> {
-            CredentialService(get())
-        }
-
         single<ServiceContract.UserSessionTokenService> {
             CachedUserSessionTokenService(get(), get())
         }

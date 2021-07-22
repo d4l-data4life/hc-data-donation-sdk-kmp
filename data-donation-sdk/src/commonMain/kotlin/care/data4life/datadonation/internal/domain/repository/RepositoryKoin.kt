@@ -28,9 +28,5 @@ internal fun resolveRepositoryModule(): Module {
         single<RepositoryContract.ConsentDocumentRepository> {
             ConsentDocumentRepository(get(), get())
         }
-
-        single<RepositoryContract.CredentialsRepository> {
-            CredentialsRepository(get())
-        }
     }
 }

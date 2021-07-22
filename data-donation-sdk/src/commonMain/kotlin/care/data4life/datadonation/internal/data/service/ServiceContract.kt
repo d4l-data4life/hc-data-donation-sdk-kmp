@@ -28,11 +28,6 @@ internal typealias PublicDataDonationCryptoKey = String
 internal typealias PublicAnalyticsCryptoKey = String
 
 internal interface ServiceContract {
-    enum class PublicCryptoKey(val identifier: String) {
-        DONATION("donation"),
-        ANALYTICS("analytics")
-    }
-
     interface CredentialService {
         fun getDataDonationPublicKey(): PublicDataDonationCryptoKey
         fun getAnalyticsPlatformPublicKey(): PublicAnalyticsCryptoKey

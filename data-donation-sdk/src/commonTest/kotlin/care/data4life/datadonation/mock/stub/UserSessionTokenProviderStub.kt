@@ -14,14 +14,20 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.provider
+package care.data4life.datadonation.mock.stub
 
 import care.data4life.datadonation.Contract
+import care.data4life.datadonation.mock.MockContract
+import care.data4life.datadonation.mock.MockException
 
-interface CredentialProvider {
-    fun getServicePublicKey(service: Contract.Service): String
-}
+class UserSessionTokenProviderStub : Contract.UserSessionTokenProvider, MockContract.Stub {
+    var whenGetUserSessionToken: ((Contract.ResultListener<String>) -> Unit)? = null
 
-interface UserSessionTokenProvider {
-    fun getUserSessionToken(tokenListener: Contract.ResultListener<String>)
+    override fun getUserSessionToken(listener: Contract.ResultListener<String>) {
+        whenGetUserSessionToken?.invoke(listener) ?: throw MockException()
+    }
+
+    override fun clear() {
+        whenGetUserSessionToken = null
+    }
 }
