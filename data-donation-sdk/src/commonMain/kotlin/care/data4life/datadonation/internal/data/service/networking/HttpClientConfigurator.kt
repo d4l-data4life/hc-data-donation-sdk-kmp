@@ -19,23 +19,46 @@ package care.data4life.datadonation.internal.data.service.networking
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.features.HttpResponseValidator
 
-internal object HttpClientConfigurator :
-    Networking.HttpClientConfigurator {
-    override fun configure(
+internal object HttpClientConfigurator : Networking.HttpClientConfigurator {
+    private fun installFeatures(
         httpConfig: HttpClientConfig<*>,
-        installers: List<Networking.HttpFeatureInstaller<in Any, in Any?>>,
-        responseValidator: Pair<Networking.ResponseValidatorConfigurator, Pair<Networking.ResponseValidator?, Networking.ErrorPropagator?>>
+        installers: List<Networking.HttpFeatureInstaller<in Any, in Any?>>?
     ) {
-        installers.forEach { (plugin, configurator, subConfig) ->
-            httpConfig.install(plugin) {
+        if (installers is List<*>) {
+            installers.forEach { (plugin, configurator, subConfig) ->
+                httpConfig.install(plugin) {
+                    configurator.configure(
+                        this,
+                        subConfig
+                    )
+                }
+            }
+        }
+    }
+
+    private fun configureHttpResponseValidation(
+        httpConfig: HttpClientConfig<*>,
+        responseValidator: Networking.HttpResponseValidation?
+    ) {
+        if (responseValidator is Networking.HttpResponseValidation) {
+            val (configurator, successfulResponseValidation, errorPropagation) = responseValidator
+
+            httpConfig.HttpResponseValidator {
                 configurator.configure(
                     this,
-                    subConfig
+                    successfulResponseValidation,
+                    errorPropagation
                 )
             }
         }
+    }
 
-        val (configurator, auxiliary) = responseValidator
-        httpConfig.HttpResponseValidator { configurator.configure(this, auxiliary) }
+    override fun configure(
+        httpConfig: HttpClientConfig<*>,
+        installers: List<Networking.HttpFeatureInstaller<in Any, in Any?>>?,
+        responseValidator: Networking.HttpResponseValidation?
+    ) {
+        installFeatures(httpConfig, installers)
+        configureHttpResponseValidation(httpConfig, responseValidator)
     }
 }

@@ -18,6 +18,9 @@ package care.data4life.datadonation.internal.data.service.networking
 
 import care.data4life.datadonation.mock.fake.defaultResponse
 import care.data4life.datadonation.mock.stub.service.networking.HttpFeatureConfiguratorStub
+import care.data4life.datadonation.mock.stub.service.networking.HttpResponseValidatorConfiguratorStub
+import care.data4life.datadonation.mock.stub.service.networking.plugin.HttpErrorPropagatorStub
+import care.data4life.datadonation.mock.stub.service.networking.plugin.HttpSuccessfulResponseValidatorStub
 import care.data4life.sdk.util.test.runWithContextBlockingTest
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
@@ -75,8 +78,7 @@ class HttpClientConfiguratorTest {
         HttpClient(MockEngine) {
             HttpClientConfigurator.configure(
                 this,
-                features,
-                Pair(ResponseValidatorConfigurator, Pair(null, null))
+                features
             )
 
             engine {
@@ -126,8 +128,7 @@ class HttpClientConfiguratorTest {
         HttpClient(MockEngine) {
             HttpClientConfigurator.configure(
                 this,
-                features,
-                Pair(ResponseValidatorConfigurator, Pair(null, null))
+                features
             )
 
             engine {
@@ -145,40 +146,48 @@ class HttpClientConfiguratorTest {
     }
 
     @Test
-    fun `Given configure is called with a HttpClientConfig and a ResponseValidatorConfigurator, it calls the Configurator with its appropriate parameter`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+    fun `Given configure is called with a HttpClientConfig and a HttpResponseValidation, it calls the Configurator with its appropriate parameter`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
-        val auxiliary = Pair(null, null)
+        val configurator = HttpResponseValidatorConfiguratorStub()
+        val successfulResponse = HttpSuccessfulResponseValidatorStub()
+        val errorPropagator = HttpErrorPropagatorStub()
 
-        val responseValidator = object : Networking.ResponseValidatorConfigurator {
-            val capturedPluginConfig = Channel<HttpCallValidator.Config>()
-            val capturedAuxiliaryConfigurator = Channel<Pair<*, *>>()
+        val responseValidation = Networking.HttpResponseValidation(
+            configurator,
+            successfulResponse,
+            errorPropagator
+        )
 
-            override fun configure(
-                pluginConfig: HttpCallValidator.Config,
-                auxiliaryConfigurator: Pair<Networking.ResponseValidator?, Networking.ErrorPropagator?>
-            ) {
-                launch {
-                    capturedPluginConfig.send(pluginConfig)
-                    capturedAuxiliaryConfigurator.send(auxiliaryConfigurator)
-                }
+        val capturedResponseConfig = Channel<HttpCallValidator.Config>()
+        val capturedSuccessfulResponse = Channel<Networking.HttpSuccessfulResponseValidator>()
+        val capturedErrorPropagation = Channel<Networking.HttpErrorPropagator>()
+
+        configurator.whenConfigure = { delegatedResponseConfig, delegatedSuccessfulResponse, delegatedErrorPropagation ->
+            launch {
+                capturedResponseConfig.send(delegatedResponseConfig)
+                capturedSuccessfulResponse.send(delegatedSuccessfulResponse!!)
+                capturedErrorPropagation.send(delegatedErrorPropagation!!)
             }
         }
 
         // When
         HttpClient {
-            ClientConfigurator.configure(
+            HttpClientConfigurator.configure(
                 this,
-                emptyMap(),
-                Pair(responseValidator, auxiliary)
+                responseValidator = responseValidation
             )
         }
 
         // Then
-        val pluginConfig: Any = responseValidator.capturedPluginConfig.receive()
+        val pluginConfig: Any = capturedResponseConfig.receive()
         assertTrue(pluginConfig is HttpCallValidator.Config)
         assertSame(
-            actual = responseValidator.capturedAuxiliaryConfigurator.receive(),
-            expected = auxiliary
+            actual = capturedSuccessfulResponse.receive(),
+            expected = successfulResponse
+        )
+        assertSame(
+            actual = capturedErrorPropagation.receive(),
+            expected = errorPropagator
         )
     }
 

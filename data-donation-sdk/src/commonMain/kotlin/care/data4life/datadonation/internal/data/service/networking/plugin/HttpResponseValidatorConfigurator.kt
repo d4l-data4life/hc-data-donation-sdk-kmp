@@ -14,27 +14,26 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.data.service.networking
+package care.data4life.datadonation.internal.data.service.networking.plugin
 
+import care.data4life.datadonation.internal.data.service.networking.Networking
 import io.ktor.client.features.HttpCallValidator
 
-internal object ResponseValidatorConfigurator :
-    Networking.ResponseValidatorConfigurator {
+internal object HttpResponseValidatorConfigurator : Networking.HttpResponseValidatorConfigurator {
     override fun configure(
-        pluginConfig: HttpCallValidator.Config,
-        auxiliaryConfigurator: Pair<Networking.ResponseValidator?, Networking.ErrorPropagator?>
+        httpResponseConfiguration: HttpCallValidator.Config,
+        successfulResponseValidation: Networking.HttpSuccessfulResponseValidator?,
+        errorPropagation: Networking.HttpErrorPropagator?
     ) {
-        val(responseValidator, errorPropagator) = auxiliaryConfigurator
-
-        if (responseValidator is Networking.ResponseValidator) {
-            pluginConfig.validateResponse { response ->
-                responseValidator.validate(response)
+        if (successfulResponseValidation is Networking.HttpSuccessfulResponseValidator) {
+            httpResponseConfiguration.validateResponse { response ->
+                successfulResponseValidation.validate(response)
             }
         }
 
-        if (errorPropagator is Networking.ErrorPropagator) {
-            pluginConfig.handleResponseException { error ->
-                errorPropagator.propagate(error)
+        if (errorPropagation is Networking.HttpErrorPropagator) {
+            httpResponseConfiguration.handleResponseException { error ->
+                errorPropagation.propagate(error)
             }
         }
     }

@@ -17,21 +17,21 @@
 package care.data4life.datadonation.internal.data.service.networking
 
 import care.data4life.datadonation.core.model.ModelContract
+import care.data4life.datadonation.mock.fake.createDefaultMockClient
 import care.data4life.datadonation.mock.stub.service.networking.HttpClientConfiguratorStub
 import care.data4life.datadonation.mock.stub.service.networking.HttpFeatureConfiguratorStub
-import care.data4life.sdk.log.Log
+import care.data4life.datadonation.mock.stub.service.networking.HttpResponseValidatorConfiguratorStub
+import care.data4life.datadonation.mock.stub.service.networking.plugin.HttpErrorPropagatorStub
+import care.data4life.datadonation.mock.stub.service.networking.plugin.HttpSuccessfulResponseValidatorStub
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.features.HttpClientFeature
-import io.ktor.client.features.json.JsonFeature
-import io.ktor.client.features.logging.Logging
 import io.ktor.util.AttributeKey
 import org.koin.core.context.stopKoin
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import kotlin.test.BeforeTest
 import kotlin.test.Test
-import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
@@ -48,7 +48,8 @@ class NetworkingKoinTest {
         val koin = koinApplication {
             modules(
                 resolveNetworking(),
-                module {
+                module(override = true) {
+                    single { createDefaultMockClient() }
                     single { ModelContract.Environment.DEV }
                 }
             )
@@ -59,89 +60,20 @@ class NetworkingKoinTest {
     }
 
     @Test
-    fun `Given resolveServiceModule is called it creates a Module, which contains a HttpClient`() {
-        // When
-        val koin = koinApplication {
-            modules(
-                resolveNetworking(),
-            )
-        }
-        // Then
-        val client: HttpClient = koin.koin.get()
-        assertNotNull(client)
-    }
-
-
-
-    @Test
-    fun `Given resolveServiceModule is called it creates a Module, which contains a List of HttpFeatureInstaller`() {
-        // When
-        val koin = koinApplication {
-            modules(
-                resolveNetworking()
-            )
-        }
-
-        val configuration = koin.koin.get<List<Networking.HttpFeatureInstaller<in Any, in Any?>>>()
-
-        // Then
-        assertEquals(
-            actual = configuration.size,
-            expected = 2
-        )
-        assertEquals(
-            actual = configuration[0],
-            expected = Networking.HttpFeatureInstaller(
-                JsonFeature,
-                HttpSerializerConfigurator,
-                JsonConfigurator
-            )
-        )
-        assertEquals(
-            actual = configuration[1],
-            expected = Networking.HttpFeatureInstaller(
-                Logging,
-                HttpLoggingConfigurator,
-                Log.logger
-            )
-        )
-    }
-
-    @Test
-    fun `Given resolveServiceModule is called it creates a Module, which contains the HTTPClient validator configuration`() {
-        // When
-        val koin = koinApplication {
-            modules(
-                resolveNetworking(),
-            )
-        }
-        // Then
-        val config: Pair<Networking.ResponseValidatorConfigurator, Pair<Networking.ResponseValidator?, Networking.ErrorPropagator?>> = koin.koin.get()
-        assertNotNull(config)
-
-        val (responseValidator, auxiliary) = config
-
-        assertSame(
-            actual = responseValidator,
-            expected = ResponseValidatorConfigurator
-        )
-        assertEquals(
-            actual = auxiliary,
-            expected = Pair(ResponseValidator, ErrorPropagator)
-        )
-    }
-
-    @Test
     fun `Given resolveServiceModule is called it creates a Module, which contains the HttpClientConfigurator`() {
         // When
         val koin = koinApplication {
             modules(
-                resolveNetworking()
+                resolveNetworking(),
+                module(override = true) {
+                    single { createDefaultMockClient() }
+                    single { ModelContract.Environment.DEV }
+                }
             )
         }
 
         // Then
-        val configuration = koin.koin.get<List<Networking.HttpClientConfigurator>>()
+        val configuration = koin.koin.get<Networking.HttpClientConfigurator>()
         assertNotNull(configuration)
     }
 
@@ -156,13 +88,20 @@ class NetworkingKoinTest {
                 "something"
             )
         )
+        val validation = Networking.HttpResponseValidation(
+            HttpResponseValidatorConfiguratorStub(),
+            HttpSuccessfulResponseValidatorStub(),
+            HttpErrorPropagatorStub()
+        )
 
         var capturedHttpConfig: HttpClientConfig<*>? = null
         var capturedFeatures: List<Networking.HttpFeatureInstaller<in Any, in Any>>? = null
+        var capturedResponseValidation: Networking.HttpResponseValidation? = null
 
-        clientConfigurator.whenConfigure = { delegatedHttpConfig, delegatedFeatures ->
+        clientConfigurator.whenConfigure = { delegatedHttpConfig, delegatedFeatures, delegatedResponseValidation ->
             capturedHttpConfig = delegatedHttpConfig
             capturedFeatures = delegatedFeatures
+            capturedResponseValidation = delegatedResponseValidation
         }
 
         // When
@@ -170,21 +109,29 @@ class NetworkingKoinTest {
             modules(
                 resolveNetworking(),
                 module(override = true) {
-                    factory<Networking.HttpClientConfigurator> {
+                    single<Networking.HttpClientConfigurator> {
                         clientConfigurator
                     }
-                    factory<List<Networking.HttpFeatureInstaller<out Any, out Any?>>> {
+                    single<List<Networking.HttpFeatureInstaller<out Any, out Any?>>> {
                         features
                     }
+                    single { validation }
+                    single { ModelContract.Environment.DEV }
                 }
             )
         }
         // Then
-        koin.koin.get<HttpClient>()
+        val client: HttpClient = koin.koin.get()
+        assertNotNull(client)
+
         assertTrue(capturedHttpConfig is HttpClientConfig<*>)
         assertSame(
             actual = capturedFeatures,
             expected = features
+        )
+        assertSame(
+            actual = capturedResponseValidation,
+            expected = validation
         )
     }
 

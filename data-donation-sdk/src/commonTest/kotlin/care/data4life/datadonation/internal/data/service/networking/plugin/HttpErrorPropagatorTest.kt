@@ -14,23 +14,28 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.data.service.networking
+package care.data4life.datadonation.internal.data.service.networking.plugin
 
+import care.data4life.datadonation.internal.data.service.networking.Networking
 import care.data4life.datadonation.lang.HttpRuntimeError
-import care.data4life.datadonation.mock.fake.createFakeResponse
-import io.ktor.client.features.ResponseException
+import care.data4life.sdk.util.test.runBlockingTest
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.mock.MockEngine
+import io.ktor.client.engine.mock.respondError
+import io.ktor.client.features.HttpResponseValidator
+import io.ktor.client.request.get
 import io.ktor.http.HttpStatusCode
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
-class ErrorPropagatorTest {
+class HttpErrorPropagatorTest {
     @Test
-    fun `It fulfils ErrorPropagator`() {
-        val propagator: Any = ErrorPropagator
+    fun `It fulfils HttpErrorPropagator`() {
+        val propagator: Any = HttpErrorPropagator
 
-        assertTrue(propagator is Networking.ErrorPropagator)
+        assertTrue(propagator is Networking.HttpErrorPropagator)
     }
 
     @Test
@@ -41,7 +46,7 @@ class ErrorPropagatorTest {
         // Then
         val error = assertFailsWith<RuntimeException> {
             // When
-            ErrorPropagator.propagate(throwable)
+            HttpErrorPropagator.propagate(throwable)
         }
 
         // Then
@@ -52,21 +57,32 @@ class ErrorPropagatorTest {
     }
 
     @Test
-    fun `Given propagate is called with a Throwable, it rethrows it as HTTPRuntimeError, which contains the HTTP_CODE`() {
+    fun `Given propagate is called with a Throwable, it rethrows it as HttpRuntimeError, which contains a HttpStatusCode`() = runBlockingTest {
         // Given
-        val throwable = ResponseException(
-            createFakeResponse(HttpStatusCode.Unauthorized),
-            cachedResponseText = "Fake text"
-        )
+        val client = HttpClient(MockEngine) {
+            HttpResponseValidator {
+                handleResponseException { response ->
+                    HttpErrorPropagator.propagate(response)
+                }
+            }
+
+            engine {
+                addHandler {
+                    respondError(
+                        status = HttpStatusCode.InternalServerError
+                    )
+                }
+            }
+        }
 
         // Then
         val error = assertFailsWith<HttpRuntimeError> {
-            ErrorPropagator.propagate(throwable)
+            client.get("/somewhre")
         }
 
         assertEquals(
             actual = error.statusCode,
-            expected = HttpStatusCode.Unauthorized
+            expected = HttpStatusCode.InternalServerError
         )
     }
 }

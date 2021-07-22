@@ -19,17 +19,18 @@ package care.data4life.datadonation.mock.stub.service.networking
 import care.data4life.datadonation.internal.data.service.networking.Networking
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
-import io.ktor.client.HttpClientConfig
+import io.ktor.client.features.HttpCallValidator
 
-internal class HttpClientConfiguratorStub : Networking.HttpClientConfigurator, MockContract.Stub {
-    var whenConfigure: ((HttpClientConfig<*>, List<Networking.HttpFeatureInstaller<in Any, in Any?>>?, Networking.HttpResponseValidation?) -> Unit)? = null
+internal class HttpResponseValidatorConfiguratorStub : Networking.HttpResponseValidatorConfigurator, MockContract.Stub {
+    var whenConfigure: ((HttpCallValidator.Config, Networking.HttpSuccessfulResponseValidator?, Networking.HttpErrorPropagator?) -> Unit)? = null
 
     override fun configure(
-        httpConfig: HttpClientConfig<*>,
-        installers: List<Networking.HttpFeatureInstaller<in Any, in Any?>>?,
-        responseValidator: Networking.HttpResponseValidation?
+        httpResponseConfiguration: HttpCallValidator.Config,
+        successfulResponseValidation: Networking.HttpSuccessfulResponseValidator?,
+        errorPropagation: Networking.HttpErrorPropagator?
     ) {
-        whenConfigure?.invoke(httpConfig, installers, responseValidator) ?: throw MockException()
+        whenConfigure?.invoke(httpResponseConfiguration, successfulResponseValidation, errorPropagation)
+            ?: throw MockException()
     }
 
     override fun clear() {

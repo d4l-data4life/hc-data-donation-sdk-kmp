@@ -14,17 +14,15 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.data.service.networking
+package care.data4life.datadonation.internal.data.service.networking.plugin
 
-import kotlinx.serialization.json.JsonBuilder
+import care.data4life.datadonation.internal.data.service.networking.plugin.KtorPluginsContract.Logger.Companion.PREFIX
+import care.data4life.sdk.log.Logger
 
-internal object JsonConfigurator : Networking.JsonConfigurator {
-    override fun configure(jsonBuild: JsonBuilder): JsonBuilder {
-        jsonBuild.isLenient = true
-        jsonBuild.ignoreUnknownKeys = true
-        jsonBuild.allowSpecialFloatingPointValues = true
-        jsonBuild.useArrayPolymorphism = false
-
-        return jsonBuild
+internal class SimpleLogger(
+    private val logger: Logger
+) : KtorPluginsContract.Logger {
+    override fun log(message: String) {
+        logger.info("$PREFIX $message")
     }
 }

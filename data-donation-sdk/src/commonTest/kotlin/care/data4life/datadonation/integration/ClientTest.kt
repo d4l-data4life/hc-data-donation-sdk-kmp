@@ -41,6 +41,7 @@ import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.ModelContract.Environment
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.encryption.resolveEncryptionModule
+import care.data4life.datadonation.internal.data.service.networking.plugin.resolveKtorPlugins
 import care.data4life.datadonation.internal.data.service.networking.resolveNetworking
 import care.data4life.datadonation.internal.data.service.resolveServiceModule
 import care.data4life.datadonation.internal.di.resolveCoreModule
@@ -92,6 +93,7 @@ class ClientTest {
                 resolveRootModule(config),
                 resolveCoreModule(),
                 resolveNetworking(),
+                resolveKtorPlugins(),
                 resolveUsecaseRunnerModule(),
                 resolveUsecaseModule(),
                 resolveRepositoryModule(),
@@ -146,6 +148,7 @@ class ClientTest {
                 resolveRootModule(config),
                 resolveCoreModule(),
                 resolveNetworking(),
+                resolveKtorPlugins(),
                 resolveUsecaseRunnerModule(),
                 resolveUsecaseModule(),
                 resolveRepositoryModule(),
@@ -216,6 +219,7 @@ class ClientTest {
                 resolveRootModule(config),
                 resolveCoreModule(),
                 resolveNetworking(),
+                resolveKtorPlugins(),
                 resolveUsecaseRunnerModule(),
                 resolveUsecaseModule(),
                 resolveRepositoryModule(),
@@ -263,6 +267,7 @@ class ClientTest {
                 resolveRootModule(config),
                 resolveCoreModule(),
                 resolveNetworking(),
+                resolveKtorPlugins(),
                 resolveUsecaseRunnerModule(),
                 resolveUsecaseModule(),
                 resolveRepositoryModule(),
@@ -308,6 +313,7 @@ class ClientTest {
                 resolveRootModule(config),
                 resolveCoreModule(),
                 resolveNetworking(),
+                resolveKtorPlugins(),
                 resolveUsecaseRunnerModule(),
                 resolveUsecaseModule(),
                 resolveRepositoryModule(),
@@ -353,6 +359,7 @@ class ClientTest {
                 resolveRootModule(config),
                 resolveCoreModule(),
                 resolveNetworking(),
+                resolveKtorPlugins(),
                 resolveUsecaseRunnerModule(),
                 resolveUsecaseModule(),
                 resolveRepositoryModule(),

@@ -14,21 +14,17 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.data.service.networking
+package care.data4life.datadonation.internal.data.service.networking.plugin
 
-import care.data4life.datadonation.lang.HttpRuntimeError
-import io.ktor.client.features.ResponseException
+import io.ktor.client.features.json.JsonFeature
+import io.ktor.client.features.json.serializer.KotlinxSerializer
+import kotlinx.serialization.json.Json
 
-internal object ErrorPropagator : Networking.ErrorPropagator {
-    private fun wrapError(error: Throwable): Throwable {
-        return if (error is ResponseException) {
-            HttpRuntimeError(error.response.status)
-        } else {
-            error
-        }
-    }
-
-    override fun propagate(error: Throwable) {
-        throw wrapError(error)
+internal object HttpSerializerConfigurator :
+    KtorPluginsContract.HttpSerializerConfigurator {
+    override fun configure(pluginConfig: JsonFeature.Config, subConfiguration: KtorPluginsContract.JsonConfigurator) {
+        pluginConfig.serializer = KotlinxSerializer(
+            Json { subConfiguration.configure(this) }
+        )
     }
 }

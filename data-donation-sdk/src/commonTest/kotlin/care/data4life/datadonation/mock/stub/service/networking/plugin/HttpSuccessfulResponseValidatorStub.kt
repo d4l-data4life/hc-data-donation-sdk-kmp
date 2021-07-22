@@ -14,32 +14,21 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.mock.stub.service.networking
+package care.data4life.datadonation.mock.stub.service.networking.plugin
 
+import care.data4life.datadonation.internal.data.service.networking.Networking
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
-import care.data4life.sdk.log.Logger
+import io.ktor.client.statement.HttpResponse
 
-class LoggerStub : Logger, MockContract.Stub {
-    var whenInfo: ((String) -> Unit)? = null
-    var whenError: ((Throwable, String?) -> Unit)? = null
-    var whenDebug: ((String) -> Unit)? = null
+internal class HttpSuccessfulResponseValidatorStub : Networking.HttpSuccessfulResponseValidator, MockContract.Stub {
+    var whenValidate: ((response: HttpResponse) -> Unit)? = null
 
-    override fun debug(message: String) {
-        whenDebug?.invoke(message) ?: throw MockException()
-    }
-
-    override fun error(t: Throwable, message: String?) {
-        whenError?.invoke(t, message) ?: throw MockException()
-    }
-
-    override fun info(message: String) {
-        whenInfo?.invoke(message) ?: throw MockException()
+    override fun validate(response: HttpResponse) {
+        whenValidate?.invoke(response) ?: throw MockException()
     }
 
     override fun clear() {
-        whenDebug = null
-        whenError = null
-        whenInfo = null
+        whenValidate = null
     }
 }

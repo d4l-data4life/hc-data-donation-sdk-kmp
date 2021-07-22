@@ -14,25 +14,32 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.mock.stub.service.networking
+package care.data4life.datadonation.mock.stub.service.networking.plugin
 
-import care.data4life.datadonation.internal.data.service.networking.Networking
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
-import io.ktor.client.HttpClientConfig
+import care.data4life.sdk.log.Logger
 
-internal class HttpClientConfiguratorStub : Networking.HttpClientConfigurator, MockContract.Stub {
-    var whenConfigure: ((HttpClientConfig<*>, List<Networking.HttpFeatureInstaller<in Any, in Any?>>?, Networking.HttpResponseValidation?) -> Unit)? = null
+class LoggerStub : Logger, MockContract.Stub {
+    var whenInfo: ((String) -> Unit)? = null
+    var whenError: ((Throwable, String?) -> Unit)? = null
+    var whenDebug: ((String) -> Unit)? = null
 
-    override fun configure(
-        httpConfig: HttpClientConfig<*>,
-        installers: List<Networking.HttpFeatureInstaller<in Any, in Any?>>?,
-        responseValidator: Networking.HttpResponseValidation?
-    ) {
-        whenConfigure?.invoke(httpConfig, installers, responseValidator) ?: throw MockException()
+    override fun debug(message: String) {
+        whenDebug?.invoke(message) ?: throw MockException()
+    }
+
+    override fun error(t: Throwable, message: String?) {
+        whenError?.invoke(t, message) ?: throw MockException()
+    }
+
+    override fun info(message: String) {
+        whenInfo?.invoke(message) ?: throw MockException()
     }
 
     override fun clear() {
-        whenConfigure = null
+        whenDebug = null
+        whenError = null
+        whenInfo = null
     }
 }

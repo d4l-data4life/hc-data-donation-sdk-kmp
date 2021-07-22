@@ -14,30 +14,17 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.data.service.networking
+package care.data4life.datadonation.internal.data.service.networking.plugin
 
-import io.ktor.client.HttpClient
-import org.koin.core.module.Module
-import org.koin.dsl.module
+import kotlinx.serialization.json.JsonBuilder
 
-internal fun resolveNetworking(): Module {
-    return module {
-        single<Networking.RequestBuilderTemplate> {
-            RequestBuilder.Template(get(), get())
-        }
+internal object JsonConfigurator : KtorPluginsContract.JsonConfigurator {
+    override fun configure(jsonBuild: JsonBuilder): JsonBuilder {
+        jsonBuild.isLenient = true
+        jsonBuild.ignoreUnknownKeys = true
+        jsonBuild.allowSpecialFloatingPointValues = true
+        jsonBuild.useArrayPolymorphism = false
 
-        single<Networking.HttpClientConfigurator> {
-            HttpClientConfigurator
-        }
-
-        single {
-            HttpClient {
-                get<Networking.HttpClientConfigurator>().configure(
-                    this,
-                    installers = getOrNull(),
-                    responseValidator = getOrNull(),
-                )
-            }
-        }
+        return jsonBuild
     }
 }

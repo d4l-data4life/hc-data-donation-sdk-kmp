@@ -14,9 +14,9 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.data.service.networking
+package care.data4life.datadonation.internal.data.service.networking.plugin
 
-import care.data4life.datadonation.mock.stub.service.networking.LoggerStub
+import care.data4life.datadonation.mock.stub.service.networking.plugin.LoggerStub
 import io.ktor.client.features.logging.LogLevel
 import io.ktor.client.features.logging.Logging
 import kotlin.test.Test
@@ -29,7 +29,7 @@ class HttpLoggingConfiguratorTest {
     fun `It fulfils HttpLoggingConfigurator`() {
         val configurator: Any = HttpLoggingConfigurator
 
-        assertTrue(configurator is Networking.HttpLoggingConfigurator)
+        assertTrue(configurator is KtorPluginsContract.HttpLoggingConfigurator)
     }
 
     @Test
@@ -57,7 +57,7 @@ class HttpLoggingConfiguratorTest {
             expected = LogLevel.ALL
         )
 
-        assertTrue(config.logger is Networking.Logger)
+        assertTrue(config.logger is KtorPluginsContract.Logger)
         assertTrue(wasCalled)
     }
 }

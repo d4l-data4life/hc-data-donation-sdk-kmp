@@ -20,11 +20,8 @@ import care.data4life.sdk.lang.D4LRuntimeException
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.features.HttpCallValidator
 import io.ktor.client.features.HttpClientFeature
-import io.ktor.client.features.json.JsonFeature
-import io.ktor.client.features.logging.Logging
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.HttpStatement
-import kotlinx.serialization.json.JsonBuilder
 
 internal typealias Header = Map<String, String>
 internal typealias Parameter = Map<String, Any?>
@@ -32,35 +29,27 @@ internal typealias AccessToken = String
 internal typealias Path = List<String>
 
 internal interface Networking {
-    interface Logger : io.ktor.client.features.logging.Logger {
-        override fun log(message: String)
-
-        companion object {
-            const val PREFIX = "DD-SDK-HTTP:"
-        }
-    }
-
     fun interface HttpFeatureConfigurator<FeatureConfiguration : Any, SubConfiguration> {
         fun configure(pluginConfig: FeatureConfiguration, subConfiguration: SubConfiguration)
     }
 
-    fun interface JsonConfigurator {
-        fun configure(jsonBuild: JsonBuilder): JsonBuilder
-    }
-
-    fun interface ResponseValidator {
+    fun interface HttpSuccessfulResponseValidator {
         @Throws(D4LRuntimeException::class)
         fun validate(response: HttpResponse)
     }
 
-    fun interface ErrorPropagator {
+    fun interface HttpErrorPropagator {
         @Throws(D4LRuntimeException::class)
         fun propagate(error: Throwable)
     }
 
-    fun interface HttpSerializerConfigurator : HttpFeatureConfigurator<JsonFeature.Config, JsonConfigurator>
-    fun interface HttpLoggingConfigurator : HttpFeatureConfigurator<Logging.Config, care.data4life.sdk.log.Logger>
-    fun interface ResponseValidatorConfigurator : HttpFeatureConfigurator<HttpCallValidator.Config, Pair<ResponseValidator?, ErrorPropagator?>>
+    fun interface HttpResponseValidatorConfigurator {
+        fun configure(
+            httpResponseConfiguration: HttpCallValidator.Config,
+            successfulResponseValidation: HttpSuccessfulResponseValidator?,
+            errorPropagation: HttpErrorPropagator?
+        )
+    }
 
     data class HttpFeatureInstaller<FeatureConfiguration : Any, SubConfiguration>(
         val feature: HttpClientFeature<*, *>,
@@ -68,11 +57,17 @@ internal interface Networking {
         val subConfiguration: SubConfiguration
     )
 
-    fun interface HttpClientConfigurator {
+    data class HttpResponseValidation(
+        val validationConfigurator: HttpResponseValidatorConfigurator,
+        val successfulResponseValidation: HttpSuccessfulResponseValidator? = null,
+        val errorPropagation: HttpErrorPropagator? = null
+    )
+
+    interface HttpClientConfigurator {
         fun configure(
             httpConfig: HttpClientConfig<*>,
-            installers: List<HttpFeatureInstaller<in Any, in Any?>>,
-            responseValidator: Pair<ResponseValidatorConfigurator, Pair<ResponseValidator?, ErrorPropagator?>>
+            installers: List<HttpFeatureInstaller<in Any, in Any?>>? = null,
+            responseValidator: HttpResponseValidation? = null
         )
     }
 

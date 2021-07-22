@@ -14,9 +14,12 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.data.service.networking
+package care.data4life.datadonation.internal.data.service.networking.plugin
 
+import care.data4life.datadonation.internal.data.service.networking.Networking
 import care.data4life.datadonation.mock.fake.defaultResponse
+import care.data4life.datadonation.mock.stub.service.networking.plugin.HttpErrorPropagatorStub
+import care.data4life.datadonation.mock.stub.service.networking.plugin.HttpSuccessfulResponseValidatorStub
 import care.data4life.sdk.lang.D4LException
 import care.data4life.sdk.util.test.runBlockingTest
 import io.ktor.client.HttpClient
@@ -32,23 +35,23 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
-class ResponseValidatorConfiguratorTest {
+class HttpResponseValidatorConfiguratorTest {
     @Test
-    fun `It fulfils ResponseValidatorConfigurator`() {
-        val configurator: Any = ResponseValidatorConfigurator
+    fun `It fulfils HttpResponseValidatorConfigurator`() {
+        val configurator: Any = HttpResponseValidatorConfigurator
 
-        assertTrue(configurator is Networking.ResponseValidatorConfigurator)
+        assertTrue(configurator is Networking.HttpResponseValidatorConfigurator)
     }
 
     @Test
     fun `Given configure is called with a Pair of Validators, it ignores ResponseValidation if it is null`() = runBlockingTest {
         // Given
-        val validators = Pair(null, null)
         val client = HttpClient(MockEngine) {
             HttpResponseValidator {
-                ResponseValidatorConfigurator.configure(
+                HttpResponseValidatorConfigurator.configure(
                     this,
-                    validators
+                    null,
+                    null
                 )
             }
 
@@ -70,9 +73,14 @@ class ResponseValidatorConfiguratorTest {
     }
 
     @Test
-    fun `Given configure is called  with a Pair of Validators, it sets a ResponseValidation if it is not null`() = runBlockingTest {
+    fun `Given configure is called  with a Pair of Validators, it configures a HttpSuccessfulResponseValidator if it is not null`() = runBlockingTest {
         // Given
-        val validators = Pair(ResponseValidatorStub, null)
+        val successfulResponseValidator = HttpSuccessfulResponseValidatorStub()
+
+        successfulResponseValidator.whenValidate = {
+            throw RuntimeException()
+        }
+
         val client = HttpClient(MockEngine) {
             engine {
                 addHandler {
@@ -81,9 +89,10 @@ class ResponseValidatorConfiguratorTest {
             }
 
             HttpResponseValidator {
-                ResponseValidatorConfigurator.configure(
+                HttpResponseValidatorConfigurator.configure(
                     this,
-                    validators
+                    successfulResponseValidator,
+                    null
                 )
             }
         }
@@ -95,14 +104,14 @@ class ResponseValidatorConfiguratorTest {
     }
 
     @Test
-    fun `Given configure is called with a Pair of Validators, it ignores ErrorPropagator if it is null`() = runBlockingTest {
+    fun `Given configure is called with a Pair of Validators, it ignores HttpErrorPropagator if it is null`() = runBlockingTest {
         // Given
-        val validators = Pair(null, null)
         val client = HttpClient(MockEngine) {
             HttpResponseValidator {
-                ResponseValidatorConfigurator.configure(
+                HttpResponseValidatorConfigurator.configure(
                     this,
-                    validators
+                    null,
+                    null
                 )
             }
 
@@ -123,9 +132,14 @@ class ResponseValidatorConfiguratorTest {
     }
 
     @Test
-    fun `Given configure is called  with a Pair of Validators, it sets a ErrorPropagator if it is not null`() = runBlockingTest {
+    fun `Given configure is called  with a Pair of Validators, it configures a HttpErrorPropagator if it is not null`() = runBlockingTest {
         // Given
-        val validators = Pair(null, ErrorPropagatorStub)
+        val propagator = HttpErrorPropagatorStub()
+
+        propagator.whenPropagate = {
+            throw D4LException()
+        }
+
         val client = HttpClient(MockEngine) {
             engine {
                 addHandler {
@@ -137,9 +151,10 @@ class ResponseValidatorConfiguratorTest {
             }
 
             HttpResponseValidator {
-                ResponseValidatorConfigurator.configure(
+                HttpResponseValidatorConfigurator.configure(
                     this,
-                    validators
+                    null,
+                    propagator
                 )
             }
         }
@@ -147,18 +162,6 @@ class ResponseValidatorConfiguratorTest {
         // When
         assertFailsWith<D4LException> {
             client.request<HttpResponse>("/not/important")
-        }
-    }
-
-    private object ResponseValidatorStub : Networking.ResponseValidator {
-        override fun validate(response: HttpResponse) {
-            throw RuntimeException()
-        }
-    }
-
-    private object ErrorPropagatorStub : Networking.ErrorPropagator {
-        override fun propagate(error: Throwable) {
-            throw D4LException()
         }
     }
 }

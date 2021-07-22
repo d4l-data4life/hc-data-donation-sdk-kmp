@@ -14,9 +14,9 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.data.service.networking
+package care.data4life.datadonation.internal.data.service.networking.plugin
 
-import care.data4life.datadonation.mock.stub.service.networking.LoggerStub
+import care.data4life.datadonation.mock.stub.service.networking.plugin.LoggerStub
 import care.data4life.sdk.log.Log
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -27,7 +27,7 @@ class SimpleLoggerTest {
     fun `It fulfils logger`() {
         val logger: Any = SimpleLogger(Log.logger)
 
-        assertTrue(logger is Networking.Logger)
+        assertTrue(logger is KtorPluginsContract.Logger)
     }
 
     @Test
