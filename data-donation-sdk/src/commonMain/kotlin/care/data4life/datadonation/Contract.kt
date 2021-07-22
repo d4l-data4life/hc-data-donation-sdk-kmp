@@ -35,8 +35,6 @@ package care.data4life.datadonation
 import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.ModelContract.Environment
 import care.data4life.datadonation.core.model.UserConsent
-import care.data4life.datadonation.internal.provider.CredentialProvider
-import care.data4life.datadonation.internal.provider.UserSessionTokenProvider
 import kotlinx.coroutines.flow.Flow
 
 interface Contract {
@@ -50,14 +48,8 @@ interface Contract {
         fun onError(exception: Exception)
     }
 
-    interface Configuration :
-        CredentialProvider,
-        UserSessionTokenProvider {
-        override fun getServicePublicKey(service: Service): String
-
-        override fun getUserSessionToken(tokenListener: ResultListener<String>)
-
-        fun getEnvironment(): Environment
+    fun interface UserSessionTokenProvider {
+        fun getUserSessionToken(listener: ResultListener<String>)
     }
 
     interface DataDonation {
@@ -81,7 +73,10 @@ interface Contract {
 
     interface DataDonationFactory {
         fun getInstance(
-            configuration: Configuration
+            environment: Environment,
+            donationPublicKey: String,
+            alpPublicKey: String,
+            userSession: UserSessionTokenProvider
         ): DataDonation
     }
 }

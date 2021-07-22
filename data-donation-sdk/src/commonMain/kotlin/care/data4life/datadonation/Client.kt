@@ -33,6 +33,7 @@
 package care.data4life.datadonation
 
 import care.data4life.datadonation.core.model.ConsentDocument
+import care.data4life.datadonation.core.model.ModelContract
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.di.initKoin
 import care.data4life.datadonation.internal.domain.usecases.*
@@ -41,7 +42,6 @@ import kotlinx.coroutines.flow.flow
 import org.koin.core.KoinApplication
 
 class Client internal constructor(
-    private val configuration: Contract.Configuration,
     koinApplication: KoinApplication
 ) : Contract.DataDonation {
     private val createUserContent: UsecaseContract.CreateUserConsent by koinApplication.koin.inject()
@@ -95,9 +95,19 @@ class Client internal constructor(
 
     companion object Factory : Contract.DataDonationFactory {
         override fun getInstance(
-            configuration: Contract.Configuration
+            environment: ModelContract.Environment,
+            donationPublicKey: String,
+            alpPublicKey: String,
+            userSession: Contract.UserSessionTokenProvider
         ): Contract.DataDonation {
-            return Client(configuration, initKoin(configuration))
+            return Client(
+                initKoin(
+                    environment,
+                    donationPublicKey,
+                    alpPublicKey,
+                    userSession
+                )
+            )
         }
     }
 }
