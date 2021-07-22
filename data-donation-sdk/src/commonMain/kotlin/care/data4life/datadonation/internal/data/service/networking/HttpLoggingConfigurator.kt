@@ -22,8 +22,8 @@ import io.ktor.client.features.logging.Logging
 
 internal object HttpLoggingConfigurator :
     Networking.HttpLoggingConfigurator {
-    override fun configure(pluginConfig: Logging.Config, subConfiguration: Logger) {
-        pluginConfig.logger = SimpleLogger(subConfiguration)
-        pluginConfig.level = LogLevel.ALL
+    override fun configure(pluginConfiguration: Logging.Config, subConfiguration: Logger) {
+        pluginConfiguration.logger = SimpleLogger(subConfiguration)
+        pluginConfiguration.level = LogLevel.ALL
     }
 }

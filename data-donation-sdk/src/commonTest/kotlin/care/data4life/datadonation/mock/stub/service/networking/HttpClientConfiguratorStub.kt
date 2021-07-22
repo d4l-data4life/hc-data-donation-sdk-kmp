@@ -22,11 +22,11 @@ import care.data4life.datadonation.mock.MockException
 import io.ktor.client.HttpClientConfig
 
 internal class HttpClientConfiguratorStub : Networking.HttpClientConfigurator, MockContract.Stub {
-    var whenConfigure: ((HttpClientConfig<*>, List<Networking.HttpFeatureInstaller<in Any, in Any?>>) -> Unit)? = null
+    var whenConfigure: ((HttpClientConfig<*>, List<Networking.HttpPluginInstaller<in Any, in Any?>>) -> Unit)? = null
 
     override fun configure(
         httpConfig: HttpClientConfig<*>,
-        installers: List<Networking.HttpFeatureInstaller<in Any, in Any?>>
+        installers: List<Networking.HttpPluginInstaller<in Any, in Any?>>
     ) {
         whenConfigure?.invoke(httpConfig, installers) ?: throw MockException()
     }

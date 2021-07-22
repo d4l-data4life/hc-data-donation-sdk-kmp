@@ -17,7 +17,7 @@
 package care.data4life.datadonation.internal.data.service.networking
 
 import care.data4life.datadonation.mock.fake.defaultResponse
-import care.data4life.datadonation.mock.stub.service.networking.HttpFeatureConfiguratorStub
+import care.data4life.datadonation.mock.stub.service.networking.HttpPluginConfiguratorStub
 import care.data4life.sdk.util.test.runWithContextBlockingTest
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
@@ -46,15 +46,15 @@ class HttpClientConfiguratorTest {
     }
 
     @Test
-    fun `Given configure is called with a HttpClientConfig and a List of HttpFeatureInstaller it installs a given Feature`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+    fun `Given configure is called with a HttpClientConfig and a List of HttpFeatureInstaller it installs a given Plugin`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val capturedPluginConfig = Channel<Any>()
         val capturedSubConfig = Channel<String>()
 
         val subConfig = "something"
-        val stubFeatureConfigurator = HttpFeatureConfiguratorStub<FeatureStub.Config, String>()
+        val stubPluginConfigurator = HttpPluginConfiguratorStub<PluginStub.Config, String>()
 
-        stubFeatureConfigurator.whenConfigure = { pluginConfig, subConfiguration ->
+        stubPluginConfigurator.whenConfigure = { pluginConfig, subConfiguration ->
             launch {
                 capturedPluginConfig.send(pluginConfig)
                 capturedSubConfig.send(subConfiguration)
@@ -62,9 +62,9 @@ class HttpClientConfiguratorTest {
         }
 
         val features = listOf(
-            Networking.HttpFeatureInstaller(
-                FeatureStub,
-                stubFeatureConfigurator as Networking.HttpFeatureConfigurator<Any, Any?>,
+            Networking.HttpPluginInstaller(
+                PluginStub,
+                stubPluginConfigurator as Networking.HttpPluginConfigurator<Any, Any?>,
                 subConfig,
             )
         )
@@ -84,7 +84,7 @@ class HttpClientConfiguratorTest {
         }
 
         // Then
-        assertTrue(capturedPluginConfig.receive() is FeatureStub.Config)
+        assertTrue(capturedPluginConfig.receive() is PluginStub.Config)
         assertEquals(
             actual = capturedSubConfig.receive(),
             expected = subConfig
@@ -92,29 +92,29 @@ class HttpClientConfiguratorTest {
     }
 
     @Test
-    fun `Given configure is called with a HttpClientConfig and a List of HttpFeatureInstaller it installs a arbitrary number of Features`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+    fun `Given configure is called with a HttpClientConfig and a List of HttpFeatureInstaller it installs a arbitrary number of Plugins`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val subConfig = "something"
-        val stubFeatureConfigurator = HttpFeatureConfiguratorStub<FeatureStub.Config, String>()
+        val stubPluginConfigurator = HttpPluginConfiguratorStub<PluginStub.Config, String>()
 
-        stubFeatureConfigurator.whenConfigure = { _, _ ->
+        stubPluginConfigurator.whenConfigure = { _, _ ->
             Counter.amount++
         }
 
         val features = listOf(
-            Networking.HttpFeatureInstaller(
-                FeatureStub,
-                stubFeatureConfigurator as Networking.HttpFeatureConfigurator<Any, Any?>,
+            Networking.HttpPluginInstaller(
+                PluginStub,
+                stubPluginConfigurator as Networking.HttpPluginConfigurator<Any, Any?>,
                 subConfig,
             ),
-            Networking.HttpFeatureInstaller(
-                FeatureStub,
-                stubFeatureConfigurator as Networking.HttpFeatureConfigurator<Any, Any?>,
+            Networking.HttpPluginInstaller(
+                PluginStub,
+                stubPluginConfigurator as Networking.HttpPluginConfigurator<Any, Any?>,
                 subConfig,
             ),
-            Networking.HttpFeatureInstaller(
-                FeatureStub,
-                stubFeatureConfigurator as Networking.HttpFeatureConfigurator<Any, Any?>,
+            Networking.HttpPluginInstaller(
+                PluginStub,
+                stubPluginConfigurator as Networking.HttpPluginConfigurator<Any, Any?>,
                 subConfig,
             )
         )
@@ -145,17 +145,17 @@ class HttpClientConfiguratorTest {
         var amount = 0
     }
 
-    private class FeatureStub {
+    private class PluginStub {
         class Config
 
-        companion object Feature : HttpClientFeature<Config, FeatureStub> {
-            override val key: AttributeKey<FeatureStub> = AttributeKey("FeatureStub")
+        companion object Feature : HttpClientFeature<Config, PluginStub> {
+            override val key: AttributeKey<PluginStub> = AttributeKey("PluginStub")
 
-            override fun install(feature: FeatureStub, scope: HttpClient) = Unit
+            override fun install(feature: PluginStub, scope: HttpClient) = Unit
 
-            override fun prepare(block: Config.() -> Unit): FeatureStub {
+            override fun prepare(block: Config.() -> Unit): PluginStub {
                 Config().apply(block)
-                return FeatureStub()
+                return PluginStub()
             }
         }
     }

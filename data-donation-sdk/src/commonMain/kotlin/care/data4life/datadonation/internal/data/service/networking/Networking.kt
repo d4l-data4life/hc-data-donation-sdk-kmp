@@ -39,27 +39,27 @@ internal interface Networking {
         }
     }
 
-    fun interface HttpFeatureConfigurator<FeatureConfiguration : Any, SubConfiguration> {
-        fun configure(pluginConfig: FeatureConfiguration, subConfiguration: SubConfiguration)
+    fun interface HttpPluginConfigurator<PluginConfiguration : Any, SubConfiguration> {
+        fun configure(pluginConfiguration: PluginConfiguration, subConfiguration: SubConfiguration)
     }
 
     fun interface JsonConfigurator {
         fun configure(jsonBuild: JsonBuilder): JsonBuilder
     }
 
-    fun interface HttpSerializerConfigurator : HttpFeatureConfigurator<JsonFeature.Config, JsonConfigurator>
-    fun interface HttpLoggingConfigurator : HttpFeatureConfigurator<Logging.Config, care.data4life.sdk.log.Logger>
+    fun interface HttpSerializerConfigurator : HttpPluginConfigurator<JsonFeature.Config, JsonConfigurator>
+    fun interface HttpLoggingConfigurator : HttpPluginConfigurator<Logging.Config, care.data4life.sdk.log.Logger>
 
-    data class HttpFeatureInstaller<FeatureConfiguration : Any, SubConfiguration>(
+    data class HttpPluginInstaller<PluginConfiguration : Any, SubConfiguration>(
         val feature: HttpClientFeature<*, *>,
-        val featureConfigurator: HttpFeatureConfigurator<FeatureConfiguration, SubConfiguration>,
+        val pluginConfigurator: HttpPluginConfigurator<PluginConfiguration, SubConfiguration>,
         val subConfiguration: SubConfiguration
     )
 
     fun interface HttpClientConfigurator {
         fun configure(
             httpConfig: HttpClientConfig<*>,
-            installers: List<HttpFeatureInstaller<in Any, in Any?>>
+            installers: List<HttpPluginInstaller<in Any, in Any?>>
         )
     }
 
