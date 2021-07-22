@@ -19,7 +19,7 @@ package care.data4life.datadonation.internal.data.service.networking
 import care.data4life.datadonation.core.model.ModelContract
 import care.data4life.datadonation.mock.fake.createDefaultMockClient
 import care.data4life.datadonation.mock.stub.service.networking.HttpClientConfiguratorStub
-import care.data4life.datadonation.mock.stub.service.networking.HttpFeatureConfiguratorStub
+import care.data4life.datadonation.mock.stub.service.networking.HttpPluginConfiguratorStub
 import care.data4life.datadonation.mock.stub.service.networking.HttpResponseValidatorConfiguratorStub
 import care.data4life.datadonation.mock.stub.service.networking.plugin.HttpErrorPropagatorStub
 import care.data4life.datadonation.mock.stub.service.networking.plugin.HttpSuccessfulResponseValidatorStub
@@ -82,9 +82,9 @@ class NetworkingKoinTest {
         // Given
         val clientConfigurator = HttpClientConfiguratorStub()
         val features = listOf(
-            Networking.HttpFeatureInstaller(
-                FeatureStub,
-                HttpFeatureConfiguratorStub<Any, Any>(),
+            Networking.HttpPluginInstaller(
+                PluginStub,
+                HttpPluginConfiguratorStub<Any, Any>(),
                 "something"
             )
         )
@@ -95,12 +95,13 @@ class NetworkingKoinTest {
         )
 
         var capturedHttpConfig: HttpClientConfig<*>? = null
-        var capturedFeatures: List<Networking.HttpFeatureInstaller<in Any, in Any>>? = null
+        var capturedPlugins: List<Networking.HttpPluginInstaller<in Any, in Any>>? = null
         var capturedResponseValidation: Networking.HttpResponseValidation? = null
+
 
         clientConfigurator.whenConfigure = { delegatedHttpConfig, delegatedFeatures, delegatedResponseValidation ->
             capturedHttpConfig = delegatedHttpConfig
-            capturedFeatures = delegatedFeatures
+            capturedPlugins = delegatedFeatures
             capturedResponseValidation = delegatedResponseValidation
         }
 
@@ -112,7 +113,7 @@ class NetworkingKoinTest {
                     single<Networking.HttpClientConfigurator> {
                         clientConfigurator
                     }
-                    single<List<Networking.HttpFeatureInstaller<out Any, out Any?>>> {
+                    single<List<Networking.HttpPluginInstaller<out Any, out Any?>>> {
                         features
                     }
                     single { validation }
@@ -126,7 +127,7 @@ class NetworkingKoinTest {
 
         assertTrue(capturedHttpConfig is HttpClientConfig<*>)
         assertSame(
-            actual = capturedFeatures,
+            actual = capturedPlugins,
             expected = features
         )
         assertSame(
@@ -135,17 +136,17 @@ class NetworkingKoinTest {
         )
     }
 
-    private class FeatureStub {
+    private class PluginStub {
         class Config
 
-        companion object Feature : HttpClientFeature<Config, FeatureStub> {
-            override val key: AttributeKey<FeatureStub> = AttributeKey("FeatureStub")
+        companion object Feature : HttpClientFeature<Config, PluginStub> {
+            override val key: AttributeKey<PluginStub> = AttributeKey("PluginStub")
 
-            override fun install(feature: FeatureStub, scope: HttpClient) = Unit
+            override fun install(feature: PluginStub, scope: HttpClient) = Unit
 
-            override fun prepare(block: Config.() -> Unit): FeatureStub {
+            override fun prepare(block: Config.() -> Unit): PluginStub {
                 Config().apply(block)
-                return FeatureStub()
+                return PluginStub()
             }
         }
     }

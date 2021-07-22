@@ -22,7 +22,7 @@ import io.ktor.client.features.HttpResponseValidator
 internal object HttpClientConfigurator : Networking.HttpClientConfigurator {
     private fun installFeatures(
         httpConfig: HttpClientConfig<*>,
-        installers: List<Networking.HttpFeatureInstaller<in Any, in Any?>>?
+        installers: List<Networking.HttpPluginInstaller<in Any, in Any?>>?
     ) {
         if (installers is List<*>) {
             installers.forEach { (plugin, configurator, subConfig) ->
@@ -55,7 +55,7 @@ internal object HttpClientConfigurator : Networking.HttpClientConfigurator {
 
     override fun configure(
         httpConfig: HttpClientConfig<*>,
-        installers: List<Networking.HttpFeatureInstaller<in Any, in Any?>>?,
+        installers: List<Networking.HttpPluginInstaller<in Any, in Any?>>?,
         responseValidator: Networking.HttpResponseValidation?
     ) {
         installFeatures(httpConfig, installers)

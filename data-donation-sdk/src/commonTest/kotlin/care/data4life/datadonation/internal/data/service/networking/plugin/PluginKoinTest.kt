@@ -36,24 +36,24 @@ class PluginKoinTest {
             )
         }
 
-        val configuration = koin.koin.get<List<Networking.HttpFeatureInstaller<in Any, in Any?>>>()
+        val configuration = koin.koin.get<List<Networking.HttpPluginInstaller<in Any, in Any?>>>()
 
         // Then
         assertEquals(
             actual = configuration.size,
             expected = 2
         )
-        assertEquals(
+        assertEquals<Any>(
             actual = configuration[0],
-            expected = Networking.HttpFeatureInstaller(
+            expected = Networking.HttpPluginInstaller(
                 JsonFeature,
                 HttpSerializerConfigurator,
                 JsonConfigurator
             )
         )
-        assertEquals(
+        assertEquals<Any>(
             actual = configuration[1],
-            expected = Networking.HttpFeatureInstaller(
+            expected = Networking.HttpPluginInstaller(
                 Logging,
                 HttpLoggingConfigurator,
                 Log.logger

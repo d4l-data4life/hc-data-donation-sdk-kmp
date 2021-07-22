@@ -29,8 +29,8 @@ internal typealias AccessToken = String
 internal typealias Path = List<String>
 
 internal interface Networking {
-    fun interface HttpFeatureConfigurator<FeatureConfiguration : Any, SubConfiguration> {
-        fun configure(pluginConfig: FeatureConfiguration, subConfiguration: SubConfiguration)
+    fun interface HttpPluginConfigurator<PluginConfiguration : Any, SubConfiguration> {
+        fun configure(pluginConfiguration: PluginConfiguration, subConfiguration: SubConfiguration)
     }
 
     fun interface HttpSuccessfulResponseValidator {
@@ -51,9 +51,9 @@ internal interface Networking {
         )
     }
 
-    data class HttpFeatureInstaller<FeatureConfiguration : Any, SubConfiguration>(
+    data class HttpPluginInstaller<PluginConfiguration : Any, SubConfiguration>(
         val feature: HttpClientFeature<*, *>,
-        val featureConfigurator: HttpFeatureConfigurator<FeatureConfiguration, SubConfiguration>,
+        val pluginConfigurator: HttpPluginConfigurator<PluginConfiguration, SubConfiguration>,
         val subConfiguration: SubConfiguration
     )
 
@@ -66,7 +66,7 @@ internal interface Networking {
     interface HttpClientConfigurator {
         fun configure(
             httpConfig: HttpClientConfig<*>,
-            installers: List<HttpFeatureInstaller<in Any, in Any?>>? = null,
+            installers: List<HttpPluginInstaller<in Any, in Any?>>? = null,
             responseValidator: HttpResponseValidation? = null
         )
     }

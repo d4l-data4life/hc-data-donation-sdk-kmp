@@ -24,8 +24,8 @@ import kotlinx.serialization.json.JsonBuilder
 class JsonConfiguratorStub : KtorPluginsContract.JsonConfigurator, MockContract.Stub {
     var whenConfigure: ((JsonBuilder) -> JsonBuilder)? = null
 
-    override fun configure(jsonBuild: JsonBuilder): JsonBuilder {
-        return whenConfigure?.invoke(jsonBuild) ?: throw MockException()
+    override fun configure(jsonBuilder: JsonBuilder): JsonBuilder {
+        return whenConfigure?.invoke(jsonBuilder) ?: throw MockException()
     }
 
     override fun clear() {

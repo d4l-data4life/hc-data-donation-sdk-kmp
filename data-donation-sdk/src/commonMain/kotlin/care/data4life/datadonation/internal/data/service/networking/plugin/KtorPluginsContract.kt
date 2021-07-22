@@ -31,9 +31,9 @@ internal interface KtorPluginsContract {
     }
 
     fun interface JsonConfigurator {
-        fun configure(jsonBuild: JsonBuilder): JsonBuilder
+        fun configure(jsonBuilder: JsonBuilder): JsonBuilder
     }
 
-    fun interface HttpSerializerConfigurator : Networking.HttpFeatureConfigurator<JsonFeature.Config, JsonConfigurator>
-    fun interface HttpLoggingConfigurator : Networking.HttpFeatureConfigurator<Logging.Config, care.data4life.sdk.log.Logger>
+    fun interface HttpSerializerConfigurator : Networking.HttpPluginConfigurator<JsonFeature.Config, JsonConfigurator>
+    fun interface HttpLoggingConfigurator : Networking.HttpPluginConfigurator<Logging.Config, care.data4life.sdk.log.Logger>
 }

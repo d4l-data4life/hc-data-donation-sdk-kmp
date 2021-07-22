@@ -25,14 +25,14 @@ import org.koin.dsl.module
 
 fun resolveKtorPlugins(): Module {
     return module {
-        single<List<Networking.HttpFeatureInstaller<out Any, out Any?>>> {
+        single<List<Networking.HttpPluginInstaller<out Any, out Any?>>> {
             listOf(
-                Networking.HttpFeatureInstaller(
+                Networking.HttpPluginInstaller(
                     JsonFeature,
                     HttpSerializerConfigurator,
                     JsonConfigurator
                 ),
-                Networking.HttpFeatureInstaller(
+                Networking.HttpPluginInstaller(
                     Logging,
                     HttpLoggingConfigurator,
                     Log.logger
