@@ -19,13 +19,14 @@ package care.data4life.datadonation.mock.stub.service.networking
 import care.data4life.datadonation.internal.data.service.networking.Networking
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
-import kotlinx.serialization.json.JsonBuilder
 
-class JsonConfiguratorStub : Networking.JsonConfigurator, MockContract.Stub {
-    var whenConfigure: ((JsonBuilder) -> JsonBuilder)? = null
+internal class HttpFeatureConfiguratorStub<FeatureConfiguration : Any, SubConfiguration> :
+    Networking.HttpFeatureConfigurator<FeatureConfiguration, SubConfiguration>,
+    MockContract.Stub {
+    var whenConfigure: ((FeatureConfiguration, SubConfiguration) -> Unit)? = null
 
-    override fun configure(jsonBuild: JsonBuilder): JsonBuilder {
-        return whenConfigure?.invoke(jsonBuild) ?: throw MockException()
+    override fun configure(pluginConfig: FeatureConfiguration, subConfiguration: SubConfiguration) {
+        whenConfigure?.invoke(pluginConfig, subConfiguration) ?: throw MockException()
     }
 
     override fun clear() {

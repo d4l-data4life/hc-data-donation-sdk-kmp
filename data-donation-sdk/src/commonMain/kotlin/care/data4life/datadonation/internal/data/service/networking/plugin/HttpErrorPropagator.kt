@@ -14,17 +14,22 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.lang
+package care.data4life.datadonation.internal.data.service.networking.plugin
 
-import care.data4life.sdk.lang.D4LRuntimeException
+import care.data4life.datadonation.internal.data.service.networking.Networking
+import care.data4life.datadonation.lang.HttpRuntimeError
+import io.ktor.client.features.ResponseException
 
-sealed class CoreRuntimeError(
-    message: String?,
-    cause: Throwable?
-) : D4LRuntimeException(message = message, cause = cause) {
-    class InternalFailure : CoreRuntimeError(message = "Internal failure", cause = null)
-    class RequestValidationFailure(message: String) : CoreRuntimeError(message = message, cause = null)
-    class ResponseTransformFailure : CoreRuntimeError(message = "Unexpected Response", cause = null)
-    class MissingCredentials(cause: Throwable? = null) : CoreRuntimeError(cause = cause, message = null)
-    class MissingSession(cause: Throwable? = null) : CoreRuntimeError(cause = cause, message = null)
+internal object HttpErrorPropagator : Networking.HttpErrorPropagator {
+    private fun wrapError(error: Throwable): Throwable {
+        return if (error is ResponseException) {
+            HttpRuntimeError(error.response.status)
+        } else {
+            error
+        }
+    }
+
+    override fun propagate(error: Throwable) {
+        throw wrapError(error)
+    }
 }

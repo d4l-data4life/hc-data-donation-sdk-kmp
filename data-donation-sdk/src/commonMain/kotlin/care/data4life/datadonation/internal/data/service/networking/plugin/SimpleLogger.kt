@@ -14,16 +14,15 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.data.service.networking
+package care.data4life.datadonation.internal.data.service.networking.plugin
 
-import io.ktor.client.features.json.JsonFeature
-import io.ktor.client.features.json.serializer.KotlinxSerializer
-import kotlinx.serialization.json.Json
+import care.data4life.datadonation.internal.data.service.networking.plugin.KtorPluginsContract.Logger.Companion.PREFIX
+import care.data4life.sdk.log.Logger
 
-internal object SerializerConfigurator : Networking.SerializerConfigurator {
-    override fun configure(pluginConfig: JsonFeature.Config, auxiliaryConfigurator: Networking.JsonConfigurator) {
-        pluginConfig.serializer = KotlinxSerializer(
-            Json { auxiliaryConfigurator.configure(this) }
-        )
+internal class SimpleLogger(
+    private val logger: Logger
+) : KtorPluginsContract.Logger {
+    override fun log(message: String) {
+        logger.info("$PREFIX $message")
     }
 }

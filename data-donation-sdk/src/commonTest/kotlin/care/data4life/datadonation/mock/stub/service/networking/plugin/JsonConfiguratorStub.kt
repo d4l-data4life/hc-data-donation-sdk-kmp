@@ -14,17 +14,21 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.data.service.networking
+package care.data4life.datadonation.mock.stub.service.networking.plugin
 
+import care.data4life.datadonation.internal.data.service.networking.plugin.KtorPluginsContract
+import care.data4life.datadonation.mock.MockContract
+import care.data4life.datadonation.mock.MockException
 import kotlinx.serialization.json.JsonBuilder
 
-internal object JsonConfigurator : Networking.JsonConfigurator {
-    override fun configure(jsonBuild: JsonBuilder): JsonBuilder {
-        jsonBuild.isLenient = true
-        jsonBuild.ignoreUnknownKeys = true
-        jsonBuild.allowSpecialFloatingPointValues = true
-        jsonBuild.useArrayPolymorphism = false
+class JsonConfiguratorStub : KtorPluginsContract.JsonConfigurator, MockContract.Stub {
+    var whenConfigure: ((JsonBuilder) -> JsonBuilder)? = null
 
-        return jsonBuild
+    override fun configure(jsonBuild: JsonBuilder): JsonBuilder {
+        return whenConfigure?.invoke(jsonBuild) ?: throw MockException()
+    }
+
+    override fun clear() {
+        whenConfigure = null
     }
 }

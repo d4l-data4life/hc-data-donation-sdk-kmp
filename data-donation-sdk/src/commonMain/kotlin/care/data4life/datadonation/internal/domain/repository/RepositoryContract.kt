@@ -19,7 +19,7 @@ package care.data4life.datadonation.internal.domain.repository
 import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.UserConsent
 
-typealias Signature = String
+internal typealias Signature = String
 
 internal interface RepositoryContract {
     interface UserConsentRepository {

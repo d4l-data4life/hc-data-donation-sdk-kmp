@@ -14,20 +14,32 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.mock.stub.service
+package care.data4life.datadonation.mock.stub.service.networking.plugin
 
-import care.data4life.datadonation.internal.data.service.ServiceContract
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
+import care.data4life.sdk.log.Logger
 
-class UserSessionTokenServiceStub : ServiceContract.UserSessionTokenService, MockContract.Stub {
-    var whenSessionToken: (() -> String)? = null
+class LoggerStub : Logger, MockContract.Stub {
+    var whenInfo: ((String) -> Unit)? = null
+    var whenError: ((Throwable, String?) -> Unit)? = null
+    var whenDebug: ((String) -> Unit)? = null
 
-    override suspend fun getUserSessionToken(): String {
-        return whenSessionToken?.invoke() ?: throw MockException()
+    override fun debug(message: String) {
+        whenDebug?.invoke(message) ?: throw MockException()
+    }
+
+    override fun error(t: Throwable, message: String?) {
+        whenError?.invoke(t, message) ?: throw MockException()
+    }
+
+    override fun info(message: String) {
+        whenInfo?.invoke(message) ?: throw MockException()
     }
 
     override fun clear() {
-        whenSessionToken = null
+        whenDebug = null
+        whenError = null
+        whenInfo = null
     }
 }

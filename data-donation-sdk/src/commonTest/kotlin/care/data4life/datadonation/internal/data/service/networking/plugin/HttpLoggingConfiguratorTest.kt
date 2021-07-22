@@ -14,9 +14,9 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.data.service.networking
+package care.data4life.datadonation.internal.data.service.networking.plugin
 
-import care.data4life.datadonation.mock.stub.service.networking.LoggerStub
+import care.data4life.datadonation.mock.stub.service.networking.plugin.LoggerStub
 import io.ktor.client.features.logging.LogLevel
 import io.ktor.client.features.logging.Logging
 import kotlin.test.Test
@@ -24,12 +24,12 @@ import kotlin.test.assertEquals
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
-class LoggingConfiguratorTest {
+class HttpLoggingConfiguratorTest {
     @Test
-    fun `It fulfils LoggingConfigurator`() {
-        val configurator: Any = LoggerConfigurator
+    fun `It fulfils HttpLoggingConfigurator`() {
+        val configurator: Any = HttpLoggingConfigurator
 
-        assertTrue(configurator is Networking.LoggingConfigurator)
+        assertTrue(configurator is KtorPluginsContract.HttpLoggingConfigurator)
     }
 
     @Test
@@ -44,7 +44,7 @@ class LoggingConfiguratorTest {
         }
 
         // When
-        val result = LoggerConfigurator.configure(config, internalLogger)
+        val result = HttpLoggingConfigurator.configure(config, internalLogger)
         config.logger.log("test")
 
         // Then
@@ -57,7 +57,7 @@ class LoggingConfiguratorTest {
             expected = LogLevel.ALL
         )
 
-        assertTrue(config.logger is Networking.Logger)
+        assertTrue(config.logger is KtorPluginsContract.Logger)
         assertTrue(wasCalled)
     }
 }

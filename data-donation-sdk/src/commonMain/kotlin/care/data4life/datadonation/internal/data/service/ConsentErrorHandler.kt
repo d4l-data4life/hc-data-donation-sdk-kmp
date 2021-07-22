@@ -98,7 +98,7 @@ internal object ConsentErrorHandler : ServiceContract.ConsentService.ConsentErro
                 HttpStatusCode.NotFound to ConsentServiceError.NotFoundError(),
                 HttpStatusCode.Conflict to ConsentServiceError.DocumentConflictError(),
                 HttpStatusCode.UnprocessableEntity to ConsentServiceError.UnprocessableEntityError(),
-                HttpStatusCode.InternalServerError to ConsentServiceError.InternalServerError()
+                HttpStatusCode.InternalServerError to ConsentServiceError.InternalServerError(),
             )
         )
     }

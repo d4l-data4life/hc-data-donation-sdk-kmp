@@ -14,32 +14,21 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.data.service.networking
+package care.data4life.datadonation.mock.stub.service.networking.plugin
 
-import care.data4life.datadonation.lang.HttpRuntimeError
+import care.data4life.datadonation.internal.data.service.networking.Networking
+import care.data4life.datadonation.mock.MockContract
+import care.data4life.datadonation.mock.MockException
 import io.ktor.client.statement.HttpResponse
-import io.ktor.client.statement.request
-import io.ktor.http.HttpMethod
-import io.ktor.http.HttpStatusCode
 
-internal object ResponseValidator : Networking.ResponseValidator {
-    private fun validateNonDelete(response: HttpResponse) {
-        if (response.status != HttpStatusCode.OK) {
-            throw HttpRuntimeError(response.status)
-        }
-    }
-
-    private fun validateDelete(response: HttpResponse) {
-        if (response.status != HttpStatusCode.NoContent) {
-            throw HttpRuntimeError(response.status)
-        }
-    }
+internal class HttpSuccessfulResponseValidatorStub : Networking.HttpSuccessfulResponseValidator, MockContract.Stub {
+    var whenValidate: ((response: HttpResponse) -> Unit)? = null
 
     override fun validate(response: HttpResponse) {
-        if (response.request.method == HttpMethod.Delete) {
-            validateDelete(response)
-        } else {
-            validateNonDelete(response)
-        }
+        whenValidate?.invoke(response) ?: throw MockException()
+    }
+
+    override fun clear() {
+        whenValidate = null
     }
 }

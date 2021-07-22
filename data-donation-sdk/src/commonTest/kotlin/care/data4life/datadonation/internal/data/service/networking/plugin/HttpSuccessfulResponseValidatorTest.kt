@@ -14,8 +14,9 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.data.service.networking
+package care.data4life.datadonation.internal.data.service.networking.plugin
 
+import care.data4life.datadonation.internal.data.service.networking.Networking
 import care.data4life.datadonation.lang.HttpRuntimeError
 import care.data4life.datadonation.mock.fake.defaultResponse
 import care.data4life.sdk.util.test.runBlockingTest
@@ -32,12 +33,12 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
-class ResponseValidatorTest {
+class HttpSuccessfulResponseValidatorTest {
     @Test
-    fun `It fulfils ResponseValidator`() {
-        val validator: Any = ResponseValidator
+    fun `It fulfils HttpSuccessfulResponseValidator`() {
+        val validator: Any = HttpSuccessfulResponseValidator
 
-        assertTrue(validator is Networking.ResponseValidator)
+        assertTrue(validator is Networking.HttpSuccessfulResponseValidator)
     }
 
     @Test
@@ -46,7 +47,7 @@ class ResponseValidatorTest {
         val client = HttpClient(MockEngine) {
             HttpResponseValidator {
                 validateResponse { response ->
-                    ResponseValidator.validate(response)
+                    HttpSuccessfulResponseValidator.validate(response)
                 }
             }
 
@@ -73,7 +74,7 @@ class ResponseValidatorTest {
         val client = HttpClient(MockEngine) {
             HttpResponseValidator {
                 validateResponse { response ->
-                    ResponseValidator.validate(response)
+                    HttpSuccessfulResponseValidator.validate(response)
                 }
             }
 
@@ -105,7 +106,7 @@ class ResponseValidatorTest {
         val client = HttpClient(MockEngine) {
             HttpResponseValidator {
                 validateResponse { response ->
-                    ResponseValidator.validate(response)
+                    HttpSuccessfulResponseValidator.validate(response)
                 }
             }
 
@@ -135,7 +136,7 @@ class ResponseValidatorTest {
         val client = HttpClient(MockEngine) {
             HttpResponseValidator {
                 validateResponse { response ->
-                    ResponseValidator.validate(response)
+                    HttpSuccessfulResponseValidator.validate(response)
                 }
             }
 

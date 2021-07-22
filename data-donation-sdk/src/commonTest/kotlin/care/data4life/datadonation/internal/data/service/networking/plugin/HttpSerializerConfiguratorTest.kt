@@ -14,21 +14,21 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.data.service.networking
+package care.data4life.datadonation.internal.data.service.networking.plugin
 
-import care.data4life.datadonation.mock.stub.service.networking.JsonConfiguratorStub
+import care.data4life.datadonation.mock.stub.service.networking.plugin.JsonConfiguratorStub
 import io.ktor.client.features.json.JsonFeature
 import kotlinx.serialization.json.JsonBuilder
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class SerializerConfiguratorTest {
+class HttpSerializerConfiguratorTest {
     @Test
-    fun `It fulfils SerializerConfigurator`() {
-        val configurator: Any = SerializerConfigurator
+    fun `It fulfils HttpSerializerConfigurator`() {
+        val configurator: Any = HttpSerializerConfigurator
 
-        assertTrue(configurator is Networking.Configurator<*, *>)
+        assertTrue(configurator is KtorPluginsContract.HttpSerializerConfigurator)
     }
 
     @Test
@@ -44,7 +44,7 @@ class SerializerConfiguratorTest {
         }
 
         // When
-        val result = SerializerConfigurator.configure(pluginConfig, jsonConfigurator)
+        val result = HttpSerializerConfigurator.configure(pluginConfig, jsonConfigurator)
 
         // Then
         assertEquals(
