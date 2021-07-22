@@ -23,7 +23,7 @@ internal object HttpResponseValidatorConfigurator : KtorPluginsContract.HttpResp
         pluginConfiguration: HttpCallValidator.Config,
         subConfiguration: KtorPluginsContract.HttpResponseValidationConfiguration
     ) {
-        val (successfulResponseValidator, errorPropagator) = subConfiguration
+        val (successfulResponseValidator, errorMapper) = subConfiguration
 
         if (successfulResponseValidator is KtorPluginsContract.HttpSuccessfulResponseValidator) {
             pluginConfiguration.validateResponse { response ->
@@ -31,9 +31,9 @@ internal object HttpResponseValidatorConfigurator : KtorPluginsContract.HttpResp
             }
         }
 
-        if (errorPropagator is KtorPluginsContract.HttpErrorMapper) {
+        if (errorMapper is KtorPluginsContract.HttpErrorMapper) {
             pluginConfiguration.handleResponseException { error ->
-                errorPropagator.mapAndThrow(error)
+                errorMapper.mapAndThrow(error)
             }
         }
     }
