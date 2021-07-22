@@ -97,6 +97,8 @@ kotlin {
 
                 //DI
                 implementation(Dependency.multiplatform.koin.android)
+                implementation(Dependency.jvm.slf4jNop)
+                implementation(Dependency.jvm.slf4jApi)
 
                 //
                 implementation(Dependency.android.threeTenABP)
@@ -111,11 +113,6 @@ kotlin {
             dependencies {
                 implementation(Dependency.multiplatform.kotlin.testJvm)
                 implementation(Dependency.multiplatform.kotlin.testJvmJunit)
-
-                // DI
-                implementation(Dependency.jvm.slf4jNop)
-                implementation(Dependency.jvm.slf4jApi)
-
                 dependsOn(commonTest.get())
             }
         }
