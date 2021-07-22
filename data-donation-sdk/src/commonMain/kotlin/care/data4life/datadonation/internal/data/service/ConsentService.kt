@@ -38,7 +38,7 @@ import care.data4life.datadonation.lang.HttpRuntimeError
 import kotlinx.datetime.Clock
 
 internal class ConsentService constructor(
-    private val requestBuilderTemplate: Networking.RequestBuilderTemplate,
+    private val requestBuilderFactory: Networking.RequestBuilderFactory,
     private val errorHandler: ServiceContract.ConsentService.ConsentErrorHandler,
     private val clock: Clock
 ) : ServiceContract.ConsentService {
@@ -67,7 +67,7 @@ internal class ConsentService constructor(
             LANGUAGE to language
         )
 
-        val request = requestBuilderTemplate
+        val request = requestBuilderFactory
             .create()
             .setAccessToken(accessToken)
             .setParameter(parameter)
@@ -94,7 +94,7 @@ internal class ConsentService constructor(
             USER_CONSENT_KEY to consentKey,
         )
 
-        val request = requestBuilderTemplate
+        val request = requestBuilderFactory
             .create()
             .setAccessToken(accessToken)
             .setParameter(parameter)
@@ -122,7 +122,7 @@ internal class ConsentService constructor(
             clock.now().toString()
         )
 
-        val request = requestBuilderTemplate
+        val request = requestBuilderFactory
             .create()
             .setAccessToken(accessToken)
             .useJsonContentType()
@@ -156,7 +156,7 @@ internal class ConsentService constructor(
             ConsentSignatureType.CONSENT_ONCE.apiValue
         )
 
-        val request = requestBuilderTemplate
+        val request = requestBuilderFactory
             .create()
             .setAccessToken(accessToken)
             .useJsonContentType()
@@ -189,7 +189,7 @@ internal class ConsentService constructor(
             ConsentSignatureType.NORMAL_USE.apiValue
         )
 
-        val request = requestBuilderTemplate
+        val request = requestBuilderFactory
             .create()
             .setAccessToken(accessToken)
             .useJsonContentType()
@@ -210,7 +210,7 @@ internal class ConsentService constructor(
         val path = buildPath(USER_CONSENTS)
         val payload = ConsentRevocationPayload(consentKey)
 
-        val request = requestBuilderTemplate
+        val request = requestBuilderFactory
             .create()
             .setAccessToken(accessToken)
             .useJsonContentType()

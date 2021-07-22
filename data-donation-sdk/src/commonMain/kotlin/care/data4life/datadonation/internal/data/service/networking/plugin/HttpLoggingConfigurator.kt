@@ -20,10 +20,9 @@ import care.data4life.sdk.log.Logger
 import io.ktor.client.features.logging.LogLevel
 import io.ktor.client.features.logging.Logging
 
-internal object HttpLoggingConfigurator :
-    KtorPluginsContract.HttpLoggingConfigurator {
-    override fun configure(pluginConfig: Logging.Config, subConfiguration: Logger) {
-        pluginConfig.logger = SimpleLogger(subConfiguration)
-        pluginConfig.level = LogLevel.ALL
+internal object HttpLoggingConfigurator : KtorPluginsContract.HttpLoggingConfigurator {
+    override fun configure(pluginConfiguration: Logging.Config, subConfiguration: Logger) {
+        pluginConfiguration.logger = SimpleLogger(subConfiguration)
+        pluginConfiguration.level = LogLevel.ALL
     }
 }

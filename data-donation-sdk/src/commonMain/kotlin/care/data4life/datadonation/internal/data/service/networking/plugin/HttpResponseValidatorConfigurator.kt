@@ -16,24 +16,24 @@
 
 package care.data4life.datadonation.internal.data.service.networking.plugin
 
-import care.data4life.datadonation.internal.data.service.networking.Networking
 import io.ktor.client.features.HttpCallValidator
 
-internal object HttpResponseValidatorConfigurator : Networking.HttpResponseValidatorConfigurator {
+internal object HttpResponseValidatorConfigurator : KtorPluginsContract.HttpResponseValidatorConfigurator {
     override fun configure(
-        httpResponseConfiguration: HttpCallValidator.Config,
-        successfulResponseValidation: Networking.HttpSuccessfulResponseValidator?,
-        errorPropagation: Networking.HttpErrorPropagator?
+        pluginConfiguration: HttpCallValidator.Config,
+        subConfiguration: KtorPluginsContract.HttpResponseValidationConfiguration
     ) {
-        if (successfulResponseValidation is Networking.HttpSuccessfulResponseValidator) {
-            httpResponseConfiguration.validateResponse { response ->
-                successfulResponseValidation.validate(response)
+        val (successfulResponseValidator, errorMapper) = subConfiguration
+
+        if (successfulResponseValidator is KtorPluginsContract.HttpSuccessfulResponseValidator) {
+            pluginConfiguration.validateResponse { response ->
+                successfulResponseValidator.validate(response)
             }
         }
 
-        if (errorPropagation is Networking.HttpErrorPropagator) {
-            httpResponseConfiguration.handleResponseException { error ->
-                errorPropagation.propagate(error)
+        if (errorMapper is KtorPluginsContract.HttpErrorMapper) {
+            pluginConfiguration.handleResponseException { error ->
+                errorMapper.mapAndThrow(error)
             }
         }
     }

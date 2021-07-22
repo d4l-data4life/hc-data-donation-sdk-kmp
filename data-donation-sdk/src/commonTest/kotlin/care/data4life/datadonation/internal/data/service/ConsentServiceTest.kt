@@ -57,7 +57,7 @@ class ConsentServiceTest {
     @Test
     fun `It fulfils ConsentService`() {
         val service: Any = ConsentService(
-            RequestBuilderSpy.Template(),
+            RequestBuilderSpy.Factory(),
             ConsentErrorHandlerStub(),
             ClockStub()
         )
@@ -73,9 +73,9 @@ class ConsentServiceTest {
         val language = "zh-TW-hans-de-informal-x-old"
         val consentKey = "tomato"
 
-        val requestTemplate = RequestBuilderSpy.Template()
+        val requestTemplate = RequestBuilderSpy.Factory()
         val error = HttpRuntimeError(HttpStatusCode.TooManyRequests)
-        val outgoingError = ConsentServiceError.ForbiddenError()
+        val outgoingError = ConsentServiceError.Forbidden()
         var capturedError: HttpRuntimeError? = null
 
         val client = createErrorMockClient(error)
@@ -95,7 +95,7 @@ class ConsentServiceTest {
         }
 
         // Then
-        val result = assertFailsWith<ConsentServiceError.ForbiddenError> {
+        val result = assertFailsWith<ConsentServiceError.Forbidden> {
             val service = ConsentService(
                 requestTemplate,
                 errorHandler,
@@ -123,7 +123,7 @@ class ConsentServiceTest {
     @Test
     fun `Given fetchConsentDocuments was called with a AccessToken, Version, Language and a ConsentKey it fails due to unexpected response`() = runBlockingTest {
         // Given
-        val requestTemplate = RequestBuilderSpy.Template()
+        val requestTemplate = RequestBuilderSpy.Factory()
         val client = createMockClientWithResponse { scope ->
             return@createMockClientWithResponse scope.respond(
                 content = "something"
@@ -167,7 +167,7 @@ class ConsentServiceTest {
     @Test
     fun `Given fetchConsentDocuments was called with a AccessToken, Version, Language and a ConsentKey it returns a List of ConsentDocument`() = runBlockingTest {
         // Given
-        val requestTemplate = RequestBuilderSpy.Template()
+        val requestTemplate = RequestBuilderSpy.Factory()
         val accessToken = "potato"
         val version = 23
         val language = "zh-TW-hans-de-informal-x-old"
@@ -242,12 +242,12 @@ class ConsentServiceTest {
     @Test
     fun `Given fetchUserConsents was called with a AccessToken, Latest and a ConsentKey it delegates HttpRequestErrors to its ErrorHandler`() = runBlockingTest {
         // Given
-        val requestTemplate = RequestBuilderSpy.Template()
+        val requestTemplate = RequestBuilderSpy.Factory()
         val accessToken = "potato"
         val consentKey = "tomato"
 
         val error = HttpRuntimeError(HttpStatusCode.TooManyRequests)
-        val outgoingError = ConsentServiceError.ForbiddenError()
+        val outgoingError = ConsentServiceError.Forbidden()
         var capturedError: HttpRuntimeError? = null
 
         val client = createErrorMockClient(error)
@@ -267,7 +267,7 @@ class ConsentServiceTest {
         }
 
         // Then
-        val result = assertFailsWith<ConsentServiceError.ForbiddenError> {
+        val result = assertFailsWith<ConsentServiceError.Forbidden> {
             // When
             val service = ConsentService(
                 requestTemplate,
@@ -295,7 +295,7 @@ class ConsentServiceTest {
     @Test
     fun `Given fetchUserConsents was called with a AccessToken, Latest and a ConsentKey it fails due to unexpected response`() = runBlockingTest {
         // Given
-        val requestTemplate = RequestBuilderSpy.Template()
+        val requestTemplate = RequestBuilderSpy.Factory()
         val client = createMockClientWithResponse { scope ->
             return@createMockClientWithResponse scope.respond(
                 content = "something"
@@ -335,7 +335,7 @@ class ConsentServiceTest {
     @Test
     fun `Given fetchUserConsents was called with a AccessToken, LatestConsent and a ConsentKey it returns a List of UserConsents`() = runBlockingTest {
         // Given
-        val requestTemplate = RequestBuilderSpy.Template()
+        val requestTemplate = RequestBuilderSpy.Factory()
         val accessToken = "potato"
         val lastedConsent = true
         val consentKey = "tomato"
@@ -410,14 +410,14 @@ class ConsentServiceTest {
     @Test
     fun `Given createUserConsent was called with a AccessToken and a Version it delegates HttpRequestErrors to its ErrorHandler`() = runBlockingTest {
         // Given
-        val requestTemplate = RequestBuilderSpy.Template()
+        val requestTemplate = RequestBuilderSpy.Factory()
         val clock = ClockStub()
         val accessToken = "potato"
         val consentKey = "custom-consent-key"
         val version = 23
 
         val error = HttpRuntimeError(HttpStatusCode.TooManyRequests)
-        val outgoingError = ConsentServiceError.ForbiddenError()
+        val outgoingError = ConsentServiceError.Forbidden()
         var capturedError: HttpRuntimeError? = null
 
         val client = createErrorMockClient(error)
@@ -439,7 +439,7 @@ class ConsentServiceTest {
         clock.whenNow = { Instant.DISTANT_FUTURE }
 
         // Then
-        val result = assertFailsWith<ConsentServiceError.ForbiddenError> {
+        val result = assertFailsWith<ConsentServiceError.Forbidden> {
             // When
             val service = ConsentService(
                 requestTemplate,
@@ -467,7 +467,7 @@ class ConsentServiceTest {
     @Test
     fun `Given createUserConsent was called with a AccessToken and a Version it just runs`() = runBlockingTest {
         // Given
-        val requestTemplate = RequestBuilderSpy.Template()
+        val requestTemplate = RequestBuilderSpy.Factory()
         val clock = ClockStub()
 
         val accessToken = "potato"
@@ -551,12 +551,12 @@ class ConsentServiceTest {
     @Test
     fun `Given requestSignatureRegistration was called with a AccessToken and a Message it delegates HttpRequestErrors to its ErrorHandler`() = runBlockingTest {
         // Given
-        val requestTemplate = RequestBuilderSpy.Template()
+        val requestTemplate = RequestBuilderSpy.Factory()
         val accessToken = "potato"
         val message = "tomato"
 
         val error = HttpRuntimeError(HttpStatusCode.TooManyRequests)
-        val outgoingError = ConsentServiceError.ForbiddenError()
+        val outgoingError = ConsentServiceError.Forbidden()
         var capturedError: HttpRuntimeError? = null
 
         val client = createErrorMockClient(error)
@@ -576,7 +576,7 @@ class ConsentServiceTest {
         }
 
         // Then
-        val result = assertFailsWith<ConsentServiceError.ForbiddenError> {
+        val result = assertFailsWith<ConsentServiceError.Forbidden> {
             val service = ConsentService(
                 requestTemplate,
                 errorHandler,
@@ -602,7 +602,7 @@ class ConsentServiceTest {
     @Test
     fun `Given a instance had been created and requestSignatureConsentRegistration was called with a AccessToken and a Message it fails due to a unexpected response`() = runBlockingTest {
         // Given
-        val requestTemplate = RequestBuilderSpy.Template()
+        val requestTemplate = RequestBuilderSpy.Factory()
         val client = createMockClientWithResponse { scope ->
             return@createMockClientWithResponse scope.respond(
                 content = "something"
@@ -642,7 +642,7 @@ class ConsentServiceTest {
     @Test
     fun `Given a instance had been created and requestSignatureConsentRegistration was called with a AccessToken and a Message it returns a ConsentSignature`() = runBlockingTest {
         // Given
-        val requestTemplate = RequestBuilderSpy.Template()
+        val requestTemplate = RequestBuilderSpy.Factory()
         val accessToken = "potato"
         val message = "tomato"
 
@@ -714,12 +714,12 @@ class ConsentServiceTest {
     @Test
     fun `Given requestSignatureDonation was called with a AccessToken and a Message it delegates HttpRequestErrors to its ErrorHandler`() = runBlockingTest {
         // Given
-        val requestTemplate = RequestBuilderSpy.Template()
+        val requestTemplate = RequestBuilderSpy.Factory()
         val accessToken = "potato"
         val message = "tomato"
 
         val error = HttpRuntimeError(HttpStatusCode.TooManyRequests)
-        val outgoingError = ConsentServiceError.ForbiddenError()
+        val outgoingError = ConsentServiceError.Forbidden()
         var capturedError: HttpRuntimeError? = null
 
         val client = createErrorMockClient(error)
@@ -739,7 +739,7 @@ class ConsentServiceTest {
         }
 
         // Then
-        val result = assertFailsWith<ConsentServiceError.ForbiddenError> {
+        val result = assertFailsWith<ConsentServiceError.Forbidden> {
             // When
             val service = ConsentService(
                 requestTemplate,
@@ -766,7 +766,7 @@ class ConsentServiceTest {
     @Test
     fun `Given requestSignatureDonation was called with a AccessToken and a Message it fails due to a unexpected response`() = runBlockingTest {
         // Given
-        val requestTemplate = RequestBuilderSpy.Template()
+        val requestTemplate = RequestBuilderSpy.Factory()
         val client = createMockClientWithResponse { scope ->
             return@createMockClientWithResponse scope.respond(
                 content = "something"
@@ -805,7 +805,7 @@ class ConsentServiceTest {
     @Test
     fun `Given requestSignatureDonation was called with a AccessToken and a Message it returns a ConsentSignature`() = runBlockingTest {
         // Given
-        val requestTemplate = RequestBuilderSpy.Template()
+        val requestTemplate = RequestBuilderSpy.Factory()
         val accessToken = "potato"
         val message = "tomato"
 
@@ -877,12 +877,12 @@ class ConsentServiceTest {
     @Test
     fun `Given revokeUserConsent was called with a AccessToken it delegates HttpRequestErrors to its ErrorHandler`() = runBlockingTest {
         // Given
-        val requestTemplate = RequestBuilderSpy.Template()
+        val requestTemplate = RequestBuilderSpy.Factory()
         val accessToken = "potato"
         val consentKey = "custom-consent-key"
 
         val error = HttpRuntimeError(HttpStatusCode.TooManyRequests)
-        val outgoingError = ConsentServiceError.ForbiddenError()
+        val outgoingError = ConsentServiceError.Forbidden()
         var capturedError: HttpRuntimeError? = null
 
         val client = createErrorMockClient(error)
@@ -902,7 +902,7 @@ class ConsentServiceTest {
         }
 
         // Then
-        val result = assertFailsWith<ConsentServiceError.ForbiddenError> {
+        val result = assertFailsWith<ConsentServiceError.Forbidden> {
             // When
             val service = ConsentService(
                 requestTemplate,
@@ -929,7 +929,7 @@ class ConsentServiceTest {
     @Test
     fun `Given revokeUserConsent was called with a AccessToken it just runs`() = runBlockingTest {
         // Given
-        val requestTemplate = RequestBuilderSpy.Template()
+        val requestTemplate = RequestBuilderSpy.Factory()
         val accessToken = "potato"
         val consentKey = "custom-consent-key"
 

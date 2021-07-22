@@ -32,7 +32,6 @@
 
 package care.data4life.datadonation.core.model
 
-// TODO: Test this
 data class KeyPair(
     override val public: ByteArray,
     override val private: ByteArray

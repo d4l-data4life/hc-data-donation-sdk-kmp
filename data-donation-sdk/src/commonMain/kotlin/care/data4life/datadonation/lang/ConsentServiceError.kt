@@ -22,13 +22,13 @@ sealed class ConsentServiceError(
     open val httpStatus: Int
 ) : D4LRuntimeException() {
 
-    class UnexpectedError(override val httpStatus: Int) : ConsentServiceError(httpStatus)
-    class BadRequestError : ConsentServiceError(400)
-    class UnauthorizedError : ConsentServiceError(401)
-    class ForbiddenError : ConsentServiceError(403)
-    class NotFoundError : ConsentServiceError(404)
-    class DocumentConflictError : ConsentServiceError(409)
-    class UnprocessableEntityError : ConsentServiceError(422)
-    class TooManyRequestsError : ConsentServiceError(429)
-    class InternalServerError : ConsentServiceError(500)
+    class UnexpectedFailure(override val httpStatus: Int) : ConsentServiceError(httpStatus)
+    class BadRequest : ConsentServiceError(400)
+    class Unauthorized : ConsentServiceError(401)
+    class Forbidden : ConsentServiceError(403)
+    class NotFound : ConsentServiceError(404)
+    class DocumentConflict : ConsentServiceError(409)
+    class UnprocessableEntity : ConsentServiceError(422)
+    class TooManyRequests : ConsentServiceError(429)
+    class InternalServer : ConsentServiceError(500)
 }
