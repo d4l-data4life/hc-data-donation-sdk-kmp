@@ -34,7 +34,6 @@ package care.data4life.datadonation.internal.di
 
 import care.data4life.datadonation.Contract
 import care.data4life.datadonation.core.model.ModelContract.Environment
-import care.data4life.datadonation.encryption.resolveEncryptionModule
 import care.data4life.datadonation.internal.data.service.networking.resolveNetworking
 import care.data4life.datadonation.internal.data.service.resolveServiceModule
 import care.data4life.datadonation.internal.domain.repository.resolveRepositoryModule
@@ -58,7 +57,6 @@ internal fun initKoin(configuration: Contract.Configuration): KoinApplication {
             resolveUsecaseRunnerModule(),
             resolveUsecaseModule(),
             resolveRepositoryModule(),
-            resolveEncryptionModule(),
             resolveServiceModule()
         )
     }

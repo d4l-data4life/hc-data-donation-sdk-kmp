@@ -40,28 +40,6 @@ kotlin {
         }
     }
 
-    iosArm64 {
-        val platform = "iphoneos"
-        compilations.getByName("main") {
-            cinterops.create("iOSCryptoDD") {
-                val interopTask = tasks[interopProcessingTaskName]
-                interopTask.dependsOn(":iOSCryptoDD:build${platform.capitalize()}")
-                includeDirs.headerFilterOnly("$rootDir/iOSCryptoDD/build/Release-$platform/include")
-            }
-        }
-    }
-
-    iosX64 {
-        val platform = "iphonesimulator"
-        compilations.getByName("main") {
-            cinterops.create("iOSCryptoDD") {
-                val interopTask = tasks[interopProcessingTaskName]
-                interopTask.dependsOn(":iOSCryptoDD:build${platform.capitalize()}")
-                includeDirs.headerFilterOnly("$rootDir/iOSCryptoDD/build/Release-$platform/include")
-            }
-        }
-    }
-
     sourceSets {
         all {
             languageSettings.apply {
@@ -158,14 +136,6 @@ kotlin {
         val iosTest by getting {
             dependencies {
                 dependsOn(commonTest.get())
-            }
-        }
-    }
-
-    targets.all {
-        compilations.all {
-            kotlinOptions {
-                freeCompilerArgs = freeCompilerArgs + "-Xallow-result-return-type"
             }
         }
     }
