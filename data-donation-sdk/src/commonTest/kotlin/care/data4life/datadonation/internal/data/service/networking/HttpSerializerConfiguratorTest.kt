@@ -28,7 +28,7 @@ class HttpSerializerConfiguratorTest {
     fun `It fulfils HttpSerializerConfigurator`() {
         val configurator: Any = HttpSerializerConfigurator
 
-        assertTrue(configurator is Networking.HttpFeatureConfigurator<*, *>)
+        assertTrue(configurator is Networking.HttpSerializerConfigurator)
     }
 
     @Test
