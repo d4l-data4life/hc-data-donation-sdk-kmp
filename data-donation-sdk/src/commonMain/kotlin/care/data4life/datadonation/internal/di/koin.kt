@@ -40,7 +40,6 @@ import care.data4life.datadonation.internal.data.service.resolveServiceModule
 import care.data4life.datadonation.internal.domain.repository.resolveRepositoryModule
 import care.data4life.datadonation.internal.domain.usecases.*
 import care.data4life.datadonation.internal.provider.CredentialProvider
-import care.data4life.datadonation.internal.provider.ScopeProvider
 import care.data4life.datadonation.internal.provider.UserSessionTokenProvider
 import kotlinx.datetime.Clock
 import org.koin.core.KoinApplication
@@ -68,7 +67,6 @@ internal fun resolveRootModule(configuration: Contract.Configuration): Module {
             configuration
         } binds arrayOf(
             Contract.Configuration::class,
-            ScopeProvider::class,
             CredentialProvider::class,
             UserSessionTokenProvider::class
         )

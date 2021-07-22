@@ -128,12 +128,10 @@ class ClientTest {
 
         val version = 23
         val consentKey = "custom-consent-key"
-        val keyPair = DummyData.keyPair
 
         val capturedParameter = Channel<UsecaseContract.CreateUserConsent.Parameter>()
 
         config.whenGetEnvironment = { Environment.DEV }
-        config.whenGetDonorKeyPair = { keyPair }
 
         usecase.whenExecute = { delegatedParameter ->
             launch {
@@ -170,8 +168,7 @@ class ClientTest {
             actual = capturedParameter.receive(),
             expected = CreateUserConsent.Parameter(
                 consentKey = consentKey,
-                version = version,
-                keyPair = keyPair
+                version = version
             )
         )
     }

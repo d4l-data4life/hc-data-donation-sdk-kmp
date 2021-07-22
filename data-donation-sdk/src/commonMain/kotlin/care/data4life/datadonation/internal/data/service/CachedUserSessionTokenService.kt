@@ -32,7 +32,7 @@
 
 package care.data4life.datadonation.internal.data.service
 
-import care.data4life.datadonation.core.listener.ListenerContract
+import care.data4life.datadonation.Contract
 import care.data4life.datadonation.internal.provider.UserSessionTokenProvider
 import care.data4life.datadonation.lang.CoreRuntimeError
 import kotlinx.datetime.Clock
@@ -59,7 +59,7 @@ class CachedUserSessionTokenService(
 
                 continuation.resume(cachedValue)
             } else {
-                provider.getUserSessionToken(object : ListenerContract.ResultListener<String> {
+                provider.getUserSessionToken(object : Contract.ResultListener<String> {
                     override fun onSuccess(result: String) {
                         cachedValue = result
                         cachedAt = clock.now()

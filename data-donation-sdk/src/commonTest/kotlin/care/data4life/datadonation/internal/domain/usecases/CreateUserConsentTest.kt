@@ -32,7 +32,6 @@
 
 package care.data4life.datadonation.internal.domain.usecases
 
-import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.mock.DummyData
 import care.data4life.datadonation.mock.stub.repository.UserConsentRepositoryStub
 import care.data4life.sdk.util.test.runBlockingTest
@@ -55,7 +54,6 @@ class CreateUserConsentTest {
         // Given
         val consentKey = "custom-consent-key"
         val version = 42
-        val keyPair = KeyPair(ByteArray(23), ByteArray(42))
 
         var capturedCreationConsentKey: String? = "NotNull"
         var capturedVersion: Int? = null
@@ -75,7 +73,7 @@ class CreateUserConsentTest {
             listOf(consent, DummyData.userConsent.copy(accountId = "not expected"))
         }
 
-        val parameter = CreateUserConsent.Parameter(keyPair, consentKey, version)
+        val parameter = CreateUserConsent.Parameter(consentKey, version)
 
         // When
         val result = CreateUserConsent(repo).execute(parameter)

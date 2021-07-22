@@ -17,31 +17,20 @@
 package care.data4life.datadonation.mock.stub
 
 import care.data4life.datadonation.Contract
-import care.data4life.datadonation.core.listener.ListenerContract
-import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.ModelContract.Environment
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
-import kotlinx.coroutines.CoroutineScope
 
 class ClientConfigurationStub : Contract.Configuration, MockContract.Stub {
     var whenGetServicePublicKey: ((Contract.Service) -> String)? = null
-    var whenGetDonorKeyPair: (() -> KeyPair?)? = null
-    var whenGetUserSessionToken: ((ListenerContract.ResultListener<String>) -> Unit)? = null
+    var whenGetUserSessionToken: ((Contract.ResultListener<String>) -> Unit)? = null
     var whenGetEnvironment: (() -> Environment)? = null
-    var whenGetCoroutineScope: (() -> CoroutineScope)? = null
 
     override fun getServicePublicKey(service: Contract.Service): String {
         return whenGetServicePublicKey?.invoke(service) ?: throw MockException()
     }
 
-    override fun getDonorKeyPair(): KeyPair? {
-        whenGetDonorKeyPair ?: throw MockException()
-
-        return whenGetDonorKeyPair!!.invoke()
-    }
-
-    override fun getUserSessionToken(tokenListener: ListenerContract.ResultListener<String>) {
+    override fun getUserSessionToken(tokenListener: Contract.ResultListener<String>) {
         return whenGetUserSessionToken?.invoke(tokenListener) ?: throw MockException()
     }
 
@@ -49,15 +38,9 @@ class ClientConfigurationStub : Contract.Configuration, MockContract.Stub {
         return whenGetEnvironment?.invoke() ?: throw MockException()
     }
 
-    override fun getCoroutineScope(): CoroutineScope {
-        return whenGetCoroutineScope?.invoke() ?: throw MockException()
-    }
-
     override fun clear() {
         whenGetServicePublicKey = null
-        whenGetDonorKeyPair = null
         whenGetUserSessionToken = null
         whenGetEnvironment = null
-        whenGetCoroutineScope = null
     }
 }

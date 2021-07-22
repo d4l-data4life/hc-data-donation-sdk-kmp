@@ -68,7 +68,6 @@ class Client internal constructor(
         consentDocumentVersion: Int
     ): Flow<UserConsent> = flow {
         val parameter = CreateUserConsent.Parameter(
-            configuration.getDonorKeyPair(), // TODO: Fix this
             consentKey,
             consentDocumentVersion
         )

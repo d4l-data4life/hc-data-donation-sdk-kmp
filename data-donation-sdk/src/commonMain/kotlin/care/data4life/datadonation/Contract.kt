@@ -32,15 +32,11 @@
 
 package care.data4life.datadonation
 
-import care.data4life.datadonation.core.listener.ListenerContract
 import care.data4life.datadonation.core.model.ConsentDocument
-import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.ModelContract.Environment
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.provider.CredentialProvider
-import care.data4life.datadonation.internal.provider.ScopeProvider
 import care.data4life.datadonation.internal.provider.UserSessionTokenProvider
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 
 interface Contract {
@@ -49,23 +45,22 @@ interface Contract {
         ALP("AnalyticsPlatform")
     }
 
+    interface ResultListener<T : Any> {
+        fun onSuccess(result: T)
+        fun onError(exception: Exception)
+    }
+
     interface Configuration :
-        ScopeProvider,
         CredentialProvider,
         UserSessionTokenProvider {
         override fun getServicePublicKey(service: Service): String
 
-        fun getDonorKeyPair(): KeyPair? // TODO
-
-        override fun getUserSessionToken(tokenListener: ListenerContract.ResultListener<String>)
+        override fun getUserSessionToken(tokenListener: ResultListener<String>)
 
         fun getEnvironment(): Environment
-
-        override fun getCoroutineScope(): CoroutineScope
     }
 
     interface DataDonation {
-        // TODO
         fun fetchConsentDocuments(
             consentDocumentVersion: Int?,
             language: String?,
@@ -85,6 +80,8 @@ interface Contract {
     }
 
     interface DataDonationFactory {
-        fun getInstance(configuration: Configuration): DataDonation
+        fun getInstance(
+            configuration: Configuration
+        ): DataDonation
     }
 }

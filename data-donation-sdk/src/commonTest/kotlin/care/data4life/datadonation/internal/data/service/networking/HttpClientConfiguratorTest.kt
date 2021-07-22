@@ -54,10 +54,10 @@ class HttpClientConfiguratorTest {
     fun `Given configure is called with a HttpClientConfig and a List of HttpFeatureInstaller it installs a given Feature`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val capturedPluginConfig = Channel<Any>()
-        val capturedSubConfig = Channel<String>()
+        val capturedSubConfig = Channel<Any?>()
 
-        val subConfig = "something"
-        val stubFeatureConfigurator = HttpFeatureConfiguratorStub<FeatureStub.Config, String>()
+        val subConfig = object {}
+        val stubFeatureConfigurator = HttpFeatureConfiguratorStub<Any, Any?>()
 
         stubFeatureConfigurator.whenConfigure = { pluginConfig, subConfiguration ->
             launch {
@@ -69,7 +69,7 @@ class HttpClientConfiguratorTest {
         val features = listOf(
             Networking.HttpFeatureInstaller(
                 FeatureStub,
-                stubFeatureConfigurator as Networking.HttpFeatureConfigurator<Any, Any?>,
+                stubFeatureConfigurator,
                 subConfig,
             )
         )
@@ -99,8 +99,8 @@ class HttpClientConfiguratorTest {
     @Test
     fun `Given configure is called with a HttpClientConfig and a List of HttpFeatureInstaller it installs a arbitrary number of Features`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
-        val subConfig = "something"
-        val stubFeatureConfigurator = HttpFeatureConfiguratorStub<FeatureStub.Config, String>()
+        val subConfig = object {}
+        val stubFeatureConfigurator = HttpFeatureConfiguratorStub<Any, Any?>()
 
         stubFeatureConfigurator.whenConfigure = { _, _ ->
             Counter.amount++
@@ -109,17 +109,17 @@ class HttpClientConfiguratorTest {
         val features = listOf(
             Networking.HttpFeatureInstaller(
                 FeatureStub,
-                stubFeatureConfigurator as Networking.HttpFeatureConfigurator<Any, Any?>,
+                stubFeatureConfigurator,
                 subConfig,
             ),
             Networking.HttpFeatureInstaller(
                 FeatureStub,
-                stubFeatureConfigurator as Networking.HttpFeatureConfigurator<Any, Any?>,
+                stubFeatureConfigurator,
                 subConfig,
             ),
             Networking.HttpFeatureInstaller(
                 FeatureStub,
-                stubFeatureConfigurator as Networking.HttpFeatureConfigurator<Any, Any?>,
+                stubFeatureConfigurator,
                 subConfig,
             )
         )

@@ -20,7 +20,6 @@ import care.data4life.datadonation.Contract
 import care.data4life.datadonation.core.model.ModelContract.Environment
 import care.data4life.datadonation.internal.di.resolveRootModule
 import care.data4life.datadonation.internal.provider.CredentialProvider
-import care.data4life.datadonation.internal.provider.ScopeProvider
 import care.data4life.datadonation.internal.provider.UserSessionTokenProvider
 import care.data4life.datadonation.mock.stub.ClientConfigurationStub
 import kotlinx.datetime.Clock
@@ -47,17 +46,6 @@ class RootKoinTest {
         }
         // Then
         val instance: Contract.Configuration = koin.koin.get()
-        assertNotNull(instance)
-    }
-
-    @Test
-    fun `Given resolveRootModule is called with a Configuration it creates a Module, which contains a ScopeResolver`() {
-        // When
-        val koin = koinApplication {
-            modules(resolveRootModule(config))
-        }
-        // Then
-        val instance: ScopeProvider = koin.koin.get()
         assertNotNull(instance)
     }
 

@@ -20,7 +20,6 @@ import care.data4life.datadonation.Contract
 import care.data4life.datadonation.core.model.ModelContract.Environment
 import care.data4life.datadonation.internal.data.service.networking.Networking
 import care.data4life.datadonation.internal.provider.CredentialProvider
-import care.data4life.datadonation.internal.provider.ScopeProvider
 import care.data4life.datadonation.internal.provider.UserSessionTokenProvider
 import care.data4life.datadonation.mock.fake.createDefaultMockClient
 import care.data4life.datadonation.mock.stub.ClientConfigurationStub
@@ -86,7 +85,6 @@ class ServiceKoinTest {
                         ClientConfigurationStub()
                     } binds arrayOf(
                         Contract.Configuration::class,
-                        ScopeProvider::class,
                         CredentialProvider::class,
                         UserSessionTokenProvider::class
                     )
@@ -110,7 +108,6 @@ class ServiceKoinTest {
                         ClientConfigurationStub()
                     } binds arrayOf(
                         Contract.Configuration::class,
-                        ScopeProvider::class,
                         CredentialProvider::class,
                         UserSessionTokenProvider::class
                     )

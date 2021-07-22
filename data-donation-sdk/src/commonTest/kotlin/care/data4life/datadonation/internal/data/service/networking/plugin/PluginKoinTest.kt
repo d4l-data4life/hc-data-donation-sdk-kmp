@@ -43,7 +43,7 @@ class PluginKoinTest {
             actual = configuration.size,
             expected = 2
         )
-        assertEquals(
+        assertEquals<Any>(
             actual = configuration[0],
             expected = Networking.HttpFeatureInstaller(
                 JsonFeature,
@@ -51,7 +51,7 @@ class PluginKoinTest {
                 JsonConfigurator
             )
         )
-        assertEquals(
+        assertEquals<Any>(
             actual = configuration[1],
             expected = Networking.HttpFeatureInstaller(
                 Logging,
