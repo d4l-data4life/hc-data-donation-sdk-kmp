@@ -55,7 +55,7 @@ class NetworkingKoinTest {
             )
         }
         // Then
-        val builder: Networking.RequestBuilderTemplate = koin.koin.get()
+        val builder: Networking.RequestBuilderFactory = koin.koin.get()
         assertNotNull(builder)
     }
 
@@ -97,7 +97,6 @@ class NetworkingKoinTest {
         var capturedHttpConfig: HttpClientConfig<*>? = null
         var capturedPlugins: List<Networking.HttpPluginInstaller<in Any, in Any>>? = null
         var capturedResponseValidation: Networking.HttpResponseValidation? = null
-
 
         clientConfigurator.whenConfigure = { delegatedHttpConfig, delegatedFeatures, delegatedResponseValidation ->
             capturedHttpConfig = delegatedHttpConfig

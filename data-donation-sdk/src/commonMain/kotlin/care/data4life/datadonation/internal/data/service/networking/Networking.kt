@@ -96,7 +96,7 @@ internal interface Networking {
         }
     }
 
-    interface RequestBuilderTemplate {
+    interface RequestBuilderFactory {
         fun create(): RequestBuilder
     }
 }
