@@ -18,6 +18,7 @@ package care.data4life.datadonation.internal.data.service.networking.plugin
 
 import care.data4life.datadonation.internal.data.service.networking.Networking
 import care.data4life.sdk.log.Log
+import io.ktor.client.features.HttpCallValidator
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.logging.Logging
 import org.koin.core.module.Module
@@ -36,15 +37,15 @@ fun resolveKtorPlugins(): Module {
                     Logging,
                     HttpLoggingConfigurator,
                     Log.logger
+                ),
+                Networking.HttpPluginInstaller(
+                    HttpCallValidator,
+                    HttpResponseValidatorConfigurator,
+                    KtorPluginsContract.HttpResponseValidationConfiguration(
+                        HttpSuccessfulResponseValidator,
+                        HttpErrorPropagator
+                    )
                 )
-            )
-        }
-
-        single {
-            Networking.HttpResponseValidation(
-                HttpResponseValidatorConfigurator,
-                HttpSuccessfulResponseValidator,
-                HttpErrorPropagator
             )
         }
     }

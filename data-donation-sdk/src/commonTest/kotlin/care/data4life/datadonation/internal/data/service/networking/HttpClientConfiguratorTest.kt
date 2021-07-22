@@ -18,13 +18,9 @@ package care.data4life.datadonation.internal.data.service.networking
 
 import care.data4life.datadonation.mock.fake.defaultResponse
 import care.data4life.datadonation.mock.stub.service.networking.HttpPluginConfiguratorStub
-import care.data4life.datadonation.mock.stub.service.networking.HttpResponseValidatorConfiguratorStub
-import care.data4life.datadonation.mock.stub.service.networking.plugin.HttpErrorPropagatorStub
-import care.data4life.datadonation.mock.stub.service.networking.plugin.HttpSuccessfulResponseValidatorStub
 import care.data4life.sdk.util.test.runWithContextBlockingTest
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
-import io.ktor.client.features.HttpCallValidator
 import io.ktor.client.features.HttpClientFeature
 import io.ktor.util.AttributeKey
 import kotlinx.coroutines.GlobalScope
@@ -34,7 +30,6 @@ import kotlin.native.concurrent.ThreadLocal
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 class HttpClientConfiguratorTest {
@@ -142,52 +137,6 @@ class HttpClientConfiguratorTest {
         assertEquals(
             actual = Counter.amount,
             expected = features.size
-        )
-    }
-
-    @Test
-    fun `Given configure is called with a HttpClientConfig and a HttpResponseValidation, it calls the Configurator with its appropriate parameter`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
-        // Given
-        val configurator = HttpResponseValidatorConfiguratorStub()
-        val successfulResponse = HttpSuccessfulResponseValidatorStub()
-        val errorPropagator = HttpErrorPropagatorStub()
-
-        val responseValidation = Networking.HttpResponseValidation(
-            configurator,
-            successfulResponse,
-            errorPropagator
-        )
-
-        val capturedResponseConfig = Channel<HttpCallValidator.Config>()
-        val capturedSuccessfulResponse = Channel<Networking.HttpSuccessfulResponseValidator>()
-        val capturedErrorPropagation = Channel<Networking.HttpErrorPropagator>()
-
-        configurator.whenConfigure = { delegatedResponseConfig, delegatedSuccessfulResponse, delegatedErrorPropagation ->
-            launch {
-                capturedResponseConfig.send(delegatedResponseConfig)
-                capturedSuccessfulResponse.send(delegatedSuccessfulResponse!!)
-                capturedErrorPropagation.send(delegatedErrorPropagation!!)
-            }
-        }
-
-        // When
-        HttpClient {
-            HttpClientConfigurator.configure(
-                this,
-                responseValidator = responseValidation
-            )
-        }
-
-        // Then
-        val pluginConfig: Any = capturedResponseConfig.receive()
-        assertTrue(pluginConfig is HttpCallValidator.Config)
-        assertSame(
-            actual = capturedSuccessfulResponse.receive(),
-            expected = successfulResponse
-        )
-        assertSame(
-            actual = capturedErrorPropagation.receive(),
-            expected = errorPropagator
         )
     }
 

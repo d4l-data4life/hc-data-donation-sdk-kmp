@@ -75,7 +75,7 @@ class ConsentServiceTest {
 
         val requestTemplate = RequestBuilderSpy.Factory()
         val error = HttpRuntimeError(HttpStatusCode.TooManyRequests)
-        val outgoingError = ConsentServiceError.ForbiddenError()
+        val outgoingError = ConsentServiceError.Forbidden()
         var capturedError: HttpRuntimeError? = null
 
         val client = createErrorMockClient(error)
@@ -95,7 +95,7 @@ class ConsentServiceTest {
         }
 
         // Then
-        val result = assertFailsWith<ConsentServiceError.ForbiddenError> {
+        val result = assertFailsWith<ConsentServiceError.Forbidden> {
             val service = ConsentService(
                 requestTemplate,
                 errorHandler,
@@ -247,7 +247,7 @@ class ConsentServiceTest {
         val consentKey = "tomato"
 
         val error = HttpRuntimeError(HttpStatusCode.TooManyRequests)
-        val outgoingError = ConsentServiceError.ForbiddenError()
+        val outgoingError = ConsentServiceError.Forbidden()
         var capturedError: HttpRuntimeError? = null
 
         val client = createErrorMockClient(error)
@@ -267,7 +267,7 @@ class ConsentServiceTest {
         }
 
         // Then
-        val result = assertFailsWith<ConsentServiceError.ForbiddenError> {
+        val result = assertFailsWith<ConsentServiceError.Forbidden> {
             // When
             val service = ConsentService(
                 requestTemplate,
@@ -417,7 +417,7 @@ class ConsentServiceTest {
         val version = 23
 
         val error = HttpRuntimeError(HttpStatusCode.TooManyRequests)
-        val outgoingError = ConsentServiceError.ForbiddenError()
+        val outgoingError = ConsentServiceError.Forbidden()
         var capturedError: HttpRuntimeError? = null
 
         val client = createErrorMockClient(error)
@@ -439,7 +439,7 @@ class ConsentServiceTest {
         clock.whenNow = { Instant.DISTANT_FUTURE }
 
         // Then
-        val result = assertFailsWith<ConsentServiceError.ForbiddenError> {
+        val result = assertFailsWith<ConsentServiceError.Forbidden> {
             // When
             val service = ConsentService(
                 requestTemplate,
@@ -556,7 +556,7 @@ class ConsentServiceTest {
         val message = "tomato"
 
         val error = HttpRuntimeError(HttpStatusCode.TooManyRequests)
-        val outgoingError = ConsentServiceError.ForbiddenError()
+        val outgoingError = ConsentServiceError.Forbidden()
         var capturedError: HttpRuntimeError? = null
 
         val client = createErrorMockClient(error)
@@ -576,7 +576,7 @@ class ConsentServiceTest {
         }
 
         // Then
-        val result = assertFailsWith<ConsentServiceError.ForbiddenError> {
+        val result = assertFailsWith<ConsentServiceError.Forbidden> {
             val service = ConsentService(
                 requestTemplate,
                 errorHandler,
@@ -719,7 +719,7 @@ class ConsentServiceTest {
         val message = "tomato"
 
         val error = HttpRuntimeError(HttpStatusCode.TooManyRequests)
-        val outgoingError = ConsentServiceError.ForbiddenError()
+        val outgoingError = ConsentServiceError.Forbidden()
         var capturedError: HttpRuntimeError? = null
 
         val client = createErrorMockClient(error)
@@ -739,7 +739,7 @@ class ConsentServiceTest {
         }
 
         // Then
-        val result = assertFailsWith<ConsentServiceError.ForbiddenError> {
+        val result = assertFailsWith<ConsentServiceError.Forbidden> {
             // When
             val service = ConsentService(
                 requestTemplate,
@@ -882,7 +882,7 @@ class ConsentServiceTest {
         val consentKey = "custom-consent-key"
 
         val error = HttpRuntimeError(HttpStatusCode.TooManyRequests)
-        val outgoingError = ConsentServiceError.ForbiddenError()
+        val outgoingError = ConsentServiceError.Forbidden()
         var capturedError: HttpRuntimeError? = null
 
         val client = createErrorMockClient(error)
@@ -902,7 +902,7 @@ class ConsentServiceTest {
         }
 
         // Then
-        val result = assertFailsWith<ConsentServiceError.ForbiddenError> {
+        val result = assertFailsWith<ConsentServiceError.Forbidden> {
             // When
             val service = ConsentService(
                 requestTemplate,

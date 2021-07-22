@@ -16,7 +16,6 @@
 
 package care.data4life.datadonation.internal.data.service.networking.plugin
 
-import care.data4life.datadonation.internal.data.service.networking.Networking
 import care.data4life.datadonation.lang.HttpRuntimeError
 import care.data4life.sdk.util.test.runBlockingTest
 import io.ktor.client.HttpClient
@@ -35,7 +34,7 @@ class HttpErrorPropagatorTest {
     fun `It fulfils HttpErrorPropagator`() {
         val propagator: Any = HttpErrorPropagator
 
-        assertTrue(propagator is Networking.HttpErrorPropagator)
+        assertTrue(propagator is KtorPluginsContract.HttpErrorPropagator)
     }
 
     @Test

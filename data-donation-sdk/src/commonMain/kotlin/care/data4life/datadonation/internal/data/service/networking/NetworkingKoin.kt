@@ -34,8 +34,7 @@ internal fun resolveNetworking(): Module {
             HttpClient {
                 get<Networking.HttpClientConfigurator>().configure(
                     this,
-                    installers = getOrNull(),
-                    responseValidator = getOrNull(),
+                    installers = getOrNull()
                 )
             }
         }

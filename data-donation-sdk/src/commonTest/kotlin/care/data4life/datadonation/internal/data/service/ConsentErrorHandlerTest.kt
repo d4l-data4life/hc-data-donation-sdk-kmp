@@ -40,7 +40,7 @@ class ConsentErrorHandlerTest {
         val result = ConsentErrorHandler.handleFetchConsentDocuments(error)
 
         // Then
-        assertTrue(result is ConsentServiceError.UnexpectedError)
+        assertTrue(result is ConsentServiceError.UnexpectedFailure)
         assertEquals(
             actual = result.httpStatus,
             expected = 503
@@ -56,7 +56,7 @@ class ConsentErrorHandlerTest {
         val result = ConsentErrorHandler.handleFetchConsentDocuments(error)
 
         // Then
-        assertTrue(result is ConsentServiceError.InternalServerError)
+        assertTrue(result is ConsentServiceError.InternalServer)
     }
 
     @Test
@@ -68,7 +68,7 @@ class ConsentErrorHandlerTest {
         val result = ConsentErrorHandler.handleFetchUserConsents(error)
 
         // Then
-        assertTrue(result is ConsentServiceError.UnexpectedError)
+        assertTrue(result is ConsentServiceError.UnexpectedFailure)
         assertEquals(
             actual = result.httpStatus,
             expected = 503
@@ -84,7 +84,7 @@ class ConsentErrorHandlerTest {
         val result = ConsentErrorHandler.handleFetchUserConsents(error)
 
         // Then
-        assertTrue(result is ConsentServiceError.InternalServerError)
+        assertTrue(result is ConsentServiceError.InternalServer)
     }
 
     @Test
@@ -96,7 +96,7 @@ class ConsentErrorHandlerTest {
         val result = ConsentErrorHandler.handleCreateUserConsent(error)
 
         // Then
-        assertTrue(result is ConsentServiceError.UnexpectedError)
+        assertTrue(result is ConsentServiceError.UnexpectedFailure)
         assertEquals(
             actual = result.httpStatus,
             expected = 503
@@ -112,7 +112,7 @@ class ConsentErrorHandlerTest {
         val result = ConsentErrorHandler.handleCreateUserConsent(error)
 
         // Then
-        assertTrue(result is ConsentServiceError.BadRequestError)
+        assertTrue(result is ConsentServiceError.BadRequest)
     }
 
     @Test
@@ -124,7 +124,7 @@ class ConsentErrorHandlerTest {
         val result = ConsentErrorHandler.handleCreateUserConsent(error)
 
         // Then
-        assertTrue(result is ConsentServiceError.NotFoundError)
+        assertTrue(result is ConsentServiceError.NotFound)
     }
 
     @Test
@@ -136,7 +136,7 @@ class ConsentErrorHandlerTest {
         val result = ConsentErrorHandler.handleCreateUserConsent(error)
 
         // Then
-        assertTrue(result is ConsentServiceError.UnprocessableEntityError)
+        assertTrue(result is ConsentServiceError.UnprocessableEntity)
     }
 
     @Test
@@ -148,7 +148,7 @@ class ConsentErrorHandlerTest {
         val result = ConsentErrorHandler.handleCreateUserConsent(error)
 
         // Then
-        assertTrue(result is ConsentServiceError.InternalServerError)
+        assertTrue(result is ConsentServiceError.InternalServer)
     }
 
     @Test
@@ -160,7 +160,7 @@ class ConsentErrorHandlerTest {
         val result = ConsentErrorHandler.handleRequestSignatureConsentRegistration(error)
 
         // Then
-        assertTrue(result is ConsentServiceError.UnexpectedError)
+        assertTrue(result is ConsentServiceError.UnexpectedFailure)
         assertEquals(
             actual = result.httpStatus,
             expected = 503
@@ -176,7 +176,7 @@ class ConsentErrorHandlerTest {
         val result = ConsentErrorHandler.handleRequestSignatureConsentRegistration(error)
 
         // Then
-        assertTrue(result is ConsentServiceError.UnauthorizedError)
+        assertTrue(result is ConsentServiceError.Unauthorized)
     }
 
     @Test
@@ -188,7 +188,7 @@ class ConsentErrorHandlerTest {
         val result = ConsentErrorHandler.handleRequestSignatureConsentRegistration(error)
 
         // Then
-        assertTrue(result is ConsentServiceError.ForbiddenError)
+        assertTrue(result is ConsentServiceError.Forbidden)
     }
 
     @Test
@@ -200,7 +200,7 @@ class ConsentErrorHandlerTest {
         val result = ConsentErrorHandler.handleRequestSignatureConsentRegistration(error)
 
         // Then
-        assertTrue(result is ConsentServiceError.NotFoundError)
+        assertTrue(result is ConsentServiceError.NotFound)
     }
 
     @Test
@@ -212,7 +212,7 @@ class ConsentErrorHandlerTest {
         val result = ConsentErrorHandler.handleRequestSignatureConsentRegistration(error)
 
         // Then
-        assertTrue(result is ConsentServiceError.DocumentConflictError)
+        assertTrue(result is ConsentServiceError.DocumentConflict)
     }
 
     @Test
@@ -224,7 +224,7 @@ class ConsentErrorHandlerTest {
         val result = ConsentErrorHandler.handleRequestSignatureConsentRegistration(error)
 
         // Then
-        assertTrue(result is ConsentServiceError.UnprocessableEntityError)
+        assertTrue(result is ConsentServiceError.UnprocessableEntity)
     }
 
     @Test
@@ -236,7 +236,7 @@ class ConsentErrorHandlerTest {
         val result = ConsentErrorHandler.handleRequestSignatureConsentRegistration(error)
 
         // Then
-        assertTrue(result is ConsentServiceError.TooManyRequestsError)
+        assertTrue(result is ConsentServiceError.TooManyRequests)
     }
 
     @Test
@@ -248,7 +248,7 @@ class ConsentErrorHandlerTest {
         val result = ConsentErrorHandler.handleRequestSignatureConsentRegistration(error)
 
         // Then
-        assertTrue(result is ConsentServiceError.InternalServerError)
+        assertTrue(result is ConsentServiceError.InternalServer)
     }
 
     @Test
@@ -260,7 +260,7 @@ class ConsentErrorHandlerTest {
         val result = ConsentErrorHandler.handleRequestSignatureDonation(error)
 
         // Then
-        assertTrue(result is ConsentServiceError.UnexpectedError)
+        assertTrue(result is ConsentServiceError.UnexpectedFailure)
         assertEquals(
             actual = result.httpStatus,
             expected = 503
@@ -276,7 +276,7 @@ class ConsentErrorHandlerTest {
         val result = ConsentErrorHandler.handleRequestSignatureDonation(error)
 
         // Then
-        assertTrue(result is ConsentServiceError.UnauthorizedError)
+        assertTrue(result is ConsentServiceError.Unauthorized)
     }
 
     @Test
@@ -288,7 +288,7 @@ class ConsentErrorHandlerTest {
         val result = ConsentErrorHandler.handleRequestSignatureDonation(error)
 
         // Then
-        assertTrue(result is ConsentServiceError.DocumentConflictError)
+        assertTrue(result is ConsentServiceError.DocumentConflict)
     }
 
     @Test
@@ -300,7 +300,7 @@ class ConsentErrorHandlerTest {
         val result = ConsentErrorHandler.handleRequestSignatureDonation(error)
 
         // Then
-        assertTrue(result is ConsentServiceError.UnprocessableEntityError)
+        assertTrue(result is ConsentServiceError.UnprocessableEntity)
     }
 
     @Test
@@ -312,7 +312,7 @@ class ConsentErrorHandlerTest {
         val result = ConsentErrorHandler.handleRequestSignatureDonation(error)
 
         // Then
-        assertTrue(result is ConsentServiceError.InternalServerError)
+        assertTrue(result is ConsentServiceError.InternalServer)
     }
 
     @Test
@@ -324,7 +324,7 @@ class ConsentErrorHandlerTest {
         val result = ConsentErrorHandler.handleRevokeUserConsent(error)
 
         // Then
-        assertTrue(result is ConsentServiceError.UnexpectedError)
+        assertTrue(result is ConsentServiceError.UnexpectedFailure)
         assertEquals(
             actual = result.httpStatus,
             expected = 503
@@ -340,7 +340,7 @@ class ConsentErrorHandlerTest {
         val result = ConsentErrorHandler.handleRevokeUserConsent(error)
 
         // Then
-        assertTrue(result is ConsentServiceError.UnauthorizedError)
+        assertTrue(result is ConsentServiceError.Unauthorized)
     }
 
     @Test
@@ -352,7 +352,7 @@ class ConsentErrorHandlerTest {
         val result = ConsentErrorHandler.handleRevokeUserConsent(error)
 
         // Then
-        assertTrue(result is ConsentServiceError.ForbiddenError)
+        assertTrue(result is ConsentServiceError.Forbidden)
     }
 
     @Test
@@ -364,7 +364,7 @@ class ConsentErrorHandlerTest {
         val result = ConsentErrorHandler.handleRevokeUserConsent(error)
 
         // Then
-        assertTrue(result is ConsentServiceError.NotFoundError)
+        assertTrue(result is ConsentServiceError.NotFound)
     }
 
     @Test
@@ -376,7 +376,7 @@ class ConsentErrorHandlerTest {
         val result = ConsentErrorHandler.handleRevokeUserConsent(error)
 
         // Then
-        assertTrue(result is ConsentServiceError.DocumentConflictError)
+        assertTrue(result is ConsentServiceError.DocumentConflict)
     }
 
     @Test
@@ -388,7 +388,7 @@ class ConsentErrorHandlerTest {
         val result = ConsentErrorHandler.handleRevokeUserConsent(error)
 
         // Then
-        assertTrue(result is ConsentServiceError.UnprocessableEntityError)
+        assertTrue(result is ConsentServiceError.UnprocessableEntity)
     }
 
     @Test
@@ -400,6 +400,6 @@ class ConsentErrorHandlerTest {
         val result = ConsentErrorHandler.handleRevokeUserConsent(error)
 
         // Then
-        assertTrue(result is ConsentServiceError.InternalServerError)
+        assertTrue(result is ConsentServiceError.InternalServer)
     }
 }

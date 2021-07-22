@@ -20,9 +20,6 @@ import care.data4life.datadonation.core.model.ModelContract
 import care.data4life.datadonation.mock.fake.createDefaultMockClient
 import care.data4life.datadonation.mock.stub.service.networking.HttpClientConfiguratorStub
 import care.data4life.datadonation.mock.stub.service.networking.HttpPluginConfiguratorStub
-import care.data4life.datadonation.mock.stub.service.networking.HttpResponseValidatorConfiguratorStub
-import care.data4life.datadonation.mock.stub.service.networking.plugin.HttpErrorPropagatorStub
-import care.data4life.datadonation.mock.stub.service.networking.plugin.HttpSuccessfulResponseValidatorStub
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.features.HttpClientFeature
@@ -88,20 +85,12 @@ class NetworkingKoinTest {
                 "something"
             )
         )
-        val validation = Networking.HttpResponseValidation(
-            HttpResponseValidatorConfiguratorStub(),
-            HttpSuccessfulResponseValidatorStub(),
-            HttpErrorPropagatorStub()
-        )
-
         var capturedHttpConfig: HttpClientConfig<*>? = null
         var capturedPlugins: List<Networking.HttpPluginInstaller<in Any, in Any>>? = null
-        var capturedResponseValidation: Networking.HttpResponseValidation? = null
 
-        clientConfigurator.whenConfigure = { delegatedHttpConfig, delegatedFeatures, delegatedResponseValidation ->
+        clientConfigurator.whenConfigure = { delegatedHttpConfig, delegatedPlugins ->
             capturedHttpConfig = delegatedHttpConfig
-            capturedPlugins = delegatedFeatures
-            capturedResponseValidation = delegatedResponseValidation
+            capturedPlugins = delegatedPlugins
         }
 
         // When
@@ -115,7 +104,6 @@ class NetworkingKoinTest {
                     single<List<Networking.HttpPluginInstaller<out Any, out Any?>>> {
                         features
                     }
-                    single { validation }
                     single { ModelContract.Environment.DEV }
                 }
             )
@@ -128,10 +116,6 @@ class NetworkingKoinTest {
         assertSame(
             actual = capturedPlugins,
             expected = features
-        )
-        assertSame(
-            actual = capturedResponseValidation,
-            expected = validation
         )
     }
 

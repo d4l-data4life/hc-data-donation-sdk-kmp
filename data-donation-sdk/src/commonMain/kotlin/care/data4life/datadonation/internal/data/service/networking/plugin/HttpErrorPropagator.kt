@@ -16,11 +16,10 @@
 
 package care.data4life.datadonation.internal.data.service.networking.plugin
 
-import care.data4life.datadonation.internal.data.service.networking.Networking
 import care.data4life.datadonation.lang.HttpRuntimeError
 import io.ktor.client.features.ResponseException
 
-internal object HttpErrorPropagator : Networking.HttpErrorPropagator {
+internal object HttpErrorPropagator : KtorPluginsContract.HttpErrorPropagator {
     private fun wrapError(error: Throwable): Throwable {
         return if (error is ResponseException) {
             HttpRuntimeError(error.response.status)
