@@ -17,7 +17,6 @@
 package care.data4life.datadonation.internal.domain.usecases
 
 import care.data4life.datadonation.core.model.ConsentDocument
-import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.hl7.fhir.stu3.model.FhirResource
 
@@ -48,7 +47,6 @@ interface UsecaseContract {
 
     interface CreateUserConsent : Usecase<CreateUserConsent.Parameter, UserConsent> {
         interface Parameter {
-            val keyPair: KeyPair?
             val consentKey: String
             val version: Int
         }

@@ -16,20 +16,15 @@
 
 package care.data4life.datadonation.internal.data.service
 
-import care.data4life.datadonation.Contract
-import care.data4life.datadonation.core.model.ModelContract.Environment
+import care.data4life.datadonation.DataDonationSDKPublicAPI
+import care.data4life.datadonation.DataDonationSDKPublicAPI.Environment
 import care.data4life.datadonation.internal.data.service.networking.Networking
-import care.data4life.datadonation.internal.provider.CredentialProvider
-import care.data4life.datadonation.internal.provider.ScopeProvider
-import care.data4life.datadonation.internal.provider.UserSessionTokenProvider
 import care.data4life.datadonation.mock.fake.createDefaultMockClient
-import care.data4life.datadonation.mock.stub.ClientConfigurationStub
 import care.data4life.datadonation.mock.stub.ClockStub
+import care.data4life.datadonation.mock.stub.UserSessionTokenProviderStub
 import care.data4life.datadonation.mock.stub.service.networking.RequestBuilderSpy
 import kotlinx.datetime.Clock
 import org.koin.core.context.stopKoin
-import org.koin.dsl.bind
-import org.koin.dsl.binds
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import kotlin.test.BeforeTest
@@ -60,41 +55,17 @@ class ServiceKoinTest {
             modules(
                 resolveServiceModule(),
                 module {
-                    single { ClockStub() } bind Clock::class
+                    single<Clock> { ClockStub() }
                     single<Networking.RequestBuilderFactory> {
                         RequestBuilderSpy.Factory()
                     }
                     single { createDefaultMockClient() }
-                    single { Environment.DEV } bind Environment::class
+                    single<Environment> { Environment.DEV }
                 }
             )
         }
         // Then
         val builder: ServiceContract.ConsentService = koin.koin.get()
-        assertNotNull(builder)
-    }
-
-    @Test
-    fun `Given resolveServiceModule is called it creates a Module, which contains a CredentialService`() {
-        // When
-        val koin = koinApplication {
-            modules(
-                resolveServiceModule(),
-                module {
-                    single { ClockStub() } bind Clock::class
-                    single {
-                        ClientConfigurationStub()
-                    } binds arrayOf(
-                        Contract.Configuration::class,
-                        ScopeProvider::class,
-                        CredentialProvider::class,
-                        UserSessionTokenProvider::class
-                    )
-                }
-            )
-        }
-        // Then
-        val builder: ServiceContract.CredentialService = koin.koin.get()
         assertNotNull(builder)
     }
 
@@ -105,15 +76,10 @@ class ServiceKoinTest {
             modules(
                 resolveServiceModule(),
                 module {
-                    single { ClockStub() } bind Clock::class
-                    single {
-                        ClientConfigurationStub()
-                    } binds arrayOf(
-                        Contract.Configuration::class,
-                        ScopeProvider::class,
-                        CredentialProvider::class,
-                        UserSessionTokenProvider::class
-                    )
+                    single<Clock> { ClockStub() }
+                    single<DataDonationSDKPublicAPI.UserSessionTokenProvider> {
+                        UserSessionTokenProviderStub()
+                    }
                 }
             )
         }

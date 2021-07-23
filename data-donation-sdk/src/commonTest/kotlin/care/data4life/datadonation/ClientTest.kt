@@ -16,18 +16,18 @@
 
 package care.data4life.datadonation
 
-import care.data4life.datadonation.core.model.ModelContract.Environment
+import care.data4life.datadonation.DataDonationSDKPublicAPI.Environment
 import care.data4life.datadonation.internal.domain.usecases.CreateUserConsent
 import care.data4life.datadonation.internal.domain.usecases.FetchConsentDocuments
 import care.data4life.datadonation.internal.domain.usecases.FetchUserConsents
 import care.data4life.datadonation.internal.domain.usecases.RevokeUserConsent
 import care.data4life.datadonation.internal.domain.usecases.UsecaseContract
 import care.data4life.datadonation.mock.DummyData
-import care.data4life.datadonation.mock.stub.ClientConfigurationStub
 import care.data4life.datadonation.mock.stub.CreateUserConsentStub
 import care.data4life.datadonation.mock.stub.FetchConsentDocumentsStub
 import care.data4life.datadonation.mock.stub.FetchUserConsentsStub
 import care.data4life.datadonation.mock.stub.RevokeUserConsentStub
+import care.data4life.datadonation.mock.stub.UserSessionTokenProviderStub
 import care.data4life.sdk.util.test.runWithContextBlockingTest
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
@@ -37,7 +37,6 @@ import org.koin.core.context.stopKoin
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import kotlin.test.BeforeTest
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertSame
@@ -53,21 +52,22 @@ class ClientTest {
     fun `It fulfils DataDonationFactory`() {
         val factory: Any = Client
 
-        assertTrue(factory is Contract.DataDonationFactory)
+        assertTrue(factory is DataDonationSDKPublicAPI.DataDonationClientFactory)
     }
 
     @Test
-    @Ignore // TODO: Ignore until we got rid of the ClientConfiguration
     fun `Given getInstance is called with a Configuration it returns a DataDonation`() {
-        val client: Any = Client.getInstance(ClientConfigurationStub())
+        val client: Any = Client.getInstance(
+            Environment.DEV,
+            UserSessionTokenProviderStub()
+        )
 
-        assertTrue(client is Contract.DataDonation)
+        assertTrue(client is DataDonationSDKPublicAPI.DataDonationClient)
     }
 
     @Test
     fun `Given fetchConsentDocuments is called with a ConsentKey it builds and delegates its Parameter to the Usecase and returns a runnable Flow which emits a List of ConsentDocument`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
-        val config = ClientConfigurationStub()
         val usecase = FetchConsentDocumentsStub()
         val documents = listOf(DummyData.consentDocument)
 
@@ -77,7 +77,6 @@ class ClientTest {
 
         val capturedParameter = Channel<UsecaseContract.FetchConsentDocuments.Parameter>()
 
-        config.whenGetEnvironment = { Environment.DEV }
         usecase.whenExecute = { delegatedParameter ->
             launch {
                 capturedParameter.send(delegatedParameter)
@@ -104,7 +103,7 @@ class ClientTest {
             )
         }
 
-        val client = Client(config, di)
+        val client = Client(di)
 
         // When
         client.fetchConsentDocuments(
@@ -132,18 +131,13 @@ class ClientTest {
     @Test
     fun `Given createUserConsent is called with a ConsentDocumentVersion and a Language it builds and delegates its Parameter to the Usecase and returns a runnable Flow which emits a UserConsent`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
-        val config = ClientConfigurationStub()
         val usecase = CreateUserConsentStub()
         val consent = DummyData.userConsent
 
         val version = 23
         val consentKey = "custom-consent-key"
-        val keyPair = DummyData.keyPair
 
         val capturedParameter = Channel<UsecaseContract.CreateUserConsent.Parameter>()
-
-        config.whenGetEnvironment = { Environment.DEV }
-        config.whenGetDonorKeyPair = { keyPair }
 
         usecase.whenExecute = { delegatedParameter ->
             launch {
@@ -171,7 +165,7 @@ class ClientTest {
             )
         }
 
-        val client = Client(config, di)
+        val client = Client(di)
 
         // When
         client.createUserConsent(
@@ -189,8 +183,7 @@ class ClientTest {
             actual = capturedParameter.receive(),
             expected = CreateUserConsent.Parameter(
                 consentKey = consentKey,
-                version = version,
-                keyPair = keyPair
+                version = version
             )
         )
     }
@@ -198,13 +191,11 @@ class ClientTest {
     @Test
     fun `Given fetchUserConsents is called with a ConsentKey it builds and delegates its Parameter to the Usecase and returns a runnable Flow which emits a List of UserConsent`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
-        val config = ClientConfigurationStub()
         val usecase = FetchUserConsentsStub()
         val consents = listOf(DummyData.userConsent)
 
         val capturedParameter = Channel<UsecaseContract.FetchUserConsents.Parameter>()
 
-        config.whenGetEnvironment = { Environment.DEV }
         usecase.whenExecute = { delegatedParameter ->
             launch {
                 capturedParameter.send(delegatedParameter)
@@ -232,7 +223,7 @@ class ClientTest {
         }
 
         val consentKey = "key"
-        val client = Client(config, di)
+        val client = Client(di)
 
         // When
         client.fetchUserConsents(
@@ -256,13 +247,11 @@ class ClientTest {
     @Test
     fun `Given fetchAllUserConsents is called it builds and delegates its Parameter to the Usecase and returns a runnable Flow which emits a List of UserConsent`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
-        val config = ClientConfigurationStub()
         val usecase = FetchUserConsentsStub()
         val consents = listOf(DummyData.userConsent)
 
         val capturedParameter = Channel<UsecaseContract.FetchUserConsents.Parameter>()
 
-        config.whenGetEnvironment = { Environment.DEV }
         usecase.whenExecute = { delegatedParameter ->
             launch {
                 capturedParameter.send(delegatedParameter)
@@ -289,7 +278,7 @@ class ClientTest {
             )
         }
 
-        val client = Client(config, di)
+        val client = Client(di)
 
         // When
         client.fetchAllUserConsents().ktFlow.collect { result ->
@@ -309,14 +298,11 @@ class ClientTest {
     @Test
     fun `Given revokeUserConsent is called with a ConsentKey it builds and delegates its Parameter to the Usecase and returns a runnable Flow which just runs`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
-        val config = ClientConfigurationStub()
         val usecase = RevokeUserConsentStub()
 
         val consentKey = "custom-consent-key"
 
         val capturedParameter = Channel<UsecaseContract.RevokeUserConsent.Parameter>()
-
-        config.whenGetEnvironment = { Environment.DEV }
 
         usecase.whenExecute = { delegatedParameter ->
             launch {
@@ -344,7 +330,7 @@ class ClientTest {
             )
         }
 
-        val client = Client(config, di)
+        val client = Client(di)
 
         // When
         client.revokeUserConsent(consentKey).ktFlow.collect { result ->

@@ -16,13 +16,9 @@
 
 package care.data4life.datadonation.di
 
-import care.data4life.datadonation.Contract
-import care.data4life.datadonation.core.model.ModelContract.Environment
+import care.data4life.datadonation.DataDonationSDKPublicAPI
 import care.data4life.datadonation.internal.di.resolveRootModule
-import care.data4life.datadonation.internal.provider.CredentialProvider
-import care.data4life.datadonation.internal.provider.ScopeProvider
-import care.data4life.datadonation.internal.provider.UserSessionTokenProvider
-import care.data4life.datadonation.mock.stub.ClientConfigurationStub
+import care.data4life.datadonation.mock.stub.UserSessionTokenProviderStub
 import kotlinx.datetime.Clock
 import org.koin.core.context.stopKoin
 import org.koin.dsl.koinApplication
@@ -31,83 +27,68 @@ import kotlin.test.Test
 import kotlin.test.assertNotNull
 
 class RootKoinTest {
-    private val config = ClientConfigurationStub()
-
     @BeforeTest
     fun setUp() {
         stopKoin()
-        config.clear()
     }
 
     @Test
-    fun `Given resolveRootModule is called with a Configuration it creates a Module, which contains a Configuration`() {
-        // When
-        val koin = koinApplication {
-            modules(resolveRootModule(config))
-        }
-        // Then
-        val instance: Contract.Configuration = koin.koin.get()
-        assertNotNull(instance)
-    }
-
-    @Test
-    fun `Given resolveRootModule is called with a Configuration it creates a Module, which contains a ScopeResolver`() {
-        // When
-        val koin = koinApplication {
-            modules(resolveRootModule(config))
-        }
-        // Then
-        val instance: ScopeProvider = koin.koin.get()
-        assertNotNull(instance)
-    }
-
-    @Test
-    fun `Given resolveRootModule is called with a Configuration it creates a Module, which contains a CredentialProvider`() {
-        // When
-        val koin = koinApplication {
-            modules(resolveRootModule(config))
-        }
-        // Then
-        val instance: CredentialProvider = koin.koin.get()
-        assertNotNull(instance)
-    }
-
-    @Test
-    fun `Given resolveRootModule is called with a Configuration it creates a Module, which contains a UserSessionTokenProvider`() {
-        // When
-        val koin = koinApplication {
-            modules(resolveRootModule(config))
-        }
-        // Then
-        val instance: UserSessionTokenProvider = koin.koin.get()
-        assertNotNull(instance)
-    }
-
-    @Test
-    fun `Given resolveRootModule is called with a Configuration it creates a Module which contains a Environment`() {
+    fun `Given resolveRootModule is called with its appropriate parameter it creates a Module, which contains a Environment`() {
         // Given
-        config.whenGetEnvironment = { Environment.DEV }
+        val env = DataDonationSDKPublicAPI.Environment.DEV
+        val provider = UserSessionTokenProviderStub()
 
         // When
         val koin = koinApplication {
-            modules(resolveRootModule(config))
+            modules(
+                resolveRootModule(
+                    env,
+                    provider
+                )
+            )
         }
         // Then
-        val instance: UserSessionTokenProvider = koin.koin.get()
-        assertNotNull(instance)
+        val builder: DataDonationSDKPublicAPI.Environment = koin.koin.get()
+        assertNotNull(builder)
     }
 
     @Test
-    fun `Given resolveRootModule is called with a Configuration it creates a Module which contains a Clock`() {
+    fun `Given resolveRootModule is called with its appropriate parameter it creates a Module, which contains a Clock`() {
         // Given
-        config.whenGetEnvironment = { Environment.DEV }
+        val env = DataDonationSDKPublicAPI.Environment.DEV
+        val provider = UserSessionTokenProviderStub()
 
         // When
         val koin = koinApplication {
-            modules(resolveRootModule(config))
+            modules(
+                resolveRootModule(
+                    env,
+                    provider
+                )
+            )
         }
         // Then
-        val instance: Clock = koin.koin.get()
-        assertNotNull(instance)
+        val builder: Clock = koin.koin.get()
+        assertNotNull(builder)
+    }
+
+    @Test
+    fun `Given resolveRootModule is called with its appropriate parameter it creates a Module, which contains a UserSessionTokenProvider`() {
+        // Given
+        val env = DataDonationSDKPublicAPI.Environment.DEV
+        val provider = UserSessionTokenProviderStub()
+
+        // When
+        val koin = koinApplication {
+            modules(
+                resolveRootModule(
+                    env,
+                    provider
+                )
+            )
+        }
+        // Then
+        val builder: DataDonationSDKPublicAPI.UserSessionTokenProvider = koin.koin.get()
+        assertNotNull(builder)
     }
 }

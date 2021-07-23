@@ -18,7 +18,6 @@ package care.data4life.datadonation.internal.domain.repository
 
 import care.data4life.datadonation.internal.data.service.ServiceContract
 import care.data4life.datadonation.mock.stub.service.ConsentServiceStub
-import care.data4life.datadonation.mock.stub.service.CredentialServiceStub
 import care.data4life.datadonation.mock.stub.service.UserSessionTokenServiceStub
 import org.koin.core.context.stopKoin
 import org.koin.dsl.koinApplication
@@ -76,25 +75,6 @@ class RepositoryKoinTest {
 
         // Then
         val repo: RepositoryContract.ConsentDocumentRepository = koin.koin.get()
-        assertNotNull(repo)
-    }
-
-    @Test
-    fun `Given resolveRepositoryModule is called it creates a Module, which contains a CredentialsRepository`() {
-        // When
-        val koin = koinApplication {
-            modules(
-                resolveRepositoryModule(),
-                module {
-                    single<ServiceContract.CredentialService> {
-                        CredentialServiceStub()
-                    }
-                }
-            )
-        }
-
-        // Then
-        val repo: RepositoryContract.CredentialsRepository = koin.koin.get()
         assertNotNull(repo)
     }
 }

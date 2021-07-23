@@ -20,12 +20,6 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 interface ModelContract {
-    enum class Environment(val url: String) {
-        DEV("api-phdp-dev.hpsgc.de"),
-        SANDBOX("api-phdp-sandbox.hpsgc.de"),
-        STAGING("api-staging.data4life.care"),
-        PRODUCTION("api.data4life.care")
-    }
 
     @Serializable
     enum class ConsentEvent {

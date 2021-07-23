@@ -32,27 +32,29 @@
 
 package care.data4life.datadonation.internal.di
 
-import care.data4life.datadonation.Contract
-import care.data4life.datadonation.core.model.ModelContract.Environment
+import care.data4life.datadonation.DataDonationSDKPublicAPI
+import care.data4life.datadonation.DataDonationSDKPublicAPI.Environment
 import care.data4life.datadonation.internal.data.service.networking.plugin.resolveKtorPlugins
 import care.data4life.datadonation.internal.data.service.networking.resolveNetworking
 import care.data4life.datadonation.internal.data.service.resolveServiceModule
 import care.data4life.datadonation.internal.domain.repository.resolveRepositoryModule
 import care.data4life.datadonation.internal.domain.usecases.*
-import care.data4life.datadonation.internal.provider.CredentialProvider
-import care.data4life.datadonation.internal.provider.ScopeProvider
-import care.data4life.datadonation.internal.provider.UserSessionTokenProvider
 import kotlinx.datetime.Clock
 import org.koin.core.KoinApplication
 import org.koin.core.module.Module
-import org.koin.dsl.binds
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 
-internal fun initKoin(configuration: Contract.Configuration): KoinApplication {
+internal fun initKoin(
+    environment: Environment,
+    userSession: DataDonationSDKPublicAPI.UserSessionTokenProvider
+): KoinApplication {
     return koinApplication {
         modules(
-            resolveRootModule(configuration),
+            resolveRootModule(
+                environment,
+                userSession
+            ),
             resolveNetworking(),
             resolveKtorPlugins(),
             resolveUsecaseModule(),
@@ -62,19 +64,17 @@ internal fun initKoin(configuration: Contract.Configuration): KoinApplication {
     }
 }
 
-internal fun resolveRootModule(configuration: Contract.Configuration): Module {
+internal fun resolveRootModule(
+    environment: Environment,
+    userSessionTokenProvider: DataDonationSDKPublicAPI.UserSessionTokenProvider
+): Module {
     return module {
-        single {
-            configuration
-        } binds arrayOf(
-            Contract.Configuration::class,
-            ScopeProvider::class,
-            CredentialProvider::class,
-            UserSessionTokenProvider::class
-        )
-
-        single<Environment> { configuration.getEnvironment() }
+        single<Environment> { environment }
 
         single<Clock> { Clock.System }
+
+        single<DataDonationSDKPublicAPI.UserSessionTokenProvider> {
+            userSessionTokenProvider
+        }
     }
 }

@@ -32,7 +32,6 @@
 
 package care.data4life.datadonation.internal.domain.usecases
 
-import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.domain.repository.RepositoryContract
 
@@ -47,7 +46,6 @@ internal class CreateUserConsent(
     }
 
     data class Parameter(
-        override val keyPair: KeyPair?,
         override val consentKey: String,
         override val version: Int
     ) : UsecaseContract.CreateUserConsent.Parameter

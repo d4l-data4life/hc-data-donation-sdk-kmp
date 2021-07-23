@@ -24,13 +24,13 @@ import care.data4life.datadonation.lang.ConsentServiceError
 import care.data4life.datadonation.lang.HttpRuntimeError
 
 internal typealias SessionToken = String
-internal typealias DataDonationKey = String
-internal typealias AnalyticsKey = String
+internal typealias PublicDataDonationCryptoKey = String
+internal typealias PublicAnalyticsCryptoKey = String
 
 internal interface ServiceContract {
     interface CredentialService {
-        fun getDataDonationPublicKey(): DataDonationKey
-        fun getAnalyticsPlatformPublicKey(): AnalyticsKey
+        fun getDataDonationPublicKey(): PublicDataDonationCryptoKey
+        fun getAnalyticsPlatformPublicKey(): PublicAnalyticsCryptoKey
     }
 
     interface UserSessionTokenService {

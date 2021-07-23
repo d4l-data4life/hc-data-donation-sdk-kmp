@@ -42,9 +42,8 @@ import kotlinx.coroutines.flow.flow
 import org.koin.core.KoinApplication
 
 class Client internal constructor(
-    private val configuration: Contract.Configuration,
     koinApplication: KoinApplication
-) : Contract.DataDonation {
+) : DataDonationSDKPublicAPI.DataDonationClient {
     private val createUserContent: UsecaseContract.CreateUserConsent = koinApplication.koin.get()
     private val fetchConsentDocuments: UsecaseContract.FetchConsentDocuments = koinApplication.koin.get()
     private val fetchUserConsents: UsecaseContract.FetchUserConsents = koinApplication.koin.get()
@@ -74,7 +73,6 @@ class Client internal constructor(
     ): D4LSDKFlowContract<UserConsent> {
         val flow = flow {
             val parameter = CreateUserConsent.Parameter(
-                configuration.getDonorKeyPair(), // TODO: Fix this
                 consentKey,
                 consentDocumentVersion
             )
@@ -115,11 +113,17 @@ class Client internal constructor(
         return D4LSDKFlow(flow)
     }
 
-    companion object Factory : Contract.DataDonationFactory {
+    companion object Factory : DataDonationSDKPublicAPI.DataDonationClientFactory {
         override fun getInstance(
-            configuration: Contract.Configuration
-        ): Contract.DataDonation {
-            return Client(configuration, initKoin(configuration))
+            environment: DataDonationSDKPublicAPI.Environment,
+            userSession: DataDonationSDKPublicAPI.UserSessionTokenProvider
+        ): DataDonationSDKPublicAPI.DataDonationClient {
+            return Client(
+                initKoin(
+                    environment,
+                    userSession
+                )
+            )
         }
     }
 }

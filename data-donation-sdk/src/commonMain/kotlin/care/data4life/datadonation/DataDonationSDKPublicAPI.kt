@@ -32,40 +32,26 @@
 
 package care.data4life.datadonation
 
-import care.data4life.datadonation.core.listener.ListenerContract
 import care.data4life.datadonation.core.model.ConsentDocument
-import care.data4life.datadonation.core.model.KeyPair
-import care.data4life.datadonation.core.model.ModelContract.Environment
 import care.data4life.datadonation.core.model.UserConsent
-import care.data4life.datadonation.internal.provider.CredentialProvider
-import care.data4life.datadonation.internal.provider.ScopeProvider
-import care.data4life.datadonation.internal.provider.UserSessionTokenProvider
 import care.data4life.datadonation.wrapper.D4LSDKFlowContract
-import kotlinx.coroutines.CoroutineScope
 
-interface Contract {
-    enum class Service(name: String) {
-        DD("DataDonation"),
-        ALP("AnalyticsPlatform")
+interface DataDonationSDKPublicAPI {
+    enum class Environment(val url: String) {
+        DEV("api-phdp-dev.hpsgc.de"),
+        SANDBOX("api-phdp-sandbox.hpsgc.de"),
+        STAGING("api-staging.data4life.care"),
+        PRODUCTION("api.data4life.care")
     }
 
-    interface Configuration :
-        ScopeProvider,
-        CredentialProvider,
-        UserSessionTokenProvider {
-        override fun getServicePublicKey(service: Service): String
-
-        fun getDonorKeyPair(): KeyPair? // TODO
-
-        override fun getUserSessionToken(tokenListener: ListenerContract.ResultListener<String>)
-
-        fun getEnvironment(): Environment
-
-        override fun getCoroutineScope(): CoroutineScope
+    fun interface UserSessionTokenProvider {
+        fun getUserSessionToken(
+            onSuccess: (sessionToken: String) -> Unit,
+            onError: (error: Exception) -> Unit
+        )
     }
 
-    interface DataDonation {
-        // TODO
+    interface DataDonationClient {
         fun fetchConsentDocuments(
             consentDocumentVersion: Int?,
             language: String?,
@@ -84,7 +70,10 @@ interface Contract {
         fun revokeUserConsent(consentKey: String): D4LSDKFlowContract<Unit>
     }
 
-    interface DataDonationFactory {
-        fun getInstance(configuration: Configuration): DataDonation
+    interface DataDonationClientFactory {
+        fun getInstance(
+            environment: Environment,
+            userSession: UserSessionTokenProvider
+        ): DataDonationClient
     }
 }

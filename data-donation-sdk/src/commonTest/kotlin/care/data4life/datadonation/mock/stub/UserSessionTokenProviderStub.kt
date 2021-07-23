@@ -14,16 +14,23 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.core.listener
+package care.data4life.datadonation.mock.stub
 
-interface ListenerContract {
-    interface Callback {
-        fun onSuccess()
-        fun onError(exception: Exception)
+import care.data4life.datadonation.DataDonationSDKPublicAPI
+import care.data4life.datadonation.mock.MockContract
+import care.data4life.datadonation.mock.MockException
+
+class UserSessionTokenProviderStub : DataDonationSDKPublicAPI.UserSessionTokenProvider, MockContract.Stub {
+    var whenGetUserSessionToken: ((((sessionToken: String) -> Unit), ((error: Exception) -> Unit)) -> Unit)? = null
+
+    override fun getUserSessionToken(
+        onSuccess: (sessionToken: String) -> Unit,
+        onError: (error: Exception) -> Unit
+    ) {
+        whenGetUserSessionToken?.invoke(onSuccess, onError) ?: throw MockException()
     }
 
-    interface ResultListener<T : Any> {
-        fun onSuccess(result: T)
-        fun onError(exception: Exception)
+    override fun clear() {
+        whenGetUserSessionToken = null
     }
 }
