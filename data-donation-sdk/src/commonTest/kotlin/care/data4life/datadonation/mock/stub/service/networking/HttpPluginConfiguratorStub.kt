@@ -16,18 +16,17 @@
 
 package care.data4life.datadonation.mock.stub.service.networking
 
-import care.data4life.datadonation.internal.data.service.networking.plugin.KtorPluginsContract
+import care.data4life.datadonation.internal.data.service.networking.Networking
 import care.data4life.datadonation.mock.MockContract
-import io.ktor.client.features.HttpCallValidator
+import care.data4life.datadonation.mock.MockException
 
-internal class HttpResponseValidatorConfiguratorStub : KtorPluginsContract.HttpResponseValidatorConfigurator, MockContract.Stub {
-    var whenConfigure: ((HttpCallValidator.Config, KtorPluginsContract.HttpResponseValidationConfiguration?) -> Unit)? = null
+internal class HttpPluginConfiguratorStub<FeatureConfiguration : Any, SubConfiguration> :
+    Networking.HttpPluginConfigurator<FeatureConfiguration, SubConfiguration>,
+    MockContract.Stub {
+    var whenConfigure: ((FeatureConfiguration, SubConfiguration) -> Unit)? = null
 
-    override fun configure(
-        pluginConfiguration: HttpCallValidator.Config,
-        subConfiguration: KtorPluginsContract.HttpResponseValidationConfiguration
-    ) {
-        whenConfigure?.invoke(pluginConfiguration, subConfiguration)
+    override fun configure(pluginConfiguration: FeatureConfiguration, subConfiguration: SubConfiguration) {
+        whenConfigure?.invoke(pluginConfiguration, subConfiguration) ?: throw MockException()
     }
 
     override fun clear() {

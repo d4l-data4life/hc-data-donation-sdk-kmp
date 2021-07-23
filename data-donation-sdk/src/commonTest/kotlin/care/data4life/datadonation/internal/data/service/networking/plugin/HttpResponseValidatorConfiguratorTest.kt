@@ -16,9 +16,8 @@
 
 package care.data4life.datadonation.internal.data.service.networking.plugin
 
-import care.data4life.datadonation.internal.data.service.networking.Networking
 import care.data4life.datadonation.mock.fake.defaultResponse
-import care.data4life.datadonation.mock.stub.service.networking.plugin.HttpErrorPropagatorStub
+import care.data4life.datadonation.mock.stub.service.networking.plugin.HttpErrorMapperStub
 import care.data4life.datadonation.mock.stub.service.networking.plugin.HttpSuccessfulResponseValidatorStub
 import care.data4life.sdk.lang.D4LException
 import care.data4life.sdk.util.test.runBlockingTest
@@ -26,7 +25,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
 import io.ktor.client.features.ClientRequestException
-import io.ktor.client.features.HttpResponseValidator
+import io.ktor.client.features.HttpCallValidator
 import io.ktor.client.request.request
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpStatusCode
@@ -40,18 +39,20 @@ class HttpResponseValidatorConfiguratorTest {
     fun `It fulfils HttpResponseValidatorConfigurator`() {
         val configurator: Any = HttpResponseValidatorConfigurator
 
-        assertTrue(configurator is Networking.HttpResponseValidatorConfigurator)
+        assertTrue(configurator is KtorPluginsContract.HttpResponseValidatorConfigurator)
     }
 
     @Test
     fun `Given configure is called with a Pair of Validators, it ignores ResponseValidation if it is null`() = runBlockingTest {
         // Given
         val client = HttpClient(MockEngine) {
-            HttpResponseValidator {
+            install(HttpCallValidator) {
                 HttpResponseValidatorConfigurator.configure(
                     this,
-                    null,
-                    null
+                    KtorPluginsContract.HttpResponseValidationConfiguration(
+                        null,
+                        null
+                    )
                 )
             }
 
@@ -87,12 +88,13 @@ class HttpResponseValidatorConfiguratorTest {
                     defaultResponse(this)
                 }
             }
-
-            HttpResponseValidator {
+            install(HttpCallValidator) {
                 HttpResponseValidatorConfigurator.configure(
                     this,
-                    successfulResponseValidator,
-                    null
+                    KtorPluginsContract.HttpResponseValidationConfiguration(
+                        successfulResponseValidator,
+                        null
+                    )
                 )
             }
         }
@@ -107,11 +109,13 @@ class HttpResponseValidatorConfiguratorTest {
     fun `Given configure is called with a Pair of Validators, it ignores HttpErrorPropagator if it is null`() = runBlockingTest {
         // Given
         val client = HttpClient(MockEngine) {
-            HttpResponseValidator {
+            install(HttpCallValidator) {
                 HttpResponseValidatorConfigurator.configure(
                     this,
-                    null,
-                    null
+                    KtorPluginsContract.HttpResponseValidationConfiguration(
+                        null,
+                        null
+                    )
                 )
             }
 
@@ -134,7 +138,7 @@ class HttpResponseValidatorConfiguratorTest {
     @Test
     fun `Given configure is called  with a Pair of Validators, it configures a HttpErrorPropagator if it is not null`() = runBlockingTest {
         // Given
-        val propagator = HttpErrorPropagatorStub()
+        val propagator = HttpErrorMapperStub()
 
         propagator.whenPropagate = {
             throw D4LException()
@@ -150,11 +154,13 @@ class HttpResponseValidatorConfiguratorTest {
                 }
             }
 
-            HttpResponseValidator {
+            install(HttpCallValidator) {
                 HttpResponseValidatorConfigurator.configure(
                     this,
-                    null,
-                    propagator
+                    KtorPluginsContract.HttpResponseValidationConfiguration(
+                        null,
+                        propagator
+                    )
                 )
             }
         }

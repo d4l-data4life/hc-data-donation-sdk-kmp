@@ -14,20 +14,20 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.mock.stub.service.networking.plugin
+package care.data4life.datadonation.wrapper
 
-import care.data4life.datadonation.internal.data.service.networking.Networking
-import care.data4life.datadonation.mock.MockContract
-import care.data4life.datadonation.mock.MockException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
 
-internal class HttpErrorPropagatorStub : Networking.HttpErrorPropagator, MockContract.Stub {
-    var whenPropagate: ((error: Throwable) -> Unit)? = null
+// TODO Move into util rep
+interface D4LSDKFlowContract<T> {
+    fun subscribe(
+        scope: CoroutineScope,
+        onEach: (item: T) -> Unit,
+        onComplete: () -> Unit,
+        onThrow: (error: Throwable) -> Unit
+    ): Job
 
-    override fun propagate(error: Throwable) {
-        whenPropagate?.invoke(error) ?: throw MockException()
-    }
-
-    override fun clear() {
-        whenPropagate = null
-    }
+    fun asKtFlow(): Flow<T>
 }

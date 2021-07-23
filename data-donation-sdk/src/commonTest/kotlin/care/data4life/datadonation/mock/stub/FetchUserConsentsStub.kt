@@ -14,16 +14,13 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.data.service.networking.plugin
+package care.data4life.datadonation.mock.stub
 
-import io.ktor.client.features.json.JsonFeature
-import io.ktor.client.features.json.serializer.KotlinxSerializer
-import kotlinx.serialization.json.Json
+import care.data4life.datadonation.core.model.UserConsent
+import care.data4life.datadonation.internal.domain.usecases.UsecaseContract.FetchUserConsents
+import care.data4life.datadonation.mock.MockContract
 
-internal object HttpSerializerConfigurator : KtorPluginsContract.HttpSerializerConfigurator {
-    override fun configure(pluginConfiguration: JsonFeature.Config, subConfiguration: KtorPluginsContract.JsonConfigurator) {
-        pluginConfiguration.serializer = KotlinxSerializer(
-            Json { subConfiguration.configure(this) }
-        )
-    }
-}
+class FetchUserConsentsStub :
+    FetchUserConsents,
+    UsecaseStub<FetchUserConsents.Parameter, List<UserConsent>>(),
+    MockContract.Stub

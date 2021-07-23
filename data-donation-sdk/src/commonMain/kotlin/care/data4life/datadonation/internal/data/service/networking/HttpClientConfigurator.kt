@@ -17,12 +17,11 @@
 package care.data4life.datadonation.internal.data.service.networking
 
 import io.ktor.client.HttpClientConfig
-import io.ktor.client.features.HttpResponseValidator
 
 internal object HttpClientConfigurator : Networking.HttpClientConfigurator {
-    private fun installFeatures(
+    override fun configure(
         httpConfig: HttpClientConfig<*>,
-        installers: List<Networking.HttpFeatureInstaller<in Any, in Any?>>?
+        installers: List<Networking.HttpPluginInstaller<in Any, in Any?>>?
     ) {
         if (installers is List<*>) {
             installers.forEach { (plugin, configurator, subConfig) ->
@@ -34,31 +33,5 @@ internal object HttpClientConfigurator : Networking.HttpClientConfigurator {
                 }
             }
         }
-    }
-
-    private fun configureHttpResponseValidation(
-        httpConfig: HttpClientConfig<*>,
-        responseValidator: Networking.HttpResponseValidation?
-    ) {
-        if (responseValidator is Networking.HttpResponseValidation) {
-            val (configurator, successfulResponseValidation, errorPropagation) = responseValidator
-
-            httpConfig.HttpResponseValidator {
-                configurator.configure(
-                    this,
-                    successfulResponseValidation,
-                    errorPropagation
-                )
-            }
-        }
-    }
-
-    override fun configure(
-        httpConfig: HttpClientConfig<*>,
-        installers: List<Networking.HttpFeatureInstaller<in Any, in Any?>>?,
-        responseValidator: Networking.HttpResponseValidation?
-    ) {
-        installFeatures(httpConfig, installers)
-        configureHttpResponseValidation(httpConfig, responseValidator)
     }
 }

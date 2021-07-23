@@ -26,7 +26,7 @@ internal object ConsentErrorHandler : ServiceContract.ConsentService.ConsentErro
         map: Map<HttpStatusCode, ConsentServiceError>
     ): ConsentServiceError {
         return map.getOrElse(error.statusCode) {
-            ConsentServiceError.UnexpectedError(error.statusCode.value)
+            ConsentServiceError.UnexpectedFailure(error.statusCode.value)
         }
     }
 
@@ -34,7 +34,7 @@ internal object ConsentErrorHandler : ServiceContract.ConsentService.ConsentErro
         return mapError(
             error,
             mapOf(
-                HttpStatusCode.InternalServerError to ConsentServiceError.InternalServerError()
+                HttpStatusCode.InternalServerError to ConsentServiceError.InternalServer()
             )
         )
     }
@@ -43,7 +43,7 @@ internal object ConsentErrorHandler : ServiceContract.ConsentService.ConsentErro
         return mapError(
             error,
             mapOf(
-                HttpStatusCode.InternalServerError to ConsentServiceError.InternalServerError()
+                HttpStatusCode.InternalServerError to ConsentServiceError.InternalServer()
             )
         )
     }
@@ -52,10 +52,10 @@ internal object ConsentErrorHandler : ServiceContract.ConsentService.ConsentErro
         return mapError(
             error,
             mapOf(
-                HttpStatusCode.BadRequest to ConsentServiceError.BadRequestError(),
-                HttpStatusCode.NotFound to ConsentServiceError.NotFoundError(),
-                HttpStatusCode.UnprocessableEntity to ConsentServiceError.UnprocessableEntityError(),
-                HttpStatusCode.InternalServerError to ConsentServiceError.InternalServerError()
+                HttpStatusCode.BadRequest to ConsentServiceError.BadRequest(),
+                HttpStatusCode.NotFound to ConsentServiceError.NotFound(),
+                HttpStatusCode.UnprocessableEntity to ConsentServiceError.UnprocessableEntity(),
+                HttpStatusCode.InternalServerError to ConsentServiceError.InternalServer()
             )
         )
     }
@@ -66,13 +66,13 @@ internal object ConsentErrorHandler : ServiceContract.ConsentService.ConsentErro
         return mapError(
             error,
             mapOf(
-                HttpStatusCode.Unauthorized to ConsentServiceError.UnauthorizedError(),
-                HttpStatusCode.Forbidden to ConsentServiceError.ForbiddenError(),
-                HttpStatusCode.NotFound to ConsentServiceError.NotFoundError(),
-                HttpStatusCode.Conflict to ConsentServiceError.DocumentConflictError(),
-                HttpStatusCode.UnprocessableEntity to ConsentServiceError.UnprocessableEntityError(),
-                HttpStatusCode.TooManyRequests to ConsentServiceError.TooManyRequestsError(),
-                HttpStatusCode.InternalServerError to ConsentServiceError.InternalServerError()
+                HttpStatusCode.Unauthorized to ConsentServiceError.Unauthorized(),
+                HttpStatusCode.Forbidden to ConsentServiceError.Forbidden(),
+                HttpStatusCode.NotFound to ConsentServiceError.NotFound(),
+                HttpStatusCode.Conflict to ConsentServiceError.DocumentConflict(),
+                HttpStatusCode.UnprocessableEntity to ConsentServiceError.UnprocessableEntity(),
+                HttpStatusCode.TooManyRequests to ConsentServiceError.TooManyRequests(),
+                HttpStatusCode.InternalServerError to ConsentServiceError.InternalServer()
             )
         )
     }
@@ -81,10 +81,10 @@ internal object ConsentErrorHandler : ServiceContract.ConsentService.ConsentErro
         return mapError(
             error,
             mapOf(
-                HttpStatusCode.Unauthorized to ConsentServiceError.UnauthorizedError(),
-                HttpStatusCode.Conflict to ConsentServiceError.DocumentConflictError(),
-                HttpStatusCode.UnprocessableEntity to ConsentServiceError.UnprocessableEntityError(),
-                HttpStatusCode.InternalServerError to ConsentServiceError.InternalServerError()
+                HttpStatusCode.Unauthorized to ConsentServiceError.Unauthorized(),
+                HttpStatusCode.Conflict to ConsentServiceError.DocumentConflict(),
+                HttpStatusCode.UnprocessableEntity to ConsentServiceError.UnprocessableEntity(),
+                HttpStatusCode.InternalServerError to ConsentServiceError.InternalServer()
             )
         )
     }
@@ -93,12 +93,12 @@ internal object ConsentErrorHandler : ServiceContract.ConsentService.ConsentErro
         return mapError(
             error,
             mapOf(
-                HttpStatusCode.Unauthorized to ConsentServiceError.UnauthorizedError(),
-                HttpStatusCode.Forbidden to ConsentServiceError.ForbiddenError(),
-                HttpStatusCode.NotFound to ConsentServiceError.NotFoundError(),
-                HttpStatusCode.Conflict to ConsentServiceError.DocumentConflictError(),
-                HttpStatusCode.UnprocessableEntity to ConsentServiceError.UnprocessableEntityError(),
-                HttpStatusCode.InternalServerError to ConsentServiceError.InternalServerError(),
+                HttpStatusCode.Unauthorized to ConsentServiceError.Unauthorized(),
+                HttpStatusCode.Forbidden to ConsentServiceError.Forbidden(),
+                HttpStatusCode.NotFound to ConsentServiceError.NotFound(),
+                HttpStatusCode.Conflict to ConsentServiceError.DocumentConflict(),
+                HttpStatusCode.UnprocessableEntity to ConsentServiceError.UnprocessableEntity(),
+                HttpStatusCode.InternalServerError to ConsentServiceError.InternalServer(),
             )
         )
     }

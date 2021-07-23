@@ -161,11 +161,11 @@ internal class RequestBuilder private constructor(
         )
     }
 
-    class Template(
+    class Factory(
         private val environment: Environment,
         private val client: HttpClient,
         private val port: Int? = null
-    ) : Networking.RequestBuilderTemplate {
+    ) : Networking.RequestBuilderFactory {
         override fun create(): Networking.RequestBuilder {
             return RequestBuilder(
                 client,

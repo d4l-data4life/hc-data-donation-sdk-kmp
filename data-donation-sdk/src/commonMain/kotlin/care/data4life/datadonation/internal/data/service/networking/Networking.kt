@@ -16,11 +16,8 @@
 
 package care.data4life.datadonation.internal.data.service.networking
 
-import care.data4life.sdk.lang.D4LRuntimeException
 import io.ktor.client.HttpClientConfig
-import io.ktor.client.features.HttpCallValidator
 import io.ktor.client.features.HttpClientFeature
-import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.HttpStatement
 
 internal typealias Header = Map<String, String>
@@ -28,46 +25,22 @@ internal typealias Parameter = Map<String, Any?>
 internal typealias AccessToken = String
 internal typealias Path = List<String>
 
+// TODO Move into util rep
 internal interface Networking {
-    fun interface HttpFeatureConfigurator<FeatureConfiguration : Any, SubConfiguration> {
-        fun configure(pluginConfig: FeatureConfiguration, subConfiguration: SubConfiguration)
+    fun interface HttpPluginConfigurator<PluginConfiguration : Any, SubConfiguration> {
+        fun configure(pluginConfiguration: PluginConfiguration, subConfiguration: SubConfiguration)
     }
 
-    fun interface HttpSuccessfulResponseValidator {
-        @Throws(D4LRuntimeException::class)
-        fun validate(response: HttpResponse)
-    }
-
-    fun interface HttpErrorPropagator {
-        @Throws(D4LRuntimeException::class)
-        fun propagate(error: Throwable)
-    }
-
-    fun interface HttpResponseValidatorConfigurator {
-        fun configure(
-            httpResponseConfiguration: HttpCallValidator.Config,
-            successfulResponseValidation: HttpSuccessfulResponseValidator?,
-            errorPropagation: HttpErrorPropagator?
-        )
-    }
-
-    data class HttpFeatureInstaller<FeatureConfiguration : Any, SubConfiguration>(
+    data class HttpPluginInstaller<PluginConfiguration : Any, SubConfiguration>(
         val feature: HttpClientFeature<*, *>,
-        val featureConfigurator: HttpFeatureConfigurator<FeatureConfiguration, SubConfiguration>,
+        val pluginConfigurator: HttpPluginConfigurator<PluginConfiguration, SubConfiguration>,
         val subConfiguration: SubConfiguration
-    )
-
-    data class HttpResponseValidation(
-        val validationConfigurator: HttpResponseValidatorConfigurator,
-        val successfulResponseValidation: HttpSuccessfulResponseValidator? = null,
-        val errorPropagation: HttpErrorPropagator? = null
     )
 
     interface HttpClientConfigurator {
         fun configure(
             httpConfig: HttpClientConfig<*>,
-            installers: List<HttpFeatureInstaller<in Any, in Any?>>? = null,
-            responseValidator: HttpResponseValidation? = null
+            installers: List<HttpPluginInstaller<in Any, in Any?>>? = null
         )
     }
 
@@ -96,7 +69,7 @@ internal interface Networking {
         }
     }
 
-    interface RequestBuilderTemplate {
+    interface RequestBuilderFactory {
         fun create(): RequestBuilder
     }
 }

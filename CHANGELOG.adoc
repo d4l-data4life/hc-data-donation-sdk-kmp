@@ -37,10 +37,14 @@ See link:{link-repository}/compare/v0.0.1...main[changeset]
 === Changed
 
 * The SDK client got a factory as companion. A direct access to the constructor is prohibit.
+* Client methods do not use Callbacks or ResultListener, they expose Kotlin Flows through a wrapper.
 
 === Deprecated
 
 === Removed
+
+* Client#registerDonor and Client#donateResources
+* Callbacks and ResultListener in the PublicAPI
 
 === Fixed
 

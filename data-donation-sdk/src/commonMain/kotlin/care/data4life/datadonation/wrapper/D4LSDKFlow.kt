@@ -14,13 +14,21 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.mock.stub
+package care.data4life.datadonation.wrapper
 
-import care.data4life.datadonation.core.model.UserConsent
-import care.data4life.datadonation.internal.domain.usecases.UsecaseContract.FetchUserConsents
-import care.data4life.datadonation.mock.MockContract
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
 
-class FetchUserConsentStub :
-    FetchUserConsents,
-    UsecaseStub<FetchUserConsents.Parameter, List<UserConsent>>(),
-    MockContract.Stub
+expect class D4LSDKFlow<T>(
+    internalFlow: Flow<T>
+) : D4LSDKFlowContract<T> {
+    override fun subscribe(
+        scope: CoroutineScope,
+        onEach: (item: T) -> Unit,
+        onComplete: () -> Unit,
+        onThrow: (error: Throwable) -> Unit
+    ): Job
+
+    override fun asKtFlow(): Flow<T>
+}

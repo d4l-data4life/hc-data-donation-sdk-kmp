@@ -34,7 +34,7 @@ package care.data4life.datadonation
 
 import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.UserConsent
-import kotlinx.coroutines.flow.Flow
+import care.data4life.datadonation.wrapper.D4LSDKFlowContract
 
 interface Contract {
     enum class Environment(val url: String) {
@@ -58,18 +58,18 @@ interface Contract {
             consentDocumentVersion: Int?,
             language: String?,
             consentKey: String
-        ): Flow<List<ConsentDocument>>
+        ): D4LSDKFlowContract<List<ConsentDocument>>
 
         fun createUserConsent(
             consentKey: String,
             consentDocumentVersion: Int
-        ): Flow<UserConsent>
+        ): D4LSDKFlowContract<UserConsent>
 
-        fun fetchUserConsents(consentKey: String): Flow<List<UserConsent>>
+        fun fetchUserConsents(consentKey: String): D4LSDKFlowContract<List<UserConsent>>
 
-        fun fetchAllUserConsents(): Flow<List<UserConsent>>
+        fun fetchAllUserConsents(): D4LSDKFlowContract<List<UserConsent>>
 
-        fun revokeUserConsent(consentKey: String): Flow<Unit>
+        fun revokeUserConsent(consentKey: String): D4LSDKFlowContract<Unit>
     }
 
     interface DataDonationFactory {

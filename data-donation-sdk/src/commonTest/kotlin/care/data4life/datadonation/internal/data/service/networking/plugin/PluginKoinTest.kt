@@ -18,13 +18,12 @@ package care.data4life.datadonation.internal.data.service.networking.plugin
 
 import care.data4life.datadonation.internal.data.service.networking.Networking
 import care.data4life.sdk.log.Log
+import io.ktor.client.features.HttpCallValidator
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.logging.Logging
 import org.koin.dsl.koinApplication
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertSame
 
 class PluginKoinTest {
     @Test
@@ -36,16 +35,16 @@ class PluginKoinTest {
             )
         }
 
-        val configuration = koin.koin.get<List<Networking.HttpFeatureInstaller<in Any, in Any?>>>()
+        val configuration = koin.koin.get<List<Networking.HttpPluginInstaller<in Any, in Any?>>>()
 
         // Then
         assertEquals(
             actual = configuration.size,
-            expected = 2
+            expected = 3
         )
         assertEquals<Any>(
             actual = configuration[0],
-            expected = Networking.HttpFeatureInstaller(
+            expected = Networking.HttpPluginInstaller(
                 JsonFeature,
                 HttpSerializerConfigurator,
                 JsonConfigurator
@@ -53,39 +52,22 @@ class PluginKoinTest {
         )
         assertEquals<Any>(
             actual = configuration[1],
-            expected = Networking.HttpFeatureInstaller(
+            expected = Networking.HttpPluginInstaller(
                 Logging,
                 HttpLoggingConfigurator,
                 Log.logger
             )
         )
-    }
-
-    @Test
-    fun `Given resolveServiceModule is called it creates a Module, which contains the HTTPClient validator configuration`() {
-        // When
-        val koin = koinApplication {
-            modules(
-                resolveKtorPlugins(),
+        assertEquals<Any>(
+            actual = configuration[2],
+            expected = Networking.HttpPluginInstaller(
+                HttpCallValidator,
+                HttpResponseValidatorConfigurator,
+                KtorPluginsContract.HttpResponseValidationConfiguration(
+                    HttpSuccessfulResponseValidator,
+                    HttpErrorMapper
+                )
             )
-        }
-        // Then
-        val config: Networking.HttpResponseValidation = koin.koin.get()
-        assertNotNull(config)
-
-        val (responseValidator, successfulResponses, errorPropagator) = config
-
-        assertSame(
-            actual = responseValidator,
-            expected = HttpResponseValidatorConfigurator
-        )
-        assertSame(
-            actual = successfulResponses,
-            expected = HttpSuccessfulResponseValidator
-        )
-        assertSame(
-            actual = errorPropagator,
-            expected = HttpErrorPropagator
         )
     }
 }

@@ -16,12 +16,12 @@
 
 package care.data4life.datadonation.mock.stub.service.networking.plugin
 
-import care.data4life.datadonation.internal.data.service.networking.Networking
+import care.data4life.datadonation.internal.data.service.networking.plugin.KtorPluginsContract
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 import io.ktor.client.statement.HttpResponse
 
-internal class HttpSuccessfulResponseValidatorStub : Networking.HttpSuccessfulResponseValidator, MockContract.Stub {
+internal class HttpSuccessfulResponseValidatorStub : KtorPluginsContract.HttpSuccessfulResponseValidator, MockContract.Stub {
     var whenValidate: ((response: HttpResponse) -> Unit)? = null
 
     override fun validate(response: HttpResponse) {

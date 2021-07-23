@@ -86,7 +86,7 @@ internal class RequestBuilderSpy private constructor(
         ) ?: throw MockException()
     }
 
-    class Template : Networking.RequestBuilderTemplate, MockContract.Spy {
+    class Factory : Networking.RequestBuilderFactory, MockContract.Spy {
         var onPrepare: ((Networking.Method, Path) -> HttpStatement)? = null
 
         private var instance: RequestBuilderSpy? = null

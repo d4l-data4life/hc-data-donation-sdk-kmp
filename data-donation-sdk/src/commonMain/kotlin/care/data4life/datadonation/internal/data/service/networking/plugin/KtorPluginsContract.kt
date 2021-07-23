@@ -17,8 +17,11 @@
 package care.data4life.datadonation.internal.data.service.networking.plugin
 
 import care.data4life.datadonation.internal.data.service.networking.Networking
+import care.data4life.sdk.lang.D4LRuntimeException
+import io.ktor.client.features.HttpCallValidator
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.logging.Logging
+import io.ktor.client.statement.HttpResponse
 import kotlinx.serialization.json.JsonBuilder
 
 internal interface KtorPluginsContract {
@@ -31,9 +34,25 @@ internal interface KtorPluginsContract {
     }
 
     fun interface JsonConfigurator {
-        fun configure(jsonBuild: JsonBuilder): JsonBuilder
+        fun configure(jsonBuilder: JsonBuilder): JsonBuilder
     }
 
-    fun interface HttpSerializerConfigurator : Networking.HttpFeatureConfigurator<JsonFeature.Config, JsonConfigurator>
-    fun interface HttpLoggingConfigurator : Networking.HttpFeatureConfigurator<Logging.Config, care.data4life.sdk.log.Logger>
+    fun interface HttpSuccessfulResponseValidator {
+        @Throws(D4LRuntimeException::class)
+        fun validate(response: HttpResponse)
+    }
+
+    fun interface HttpErrorMapper {
+        @Throws(D4LRuntimeException::class)
+        fun mapAndThrow(error: Throwable)
+    }
+
+    data class HttpResponseValidationConfiguration(
+        val successfulResponseValidator: HttpSuccessfulResponseValidator? = null,
+        val errorMapper: HttpErrorMapper? = null
+    )
+
+    fun interface HttpSerializerConfigurator : Networking.HttpPluginConfigurator<JsonFeature.Config, JsonConfigurator>
+    fun interface HttpLoggingConfigurator : Networking.HttpPluginConfigurator<Logging.Config, care.data4life.sdk.log.Logger>
+    fun interface HttpResponseValidatorConfigurator : Networking.HttpPluginConfigurator<HttpCallValidator.Config, HttpResponseValidationConfiguration>
 }
