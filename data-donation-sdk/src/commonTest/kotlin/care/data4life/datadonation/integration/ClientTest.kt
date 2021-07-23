@@ -34,7 +34,6 @@ package care.data4life.datadonation.integration
 
 import care.data4life.datadonation.Client
 import care.data4life.datadonation.Contract
-import care.data4life.datadonation.core.listener.ListenerContract.Callback
 import care.data4life.datadonation.core.listener.ListenerContract.ResultListener
 import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.ModelContract.Environment
@@ -50,7 +49,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 import org.koin.core.context.stopKoin
 import org.koin.dsl.koinApplication
 import kotlin.test.BeforeTest
@@ -98,7 +96,7 @@ class ClientTest {
             version,
             language,
             consentKey
-        ).collect { result ->
+        ).asKtFlow().collect { result ->
             // Then
             assertEquals(
                 actual = result,
@@ -138,12 +136,12 @@ class ClientTest {
             version,
             language,
             consentKey,
-        ).collect { consentDocuments ->
+        ).asKtFlow().collect { consentDocuments ->
             val consentDoc = consentDocuments.first()
             client.createUserConsent(
                 consentDoc.key,
                 consentDoc.version
-            ).collect { result ->
+            ).asKtFlow().collect { result ->
                 // Then
                 assertSame(
                     actual = result,
@@ -178,7 +176,7 @@ class ClientTest {
         val client = Client(config, koin)
 
         // When
-        client.fetchUserConsents(consentKey).collect { result ->
+        client.fetchUserConsents(consentKey).asKtFlow().collect { result ->
             // Then
             assertEquals(
                 actual = result,
@@ -211,19 +209,9 @@ class ClientTest {
 
         val client = Client(config, koin)
         val capturedResult = Channel<Boolean>()
-        val callback = object : Callback {
-            override fun onSuccess() {
-                launch {
-                    capturedResult.send(true)
-                }
-            }
-
-            override fun onError(exception: Exception) = throw exception
-        }
 
         // When
-        client.revokeUserConsent(language).collect { result ->
-        }
+        client.revokeUserConsent(language).asKtFlow().collect {}
         val result = capturedResult.receive()
 
         // Then

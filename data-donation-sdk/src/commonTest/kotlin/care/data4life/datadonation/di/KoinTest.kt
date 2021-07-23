@@ -41,7 +41,7 @@ class KoinTest {
         // When
         val app = initKoin(config)
         // Then
-        val usecase: UsecaseContract.CreateUserConsent by app.koin.inject()
+        val usecase: UsecaseContract.CreateUserConsent = app.koin.get()
         assertNotNull(usecase)
     }
 
@@ -52,7 +52,7 @@ class KoinTest {
         // When
         val app = initKoin(config)
         // Then
-        val usecase: UsecaseContract.FetchConsentDocuments by app.koin.inject()
+        val usecase: UsecaseContract.FetchConsentDocuments = app.koin.get()
         assertNotNull(usecase)
     }
 
@@ -63,7 +63,7 @@ class KoinTest {
         // When
         val app = initKoin(config)
         // Then
-        val usecase: UsecaseContract.FetchUserConsents by app.koin.inject()
+        val usecase: UsecaseContract.FetchUserConsents = app.koin.get()
         assertNotNull(usecase)
     }
 
@@ -74,7 +74,7 @@ class KoinTest {
         // When
         val app = initKoin(config)
         // Then
-        val usecase: UsecaseContract.RevokeUserConsent by app.koin.inject()
+        val usecase: UsecaseContract.RevokeUserConsent = app.koin.get()
         assertNotNull(usecase)
     }
 }
