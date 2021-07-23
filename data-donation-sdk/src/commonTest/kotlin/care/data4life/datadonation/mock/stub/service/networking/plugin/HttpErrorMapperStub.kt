@@ -16,14 +16,14 @@
 
 package care.data4life.datadonation.mock.stub.service.networking.plugin
 
-import care.data4life.datadonation.internal.data.service.networking.Networking
+import care.data4life.datadonation.internal.data.service.networking.plugin.KtorPluginsContract
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 
-internal class HttpErrorPropagatorStub : Networking.HttpErrorPropagator, MockContract.Stub {
+internal class HttpErrorMapperStub : KtorPluginsContract.HttpErrorMapper, MockContract.Stub {
     var whenPropagate: ((error: Throwable) -> Unit)? = null
 
-    override fun propagate(error: Throwable) {
+    override fun mapAndThrow(error: Throwable) {
         whenPropagate?.invoke(error) ?: throw MockException()
     }
 

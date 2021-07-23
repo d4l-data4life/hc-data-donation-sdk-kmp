@@ -42,6 +42,8 @@ See link:{link-repository}/compare/v0.0.1...main[changeset]
 
 === Removed
 
+* Client#registerDonor and Client#donateResources
+
 === Fixed
 
 * iOS encryption NSData was not able to convert to ByteArray.

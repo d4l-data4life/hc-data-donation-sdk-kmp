@@ -16,7 +16,6 @@
 
 package care.data4life.datadonation.internal.data.service.networking.plugin
 
-import care.data4life.datadonation.internal.data.service.networking.Networking
 import care.data4life.datadonation.lang.HttpRuntimeError
 import care.data4life.datadonation.mock.fake.defaultResponse
 import care.data4life.sdk.util.test.runBlockingTest
@@ -38,7 +37,7 @@ class HttpSuccessfulResponseValidatorTest {
     fun `It fulfils HttpSuccessfulResponseValidator`() {
         val validator: Any = HttpSuccessfulResponseValidator
 
-        assertTrue(validator is Networking.HttpSuccessfulResponseValidator)
+        assertTrue(validator is KtorPluginsContract.HttpSuccessfulResponseValidator)
     }
 
     @Test

@@ -61,10 +61,10 @@ class RequestBuilderTest {
         val client = createDefaultMockClient()
 
         // When
-        val template: Any = RequestBuilder.Template(env, client)
+        val template: Any = RequestBuilder.Factory(env, client)
 
         // Then
-        assertTrue(template is Networking.RequestBuilderTemplate)
+        assertTrue(template is Networking.RequestBuilderFactory)
     }
 
     @Test
@@ -74,7 +74,7 @@ class RequestBuilderTest {
         val client = createDefaultMockClient()
 
         // When
-        val builder: Any = RequestBuilder.Template(env, client).create()
+        val builder: Any = RequestBuilder.Factory(env, client).create()
 
         // Then
         assertTrue(builder is Networking.RequestBuilder)
@@ -93,7 +93,7 @@ class RequestBuilderTest {
         }
 
         // When
-        val builder = RequestBuilder.Template(env, client).create()
+        val builder = RequestBuilder.Factory(env, client).create()
         builder.prepare().receive()
     }
 
@@ -110,7 +110,7 @@ class RequestBuilderTest {
         }
 
         // When
-        val builder = RequestBuilder.Template(env, client).create()
+        val builder = RequestBuilder.Factory(env, client).create()
         builder.prepare().receive()
     }
 
@@ -127,7 +127,7 @@ class RequestBuilderTest {
         }
 
         // When
-        val builder = RequestBuilder.Template(env, client).create()
+        val builder = RequestBuilder.Factory(env, client).create()
         builder.prepare().receive()
     }
 
@@ -146,7 +146,7 @@ class RequestBuilderTest {
         }
 
         // When
-        val builder = RequestBuilder.Template(env, client).create()
+        val builder = RequestBuilder.Factory(env, client).create()
         builder.prepare(path = path)
     }
 
@@ -163,7 +163,7 @@ class RequestBuilderTest {
         }
 
         // When
-        val builder = RequestBuilder.Template(env, client).create()
+        val builder = RequestBuilder.Factory(env, client).create()
         builder.prepare().receive()
     }
 
@@ -180,7 +180,7 @@ class RequestBuilderTest {
         }
 
         // When
-        val builder = RequestBuilder.Template(env, client).create()
+        val builder = RequestBuilder.Factory(env, client).create()
         builder.prepare().receive()
     }
 
@@ -199,7 +199,7 @@ class RequestBuilderTest {
         }
 
         // When
-        val builder = RequestBuilder.Template(env, client, port).create()
+        val builder = RequestBuilder.Factory(env, client, port).create()
         builder.prepare().receive()
     }
 
@@ -219,7 +219,7 @@ class RequestBuilderTest {
         }
 
         // When
-        val builder = RequestBuilder.Template(env, client).create()
+        val builder = RequestBuilder.Factory(env, client).create()
         builder.prepare().receive()
     }
 
@@ -234,7 +234,7 @@ class RequestBuilderTest {
         val env = Environment.DEV
         val client = createMockClientWithAssertion { request ->
             // Then
-            assertEquals(
+            assertEquals<Any>(
                 actual = request.headers.toMap(),
                 expected = mapOf(
                     "Accept-Charset" to listOf("UTF-8"),
@@ -246,7 +246,7 @@ class RequestBuilderTest {
         }
 
         // When
-        val builder = RequestBuilder.Template(env, client).create()
+        val builder = RequestBuilder.Factory(env, client).create()
         builder.setHeaders(headers).prepare().receive()
     }
 
@@ -263,7 +263,7 @@ class RequestBuilderTest {
         }
 
         // When
-        val builder = RequestBuilder.Template(env, client).create()
+        val builder = RequestBuilder.Factory(env, client).create()
         builder.prepare().receive()
     }
 
@@ -278,7 +278,7 @@ class RequestBuilderTest {
         val env = Environment.DEV
         val client = createMockClientWithAssertion { request ->
             // Then
-            assertEquals(
+            assertEquals<Any>(
                 actual = request.url.parameters.toMap(),
                 expected = mapOf(
                     "PARAM" to listOf(parameter["PARAM"]),
@@ -288,7 +288,7 @@ class RequestBuilderTest {
         }
 
         // When
-        val builder = RequestBuilder.Template(env, client).create()
+        val builder = RequestBuilder.Factory(env, client).create()
         builder.setParameter(parameter).prepare().receive()
     }
 
@@ -302,7 +302,7 @@ class RequestBuilderTest {
         }
 
         // When
-        val builder = RequestBuilder.Template(env, client).create()
+        val builder = RequestBuilder.Factory(env, client).create()
         builder.prepare().receive()
     }
 
@@ -326,7 +326,7 @@ class RequestBuilderTest {
         }
 
         // When
-        val builder = RequestBuilder.Template(env, client).create()
+        val builder = RequestBuilder.Factory(env, client).create()
         builder.setAccessToken(token).prepare().receive()
     }
 
@@ -346,7 +346,7 @@ class RequestBuilderTest {
         }
 
         // When
-        val builder = RequestBuilder.Template(env, client).create()
+        val builder = RequestBuilder.Factory(env, client).create()
         builder.prepare().receive()
     }
 
@@ -383,7 +383,7 @@ class RequestBuilderTest {
         }
 
         // When
-        val builder = RequestBuilder.Template(env, client).create()
+        val builder = RequestBuilder.Factory(env, client).create()
         builder.useJsonContentType().prepare().receive()
     }
 
@@ -401,7 +401,7 @@ class RequestBuilderTest {
         }
 
         // When
-        val builder = RequestBuilder.Template(env, client).create()
+        val builder = RequestBuilder.Factory(env, client).create()
         builder.prepare().receive()
     }
 
@@ -413,7 +413,7 @@ class RequestBuilderTest {
 
         val error = assertFailsWith<CoreRuntimeError.RequestValidationFailure> {
             // When
-            val builder = RequestBuilder.Template(env, client).create()
+            val builder = RequestBuilder.Factory(env, client).create()
             builder.setBody("Wups").prepare(Networking.Method.GET)
         }
 
@@ -433,7 +433,7 @@ class RequestBuilderTest {
         // When
         val error = assertFailsWith<CoreRuntimeError.RequestValidationFailure> {
             // When
-            val builder = RequestBuilder.Template(env, client).create()
+            val builder = RequestBuilder.Factory(env, client).create()
             builder.prepare(Networking.Method.POST)
         }
 
@@ -452,7 +452,7 @@ class RequestBuilderTest {
 
         val error = assertFailsWith<CoreRuntimeError.RequestValidationFailure> {
             // When
-            val builder = RequestBuilder.Template(env, client).create()
+            val builder = RequestBuilder.Factory(env, client).create()
             builder.prepare(Networking.Method.PUT)
         }
 
@@ -471,7 +471,7 @@ class RequestBuilderTest {
 
         val error = assertFailsWith<CoreRuntimeError.RequestValidationFailure> {
             // When
-            val builder = RequestBuilder.Template(env, client).create()
+            val builder = RequestBuilder.Factory(env, client).create()
             builder.prepare(Networking.Method.DELETE)
         }
 
@@ -497,7 +497,7 @@ class RequestBuilderTest {
         }
 
         // When
-        val builder = RequestBuilder.Template(env, client).create()
+        val builder = RequestBuilder.Factory(env, client).create()
         builder.setBody(payload).prepare(Networking.Method.POST)
     }
 
@@ -522,7 +522,7 @@ class RequestBuilderTest {
         }
 
         // When
-        val builder = RequestBuilder.Template(env, client).create()
+        val builder = RequestBuilder.Factory(env, client).create()
         builder.setBody(payload).prepare(Networking.Method.POST)
     }
 
@@ -541,7 +541,7 @@ class RequestBuilderTest {
         }
 
         // When
-        val builder = RequestBuilder.Template(env, client).create()
+        val builder = RequestBuilder.Factory(env, client).create()
         builder.setBody(payload).prepare(Networking.Method.PUT)
     }
 
@@ -567,7 +567,7 @@ class RequestBuilderTest {
         }
 
         // When
-        val builder = RequestBuilder.Template(env, client).create()
+        val builder = RequestBuilder.Factory(env, client).create()
         builder.setBody(payload).prepare(Networking.Method.PUT)
     }
 
@@ -586,7 +586,7 @@ class RequestBuilderTest {
         }
 
         // When
-        val builder = RequestBuilder.Template(env, client).create()
+        val builder = RequestBuilder.Factory(env, client).create()
         builder.setBody(payload).prepare(Networking.Method.DELETE)
     }
 
@@ -612,7 +612,7 @@ class RequestBuilderTest {
         }
 
         // When
-        val builder = RequestBuilder.Template(env, client).create()
+        val builder = RequestBuilder.Factory(env, client).create()
         builder.setBody(payload).prepare(Networking.Method.DELETE)
     }
 }

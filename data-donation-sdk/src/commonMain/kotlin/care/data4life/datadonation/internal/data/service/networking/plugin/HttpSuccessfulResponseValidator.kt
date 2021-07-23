@@ -16,14 +16,13 @@
 
 package care.data4life.datadonation.internal.data.service.networking.plugin
 
-import care.data4life.datadonation.internal.data.service.networking.Networking
 import care.data4life.datadonation.lang.HttpRuntimeError
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.request
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 
-internal object HttpSuccessfulResponseValidator : Networking.HttpSuccessfulResponseValidator {
+internal object HttpSuccessfulResponseValidator : KtorPluginsContract.HttpSuccessfulResponseValidator {
     private fun validateNonDelete(response: HttpResponse) {
         if (response.status != HttpStatusCode.OK) {
             throw HttpRuntimeError(response.status)

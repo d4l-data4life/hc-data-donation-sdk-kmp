@@ -14,22 +14,22 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.data.service.networking.plugin
+package care.data4life.datadonation.mock.stub.service.networking
 
 import care.data4life.datadonation.internal.data.service.networking.Networking
-import care.data4life.datadonation.lang.HttpRuntimeError
-import io.ktor.client.features.ResponseException
+import care.data4life.datadonation.mock.MockContract
+import care.data4life.datadonation.mock.MockException
 
-internal object HttpErrorPropagator : Networking.HttpErrorPropagator {
-    private fun wrapError(error: Throwable): Throwable {
-        return if (error is ResponseException) {
-            HttpRuntimeError(error.response.status)
-        } else {
-            error
-        }
+internal class HttpPluginConfiguratorStub<FeatureConfiguration : Any, SubConfiguration> :
+    Networking.HttpPluginConfigurator<FeatureConfiguration, SubConfiguration>,
+    MockContract.Stub {
+    var whenConfigure: ((FeatureConfiguration, SubConfiguration) -> Unit)? = null
+
+    override fun configure(pluginConfiguration: FeatureConfiguration, subConfiguration: SubConfiguration) {
+        whenConfigure?.invoke(pluginConfiguration, subConfiguration) ?: throw MockException()
     }
 
-    override fun propagate(error: Throwable) {
-        throw wrapError(error)
+    override fun clear() {
+        whenConfigure = null
     }
 }
