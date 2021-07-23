@@ -66,7 +66,7 @@ internal fun initKoin(
 
 internal fun resolveRootModule(
     environment: Environment,
-    userSession: DataDonationSDKPublicAPI.UserSessionTokenProvider
+    userSessionTokenProvider: DataDonationSDKPublicAPI.UserSessionTokenProvider
 ): Module {
     return module {
         single<Environment> { environment }
@@ -74,7 +74,7 @@ internal fun resolveRootModule(
         single<Clock> { Clock.System }
 
         single<DataDonationSDKPublicAPI.UserSessionTokenProvider> {
-            userSession
+            userSessionTokenProvider
         }
     }
 }
