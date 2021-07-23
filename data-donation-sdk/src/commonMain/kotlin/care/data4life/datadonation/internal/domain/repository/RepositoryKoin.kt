@@ -25,24 +25,12 @@ internal fun resolveRepositoryModule(): Module {
             UserConsentRepository(get(), get())
         }
 
-        single<RepositoryContract.RegistrationRepository> {
-            RegistrationRepository(get())
-        }
-
         single<RepositoryContract.ConsentDocumentRepository> {
             ConsentDocumentRepository(get(), get())
         }
 
         single<RepositoryContract.CredentialsRepository> {
             CredentialsRepository(get())
-        }
-
-        single<RepositoryContract.DonationRepository> {
-            DonationRepository(get())
-        }
-
-        single<RepositoryContract.ServiceTokenRepository> {
-            ServiceTokenRepository(get())
         }
     }
 }

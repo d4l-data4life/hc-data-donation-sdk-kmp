@@ -17,7 +17,6 @@
 rootProject.name = "mpp-data-donation-sdk"
 
 include(
-    ":iOSCryptoDD",
     ":data-donation-sdk",
     ":docs"
 )

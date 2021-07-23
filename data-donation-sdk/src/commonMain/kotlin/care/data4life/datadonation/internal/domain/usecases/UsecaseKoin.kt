@@ -16,41 +16,13 @@
 
 package care.data4life.datadonation.internal.domain.usecases
 
-import care.data4life.datadonation.encryption.EncryptionContract
-import care.data4life.datadonation.internal.utils.Base64Factory
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
 internal fun resolveUsecaseModule(): Module {
     return module {
-        single {
-            CreateRequestConsentPayload(
-                get(),
-                get(),
-                get<EncryptionContract.HybridEncryptionRegistry>().hybridEncryptionDD,
-                Base64Factory.createEncoder()
-            )
-        }
-
-        single {
-            DonateResources(
-                get(),
-                get(),
-                get(),
-                get(),
-                get<EncryptionContract.HybridEncryptionRegistry>().hybridEncryptionALP
-            )
-        }
-
-        factory<UsecaseContract.RedactSensitiveInformation> {
+        single<UsecaseContract.RedactSensitiveInformation> {
             RedactSensitiveInformation()
-        }
-
-        factory {
-            RegisterNewDonor(
-                get(),
-                get()
-            )
         }
 
         single<UsecaseContract.FetchConsentDocuments> {
@@ -63,10 +35,6 @@ internal fun resolveUsecaseModule(): Module {
 
         single<UsecaseContract.FetchUserConsents> {
             FetchUserConsents(get())
-        }
-
-        factory {
-            RemoveInternalInformation(kotlinx.serialization.json.Json {})
         }
 
         single<UsecaseContract.RevokeUserConsent> {

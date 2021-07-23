@@ -16,14 +16,8 @@
 
 package care.data4life.datadonation.internal.domain.usecases
 
-import care.data4life.datadonation.encryption.EncryptionContract
 import care.data4life.datadonation.internal.domain.repository.RepositoryContract
-import care.data4life.datadonation.mock.stub.encryption.HybridEncryptionRegistryStub
-import care.data4life.datadonation.mock.stub.encryption.HybridEncryptionStub
 import care.data4life.datadonation.mock.stub.repository.ConsentDocumentRepositoryStub
-import care.data4life.datadonation.mock.stub.repository.DonationRepositoryStub
-import care.data4life.datadonation.mock.stub.repository.RegistrationRepositoryStub
-import care.data4life.datadonation.mock.stub.repository.ServiceTokenRepositoryStub
 import care.data4life.datadonation.mock.stub.repository.UserConsentRepositoryStub
 import org.koin.core.context.stopKoin
 import org.koin.dsl.bind
@@ -40,66 +34,6 @@ class UsecaseKoinTest {
     }
 
     @Test
-    fun `Given resolveUsecaseModule is called it creates a Module, which contains CreateRequestConsentPayload`() {
-        // Given
-        val hybridEncryptionRegistry = HybridEncryptionRegistryStub()
-        hybridEncryptionRegistry.givenHybridEncryptionDD = HybridEncryptionStub()
-
-        // When
-        val koin = koinApplication {
-            modules(
-                resolveUsecaseModule(),
-                module {
-                    single<RepositoryContract.ServiceTokenRepository> {
-                        ServiceTokenRepositoryStub()
-                    } bind RepositoryContract.ServiceTokenRepository::class
-                    single<RepositoryContract.UserConsentRepository> {
-                        UserConsentRepositoryStub()
-                    } bind RepositoryContract.UserConsentRepository::class
-                    single<EncryptionContract.HybridEncryptionRegistry> {
-                        hybridEncryptionRegistry
-                    } bind EncryptionContract.HybridEncryptionRegistry::class
-                }
-            )
-        }
-        // Then
-        val instance: CreateRequestConsentPayload = koin.koin.get()
-        assertNotNull(instance)
-    }
-
-    @Test
-    fun `Given resolveUsecaseModule is called it creates a Module, which contains DonateResources`() {
-        // Given
-        val hybridEncryptionRegistry = HybridEncryptionRegistryStub()
-        hybridEncryptionRegistry.givenHybridEncryptionALP = HybridEncryptionStub()
-        hybridEncryptionRegistry.givenHybridEncryptionDD = HybridEncryptionStub()
-
-        // When
-        val koin = koinApplication {
-            modules(
-                resolveUsecaseModule(),
-                module {
-                    single<EncryptionContract.HybridEncryptionRegistry> {
-                        hybridEncryptionRegistry
-                    } bind EncryptionContract.HybridEncryptionRegistry::class
-                    single<RepositoryContract.DonationRepository> {
-                        DonationRepositoryStub()
-                    } bind RepositoryContract::class
-                    single<RepositoryContract.ServiceTokenRepository> {
-                        ServiceTokenRepositoryStub()
-                    } bind RepositoryContract.ServiceTokenRepository::class
-                    single<RepositoryContract.UserConsentRepository> {
-                        UserConsentRepositoryStub()
-                    } bind RepositoryContract.UserConsentRepository::class
-                }
-            )
-        }
-        // Then
-        val instance: DonateResources = koin.koin.get()
-        assertNotNull(instance)
-    }
-
-    @Test
     fun `Given resolveUsecaseModule is called it creates a Module, which contains FilterSensitiveInformation`() {
         // When
         val koin = koinApplication {
@@ -107,40 +41,6 @@ class UsecaseKoinTest {
         }
         // Then
         val instance: UsecaseContract.RedactSensitiveInformation = koin.koin.get()
-        assertNotNull(instance)
-    }
-
-    @Test
-    fun `Given resolveUsecaseModule is called it creates a Module, which contains RegisterNewDonor`() {
-        // Given
-        val hybridEncryptionRegistry = HybridEncryptionRegistryStub()
-        hybridEncryptionRegistry.givenHybridEncryptionDD = HybridEncryptionStub()
-
-        // When
-        val koin = koinApplication {
-            modules(
-                resolveUsecaseModule(),
-                module {
-                    single<EncryptionContract.HybridEncryptionRegistry> {
-                        hybridEncryptionRegistry
-                    } bind EncryptionContract.HybridEncryptionRegistry::class
-                    single<RepositoryContract.DonationRepository> {
-                        DonationRepositoryStub()
-                    } bind RepositoryContract::class
-                    single<RepositoryContract.ServiceTokenRepository> {
-                        ServiceTokenRepositoryStub()
-                    } bind RepositoryContract.ServiceTokenRepository::class
-                    single<RepositoryContract.UserConsentRepository> {
-                        UserConsentRepositoryStub()
-                    } bind RepositoryContract.UserConsentRepository::class
-                    single<RepositoryContract.RegistrationRepository> {
-                        RegistrationRepositoryStub()
-                    } bind RepositoryContract.RegistrationRepository::class
-                }
-            )
-        }
-        // Then
-        val instance: RegisterNewDonor = koin.koin.get()
         assertNotNull(instance)
     }
 
@@ -195,17 +95,6 @@ class UsecaseKoinTest {
         }
         // Then
         val instance: UsecaseContract.FetchUserConsents = koin.koin.get()
-        assertNotNull(instance)
-    }
-
-    @Test
-    fun `Given resolveUsecaseModule is called it creates a Module, which contains RemoveInternalInformation`() {
-        // When
-        val koin = koinApplication {
-            modules(resolveUsecaseModule())
-        }
-        // Then
-        val instance: RemoveInternalInformation = koin.koin.get()
         assertNotNull(instance)
     }
 

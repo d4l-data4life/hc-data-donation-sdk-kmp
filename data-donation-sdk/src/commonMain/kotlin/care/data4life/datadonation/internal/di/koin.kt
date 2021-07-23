@@ -34,9 +34,6 @@ package care.data4life.datadonation.internal.di
 
 import care.data4life.datadonation.Contract
 import care.data4life.datadonation.core.model.ModelContract.Environment
-import care.data4life.datadonation.encryption.resolveEncryptionModule
-import care.data4life.datadonation.internal.data.service.DonationService
-import care.data4life.datadonation.internal.data.service.ServiceContract
 import care.data4life.datadonation.internal.data.service.networking.plugin.resolveKtorPlugins
 import care.data4life.datadonation.internal.data.service.networking.resolveNetworking
 import care.data4life.datadonation.internal.data.service.resolveServiceModule
@@ -53,18 +50,15 @@ import org.koin.dsl.binds
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 
-// TODO: Break down dependencies and move them in their corresponding packages
 internal fun initKoin(configuration: Contract.Configuration): KoinApplication {
     return koinApplication {
         modules(
             resolveRootModule(configuration),
-            resolveCoreModule(),
             resolveNetworking(),
             resolveKtorPlugins(),
             resolveUsecaseRunnerModule(),
             resolveUsecaseModule(),
             resolveRepositoryModule(),
-            resolveEncryptionModule(),
             resolveServiceModule()
         )
     }
@@ -84,14 +78,5 @@ internal fun resolveRootModule(configuration: Contract.Configuration): Module {
         single<Environment> { configuration.getEnvironment() }
 
         single<Clock> { Clock.System }
-    }
-}
-
-internal fun resolveCoreModule(): Module {
-    return module {
-        // Services
-        single<ServiceContract.DonationService> {
-            DonationService(get(), get())
-        }
     }
 }

@@ -34,13 +34,10 @@ package care.data4life.datadonation
 
 import care.data4life.datadonation.core.listener.ListenerContract
 import care.data4life.datadonation.core.model.ConsentDocument
-import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.di.initKoin
 import care.data4life.datadonation.internal.domain.usecases.*
 import care.data4life.datadonation.internal.runner.UsecaseRunnerContract
-import care.data4life.hl7.fhir.stu3.model.FhirResource
-import kotlinx.coroutines.launch
 import org.koin.core.KoinApplication
 
 class Client internal constructor(
@@ -48,11 +45,9 @@ class Client internal constructor(
     koinApplication: KoinApplication
 ) : Contract.DataDonation {
     private val createUserContent: UsecaseContract.CreateUserConsent by koinApplication.koin.inject()
-    private val registerNewDonor: RegisterNewDonor by koinApplication.koin.inject()
     private val fetchConsentDocuments: UsecaseContract.FetchConsentDocuments by koinApplication.koin.inject()
     private val fetchUserConsents: UsecaseContract.FetchUserConsents by koinApplication.koin.inject()
     private val revokeUserConsent: UsecaseContract.RevokeUserConsent by koinApplication.koin.inject()
-    private val donateResources: DonateResources by koinApplication.koin.inject()
     private val usecaseRunner: UsecaseRunnerContract by koinApplication.koin.inject()
 
     override fun fetchConsentDocuments(
@@ -92,13 +87,6 @@ class Client internal constructor(
         )
     }
 
-    override fun registerDonor(
-        listener: ListenerContract.ResultListener<KeyPair>
-    ) {
-        registerNewDonor.withParams(RegisterNewDonor.Parameters(configuration.getDonorKeyPair()))
-            .runForListener(listener)
-    }
-
     override fun fetchUserConsents(
         consentKey: String,
         listener: ListenerContract.ResultListener<List<UserConsent>>
@@ -135,45 +123,6 @@ class Client internal constructor(
             revokeUserConsent,
             parameter
         )
-    }
-
-    override fun <T : FhirResource> donateResources(
-        resources: List<T>,
-        callback: ListenerContract.Callback
-    ) {
-        donateResources.withParams(
-            DonateResources.Parameters(
-                configuration.getDonorKeyPair(),
-                resources
-            )
-        ).runForListener(callback)
-    }
-
-    // TODO: Remove -> Wrong level of abstraction
-    private fun <ReturnType : Any> Usecase<ReturnType>.runForListener(
-        listener: ListenerContract.ResultListener<ReturnType>
-    ) {
-        configuration.getCoroutineScope().launch {
-            try {
-                listener.onSuccess(this@runForListener.execute())
-            } catch (ex: Exception) {
-                listener.onError(ex)
-            }
-        }
-    }
-
-    // TODO: Remove -> Wrong level of abstraction
-    private fun <ReturnType : Any> Usecase<ReturnType>.runForListener(
-        listener: ListenerContract.Callback
-    ) {
-        configuration.getCoroutineScope().launch {
-            try {
-                execute()
-                listener.onSuccess()
-            } catch (ex: Exception) {
-                listener.onError(ex)
-            }
-        }
     }
 
     companion object Factory : Contract.DataDonationFactory {
