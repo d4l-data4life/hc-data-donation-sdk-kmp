@@ -45,8 +45,8 @@ class CachedUserSessionTokenServiceTest {
         val provider = UserSessionTokenProviderStub()
         val time = ClockStub()
 
-        provider.whenGetUserSessionToken = { givenListener ->
-            givenListener.onError(error)
+        provider.whenGetUserSessionToken = { _, onError ->
+            onError(error)
         }
 
         time.whenNow = {
@@ -74,8 +74,8 @@ class CachedUserSessionTokenServiceTest {
         val provider = UserSessionTokenProviderStub()
         val time = ClockStub()
 
-        provider.whenGetUserSessionToken = { givenListener ->
-            givenListener.onSuccess(token)
+        provider.whenGetUserSessionToken = { onSuccess, _ ->
+            onSuccess(token)
         }
 
         time.whenNow = {
@@ -130,8 +130,8 @@ class CachedUserSessionTokenServiceTest {
             kotlinx.datetime.Instant.fromEpochMilliseconds(1.minutes.plus(30.seconds).toLongMilliseconds())
         )
 
-        provider.whenGetUserSessionToken = { givenListener ->
-            givenListener.onSuccess(tokens.removeAt(0))
+        provider.whenGetUserSessionToken = { onSuccess, _ ->
+            onSuccess(tokens.removeAt(0))
         }
         time.whenNow = {
             lifeTime.removeAt(0)

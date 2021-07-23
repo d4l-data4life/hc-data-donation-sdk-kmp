@@ -36,7 +36,7 @@ import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.wrapper.D4LSDKFlowContract
 
-interface Contract {
+interface PublicAPI {
     enum class Environment(val url: String) {
         DEV("api-phdp-dev.hpsgc.de"),
         SANDBOX("api-phdp-sandbox.hpsgc.de"),
@@ -44,16 +44,14 @@ interface Contract {
         PRODUCTION("api.data4life.care")
     }
 
-    interface ResultListener<T : Any> {
-        fun onSuccess(result: T)
-        fun onError(exception: Exception)
-    }
-
     fun interface UserSessionTokenProvider {
-        fun getUserSessionToken(listener: ResultListener<String>)
+        fun getUserSessionToken(
+            onSuccess: (sessionToken: String) -> Unit,
+            onError: (error: Exception) -> Unit
+        )
     }
 
-    interface DataDonation {
+    interface DataDonationClient {
         fun fetchConsentDocuments(
             consentDocumentVersion: Int?,
             language: String?,
@@ -72,10 +70,10 @@ interface Contract {
         fun revokeUserConsent(consentKey: String): D4LSDKFlowContract<Unit>
     }
 
-    interface DataDonationFactory {
+    interface DataDonationClientFactory {
         fun getInstance(
             environment: Environment,
             userSession: UserSessionTokenProvider
-        ): DataDonation
+        ): DataDonationClient
     }
 }

@@ -32,43 +32,59 @@
 
 package care.data4life.datadonation.internal.data.service
 
-import care.data4life.datadonation.Contract
+import care.data4life.datadonation.PublicAPI
 import care.data4life.datadonation.lang.CoreRuntimeError
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
+import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import kotlin.time.minutes
 
 class CachedUserSessionTokenService(
-    private val provider: Contract.UserSessionTokenProvider,
+    private val provider: PublicAPI.UserSessionTokenProvider,
     private val clock: Clock
 ) : ServiceContract.UserSessionTokenService {
 
     private var cachedValue: String = ""
     private var cachedAt = Instant.fromEpochSeconds(0)
 
+    private fun fetchCachedToken(continuation: Continuation<SessionToken>) {
+        if (cachedValue.isEmpty()) {
+            throw CoreRuntimeError.MissingSession()
+        }
+
+        continuation.resume(cachedValue)
+    }
+
+    private fun updateCachedToken(sessionToken: SessionToken) {
+        cachedValue = sessionToken
+        cachedAt = clock.now()
+    }
+
+    private fun handleApiError(error: Exception) {
+        throw CoreRuntimeError.MissingSession(error)
+    }
+
+    private fun fetchTokenFromApi(continuation: Continuation<SessionToken>) {
+        provider.getUserSessionToken(
+            { sessionToken ->
+                updateCachedToken(sessionToken)
+                continuation.resume(sessionToken)
+            },
+            {
+                error ->
+                handleApiError(error)
+            }
+        )
+    }
+
     override suspend fun getUserSessionToken(): SessionToken {
         return suspendCoroutine { continuation ->
-
             if (cachedAt > clock.now().minus(1.minutes)) {
-                if (cachedValue.isEmpty()) {
-                    throw CoreRuntimeError.MissingSession()
-                }
-
-                continuation.resume(cachedValue)
+                fetchCachedToken(continuation)
             } else {
-                provider.getUserSessionToken(object : Contract.ResultListener<String> {
-                    override fun onSuccess(result: String) {
-                        cachedValue = result
-                        cachedAt = clock.now()
-                        continuation.resume(result)
-                    }
-
-                    override fun onError(exception: Exception) {
-                        throw CoreRuntimeError.MissingSession(exception)
-                    }
-                })
+                fetchTokenFromApi(continuation)
             }
         }
     }

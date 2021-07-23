@@ -16,8 +16,8 @@
 
 package care.data4life.datadonation.internal.data.service
 
-import care.data4life.datadonation.Contract
-import care.data4life.datadonation.Contract.Environment
+import care.data4life.datadonation.PublicAPI
+import care.data4life.datadonation.PublicAPI.Environment
 import care.data4life.datadonation.internal.data.service.networking.Networking
 import care.data4life.datadonation.mock.fake.createDefaultMockClient
 import care.data4life.datadonation.mock.stub.ClockStub
@@ -77,7 +77,7 @@ class ServiceKoinTest {
                 resolveServiceModule(),
                 module {
                     single<Clock> { ClockStub() }
-                    single<Contract.UserSessionTokenProvider> {
+                    single<PublicAPI.UserSessionTokenProvider> {
                         UserSessionTokenProviderStub()
                     }
                 }

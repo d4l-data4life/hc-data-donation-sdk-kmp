@@ -32,8 +32,8 @@
 
 package care.data4life.datadonation.internal.di
 
-import care.data4life.datadonation.Contract
-import care.data4life.datadonation.Contract.Environment
+import care.data4life.datadonation.PublicAPI
+import care.data4life.datadonation.PublicAPI.Environment
 import care.data4life.datadonation.internal.data.service.networking.plugin.resolveKtorPlugins
 import care.data4life.datadonation.internal.data.service.networking.resolveNetworking
 import care.data4life.datadonation.internal.data.service.resolveServiceModule
@@ -47,7 +47,7 @@ import org.koin.dsl.module
 
 internal fun initKoin(
     environment: Environment,
-    userSession: Contract.UserSessionTokenProvider
+    userSession: PublicAPI.UserSessionTokenProvider
 ): KoinApplication {
     return koinApplication {
         modules(
@@ -66,14 +66,14 @@ internal fun initKoin(
 
 internal fun resolveRootModule(
     environment: Environment,
-    userSession: Contract.UserSessionTokenProvider
+    userSession: PublicAPI.UserSessionTokenProvider
 ): Module {
     return module {
         single<Environment> { environment }
 
         single<Clock> { Clock.System }
 
-        single<Contract.UserSessionTokenProvider> {
+        single<PublicAPI.UserSessionTokenProvider> {
             userSession
         }
     }

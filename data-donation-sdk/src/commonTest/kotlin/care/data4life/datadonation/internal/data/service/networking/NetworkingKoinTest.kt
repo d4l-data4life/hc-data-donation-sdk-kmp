@@ -16,7 +16,7 @@
 
 package care.data4life.datadonation.internal.data.service.networking
 
-import care.data4life.datadonation.Contract
+import care.data4life.datadonation.PublicAPI
 import care.data4life.datadonation.mock.fake.createDefaultMockClient
 import care.data4life.datadonation.mock.stub.service.networking.HttpClientConfiguratorStub
 import care.data4life.datadonation.mock.stub.service.networking.HttpPluginConfiguratorStub
@@ -47,7 +47,7 @@ class NetworkingKoinTest {
                 resolveNetworking(),
                 module(override = true) {
                     single { createDefaultMockClient() }
-                    single { Contract.Environment.DEV }
+                    single { PublicAPI.Environment.DEV }
                 }
             )
         }
@@ -64,7 +64,7 @@ class NetworkingKoinTest {
                 resolveNetworking(),
                 module(override = true) {
                     single { createDefaultMockClient() }
-                    single { Contract.Environment.DEV }
+                    single { PublicAPI.Environment.DEV }
                 }
             )
         }
@@ -104,7 +104,7 @@ class NetworkingKoinTest {
                     single<List<Networking.HttpPluginInstaller<out Any, out Any?>>> {
                         features
                     }
-                    single { Contract.Environment.DEV }
+                    single { PublicAPI.Environment.DEV }
                 }
             )
         }

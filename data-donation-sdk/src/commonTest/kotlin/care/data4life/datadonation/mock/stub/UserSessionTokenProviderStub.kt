@@ -16,15 +16,18 @@
 
 package care.data4life.datadonation.mock.stub
 
-import care.data4life.datadonation.Contract
+import care.data4life.datadonation.PublicAPI
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 
-class UserSessionTokenProviderStub : Contract.UserSessionTokenProvider, MockContract.Stub {
-    var whenGetUserSessionToken: ((Contract.ResultListener<String>) -> Unit)? = null
+class UserSessionTokenProviderStub : PublicAPI.UserSessionTokenProvider, MockContract.Stub {
+    var whenGetUserSessionToken: ((((sessionToken: String) -> Unit), ((error: Exception) -> Unit)) -> Unit)? = null
 
-    override fun getUserSessionToken(listener: Contract.ResultListener<String>) {
-        whenGetUserSessionToken?.invoke(listener) ?: throw MockException()
+    override fun getUserSessionToken(
+        onSuccess: (sessionToken: String) -> Unit,
+        onError: (error: Exception) -> Unit
+    ) {
+        whenGetUserSessionToken?.invoke(onSuccess, onError) ?: throw MockException()
     }
 
     override fun clear() {

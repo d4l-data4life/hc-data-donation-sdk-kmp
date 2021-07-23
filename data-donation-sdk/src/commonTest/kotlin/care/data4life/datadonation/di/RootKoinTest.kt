@@ -16,7 +16,7 @@
 
 package care.data4life.datadonation.di
 
-import care.data4life.datadonation.Contract
+import care.data4life.datadonation.PublicAPI
 import care.data4life.datadonation.internal.di.resolveRootModule
 import care.data4life.datadonation.mock.stub.UserSessionTokenProviderStub
 import kotlinx.datetime.Clock
@@ -35,7 +35,7 @@ class RootKoinTest {
     @Test
     fun `Given resolveRootModule is called with its appropriate parameter it creates a Module, which contains a Environment`() {
         // Given
-        val env = Contract.Environment.DEV
+        val env = PublicAPI.Environment.DEV
         val provider = UserSessionTokenProviderStub()
 
         // When
@@ -48,14 +48,14 @@ class RootKoinTest {
             )
         }
         // Then
-        val builder: Contract.Environment = koin.koin.get()
+        val builder: PublicAPI.Environment = koin.koin.get()
         assertNotNull(builder)
     }
 
     @Test
     fun `Given resolveRootModule is called with its appropriate parameter it creates a Module, which contains a Clock`() {
         // Given
-        val env = Contract.Environment.DEV
+        val env = PublicAPI.Environment.DEV
         val provider = UserSessionTokenProviderStub()
 
         // When
@@ -75,7 +75,7 @@ class RootKoinTest {
     @Test
     fun `Given resolveRootModule is called with its appropriate parameter it creates a Module, which contains a UserSessionTokenProvider`() {
         // Given
-        val env = Contract.Environment.DEV
+        val env = PublicAPI.Environment.DEV
         val provider = UserSessionTokenProviderStub()
 
         // When
@@ -88,7 +88,7 @@ class RootKoinTest {
             )
         }
         // Then
-        val builder: Contract.UserSessionTokenProvider = koin.koin.get()
+        val builder: PublicAPI.UserSessionTokenProvider = koin.koin.get()
         assertNotNull(builder)
     }
 }
