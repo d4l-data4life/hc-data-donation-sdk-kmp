@@ -38,9 +38,9 @@ See link:{link-repository}/compare/v0.0.1...main[changeset]
 
 * The SDK client got a factory as companion. A direct access to the constructor is prohibit.
 * Client methods do not use Callbacks or ResultListener, they expose Kotlin Flows through a wrapper.
-* Contract -> DataDonationSDKPublicAPIg
-* ClientFactory#getInstance does not use a ConfigurationBundle, instead it expects parameters one by one
-* UserSessionTokenProvider#getUserSessionToken does not expect a particular Object any longer, it expects singular Closures
+* Contract -> DataDonationSDKPublicAPI.
+* ClientFactory#getInstance does not use a ConfigurationBundle, instead it expects parameters one by one.
+* UserSessionTokenProvider#getUserSessionToken does not expect a particular Object any longer, it expects singular Closures.
 
 === Deprecated
 
