@@ -46,7 +46,7 @@ class D4LSDKFlowTest {
         val ktFlow = flow<Unit> { }
 
         // When
-        val result = D4LSDKFlow(ktFlow).asKtFlow()
+        val result = D4LSDKFlow(ktFlow).ktFlow
 
         // Then
         assertSame(

@@ -35,6 +35,9 @@ actual class D4LSDKFlow<T> actual constructor(
         freeze()
     }
 
+    actual override val ktFlow: Flow<T>
+        get() = flow.freeze()
+
     actual override fun subscribe(
         scope: CoroutineScope,
         onEach: (item: T) -> Unit,
@@ -48,6 +51,4 @@ actual class D4LSDKFlow<T> actual constructor(
             .launchIn(scope)
             .freeze()
     }
-
-    actual override fun asKtFlow(): Flow<T> = flow
 }

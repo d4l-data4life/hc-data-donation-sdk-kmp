@@ -23,12 +23,12 @@ import kotlinx.coroutines.flow.Flow
 expect class D4LSDKFlow<T>(
     internalFlow: Flow<T>
 ) : D4LSDKFlowContract<T> {
+    override val ktFlow: Flow<T>
+
     override fun subscribe(
         scope: CoroutineScope,
         onEach: (item: T) -> Unit,
         onComplete: () -> Unit,
         onThrow: (error: Throwable) -> Unit
     ): Job
-
-    override fun asKtFlow(): Flow<T>
 }

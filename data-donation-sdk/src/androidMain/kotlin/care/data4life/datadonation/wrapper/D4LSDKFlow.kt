@@ -29,6 +29,9 @@ actual class D4LSDKFlow<T> actual constructor(
 ) : D4LSDKFlowContract<T> {
     private val flow = internalFlow
 
+    actual override val ktFlow: Flow<T>
+        get() = flow
+
     actual override fun subscribe(
         scope: CoroutineScope,
         onEach: (item: T) -> Unit,
@@ -41,6 +44,4 @@ actual class D4LSDKFlow<T> actual constructor(
             .onCompletion { onComplete() }
             .launchIn(scope)
     }
-
-    actual override fun asKtFlow(): Flow<T> = flow
 }

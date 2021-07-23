@@ -34,6 +34,15 @@ class D4lSDKFlowIosTest {
     }
 
     @Test
+    fun `Its KtFlow  is frozen`() {
+        // Given
+        val flow = D4LSDKFlow(flow<Unit> { })
+
+        // Then
+        assertTrue(flow.ktFlow.isFrozen)
+    }
+
+    @Test
     fun `Given subscribe is called it returns a Job which is frozen`() {
         // Given
         val ktFlow = flow<Unit> { }
