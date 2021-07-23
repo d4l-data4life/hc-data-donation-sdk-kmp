@@ -43,7 +43,7 @@ import org.koin.core.KoinApplication
 
 class Client internal constructor(
     koinApplication: KoinApplication
-) : PublicAPI.DataDonationClient {
+) : DataDonationSDKPublicAPI.DataDonationClient {
     private val createUserContent: UsecaseContract.CreateUserConsent = koinApplication.koin.get()
     private val fetchConsentDocuments: UsecaseContract.FetchConsentDocuments = koinApplication.koin.get()
     private val fetchUserConsents: UsecaseContract.FetchUserConsents = koinApplication.koin.get()
@@ -113,11 +113,11 @@ class Client internal constructor(
         return D4LSDKFlow(flow)
     }
 
-    companion object Factory : PublicAPI.DataDonationClientFactory {
+    companion object Factory : DataDonationSDKPublicAPI.DataDonationClientFactory {
         override fun getInstance(
-            environment: PublicAPI.Environment,
-            userSession: PublicAPI.UserSessionTokenProvider
-        ): PublicAPI.DataDonationClient {
+            environment: DataDonationSDKPublicAPI.Environment,
+            userSession: DataDonationSDKPublicAPI.UserSessionTokenProvider
+        ): DataDonationSDKPublicAPI.DataDonationClient {
             return Client(
                 initKoin(
                     environment,

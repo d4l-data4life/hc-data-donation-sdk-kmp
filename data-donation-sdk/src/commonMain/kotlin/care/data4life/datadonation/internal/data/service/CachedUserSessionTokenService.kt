@@ -32,7 +32,7 @@
 
 package care.data4life.datadonation.internal.data.service
 
-import care.data4life.datadonation.PublicAPI
+import care.data4life.datadonation.DataDonationSDKPublicAPI
 import care.data4life.datadonation.lang.CoreRuntimeError
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
@@ -42,7 +42,7 @@ import kotlin.coroutines.suspendCoroutine
 import kotlin.time.minutes
 
 class CachedUserSessionTokenService(
-    private val provider: PublicAPI.UserSessionTokenProvider,
+    private val provider: DataDonationSDKPublicAPI.UserSessionTokenProvider,
     private val clock: Clock
 ) : ServiceContract.UserSessionTokenService {
 

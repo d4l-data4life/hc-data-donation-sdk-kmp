@@ -16,11 +16,11 @@
 
 package care.data4life.datadonation.mock.stub
 
-import care.data4life.datadonation.PublicAPI
+import care.data4life.datadonation.DataDonationSDKPublicAPI
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 
-class UserSessionTokenProviderStub : PublicAPI.UserSessionTokenProvider, MockContract.Stub {
+class UserSessionTokenProviderStub : DataDonationSDKPublicAPI.UserSessionTokenProvider, MockContract.Stub {
     var whenGetUserSessionToken: ((((sessionToken: String) -> Unit), ((error: Exception) -> Unit)) -> Unit)? = null
 
     override fun getUserSessionToken(

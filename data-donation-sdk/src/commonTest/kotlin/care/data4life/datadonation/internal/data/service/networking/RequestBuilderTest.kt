@@ -16,7 +16,7 @@
 
 package care.data4life.datadonation.internal.data.service.networking
 
-import care.data4life.datadonation.PublicAPI.Environment
+import care.data4life.datadonation.DataDonationSDKPublicAPI.Environment
 import care.data4life.datadonation.internal.data.service.networking.Networking.RequestBuilder.Companion.ACCESS_TOKEN_FIELD
 import care.data4life.datadonation.internal.data.service.networking.Networking.RequestBuilder.Companion.ACCESS_TOKEN_VALUE_PREFIX
 import care.data4life.datadonation.lang.CoreRuntimeError

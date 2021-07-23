@@ -33,7 +33,7 @@
 package care.data4life.datadonation.integration
 
 import care.data4life.datadonation.Client
-import care.data4life.datadonation.PublicAPI
+import care.data4life.datadonation.DataDonationSDKPublicAPI
 import care.data4life.datadonation.internal.data.service.networking.plugin.resolveKtorPlugins
 import care.data4life.datadonation.internal.data.service.networking.resolveNetworking
 import care.data4life.datadonation.internal.data.service.resolveServiceModule
@@ -72,7 +72,7 @@ class ClientTest {
         val koin = koinApplication {
             modules(
                 resolveRootModule(
-                    PublicAPI.Environment.DEV,
+                    DataDonationSDKPublicAPI.Environment.DEV,
                     UserSessionTokenProvider
                 ),
                 resolveNetworking(),
@@ -110,7 +110,7 @@ class ClientTest {
         val koin = koinApplication {
             modules(
                 resolveRootModule(
-                    PublicAPI.Environment.DEV,
+                    DataDonationSDKPublicAPI.Environment.DEV,
                     UserSessionTokenProvider
                 ),
                 resolveNetworking(),
@@ -152,7 +152,7 @@ class ClientTest {
         val koin = koinApplication {
             modules(
                 resolveRootModule(
-                    PublicAPI.Environment.DEV,
+                    DataDonationSDKPublicAPI.Environment.DEV,
                     UserSessionTokenProvider
                 ),
                 resolveNetworking(),
@@ -184,7 +184,7 @@ class ClientTest {
         val koin = koinApplication {
             modules(
                 resolveRootModule(
-                    PublicAPI.Environment.DEV,
+                    DataDonationSDKPublicAPI.Environment.DEV,
                     UserSessionTokenProvider
                 ),
                 resolveNetworking(),
@@ -206,7 +206,7 @@ class ClientTest {
         assertTrue(result)
     }
 
-    private object UserSessionTokenProvider : PublicAPI.UserSessionTokenProvider {
+    private object UserSessionTokenProvider : DataDonationSDKPublicAPI.UserSessionTokenProvider {
         override fun getUserSessionToken(
             onSuccess: (sessionToken: String) -> Unit,
             onError: (error: Exception) -> Unit

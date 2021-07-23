@@ -16,7 +16,7 @@
 
 package care.data4life.datadonation.di
 
-import care.data4life.datadonation.PublicAPI.Environment
+import care.data4life.datadonation.DataDonationSDKPublicAPI.Environment
 import care.data4life.datadonation.internal.di.initKoin
 import care.data4life.datadonation.internal.domain.usecases.UsecaseContract
 import care.data4life.datadonation.mock.stub.UserSessionTokenProviderStub
