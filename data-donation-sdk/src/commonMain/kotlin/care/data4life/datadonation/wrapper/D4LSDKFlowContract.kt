@@ -22,12 +22,12 @@ import kotlinx.coroutines.flow.Flow
 
 // TODO Move into util rep
 interface D4LSDKFlowContract<T> {
+    val ktFlow: Flow<T>
+
     fun subscribe(
         scope: CoroutineScope,
         onEach: (item: T) -> Unit,
         onComplete: () -> Unit,
         onThrow: (error: Throwable) -> Unit
     ): Job
-
-    fun asKtFlow(): Flow<T>
 }

@@ -96,7 +96,7 @@ class ClientTest {
             version,
             language,
             consentKey
-        ).asKtFlow().collect { result ->
+        ).ktFlow.collect { result ->
             // Then
             assertEquals(
                 actual = result,
@@ -136,12 +136,12 @@ class ClientTest {
             version,
             language,
             consentKey,
-        ).asKtFlow().collect { consentDocuments ->
+        ).ktFlow.collect { consentDocuments ->
             val consentDoc = consentDocuments.first()
             client.createUserConsent(
                 consentDoc.key,
                 consentDoc.version
-            ).asKtFlow().collect { result ->
+            ).ktFlow.collect { result ->
                 // Then
                 assertSame(
                     actual = result,
@@ -176,7 +176,7 @@ class ClientTest {
         val client = Client(config, koin)
 
         // When
-        client.fetchUserConsents(consentKey).asKtFlow().collect { result ->
+        client.fetchUserConsents(consentKey).ktFlow.collect { result ->
             // Then
             assertEquals(
                 actual = result,
@@ -211,7 +211,7 @@ class ClientTest {
         val capturedResult = Channel<Boolean>()
 
         // When
-        client.revokeUserConsent(language).asKtFlow().collect {}
+        client.revokeUserConsent(language).ktFlow.collect {}
         val result = capturedResult.receive()
 
         // Then
