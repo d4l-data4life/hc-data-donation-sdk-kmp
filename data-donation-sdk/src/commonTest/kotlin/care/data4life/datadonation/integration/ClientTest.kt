@@ -34,31 +34,28 @@ package care.data4life.datadonation.integration
 
 import care.data4life.datadonation.Client
 import care.data4life.datadonation.Contract
-import care.data4life.datadonation.core.listener.ListenerContract.Callback
 import care.data4life.datadonation.core.listener.ListenerContract.ResultListener
-import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.ModelContract.Environment
-import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.service.networking.plugin.resolveKtorPlugins
 import care.data4life.datadonation.internal.data.service.networking.resolveNetworking
 import care.data4life.datadonation.internal.data.service.resolveServiceModule
 import care.data4life.datadonation.internal.di.resolveRootModule
 import care.data4life.datadonation.internal.domain.repository.resolveRepositoryModule
 import care.data4life.datadonation.internal.domain.usecases.resolveUsecaseModule
-import care.data4life.datadonation.internal.runner.resolveUsecaseRunnerModule
 import care.data4life.datadonation.mock.DummyData
 import care.data4life.sdk.util.test.runWithContextBlockingTest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.collect
 import org.koin.core.context.stopKoin
 import org.koin.dsl.koinApplication
 import kotlin.test.BeforeTest
 import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 // TODO: use MockEngine and make separated E2E tests
@@ -86,7 +83,6 @@ class ClientTest {
                 resolveRootModule(config),
                 resolveNetworking(),
                 resolveKtorPlugins(),
-                resolveUsecaseRunnerModule(),
                 resolveUsecaseModule(),
                 resolveRepositoryModule(),
                 resolveServiceModule()
@@ -94,31 +90,19 @@ class ClientTest {
         }
 
         val client = Client(config, koin)
-        val capturedResult = Channel<List<ConsentDocument>>()
-        val listener = object : ResultListener<List<ConsentDocument>> {
-            override fun onSuccess(result: List<ConsentDocument>) {
-                launch {
-                    capturedResult.send(result)
-                }
-            }
-
-            override fun onError(exception: Exception) = throw exception
-        }
 
         // When
         client.fetchConsentDocuments(
             version,
             language,
-            consentKey,
-            listener
-        )
-
-        // Then
-        val result = capturedResult.receive()
-        assertEquals(
-            actual = result,
-            expected = emptyList() // TODO use a actual response
-        )
+            consentKey
+        ).ktFlow.collect { result ->
+            // Then
+            assertEquals(
+                actual = result,
+                expected = emptyList() // TODO
+            )
+        }
     }
 
     @Test
@@ -139,7 +123,6 @@ class ClientTest {
                 resolveRootModule(config),
                 resolveNetworking(),
                 resolveKtorPlugins(),
-                resolveUsecaseRunnerModule(),
                 resolveUsecaseModule(),
                 resolveRepositoryModule(),
                 resolveServiceModule()
@@ -147,49 +130,25 @@ class ClientTest {
         }
 
         val client = Client(config, koin)
-        val capturedConsentDoc = Channel<List<ConsentDocument>>()
-        val consentDocListener = object : ResultListener<List<ConsentDocument>> {
-            override fun onSuccess(result: List<ConsentDocument>) {
-                launch {
-                    capturedConsentDoc.send(result)
-                }
-            }
-
-            override fun onError(exception: Exception) = throw exception
-        }
-
-        val capturedConsent = Channel<UserConsent>()
-        val consentListener = object : ResultListener<UserConsent> {
-            override fun onSuccess(result: UserConsent) {
-                launch {
-                    capturedConsent.send(result)
-                }
-            }
-
-            override fun onError(exception: Exception) = throw exception
-        }
 
         // When
         client.fetchConsentDocuments(
             version,
             language,
             consentKey,
-            consentDocListener
-        )
-
-        val consentDoc = capturedConsentDoc.receive().first()
-        client.createUserConsent(
-            consentDoc.key,
-            consentDoc.version,
-            consentListener
-        )
-        val result = capturedConsent.receive()
-
-        // Then
-        assertEquals(
-            actual = result,
-            expected = DummyData.userConsent // TODO
-        )
+        ).ktFlow.collect { consentDocuments ->
+            val consentDoc = consentDocuments.first()
+            client.createUserConsent(
+                consentDoc.key,
+                consentDoc.version
+            ).ktFlow.collect { result ->
+                // Then
+                assertSame(
+                    actual = result,
+                    expected = DummyData.userConsent // TODO
+                )
+            }
+        }
     }
 
     @Test
@@ -208,7 +167,6 @@ class ClientTest {
                 resolveRootModule(config),
                 resolveNetworking(),
                 resolveKtorPlugins(),
-                resolveUsecaseRunnerModule(),
                 resolveUsecaseModule(),
                 resolveRepositoryModule(),
                 resolveServiceModule()
@@ -216,24 +174,15 @@ class ClientTest {
         }
 
         val client = Client(config, koin)
-        val capturedResult = Channel<List<UserConsent>>()
-        val listener = object : ResultListener<List<UserConsent>> {
-            override fun onSuccess(result: List<UserConsent>) {
-                launch {
-                    capturedResult.send(result)
-                }
-            }
 
-            override fun onError(exception: Exception) = throw exception
-        }
         // When
-        client.fetchUserConsents(consentKey, listener)
-        val result = capturedResult.receive()
-        // Then
-        assertEquals(
-            actual = result,
-            expected = emptyList() // TODO
-        )
+        client.fetchUserConsents(consentKey).ktFlow.collect { result ->
+            // Then
+            assertEquals(
+                actual = result,
+                expected = emptyList() // TODO
+            )
+        }
     }
 
     @Test
@@ -252,7 +201,6 @@ class ClientTest {
                 resolveRootModule(config),
                 resolveNetworking(),
                 resolveKtorPlugins(),
-                resolveUsecaseRunnerModule(),
                 resolveUsecaseModule(),
                 resolveRepositoryModule(),
                 resolveServiceModule()
@@ -261,18 +209,9 @@ class ClientTest {
 
         val client = Client(config, koin)
         val capturedResult = Channel<Boolean>()
-        val callback = object : Callback {
-            override fun onSuccess() {
-                launch {
-                    capturedResult.send(true)
-                }
-            }
-
-            override fun onError(exception: Exception) = throw exception
-        }
 
         // When
-        client.revokeUserConsent(language, callback)
+        client.revokeUserConsent(language).ktFlow.collect {}
         val result = capturedResult.receive()
 
         // Then

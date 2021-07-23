@@ -21,7 +21,9 @@ import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.ModelContract.ConsentEvent
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.model.ConsentSignature
+import kotlin.native.concurrent.ThreadLocal
 
+@ThreadLocal
 object DummyData {
     val timestamp = "2020-07-06T10:18:12.601Z"
 

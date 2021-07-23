@@ -37,13 +37,13 @@ import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.KeyPair
 import care.data4life.datadonation.core.model.ModelContract.Environment
 import care.data4life.datadonation.core.model.UserConsent
-import care.data4life.datadonation.internal.runner.CredentialProvider
-import care.data4life.datadonation.internal.runner.ScopeProvider
-import care.data4life.datadonation.internal.runner.UserSessionTokenProvider
+import care.data4life.datadonation.internal.provider.CredentialProvider
+import care.data4life.datadonation.internal.provider.ScopeProvider
+import care.data4life.datadonation.internal.provider.UserSessionTokenProvider
+import care.data4life.datadonation.wrapper.D4LSDKFlowContract
 import kotlinx.coroutines.CoroutineScope
 
 interface Contract {
-
     enum class Service(name: String) {
         DD("DataDonation"),
         ALP("AnalyticsPlatform")
@@ -55,7 +55,7 @@ interface Contract {
         UserSessionTokenProvider {
         override fun getServicePublicKey(service: Service): String
 
-        fun getDonorKeyPair(): KeyPair?
+        fun getDonorKeyPair(): KeyPair? // TODO
 
         override fun getUserSessionToken(tokenListener: ListenerContract.ResultListener<String>)
 
@@ -65,29 +65,23 @@ interface Contract {
     }
 
     interface DataDonation {
+        // TODO
         fun fetchConsentDocuments(
             consentDocumentVersion: Int?,
             language: String?,
-            consentKey: String,
-            listener: ListenerContract.ResultListener<List<ConsentDocument>>
-        )
+            consentKey: String
+        ): D4LSDKFlowContract<List<ConsentDocument>>
 
         fun createUserConsent(
             consentKey: String,
-            consentDocumentVersion: Int,
-            listener: ListenerContract.ResultListener<UserConsent>
-        )
+            consentDocumentVersion: Int
+        ): D4LSDKFlowContract<UserConsent>
 
-        fun fetchUserConsents(
-            consentKey: String,
-            listener: ListenerContract.ResultListener<List<UserConsent>>
-        )
+        fun fetchUserConsents(consentKey: String): D4LSDKFlowContract<List<UserConsent>>
 
-        fun fetchAllUserConsents(
-            listener: ListenerContract.ResultListener<List<UserConsent>>
-        )
+        fun fetchAllUserConsents(): D4LSDKFlowContract<List<UserConsent>>
 
-        fun revokeUserConsent(consentKey: String, callback: ListenerContract.Callback)
+        fun revokeUserConsent(consentKey: String): D4LSDKFlowContract<Unit>
     }
 
     interface DataDonationFactory {

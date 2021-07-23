@@ -14,15 +14,20 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.runner
+package care.data4life.datadonation.wrapper
 
-import org.koin.core.module.Module
-import org.koin.dsl.module
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
 
-internal fun resolveUsecaseRunnerModule(): Module {
-    return module {
-        single<UsecaseRunnerContract> {
-            UsecaseRunner(get())
-        }
-    }
+// TODO Move into util rep
+interface D4LSDKFlowContract<T> {
+    val ktFlow: Flow<T>
+
+    fun subscribe(
+        scope: CoroutineScope,
+        onEach: (item: T) -> Unit,
+        onComplete: () -> Unit,
+        onThrow: (error: Throwable) -> Unit
+    ): Job
 }

@@ -25,6 +25,7 @@ internal typealias Parameter = Map<String, Any?>
 internal typealias AccessToken = String
 internal typealias Path = List<String>
 
+// TODO Move into util rep
 internal interface Networking {
     fun interface HttpPluginConfigurator<PluginConfiguration : Any, SubConfiguration> {
         fun configure(pluginConfiguration: PluginConfiguration, subConfiguration: SubConfiguration)

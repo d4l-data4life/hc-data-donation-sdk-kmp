@@ -16,30 +16,28 @@
 
 package care.data4life.datadonation
 
-import care.data4life.datadonation.core.listener.ListenerContract
-import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.ModelContract.Environment
-import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.domain.usecases.CreateUserConsent
 import care.data4life.datadonation.internal.domain.usecases.FetchConsentDocuments
 import care.data4life.datadonation.internal.domain.usecases.FetchUserConsents
 import care.data4life.datadonation.internal.domain.usecases.RevokeUserConsent
 import care.data4life.datadonation.internal.domain.usecases.UsecaseContract
-import care.data4life.datadonation.internal.runner.UsecaseRunnerContract
 import care.data4life.datadonation.mock.DummyData
-import care.data4life.datadonation.mock.stub.CallbackStub
 import care.data4life.datadonation.mock.stub.ClientConfigurationStub
 import care.data4life.datadonation.mock.stub.CreateUserConsentStub
 import care.data4life.datadonation.mock.stub.FetchConsentDocumentsStub
-import care.data4life.datadonation.mock.stub.FetchUserConsentStub
-import care.data4life.datadonation.mock.stub.ResultListenerStub
+import care.data4life.datadonation.mock.stub.FetchUserConsentsStub
 import care.data4life.datadonation.mock.stub.RevokeUserConsentStub
-import care.data4life.datadonation.mock.stub.UsecaseRunnerStub
+import care.data4life.sdk.util.test.runWithContextBlockingTest
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import org.koin.core.context.stopKoin
-import org.koin.dsl.bind
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import kotlin.test.BeforeTest
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertSame
@@ -59,6 +57,7 @@ class ClientTest {
     }
 
     @Test
+    @Ignore // TODO: Ignore until we got rid of the ClientConfiguration
     fun `Given getInstance is called with a Configuration it returns a DataDonation`() {
         val client: Any = Client.getInstance(ClientConfigurationStub())
 
@@ -66,128 +65,25 @@ class ClientTest {
     }
 
     @Test
-    fun `Given fetchAllUserConsents is called with a ResultListener it resolves the Usecase with its default Parameter and delegates them to the UsecaseRunner`() {
+    fun `Given fetchConsentDocuments is called with a ConsentKey it builds and delegates its Parameter to the Usecase and returns a runnable Flow which emits a List of ConsentDocument`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val config = ClientConfigurationStub()
-        val listener = ResultListenerStub<List<UserConsent>>()
-        val usecase = FetchUserConsentStub()
-
-        var capturedParameter: UsecaseContract.FetchUserConsents.Parameter? = null
-        var capturedListener: ListenerContract.ResultListener<*>? = null
-        var capturedUsecase: UsecaseContract.Usecase<*, *>? = null
-
-        config.whenGetEnvironment = { Environment.DEV }
-
-        val di = koinApplication {
-            modules(
-                module {
-                    single {
-                        usecase
-                    } bind UsecaseContract.FetchUserConsents::class
-
-                    single {
-                        UsecaseRunnerStub().also {
-                            it.whenRunListener = { delegatedResultListener, delegatedUsecase, delegatedParameter ->
-                                capturedListener = delegatedResultListener
-                                capturedUsecase = delegatedUsecase
-                                capturedParameter = delegatedParameter as UsecaseContract.FetchUserConsents.Parameter
-                            }
-                        }
-                    } bind UsecaseRunnerContract::class
-                }
-            )
-        }
-
-        val client = Client(config, di)
-
-        // When
-        client.fetchAllUserConsents(listener)
-
-        // Then
-        assertEquals(
-            actual = capturedParameter,
-            expected = FetchUserConsents.Parameter()
-        )
-        assertSame(
-            actual = capturedListener,
-            expected = listener
-        )
-        assertSame(
-            actual = capturedUsecase,
-            expected = usecase
-        )
-    }
-
-    @Test
-    fun `Given fetchUserConsents is called with a ConsentKey and with a ResultListener  it resolves the Usecase with wraps the given Parameter and delegates that to the UsecaseRunner`() {
-        // Given
-        val config = ClientConfigurationStub()
-        val listener = ResultListenerStub<List<UserConsent>>()
-        val usecase = FetchUserConsentStub()
-
-        var capturedParameter: UsecaseContract.FetchUserConsents.Parameter? = null
-        var capturedListener: ListenerContract.ResultListener<*>? = null
-        var capturedUsecase: UsecaseContract.Usecase<*, *>? = null
-
-        config.whenGetEnvironment = { Environment.DEV }
-
-        val di = koinApplication {
-            modules(
-                module {
-                    single {
-                        usecase
-                    } bind UsecaseContract.FetchUserConsents::class
-
-                    single {
-                        UsecaseRunnerStub().also {
-                            it.whenRunListener = { delegatedResultListener, delegatedUsecase, delegatedParameter ->
-                                capturedListener = delegatedResultListener
-                                capturedUsecase = delegatedUsecase
-                                capturedParameter = delegatedParameter as UsecaseContract.FetchUserConsents.Parameter
-                            }
-                        }
-                    } bind UsecaseRunnerContract::class
-                }
-            )
-        }
-
-        val consentKey = "key"
-        val client = Client(config, di)
-
-        // When
-        client.fetchUserConsents(consentKey, listener)
-
-        // Then
-        assertEquals(
-            actual = capturedParameter,
-            expected = FetchUserConsents.Parameter(consentKey)
-        )
-        assertSame(
-            actual = capturedListener,
-            expected = listener
-        )
-        assertSame(
-            actual = capturedUsecase,
-            expected = usecase
-        )
-    }
-
-    @Test
-    fun `Given fetchConsentDocuments is called with a ConsentKey and with a ResultListener it resolves the Usecase with wraps the given Parameter and delegates that to the UsecaseRunner`() {
-        // Given
-        val config = ClientConfigurationStub()
-        val listener = ResultListenerStub<List<ConsentDocument>>()
         val usecase = FetchConsentDocumentsStub()
+        val documents = listOf(DummyData.consentDocument)
 
         val version = 23
         val language = "de-j-old-n-kotlin-x-done"
         val consentKey = "abc"
 
-        var capturedParameter: UsecaseContract.FetchConsentDocuments.Parameter? = null
-        var capturedListener: ListenerContract.ResultListener<*>? = null
-        var capturedUsecase: UsecaseContract.Usecase<*, *>? = null
+        val capturedParameter = Channel<UsecaseContract.FetchConsentDocuments.Parameter>()
 
         config.whenGetEnvironment = { Environment.DEV }
+        usecase.whenExecute = { delegatedParameter ->
+            launch {
+                capturedParameter.send(delegatedParameter)
+            }
+            documents
+        }
 
         val di = koinApplication {
             modules(
@@ -195,16 +91,15 @@ class ClientTest {
                     single<UsecaseContract.FetchConsentDocuments> {
                         usecase
                     }
-
-                    single {
-                        UsecaseRunnerStub().also {
-                            it.whenRunListener = { delegatedResultListener, delegatedUsecase, delegatedParameter ->
-                                capturedListener = delegatedResultListener
-                                capturedUsecase = delegatedUsecase
-                                capturedParameter = delegatedParameter as UsecaseContract.FetchConsentDocuments.Parameter
-                            }
-                        }
-                    } bind UsecaseRunnerContract::class
+                    single<UsecaseContract.CreateUserConsent> {
+                        CreateUserConsentStub()
+                    }
+                    single<UsecaseContract.FetchUserConsents> {
+                        FetchUserConsentsStub()
+                    }
+                    single<UsecaseContract.RevokeUserConsent> {
+                        RevokeUserConsentStub()
+                    }
                 }
             )
         }
@@ -212,134 +107,66 @@ class ClientTest {
         val client = Client(config, di)
 
         // When
-        val result = client.fetchConsentDocuments(
+        client.fetchConsentDocuments(
             version,
             language,
             consentKey,
-            listener
-        )
+        ).ktFlow.collect { result ->
+            // Then
+            assertSame(
+                expected = documents,
+                actual = result
+            )
+        }
 
-        // Then
-        assertSame(
-            actual = result,
-            expected = Unit
-        )
         assertEquals(
-            actual = capturedParameter,
+            actual = capturedParameter.receive(),
             expected = FetchConsentDocuments.Parameter(
                 version = version,
                 language = language,
                 consentKey = consentKey
             )
         )
-        assertSame(
-            actual = capturedListener,
-            expected = listener
-        )
-        assertSame(
-            actual = capturedUsecase,
-            expected = usecase
-        )
     }
 
     @Test
-    fun `Given revokeUserConsent is called with a ConsentKey and with a Callback it resolves the Usecase with wraps the given Parameter and delegates that to the TaskRunner`() {
+    fun `Given createUserConsent is called with a ConsentDocumentVersion and a Language it builds and delegates its Parameter to the Usecase and returns a runnable Flow which emits a UserConsent`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val config = ClientConfigurationStub()
-        val listener = CallbackStub()
-        val usecase = RevokeUserConsentStub()
-
-        val consentKey = "custom-consent-key"
-
-        var capturedParameter: UsecaseContract.RevokeUserConsent.Parameter? = null
-        var capturedListener: ListenerContract.Callback? = null
-        var capturedUsecase: UsecaseContract.Usecase<*, *>? = null
-
-        config.whenGetEnvironment = { Environment.DEV }
-
-        val di = koinApplication {
-            modules(
-                module {
-                    single {
-                        usecase
-                    } bind UsecaseContract.RevokeUserConsent::class
-
-                    single {
-                        UsecaseRunnerStub().also {
-                            it.whenRunCallback = { delegatedResultListener, delegatedUsecase, delegatedParameter ->
-                                capturedListener = delegatedResultListener
-                                capturedUsecase = delegatedUsecase
-                                capturedParameter = delegatedParameter as UsecaseContract.RevokeUserConsent.Parameter
-                            }
-                        }
-                    } bind UsecaseRunnerContract::class
-                }
-            )
-        }
-
-        val client = Client(config, di)
-
-        // When
-        val result = client.revokeUserConsent(
-            consentKey,
-            listener
-        )
-
-        // Then
-        assertSame(
-            actual = result,
-            expected = Unit
-        )
-        assertEquals(
-            actual = capturedParameter,
-            expected = RevokeUserConsent.Parameter(
-                consentKey = consentKey,
-            )
-        )
-        assertSame(
-            actual = capturedListener,
-            expected = listener
-        )
-        assertSame(
-            actual = capturedUsecase,
-            expected = usecase
-        )
-    }
-
-    @Test
-    fun `Given createUserConsent is called with a ConsentDocumentVersion, a Language and with a ResultListener it resolves the Usecase with wraps the given Parameter and delegates that to the TaskRunner`() {
-        // Given
-        val config = ClientConfigurationStub()
-        val listener = ResultListenerStub<UserConsent>()
         val usecase = CreateUserConsentStub()
+        val consent = DummyData.userConsent
 
         val version = 23
         val consentKey = "custom-consent-key"
         val keyPair = DummyData.keyPair
 
-        var capturedParameter: UsecaseContract.CreateUserConsent.Parameter? = null
-        var capturedListener: ListenerContract.ResultListener<*>? = null
-        var capturedUsecase: UsecaseContract.Usecase<*, *>? = null
+        val capturedParameter = Channel<UsecaseContract.CreateUserConsent.Parameter>()
 
         config.whenGetEnvironment = { Environment.DEV }
         config.whenGetDonorKeyPair = { keyPair }
 
+        usecase.whenExecute = { delegatedParameter ->
+            launch {
+                capturedParameter.send(delegatedParameter)
+            }
+            consent
+        }
+
         val di = koinApplication {
             modules(
                 module {
-                    single {
+                    single<UsecaseContract.CreateUserConsent> {
                         usecase
-                    } bind UsecaseContract.CreateUserConsent::class
-
-                    single {
-                        UsecaseRunnerStub().also {
-                            it.whenRunListener = { delegatedResultListener, delegatedUsecase, delegatedParameter ->
-                                capturedListener = delegatedResultListener
-                                capturedUsecase = delegatedUsecase
-                                capturedParameter = delegatedParameter as UsecaseContract.CreateUserConsent.Parameter
-                            }
-                        }
-                    } bind UsecaseRunnerContract::class
+                    }
+                    single<UsecaseContract.FetchConsentDocuments> {
+                        FetchConsentDocumentsStub()
+                    }
+                    single<UsecaseContract.FetchUserConsents> {
+                        FetchUserConsentsStub()
+                    }
+                    single<UsecaseContract.RevokeUserConsent> {
+                        RevokeUserConsentStub()
+                    }
                 }
             )
         }
@@ -349,26 +176,190 @@ class ClientTest {
         // When
         client.createUserConsent(
             consentKey,
-            version,
-            listener
-        )
+            version
+        ).ktFlow.collect { result ->
+            // Then
+            assertSame(
+                actual = result,
+                expected = consent
+            )
+        }
 
-        // Then
         assertEquals(
-            actual = capturedParameter,
+            actual = capturedParameter.receive(),
             expected = CreateUserConsent.Parameter(
                 consentKey = consentKey,
                 version = version,
                 keyPair = keyPair
             )
         )
-        assertSame(
-            actual = capturedListener,
-            expected = listener
+    }
+
+    @Test
+    fun `Given fetchUserConsents is called with a ConsentKey it builds and delegates its Parameter to the Usecase and returns a runnable Flow which emits a List of UserConsent`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+        // Given
+        val config = ClientConfigurationStub()
+        val usecase = FetchUserConsentsStub()
+        val consents = listOf(DummyData.userConsent)
+
+        val capturedParameter = Channel<UsecaseContract.FetchUserConsents.Parameter>()
+
+        config.whenGetEnvironment = { Environment.DEV }
+        usecase.whenExecute = { delegatedParameter ->
+            launch {
+                capturedParameter.send(delegatedParameter)
+            }
+            consents
+        }
+
+        val di = koinApplication {
+            modules(
+                module {
+                    single<UsecaseContract.FetchUserConsents> {
+                        usecase
+                    }
+                    single<UsecaseContract.FetchConsentDocuments> {
+                        FetchConsentDocumentsStub()
+                    }
+                    single<UsecaseContract.CreateUserConsent> {
+                        CreateUserConsentStub()
+                    }
+                    single<UsecaseContract.RevokeUserConsent> {
+                        RevokeUserConsentStub()
+                    }
+                }
+            )
+        }
+
+        val consentKey = "key"
+        val client = Client(config, di)
+
+        // When
+        client.fetchUserConsents(
+            consentKey
+        ).ktFlow.collect { result ->
+            // Then
+            assertSame(
+                actual = result,
+                expected = consents
+            )
+        }
+
+        assertEquals(
+            actual = capturedParameter.receive(),
+            expected = FetchUserConsents.Parameter(
+                consentKey = consentKey
+            )
         )
-        assertSame(
-            actual = capturedUsecase,
-            expected = usecase
+    }
+
+    @Test
+    fun `Given fetchAllUserConsents is called it builds and delegates its Parameter to the Usecase and returns a runnable Flow which emits a List of UserConsent`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+        // Given
+        val config = ClientConfigurationStub()
+        val usecase = FetchUserConsentsStub()
+        val consents = listOf(DummyData.userConsent)
+
+        val capturedParameter = Channel<UsecaseContract.FetchUserConsents.Parameter>()
+
+        config.whenGetEnvironment = { Environment.DEV }
+        usecase.whenExecute = { delegatedParameter ->
+            launch {
+                capturedParameter.send(delegatedParameter)
+            }
+            consents
+        }
+
+        val di = koinApplication {
+            modules(
+                module {
+                    single<UsecaseContract.FetchUserConsents> {
+                        usecase
+                    }
+                    single<UsecaseContract.FetchConsentDocuments> {
+                        FetchConsentDocumentsStub()
+                    }
+                    single<UsecaseContract.CreateUserConsent> {
+                        CreateUserConsentStub()
+                    }
+                    single<UsecaseContract.RevokeUserConsent> {
+                        RevokeUserConsentStub()
+                    }
+                }
+            )
+        }
+
+        val client = Client(config, di)
+
+        // When
+        client.fetchAllUserConsents().ktFlow.collect { result ->
+            // Then
+            assertSame(
+                actual = result,
+                expected = consents
+            )
+        }
+
+        assertEquals(
+            actual = capturedParameter.receive(),
+            expected = FetchUserConsents.Parameter()
+        )
+    }
+
+    @Test
+    fun `Given revokeUserConsent is called with a ConsentKey it builds and delegates its Parameter to the Usecase and returns a runnable Flow which just runs`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+        // Given
+        val config = ClientConfigurationStub()
+        val usecase = RevokeUserConsentStub()
+
+        val consentKey = "custom-consent-key"
+
+        val capturedParameter = Channel<UsecaseContract.RevokeUserConsent.Parameter>()
+
+        config.whenGetEnvironment = { Environment.DEV }
+
+        usecase.whenExecute = { delegatedParameter ->
+            launch {
+                capturedParameter.send(delegatedParameter)
+            }
+            Unit
+        }
+
+        val di = koinApplication {
+            modules(
+                module {
+                    single<UsecaseContract.RevokeUserConsent> {
+                        usecase
+                    }
+                    single<UsecaseContract.FetchConsentDocuments> {
+                        FetchConsentDocumentsStub()
+                    }
+                    single<UsecaseContract.CreateUserConsent> {
+                        CreateUserConsentStub()
+                    }
+                    single<UsecaseContract.FetchUserConsents> {
+                        FetchUserConsentsStub()
+                    }
+                }
+            )
+        }
+
+        val client = Client(config, di)
+
+        // When
+        client.revokeUserConsent(consentKey).ktFlow.collect { result ->
+            // Then
+            assertSame(
+                actual = result,
+                expected = Unit
+            )
+        }
+
+        assertEquals(
+            actual = capturedParameter.receive(),
+            expected = RevokeUserConsent.Parameter(
+                consentKey = consentKey,
+            )
         )
     }
 }

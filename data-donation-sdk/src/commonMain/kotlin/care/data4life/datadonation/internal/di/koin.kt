@@ -39,10 +39,9 @@ import care.data4life.datadonation.internal.data.service.networking.resolveNetwo
 import care.data4life.datadonation.internal.data.service.resolveServiceModule
 import care.data4life.datadonation.internal.domain.repository.resolveRepositoryModule
 import care.data4life.datadonation.internal.domain.usecases.*
-import care.data4life.datadonation.internal.runner.CredentialProvider
-import care.data4life.datadonation.internal.runner.ScopeProvider
-import care.data4life.datadonation.internal.runner.UserSessionTokenProvider
-import care.data4life.datadonation.internal.runner.resolveUsecaseRunnerModule
+import care.data4life.datadonation.internal.provider.CredentialProvider
+import care.data4life.datadonation.internal.provider.ScopeProvider
+import care.data4life.datadonation.internal.provider.UserSessionTokenProvider
 import kotlinx.datetime.Clock
 import org.koin.core.KoinApplication
 import org.koin.core.module.Module
@@ -56,7 +55,6 @@ internal fun initKoin(configuration: Contract.Configuration): KoinApplication {
             resolveRootModule(configuration),
             resolveNetworking(),
             resolveKtorPlugins(),
-            resolveUsecaseRunnerModule(),
             resolveUsecaseModule(),
             resolveRepositoryModule(),
             resolveServiceModule()

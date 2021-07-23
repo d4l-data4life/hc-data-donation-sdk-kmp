@@ -19,7 +19,6 @@ package care.data4life.datadonation.di
 import care.data4life.datadonation.core.model.ModelContract.Environment
 import care.data4life.datadonation.internal.di.initKoin
 import care.data4life.datadonation.internal.domain.usecases.UsecaseContract
-import care.data4life.datadonation.internal.runner.UsecaseRunnerContract
 import care.data4life.datadonation.mock.stub.ClientConfigurationStub
 import org.koin.core.context.stopKoin
 import kotlin.test.BeforeTest
@@ -42,7 +41,7 @@ class KoinTest {
         // When
         val app = initKoin(config)
         // Then
-        val usecase: UsecaseContract.CreateUserConsent by app.koin.inject()
+        val usecase: UsecaseContract.CreateUserConsent = app.koin.get()
         assertNotNull(usecase)
     }
 
@@ -53,7 +52,7 @@ class KoinTest {
         // When
         val app = initKoin(config)
         // Then
-        val usecase: UsecaseContract.FetchConsentDocuments by app.koin.inject()
+        val usecase: UsecaseContract.FetchConsentDocuments = app.koin.get()
         assertNotNull(usecase)
     }
 
@@ -64,7 +63,7 @@ class KoinTest {
         // When
         val app = initKoin(config)
         // Then
-        val usecase: UsecaseContract.FetchUserConsents by app.koin.inject()
+        val usecase: UsecaseContract.FetchUserConsents = app.koin.get()
         assertNotNull(usecase)
     }
 
@@ -75,18 +74,7 @@ class KoinTest {
         // When
         val app = initKoin(config)
         // Then
-        val usecase: UsecaseContract.RevokeUserConsent by app.koin.inject()
-        assertNotNull(usecase)
-    }
-
-    @Test
-    fun `Given initKoin is called with a Configuration, the resulting KoinApplication contains a UseCaseRunner`() {
-        // Given
-        config.whenGetEnvironment = { Environment.DEV }
-        // When
-        val app = initKoin(config)
-        // Then
-        val usecase: UsecaseRunnerContract by app.koin.inject()
+        val usecase: UsecaseContract.RevokeUserConsent = app.koin.get()
         assertNotNull(usecase)
     }
 }
