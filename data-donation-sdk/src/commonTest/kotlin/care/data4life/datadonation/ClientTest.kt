@@ -28,7 +28,7 @@ import care.data4life.datadonation.mock.stub.FetchConsentDocumentsStub
 import care.data4life.datadonation.mock.stub.FetchUserConsentsStub
 import care.data4life.datadonation.mock.stub.RevokeUserConsentStub
 import care.data4life.datadonation.mock.stub.UserSessionTokenProviderStub
-import care.data4life.sdk.util.test.runWithContextBlockingTest
+import care.data4life.sdk.util.test.coroutine.runWithContextBlockingTest
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.collect

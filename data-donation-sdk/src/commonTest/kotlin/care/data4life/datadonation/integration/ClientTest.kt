@@ -41,7 +41,7 @@ import care.data4life.datadonation.internal.di.resolveRootModule
 import care.data4life.datadonation.internal.domain.repository.resolveRepositoryModule
 import care.data4life.datadonation.internal.domain.usecases.resolveUsecaseModule
 import care.data4life.datadonation.mock.DummyData
-import care.data4life.sdk.util.test.runWithContextBlockingTest
+import care.data4life.sdk.util.test.coroutine.runWithContextBlockingTest
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.collect

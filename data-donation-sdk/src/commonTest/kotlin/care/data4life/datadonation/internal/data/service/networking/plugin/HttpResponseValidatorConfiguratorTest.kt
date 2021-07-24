@@ -16,11 +16,11 @@
 
 package care.data4life.datadonation.internal.data.service.networking.plugin
 
-import care.data4life.datadonation.mock.fake.defaultResponse
 import care.data4life.datadonation.mock.stub.service.networking.plugin.HttpErrorMapperStub
 import care.data4life.datadonation.mock.stub.service.networking.plugin.HttpSuccessfulResponseValidatorStub
 import care.data4life.sdk.lang.D4LException
-import care.data4life.sdk.util.test.runBlockingTest
+import care.data4life.sdk.util.test.coroutine.runBlockingTest
+import care.data4life.sdk.util.test.ktor.createHelloWorldOkResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
@@ -58,7 +58,7 @@ class HttpResponseValidatorConfiguratorTest {
 
             engine {
                 addHandler {
-                    defaultResponse(this)
+                    createHelloWorldOkResponse(this)
                 }
             }
         }
@@ -85,7 +85,7 @@ class HttpResponseValidatorConfiguratorTest {
         val client = HttpClient(MockEngine) {
             engine {
                 addHandler {
-                    defaultResponse(this)
+                    createHelloWorldOkResponse(this)
                 }
             }
             install(HttpCallValidator) {

@@ -36,8 +36,8 @@ import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.di.initKoin
 import care.data4life.datadonation.internal.domain.usecases.*
-import care.data4life.datadonation.wrapper.D4LSDKFlow
-import care.data4life.datadonation.wrapper.D4LSDKFlowContract
+import care.data4life.sdk.util.coroutine.D4LSDKFlow
+import care.data4life.sdk.util.coroutine.D4LSDKFlowContract
 import kotlinx.coroutines.flow.flow
 import org.koin.core.KoinApplication
 

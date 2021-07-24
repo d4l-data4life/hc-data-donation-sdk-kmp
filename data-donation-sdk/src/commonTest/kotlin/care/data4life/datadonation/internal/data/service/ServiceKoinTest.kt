@@ -19,10 +19,10 @@ package care.data4life.datadonation.internal.data.service
 import care.data4life.datadonation.DataDonationSDKPublicAPI
 import care.data4life.datadonation.DataDonationSDKPublicAPI.Environment
 import care.data4life.datadonation.internal.data.service.networking.Networking
-import care.data4life.datadonation.mock.fake.createDefaultMockClient
 import care.data4life.datadonation.mock.stub.ClockStub
 import care.data4life.datadonation.mock.stub.UserSessionTokenProviderStub
 import care.data4life.datadonation.mock.stub.service.networking.RequestBuilderSpy
+import care.data4life.sdk.util.test.ktor.createHelloWorldMockClient
 import kotlinx.datetime.Clock
 import org.koin.core.context.stopKoin
 import org.koin.dsl.koinApplication
@@ -59,7 +59,7 @@ class ServiceKoinTest {
                     single<Networking.RequestBuilderFactory> {
                         RequestBuilderSpy.Factory()
                     }
-                    single { createDefaultMockClient() }
+                    single { createHelloWorldMockClient() }
                     single<Environment> { Environment.DEV }
                 }
             )

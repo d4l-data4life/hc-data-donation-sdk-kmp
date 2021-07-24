@@ -16,9 +16,9 @@
 
 package care.data4life.datadonation.internal.data.service.networking
 
-import care.data4life.datadonation.mock.fake.defaultResponse
 import care.data4life.datadonation.mock.stub.service.networking.HttpPluginConfiguratorStub
-import care.data4life.sdk.util.test.runWithContextBlockingTest
+import care.data4life.sdk.util.test.coroutine.runWithContextBlockingTest
+import care.data4life.sdk.util.test.ktor.createHelloWorldOkResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.features.HttpClientFeature
@@ -78,7 +78,7 @@ class HttpClientConfiguratorTest {
 
             engine {
                 addHandler {
-                    defaultResponse(this)
+                    createHelloWorldOkResponse(this)
                 }
             }
         }
@@ -128,7 +128,7 @@ class HttpClientConfiguratorTest {
 
             engine {
                 addHandler {
-                    defaultResponse(this)
+                    createHelloWorldOkResponse(this)
                 }
             }
         }

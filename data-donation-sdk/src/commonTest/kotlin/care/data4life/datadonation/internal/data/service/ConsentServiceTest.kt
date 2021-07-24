@@ -34,12 +34,12 @@ import care.data4life.datadonation.lang.ConsentServiceError
 import care.data4life.datadonation.lang.CoreRuntimeError
 import care.data4life.datadonation.lang.HttpRuntimeError
 import care.data4life.datadonation.mock.DummyData
-import care.data4life.datadonation.mock.fake.createErrorMockClient
-import care.data4life.datadonation.mock.fake.createMockClientWithResponse
 import care.data4life.datadonation.mock.stub.ClockStub
 import care.data4life.datadonation.mock.stub.service.ConsentErrorHandlerStub
 import care.data4life.datadonation.mock.stub.service.networking.RequestBuilderSpy
-import care.data4life.sdk.util.test.runBlockingTest
+import care.data4life.sdk.util.test.coroutine.runBlockingTest
+import care.data4life.sdk.util.test.ktor.createErrorMockClient
+import care.data4life.sdk.util.test.ktor.createMockClientWithResponse
 import io.ktor.client.engine.mock.respond
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.statement.HttpStatement
