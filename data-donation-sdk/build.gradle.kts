@@ -54,7 +54,6 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(Dependency.multiplatform.kotlin.stdlibCommon)
-                implementation(Dependency.multiplatform.stately)
 
                 implementation(Dependency.multiplatform.koin.commonCore)
 
@@ -75,6 +74,7 @@ kotlin {
                 // D4L
                 implementation(Dependency.d4l.fhir)
                 implementation(Dependency.d4l.util)
+                implementation(Dependency.d4l.utilCoroutine)
             }
         }
         commonTest {
@@ -86,6 +86,8 @@ kotlin {
 
                 // D4L
                 implementation(Dependency.d4l.testUtil)
+                implementation(Dependency.d4l.testCoroutineUtil)
+                implementation(Dependency.d4l.testKtorUtil)
             }
         }
 
