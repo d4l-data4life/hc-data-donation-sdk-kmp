@@ -40,6 +40,7 @@ import care.data4life.datadonation.internal.data.service.resolveServiceModule
 import care.data4life.datadonation.internal.di.resolveRootModule
 import care.data4life.datadonation.internal.domain.repository.resolveRepositoryModule
 import care.data4life.datadonation.internal.domain.usecases.resolveUsecaseModule
+import care.data4life.datadonation.lang.ConsentServiceError
 import care.data4life.datadonation.mock.ResourceLoader
 import care.data4life.datadonation.mock.fixtures.ConsentFixtures
 import care.data4life.sdk.util.test.coroutine.runWithContextBlockingTest
@@ -50,6 +51,7 @@ import io.ktor.http.fullPath
 import io.ktor.http.headersOf
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import org.koin.core.context.stopKoin
 import org.koin.core.qualifier.named
@@ -123,6 +125,59 @@ class ClientModuleTest {
                 actual = result,
                 expected = listOf(ConsentFixtures.sampleConsentDocument)
             )
+        }
+    }
+
+    @Test
+    fun `Given fetchConsentDocuments is called with its appropriate parameter, it propagates Errors`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+        // Given
+        val consentKey = "custom-consent-key"
+        val language = "en"
+        val version = 42
+
+        val httpClient = createMockClientWithResponse { scope, request ->
+            // Then
+            assertEquals(
+                actual = request.url.fullPath,
+                expected = "/consent/api/v1/consentDocuments?consentDocumentKey=$consentKey&version=$version&language=$language"
+            )
+
+            scope.respond(
+                content = "potato",
+                status = HttpStatusCode.InternalServerError
+            )
+        }
+
+        val koin = koinApplication {
+            modules(
+                resolveRootModule(
+                    DataDonationSDKPublicAPI.Environment.DEV,
+                    UserSessionTokenProvider
+                ),
+                resolveNetworking(),
+                resolveKtorPlugins(),
+                resolveUsecaseModule(),
+                resolveRepositoryModule(),
+                resolveServiceModule(),
+                module {
+                    factory(
+                        override = true,
+                        qualifier = named("blankHttpClient")
+                    ) { httpClient }
+                }
+            )
+        }
+
+        val client = Client(koin)
+
+        // When
+        client.fetchConsentDocuments(
+            consentKey,
+            version,
+            language,
+        ).ktFlow.catch { result ->
+            // Then
+            assertTrue(result is ConsentServiceError.InternalServer)
         }
     }
 
