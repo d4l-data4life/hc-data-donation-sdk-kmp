@@ -37,12 +37,12 @@ class ConsentDocumentRepositoryTest {
     }
 
     @Test
-    fun `Given fetchConsentDocuments is called with a AccessToken, a Version and a ConsentKey, it resolves the SessionToken and delegates that to the ConsentService and returns a List of ConsentDocuments`() = runBlockingTest {
+    fun `Given fetchConsentDocuments is called with a AccessToken, a Version and a consentDocumentKey, it resolves the SessionToken and delegates that to the ConsentService and returns a List of ConsentDocuments`() = runBlockingTest {
         // Given
         val consentService = ConsentServiceStub()
         val sessionTokenService = UserSessionTokenServiceStub()
 
-        val consentKey = "tomato"
+        val consentDocumentKey = "tomato"
         val version = 23
         val language = "de-j-old-n-kotlin-x-done"
 
@@ -55,22 +55,22 @@ class ConsentDocumentRepositoryTest {
         var capturedSessionToken: String? = null
         var capturedVersion: Int? = null
         var capturedLanguage: String? = null
-        var capturedConsentKey: String? = null
+        var capturedconsentDocumentKey: String? = null
 
         sessionTokenService.whenSessionToken = { sessionToken }
 
-        consentService.whenFetchConsentDocuments = { delegatedSessionToken, delegatedVersion, delegatedLanguage, delegatedConsentKey ->
+        consentService.whenFetchConsentDocuments = { delegatedSessionToken, delegatedVersion, delegatedLanguage, delegatedconsentDocumentKey ->
             capturedSessionToken = delegatedSessionToken
             capturedLanguage = delegatedLanguage
             capturedVersion = delegatedVersion
-            capturedConsentKey = delegatedConsentKey
+            capturedconsentDocumentKey = delegatedconsentDocumentKey
             consentDocuments
         }
 
         val repo = ConsentDocumentRepository(consentService, sessionTokenService)
 
         // When
-        val result = repo.fetchConsentDocuments(language, version, consentKey)
+        val result = repo.fetchConsentDocuments(language, version, consentDocumentKey)
 
         // Then
         assertSame(
@@ -82,8 +82,8 @@ class ConsentDocumentRepositoryTest {
             expected = sessionToken
         )
         assertEquals(
-            actual = capturedConsentKey,
-            expected = consentKey
+            actual = capturedconsentDocumentKey,
+            expected = consentDocumentKey
         )
         assertEquals(
             actual = capturedLanguage,

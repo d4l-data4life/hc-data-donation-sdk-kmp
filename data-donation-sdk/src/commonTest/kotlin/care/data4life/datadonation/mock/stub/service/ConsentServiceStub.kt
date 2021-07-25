@@ -33,12 +33,12 @@ class ConsentServiceStub : ServiceContract.ConsentService, MockContract.Stub {
 
     override suspend fun createUserConsent(
         accessToken: String,
-        consentKey: String,
+        consentDocumentKey: String,
         version: Int
     ) {
         return whenCreateUserConsent?.invoke(
             accessToken,
-            consentKey,
+            consentDocumentKey,
             version
         ) ?: throw MockException()
     }
@@ -47,25 +47,25 @@ class ConsentServiceStub : ServiceContract.ConsentService, MockContract.Stub {
         accessToken: String,
         version: Int?,
         language: String?,
-        consentKey: String
+        consentDocumentKey: String
     ): List<ConsentDocument> {
         return whenFetchConsentDocuments?.invoke(
             accessToken,
             version,
             language,
-            consentKey
+            consentDocumentKey
         ) ?: throw MockException()
     }
 
     override suspend fun fetchUserConsents(
         accessToken: String,
         latestConsent: Boolean?,
-        consentKey: String?
+        consentDocumentKey: String?
     ): List<UserConsent> {
         return whenFetchUserConsents?.invoke(
             accessToken,
             latestConsent,
-            consentKey
+            consentDocumentKey
         ) ?: throw MockException()
     }
 
@@ -83,8 +83,8 @@ class ConsentServiceStub : ServiceContract.ConsentService, MockContract.Stub {
         return whenRequestSignatureDonation?.invoke(accessToken, message) ?: throw MockException()
     }
 
-    override suspend fun revokeUserConsent(accessToken: String, consentKey: String) {
-        return whenRevokeUserConsent?.invoke(accessToken, consentKey) ?: throw MockException()
+    override suspend fun revokeUserConsent(accessToken: String, consentDocumentKey: String) {
+        return whenRevokeUserConsent?.invoke(accessToken, consentDocumentKey) ?: throw MockException()
     }
 
     override fun clear() {

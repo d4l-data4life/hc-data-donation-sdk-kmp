@@ -40,21 +40,21 @@ internal class UserConsentRepository(
     private val sessionTokenService: ServiceContract.UserSessionTokenService
 ) : RepositoryContract.UserConsentRepository {
 
-    override suspend fun createUserConsent(consentKey: String, version: Int) {
+    override suspend fun createUserConsent(consentDocumentKey: String, version: Int) {
         val sessionToken = sessionTokenService.getUserSessionToken()
         consentService.createUserConsent(
             sessionToken,
-            consentKey,
+            consentDocumentKey,
             version
         )
     }
 
-    override suspend fun fetchUserConsents(consentKey: String?): List<UserConsent> {
+    override suspend fun fetchUserConsents(consentDocumentKey: String?): List<UserConsent> {
         val sessionToken = sessionTokenService.getUserSessionToken()
         return consentService.fetchUserConsents(
             sessionToken,
             false,
-            consentKey
+            consentDocumentKey
         )
     }
 
@@ -75,9 +75,9 @@ internal class UserConsentRepository(
         ).signature
     }
 
-    override suspend fun revokeUserConsent(consentKey: String) {
+    override suspend fun revokeUserConsent(consentDocumentKey: String) {
         val sessionToken = sessionTokenService.getUserSessionToken()
 
-        return consentService.revokeUserConsent(sessionToken, consentKey)
+        return consentService.revokeUserConsent(sessionToken, consentDocumentKey)
     }
 }

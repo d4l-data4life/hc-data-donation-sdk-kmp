@@ -47,18 +47,18 @@ internal interface ServiceContract {
             accessToken: String,
             version: Int?,
             language: String?,
-            consentKey: String
+            consentDocumentKey: String
         ): List<ConsentDocument>
 
         suspend fun fetchUserConsents(
             accessToken: String,
             latestConsent: Boolean?,
-            consentKey: String? = null
+            consentDocumentKey: String? = null
         ): List<UserConsent>
 
         suspend fun createUserConsent(
             accessToken: String,
-            consentKey: String,
+            consentDocumentKey: String,
             version: Int
         )
 
@@ -72,7 +72,7 @@ internal interface ServiceContract {
             message: String
         ): ConsentSignature
 
-        suspend fun revokeUserConsent(accessToken: String, consentKey: String)
+        suspend fun revokeUserConsent(accessToken: String, consentDocumentKey: String)
 
         companion object {
             val ROOT = listOf("consent", "api", "v1")

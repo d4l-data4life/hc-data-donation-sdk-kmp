@@ -50,12 +50,12 @@ class Client internal constructor(
     private val revokeUserConsent: UsecaseContract.RevokeUserConsent = koinApplication.koin.get()
 
     override fun createUserConsent(
-        consentKey: String,
+        consentDocumentKey: String,
         consentDocumentVersion: Int
     ): D4LSDKFlowContract<UserConsent> {
         val flow = flow {
             val parameter = CreateUserConsent.Parameter(
-                consentKey,
+                consentDocumentKey,
                 consentDocumentVersion
             )
 
@@ -66,7 +66,7 @@ class Client internal constructor(
     }
 
     override fun fetchConsentDocuments(
-        consentKey: String,
+        consentDocumentKey: String,
         consentDocumentVersion: Int?,
         language: String?,
     ): D4LSDKFlowContract<List<ConsentDocument>> {
@@ -74,7 +74,7 @@ class Client internal constructor(
             val parameter = FetchConsentDocuments.Parameter(
                 version = consentDocumentVersion,
                 language = language,
-                consentKey = consentKey
+                consentDocumentKey = consentDocumentKey
             )
 
             emit(fetchConsentDocuments.execute(parameter))
@@ -83,9 +83,9 @@ class Client internal constructor(
         return D4LSDKFlow(flow)
     }
 
-    override fun fetchUserConsents(consentKey: String): D4LSDKFlowContract<List<UserConsent>> {
+    override fun fetchUserConsents(consentDocumentKey: String): D4LSDKFlowContract<List<UserConsent>> {
         val flow = flow {
-            val parameter = FetchUserConsents.Parameter(consentKey)
+            val parameter = FetchUserConsents.Parameter(consentDocumentKey)
 
             emit(fetchUserConsents.execute(parameter))
         }
@@ -103,9 +103,9 @@ class Client internal constructor(
         return D4LSDKFlow(flow)
     }
 
-    override fun revokeUserConsent(consentKey: String): D4LSDKFlowContract<Unit> {
+    override fun revokeUserConsent(consentDocumentKey: String): D4LSDKFlowContract<Unit> {
         val flow = flow {
-            val parameter = RevokeUserConsent.Parameter(consentKey)
+            val parameter = RevokeUserConsent.Parameter(consentDocumentKey)
 
             emit(revokeUserConsent.execute(parameter))
         }

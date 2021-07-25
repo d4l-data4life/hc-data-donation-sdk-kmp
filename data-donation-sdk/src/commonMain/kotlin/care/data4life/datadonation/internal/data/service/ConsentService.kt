@@ -60,11 +60,11 @@ internal class ConsentService constructor(
         accessToken: String,
         version: Int?,
         language: String?,
-        consentKey: String
+        consentDocumentKey: String
     ): List<ConsentDocumentContract> {
         val path = buildPath(CONSENTS_DOCUMENTS)
         val parameter = mapOf(
-            USER_CONSENT_KEY to consentKey,
+            USER_CONSENT_KEY to consentDocumentKey,
             VERSION to version,
             LANGUAGE to language
         )
@@ -87,12 +87,12 @@ internal class ConsentService constructor(
 
     override suspend fun createUserConsent(
         accessToken: String,
-        consentKey: String,
+        consentDocumentKey: String,
         version: Int
     ) {
         val path = buildPath(USER_CONSENTS)
         val payload = ConsentCreationPayload(
-            consentKey,
+            consentDocumentKey,
             version,
             clock.now().toString()
         )
@@ -117,12 +117,12 @@ internal class ConsentService constructor(
     override suspend fun fetchUserConsents(
         accessToken: String,
         latestConsent: Boolean?,
-        consentKey: String?
+        consentDocumentKey: String?
     ): List<UserConsentContract> {
         val path = buildPath(USER_CONSENTS)
         val parameter = mapOf(
             LATEST_CONSENT to latestConsent,
-            USER_CONSENT_KEY to consentKey,
+            USER_CONSENT_KEY to consentDocumentKey,
         )
 
         val request = requestBuilderFactory
@@ -208,9 +208,9 @@ internal class ConsentService constructor(
         }
     }
 
-    override suspend fun revokeUserConsent(accessToken: String, consentKey: String) {
+    override suspend fun revokeUserConsent(accessToken: String, consentDocumentKey: String) {
         val path = buildPath(USER_CONSENTS)
-        val payload = ConsentRevocationPayload(consentKey)
+        val payload = ConsentRevocationPayload(consentDocumentKey)
 
         val request = requestBuilderFactory
             .create()

@@ -52,15 +52,15 @@ class FetchUserConsentsTest {
     }
 
     @Test
-    fun `Given a Usecase had been created and execute is called, it delegates the call to the ConsentRepository without the consentKey, if the key is null`() = runBlockingTest {
+    fun `Given a Usecase had been created and execute is called, it delegates the call to the ConsentRepository without the consentDocumentKey, if the key is null`() = runBlockingTest {
         // Given
-        val parameter = FetchUserConsents.Parameter(consentKey = null)
+        val parameter = FetchUserConsents.Parameter(consentDocumentKey = null)
         val dummyConsentList = listOf(DummyData.userConsent)
-        var capturedConsentKey: String? = null
+        var capturedconsentDocumentKey: String? = null
         val userContentRepository = UserConsentRepositoryStub()
 
-        userContentRepository.whenFetchUserConsents = { delegatedConsentKey ->
-            capturedConsentKey = delegatedConsentKey
+        userContentRepository.whenFetchUserConsents = { delegatedconsentDocumentKey ->
+            capturedconsentDocumentKey = delegatedconsentDocumentKey
             dummyConsentList
         }
 
@@ -73,20 +73,20 @@ class FetchUserConsentsTest {
             actual = result,
             expected = dummyConsentList
         )
-        assertNull(capturedConsentKey)
+        assertNull(capturedconsentDocumentKey)
     }
 
     @Test
-    fun `Given a Usecase had been created and execute is called, it delegates the call to the ConsentRepository with the consentKey, if the key is not null`() = runBlockingTest {
+    fun `Given a Usecase had been created and execute is called, it delegates the call to the ConsentRepository with the consentDocumentKey, if the key is not null`() = runBlockingTest {
         // Given
-        val consentKey = "key"
-        val parameter = FetchUserConsents.Parameter(consentKey = consentKey)
+        val consentDocumentKey = "key"
+        val parameter = FetchUserConsents.Parameter(consentDocumentKey = consentDocumentKey)
         val dummyConsentList = listOf(DummyData.userConsent)
-        var capturedConsentKey: String? = null
+        var capturedconsentDocumentKey: String? = null
         val userContentRepository = UserConsentRepositoryStub()
 
-        userContentRepository.whenFetchUserConsents = { delegatedConsentKey ->
-            capturedConsentKey = delegatedConsentKey
+        userContentRepository.whenFetchUserConsents = { delegatedconsentDocumentKey ->
+            capturedconsentDocumentKey = delegatedconsentDocumentKey
             dummyConsentList
         }
 
@@ -100,8 +100,8 @@ class FetchUserConsentsTest {
             expected = dummyConsentList
         )
         assertEquals(
-            actual = capturedConsentKey,
-            expected = consentKey
+            actual = capturedconsentDocumentKey,
+            expected = consentDocumentKey
         )
     }
 }

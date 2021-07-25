@@ -71,7 +71,7 @@ class ConsentServiceTest {
         val requestTemplate = RequestBuilderSpy.Factory()
         val clock = ClockStub()
         val accessToken = "potato"
-        val consentKey = "custom-consent-key"
+        val consentDocumentKey = "custom-consent-key"
         val version = 23
 
         val error = HttpRuntimeError(HttpStatusCode.TooManyRequests)
@@ -106,7 +106,7 @@ class ConsentServiceTest {
             )
             service.createUserConsent(
                 accessToken = accessToken,
-                consentKey = consentKey,
+                consentDocumentKey = consentDocumentKey,
                 version = version
             )
         }
@@ -129,7 +129,7 @@ class ConsentServiceTest {
         val clock = ClockStub()
 
         val accessToken = "potato"
-        val consentKey = "custom-consent-key"
+        val consentDocumentKey = "custom-consent-key"
         val version = 23
 
         var capturedMethod: Networking.Method? = null
@@ -162,7 +162,7 @@ class ConsentServiceTest {
         )
         val result = service.createUserConsent(
             accessToken = accessToken,
-            consentKey = consentKey,
+            consentDocumentKey = consentDocumentKey,
             version = version
         )
 
@@ -199,7 +199,7 @@ class ConsentServiceTest {
         assertEquals(
             actual = requestTemplate.lastInstance!!.delegatedBody,
             expected = ConsentCreationPayload(
-                consentKey,
+                consentDocumentKey,
                 version,
                 expectedTime.toString()
             )
@@ -207,12 +207,12 @@ class ConsentServiceTest {
     }
 
     @Test
-    fun `Given fetchConsentDocuments was called with a AccessToken, Version, Language and a ConsentKey it delegates HttpRequestErrors to its ErrorHandler`() = runBlockingTest {
+    fun `Given fetchConsentDocuments was called with a AccessToken, Version, Language and a consentDocumentKey it delegates HttpRequestErrors to its ErrorHandler`() = runBlockingTest {
         // Given
         val accessToken = "potato"
         val version = 23
         val language = "zh-TW-hans-de-informal-x-old"
-        val consentKey = "tomato"
+        val consentDocumentKey = "tomato"
 
         val requestTemplate = RequestBuilderSpy.Factory()
         val error = HttpRuntimeError(HttpStatusCode.TooManyRequests)
@@ -246,7 +246,7 @@ class ConsentServiceTest {
                 accessToken = accessToken,
                 version = version,
                 language = language,
-                consentKey = consentKey
+                consentDocumentKey = consentDocumentKey
             )
         }
 
@@ -262,7 +262,7 @@ class ConsentServiceTest {
     }
 
     @Test
-    fun `Given fetchConsentDocuments was called with a AccessToken, Version, Language and a ConsentKey it fails due to unexpected response`() = runBlockingTest {
+    fun `Given fetchConsentDocuments was called with a AccessToken, Version, Language and a consentDocumentKey it fails due to unexpected response`() = runBlockingTest {
         // Given
         val requestTemplate = RequestBuilderSpy.Factory()
         val client = createMockClientWithResponse { scope, _ ->
@@ -274,7 +274,7 @@ class ConsentServiceTest {
         val accessToken = "potato"
         val version = 23
         val language = "zh-TW-hans-de-informal-x-old"
-        val consentKey = "tomato"
+        val consentDocumentKey = "tomato"
 
         requestTemplate.onPrepare = { _, _ ->
             HttpStatement(
@@ -295,7 +295,7 @@ class ConsentServiceTest {
                 accessToken = accessToken,
                 version = version,
                 language = language,
-                consentKey = consentKey
+                consentDocumentKey = consentDocumentKey
             )
         }
 
@@ -306,13 +306,13 @@ class ConsentServiceTest {
     }
 
     @Test
-    fun `Given fetchConsentDocuments was called with a AccessToken, Version, Language and a ConsentKey it returns a List of ConsentDocument`() = runBlockingTest {
+    fun `Given fetchConsentDocuments was called with a AccessToken, Version, Language and a consentDocumentKey it returns a List of ConsentDocument`() = runBlockingTest {
         // Given
         val requestTemplate = RequestBuilderSpy.Factory()
         val accessToken = "potato"
         val version = 23
         val language = "zh-TW-hans-de-informal-x-old"
-        val consentKey = "tomato"
+        val consentDocumentKey = "tomato"
 
         var capturedMethod: Networking.Method? = null
         var capturedPath: Path? = null
@@ -343,7 +343,7 @@ class ConsentServiceTest {
             accessToken = accessToken,
             version = version,
             language = language,
-            consentKey = consentKey
+            consentDocumentKey = consentDocumentKey
         )
 
         // Then
@@ -373,7 +373,7 @@ class ConsentServiceTest {
         assertEquals(
             actual = requestTemplate.lastInstance!!.delegatedParameter,
             expected = mapOf(
-                USER_CONSENT_KEY to consentKey,
+                USER_CONSENT_KEY to consentDocumentKey,
                 VERSION to version,
                 LANGUAGE to language
             )
@@ -381,11 +381,11 @@ class ConsentServiceTest {
     }
 
     @Test
-    fun `Given fetchUserConsents was called with a AccessToken, Latest and a ConsentKey it delegates HttpRequestErrors to its ErrorHandler`() = runBlockingTest {
+    fun `Given fetchUserConsents was called with a AccessToken, Latest and a consentDocumentKey it delegates HttpRequestErrors to its ErrorHandler`() = runBlockingTest {
         // Given
         val requestTemplate = RequestBuilderSpy.Factory()
         val accessToken = "potato"
-        val consentKey = "tomato"
+        val consentDocumentKey = "tomato"
 
         val error = HttpRuntimeError(HttpStatusCode.TooManyRequests)
         val outgoingError = ConsentServiceError.Forbidden()
@@ -418,7 +418,7 @@ class ConsentServiceTest {
             service.fetchUserConsents(
                 accessToken = accessToken,
                 latestConsent = false,
-                consentKey = consentKey
+                consentDocumentKey = consentDocumentKey
             )
         }
 
@@ -434,7 +434,7 @@ class ConsentServiceTest {
     }
 
     @Test
-    fun `Given fetchUserConsents was called with a AccessToken, Latest and a ConsentKey it fails due to unexpected response`() = runBlockingTest {
+    fun `Given fetchUserConsents was called with a AccessToken, Latest and a consentDocumentKey it fails due to unexpected response`() = runBlockingTest {
         // Given
         val requestTemplate = RequestBuilderSpy.Factory()
         val client = createMockClientWithResponse { scope, _ ->
@@ -443,7 +443,7 @@ class ConsentServiceTest {
             )
         }
         val accessToken = "potato"
-        val consentKey = "tomato"
+        val consentDocumentKey = "tomato"
 
         requestTemplate.onPrepare = { _, _ ->
             HttpStatement(
@@ -463,7 +463,7 @@ class ConsentServiceTest {
             service.fetchUserConsents(
                 accessToken = accessToken,
                 latestConsent = false,
-                consentKey = consentKey
+                consentDocumentKey = consentDocumentKey
             )
         }
 
@@ -474,12 +474,12 @@ class ConsentServiceTest {
     }
 
     @Test
-    fun `Given fetchUserConsents was called with a AccessToken, LatestConsent and a ConsentKey it returns a List of UserConsents`() = runBlockingTest {
+    fun `Given fetchUserConsents was called with a AccessToken, LatestConsent and a consentDocumentKey it returns a List of UserConsents`() = runBlockingTest {
         // Given
         val requestTemplate = RequestBuilderSpy.Factory()
         val accessToken = "potato"
         val lastedConsent = true
-        val consentKey = "tomato"
+        val consentDocumentKey = "tomato"
 
         var capturedMethod: Networking.Method? = null
         var capturedPath: Path? = null
@@ -512,7 +512,7 @@ class ConsentServiceTest {
         val result = service.fetchUserConsents(
             accessToken = accessToken,
             latestConsent = lastedConsent,
-            consentKey = consentKey
+            consentDocumentKey = consentDocumentKey
         )
 
         // Then
@@ -543,7 +543,7 @@ class ConsentServiceTest {
             actual = requestTemplate.lastInstance!!.delegatedParameter,
             expected = mapOf(
                 LATEST_CONSENT to lastedConsent,
-                USER_CONSENT_KEY to consentKey
+                USER_CONSENT_KEY to consentDocumentKey
             )
         )
     }
@@ -879,7 +879,7 @@ class ConsentServiceTest {
         // Given
         val requestTemplate = RequestBuilderSpy.Factory()
         val accessToken = "potato"
-        val consentKey = "custom-consent-key"
+        val consentDocumentKey = "custom-consent-key"
 
         val error = HttpRuntimeError(HttpStatusCode.TooManyRequests)
         val outgoingError = ConsentServiceError.Forbidden()
@@ -911,7 +911,7 @@ class ConsentServiceTest {
             )
             service.revokeUserConsent(
                 accessToken = accessToken,
-                consentKey = consentKey
+                consentDocumentKey = consentDocumentKey
             )
         }
 
@@ -931,7 +931,7 @@ class ConsentServiceTest {
         // Given
         val requestTemplate = RequestBuilderSpy.Factory()
         val accessToken = "potato"
-        val consentKey = "custom-consent-key"
+        val consentDocumentKey = "custom-consent-key"
 
         var capturedMethod: Networking.Method? = null
         var capturedPath: Path? = null
@@ -958,7 +958,7 @@ class ConsentServiceTest {
             ConsentErrorHandlerStub(),
             ClockStub()
         )
-        val result = service.revokeUserConsent(accessToken = accessToken, consentKey = consentKey)
+        val result = service.revokeUserConsent(accessToken = accessToken, consentDocumentKey = consentDocumentKey)
 
         // Then
         assertSame(
@@ -992,7 +992,7 @@ class ConsentServiceTest {
         assertTrue(requestTemplate.lastInstance!!.delegatedJsonFlag)
         assertEquals(
             actual = requestTemplate.lastInstance!!.delegatedBody,
-            expected = ConsentRevocationPayload(consentKey)
+            expected = ConsentRevocationPayload(consentDocumentKey)
         )
     }
 }

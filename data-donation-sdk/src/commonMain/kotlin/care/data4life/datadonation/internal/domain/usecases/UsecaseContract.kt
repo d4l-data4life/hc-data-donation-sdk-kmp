@@ -27,7 +27,7 @@ interface UsecaseContract {
 
     interface FetchUserConsents : Usecase<FetchUserConsents.Parameter, List<UserConsent>> {
         interface Parameter {
-            val consentKey: String?
+            val consentDocumentKey: String?
         }
     }
 
@@ -35,19 +35,19 @@ interface UsecaseContract {
         interface Parameter {
             val version: Int?
             val language: String?
-            val consentKey: String
+            val consentDocumentKey: String
         }
     }
 
     interface RevokeUserConsent : Usecase<RevokeUserConsent.Parameter, Unit> {
         interface Parameter {
-            val consentKey: String
+            val consentDocumentKey: String
         }
     }
 
     interface CreateUserConsent : Usecase<CreateUserConsent.Parameter, UserConsent> {
         interface Parameter {
-            val consentKey: String
+            val consentDocumentKey: String
             val version: Int
         }
     }
