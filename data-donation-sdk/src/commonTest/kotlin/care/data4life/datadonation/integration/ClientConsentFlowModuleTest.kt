@@ -55,7 +55,6 @@ import io.ktor.http.fullPath
 import io.ktor.http.headersOf
 import io.ktor.util.KtorExperimentalAPI
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -66,13 +65,13 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import kotlin.test.BeforeTest
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertSame
 import kotlin.test.assertTrue
 import kotlin.time.seconds
 
-class ClientModuleTest {
+class ClientConsentFlowModuleTest {
     @BeforeTest
     fun setUp() {
         stopKoin()
@@ -193,10 +192,33 @@ class ClientModuleTest {
     }
 
     @Test
-    @Ignore
-    fun fetchUserConsentsTest() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+    fun `Given fetchUserConsents is called with a consentKey it returns a List of UserConsent`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val consentKey = "salt"
+
+        val httpClient = createMockClientWithResponse { scope, request ->
+            // Then
+            assertEquals(
+                actual = request.url.fullPath,
+                expected = "/consent/api/v1/userConsents?latest=false&consentDocumentKey=$consentKey"
+            )
+            assertEquals(
+                actual = request.headers,
+                expected = headersOf(
+                    "Authorization" to listOf("Bearer ${UserSessionTokenProvider.sessionToken}"),
+                    "Accept" to listOf("application/json"),
+                    "Accept-Charset" to listOf("UTF-8")
+                )
+            )
+
+            scope.respond(
+                content = ResourceLoader.loader.load("/fixtures/consent/UserConsents.json"),
+                status = HttpStatusCode.OK,
+                headers = headersOf(
+                    "Content-Type" to listOf("application/json")
+                )
+            )
+        }
 
         val koin = koinApplication {
             modules(
@@ -208,7 +230,13 @@ class ClientModuleTest {
                 resolveKtorPlugins(),
                 resolveUsecaseModule(),
                 resolveRepositoryModule(),
-                resolveServiceModule()
+                resolveServiceModule(),
+                module {
+                    factory(
+                        override = true,
+                        qualifier = named("blankHttpClient")
+                    ) { httpClient }
+                }
             )
         }
 
@@ -219,7 +247,7 @@ class ClientModuleTest {
             // Then
             assertEquals(
                 actual = result,
-                expected = emptyList() // TODO
+                expected = listOf(ConsentFixtures.sampleUserConsent)
             )
         }
     }
@@ -228,12 +256,12 @@ class ClientModuleTest {
     @Test
     fun `Given createUserConsent is called with a consentKey and a consentDocumentVersion, it returns a UserConsent`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
-        val consentKey = "broccoli"
+        val consentKey = "pepper"
         val version = 23
 
         val httpClient = createMockClientWithResponse { scope, request ->
             // Then
-            if(request.method == HttpMethod.Post) {
+            if (request.method == HttpMethod.Post) {
                 assertEquals(
                     actual = request.url.fullPath,
                     expected = "/consent/api/v1/userConsents"
@@ -253,7 +281,7 @@ class ClientModuleTest {
                 launch {
                     assertEquals(
                         actual = request.body.toByteReadPacket().readText(),
-                        expected = "{\"consentDocumentKey\":\"broccoli\",\"consentDocumentVersion\":23,\"consentDate\":\"1970-01-01T00:01:30Z\"}"
+                        expected = "{\"consentDocumentKey\":\"$consentKey\",\"consentDocumentVersion\":$version,\"consentDate\":\"1970-01-01T00:01:30Z\"}"
                     )
                 }
                 scope.respond(
@@ -273,7 +301,6 @@ class ClientModuleTest {
                         "Accept-Charset" to listOf("UTF-8")
                     )
                 )
-
 
                 scope.respond(
                     content = ResourceLoader.loader.load("/fixtures/consent/UserConsents.json"),
@@ -325,11 +352,42 @@ class ClientModuleTest {
         }
     }
 
+    @KtorExperimentalAPI
     @Test
-    @Ignore
-    fun revokeUserConsentsTest() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+    fun `Given revokeUserConsents is called with ConsentKey it just runs`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
-        val language = "en"
+        val consentKey = "water"
+
+        val httpClient = createMockClientWithResponse { scope, request ->
+            // Then
+            assertEquals(
+                actual = request.url.fullPath,
+                expected = "/consent/api/v1/userConsents"
+            )
+            assertEquals(
+                actual = request.method,
+                expected = HttpMethod.Delete
+            )
+            launch {
+                assertEquals(
+                    actual = request.body.toByteReadPacket().readText(),
+                    expected = "{\"consentDocumentKey\":\"$consentKey\"}"
+                )
+            }
+            assertEquals(
+                actual = request.headers,
+                expected = headersOf(
+                    "Authorization" to listOf("Bearer ${UserSessionTokenProvider.sessionToken}"),
+                    "Accept" to listOf("application/json"),
+                    "Accept-Charset" to listOf("UTF-8")
+                )
+            )
+
+            scope.respond(
+                content = "",
+                status = HttpStatusCode.NoContent
+            )
+        }
 
         val koin = koinApplication {
             modules(
@@ -341,19 +399,69 @@ class ClientModuleTest {
                 resolveKtorPlugins(),
                 resolveUsecaseModule(),
                 resolveRepositoryModule(),
-                resolveServiceModule()
+                resolveServiceModule(),
+                module {
+                    factory(
+                        override = true,
+                        qualifier = named("blankHttpClient")
+                    ) { httpClient }
+                }
             )
         }
 
         val client = Client(koin)
-        val capturedResult = Channel<Boolean>()
 
         // When
-        client.revokeUserConsent(language).ktFlow.collect {}
-        val result = capturedResult.receive()
+        client.revokeUserConsent(consentKey).ktFlow.collect { result ->
+            // Then
+            assertSame(
+                actual = result,
+                expected = Unit
+            )
+        }
+    }
 
-        // Then
-        assertTrue(result)
+    @KtorExperimentalAPI
+    @Test
+    fun `Given revokeUserConsents is called with ConsentKey it fails at unexpected Resonse`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+        // Given
+        val consentKey = "water"
+
+        val httpClient = createMockClientWithResponse { scope, _ ->
+            // Then
+            scope.respond(
+                content = "",
+                status = HttpStatusCode.OK
+            )
+        }
+
+        val koin = koinApplication {
+            modules(
+                resolveRootModule(
+                    DataDonationSDKPublicAPI.Environment.DEV,
+                    UserSessionTokenProvider
+                ),
+                resolveNetworking(),
+                resolveKtorPlugins(),
+                resolveUsecaseModule(),
+                resolveRepositoryModule(),
+                resolveServiceModule(),
+                module {
+                    factory(
+                        override = true,
+                        qualifier = named("blankHttpClient")
+                    ) { httpClient }
+                }
+            )
+        }
+
+        val client = Client(koin)
+
+        // When
+        client.revokeUserConsent(consentKey).ktFlow.catch { result ->
+            // Then
+            assertTrue(result is ConsentServiceError.UnexpectedFailure)
+        }
     }
 
     private object UserSessionTokenProvider : DataDonationSDKPublicAPI.UserSessionTokenProvider {
