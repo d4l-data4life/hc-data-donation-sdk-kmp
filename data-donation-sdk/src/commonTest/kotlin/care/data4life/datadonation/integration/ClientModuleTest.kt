@@ -40,34 +40,55 @@ import care.data4life.datadonation.internal.data.service.resolveServiceModule
 import care.data4life.datadonation.internal.di.resolveRootModule
 import care.data4life.datadonation.internal.domain.repository.resolveRepositoryModule
 import care.data4life.datadonation.internal.domain.usecases.resolveUsecaseModule
-import care.data4life.datadonation.mock.DummyData
+import care.data4life.datadonation.mock.ResourceLoader
+import care.data4life.datadonation.mock.fixtures.ConsentFixtures
 import care.data4life.sdk.util.test.coroutine.runWithContextBlockingTest
+import care.data4life.sdk.util.test.ktor.createMockClientWithResponse
+import io.ktor.client.engine.mock.respond
+import io.ktor.http.HttpStatusCode
+import io.ktor.http.fullPath
+import io.ktor.http.headersOf
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.collect
 import org.koin.core.context.stopKoin
+import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
+import org.koin.dsl.module
 import kotlin.test.BeforeTest
 import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
-// TODO: use MockEngine and make separated E2E tests
-class ClientTest {
+class ClientModuleTest {
     @BeforeTest
     fun setUp() {
         stopKoin()
     }
 
     @Test
-    @Ignore
-    fun fetchConsentDocumentTest() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+    fun `Given fetchConsentDocuments is called with its appropriate parameter, it returns a List of ConsentDocument`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val consentKey = "custom-consent-key"
         val language = "en"
         val version = 42
+
+        val httpClient = createMockClientWithResponse { scope, request ->
+            // Then
+            assertEquals(
+                actual = request.url.fullPath,
+                expected = "/consent/api/v1/consentDocuments?consentDocumentKey=$consentKey&version=$version&language=$language"
+            )
+
+            scope.respond(
+                content = ResourceLoader.loader.load("/fixtures/consent/ConsentDocuments.json"),
+                status = HttpStatusCode.OK,
+                headers = headersOf(
+                    "Content-Type" to listOf("application/json")
+                )
+            )
+        }
 
         val koin = koinApplication {
             modules(
@@ -79,7 +100,13 @@ class ClientTest {
                 resolveKtorPlugins(),
                 resolveUsecaseModule(),
                 resolveRepositoryModule(),
-                resolveServiceModule()
+                resolveServiceModule(),
+                module {
+                    factory(
+                        override = true,
+                        qualifier = named("blankHttpClient")
+                    ) { httpClient }
+                }
             )
         }
 
@@ -87,59 +114,15 @@ class ClientTest {
 
         // When
         client.fetchConsentDocuments(
+            consentKey,
             version,
             language,
-            consentKey
         ).ktFlow.collect { result ->
             // Then
             assertEquals(
                 actual = result,
-                expected = emptyList() // TODO
+                expected = listOf(ConsentFixtures.sampleConsentDocument)
             )
-        }
-    }
-
-    @Test
-    @Ignore
-    fun createUserConsentTest() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
-        // Given
-        val consentKey = "custom-consent-key"
-        val language = "en"
-        val version = 42
-
-        val koin = koinApplication {
-            modules(
-                resolveRootModule(
-                    DataDonationSDKPublicAPI.Environment.DEV,
-                    UserSessionTokenProvider
-                ),
-                resolveNetworking(),
-                resolveKtorPlugins(),
-                resolveUsecaseModule(),
-                resolveRepositoryModule(),
-                resolveServiceModule()
-            )
-        }
-
-        val client = Client(koin)
-
-        // When
-        client.fetchConsentDocuments(
-            version,
-            language,
-            consentKey,
-        ).ktFlow.collect { consentDocuments ->
-            val consentDoc = consentDocuments.first()
-            client.createUserConsent(
-                consentDoc.key,
-                consentDoc.version
-            ).ktFlow.collect { result ->
-                // Then
-                assertSame(
-                    actual = result,
-                    expected = DummyData.userConsent // TODO
-                )
-            }
         }
     }
 

@@ -19,6 +19,9 @@ gen/
 !.idea/encoding.xml
 !.idea/copyright/
 
+# generated
+data-donation-sdk/src-gen/commonTest/kotlin/care/data4life/datadonation/test/config/TestConfig.kt
+
 # Others
 captures/
 

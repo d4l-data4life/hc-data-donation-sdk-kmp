@@ -32,7 +32,7 @@
 
 package care.data4life.datadonation.internal.domain.usecases
 
-import care.data4life.datadonation.core.model.UserConsent
+import care.data4life.datadonation.core.model.ModelContract.UserConsent
 import care.data4life.datadonation.internal.domain.repository.RepositoryContract
 
 internal class CreateUserConsent(

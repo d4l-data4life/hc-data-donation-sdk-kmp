@@ -14,19 +14,13 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.data.service.networking
+package care.data4life.datadonation.mock
 
-import care.data4life.datadonation.lang.CoreRuntimeError
-import io.ktor.client.call.NoTransformationFoundException
-import io.ktor.client.statement.HttpStatement
+import care.data4life.sdk.config.TestConfig
+import care.data4life.sdk.util.test.CommonResourceLoader
+import kotlin.native.concurrent.ThreadLocal
 
-internal suspend inline fun <reified T> receive(
-    request: HttpStatement,
-): T {
-    return try {
-        request.receive()
-    } catch (exception: NoTransformationFoundException) {
-        println(exception)
-        throw CoreRuntimeError.ResponseTransformFailure()
-    }
+@ThreadLocal
+object ResourceLoader {
+    val loader = CommonResourceLoader(TestConfig.projectDir)
 }

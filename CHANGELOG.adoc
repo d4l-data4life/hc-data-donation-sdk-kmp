@@ -31,8 +31,12 @@ See link:{link-repository}/compare/v0.0.1...main[changeset]
 
 === Added
 
-* slf4j for Koin (1.7.31).
-* sdk-util-test (1.8.1).
+* slf4j for Koin (1.7.31) (Dependency).
+* sdk-util-coroutine (1.9.0) (Dependency).
+* sdk-util-test (1.9.0) (Dependency).
+* sdk-util-coroutine-test (1.9.0) (Dependency).
+* sdk-util-ktor-test (1.9.0) (Dependency).
+* stately-isolation (1.1.5-a1) (Dependency).
 
 === Changed
 
@@ -56,6 +60,7 @@ See link:{link-repository}/compare/v0.0.1...main[changeset]
 * iOS encryption NSData was not able to convert to ByteArray.
 * iOS tests were not able to run properly in coroutine context.
 * Dependencies are now resolved correctly by Koin.
+* iOS SessionTokenService broke freezing.
 
 === Security
 

@@ -66,6 +66,147 @@ class ConsentServiceTest {
     }
 
     @Test
+    fun `Given createUserConsent was called with a AccessToken and a Version it delegates HttpRequestErrors to its ErrorHandler`() = runBlockingTest {
+        // Given
+        val requestTemplate = RequestBuilderSpy.Factory()
+        val clock = ClockStub()
+        val accessToken = "potato"
+        val consentKey = "custom-consent-key"
+        val version = 23
+
+        val error = HttpRuntimeError(HttpStatusCode.TooManyRequests)
+        val outgoingError = ConsentServiceError.Forbidden()
+        var capturedError: HttpRuntimeError? = null
+
+        val client = createErrorMockClient(error)
+
+        val errorHandler = ConsentErrorHandlerStub()
+
+        errorHandler.whenHandleCreateUserConsent = { delegatedError ->
+            capturedError = delegatedError
+            outgoingError
+        }
+
+        requestTemplate.onPrepare = { _, _ ->
+            HttpStatement(
+                dummyKtor,
+                client
+            )
+        }
+
+        clock.whenNow = { Instant.DISTANT_FUTURE }
+
+        // Then
+        val result = assertFailsWith<ConsentServiceError.Forbidden> {
+            // When
+            val service = ConsentService(
+                requestTemplate,
+                errorHandler,
+                clock
+            )
+            service.createUserConsent(
+                accessToken = accessToken,
+                consentKey = consentKey,
+                version = version
+            )
+        }
+
+        // Then
+        assertSame(
+            actual = capturedError,
+            expected = error
+        )
+        assertSame(
+            actual = result,
+            expected = outgoingError
+        )
+    }
+
+    @Test
+    fun `Given createUserConsent was called with a AccessToken and a Version it just runs`() = runBlockingTest {
+        // Given
+        val requestTemplate = RequestBuilderSpy.Factory()
+        val clock = ClockStub()
+
+        val accessToken = "potato"
+        val consentKey = "custom-consent-key"
+        val version = 23
+
+        var capturedMethod: Networking.Method? = null
+        var capturedPath: Path? = null
+        val expectedTime = Instant.DISTANT_PAST
+
+        clock.whenNow = { expectedTime }
+
+        val client = createMockClientWithResponse { scope, _ ->
+            return@createMockClientWithResponse scope.respond(
+                content = "",
+                status = HttpStatusCode.NoContent
+            )
+        }
+
+        requestTemplate.onPrepare = { method, path ->
+            capturedMethod = method
+            capturedPath = path
+            HttpStatement(
+                dummyKtor,
+                client
+            )
+        }
+
+        // When
+        val service = ConsentService(
+            requestTemplate,
+            ConsentErrorHandlerStub(),
+            clock
+        )
+        val result = service.createUserConsent(
+            accessToken = accessToken,
+            consentKey = consentKey,
+            version = version
+        )
+
+        // Then
+        assertSame(
+            actual = result,
+            expected = Unit
+        )
+        assertEquals(
+            actual = result,
+            expected = Unit
+        )
+
+        assertEquals(
+            actual = capturedMethod,
+            expected = Networking.Method.POST
+        )
+        assertEquals(
+            actual = capturedPath,
+            expected = ServiceContract.ConsentService.ROOT.toMutableList().also {
+                it.add(USER_CONSENTS)
+            }
+        )
+
+        assertEquals(
+            actual = requestTemplate.createdInstances,
+            expected = 1
+        )
+        assertEquals(
+            actual = requestTemplate.lastInstance!!.delegatedAccessToken,
+            expected = accessToken
+        )
+        assertTrue(requestTemplate.lastInstance!!.delegatedJsonFlag)
+        assertEquals(
+            actual = requestTemplate.lastInstance!!.delegatedBody,
+            expected = ConsentCreationPayload(
+                consentKey,
+                version,
+                expectedTime.toString()
+            )
+        )
+    }
+
+    @Test
     fun `Given fetchConsentDocuments was called with a AccessToken, Version, Language and a ConsentKey it delegates HttpRequestErrors to its ErrorHandler`() = runBlockingTest {
         // Given
         val accessToken = "potato"
@@ -182,7 +323,7 @@ class ConsentServiceTest {
 
         val client = createMockClientWithResponse(listOf(response)) { scope, _ ->
             return@createMockClientWithResponse scope.respond(
-                content = "something"
+                content = "[]"
             )
         }
 
@@ -403,147 +544,6 @@ class ConsentServiceTest {
             expected = mapOf(
                 LATEST_CONSENT to lastedConsent,
                 USER_CONSENT_KEY to consentKey
-            )
-        )
-    }
-
-    @Test
-    fun `Given createUserConsent was called with a AccessToken and a Version it delegates HttpRequestErrors to its ErrorHandler`() = runBlockingTest {
-        // Given
-        val requestTemplate = RequestBuilderSpy.Factory()
-        val clock = ClockStub()
-        val accessToken = "potato"
-        val consentKey = "custom-consent-key"
-        val version = 23
-
-        val error = HttpRuntimeError(HttpStatusCode.TooManyRequests)
-        val outgoingError = ConsentServiceError.Forbidden()
-        var capturedError: HttpRuntimeError? = null
-
-        val client = createErrorMockClient(error)
-
-        val errorHandler = ConsentErrorHandlerStub()
-
-        errorHandler.whenHandleCreateUserConsent = { delegatedError ->
-            capturedError = delegatedError
-            outgoingError
-        }
-
-        requestTemplate.onPrepare = { _, _ ->
-            HttpStatement(
-                dummyKtor,
-                client
-            )
-        }
-
-        clock.whenNow = { Instant.DISTANT_FUTURE }
-
-        // Then
-        val result = assertFailsWith<ConsentServiceError.Forbidden> {
-            // When
-            val service = ConsentService(
-                requestTemplate,
-                errorHandler,
-                clock
-            )
-            service.createUserConsent(
-                accessToken = accessToken,
-                consentKey = consentKey,
-                version = version
-            )
-        }
-
-        // Then
-        assertSame(
-            actual = capturedError,
-            expected = error
-        )
-        assertSame(
-            actual = result,
-            expected = outgoingError
-        )
-    }
-
-    @Test
-    fun `Given createUserConsent was called with a AccessToken and a Version it just runs`() = runBlockingTest {
-        // Given
-        val requestTemplate = RequestBuilderSpy.Factory()
-        val clock = ClockStub()
-
-        val accessToken = "potato"
-        val consentKey = "custom-consent-key"
-        val version = 23
-
-        var capturedMethod: Networking.Method? = null
-        var capturedPath: Path? = null
-        val expectedTime = Instant.DISTANT_PAST
-
-        clock.whenNow = { expectedTime }
-
-        val client = createMockClientWithResponse { scope, _ ->
-            return@createMockClientWithResponse scope.respond(
-                content = "",
-                status = HttpStatusCode.NoContent
-            )
-        }
-
-        requestTemplate.onPrepare = { method, path ->
-            capturedMethod = method
-            capturedPath = path
-            HttpStatement(
-                dummyKtor,
-                client
-            )
-        }
-
-        // When
-        val service = ConsentService(
-            requestTemplate,
-            ConsentErrorHandlerStub(),
-            clock
-        )
-        val result = service.createUserConsent(
-            accessToken = accessToken,
-            consentKey = consentKey,
-            version = version
-        )
-
-        // Then
-        assertSame(
-            actual = result,
-            expected = Unit
-        )
-        assertEquals(
-            actual = result,
-            expected = Unit
-        )
-
-        assertEquals(
-            actual = capturedMethod,
-            expected = Networking.Method.POST
-        )
-        assertEquals(
-            actual = capturedPath,
-            expected = ServiceContract.ConsentService.ROOT.toMutableList().also {
-                it.add(USER_CONSENTS)
-            }
-        )
-
-        assertEquals(
-            actual = requestTemplate.createdInstances,
-            expected = 1
-        )
-        assertEquals(
-            actual = requestTemplate.lastInstance!!.delegatedAccessToken,
-            expected = accessToken
-        )
-        assertTrue(requestTemplate.lastInstance!!.delegatedJsonFlag)
-        assertEquals(
-            actual = requestTemplate.lastInstance!!.delegatedBody,
-            expected = ConsentCreationPayload(
-                consentKey,
-                version,
-                expectedTime.toString()
             )
         )
     }

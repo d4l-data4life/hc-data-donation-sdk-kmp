@@ -66,69 +66,6 @@ class ClientTest {
     }
 
     @Test
-    fun `Given fetchConsentDocuments is called with a ConsentKey it builds and delegates its Parameter to the Usecase and returns a runnable Flow which emits a List of ConsentDocument`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
-        // Given
-        val usecase = FetchConsentDocumentsStub()
-        val documents = listOf(DummyData.consentDocument)
-
-        val version = 23
-        val language = "de-j-old-n-kotlin-x-done"
-        val consentKey = "abc"
-
-        val capturedParameter = Channel<UsecaseContract.FetchConsentDocuments.Parameter>()
-
-        usecase.whenExecute = { delegatedParameter ->
-            launch {
-                capturedParameter.send(delegatedParameter)
-            }
-            documents
-        }
-
-        val di = koinApplication {
-            modules(
-                module {
-                    single<UsecaseContract.FetchConsentDocuments> {
-                        usecase
-                    }
-                    single<UsecaseContract.CreateUserConsent> {
-                        CreateUserConsentStub()
-                    }
-                    single<UsecaseContract.FetchUserConsents> {
-                        FetchUserConsentsStub()
-                    }
-                    single<UsecaseContract.RevokeUserConsent> {
-                        RevokeUserConsentStub()
-                    }
-                }
-            )
-        }
-
-        val client = Client(di)
-
-        // When
-        client.fetchConsentDocuments(
-            version,
-            language,
-            consentKey,
-        ).ktFlow.collect { result ->
-            // Then
-            assertSame(
-                expected = documents,
-                actual = result
-            )
-        }
-
-        assertEquals(
-            actual = capturedParameter.receive(),
-            expected = FetchConsentDocuments.Parameter(
-                version = version,
-                language = language,
-                consentKey = consentKey
-            )
-        )
-    }
-
-    @Test
     fun `Given createUserConsent is called with a ConsentDocumentVersion and a Language it builds and delegates its Parameter to the Usecase and returns a runnable Flow which emits a UserConsent`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val usecase = CreateUserConsentStub()
@@ -184,6 +121,69 @@ class ClientTest {
             expected = CreateUserConsent.Parameter(
                 consentKey = consentKey,
                 version = version
+            )
+        )
+    }
+
+    @Test
+    fun `Given fetchConsentDocuments is called with a ConsentKey it builds and delegates its Parameter to the Usecase and returns a runnable Flow which emits a List of ConsentDocument`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+        // Given
+        val usecase = FetchConsentDocumentsStub()
+        val documents = listOf(DummyData.consentDocument)
+
+        val version = 23
+        val language = "de-j-old-n-kotlin-x-done"
+        val consentKey = "abc"
+
+        val capturedParameter = Channel<UsecaseContract.FetchConsentDocuments.Parameter>()
+
+        usecase.whenExecute = { delegatedParameter ->
+            launch {
+                capturedParameter.send(delegatedParameter)
+            }
+            documents
+        }
+
+        val di = koinApplication {
+            modules(
+                module {
+                    single<UsecaseContract.FetchConsentDocuments> {
+                        usecase
+                    }
+                    single<UsecaseContract.CreateUserConsent> {
+                        CreateUserConsentStub()
+                    }
+                    single<UsecaseContract.FetchUserConsents> {
+                        FetchUserConsentsStub()
+                    }
+                    single<UsecaseContract.RevokeUserConsent> {
+                        RevokeUserConsentStub()
+                    }
+                }
+            )
+        }
+
+        val client = Client(di)
+
+        // When
+        client.fetchConsentDocuments(
+            consentKey,
+            version,
+            language,
+        ).ktFlow.collect { result ->
+            // Then
+            assertSame(
+                expected = documents,
+                actual = result
+            )
+        }
+
+        assertEquals(
+            actual = capturedParameter.receive(),
+            expected = FetchConsentDocuments.Parameter(
+                version = version,
+                language = language,
+                consentKey = consentKey
             )
         )
     }

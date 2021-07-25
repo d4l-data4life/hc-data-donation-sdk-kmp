@@ -19,8 +19,8 @@ package care.data4life.datadonation.internal.data.service
 import care.data4life.datadonation.lang.CoreRuntimeError
 import care.data4life.datadonation.mock.stub.ClockStub
 import care.data4life.datadonation.mock.stub.UserSessionTokenProviderStub
-import care.data4life.sdk.util.test.coroutine.runWithContextBlockingTest
-import kotlinx.coroutines.GlobalScope
+import care.data4life.sdk.util.test.coroutine.runBlockingTest
+import co.touchlab.stately.isolate.IsolateState
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -39,7 +39,7 @@ class CachedUserSessionTokenServiceTest {
     }
 
     @Test
-    fun `Given getUserSessionToken is called, it fails, if it has no valid cached Token and the Provider delegates an Exception`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+    fun `Given getUserSessionToken is called, it fails, if it has no valid cached Token and the Provider delegates an Exception`() = runBlockingTest {
         // Given
         val error = RuntimeException("error")
         val provider = UserSessionTokenProviderStub()
@@ -68,7 +68,7 @@ class CachedUserSessionTokenServiceTest {
     }
 
     @Test
-    fun `Given getUserSessionToken is called, returns a new Token, if it has no valid cached Token and the Provider delegates a String`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+    fun `Given getUserSessionToken is called, returns a new Token, if it has no valid cached Token and the Provider delegates a SessionToken`() = runBlockingTest {
         // Given
         val token = "tomato"
         val provider = UserSessionTokenProviderStub()
@@ -95,7 +95,7 @@ class CachedUserSessionTokenServiceTest {
     }
 
     @Test
-    fun `Given getUserSessionToken is called, it fails, if an internal error happens`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+    fun `Given getUserSessionToken is called, it fails, if an internal error happens`() = runBlockingTest {
         // Given
         val provider = UserSessionTokenProviderStub()
         val time = ClockStub()
@@ -116,25 +116,29 @@ class CachedUserSessionTokenServiceTest {
     }
 
     @Test
-    fun `Given getUserSessionToken is called, it returns a cached token, if a token had been previously stored and it used in its 1 minute lifetime`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+    fun `Given getUserSessionToken is called, it returns a cached token, if a token had been previously stored and it used in its 1 minute lifetime`() = runBlockingTest {
         // Given
         val expectedToken = "potato"
-        val tokens = mutableListOf(
-            expectedToken,
-            "tomato"
-        )
+        val tokens = IsolateState {
+            mutableListOf(
+                expectedToken,
+                "tomato"
+            )
+        }
         val provider = UserSessionTokenProviderStub()
         val time = ClockStub()
-        val lifeTime = mutableListOf(
-            kotlinx.datetime.Instant.fromEpochMilliseconds(1.minutes.toLongMilliseconds()),
-            kotlinx.datetime.Instant.fromEpochMilliseconds(1.minutes.plus(30.seconds).toLongMilliseconds())
-        )
+        val lifeTime = IsolateState {
+            mutableListOf(
+                kotlinx.datetime.Instant.fromEpochMilliseconds(1.minutes.toLongMilliseconds()),
+                kotlinx.datetime.Instant.fromEpochMilliseconds(1.minutes.plus(30.seconds).toLongMilliseconds())
+            )
+        }
 
         provider.whenGetUserSessionToken = { onSuccess, _ ->
-            onSuccess(tokens.removeAt(0))
+            onSuccess(tokens.access { it.removeAt(0) })
         }
         time.whenNow = {
-            lifeTime.removeAt(0)
+            lifeTime.access { it.removeAt(0) }
         }
 
         val service = CachedUserSessionTokenService(provider, time)

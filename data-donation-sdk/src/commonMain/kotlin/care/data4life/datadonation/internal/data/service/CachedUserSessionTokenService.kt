@@ -34,58 +34,73 @@ package care.data4life.datadonation.internal.data.service
 
 import care.data4life.datadonation.DataDonationSDKPublicAPI
 import care.data4life.datadonation.lang.CoreRuntimeError
+import co.touchlab.stately.isolate.IsolateState
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
-import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import kotlin.time.minutes
 
 class CachedUserSessionTokenService(
     private val provider: DataDonationSDKPublicAPI.UserSessionTokenProvider,
-    private val clock: Clock
+    clock: Clock
 ) : ServiceContract.UserSessionTokenService {
+    private val cache = IsolateState { Cache(clock) }
 
-    private var cachedValue: String = ""
-    private var cachedAt = Instant.fromEpochSeconds(0)
-
-    private fun fetchCachedToken(continuation: Continuation<SessionToken>) {
-        if (cachedValue.isEmpty()) {
-            throw CoreRuntimeError.MissingSession()
+    private suspend fun fetchTokenFromApi(): Any {
+        return suspendCoroutine { continuation ->
+            provider.getUserSessionToken(
+                { sessionToken -> continuation.resume(sessionToken) },
+                { error -> continuation.resume(error) }
+            )
         }
-
-        continuation.resume(cachedValue)
     }
 
-    private fun updateCachedToken(sessionToken: SessionToken) {
-        cachedValue = sessionToken
-        cachedAt = clock.now()
+    private fun getCachedToken(): SessionToken? {
+        return if (cache.access { it.isExpired() }) {
+            cache.access { it.fetchCachedToken() }
+        } else {
+            null
+        }
     }
 
-    private fun handleApiError(error: Exception) {
-        throw CoreRuntimeError.MissingSession(error)
-    }
-
-    private fun fetchTokenFromApi(continuation: Continuation<SessionToken>) {
-        provider.getUserSessionToken(
-            { sessionToken ->
-                updateCachedToken(sessionToken)
-                continuation.resume(sessionToken)
-            },
-            {
-                error ->
-                handleApiError(error)
-            }
-        )
+    private fun resolveSessionToken(result: Any): SessionToken {
+        return when (result) {
+            is SessionToken -> result.also { cache.access { it.updateCachedToken(result) } }
+            is Exception -> throw CoreRuntimeError.MissingSession(result)
+            else -> throw CoreRuntimeError.MissingSession()
+        }
     }
 
     override suspend fun getUserSessionToken(): SessionToken {
-        return suspendCoroutine { continuation ->
-            if (cachedAt > clock.now().minus(1.minutes)) {
-                fetchCachedToken(continuation)
-            } else {
-                fetchTokenFromApi(continuation)
+        val cachedToken = getCachedToken()
+
+        return if (cachedToken is SessionToken) {
+            cachedToken
+        } else {
+            resolveSessionToken(fetchTokenFromApi())
+        }
+    }
+
+    private class Cache(private val clock: Clock) {
+        private var cachedValue: String = ""
+        private var cachedAt = Instant.fromEpochSeconds(0)
+
+        fun fetchCachedToken(): String {
+            if (cachedValue.isEmpty()) {
+                throw CoreRuntimeError.MissingSession()
             }
+
+            return cachedValue
+        }
+
+        fun updateCachedToken(sessionToken: SessionToken) {
+            cachedValue = sessionToken
+            cachedAt = clock.now()
+        }
+
+        fun isExpired(): Boolean {
+            return cachedAt > clock.now().minus(1.minutes)
         }
     }
 }

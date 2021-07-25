@@ -18,20 +18,26 @@ package care.data4life.datadonation.internal.data.service.networking
 
 import io.ktor.client.HttpClient
 import org.koin.core.module.Module
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 internal fun resolveNetworking(): Module {
     return module {
         single<Networking.RequestBuilderFactory> {
-            RequestBuilder.Factory(get(), get())
+            RequestBuilder.Factory(
+                get(),
+                get(qualifier = named("configuredHttpClient"))
+            )
         }
 
         single<Networking.HttpClientConfigurator> {
             HttpClientConfigurator
         }
 
-        single {
-            HttpClient {
+        factory(named("blankHttpClient")) { HttpClient() }
+
+        single(named("configuredHttpClient")) {
+            get<HttpClient>(qualifier = named("blankHttpClient")).config {
                 get<Networking.HttpClientConfigurator>().configure(
                     this,
                     installers = getOrNull()

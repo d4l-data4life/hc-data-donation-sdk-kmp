@@ -32,8 +32,8 @@
 
 package care.data4life.datadonation
 
-import care.data4life.datadonation.core.model.ConsentDocument
-import care.data4life.datadonation.core.model.UserConsent
+import care.data4life.datadonation.core.model.ModelContract.ConsentDocument
+import care.data4life.datadonation.core.model.ModelContract.UserConsent
 import care.data4life.datadonation.internal.di.initKoin
 import care.data4life.datadonation.internal.domain.usecases.*
 import care.data4life.sdk.util.coroutine.D4LSDKFlow
@@ -49,24 +49,6 @@ class Client internal constructor(
     private val fetchUserConsents: UsecaseContract.FetchUserConsents = koinApplication.koin.get()
     private val revokeUserConsent: UsecaseContract.RevokeUserConsent = koinApplication.koin.get()
 
-    override fun fetchConsentDocuments(
-        consentDocumentVersion: Int?,
-        language: String?,
-        consentKey: String
-    ): D4LSDKFlowContract<List<ConsentDocument>> {
-        val flow = flow {
-            val parameter = FetchConsentDocuments.Parameter(
-                version = consentDocumentVersion,
-                language = language,
-                consentKey = consentKey
-            )
-
-            emit(fetchConsentDocuments.execute(parameter))
-        }
-
-        return D4LSDKFlow(flow)
-    }
-
     override fun createUserConsent(
         consentKey: String,
         consentDocumentVersion: Int
@@ -78,6 +60,24 @@ class Client internal constructor(
             )
 
             emit(createUserContent.execute(parameter))
+        }
+
+        return D4LSDKFlow(flow)
+    }
+
+    override fun fetchConsentDocuments(
+        consentKey: String,
+        consentDocumentVersion: Int?,
+        language: String?,
+    ): D4LSDKFlowContract<List<ConsentDocument>> {
+        val flow = flow {
+            val parameter = FetchConsentDocuments.Parameter(
+                version = consentDocumentVersion,
+                language = language,
+                consentKey = consentKey
+            )
+
+            emit(fetchConsentDocuments.execute(parameter))
         }
 
         return D4LSDKFlow(flow)
