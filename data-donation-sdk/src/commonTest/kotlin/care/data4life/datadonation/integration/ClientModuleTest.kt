@@ -34,6 +34,7 @@ package care.data4life.datadonation.integration
 
 import care.data4life.datadonation.Client
 import care.data4life.datadonation.DataDonationSDKPublicAPI
+import care.data4life.datadonation.internal.data.service.ServiceContract.UserSessionTokenService.Companion.CACHE_LIFETIME
 import care.data4life.datadonation.internal.data.service.networking.plugin.resolveKtorPlugins
 import care.data4life.datadonation.internal.data.service.networking.resolveNetworking
 import care.data4life.datadonation.internal.data.service.resolveServiceModule
@@ -43,16 +44,23 @@ import care.data4life.datadonation.internal.domain.usecases.resolveUsecaseModule
 import care.data4life.datadonation.lang.ConsentServiceError
 import care.data4life.datadonation.mock.ResourceLoader
 import care.data4life.datadonation.mock.fixtures.ConsentFixtures
+import care.data4life.datadonation.mock.stub.ClockStub
 import care.data4life.sdk.util.test.coroutine.runWithContextBlockingTest
 import care.data4life.sdk.util.test.ktor.createMockClientWithResponse
 import io.ktor.client.engine.mock.respond
+import io.ktor.client.engine.mock.toByteReadPacket
+import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.fullPath
 import io.ktor.http.headersOf
+import io.ktor.util.KtorExperimentalAPI
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
 import org.koin.core.context.stopKoin
 import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
@@ -62,6 +70,7 @@ import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
+import kotlin.time.seconds
 
 class ClientModuleTest {
     @BeforeTest
@@ -72,7 +81,7 @@ class ClientModuleTest {
     @Test
     fun `Given fetchConsentDocuments is called with its appropriate parameter, it returns a List of ConsentDocument`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
-        val consentKey = "custom-consent-key"
+        val consentKey = "potato"
         val language = "en"
         val version = 42
 
@@ -81,6 +90,14 @@ class ClientModuleTest {
             assertEquals(
                 actual = request.url.fullPath,
                 expected = "/consent/api/v1/consentDocuments?consentDocumentKey=$consentKey&version=$version&language=$language"
+            )
+            assertEquals(
+                actual = request.headers,
+                expected = headersOf(
+                    "Authorization" to listOf("Bearer ${UserSessionTokenProvider.sessionToken}"),
+                    "Accept" to listOf("application/json"),
+                    "Accept-Charset" to listOf("UTF-8")
+                )
             )
 
             scope.respond(
@@ -131,17 +148,11 @@ class ClientModuleTest {
     @Test
     fun `Given fetchConsentDocuments is called with its appropriate parameter, it propagates Errors`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
-        val consentKey = "custom-consent-key"
+        val consentKey = "tomato"
         val language = "en"
         val version = 42
 
-        val httpClient = createMockClientWithResponse { scope, request ->
-            // Then
-            assertEquals(
-                actual = request.url.fullPath,
-                expected = "/consent/api/v1/consentDocuments?consentDocumentKey=$consentKey&version=$version&language=$language"
-            )
-
+        val httpClient = createMockClientWithResponse { scope, _ ->
             scope.respond(
                 content = "potato",
                 status = HttpStatusCode.InternalServerError
@@ -185,7 +196,7 @@ class ClientModuleTest {
     @Ignore
     fun fetchUserConsentsTest() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
-        val consentKey = "custom-consent-key"
+        val consentKey = "salt"
 
         val koin = koinApplication {
             modules(
@@ -209,6 +220,107 @@ class ClientModuleTest {
             assertEquals(
                 actual = result,
                 expected = emptyList() // TODO
+            )
+        }
+    }
+
+    @KtorExperimentalAPI
+    @Test
+    fun `Given createUserConsent is called with a consentKey and a consentDocumentVersion, it returns a UserConsent`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+        // Given
+        val consentKey = "broccoli"
+        val version = 23
+
+        val httpClient = createMockClientWithResponse { scope, request ->
+            // Then
+            if(request.method == HttpMethod.Post) {
+                assertEquals(
+                    actual = request.url.fullPath,
+                    expected = "/consent/api/v1/userConsents"
+                )
+                assertEquals(
+                    actual = request.headers,
+                    expected = headersOf(
+                        "Authorization" to listOf("Bearer ${UserSessionTokenProvider.sessionToken}"),
+                        "Accept" to listOf("application/json"),
+                        "Accept-Charset" to listOf("UTF-8")
+                    )
+                )
+                assertEquals(
+                    actual = request.body.contentType.toString(),
+                    expected = "application/json"
+                )
+                launch {
+                    assertEquals(
+                        actual = request.body.toByteReadPacket().readText(),
+                        expected = "{\"consentDocumentKey\":\"broccoli\",\"consentDocumentVersion\":23,\"consentDate\":\"1970-01-01T00:01:30Z\"}"
+                    )
+                }
+                scope.respond(
+                    content = "",
+                    status = HttpStatusCode.OK,
+                )
+            } else {
+                assertEquals(
+                    actual = request.url.fullPath,
+                    expected = "/consent/api/v1/userConsents?latest=false"
+                )
+                assertEquals(
+                    actual = request.headers,
+                    expected = headersOf(
+                        "Authorization" to listOf("Bearer ${UserSessionTokenProvider.sessionToken}"),
+                        "Accept" to listOf("application/json"),
+                        "Accept-Charset" to listOf("UTF-8")
+                    )
+                )
+
+
+                scope.respond(
+                    content = ResourceLoader.loader.load("/fixtures/consent/UserConsents.json"),
+                    status = HttpStatusCode.OK,
+                    headers = headersOf(
+                        "Content-Type" to listOf("application/json")
+                    )
+                )
+            }
+        }
+
+        val koin = koinApplication {
+            modules(
+                resolveRootModule(
+                    DataDonationSDKPublicAPI.Environment.DEV,
+                    UserSessionTokenProvider
+                ),
+                resolveNetworking(),
+                resolveKtorPlugins(),
+                resolveUsecaseModule(),
+                resolveRepositoryModule(),
+                resolveServiceModule(),
+                module {
+                    factory(
+                        override = true,
+                        qualifier = named("blankHttpClient")
+                    ) { httpClient }
+                    single<Clock>(override = true) {
+                        ClockStub().also {
+                            it.whenNow = { Instant.fromEpochMilliseconds(CACHE_LIFETIME.plus(30.seconds).toLongMilliseconds()) }
+                        }
+                    }
+                }
+            )
+        }
+
+        val client = Client(koin)
+
+        // When
+        client.createUserConsent(
+            consentKey,
+            version,
+        ).ktFlow.collect { result ->
+            // Then
+            assertEquals(
+                actual = result,
+                expected = ConsentFixtures.sampleUserConsent
             )
         }
     }
@@ -245,11 +357,13 @@ class ClientModuleTest {
     }
 
     private object UserSessionTokenProvider : DataDonationSDKPublicAPI.UserSessionTokenProvider {
+        const val sessionToken = "sessionToken"
+
         override fun getUserSessionToken(
             onSuccess: (sessionToken: String) -> Unit,
             onError: (error: Exception) -> Unit
         ) {
-            onSuccess("eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJvd25lcjpmMmNiNDBhZS1lOGQxLTQzOTctOGIzZC1hMjRmODgwZTRjYmQiLCJpc3MiOiJ1cm46Z2hjIiwiZXhwIjoxNjExMTY3ODA3LCJuYmYiOjE2MTExNjczODcsImlhdCI6MTYxMTE2NzQ0NywianRpIjoiMWMxZjVhMmItZjA0Ny00NTc5LWE0YWItZDBjY2ZmOTVkMDEwIiwiZ2hjOmFpZCI6ImVmZGRiOTVhLWFkMTktNDczMS1iOWM5LThjZWMwOTg3MzQzZSIsImdoYzpjaWQiOiI4OWRiYzg3Ni1hYzdjLTQzYjctODc0MS0yNWIxNDA2NWZiOTEjYW5kcm9pZF9odWIiLCJnaGM6dWlkIjoiZjJjYjQwYWUtZThkMS00Mzk3LThiM2QtYTI0Zjg4MGU0Y2JkIiwiZ2hjOnRpZCI6ImQ0bCIsImdoYzpzY29wZSI6InBlcm06ciByZWM6ciByZWM6dyBhdHRhY2htZW50OnIgYXR0YWNobWVudDp3IHVzZXI6ciB1c2VyOnEifQ.JpjUvgAk-wCJAY8xu5J9CT93655lXqyy3dki0Gr0sWtU4PpCZePmeGHPABmBKdg3Bj8kdnbz2463OMfeGELigOLe1Mx8nPPPiGV2SPliCZp-rOOOodxscAd1OTT1AnCPmwJXlXHuNj4CUnR_Urr0dvpNt8a3CdwsezhgDwoyDQpKYPbMN-IrI1WcHaG8SCOPhiX-6zMVrnwpS6fBAtAtUbpvVQZXraKjdbiB3ZCoCWAMKG3_2TtamklOYFCPm1rladkptIFPVXR4y_6LoR_ILN77SERxrEERASvm1ZJXwd2EjLHKkabJ1EgIYiqntiCrRNawtYs0sjo4g_5il4nzUHZbrNWHo0c0m9Qzjahj3vJAQEddJcTZdJyM7_Ootmqwo3DTcn4w_xfIDoTArW5tHJ27TRBIo73PoOCAF4iZA4TGE9NassegeEtLl9jtKBDUr3MZVZkZEPZip8XWvX8E3UtIAVx-cji1hHK6P-jOzTZOCYJNCFx2C5ZK7zhVN9oWsImeiagViEe5OuxXWcFc38QE5eHBGjbOAKEGLchkuxk6zX2HhycJEW6JT73Vcf8iYytLF596SQ_uY4O2m1cr8HshFc10mAhGgnMhqHhe1QUIWlwFe5HHz7P4LTeK7zP8iAAVgEqlx7X1ryvpw5ekz7p1hbLYB9hKvvJ-vx13HkI")
+            onSuccess(sessionToken)
         }
     }
 }

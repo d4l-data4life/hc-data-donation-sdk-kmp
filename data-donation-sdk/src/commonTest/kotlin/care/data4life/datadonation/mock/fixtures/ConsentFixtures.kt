@@ -17,6 +17,8 @@
 package care.data4life.datadonation.mock.fixtures
 
 import care.data4life.datadonation.core.model.ConsentDocument
+import care.data4life.datadonation.core.model.ModelContract
+import care.data4life.datadonation.core.model.UserConsent
 import kotlin.native.concurrent.ThreadLocal
 
 @ThreadLocal
@@ -32,5 +34,13 @@ object ConsentFixtures {
         requiresToken = false,
         studyId = "exampleId",
         programName = "example"
+    )
+
+    val sampleUserConsent = UserConsent(
+        consentDocumentKey = "soup",
+        consentDocumentVersion = "23",
+        accountId = "123e4567-e89b-12d3-a456-426614174000",
+        event = ModelContract.ConsentEvent.Consent,
+        createdAt = "1970-01-01T00:01:30Z"
     )
 }

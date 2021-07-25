@@ -33,13 +33,13 @@
 package care.data4life.datadonation.internal.data.service
 
 import care.data4life.datadonation.DataDonationSDKPublicAPI
+import care.data4life.datadonation.internal.data.service.ServiceContract.UserSessionTokenService.Companion.CACHE_LIFETIME
 import care.data4life.datadonation.lang.CoreRuntimeError
 import co.touchlab.stately.isolate.IsolateState
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
-import kotlin.time.minutes
 
 class CachedUserSessionTokenService(
     private val provider: DataDonationSDKPublicAPI.UserSessionTokenProvider,
@@ -100,7 +100,7 @@ class CachedUserSessionTokenService(
         }
 
         fun isExpired(): Boolean {
-            return cachedAt > clock.now().minus(1.minutes)
+            return cachedAt > clock.now().minus(CACHE_LIFETIME)
         }
     }
 }

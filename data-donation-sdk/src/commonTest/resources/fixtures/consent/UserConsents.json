@@ -1,0 +1,9 @@
+[
+  {
+    "consentDocumentKey" : "soup",
+    "consentDocumentVersion": 23,
+    "accountId": "123e4567-e89b-12d3-a456-426614174000",
+    "event": "consent",
+    "createdAt": "1970-01-01T00:01:30Z"
+  }
+]

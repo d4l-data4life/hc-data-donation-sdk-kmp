@@ -17,7 +17,7 @@
 package care.data4life.datadonation.internal.data.service
 
 import care.data4life.datadonation.core.model.ConsentDocument
-import care.data4life.datadonation.core.model.ModelContract.UserConsent
+import care.data4life.datadonation.core.model.UserConsent
 import care.data4life.datadonation.internal.data.model.ConsentCreationPayload
 import care.data4life.datadonation.internal.data.model.ConsentRevocationPayload
 import care.data4life.datadonation.internal.data.model.ConsentSignature
@@ -37,6 +37,7 @@ import care.data4life.datadonation.internal.data.service.networking.receive
 import care.data4life.datadonation.lang.HttpRuntimeError
 import kotlinx.datetime.Clock
 import care.data4life.datadonation.core.model.ModelContract.ConsentDocument as ConsentDocumentContract
+import care.data4life.datadonation.core.model.ModelContract.UserConsent as UserConsentContract
 
 internal class ConsentService constructor(
     private val requestBuilderFactory: Networking.RequestBuilderFactory,
@@ -53,35 +54,6 @@ internal class ConsentService constructor(
         }
 
         return path
-    }
-
-    override suspend fun createUserConsent(
-        accessToken: String,
-        consentKey: String,
-        version: Int
-    ) {
-        val path = buildPath(USER_CONSENTS)
-        val payload = ConsentCreationPayload(
-            consentKey,
-            version,
-            clock.now().toString()
-        )
-
-        val request = requestBuilderFactory
-            .create()
-            .setAccessToken(accessToken)
-            .useJsonContentType()
-            .setBody(payload)
-            .prepare(
-                Networking.Method.POST,
-                path
-            )
-
-        return try {
-            receive(request)
-        } catch (error: HttpRuntimeError) {
-            throw errorHandler.handleCreateUserConsent(error)
-        }
     }
 
     override suspend fun fetchConsentDocuments(
@@ -113,11 +85,40 @@ internal class ConsentService constructor(
         }
     }
 
+    override suspend fun createUserConsent(
+        accessToken: String,
+        consentKey: String,
+        version: Int
+    ) {
+        val path = buildPath(USER_CONSENTS)
+        val payload = ConsentCreationPayload(
+            consentKey,
+            version,
+            clock.now().toString()
+        )
+
+        val request = requestBuilderFactory
+            .create()
+            .setAccessToken(accessToken)
+            .useJsonContentType()
+            .setBody(payload)
+            .prepare(
+                Networking.Method.POST,
+                path
+            )
+
+        return try {
+            receive(request)
+        } catch (error: HttpRuntimeError) {
+            throw errorHandler.handleCreateUserConsent(error)
+        }
+    }
+
     override suspend fun fetchUserConsents(
         accessToken: String,
         latestConsent: Boolean?,
         consentKey: String?
-    ): List<UserConsent> {
+    ): List<UserConsentContract> {
         val path = buildPath(USER_CONSENTS)
         val parameter = mapOf(
             LATEST_CONSENT to latestConsent,
@@ -134,7 +135,7 @@ internal class ConsentService constructor(
             )
 
         return try {
-            receive(request)
+            receive<List<UserConsent>>(request)
         } catch (error: HttpRuntimeError) {
             throw errorHandler.handleFetchUserConsents(error)
         }
