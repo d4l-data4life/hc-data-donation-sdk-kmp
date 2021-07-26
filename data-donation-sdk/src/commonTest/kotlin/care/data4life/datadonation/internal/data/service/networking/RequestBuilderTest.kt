@@ -21,8 +21,8 @@ import care.data4life.datadonation.internal.data.service.networking.Networking.R
 import care.data4life.datadonation.internal.data.service.networking.Networking.RequestBuilder.Companion.ACCESS_TOKEN_VALUE_PREFIX
 import care.data4life.datadonation.lang.CoreRuntimeError
 import care.data4life.sdk.util.test.coroutine.runWithContextBlockingTest
-import care.data4life.sdk.util.test.ktor.createHelloWorldMockClient
-import care.data4life.sdk.util.test.ktor.createHelloWorldOkResponse
+import care.data4life.sdk.util.test.ktor.HttpMockClientFactory.createHelloWorldMockClient
+import care.data4life.sdk.util.test.ktor.HttpMockClientResponseFactory.createHelloWorldOkResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.toByteReadPacket

@@ -19,7 +19,7 @@ package care.data4life.datadonation.internal.data.service.networking
 import care.data4life.datadonation.DataDonationSDKPublicAPI
 import care.data4life.datadonation.mock.stub.service.networking.HttpClientConfiguratorStub
 import care.data4life.datadonation.mock.stub.service.networking.HttpPluginConfiguratorStub
-import care.data4life.sdk.util.test.ktor.createHelloWorldMockClient
+import care.data4life.sdk.util.test.ktor.HttpMockClientFactory.createHelloWorldMockClient
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.features.HttpClientFeature

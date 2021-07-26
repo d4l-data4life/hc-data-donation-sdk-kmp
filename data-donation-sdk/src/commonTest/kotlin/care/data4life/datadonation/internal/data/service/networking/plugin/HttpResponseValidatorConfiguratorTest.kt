@@ -20,7 +20,7 @@ import care.data4life.datadonation.mock.stub.service.networking.plugin.HttpError
 import care.data4life.datadonation.mock.stub.service.networking.plugin.HttpSuccessfulResponseValidatorStub
 import care.data4life.sdk.lang.D4LException
 import care.data4life.sdk.util.test.coroutine.runBlockingTest
-import care.data4life.sdk.util.test.ktor.createHelloWorldOkResponse
+import care.data4life.sdk.util.test.ktor.HttpMockClientResponseFactory.createHelloWorldOkResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond

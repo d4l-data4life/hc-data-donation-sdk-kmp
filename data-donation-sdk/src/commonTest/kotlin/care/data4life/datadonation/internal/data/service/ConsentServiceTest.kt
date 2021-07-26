@@ -38,8 +38,8 @@ import care.data4life.datadonation.mock.stub.ClockStub
 import care.data4life.datadonation.mock.stub.service.ConsentErrorHandlerStub
 import care.data4life.datadonation.mock.stub.service.networking.RequestBuilderSpy
 import care.data4life.sdk.util.test.coroutine.runBlockingTest
-import care.data4life.sdk.util.test.ktor.createErrorMockClient
-import care.data4life.sdk.util.test.ktor.createMockClientWithResponse
+import care.data4life.sdk.util.test.ktor.HttpMockClientFactory.createErrorMockClient
+import care.data4life.sdk.util.test.ktor.HttpMockClientFactory.createMockClientWithResponse
 import io.ktor.client.engine.mock.respond
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.statement.HttpStatement
@@ -124,7 +124,7 @@ class ConsentServiceTest {
     fun `Given fetchConsentDocuments was called with a AccessToken, Version, Language and a ConsentKey it fails due to unexpected response`() = runBlockingTest {
         // Given
         val requestTemplate = RequestBuilderSpy.Factory()
-        val client = createMockClientWithResponse { scope ->
+        val client = createMockClientWithResponse { scope, _ ->
             return@createMockClientWithResponse scope.respond(
                 content = "something"
             )
@@ -180,7 +180,7 @@ class ConsentServiceTest {
             DummyData.consentDocument.copy(key = "soup")
         )
 
-        val client = createMockClientWithResponse(listOf(response)) { scope ->
+        val client = createMockClientWithResponse(listOf(response)) { scope, _ ->
             return@createMockClientWithResponse scope.respond(
                 content = "something"
             )
@@ -296,7 +296,7 @@ class ConsentServiceTest {
     fun `Given fetchUserConsents was called with a AccessToken, Latest and a ConsentKey it fails due to unexpected response`() = runBlockingTest {
         // Given
         val requestTemplate = RequestBuilderSpy.Factory()
-        val client = createMockClientWithResponse { scope ->
+        val client = createMockClientWithResponse { scope, _ ->
             return@createMockClientWithResponse scope.respond(
                 content = "something"
             )
@@ -347,7 +347,7 @@ class ConsentServiceTest {
             DummyData.userConsent.copy(accountId = "potato")
         )
 
-        val client = createMockClientWithResponse(listOf(response)) { scope ->
+        val client = createMockClientWithResponse(listOf(response)) { scope, _ ->
             return@createMockClientWithResponse scope.respond(
                 content = "something"
             )
@@ -480,7 +480,7 @@ class ConsentServiceTest {
 
         clock.whenNow = { expectedTime }
 
-        val client = createMockClientWithResponse { scope ->
+        val client = createMockClientWithResponse { scope, _ ->
             return@createMockClientWithResponse scope.respond(
                 content = "",
                 status = HttpStatusCode.NoContent
@@ -603,7 +603,7 @@ class ConsentServiceTest {
     fun `Given a instance had been created and requestSignatureConsentRegistration was called with a AccessToken and a Message it fails due to a unexpected response`() = runBlockingTest {
         // Given
         val requestTemplate = RequestBuilderSpy.Factory()
-        val client = createMockClientWithResponse { scope ->
+        val client = createMockClientWithResponse { scope, _ ->
             return@createMockClientWithResponse scope.respond(
                 content = "something"
             )
@@ -650,7 +650,7 @@ class ConsentServiceTest {
         var capturedPath: Path? = null
         val response = DummyData.consentSignature
 
-        val client = createMockClientWithResponse(listOf(response)) { scope ->
+        val client = createMockClientWithResponse(listOf(response)) { scope, _ ->
             return@createMockClientWithResponse scope.respond(
                 content = "something"
             )
@@ -767,7 +767,7 @@ class ConsentServiceTest {
     fun `Given requestSignatureDonation was called with a AccessToken and a Message it fails due to a unexpected response`() = runBlockingTest {
         // Given
         val requestTemplate = RequestBuilderSpy.Factory()
-        val client = createMockClientWithResponse { scope ->
+        val client = createMockClientWithResponse { scope, _ ->
             return@createMockClientWithResponse scope.respond(
                 content = "something"
             )
@@ -813,7 +813,7 @@ class ConsentServiceTest {
         var capturedPath: Path? = null
         val response = DummyData.consentSignature
 
-        val client = createMockClientWithResponse(listOf(response)) { scope ->
+        val client = createMockClientWithResponse(listOf(response)) { scope, _ ->
             return@createMockClientWithResponse scope.respond(
                 content = "something"
             )
@@ -936,7 +936,7 @@ class ConsentServiceTest {
         var capturedMethod: Networking.Method? = null
         var capturedPath: Path? = null
 
-        val client = createMockClientWithResponse { scope ->
+        val client = createMockClientWithResponse { scope, _ ->
             return@createMockClientWithResponse scope.respond(
                 content = "",
                 status = HttpStatusCode.NoContent

@@ -18,7 +18,7 @@ package care.data4life.datadonation.internal.data.service.networking
 
 import care.data4life.datadonation.mock.stub.service.networking.HttpPluginConfiguratorStub
 import care.data4life.sdk.util.test.coroutine.runWithContextBlockingTest
-import care.data4life.sdk.util.test.ktor.createHelloWorldOkResponse
+import care.data4life.sdk.util.test.ktor.HttpMockClientResponseFactory.createHelloWorldOkResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.features.HttpClientFeature
