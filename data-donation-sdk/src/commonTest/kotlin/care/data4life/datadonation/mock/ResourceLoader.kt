@@ -16,7 +16,7 @@
 
 package care.data4life.datadonation.mock
 
-import care.data4life.sdk.config.TestConfig
+import care.data4life.datadonation.test.config.TestConfig
 import care.data4life.sdk.util.test.CommonResourceLoader
 import kotlin.native.concurrent.ThreadLocal
 

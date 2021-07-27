@@ -186,7 +186,7 @@ android {
     }
 }
 
-val templatesPath = "${projectDir}/src/commonTest/resources/templates"
+val templatesPath = "${projectDir}/src/commonTest/resources/template"
 val configPath = "${projectDir}/src-gen/commonTest/kotlin/care/data4life/datadonation/test/config"
 
 val provideTestConfig: Task by tasks.creating {
