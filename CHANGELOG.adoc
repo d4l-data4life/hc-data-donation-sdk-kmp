@@ -36,42 +36,42 @@ See link:{link-repository}/compare/v0.0.1...main[changeset]
 * sdk-util-test (1.9.0) (Dependency).
 * sdk-util-coroutine-test (1.9.0) (Dependency).
 * sdk-util-ktor-test (1.9.0) (Dependency).
-* stately-isolation (1.1.5-a1) (Dependency).
+* touchlab's stately-isolation (1.1.6-a1) (Dependency).
 
 === Changed
 
-* The SDK client got a factory as companion. A direct access to the constructor is prohibit.
-* Client methods do not use Callbacks or ResultListener, they expose Kotlin Flows through a wrapper.
-* Contract -> DataDonationSDKPublicAPI.
-* ClientFactory#getInstance does not use a ConfigurationBundle, instead it expects parameters one by one.
-* UserSessionTokenProvider#getUserSessionToken does not expect a particular Object any longer, it expects singular Closures.
+* _**BREAKING**_ The SDK client got a factory as companion. A direct access to the constructor is prohibit.
+* _**BREAKING**_ Client methods do not use Callbacks or ResultListener, they expose Kotlin Flows through a wrapper.
+* _**BREAKING**_ Contract -> DataDonationSDKPublicAPI.
+* _**BREAKING**_ ClientFactory#getInstance does not use a ConfigurationBundle, instead it expects parameters one by one.
+* _**BREAKING**_ UserSessionTokenProvider#getUserSessionToken does not expect a particular Object any longer, it expects singular Closures.
 
 === Deprecated
 
 === Removed
 
-* Configuration
-* Client#registerDonor and Client#donateResources
-* Callbacks and ResultListener in the PublicAPI
+* _**BREAKING**_ Configuration
+* _**BREAKING**_ Client#registerDonor and Client#donateResources
+* _**BREAKING**_ Callbacks and ResultListener in the PublicAPI
 * touchlab's stately (Dependency)
 
 === Fixed
 
-* iOS encryption NSData was not able to convert to ByteArray.
-* iOS tests were not able to run properly in coroutine context.
+* encryption NSData was not able to convert to ByteArray (iOS).
+* tests were not able to run properly in coroutine context (iOS).
 * Dependencies are now resolved correctly by Koin.
-* iOS SessionTokenService broke freezing.
+* SessionTokenService broke freezing (iOS).
 
 === Security
 
 === Bumped
 
-* Android Gradle Plugin 4.1.0 -> 4.2.1
+* Android Gradle Plugin 4.1.0 -> 4.2.2
 * Kotlin Coroutines 1.4.2 -> 1.4.3
 * Ktor 1.4.2 -> 1.5.4.
 * JUnit 4.13 -> 4.13.2
-* sdkUtil 1.7.0 -> 1.9.0
-* fhir-sdk-kmp 0.1.0 -> 0.2.0
+* _**BREAKING**_ sdkUtil 1.7.0 -> 1.9.0
+* _**BREAKING**_ fhir-sdk-kmp 0.1.0 -> 0.2.0
 
 === Migration
 
