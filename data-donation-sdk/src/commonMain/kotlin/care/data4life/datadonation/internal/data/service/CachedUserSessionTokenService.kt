@@ -56,9 +56,9 @@ class CachedUserSessionTokenService(
         }
     }
 
-    private fun getCachedToken(): SessionToken? {
-        return if (cache.access { it.isExpired() }) {
-            cache.access { it.fetchCachedToken() }
+    private fun fetchCachedTokenIfNotExpired(): SessionToken? {
+        return if (cache.access { it.isNotExpired() }) {
+            cache.access { it.fetch() }
         } else {
             null
         }
@@ -66,14 +66,14 @@ class CachedUserSessionTokenService(
 
     private fun resolveSessionToken(result: Any): SessionToken {
         return when (result) {
-            is SessionToken -> result.also { cache.access { it.updateCachedToken(result) } }
+            is SessionToken -> result.also { cache.access { it.update(result) } }
             is Exception -> throw CoreRuntimeError.MissingSession(result)
             else -> throw CoreRuntimeError.MissingSession()
         }
     }
 
     override suspend fun getUserSessionToken(): SessionToken {
-        val cachedToken = getCachedToken()
+        val cachedToken = fetchCachedTokenIfNotExpired()
 
         return if (cachedToken is SessionToken) {
             cachedToken
@@ -83,10 +83,10 @@ class CachedUserSessionTokenService(
     }
 
     private class Cache(private val clock: Clock) {
-        private var cachedValue: String = ""
+        private var cachedValue: SessionToken = ""
         private var cachedAt = Instant.fromEpochSeconds(0)
 
-        fun fetchCachedToken(): String {
+        fun fetch(): String {
             if (cachedValue.isEmpty()) {
                 throw CoreRuntimeError.MissingSession()
             }
@@ -94,13 +94,13 @@ class CachedUserSessionTokenService(
             return cachedValue
         }
 
-        fun updateCachedToken(sessionToken: SessionToken) {
+        fun update(sessionToken: SessionToken) {
             cachedValue = sessionToken
             cachedAt = clock.now()
         }
 
-        fun isExpired(): Boolean {
-            return cachedAt > clock.now().minus(CACHE_LIFETIME)
+        fun isNotExpired(): Boolean {
+            return cachedAt > clock.now().minus(CACHE_LIFETIME).also { println(it) }
         }
     }
 }

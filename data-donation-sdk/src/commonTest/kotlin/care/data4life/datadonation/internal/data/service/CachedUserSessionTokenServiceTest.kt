@@ -130,7 +130,8 @@ class CachedUserSessionTokenServiceTest {
         val lifeTime = IsolateState {
             mutableListOf(
                 kotlinx.datetime.Instant.fromEpochMilliseconds(1.minutes.toLongMilliseconds()),
-                kotlinx.datetime.Instant.fromEpochMilliseconds(1.minutes.plus(30.seconds).toLongMilliseconds())
+                kotlinx.datetime.Instant.fromEpochMilliseconds(1.minutes.plus(30.seconds).toLongMilliseconds()),
+                kotlinx.datetime.Instant.fromEpochMilliseconds(1.minutes.plus(45.seconds).toLongMilliseconds())
             )
         }
 
@@ -144,6 +145,48 @@ class CachedUserSessionTokenServiceTest {
         val service = CachedUserSessionTokenService(provider, time)
 
         // When
+        service.getUserSessionToken()
+        val result = service.getUserSessionToken()
+
+        // Then
+        assertEquals(
+            actual = result,
+            expected = expectedToken
+        )
+    }
+
+    @Test
+    fun `Given getUserSessionToken is called, it returns a fresh token, if a token had been expired its 1 minute lifetime`() = runBlockingTest {
+        // Given
+        val expectedToken = "potato"
+        val tokens = IsolateState {
+            mutableListOf(
+                "tomato",
+                expectedToken
+            )
+        }
+        val provider = UserSessionTokenProviderStub()
+        val time = ClockStub()
+        val lifeTime = IsolateState {
+            mutableListOf(
+                kotlinx.datetime.Instant.fromEpochMilliseconds(2.minutes.toLongMilliseconds()),
+                kotlinx.datetime.Instant.fromEpochMilliseconds(2.minutes.plus(1.seconds).toLongMilliseconds()),
+                kotlinx.datetime.Instant.fromEpochMilliseconds(2.minutes.plus(2.minutes).toLongMilliseconds()),
+                kotlinx.datetime.Instant.fromEpochMilliseconds(2.minutes.plus(2.minutes).toLongMilliseconds())
+            )
+        }
+
+        provider.whenGetUserSessionToken = { onSuccess, _ ->
+            onSuccess(tokens.access { it.removeAt(0) })
+        }
+        time.whenNow = {
+            lifeTime.access { it.removeAt(0) }
+        }
+
+        val service = CachedUserSessionTokenService(provider, time)
+
+        // When
+        service.getUserSessionToken()
         val result = service.getUserSessionToken()
 
         // Then
