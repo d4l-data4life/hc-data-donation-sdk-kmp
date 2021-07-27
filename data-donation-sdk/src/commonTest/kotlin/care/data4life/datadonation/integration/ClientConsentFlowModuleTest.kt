@@ -43,7 +43,7 @@ import care.data4life.datadonation.internal.domain.repository.resolveRepositoryM
 import care.data4life.datadonation.internal.domain.usecases.resolveUsecaseModule
 import care.data4life.datadonation.lang.ConsentServiceError
 import care.data4life.datadonation.mock.ResourceLoader
-import care.data4life.datadonation.mock.fixtures.ConsentFixtures
+import care.data4life.datadonation.mock.fixture.ConsentFixtures
 import care.data4life.datadonation.mock.stub.ClockStub
 import care.data4life.sdk.util.test.coroutine.runWithContextBlockingTest
 import care.data4life.sdk.util.test.ktor.HttpMockClientFactory.createMockClientWithResponse
@@ -100,7 +100,7 @@ class ClientConsentFlowModuleTest {
             )
 
             scope.respond(
-                content = ResourceLoader.loader.load("/fixtures/consent/ConsentDocuments.json"),
+                content = ResourceLoader.loader.load("/fixture/consent/ConsentDocuments.json"),
                 status = HttpStatusCode.OK,
                 headers = headersOf(
                     "Content-Type" to listOf("application/json")
@@ -212,7 +212,7 @@ class ClientConsentFlowModuleTest {
             )
 
             scope.respond(
-                content = ResourceLoader.loader.load("/fixtures/consent/UserConsents.json"),
+                content = ResourceLoader.loader.load("/fixture/consent/UserConsents.json"),
                 status = HttpStatusCode.OK,
                 headers = headersOf(
                     "Content-Type" to listOf("application/json")
@@ -303,7 +303,7 @@ class ClientConsentFlowModuleTest {
                 )
 
                 scope.respond(
-                    content = ResourceLoader.loader.load("/fixtures/consent/UserConsents.json"),
+                    content = ResourceLoader.loader.load("/fixture/consent/UserConsents.json"),
                     status = HttpStatusCode.OK,
                     headers = headersOf(
                         "Content-Type" to listOf("application/json")
