@@ -46,7 +46,7 @@ import care.data4life.datadonation.mock.ResourceLoader
 import care.data4life.datadonation.mock.fixtures.ConsentFixtures
 import care.data4life.datadonation.mock.stub.ClockStub
 import care.data4life.sdk.util.test.coroutine.runWithContextBlockingTest
-import care.data4life.sdk.util.test.ktor.createMockClientWithResponse
+import care.data4life.sdk.util.test.ktor.HttpMockClientFactory.createMockClientWithResponse
 import io.ktor.client.engine.mock.respond
 import io.ktor.client.engine.mock.toByteReadPacket
 import io.ktor.http.HttpMethod
@@ -470,8 +470,6 @@ class ClientConsentFlowModuleTest {
         override fun getUserSessionToken(
             onSuccess: (sessionToken: String) -> Unit,
             onError: (error: Exception) -> Unit
-        ) {
-            onSuccess(sessionToken)
-        }
+        ) { onSuccess(sessionToken) }
     }
 }
