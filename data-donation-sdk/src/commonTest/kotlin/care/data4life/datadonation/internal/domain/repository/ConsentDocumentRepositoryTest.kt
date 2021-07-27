@@ -16,7 +16,7 @@
 
 package care.data4life.datadonation.internal.domain.repository
 
-import care.data4life.datadonation.mock.DummyData
+import care.data4life.datadonation.mock.fixture.ConsentFixtures.sampleConsentDocument
 import care.data4life.datadonation.mock.stub.service.ConsentServiceStub
 import care.data4life.datadonation.mock.stub.service.UserSessionTokenServiceStub
 import care.data4life.sdk.util.test.coroutine.runBlockingTest
@@ -48,8 +48,8 @@ class ConsentDocumentRepositoryTest {
 
         val sessionToken = "token"
         val consentDocuments = listOf(
-            DummyData.consentDocument,
-            DummyData.consentDocument.copy(key = "potato")
+            sampleConsentDocument,
+            sampleConsentDocument.copy(key = "potato")
         )
 
         var capturedSessionToken: String? = null

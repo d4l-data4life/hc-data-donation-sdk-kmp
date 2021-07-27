@@ -16,7 +16,8 @@
 
 package care.data4life.datadonation.internal.domain.repository
 
-import care.data4life.datadonation.mock.DummyData
+import care.data4life.datadonation.internal.data.model.ConsentSignature
+import care.data4life.datadonation.mock.fixture.ConsentFixtures.sampleUserConsent
 import care.data4life.datadonation.mock.stub.service.ConsentServiceStub
 import care.data4life.datadonation.mock.stub.service.UserSessionTokenServiceStub
 import care.data4life.sdk.util.test.coroutine.runBlockingTest
@@ -91,8 +92,8 @@ class UserConsentRepositoryTest {
 
         val sessionToken = "token"
         val userConsents = listOf(
-            DummyData.userConsent,
-            DummyData.userConsent.copy(accountId = "tomato")
+            sampleUserConsent,
+            sampleUserConsent.copy(accountId = "tomato")
         )
 
         var capturedToken: String? = null
@@ -134,8 +135,8 @@ class UserConsentRepositoryTest {
         val sessionToken = "token"
         val consentDocumentKey = "soup"
         val userConsents = listOf(
-            DummyData.userConsent,
-            DummyData.userConsent.copy(accountId = "tomato")
+            sampleUserConsent,
+            sampleUserConsent.copy(accountId = "tomato")
         )
 
         var capturedToken: String? = null
@@ -189,7 +190,7 @@ class UserConsentRepositoryTest {
         consentService.whenRequestSignatureConsentRegistration = { delegatedToken, delegatedMessage ->
             capturedToken = delegatedToken
             capturedMessage = delegatedMessage
-            DummyData.consentSignature.copy(signature = signature)
+            ConsentSignature(signature = signature)
         }
 
         val repo = UserConsentRepository(consentService, sessionService)
@@ -229,7 +230,7 @@ class UserConsentRepositoryTest {
         consentService.whenRequestSignatureDonation = { delegatedToken, delegatedMessage ->
             capturedToken = delegatedToken
             capturedMessage = delegatedMessage
-            DummyData.consentSignature.copy(signature = signature)
+            ConsentSignature(signature = signature)
         }
 
         val repo = UserConsentRepository(consentService, sessionService)

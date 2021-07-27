@@ -32,8 +32,8 @@
 
 package care.data4life.datadonation
 
-import care.data4life.datadonation.core.model.ModelContract.ConsentDocument
-import care.data4life.datadonation.core.model.ModelContract.UserConsent
+import care.data4life.datadonation.ConsentDataContract.ConsentDocument
+import care.data4life.datadonation.ConsentDataContract.UserConsent
 import care.data4life.sdk.util.coroutine.D4LSDKFlowContract
 
 interface DataDonationSDKPublicAPI {

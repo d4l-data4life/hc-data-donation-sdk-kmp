@@ -16,7 +16,7 @@
 
 package care.data4life.datadonation.mock.stub
 
-import care.data4life.datadonation.core.model.ModelContract.UserConsent
+import care.data4life.datadonation.ConsentDataContract.UserConsent
 import care.data4life.datadonation.internal.domain.usecases.UsecaseContract.FetchUserConsents
 import care.data4life.datadonation.mock.MockContract
 

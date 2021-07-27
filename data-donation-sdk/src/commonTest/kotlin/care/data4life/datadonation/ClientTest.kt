@@ -22,7 +22,8 @@ import care.data4life.datadonation.internal.domain.usecases.FetchConsentDocument
 import care.data4life.datadonation.internal.domain.usecases.FetchUserConsents
 import care.data4life.datadonation.internal.domain.usecases.RevokeUserConsent
 import care.data4life.datadonation.internal.domain.usecases.UsecaseContract
-import care.data4life.datadonation.mock.DummyData
+import care.data4life.datadonation.mock.fixture.ConsentFixtures.sampleConsentDocument
+import care.data4life.datadonation.mock.fixture.ConsentFixtures.sampleUserConsent
 import care.data4life.datadonation.mock.stub.CreateUserConsentStub
 import care.data4life.datadonation.mock.stub.FetchConsentDocumentsStub
 import care.data4life.datadonation.mock.stub.FetchUserConsentsStub
@@ -69,7 +70,7 @@ class ClientTest {
     fun `Given createUserConsent is called with a ConsentDocumentVersion and a Language it builds and delegates its Parameter to the Usecase and returns a runnable Flow which emits a UserConsent`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val usecase = CreateUserConsentStub()
-        val consent = DummyData.userConsent
+        val consent = sampleUserConsent
 
         val version = 23
         val consentDocumentKey = "custom-consent-key"
@@ -129,7 +130,7 @@ class ClientTest {
     fun `Given fetchConsentDocuments is called with a consentDocumentKey it builds and delegates its Parameter to the Usecase and returns a runnable Flow which emits a List of ConsentDocument`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val usecase = FetchConsentDocumentsStub()
-        val documents = listOf(DummyData.consentDocument)
+        val documents = listOf(sampleConsentDocument)
 
         val version = 23
         val language = "de-j-old-n-kotlin-x-done"
@@ -192,7 +193,7 @@ class ClientTest {
     fun `Given fetchUserConsents is called with a consentDocumentKey it builds and delegates its Parameter to the Usecase and returns a runnable Flow which emits a List of UserConsent`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val usecase = FetchUserConsentsStub()
-        val consents = listOf(DummyData.userConsent)
+        val consents = listOf(sampleUserConsent)
 
         val capturedParameter = Channel<UsecaseContract.FetchUserConsents.Parameter>()
 
@@ -248,7 +249,7 @@ class ClientTest {
     fun `Given fetchAllUserConsents is called it builds and delegates its Parameter to the Usecase and returns a runnable Flow which emits a List of UserConsent`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val usecase = FetchUserConsentsStub()
-        val consents = listOf(DummyData.userConsent)
+        val consents = listOf(sampleUserConsent)
 
         val capturedParameter = Channel<UsecaseContract.FetchUserConsents.Parameter>()
 

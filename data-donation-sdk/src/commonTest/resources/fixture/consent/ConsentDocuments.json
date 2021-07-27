@@ -6,9 +6,6 @@
     "description": "this is an example document",
     "recipient": "sombody",
     "language": "zxx-Hant-CN-x-private1-private2",
-    "text": "ExampleText",
-    "requiresToken": false,
-    "studyID": "exampleId",
-    "programName": "example"
+    "text": "ExampleText"
   }
 ]
