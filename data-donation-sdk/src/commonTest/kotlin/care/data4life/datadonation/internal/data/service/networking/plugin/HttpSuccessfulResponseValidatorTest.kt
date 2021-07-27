@@ -17,8 +17,8 @@
 package care.data4life.datadonation.internal.data.service.networking.plugin
 
 import care.data4life.datadonation.lang.HttpRuntimeError
-import care.data4life.datadonation.mock.fake.defaultResponse
-import care.data4life.sdk.util.test.runBlockingTest
+import care.data4life.sdk.util.test.coroutine.runBlockingTest
+import care.data4life.sdk.util.test.ktor.HttpMockClientResponseFactory.createHelloWorldOkResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
@@ -52,7 +52,7 @@ class HttpSuccessfulResponseValidatorTest {
 
             engine {
                 addHandler {
-                    defaultResponse(this)
+                    createHelloWorldOkResponse(this)
                 }
             }
         }
@@ -141,7 +141,7 @@ class HttpSuccessfulResponseValidatorTest {
 
             engine {
                 addHandler {
-                    defaultResponse(this)
+                    createHelloWorldOkResponse(this)
                 }
             }
         }

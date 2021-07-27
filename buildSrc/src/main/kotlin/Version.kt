@@ -22,7 +22,7 @@ object Version {
 
         // Android
         // https://developer.android.com/studio
-        const val android = "4.1.0"
+        const val android = "4.2.2"
     }
 
     // Kotlin
@@ -35,9 +35,6 @@ object Version {
 
     // https://github.com/Kotlin/kotlinx.serialization
     const val kotlinSerialization = "1.0.1"
-
-    // https://github.com/touchlab/Stately
-    const val stately = "1.1.0"
 
     // https://github.com/Kotlin/kotlinx-datetime
     const val dateTime = "0.1.1"
@@ -86,7 +83,7 @@ object Version {
     const val fhir = "0.2.0"
 
     // https://github.com/d4l-data4life/hc-util-sdk-kmp
-    const val sdkUtil = "1.8.1"
+    const val sdkUtil = "1.9.0"
 
     // Junit Test
     const val testJUnit = "4.13.2"

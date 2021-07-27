@@ -34,7 +34,7 @@ package care.data4life.datadonation
 
 import care.data4life.datadonation.core.model.ConsentDocument
 import care.data4life.datadonation.core.model.UserConsent
-import care.data4life.datadonation.wrapper.D4LSDKFlowContract
+import care.data4life.sdk.util.coroutine.D4LSDKFlowContract
 
 interface DataDonationSDKPublicAPI {
     enum class Environment(val url: String) {

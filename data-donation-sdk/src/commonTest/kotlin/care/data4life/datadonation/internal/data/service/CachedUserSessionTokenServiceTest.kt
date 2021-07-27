@@ -19,7 +19,7 @@ package care.data4life.datadonation.internal.data.service
 import care.data4life.datadonation.lang.CoreRuntimeError
 import care.data4life.datadonation.mock.stub.ClockStub
 import care.data4life.datadonation.mock.stub.UserSessionTokenProviderStub
-import care.data4life.sdk.util.test.runWithContextBlockingTest
+import care.data4life.sdk.util.test.coroutine.runWithContextBlockingTest
 import kotlinx.coroutines.GlobalScope
 import kotlin.test.Test
 import kotlin.test.assertEquals

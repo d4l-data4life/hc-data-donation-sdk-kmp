@@ -20,9 +20,9 @@ import care.data4life.datadonation.DataDonationSDKPublicAPI.Environment
 import care.data4life.datadonation.internal.data.service.networking.Networking.RequestBuilder.Companion.ACCESS_TOKEN_FIELD
 import care.data4life.datadonation.internal.data.service.networking.Networking.RequestBuilder.Companion.ACCESS_TOKEN_VALUE_PREFIX
 import care.data4life.datadonation.lang.CoreRuntimeError
-import care.data4life.datadonation.mock.fake.createDefaultMockClient
-import care.data4life.datadonation.mock.fake.defaultResponse
-import care.data4life.sdk.util.test.runWithContextBlockingTest
+import care.data4life.sdk.util.test.coroutine.runWithContextBlockingTest
+import care.data4life.sdk.util.test.ktor.HttpMockClientFactory.createHelloWorldMockClient
+import care.data4life.sdk.util.test.ktor.HttpMockClientResponseFactory.createHelloWorldOkResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.toByteReadPacket
@@ -48,7 +48,7 @@ class RequestBuilderTest {
             engine {
                 addHandler { request ->
                     assert.invoke(request)
-                    defaultResponse(this)
+                    createHelloWorldOkResponse(this)
                 }
             }
         }
@@ -58,7 +58,7 @@ class RequestBuilderTest {
     fun `It fulfils RequestBuilderTemplate`() {
         // Given
         val env = Environment.DEV
-        val client = createDefaultMockClient()
+        val client = createHelloWorldMockClient()
 
         // When
         val template: Any = RequestBuilder.Factory(env, client)
@@ -71,7 +71,7 @@ class RequestBuilderTest {
     fun `Given create is called with a Environment and a HttpClient it returns a RequestBuilder`() {
         // Given
         val env = Environment.DEV
-        val client = createDefaultMockClient()
+        val client = createHelloWorldMockClient()
 
         // When
         val builder: Any = RequestBuilder.Factory(env, client).create()
@@ -377,7 +377,7 @@ class RequestBuilderTest {
                         )
                     )
 
-                    defaultResponse(this)
+                    createHelloWorldOkResponse(this)
                 }
             }
         }
@@ -409,7 +409,7 @@ class RequestBuilderTest {
     fun `Given a instance was create with a Environment, setBody is called with a Payload and it was prepared and executed with GET, it fails`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val env = Environment.DEV
-        val client = createDefaultMockClient()
+        val client = createHelloWorldMockClient()
 
         val error = assertFailsWith<CoreRuntimeError.RequestValidationFailure> {
             // When
@@ -428,7 +428,7 @@ class RequestBuilderTest {
     fun `Given a instance was create with a Environment, setBody was not called and it was prepared and executed with POST, it fails`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val env = Environment.DEV
-        val client = createDefaultMockClient()
+        val client = createHelloWorldMockClient()
 
         // When
         val error = assertFailsWith<CoreRuntimeError.RequestValidationFailure> {
@@ -448,7 +448,7 @@ class RequestBuilderTest {
     fun `Given a instance was create with a Environment, setBody was not called and it was prepared and executed with PUT, it fails`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val env = Environment.DEV
-        val client = createDefaultMockClient()
+        val client = createHelloWorldMockClient()
 
         val error = assertFailsWith<CoreRuntimeError.RequestValidationFailure> {
             // When
@@ -467,7 +467,7 @@ class RequestBuilderTest {
     fun `Given a instance was create with a Environment, setBody was not called and it was prepared and executed with DELETE, it fails`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val env = Environment.DEV
-        val client = createDefaultMockClient()
+        val client = createHelloWorldMockClient()
 
         val error = assertFailsWith<CoreRuntimeError.RequestValidationFailure> {
             // When
@@ -516,7 +516,7 @@ class RequestBuilderTest {
                         actual = request.body.toByteReadPacket().readText(),
                         expected = payload
                     )
-                    defaultResponse(this)
+                    createHelloWorldOkResponse(this)
                 }
             }
         }
@@ -561,7 +561,7 @@ class RequestBuilderTest {
                         expected = payload
                     )
 
-                    defaultResponse(this)
+                    createHelloWorldOkResponse(this)
                 }
             }
         }
@@ -606,7 +606,7 @@ class RequestBuilderTest {
                         expected = payload
                     )
 
-                    defaultResponse(this)
+                    createHelloWorldOkResponse(this)
                 }
             }
         }

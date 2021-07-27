@@ -34,8 +34,11 @@ object Dependency {
 
     val d4l = D4L
     object D4L {
-        const val util = "care.data4life.hc-util-sdk-kmp:util:${Version.sdkUtil}"
-        const val testUtil = "care.data4life.hc-util-sdk-kmp:util-test:${Version.sdkUtil}"
+        const val sdkUtil = "care.data4life.hc-util-sdk-kmp:util:${Version.sdkUtil}"
+        const val sdkUtilCoroutine = "care.data4life.hc-util-sdk-kmp:util-coroutine:${Version.sdkUtil}"
+        const val sdkTestUtil = "care.data4life.hc-util-sdk-kmp:util-test:${Version.sdkUtil}"
+        const val sdkTestCoroutineUtil = "care.data4life.hc-util-sdk-kmp:util-coroutine-test:${Version.sdkUtil}"
+        const val sdkTestKtorUtil = "care.data4life.hc-util-sdk-kmp:util-ktor-test:${Version.sdkUtil}"
         const val fhir = "care.data4life.hc-fhir-sdk-kmp:fhir:${Version.fhir}"
     }
 
@@ -116,8 +119,6 @@ object Dependency {
             const val android = "io.insert-koin:koin-android:${Version.koin}"
             const val android_ext = "io.insert-koin:koin-android-ext:${Version.koin}"
         }
-
-        val stately = "co.touchlab:stately-common:${Version.stately}"
 
         val dateTime = "org.jetbrains.kotlinx:kotlinx-datetime:${Version.dateTime}"
 

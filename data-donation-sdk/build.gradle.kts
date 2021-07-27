@@ -54,7 +54,6 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(Dependency.multiplatform.kotlin.stdlibCommon)
-                implementation(Dependency.multiplatform.stately)
 
                 implementation(Dependency.multiplatform.koin.commonCore)
 
@@ -74,7 +73,8 @@ kotlin {
 
                 // D4L
                 implementation(Dependency.d4l.fhir)
-                implementation(Dependency.d4l.util)
+                implementation(Dependency.d4l.sdkUtil)
+                implementation(Dependency.d4l.sdkUtilCoroutine)
             }
         }
         commonTest {
@@ -85,7 +85,9 @@ kotlin {
                 implementation(Dependency.multiplatform.ktor.mock)
 
                 // D4L
-                implementation(Dependency.d4l.testUtil)
+                implementation(Dependency.d4l.sdkTestUtil)
+                implementation(Dependency.d4l.sdkTestCoroutineUtil)
+                implementation(Dependency.d4l.sdkTestKtorUtil)
             }
         }
 
@@ -130,7 +132,7 @@ kotlin {
                 implementation(Dependency.multiplatform.ktor.ios)
 
                 // D4L
-                implementation(Dependency.d4l.util)
+                implementation(Dependency.d4l.sdkUtil)
             }
         }
         val iosTest by getting {
