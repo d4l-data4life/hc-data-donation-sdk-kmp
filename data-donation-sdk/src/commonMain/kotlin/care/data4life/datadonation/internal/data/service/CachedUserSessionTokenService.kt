@@ -100,7 +100,7 @@ class CachedUserSessionTokenService(
         }
 
         fun isNotExpired(): Boolean {
-            return cachedAt > clock.now().minus(CACHE_LIFETIME).also { println(it) }
+            return cachedAt > clock.now().minus(CACHE_LIFETIME)
         }
     }
 }
