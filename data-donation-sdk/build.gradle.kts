@@ -59,6 +59,8 @@ kotlin {
 
                 implementation(Dependency.multiplatform.coroutines.common)
 
+                implementation(Dependency.multiplatform.stately.isolate)
+
                 implementation(Dependency.multiplatform.ktor.commonCore)
                 implementation(Dependency.multiplatform.ktor.logger)
                 implementation(Dependency.multiplatform.ktor.commonJson)
@@ -78,6 +80,8 @@ kotlin {
             }
         }
         commonTest {
+            kotlin.srcDir("src-gen/commonTest/kotlin")
+
             dependencies {
                 implementation(Dependency.multiplatform.kotlin.testCommon)
                 implementation(Dependency.multiplatform.kotlin.testCommonAnnotations)
@@ -179,5 +183,32 @@ android {
             java.setSrcDirs(setOf("src/androidTest/kotlin"))
             res.setSrcDirs(setOf("src/androidTest/res"))
         }
+    }
+}
+
+val templatesPath = "${projectDir}/src/commonTest/resources/template"
+val configPath = "${projectDir}/src-gen/commonTest/kotlin/care/data4life/datadonation/test/config"
+
+val provideTestConfig: Task by tasks.creating {
+    doFirst {
+        val templates = File(templatesPath)
+        val configs = File(configPath)
+
+        val config = File(templates, "TestConfig.tmpl")
+            .readText()
+            .replace("PROJECT_DIR", projectDir.toPath().toAbsolutePath().toString())
+
+        if (!configs.exists()) {
+            if(!configs.mkdir()) {
+                System.err.println("The script not able to create the config directory")
+            }
+        }
+        File(configPath, "TestConfig.kt").writeText(config)
+    }
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.dsl.KotlinCompile::class.java) {
+    if (this.name.contains("Test")) {
+        this.dependsOn(provideTestConfig)
     }
 }

@@ -25,6 +25,7 @@ import io.ktor.client.HttpClientConfig
 import io.ktor.client.features.HttpClientFeature
 import io.ktor.util.AttributeKey
 import org.koin.core.context.stopKoin
+import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import kotlin.test.BeforeTest
@@ -75,6 +76,24 @@ class NetworkingKoinTest {
     }
 
     @Test
+    fun `Given resolveServiceModule is called it creates a Module, it contains a blank HttpClient`() {
+        // When
+        val koin = koinApplication {
+            modules(
+                resolveNetworking(),
+                module(override = true) {
+                    single { createHelloWorldMockClient() }
+                    single { DataDonationSDKPublicAPI.Environment.DEV }
+                }
+            )
+        }
+
+        // Then
+        val client: HttpClient = koin.koin.get(qualifier = named("blankHttpClient"))
+        assertNotNull(client)
+    }
+
+    @Test
     fun `Given resolveServiceModule is called it creates a Module, it assembles the HttpClient`() {
         // Given
         val clientConfigurator = HttpClientConfiguratorStub()
@@ -109,7 +128,7 @@ class NetworkingKoinTest {
             )
         }
         // Then
-        val client: HttpClient = koin.koin.get()
+        val client: HttpClient = koin.koin.get(qualifier = named("configuredHttpClient"))
         assertNotNull(client)
 
         assertTrue(capturedHttpConfig is HttpClientConfig<*>)

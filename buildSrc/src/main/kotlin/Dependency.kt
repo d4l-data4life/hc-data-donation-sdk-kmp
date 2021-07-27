@@ -47,54 +47,60 @@ object Dependency {
         val kotlin = Kotlin
 
         object Kotlin {
-            val stdlibCommon = "org.jetbrains.kotlin:kotlin-stdlib-common:${Version.kotlin}"
-            val stdlibJdk = "org.jetbrains.kotlin:kotlin-stdlib:${Version.kotlin}"
-            val stdlibJdk8 = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Version.kotlin}"
-            val stdlibJs = "org.jetbrains.kotlin:kotlin-stdlib:${Version.kotlin}"
-            val stdlibNative = "org.jetbrains.kotlin:kotlin-stdlib:${Version.kotlin}"
-            val stdlibAndroid = "org.jetbrains.kotlin:kotlin-stdlib:${Version.kotlin}"
+            const val stdlibCommon = "org.jetbrains.kotlin:kotlin-stdlib-common:${Version.kotlin}"
+            const val stdlibJdk = "org.jetbrains.kotlin:kotlin-stdlib:${Version.kotlin}"
+            const val stdlibJdk8 = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Version.kotlin}"
+            const val stdlibJs = "org.jetbrains.kotlin:kotlin-stdlib:${Version.kotlin}"
+            const val stdlibNative = "org.jetbrains.kotlin:kotlin-stdlib:${Version.kotlin}"
+            const val stdlibAndroid = "org.jetbrains.kotlin:kotlin-stdlib:${Version.kotlin}"
 
-            val testCommon = "org.jetbrains.kotlin:kotlin-test-common:${Version.kotlin}"
-            val testCommonAnnotations =
+            const val testCommon = "org.jetbrains.kotlin:kotlin-test-common:${Version.kotlin}"
+            const val testCommonAnnotations =
                 "org.jetbrains.kotlin:kotlin-test-annotations-common:${Version.kotlin}"
-            val testJvm = "org.jetbrains.kotlin:kotlin-test:${Version.kotlin}"
-            val testJvmJunit = "org.jetbrains.kotlin:kotlin-test-junit:${Version.kotlin}"
+            const val testJvm = "org.jetbrains.kotlin:kotlin-test:${Version.kotlin}"
+            const val testJvmJunit = "org.jetbrains.kotlin:kotlin-test-junit:${Version.kotlin}"
         }
 
         val coroutines = Coroutines
 
         object Coroutines {
             // https://github.com/Kotlin/kotlinx.coroutines
-            val common =
+            const val common =
                 "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Version.kotlinCoroutines}"
-            val android =
+            const val android =
                 "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Version.kotlinCoroutines}"
-            val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Version.kotlinCoroutines}"
+            const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Version.kotlinCoroutines}"
+        }
+
+        val stately = Stately
+
+        object Stately {
+            const val isolate = "co.touchlab:stately-isolate:${Version.stately}-a1"
         }
 
         val ktor = Ktor
 
         object Ktor {
             // https://ktor.io/
-            val commonCore = "io.ktor:ktor-client-core:${Version.ktor}"
-            val commonJson = "io.ktor:ktor-client-json:${Version.ktor}"
-            val jvmCore = "io.ktor:ktor-client-core-jvm:${Version.ktor}"
-            val androidCore = "io.ktor:ktor-client-android:${Version.ktor}"
-            val jvmJson = "io.ktor:ktor-client-json-jvm:${Version.ktor}"
-            val ios = "io.ktor:ktor-client-ios:${Version.ktor}"
-            val iosCore = "io.ktor:ktor-client-core:${Version.ktor}"
-            val iosJson = "io.ktor:ktor-client-json-native:${Version.ktor}"
-            val commonSerialization = "io.ktor:ktor-client-serialization:${Version.ktor}"
-            val androidSerialization = "io.ktor:ktor-client-serialization-jvm:${Version.ktor}"
-            val iosSerialization = "io.ktor:ktor-client-serialization-native:${Version.ktor}"
+            const val commonCore = "io.ktor:ktor-client-core:${Version.ktor}"
+            const val commonJson = "io.ktor:ktor-client-json:${Version.ktor}"
+            const val jvmCore = "io.ktor:ktor-client-core-jvm:${Version.ktor}"
+            const val androidCore = "io.ktor:ktor-client-android:${Version.ktor}"
+            const val jvmJson = "io.ktor:ktor-client-json-jvm:${Version.ktor}"
+            const val ios = "io.ktor:ktor-client-ios:${Version.ktor}"
+            const val iosCore = "io.ktor:ktor-client-core:${Version.ktor}"
+            const val iosJson = "io.ktor:ktor-client-json-native:${Version.ktor}"
+            const val commonSerialization = "io.ktor:ktor-client-serialization:${Version.ktor}"
+            const val androidSerialization = "io.ktor:ktor-client-serialization-jvm:${Version.ktor}"
+            const val iosSerialization = "io.ktor:ktor-client-serialization-native:${Version.ktor}"
 
             // Logger
-            val logger = "io.ktor:ktor-client-logging:${Version.ktor}"
+            const val logger = "io.ktor:ktor-client-logging:${Version.ktor}"
 
             // Testing
-            val mock = "io.ktor:ktor-client-mock:${Version.ktor}"
-            val jvmMock = "io.ktor:ktor-client-mock-jvm:${Version.ktor}"
-            val nativeMock = "io.ktor:ktor-client-mock-native:${Version.ktor}"
+            const val mock = "io.ktor:ktor-client-mock:${Version.ktor}"
+            const val jvmMock = "io.ktor:ktor-client-mock-jvm:${Version.ktor}"
+            const val nativeMock = "io.ktor:ktor-client-mock-native:${Version.ktor}"
         }
 
         val serialization = Serialization
@@ -120,9 +126,9 @@ object Dependency {
             const val android_ext = "io.insert-koin:koin-android-ext:${Version.koin}"
         }
 
-        val dateTime = "org.jetbrains.kotlinx:kotlinx-datetime:${Version.dateTime}"
+        const val dateTime = "org.jetbrains.kotlinx:kotlinx-datetime:${Version.dateTime}"
 
-        val uuid = "com.benasher44:uuid:${Version.uuid}"
+        const val uuid = "com.benasher44:uuid:${Version.uuid}"
     }
 
     val test = Test

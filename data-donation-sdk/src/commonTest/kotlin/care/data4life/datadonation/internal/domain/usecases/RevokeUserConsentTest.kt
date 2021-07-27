@@ -47,15 +47,15 @@ class RevokeUserConsentTest {
     }
 
     @Test
-    fun `Given a Usecase had been created and execute is called, it delegates the call to the ConsentRepository with the given ConsentKey and just runs`() = runBlockingTest {
+    fun `Given a Usecase had been created and execute is called, it delegates the call to the ConsentRepository with the given consentDocumentKey and just runs`() = runBlockingTest {
         // Given
-        val consentKey = "custom-consent-key"
-        val parameter = RevokeUserConsent.Parameter(consentKey)
-        var capturedConsentKey: String? = "NotNull"
+        val consentDocumentKey = "custom-consent-key"
+        val parameter = RevokeUserConsent.Parameter(consentDocumentKey)
+        var capturedconsentDocumentKey: String? = "NotNull"
         val userContentRepository = UserConsentRepositoryStub()
 
-        userContentRepository.whenRevokeUserConsent = { delegatedConsentKey ->
-            capturedConsentKey = delegatedConsentKey
+        userContentRepository.whenRevokeUserConsent = { delegatedconsentDocumentKey ->
+            capturedconsentDocumentKey = delegatedconsentDocumentKey
         }
 
         // When
@@ -68,8 +68,8 @@ class RevokeUserConsentTest {
             expected = Unit
         )
         assertEquals(
-            actual = capturedConsentKey,
-            expected = consentKey
+            actual = capturedconsentDocumentKey,
+            expected = consentDocumentKey
         )
     }
 }

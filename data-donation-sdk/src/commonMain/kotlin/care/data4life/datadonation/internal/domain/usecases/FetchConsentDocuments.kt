@@ -32,7 +32,7 @@
 
 package care.data4life.datadonation.internal.domain.usecases
 
-import care.data4life.datadonation.core.model.ConsentDocument
+import care.data4life.datadonation.core.model.ModelContract.ConsentDocument
 import care.data4life.datadonation.internal.domain.repository.RepositoryContract
 
 internal class FetchConsentDocuments(
@@ -44,13 +44,13 @@ internal class FetchConsentDocuments(
         return consentDocumentRepository.fetchConsentDocuments(
             parameter.language,
             parameter.version,
-            parameter.consentKey
+            parameter.consentDocumentKey
         )
     }
 
     data class Parameter(
         override val version: Int?,
         override val language: String?,
-        override val consentKey: String
+        override val consentDocumentKey: String
     ) : UsecaseContract.FetchConsentDocuments.Parameter
 }

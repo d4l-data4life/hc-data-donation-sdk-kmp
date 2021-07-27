@@ -24,14 +24,14 @@ import care.data4life.datadonation.mock.MockException
 class ConsentDocumentRepositoryStub :
     RepositoryContract.ConsentDocumentRepository,
     MockContract.Stub {
-    var whenFetchConsentDocuments: ((language: String?, version: Int?, consentKey: String) -> List<ConsentDocument>)? = null
+    var whenFetchConsentDocuments: ((language: String?, version: Int?, consentDocumentKey: String) -> List<ConsentDocument>)? = null
 
     override suspend fun fetchConsentDocuments(
         language: String?,
         version: Int?,
-        consentKey: String
+        consentDocumentKey: String
     ): List<ConsentDocument> {
-        return whenFetchConsentDocuments?.invoke(language, version, consentKey) ?: throw MockException()
+        return whenFetchConsentDocuments?.invoke(language, version, consentDocumentKey) ?: throw MockException()
     }
 
     override fun clear() {

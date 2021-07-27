@@ -53,24 +53,24 @@ class FetchConsentDocumentsTest {
         // Given
         val version = 42
         val language = "de-j-old-n-kotlin-x-done"
-        val consentKey = "tomato"
+        val consentDocumentKey = "tomato"
 
         var capturedVersion: Int? = null
         var capturedLanguage: String? = null
-        var capturedConsentKey: String? = null
+        var capturedconsentDocumentKey: String? = null
 
         val consentDocuments = listOf(DummyData.consentDocument)
 
         val repo = ConsentDocumentRepositoryStub()
 
-        repo.whenFetchConsentDocuments = { delegatedLanguage, delegatedVersion, delegatedConsentKey ->
+        repo.whenFetchConsentDocuments = { delegatedLanguage, delegatedVersion, delegatedconsentDocumentKey ->
             capturedVersion = delegatedVersion
             capturedLanguage = delegatedLanguage
-            capturedConsentKey = delegatedConsentKey
+            capturedconsentDocumentKey = delegatedconsentDocumentKey
             consentDocuments
         }
 
-        val parameter = FetchConsentDocuments.Parameter(version, language, consentKey)
+        val parameter = FetchConsentDocuments.Parameter(version, language, consentDocumentKey)
 
         // When
         val result = FetchConsentDocuments(repo).execute(parameter)
@@ -89,8 +89,8 @@ class FetchConsentDocumentsTest {
             expected = version
         )
         assertEquals(
-            actual = capturedConsentKey,
-            expected = consentKey
+            actual = capturedconsentDocumentKey,
+            expected = consentDocumentKey
         )
     }
 }

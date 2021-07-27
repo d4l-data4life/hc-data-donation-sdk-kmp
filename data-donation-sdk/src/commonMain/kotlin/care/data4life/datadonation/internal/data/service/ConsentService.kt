@@ -36,6 +36,8 @@ import care.data4life.datadonation.internal.data.service.networking.Networking
 import care.data4life.datadonation.internal.data.service.networking.receive
 import care.data4life.datadonation.lang.HttpRuntimeError
 import kotlinx.datetime.Clock
+import care.data4life.datadonation.core.model.ModelContract.ConsentDocument as ConsentDocumentContract
+import care.data4life.datadonation.core.model.ModelContract.UserConsent as UserConsentContract
 
 internal class ConsentService constructor(
     private val requestBuilderFactory: Networking.RequestBuilderFactory,
@@ -58,11 +60,11 @@ internal class ConsentService constructor(
         accessToken: String,
         version: Int?,
         language: String?,
-        consentKey: String
-    ): List<ConsentDocument> {
+        consentDocumentKey: String
+    ): List<ConsentDocumentContract> {
         val path = buildPath(CONSENTS_DOCUMENTS)
         val parameter = mapOf(
-            USER_CONSENT_KEY to consentKey,
+            USER_CONSENT_KEY to consentDocumentKey,
             VERSION to version,
             LANGUAGE to language
         )
@@ -77,47 +79,20 @@ internal class ConsentService constructor(
             )
 
         return try {
-            receive(request)
+            receive<List<ConsentDocument>>(request)
         } catch (error: HttpRuntimeError) {
             throw errorHandler.handleFetchConsentDocuments(error)
         }
     }
 
-    override suspend fun fetchUserConsents(
-        accessToken: String,
-        latestConsent: Boolean?,
-        consentKey: String?
-    ): List<UserConsent> {
-        val path = buildPath(USER_CONSENTS)
-        val parameter = mapOf(
-            LATEST_CONSENT to latestConsent,
-            USER_CONSENT_KEY to consentKey,
-        )
-
-        val request = requestBuilderFactory
-            .create()
-            .setAccessToken(accessToken)
-            .setParameter(parameter)
-            .prepare(
-                Networking.Method.GET,
-                path
-            )
-
-        return try {
-            receive(request)
-        } catch (error: HttpRuntimeError) {
-            throw errorHandler.handleFetchUserConsents(error)
-        }
-    }
-
     override suspend fun createUserConsent(
         accessToken: String,
-        consentKey: String,
+        consentDocumentKey: String,
         version: Int
     ) {
         val path = buildPath(USER_CONSENTS)
         val payload = ConsentCreationPayload(
-            consentKey,
+            consentDocumentKey,
             version,
             clock.now().toString()
         )
@@ -136,6 +111,33 @@ internal class ConsentService constructor(
             receive(request)
         } catch (error: HttpRuntimeError) {
             throw errorHandler.handleCreateUserConsent(error)
+        }
+    }
+
+    override suspend fun fetchUserConsents(
+        accessToken: String,
+        latestConsent: Boolean?,
+        consentDocumentKey: String?
+    ): List<UserConsentContract> {
+        val path = buildPath(USER_CONSENTS)
+        val parameter = mapOf(
+            LATEST_CONSENT to latestConsent,
+            USER_CONSENT_KEY to consentDocumentKey,
+        )
+
+        val request = requestBuilderFactory
+            .create()
+            .setAccessToken(accessToken)
+            .setParameter(parameter)
+            .prepare(
+                Networking.Method.GET,
+                path
+            )
+
+        return try {
+            receive<List<UserConsent>>(request)
+        } catch (error: HttpRuntimeError) {
+            throw errorHandler.handleFetchUserConsents(error)
         }
     }
 
@@ -206,9 +208,9 @@ internal class ConsentService constructor(
         }
     }
 
-    override suspend fun revokeUserConsent(accessToken: String, consentKey: String) {
+    override suspend fun revokeUserConsent(accessToken: String, consentDocumentKey: String) {
         val path = buildPath(USER_CONSENTS)
-        val payload = ConsentRevocationPayload(consentKey)
+        val payload = ConsentRevocationPayload(consentDocumentKey)
 
         val request = requestBuilderFactory
             .create()

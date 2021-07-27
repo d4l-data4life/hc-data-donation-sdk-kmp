@@ -16,25 +16,25 @@
 
 package care.data4life.datadonation.internal.domain.repository
 
-import care.data4life.datadonation.core.model.ConsentDocument
-import care.data4life.datadonation.core.model.UserConsent
+import care.data4life.datadonation.core.model.ModelContract.ConsentDocument
+import care.data4life.datadonation.core.model.ModelContract.UserConsent
 
 internal typealias Signature = String
 
 internal interface RepositoryContract {
     interface UserConsentRepository {
-        suspend fun createUserConsent(consentKey: String, version: Int)
-        suspend fun fetchUserConsents(consentKey: String? = null): List<UserConsent>
+        suspend fun createUserConsent(consentDocumentKey: String, version: Int)
+        suspend fun fetchUserConsents(consentDocumentKey: String? = null): List<UserConsent>
         suspend fun signUserConsentRegistration(message: String): Signature
         suspend fun signUserConsentDonation(message: String): Signature
-        suspend fun revokeUserConsent(consentKey: String)
+        suspend fun revokeUserConsent(consentDocumentKey: String)
     }
 
     interface ConsentDocumentRepository {
         suspend fun fetchConsentDocuments(
             language: String?,
             version: Int?,
-            consentKey: String
+            consentDocumentKey: String
         ): List<ConsentDocument>
     }
 }

@@ -32,7 +32,7 @@
 
 package care.data4life.datadonation.internal.domain.repository
 
-import care.data4life.datadonation.core.model.ConsentDocument
+import care.data4life.datadonation.core.model.ModelContract.ConsentDocument
 import care.data4life.datadonation.internal.data.service.ServiceContract
 
 internal class ConsentDocumentRepository(
@@ -43,7 +43,7 @@ internal class ConsentDocumentRepository(
     override suspend fun fetchConsentDocuments(
         language: String?,
         version: Int?,
-        consentKey: String
+        consentDocumentKey: String
     ): List<ConsentDocument> {
         val sessionToken = sessionTokenService.getUserSessionToken()
 
@@ -51,7 +51,7 @@ internal class ConsentDocumentRepository(
             sessionToken,
             version,
             language,
-            consentKey
+            consentDocumentKey
         )
     }
 }

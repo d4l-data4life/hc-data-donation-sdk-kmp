@@ -22,17 +22,17 @@ import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 
 class UserConsentRepositoryStub : RepositoryContract.UserConsentRepository, MockContract.Stub {
-    var whenCreateUserConsent: ((consentKey: String, version: Int) -> Unit)? = null
-    var whenFetchUserConsents: ((consentKey: String?) -> List<UserConsent>)? = null
+    var whenCreateUserConsent: ((consentDocumentKey: String, version: Int) -> Unit)? = null
+    var whenFetchUserConsents: ((consentDocumentKey: String?) -> List<UserConsent>)? = null
     var whenSignUserConsent: ((message: String) -> String)? = null
-    var whenRevokeUserConsent: ((consentKey: String) -> Unit)? = null
+    var whenRevokeUserConsent: ((consentDocumentKey: String) -> Unit)? = null
 
-    override suspend fun createUserConsent(consentKey: String, version: Int) {
-        whenCreateUserConsent?.invoke(consentKey, version) ?: throw MockException()
+    override suspend fun createUserConsent(consentDocumentKey: String, version: Int) {
+        whenCreateUserConsent?.invoke(consentDocumentKey, version) ?: throw MockException()
     }
 
-    override suspend fun fetchUserConsents(consentKey: String?): List<UserConsent> {
-        return whenFetchUserConsents?.invoke(consentKey) ?: throw MockException()
+    override suspend fun fetchUserConsents(consentDocumentKey: String?): List<UserConsent> {
+        return whenFetchUserConsents?.invoke(consentDocumentKey) ?: throw MockException()
     }
 
     override suspend fun signUserConsentRegistration(message: String): String {
@@ -43,8 +43,8 @@ class UserConsentRepositoryStub : RepositoryContract.UserConsentRepository, Mock
         return whenSignUserConsent?.invoke(message) ?: throw MockException()
     }
 
-    override suspend fun revokeUserConsent(consentKey: String) {
-        whenRevokeUserConsent?.invoke(consentKey) ?: throw MockException()
+    override suspend fun revokeUserConsent(consentDocumentKey: String) {
+        whenRevokeUserConsent?.invoke(consentDocumentKey) ?: throw MockException()
     }
 
     override fun clear() {

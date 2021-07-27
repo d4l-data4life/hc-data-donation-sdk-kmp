@@ -52,28 +52,28 @@ class CreateUserConsentTest {
     @Test
     fun `Given a Usecase had been created and execute is called, it delegates the call to the UserContentRepository with the given parameters and returns the first consent`() = runBlockingTest {
         // Given
-        val consentKey = "custom-consent-key"
+        val consentDocumentKey = "custom-consent-key"
         val version = 42
 
-        var capturedCreationConsentKey: String? = "NotNull"
+        var capturedCreationconsentDocumentKey: String? = "NotNull"
         var capturedVersion: Int? = null
 
-        var capturedFetchingConsentKey: String? = null
+        var capturedFetchingconsentDocumentKey: String? = null
 
         val consent = DummyData.userConsent
 
         val repo = UserConsentRepositoryStub()
 
-        repo.whenCreateUserConsent = { delegatedConsentKey, delegatedVersion ->
-            capturedCreationConsentKey = delegatedConsentKey
+        repo.whenCreateUserConsent = { delegatedconsentDocumentKey, delegatedVersion ->
+            capturedCreationconsentDocumentKey = delegatedconsentDocumentKey
             capturedVersion = delegatedVersion
         }
-        repo.whenFetchUserConsents = { delegatedConsentKey ->
-            capturedFetchingConsentKey = delegatedConsentKey
+        repo.whenFetchUserConsents = { delegatedconsentDocumentKey ->
+            capturedFetchingconsentDocumentKey = delegatedconsentDocumentKey
             listOf(consent, DummyData.userConsent.copy(accountId = "not expected"))
         }
 
-        val parameter = CreateUserConsent.Parameter(consentKey, version)
+        val parameter = CreateUserConsent.Parameter(consentDocumentKey, version)
 
         // When
         val result = CreateUserConsent(repo).execute(parameter)
@@ -84,13 +84,13 @@ class CreateUserConsentTest {
             expected = result
         )
         assertEquals(
-            actual = capturedCreationConsentKey,
-            expected = consentKey
+            actual = capturedCreationconsentDocumentKey,
+            expected = consentDocumentKey
         )
         assertEquals(
             actual = capturedVersion,
             expected = version
         )
-        assertNull(capturedFetchingConsentKey)
+        assertNull(capturedFetchingconsentDocumentKey)
     }
 }

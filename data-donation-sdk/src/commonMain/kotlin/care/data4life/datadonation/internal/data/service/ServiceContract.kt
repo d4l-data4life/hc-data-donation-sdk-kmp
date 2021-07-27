@@ -16,12 +16,13 @@
 
 package care.data4life.datadonation.internal.data.service
 
-import care.data4life.datadonation.core.model.ConsentDocument
-import care.data4life.datadonation.core.model.UserConsent
+import care.data4life.datadonation.core.model.ModelContract.ConsentDocument
+import care.data4life.datadonation.core.model.ModelContract.UserConsent
 import care.data4life.datadonation.internal.data.model.ConsentSignature
 import care.data4life.datadonation.internal.data.model.DonationPayload
 import care.data4life.datadonation.lang.ConsentServiceError
 import care.data4life.datadonation.lang.HttpRuntimeError
+import kotlin.time.minutes
 
 internal typealias SessionToken = String
 internal typealias PublicDataDonationCryptoKey = String
@@ -35,6 +36,10 @@ internal interface ServiceContract {
 
     interface UserSessionTokenService {
         suspend fun getUserSessionToken(): SessionToken
+
+        companion object {
+            val CACHE_LIFETIME = 1.minutes
+        }
     }
 
     interface ConsentService {
@@ -42,18 +47,18 @@ internal interface ServiceContract {
             accessToken: String,
             version: Int?,
             language: String?,
-            consentKey: String
+            consentDocumentKey: String
         ): List<ConsentDocument>
 
         suspend fun fetchUserConsents(
             accessToken: String,
             latestConsent: Boolean?,
-            consentKey: String? = null
+            consentDocumentKey: String? = null
         ): List<UserConsent>
 
         suspend fun createUserConsent(
             accessToken: String,
-            consentKey: String,
+            consentDocumentKey: String,
             version: Int
         )
 
@@ -67,7 +72,7 @@ internal interface ServiceContract {
             message: String
         ): ConsentSignature
 
-        suspend fun revokeUserConsent(accessToken: String, consentKey: String)
+        suspend fun revokeUserConsent(accessToken: String, consentDocumentKey: String)
 
         companion object {
             val ROOT = listOf("consent", "api", "v1")
