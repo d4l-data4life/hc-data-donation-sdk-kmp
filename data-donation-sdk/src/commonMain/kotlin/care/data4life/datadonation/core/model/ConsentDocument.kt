@@ -33,6 +33,7 @@
 package care.data4life.datadonation.core.model
 
 import care.data4life.datadonation.ConsentDataContract
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -40,12 +41,14 @@ data class ConsentDocument(
     override val key: String,
     override val version: Int,
     override val processor: String,
-    override val description: String = "",
+    override val description: String? = null,
     override val recipient: String,
     override val language: String,
     override val text: String,
-    override val allowAdminConsent: Boolean = false,
-    override val irrevocable: Boolean = false,
-    override val consentEmailTemplateKey: String = "",
-    override val revokeEmailTemplateKey: String = "",
+    @SerialName("allowAdminConsent")
+    override val allowsAdminConsent: Boolean = false,
+    @SerialName("irrevocable")
+    override val isIrrevocable: Boolean = false,
+    override val consentEmailTemplateKey: String? = null,
+    override val revokeEmailTemplateKey: String? = null,
 ) : ConsentDataContract.ConsentDocument

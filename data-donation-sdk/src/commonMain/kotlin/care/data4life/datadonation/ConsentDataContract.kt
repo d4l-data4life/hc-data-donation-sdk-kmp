@@ -32,14 +32,14 @@ interface ConsentDataContract {
         val key: String
         val version: Int
         val processor: String
-        val description: String
+        val description: String?
         val recipient: String
         val language: String
         val text: String
-        val allowAdminConsent: Boolean
-        val irrevocable: Boolean
-        val consentEmailTemplateKey: String
-        val revokeEmailTemplateKey: String
+        val allowsAdminConsent: Boolean
+        val isIrrevocable: Boolean
+        val consentEmailTemplateKey: String?
+        val revokeEmailTemplateKey: String?
     }
 
     interface UserConsent {
