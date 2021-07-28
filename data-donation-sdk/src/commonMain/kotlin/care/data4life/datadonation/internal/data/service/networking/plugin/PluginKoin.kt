@@ -24,7 +24,7 @@ import io.ktor.client.features.logging.Logging
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
-fun resolveKtorPlugins(): Module {
+internal fun resolveKtorPlugins(): Module {
     return module {
         single<List<Networking.HttpPluginInstaller<out Any, out Any?>>> {
             listOf(
