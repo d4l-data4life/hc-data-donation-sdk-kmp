@@ -36,8 +36,8 @@ import care.data4life.datadonation.internal.data.service.networking.Networking
 import care.data4life.datadonation.internal.data.service.networking.receive
 import care.data4life.datadonation.lang.HttpRuntimeError
 import kotlinx.datetime.Clock
-import care.data4life.datadonation.core.model.ModelContract.ConsentDocument as ConsentDocumentContract
-import care.data4life.datadonation.core.model.ModelContract.UserConsent as UserConsentContract
+import care.data4life.datadonation.ConsentDataContract.ConsentDocument as ConsentDocumentContract
+import care.data4life.datadonation.ConsentDataContract.UserConsent as UserConsentContract
 
 internal class ConsentService constructor(
     private val requestBuilderFactory: Networking.RequestBuilderFactory,

@@ -32,7 +32,7 @@
 
 package care.data4life.datadonation.internal.domain.usecases
 
-import care.data4life.datadonation.mock.DummyData
+import care.data4life.datadonation.mock.fixture.ConsentFixtures.sampleUserConsent
 import care.data4life.datadonation.mock.stub.repository.UserConsentRepositoryStub
 import care.data4life.sdk.util.test.coroutine.runBlockingTest
 import kotlin.test.Test
@@ -60,7 +60,7 @@ class CreateUserConsentTest {
 
         var capturedFetchingconsentDocumentKey: String? = null
 
-        val consent = DummyData.userConsent
+        val consent = sampleUserConsent
 
         val repo = UserConsentRepositoryStub()
 
@@ -70,7 +70,7 @@ class CreateUserConsentTest {
         }
         repo.whenFetchUserConsents = { delegatedconsentDocumentKey ->
             capturedFetchingconsentDocumentKey = delegatedconsentDocumentKey
-            listOf(consent, DummyData.userConsent.copy(accountId = "not expected"))
+            listOf(consent, sampleUserConsent.copy(accountId = "not expected"))
         }
 
         val parameter = CreateUserConsent.Parameter(consentDocumentKey, version)

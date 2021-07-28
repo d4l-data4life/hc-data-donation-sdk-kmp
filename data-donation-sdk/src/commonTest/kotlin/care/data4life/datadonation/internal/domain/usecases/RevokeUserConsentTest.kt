@@ -51,11 +51,11 @@ class RevokeUserConsentTest {
         // Given
         val consentDocumentKey = "custom-consent-key"
         val parameter = RevokeUserConsent.Parameter(consentDocumentKey)
-        var capturedconsentDocumentKey: String? = "NotNull"
+        var capturedConsentDocumentKey: String? = "NotNull"
         val userContentRepository = UserConsentRepositoryStub()
 
-        userContentRepository.whenRevokeUserConsent = { delegatedconsentDocumentKey ->
-            capturedconsentDocumentKey = delegatedconsentDocumentKey
+        userContentRepository.whenRevokeUserConsent = { delegatedConsentDocumentKey ->
+            capturedConsentDocumentKey = delegatedConsentDocumentKey
         }
 
         // When
@@ -68,7 +68,7 @@ class RevokeUserConsentTest {
             expected = Unit
         )
         assertEquals(
-            actual = capturedconsentDocumentKey,
+            actual = capturedConsentDocumentKey,
             expected = consentDocumentKey
         )
     }

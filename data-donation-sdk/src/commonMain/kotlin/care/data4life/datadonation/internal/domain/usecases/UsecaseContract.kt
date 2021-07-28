@@ -16,8 +16,8 @@
 
 package care.data4life.datadonation.internal.domain.usecases
 
-import care.data4life.datadonation.core.model.ModelContract.ConsentDocument
-import care.data4life.datadonation.core.model.ModelContract.UserConsent
+import care.data4life.datadonation.ConsentDataContract.ConsentDocument
+import care.data4life.datadonation.ConsentDataContract.UserConsent
 import care.data4life.hl7.fhir.stu3.model.FhirResource
 
 interface UsecaseContract {
