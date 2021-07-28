@@ -6,9 +6,9 @@
 #import <Foundation/NSString.h>
 #import <Foundation/NSValue.h>
 
-@class DLDDSDKDataDonationSDKPublicAPIEnvironment, DLDDSDKKotlinEnum<E>, DLDDSDKKotlinArray<T>, DLDDSDKKotlinException, DLDDSDKConsentCreationPayload, DLDDSDKConsentMessage, DLDDSDKConsentRequest, DLDDSDKConsentRevocationPayload, DLDDSDKConsentSignature, DLDDSDKConsentSignatureType, DLDDSDKConsentSigningRequest, DLDDSDKKotlinByteArray, DLDDSDKDocumentWithSignature, DLDDSDKDonationPayload, DLDDSDKSignedConsentMessage, DLDDSDKTokenVerificationResult, DLDDSDKConsentDocument, DLDDSDKModelContractConsentEvent, DLDDSDKUserConsent, DLDDSDKKotlinThrowable, DLDDSDKKotlinRuntimeException, DLDDSDKUtilD4LRuntimeException, DLDDSDKConsentServiceError, DLDDSDKCoreRuntimeError, DLDDSDKKoin_coreModule, DLDDSDKKotlinByteIterator, DLDDSDKKotlinx_datetimeInstant, DLDDSDKKotlinIllegalStateException, DLDDSDKKoin_coreBeanDefinition<T>, DLDDSDKKoin_coreScope, DLDDSDKKoin_coreDefinitionParameters, DLDDSDKKoin_coreOptions, DLDDSDKKoin_coreScopeDSL, DLDDSDKKotlinx_coroutines_coreCancellationException, DLDDSDKKotlinUnit, DLDDSDKKotlinx_serialization_coreSerializersModule, DLDDSDKKotlinx_serialization_coreSerialKind, DLDDSDKKotlinNothing, DLDDSDKKoin_coreKind, DLDDSDKKoin_coreProperties, DLDDSDKKoin_coreCallbacks<T>, DLDDSDKKoin_coreScopeDefinition, DLDDSDKKoin_coreKoin, DLDDSDKKotlinLazyThreadSafetyMode, DLDDSDKKoin_coreLogger, DLDDSDKKoin_corePropertyRegistry, DLDDSDKKoin_coreScopeRegistry, DLDDSDKKoin_coreLevel, DLDDSDKKotlinx_coroutines_coreAtomicDesc, DLDDSDKKotlinx_coroutines_coreLockFreeLinkedListNodePrepareOp, DLDDSDKKotlinx_coroutines_coreAtomicOp<__contravariant T>, DLDDSDKKotlinx_coroutines_coreOpDescriptor, DLDDSDKKotlinx_coroutines_coreLockFreeLinkedListNode, DLDDSDKKotlinx_coroutines_coreLockFreeLinkedListNodeAbstractAtomicDesc, DLDDSDKKotlinx_coroutines_coreLockFreeLinkedListNodeAddLastDesc<T>, DLDDSDKKotlinx_coroutines_coreLockFreeLinkedListNodeRemoveFirstDesc<T>;
+@class DLDDSDKDataDonationSDKPublicAPIEnvironment, DLDDSDKKotlinEnum<E>, DLDDSDKConsentDataContractConsentEvent, DLDDSDKKotlinArray<T>, DLDDSDKKotlinException, DLDDSDKConsentDocument, DLDDSDKUserConsent, DLDDSDKKotlinThrowable, DLDDSDKKotlinRuntimeException, DLDDSDKUtilD4LRuntimeException, DLDDSDKConsentServiceError, DLDDSDKCoreRuntimeError, DLDDSDKKotlinx_coroutines_coreCancellationException, DLDDSDKKotlinUnit, DLDDSDKKotlinx_serialization_coreSerializersModule, DLDDSDKKotlinx_serialization_coreSerialKind, DLDDSDKKotlinNothing, DLDDSDKKotlinIllegalStateException, DLDDSDKKotlinx_coroutines_coreAtomicDesc, DLDDSDKKotlinx_coroutines_coreLockFreeLinkedListNodePrepareOp, DLDDSDKKotlinx_coroutines_coreAtomicOp<__contravariant T>, DLDDSDKKotlinx_coroutines_coreOpDescriptor, DLDDSDKKotlinx_coroutines_coreLockFreeLinkedListNode, DLDDSDKKotlinx_coroutines_coreLockFreeLinkedListNodeAbstractAtomicDesc, DLDDSDKKotlinx_coroutines_coreLockFreeLinkedListNodeAddLastDesc<T>, DLDDSDKKotlinx_coroutines_coreLockFreeLinkedListNodeRemoveFirstDesc<T>;
 
-@protocol DLDDSDKUtil_coroutineD4LSDKFlowContract, DLDDSDKDataDonationSDKPublicAPIDataDonationClient, DLDDSDKDataDonationSDKPublicAPIUserSessionTokenProvider, DLDDSDKDataDonationSDKPublicAPIDataDonationClientFactory, DLDDSDKKotlinComparable, DLDDSDKKotlinx_serialization_coreKSerializer, DLDDSDKKotlinx_datetimeClock, DLDDSDKUsecaseContractUsecase, DLDDSDKModelContractConsentDocument, DLDDSDKModelContractUserConsent, DLDDSDKKotlinx_coroutines_coreJob, DLDDSDKKotlinx_coroutines_coreCoroutineScope, DLDDSDKKotlinx_coroutines_coreFlow, DLDDSDKKotlinIterator, DLDDSDKKotlinx_serialization_coreEncoder, DLDDSDKKotlinx_serialization_coreSerialDescriptor, DLDDSDKKotlinx_serialization_coreSerializationStrategy, DLDDSDKKotlinx_serialization_coreDecoder, DLDDSDKKotlinx_serialization_coreDeserializationStrategy, DLDDSDKKoin_coreQualifier, DLDDSDKKotlinx_coroutines_coreChildHandle, DLDDSDKKotlinx_coroutines_coreChildJob, DLDDSDKKotlinx_coroutines_coreDisposableHandle, DLDDSDKKotlinSequence, DLDDSDKKotlinx_coroutines_coreSelectClause0, DLDDSDKKotlinCoroutineContextKey, DLDDSDKKotlinCoroutineContextElement, DLDDSDKKotlinCoroutineContext, DLDDSDKKotlinx_coroutines_coreFlowCollector, DLDDSDKKotlinx_serialization_coreCompositeEncoder, DLDDSDKKotlinAnnotation, DLDDSDKKotlinx_serialization_coreCompositeDecoder, DLDDSDKKotlinKClass, DLDDSDKKotlinLazy, DLDDSDKKoin_coreScopeCallback, DLDDSDKKotlinx_coroutines_coreParentJob, DLDDSDKKotlinx_coroutines_coreSelectInstance, DLDDSDKKotlinSuspendFunction0, DLDDSDKKotlinx_serialization_coreSerializersModuleCollector, DLDDSDKKotlinKDeclarationContainer, DLDDSDKKotlinKAnnotatedElement, DLDDSDKKotlinKClassifier, DLDDSDKKoin_coreKoinScopeComponent, DLDDSDKKotlinContinuation, DLDDSDKKotlinFunction, DLDDSDKKoin_coreKoinComponent;
+@protocol DLDDSDKUtil_coroutineD4LSDKFlowContract, DLDDSDKDataDonationSDKPublicAPIDataDonationClient, DLDDSDKDataDonationSDKPublicAPIUserSessionTokenProvider, DLDDSDKDataDonationSDKPublicAPIDataDonationClientFactory, DLDDSDKKotlinComparable, DLDDSDKKotlinx_serialization_coreKSerializer, DLDDSDKConsentDataContractConsentDocument, DLDDSDKConsentDataContractUserConsent, DLDDSDKKotlinx_coroutines_coreJob, DLDDSDKKotlinx_coroutines_coreCoroutineScope, DLDDSDKKotlinx_coroutines_coreFlow, DLDDSDKKotlinIterator, DLDDSDKKotlinx_serialization_coreEncoder, DLDDSDKKotlinx_serialization_coreSerialDescriptor, DLDDSDKKotlinx_serialization_coreSerializationStrategy, DLDDSDKKotlinx_serialization_coreDecoder, DLDDSDKKotlinx_serialization_coreDeserializationStrategy, DLDDSDKKotlinx_coroutines_coreChildHandle, DLDDSDKKotlinx_coroutines_coreChildJob, DLDDSDKKotlinx_coroutines_coreDisposableHandle, DLDDSDKKotlinSequence, DLDDSDKKotlinx_coroutines_coreSelectClause0, DLDDSDKKotlinCoroutineContextKey, DLDDSDKKotlinCoroutineContextElement, DLDDSDKKotlinCoroutineContext, DLDDSDKKotlinx_coroutines_coreFlowCollector, DLDDSDKKotlinx_serialization_coreCompositeEncoder, DLDDSDKKotlinAnnotation, DLDDSDKKotlinx_serialization_coreCompositeDecoder, DLDDSDKKotlinx_coroutines_coreParentJob, DLDDSDKKotlinx_coroutines_coreSelectInstance, DLDDSDKKotlinSuspendFunction0, DLDDSDKKotlinx_serialization_coreSerializersModuleCollector, DLDDSDKKotlinKClass, DLDDSDKKotlinContinuation, DLDDSDKKotlinFunction, DLDDSDKKotlinKDeclarationContainer, DLDDSDKKotlinKAnnotatedElement, DLDDSDKKotlinKClassifier;
 
 NS_ASSUME_NONNULL_BEGIN
 #pragma clang diagnostic push
@@ -173,9 +173,25 @@ __attribute__((swift_name("Client.Factory")))
 - (id<DLDDSDKDataDonationSDKPublicAPIDataDonationClient>)getInstanceEnvironment:(DLDDSDKDataDonationSDKPublicAPIEnvironment *)environment userSession:(id<DLDDSDKDataDonationSDKPublicAPIUserSessionTokenProvider>)userSession __attribute__((swift_name("getInstance(environment:userSession:)")));
 @end;
 
-__attribute__((swift_name("DataDonationSDKPublicAPI")))
-@protocol DLDDSDKDataDonationSDKPublicAPI
+__attribute__((swift_name("ConsentDataContract")))
+@protocol DLDDSDKConsentDataContract
 @required
+@end;
+
+__attribute__((swift_name("ConsentDataContractConsentDocument")))
+@protocol DLDDSDKConsentDataContractConsentDocument
+@required
+@property (readonly) BOOL allowsAdminConsent __attribute__((swift_name("allowsAdminConsent")));
+@property (readonly) NSString * _Nullable consentEmailTemplateKey __attribute__((swift_name("consentEmailTemplateKey")));
+@property (readonly) NSString * _Nullable description_ __attribute__((swift_name("description_")));
+@property (readonly) BOOL isIrrevocable __attribute__((swift_name("isIrrevocable")));
+@property (readonly) NSString *key __attribute__((swift_name("key")));
+@property (readonly) NSString *language __attribute__((swift_name("language")));
+@property (readonly) NSString *processor __attribute__((swift_name("processor")));
+@property (readonly) NSString *recipient __attribute__((swift_name("recipient")));
+@property (readonly) NSString * _Nullable revokeEmailTemplateKey __attribute__((swift_name("revokeEmailTemplateKey")));
+@property (readonly) NSString *text __attribute__((swift_name("text")));
+@property (readonly) int32_t version __attribute__((swift_name("version")));
 @end;
 
 __attribute__((swift_name("KotlinComparable")))
@@ -193,6 +209,41 @@ __attribute__((swift_name("KotlinEnum")))
 - (NSString *)description __attribute__((swift_name("description()")));
 @property (readonly) NSString *name __attribute__((swift_name("name")));
 @property (readonly) int32_t ordinal __attribute__((swift_name("ordinal")));
+@end;
+
+__attribute__((objc_subclassing_restricted))
+__attribute__((swift_name("ConsentDataContractConsentEvent")))
+@interface DLDDSDKConsentDataContractConsentEvent : DLDDSDKKotlinEnum<DLDDSDKConsentDataContractConsentEvent *>
++ (instancetype)alloc __attribute__((unavailable));
++ (instancetype)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable));
+- (instancetype)initWithName:(NSString *)name ordinal:(int32_t)ordinal __attribute__((swift_name("init(name:ordinal:)"))) __attribute__((objc_designated_initializer)) __attribute__((unavailable));
+@property (class, readonly) DLDDSDKConsentDataContractConsentEvent *consent __attribute__((swift_name("consent")));
+@property (class, readonly) DLDDSDKConsentDataContractConsentEvent *revoke __attribute__((swift_name("revoke")));
++ (DLDDSDKKotlinArray<DLDDSDKConsentDataContractConsentEvent *> *)values __attribute__((swift_name("values()")));
+@end;
+
+__attribute__((objc_subclassing_restricted))
+__attribute__((swift_name("ConsentDataContractConsentEvent.Companion")))
+@interface DLDDSDKConsentDataContractConsentEventCompanion : DLDDSDKBase
++ (instancetype)alloc __attribute__((unavailable));
++ (instancetype)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable));
++ (instancetype)companion __attribute__((swift_name("init()")));
+- (id<DLDDSDKKotlinx_serialization_coreKSerializer>)serializer __attribute__((swift_name("serializer()")));
+@end;
+
+__attribute__((swift_name("ConsentDataContractUserConsent")))
+@protocol DLDDSDKConsentDataContractUserConsent
+@required
+@property (readonly) NSString *accountId __attribute__((swift_name("accountId")));
+@property (readonly) NSString *consentDocumentKey __attribute__((swift_name("consentDocumentKey")));
+@property (readonly) NSString *consentDocumentVersion __attribute__((swift_name("consentDocumentVersion")));
+@property (readonly) NSString *createdAt __attribute__((swift_name("createdAt")));
+@property (readonly) DLDDSDKConsentDataContractConsentEvent *event __attribute__((swift_name("event")));
+@end;
+
+__attribute__((swift_name("DataDonationSDKPublicAPI")))
+@protocol DLDDSDKDataDonationSDKPublicAPI
+@required
 @end;
 
 __attribute__((objc_subclassing_restricted))
@@ -216,373 +267,33 @@ __attribute__((swift_name("DataDonationSDKPublicAPIUserSessionTokenProvider")))
 @end;
 
 __attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("ConsentCreationPayload")))
-@interface DLDDSDKConsentCreationPayload : DLDDSDKBase
-- (instancetype)initWithConsentDocumentKey:(NSString *)consentDocumentKey consentDocumentVersion:(int32_t)consentDocumentVersion consentDate:(NSString *)consentDate __attribute__((swift_name("init(consentDocumentKey:consentDocumentVersion:consentDate:)"))) __attribute__((objc_designated_initializer));
-- (NSString *)component1 __attribute__((swift_name("component1()")));
-- (int32_t)component2 __attribute__((swift_name("component2()")));
-- (NSString *)component3 __attribute__((swift_name("component3()")));
-- (DLDDSDKConsentCreationPayload *)doCopyConsentDocumentKey:(NSString *)consentDocumentKey consentDocumentVersion:(int32_t)consentDocumentVersion consentDate:(NSString *)consentDate __attribute__((swift_name("doCopy(consentDocumentKey:consentDocumentVersion:consentDate:)")));
-- (BOOL)isEqual:(id _Nullable)other __attribute__((swift_name("isEqual(_:)")));
-- (NSUInteger)hash __attribute__((swift_name("hash()")));
-- (NSString *)description __attribute__((swift_name("description()")));
-@property (readonly) NSString *consentDate __attribute__((swift_name("consentDate")));
-@property (readonly) NSString *consentDocumentKey __attribute__((swift_name("consentDocumentKey")));
-@property (readonly) int32_t consentDocumentVersion __attribute__((swift_name("consentDocumentVersion")));
-@end;
-
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("ConsentCreationPayload.Companion")))
-@interface DLDDSDKConsentCreationPayloadCompanion : DLDDSDKBase
-+ (instancetype)alloc __attribute__((unavailable));
-+ (instancetype)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable));
-+ (instancetype)companion __attribute__((swift_name("init()")));
-- (id<DLDDSDKKotlinx_serialization_coreKSerializer>)serializer __attribute__((swift_name("serializer()")));
-@end;
-
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("ConsentMessage")))
-@interface DLDDSDKConsentMessage : DLDDSDKBase
-- (instancetype)initWithConsentDocumentKey:(NSString *)consentDocumentKey signatureType:(NSString *)signatureType payload:(NSString *)payload __attribute__((swift_name("init(consentDocumentKey:signatureType:payload:)"))) __attribute__((objc_designated_initializer));
-- (NSString *)component1 __attribute__((swift_name("component1()")));
-- (NSString *)component2 __attribute__((swift_name("component2()")));
-- (NSString *)component3 __attribute__((swift_name("component3()")));
-- (DLDDSDKConsentMessage *)doCopyConsentDocumentKey:(NSString *)consentDocumentKey signatureType:(NSString *)signatureType payload:(NSString *)payload __attribute__((swift_name("doCopy(consentDocumentKey:signatureType:payload:)")));
-- (BOOL)isEqual:(id _Nullable)other __attribute__((swift_name("isEqual(_:)")));
-- (NSUInteger)hash __attribute__((swift_name("hash()")));
-- (NSString *)description __attribute__((swift_name("description()")));
-@property (readonly) NSString *consentDocumentKey __attribute__((swift_name("consentDocumentKey")));
-@property (readonly) NSString *payload __attribute__((swift_name("payload")));
-@property (readonly) NSString *signatureType __attribute__((swift_name("signatureType")));
-@end;
-
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("ConsentMessage.Companion")))
-@interface DLDDSDKConsentMessageCompanion : DLDDSDKBase
-+ (instancetype)alloc __attribute__((unavailable));
-+ (instancetype)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable));
-+ (instancetype)companion __attribute__((swift_name("init()")));
-- (id<DLDDSDKKotlinx_serialization_coreKSerializer>)serializer __attribute__((swift_name("serializer()")));
-@end;
-
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("ConsentRequest")))
-@interface DLDDSDKConsentRequest : DLDDSDKBase
-- (instancetype)initWithDonorId:(NSString *)donorId token:(NSString *)token __attribute__((swift_name("init(donorId:token:)"))) __attribute__((objc_designated_initializer));
-- (NSString *)component1 __attribute__((swift_name("component1()")));
-- (NSString *)component2 __attribute__((swift_name("component2()")));
-- (DLDDSDKConsentRequest *)doCopyDonorId:(NSString *)donorId token:(NSString *)token __attribute__((swift_name("doCopy(donorId:token:)")));
-- (BOOL)isEqual:(id _Nullable)other __attribute__((swift_name("isEqual(_:)")));
-- (NSUInteger)hash __attribute__((swift_name("hash()")));
-- (NSString *)description __attribute__((swift_name("description()")));
-@property (readonly) NSString *donorId __attribute__((swift_name("donorId")));
-@property (readonly) NSString *token __attribute__((swift_name("token")));
-@end;
-
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("ConsentRequest.Companion")))
-@interface DLDDSDKConsentRequestCompanion : DLDDSDKBase
-+ (instancetype)alloc __attribute__((unavailable));
-+ (instancetype)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable));
-+ (instancetype)companion __attribute__((swift_name("init()")));
-- (id<DLDDSDKKotlinx_serialization_coreKSerializer>)serializer __attribute__((swift_name("serializer()")));
-@end;
-
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("ConsentRevocationPayload")))
-@interface DLDDSDKConsentRevocationPayload : DLDDSDKBase
-- (instancetype)initWithConsentDocumentKey:(NSString *)consentDocumentKey __attribute__((swift_name("init(consentDocumentKey:)"))) __attribute__((objc_designated_initializer));
-- (NSString *)component1 __attribute__((swift_name("component1()")));
-- (DLDDSDKConsentRevocationPayload *)doCopyConsentDocumentKey:(NSString *)consentDocumentKey __attribute__((swift_name("doCopy(consentDocumentKey:)")));
-- (BOOL)isEqual:(id _Nullable)other __attribute__((swift_name("isEqual(_:)")));
-- (NSUInteger)hash __attribute__((swift_name("hash()")));
-- (NSString *)description __attribute__((swift_name("description()")));
-@property (readonly) NSString *consentDocumentKey __attribute__((swift_name("consentDocumentKey")));
-@end;
-
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("ConsentRevocationPayload.Companion")))
-@interface DLDDSDKConsentRevocationPayloadCompanion : DLDDSDKBase
-+ (instancetype)alloc __attribute__((unavailable));
-+ (instancetype)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable));
-+ (instancetype)companion __attribute__((swift_name("init()")));
-- (id<DLDDSDKKotlinx_serialization_coreKSerializer>)serializer __attribute__((swift_name("serializer()")));
-@end;
-
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("ConsentSignature")))
-@interface DLDDSDKConsentSignature : DLDDSDKBase
-- (instancetype)initWithSignature:(NSString *)signature __attribute__((swift_name("init(signature:)"))) __attribute__((objc_designated_initializer));
-- (NSString *)component1 __attribute__((swift_name("component1()")));
-- (DLDDSDKConsentSignature *)doCopySignature:(NSString *)signature __attribute__((swift_name("doCopy(signature:)")));
-- (BOOL)isEqual:(id _Nullable)other __attribute__((swift_name("isEqual(_:)")));
-- (NSUInteger)hash __attribute__((swift_name("hash()")));
-- (NSString *)description __attribute__((swift_name("description()")));
-@property (readonly) NSString *signature __attribute__((swift_name("signature")));
-@end;
-
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("ConsentSignature.Companion")))
-@interface DLDDSDKConsentSignatureCompanion : DLDDSDKBase
-+ (instancetype)alloc __attribute__((unavailable));
-+ (instancetype)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable));
-+ (instancetype)companion __attribute__((swift_name("init()")));
-- (id<DLDDSDKKotlinx_serialization_coreKSerializer>)serializer __attribute__((swift_name("serializer()")));
-@end;
-
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("ConsentSignatureType")))
-@interface DLDDSDKConsentSignatureType : DLDDSDKKotlinEnum<DLDDSDKConsentSignatureType *>
-+ (instancetype)alloc __attribute__((unavailable));
-+ (instancetype)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable));
-- (instancetype)initWithName:(NSString *)name ordinal:(int32_t)ordinal __attribute__((swift_name("init(name:ordinal:)"))) __attribute__((objc_designated_initializer)) __attribute__((unavailable));
-@property (class, readonly) DLDDSDKConsentSignatureType *consentOnce __attribute__((swift_name("consentOnce")));
-@property (class, readonly) DLDDSDKConsentSignatureType *normalUse __attribute__((swift_name("normalUse")));
-@property (class, readonly) DLDDSDKConsentSignatureType *revokeOnce __attribute__((swift_name("revokeOnce")));
-+ (DLDDSDKKotlinArray<DLDDSDKConsentSignatureType *> *)values __attribute__((swift_name("values()")));
-@property (readonly) NSString *apiValue __attribute__((swift_name("apiValue")));
-@end;
-
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("ConsentSignatureType.Companion")))
-@interface DLDDSDKConsentSignatureTypeCompanion : DLDDSDKBase
-+ (instancetype)alloc __attribute__((unavailable));
-+ (instancetype)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable));
-+ (instancetype)companion __attribute__((swift_name("init()")));
-- (id<DLDDSDKKotlinx_serialization_coreKSerializer>)serializer __attribute__((swift_name("serializer()")));
-@end;
-
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("ConsentSigningRequest")))
-@interface DLDDSDKConsentSigningRequest : DLDDSDKBase
-- (instancetype)initWithConsentDocumentKey:(NSString *)consentDocumentKey payload:(NSString *)payload signatureType:(NSString *)signatureType __attribute__((swift_name("init(consentDocumentKey:payload:signatureType:)"))) __attribute__((objc_designated_initializer));
-- (NSString *)component1 __attribute__((swift_name("component1()")));
-- (NSString *)component2 __attribute__((swift_name("component2()")));
-- (NSString *)component3 __attribute__((swift_name("component3()")));
-- (DLDDSDKConsentSigningRequest *)doCopyConsentDocumentKey:(NSString *)consentDocumentKey payload:(NSString *)payload signatureType:(NSString *)signatureType __attribute__((swift_name("doCopy(consentDocumentKey:payload:signatureType:)")));
-- (BOOL)isEqual:(id _Nullable)other __attribute__((swift_name("isEqual(_:)")));
-- (NSUInteger)hash __attribute__((swift_name("hash()")));
-- (NSString *)description __attribute__((swift_name("description()")));
-@property (readonly) NSString *consentDocumentKey __attribute__((swift_name("consentDocumentKey")));
-@property (readonly) NSString *payload __attribute__((swift_name("payload")));
-@property (readonly) NSString *signatureType __attribute__((swift_name("signatureType")));
-@end;
-
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("ConsentSigningRequest.Companion")))
-@interface DLDDSDKConsentSigningRequestCompanion : DLDDSDKBase
-+ (instancetype)alloc __attribute__((unavailable));
-+ (instancetype)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable));
-+ (instancetype)companion __attribute__((swift_name("init()")));
-- (id<DLDDSDKKotlinx_serialization_coreKSerializer>)serializer __attribute__((swift_name("serializer()")));
-@end;
-
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("DocumentWithSignature")))
-@interface DLDDSDKDocumentWithSignature : DLDDSDKBase
-- (instancetype)initWithDocument:(DLDDSDKKotlinByteArray *)document signature:(DLDDSDKKotlinByteArray *)signature __attribute__((swift_name("init(document:signature:)"))) __attribute__((objc_designated_initializer));
-- (DLDDSDKKotlinByteArray *)component1 __attribute__((swift_name("component1()")));
-- (DLDDSDKKotlinByteArray *)component2 __attribute__((swift_name("component2()")));
-- (DLDDSDKDocumentWithSignature *)doCopyDocument:(DLDDSDKKotlinByteArray *)document signature:(DLDDSDKKotlinByteArray *)signature __attribute__((swift_name("doCopy(document:signature:)")));
-- (BOOL)isEqual:(id _Nullable)other __attribute__((swift_name("isEqual(_:)")));
-- (NSUInteger)hash __attribute__((swift_name("hash()")));
-- (NSString *)description __attribute__((swift_name("description()")));
-@property (readonly) DLDDSDKKotlinByteArray *document __attribute__((swift_name("document")));
-@property (readonly) DLDDSDKKotlinByteArray *signature __attribute__((swift_name("signature")));
-@end;
-
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("DonationPayload")))
-@interface DLDDSDKDonationPayload : DLDDSDKBase
-- (instancetype)initWithRequest:(DLDDSDKKotlinByteArray *)request documents:(NSArray<DLDDSDKDocumentWithSignature *> *)documents __attribute__((swift_name("init(request:documents:)"))) __attribute__((objc_designated_initializer));
-- (DLDDSDKKotlinByteArray *)component1 __attribute__((swift_name("component1()")));
-- (NSArray<DLDDSDKDocumentWithSignature *> *)component2 __attribute__((swift_name("component2()")));
-- (DLDDSDKDonationPayload *)doCopyRequest:(DLDDSDKKotlinByteArray *)request documents:(NSArray<DLDDSDKDocumentWithSignature *> *)documents __attribute__((swift_name("doCopy(request:documents:)")));
-- (BOOL)isEqual:(id _Nullable)other __attribute__((swift_name("isEqual(_:)")));
-- (NSUInteger)hash __attribute__((swift_name("hash()")));
-- (NSString *)description __attribute__((swift_name("description()")));
-@property (readonly) NSArray<DLDDSDKDocumentWithSignature *> *documents __attribute__((swift_name("documents")));
-@property (readonly) DLDDSDKKotlinByteArray *request __attribute__((swift_name("request")));
-@end;
-
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("SignedConsentMessage")))
-@interface DLDDSDKSignedConsentMessage : DLDDSDKBase
-- (instancetype)initWithConsentMessageJson:(NSString *)consentMessageJson signature:(NSString *)signature __attribute__((swift_name("init(consentMessageJson:signature:)"))) __attribute__((objc_designated_initializer));
-- (NSString *)component1 __attribute__((swift_name("component1()")));
-- (NSString *)component2 __attribute__((swift_name("component2()")));
-- (DLDDSDKSignedConsentMessage *)doCopyConsentMessageJson:(NSString *)consentMessageJson signature:(NSString *)signature __attribute__((swift_name("doCopy(consentMessageJson:signature:)")));
-- (BOOL)isEqual:(id _Nullable)other __attribute__((swift_name("isEqual(_:)")));
-- (NSUInteger)hash __attribute__((swift_name("hash()")));
-- (NSString *)description __attribute__((swift_name("description()")));
-@property (readonly) NSString *consentMessageJson __attribute__((swift_name("consentMessageJson")));
-@property (readonly) NSString *signature __attribute__((swift_name("signature")));
-@end;
-
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("SignedConsentMessage.Companion")))
-@interface DLDDSDKSignedConsentMessageCompanion : DLDDSDKBase
-+ (instancetype)alloc __attribute__((unavailable));
-+ (instancetype)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable));
-+ (instancetype)companion __attribute__((swift_name("init()")));
-- (id<DLDDSDKKotlinx_serialization_coreKSerializer>)serializer __attribute__((swift_name("serializer()")));
-@end;
-
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("TokenVerificationResult")))
-@interface DLDDSDKTokenVerificationResult : DLDDSDKBase
-- (instancetype)initWithStudyId:(NSString * _Nullable)studyId externalId:(NSString * _Nullable)externalId errors:(NSString * _Nullable)errors __attribute__((swift_name("init(studyId:externalId:errors:)"))) __attribute__((objc_designated_initializer));
-- (NSString * _Nullable)component1 __attribute__((swift_name("component1()")));
-- (NSString * _Nullable)component2 __attribute__((swift_name("component2()")));
-- (NSString * _Nullable)component3 __attribute__((swift_name("component3()")));
-- (DLDDSDKTokenVerificationResult *)doCopyStudyId:(NSString * _Nullable)studyId externalId:(NSString * _Nullable)externalId errors:(NSString * _Nullable)errors __attribute__((swift_name("doCopy(studyId:externalId:errors:)")));
-- (BOOL)isEqual:(id _Nullable)other __attribute__((swift_name("isEqual(_:)")));
-- (NSUInteger)hash __attribute__((swift_name("hash()")));
-- (NSString *)description __attribute__((swift_name("description()")));
-@property (readonly) NSString * _Nullable errors __attribute__((swift_name("errors")));
-@property (readonly) NSString * _Nullable externalId __attribute__((swift_name("externalId")));
-@property (readonly) NSString * _Nullable studyId __attribute__((swift_name("studyId")));
-@end;
-
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("TokenVerificationResult.Companion")))
-@interface DLDDSDKTokenVerificationResultCompanion : DLDDSDKBase
-+ (instancetype)alloc __attribute__((unavailable));
-+ (instancetype)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable));
-+ (instancetype)companion __attribute__((swift_name("init()")));
-- (id<DLDDSDKKotlinx_serialization_coreKSerializer>)serializer __attribute__((swift_name("serializer()")));
-@end;
-
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("CachedUserSessionTokenService")))
-@interface DLDDSDKCachedUserSessionTokenService : DLDDSDKBase
-- (instancetype)initWithProvider:(id<DLDDSDKDataDonationSDKPublicAPIUserSessionTokenProvider>)provider clock:(id<DLDDSDKKotlinx_datetimeClock>)clock __attribute__((swift_name("init(provider:clock:)"))) __attribute__((objc_designated_initializer));
-
-/**
- @note This method converts instances of CancellationException to errors.
- Other uncaught Kotlin exceptions are fatal.
-*/
-- (void)getUserSessionTokenWithCompletionHandler:(void (^)(NSString * _Nullable, NSError * _Nullable))completionHandler __attribute__((swift_name("getUserSessionToken(completionHandler:)")));
-@end;
-
-__attribute__((swift_name("UsecaseContract")))
-@protocol DLDDSDKUsecaseContract
-@required
-@end;
-
-__attribute__((swift_name("UsecaseContractUsecase")))
-@protocol DLDDSDKUsecaseContractUsecase
-@required
-
-/**
- @note This method converts instances of CancellationException to errors.
- Other uncaught Kotlin exceptions are fatal.
-*/
-- (void)executeParameter:(id)parameter completionHandler:(void (^)(id _Nullable, NSError * _Nullable))completionHandler __attribute__((swift_name("execute(parameter:completionHandler:)")));
-@end;
-
-__attribute__((swift_name("UsecaseContractCreateUserConsent")))
-@protocol DLDDSDKUsecaseContractCreateUserConsent <DLDDSDKUsecaseContractUsecase>
-@required
-@end;
-
-__attribute__((swift_name("UsecaseContractCreateUserConsentParameter")))
-@protocol DLDDSDKUsecaseContractCreateUserConsentParameter
-@required
-@property (readonly) NSString *consentDocumentKey __attribute__((swift_name("consentDocumentKey")));
-@property (readonly) int32_t version __attribute__((swift_name("version")));
-@end;
-
-__attribute__((swift_name("UsecaseContractFetchConsentDocuments")))
-@protocol DLDDSDKUsecaseContractFetchConsentDocuments <DLDDSDKUsecaseContractUsecase>
-@required
-@end;
-
-__attribute__((swift_name("UsecaseContractFetchConsentDocumentsParameter")))
-@protocol DLDDSDKUsecaseContractFetchConsentDocumentsParameter
-@required
-@property (readonly) NSString *consentDocumentKey __attribute__((swift_name("consentDocumentKey")));
-@property (readonly) NSString * _Nullable language __attribute__((swift_name("language")));
-@property (readonly) DLDDSDKInt * _Nullable version_ __attribute__((swift_name("version_")));
-@end;
-
-__attribute__((swift_name("UsecaseContractFetchUserConsents")))
-@protocol DLDDSDKUsecaseContractFetchUserConsents <DLDDSDKUsecaseContractUsecase>
-@required
-@end;
-
-__attribute__((swift_name("UsecaseContractFetchUserConsentsParameter")))
-@protocol DLDDSDKUsecaseContractFetchUserConsentsParameter
-@required
-@property (readonly) NSString * _Nullable consentDocumentKey __attribute__((swift_name("consentDocumentKey")));
-@end;
-
-__attribute__((swift_name("UsecaseContractRedactSensitiveInformation")))
-@protocol DLDDSDKUsecaseContractRedactSensitiveInformation <DLDDSDKUsecaseContractUsecase>
-@required
-@end;
-
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("UsecaseContractRedactSensitiveInformationCompanion")))
-@interface DLDDSDKUsecaseContractRedactSensitiveInformationCompanion : DLDDSDKBase
-+ (instancetype)alloc __attribute__((unavailable));
-+ (instancetype)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable));
-+ (instancetype)companion __attribute__((swift_name("init()")));
-@property (readonly) NSString *REDACTED __attribute__((swift_name("REDACTED")));
-@end;
-
-__attribute__((swift_name("UsecaseContractRevokeUserConsent")))
-@protocol DLDDSDKUsecaseContractRevokeUserConsent <DLDDSDKUsecaseContractUsecase>
-@required
-@end;
-
-__attribute__((swift_name("UsecaseContractRevokeUserConsentParameter")))
-@protocol DLDDSDKUsecaseContractRevokeUserConsentParameter
-@required
-@property (readonly) NSString *consentDocumentKey __attribute__((swift_name("consentDocumentKey")));
-@end;
-
-__attribute__((swift_name("ModelContractConsentDocument")))
-@protocol DLDDSDKModelContractConsentDocument
-@required
-@property (readonly) NSString *description_ __attribute__((swift_name("description_")));
-@property (readonly) NSString *key __attribute__((swift_name("key")));
-@property (readonly) NSString *language __attribute__((swift_name("language")));
-@property (readonly) NSString *processor __attribute__((swift_name("processor")));
-@property (readonly) NSString *programName __attribute__((swift_name("programName")));
-@property (readonly) NSString *recipient __attribute__((swift_name("recipient")));
-@property (readonly) BOOL requiresToken __attribute__((swift_name("requiresToken")));
-@property (readonly) NSString *studyId __attribute__((swift_name("studyId")));
-@property (readonly) NSString *text __attribute__((swift_name("text")));
-@property (readonly) int32_t version __attribute__((swift_name("version")));
-@end;
-
-__attribute__((objc_subclassing_restricted))
 __attribute__((swift_name("ConsentDocument")))
-@interface DLDDSDKConsentDocument : DLDDSDKBase <DLDDSDKModelContractConsentDocument>
-- (instancetype)initWithKey:(NSString *)key version:(int32_t)version processor:(NSString *)processor description:(NSString *)description recipient:(NSString *)recipient language:(NSString *)language text:(NSString *)text requiresToken:(BOOL)requiresToken studyId:(NSString *)studyId programName:(NSString *)programName __attribute__((swift_name("init(key:version:processor:description:recipient:language:text:requiresToken:studyId:programName:)"))) __attribute__((objc_designated_initializer));
+@interface DLDDSDKConsentDocument : DLDDSDKBase <DLDDSDKConsentDataContractConsentDocument>
+- (instancetype)initWithKey:(NSString *)key version:(int32_t)version processor:(NSString *)processor description:(NSString * _Nullable)description recipient:(NSString *)recipient language:(NSString *)language text:(NSString *)text allowsAdminConsent:(BOOL)allowsAdminConsent isIrrevocable:(BOOL)isIrrevocable consentEmailTemplateKey:(NSString * _Nullable)consentEmailTemplateKey revokeEmailTemplateKey:(NSString * _Nullable)revokeEmailTemplateKey __attribute__((swift_name("init(key:version:processor:description:recipient:language:text:allowsAdminConsent:isIrrevocable:consentEmailTemplateKey:revokeEmailTemplateKey:)"))) __attribute__((objc_designated_initializer));
 - (NSString *)component1 __attribute__((swift_name("component1()")));
-- (NSString *)component10 __attribute__((swift_name("component10()")));
+- (NSString * _Nullable)component10 __attribute__((swift_name("component10()")));
+- (NSString * _Nullable)component11 __attribute__((swift_name("component11()")));
 - (int32_t)component2 __attribute__((swift_name("component2()")));
 - (NSString *)component3 __attribute__((swift_name("component3()")));
-- (NSString *)component4 __attribute__((swift_name("component4()")));
+- (NSString * _Nullable)component4 __attribute__((swift_name("component4()")));
 - (NSString *)component5 __attribute__((swift_name("component5()")));
 - (NSString *)component6 __attribute__((swift_name("component6()")));
 - (NSString *)component7 __attribute__((swift_name("component7()")));
 - (BOOL)component8 __attribute__((swift_name("component8()")));
-- (NSString *)component9 __attribute__((swift_name("component9()")));
-- (DLDDSDKConsentDocument *)doCopyKey:(NSString *)key version:(int32_t)version processor:(NSString *)processor description:(NSString *)description recipient:(NSString *)recipient language:(NSString *)language text:(NSString *)text requiresToken:(BOOL)requiresToken studyId:(NSString *)studyId programName:(NSString *)programName __attribute__((swift_name("doCopy(key:version:processor:description:recipient:language:text:requiresToken:studyId:programName:)")));
+- (BOOL)component9 __attribute__((swift_name("component9()")));
+- (DLDDSDKConsentDocument *)doCopyKey:(NSString *)key version:(int32_t)version processor:(NSString *)processor description:(NSString * _Nullable)description recipient:(NSString *)recipient language:(NSString *)language text:(NSString *)text allowsAdminConsent:(BOOL)allowsAdminConsent isIrrevocable:(BOOL)isIrrevocable consentEmailTemplateKey:(NSString * _Nullable)consentEmailTemplateKey revokeEmailTemplateKey:(NSString * _Nullable)revokeEmailTemplateKey __attribute__((swift_name("doCopy(key:version:processor:description:recipient:language:text:allowsAdminConsent:isIrrevocable:consentEmailTemplateKey:revokeEmailTemplateKey:)")));
 - (BOOL)isEqual:(id _Nullable)other __attribute__((swift_name("isEqual(_:)")));
 - (NSUInteger)hash __attribute__((swift_name("hash()")));
 - (NSString *)description __attribute__((swift_name("description()")));
-@property (readonly) NSString *description_ __attribute__((swift_name("description_")));
+@property (readonly) BOOL allowsAdminConsent __attribute__((swift_name("allowsAdminConsent")));
+@property (readonly) NSString * _Nullable consentEmailTemplateKey __attribute__((swift_name("consentEmailTemplateKey")));
+@property (readonly) NSString * _Nullable description_ __attribute__((swift_name("description_")));
+@property (readonly) BOOL isIrrevocable __attribute__((swift_name("isIrrevocable")));
 @property (readonly) NSString *key __attribute__((swift_name("key")));
 @property (readonly) NSString *language __attribute__((swift_name("language")));
 @property (readonly) NSString *processor __attribute__((swift_name("processor")));
-@property (readonly) NSString *programName __attribute__((swift_name("programName")));
 @property (readonly) NSString *recipient __attribute__((swift_name("recipient")));
-@property (readonly) BOOL requiresToken __attribute__((swift_name("requiresToken")));
-@property (readonly) NSString *studyId __attribute__((swift_name("studyId")));
+@property (readonly) NSString * _Nullable revokeEmailTemplateKey __attribute__((swift_name("revokeEmailTemplateKey")));
 @property (readonly) NSString *text __attribute__((swift_name("text")));
 @property (readonly) int32_t version __attribute__((swift_name("version")));
 @end;
@@ -596,58 +307,16 @@ __attribute__((swift_name("ConsentDocument.Companion")))
 - (id<DLDDSDKKotlinx_serialization_coreKSerializer>)serializer __attribute__((swift_name("serializer()")));
 @end;
 
-__attribute__((swift_name("ModelContract")))
-@protocol DLDDSDKModelContract
-@required
-@end;
-
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("ModelContractConsentEvent")))
-@interface DLDDSDKModelContractConsentEvent : DLDDSDKKotlinEnum<DLDDSDKModelContractConsentEvent *>
-+ (instancetype)alloc __attribute__((unavailable));
-+ (instancetype)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable));
-- (instancetype)initWithName:(NSString *)name ordinal:(int32_t)ordinal __attribute__((swift_name("init(name:ordinal:)"))) __attribute__((objc_designated_initializer)) __attribute__((unavailable));
-@property (class, readonly) DLDDSDKModelContractConsentEvent *consent __attribute__((swift_name("consent")));
-@property (class, readonly) DLDDSDKModelContractConsentEvent *revoke __attribute__((swift_name("revoke")));
-+ (DLDDSDKKotlinArray<DLDDSDKModelContractConsentEvent *> *)values __attribute__((swift_name("values()")));
-@end;
-
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("ModelContractConsentEvent.Companion")))
-@interface DLDDSDKModelContractConsentEventCompanion : DLDDSDKBase
-+ (instancetype)alloc __attribute__((unavailable));
-+ (instancetype)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable));
-+ (instancetype)companion __attribute__((swift_name("init()")));
-- (id<DLDDSDKKotlinx_serialization_coreKSerializer>)serializer __attribute__((swift_name("serializer()")));
-@end;
-
-__attribute__((swift_name("ModelContractKeyPair")))
-@protocol DLDDSDKModelContractKeyPair
-@required
-@property (readonly, getter=private) DLDDSDKKotlinByteArray *private_ __attribute__((swift_name("private_")));
-@property (readonly, getter=public) DLDDSDKKotlinByteArray *public_ __attribute__((swift_name("public_")));
-@end;
-
-__attribute__((swift_name("ModelContractUserConsent")))
-@protocol DLDDSDKModelContractUserConsent
-@required
-@property (readonly) NSString *accountId __attribute__((swift_name("accountId")));
-@property (readonly) NSString *consentDocumentKey __attribute__((swift_name("consentDocumentKey")));
-@property (readonly) NSString *consentDocumentVersion __attribute__((swift_name("consentDocumentVersion")));
-@property (readonly) NSString *createdAt __attribute__((swift_name("createdAt")));
-@property (readonly) DLDDSDKModelContractConsentEvent *event __attribute__((swift_name("event")));
-@end;
-
 __attribute__((objc_subclassing_restricted))
 __attribute__((swift_name("UserConsent")))
-@interface DLDDSDKUserConsent : DLDDSDKBase <DLDDSDKModelContractUserConsent>
-- (instancetype)initWithConsentDocumentKey:(NSString *)consentDocumentKey consentDocumentVersion:(NSString *)consentDocumentVersion accountId:(NSString *)accountId event:(DLDDSDKModelContractConsentEvent *)event createdAt:(NSString *)createdAt __attribute__((swift_name("init(consentDocumentKey:consentDocumentVersion:accountId:event:createdAt:)"))) __attribute__((objc_designated_initializer));
+@interface DLDDSDKUserConsent : DLDDSDKBase <DLDDSDKConsentDataContractUserConsent>
+- (instancetype)initWithConsentDocumentKey:(NSString *)consentDocumentKey consentDocumentVersion:(NSString *)consentDocumentVersion accountId:(NSString *)accountId event:(DLDDSDKConsentDataContractConsentEvent *)event createdAt:(NSString *)createdAt __attribute__((swift_name("init(consentDocumentKey:consentDocumentVersion:accountId:event:createdAt:)"))) __attribute__((objc_designated_initializer));
 - (NSString *)component1 __attribute__((swift_name("component1()")));
 - (NSString *)component2 __attribute__((swift_name("component2()")));
 - (NSString *)component3 __attribute__((swift_name("component3()")));
-- (DLDDSDKModelContractConsentEvent *)component4 __attribute__((swift_name("component4()")));
+- (DLDDSDKConsentDataContractConsentEvent *)component4 __attribute__((swift_name("component4()")));
 - (NSString *)component5 __attribute__((swift_name("component5()")));
-- (DLDDSDKUserConsent *)doCopyConsentDocumentKey:(NSString *)consentDocumentKey consentDocumentVersion:(NSString *)consentDocumentVersion accountId:(NSString *)accountId event:(DLDDSDKModelContractConsentEvent *)event createdAt:(NSString *)createdAt __attribute__((swift_name("doCopy(consentDocumentKey:consentDocumentVersion:accountId:event:createdAt:)")));
+- (DLDDSDKUserConsent *)doCopyConsentDocumentKey:(NSString *)consentDocumentKey consentDocumentVersion:(NSString *)consentDocumentVersion accountId:(NSString *)accountId event:(DLDDSDKConsentDataContractConsentEvent *)event createdAt:(NSString *)createdAt __attribute__((swift_name("doCopy(consentDocumentKey:consentDocumentVersion:accountId:event:createdAt:)")));
 - (BOOL)isEqual:(id _Nullable)other __attribute__((swift_name("isEqual(_:)")));
 - (NSUInteger)hash __attribute__((swift_name("hash()")));
 - (NSString *)description __attribute__((swift_name("description()")));
@@ -655,7 +324,7 @@ __attribute__((swift_name("UserConsent")))
 @property (readonly) NSString *consentDocumentKey __attribute__((swift_name("consentDocumentKey")));
 @property (readonly) NSString *consentDocumentVersion __attribute__((swift_name("consentDocumentVersion")));
 @property (readonly) NSString *createdAt __attribute__((swift_name("createdAt")));
-@property (readonly) DLDDSDKModelContractConsentEvent *event __attribute__((swift_name("event")));
+@property (readonly) DLDDSDKConsentDataContractConsentEvent *event __attribute__((swift_name("event")));
 @end;
 
 __attribute__((objc_subclassing_restricted))
@@ -822,12 +491,6 @@ __attribute__((swift_name("CoreRuntimeError.ResponseTransformFailure")))
 + (instancetype)new __attribute__((availability(swift, unavailable, message="use object initializers instead")));
 @end;
 
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("PluginKoinKt")))
-@interface DLDDSDKPluginKoinKt : DLDDSDKBase
-+ (DLDDSDKKoin_coreModule *)resolveKtorPlugins __attribute__((swift_name("resolveKtorPlugins()")));
-@end;
-
 __attribute__((swift_name("Util_coroutineD4LSDKFlowContract")))
 @protocol DLDDSDKUtil_coroutineD4LSDKFlowContract
 @required
@@ -864,57 +527,6 @@ __attribute__((swift_name("Kotlinx_serialization_coreDeserializationStrategy")))
 __attribute__((swift_name("Kotlinx_serialization_coreKSerializer")))
 @protocol DLDDSDKKotlinx_serialization_coreKSerializer <DLDDSDKKotlinx_serialization_coreSerializationStrategy, DLDDSDKKotlinx_serialization_coreDeserializationStrategy>
 @required
-@end;
-
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("KotlinByteArray")))
-@interface DLDDSDKKotlinByteArray : DLDDSDKBase
-+ (instancetype)arrayWithSize:(int32_t)size __attribute__((swift_name("init(size:)")));
-+ (instancetype)arrayWithSize:(int32_t)size init:(DLDDSDKByte *(^)(DLDDSDKInt *))init __attribute__((swift_name("init(size:init:)")));
-+ (instancetype)alloc __attribute__((unavailable));
-+ (instancetype)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable));
-- (int8_t)getIndex:(int32_t)index __attribute__((swift_name("get(index:)")));
-- (DLDDSDKKotlinByteIterator *)iterator __attribute__((swift_name("iterator()")));
-- (void)setIndex:(int32_t)index value:(int8_t)value __attribute__((swift_name("set(index:value:)")));
-@property (readonly) int32_t size __attribute__((swift_name("size")));
-@end;
-
-__attribute__((swift_name("Kotlinx_datetimeClock")))
-@protocol DLDDSDKKotlinx_datetimeClock
-@required
-- (DLDDSDKKotlinx_datetimeInstant *)now __attribute__((swift_name("now()")));
-@end;
-
-__attribute__((swift_name("KotlinIllegalStateException")))
-@interface DLDDSDKKotlinIllegalStateException : DLDDSDKKotlinRuntimeException
-- (instancetype)init __attribute__((swift_name("init()"))) __attribute__((objc_designated_initializer));
-+ (instancetype)new __attribute__((availability(swift, unavailable, message="use object initializers instead")));
-- (instancetype)initWithMessage:(NSString * _Nullable)message __attribute__((swift_name("init(message:)"))) __attribute__((objc_designated_initializer));
-- (instancetype)initWithMessage:(NSString * _Nullable)message cause:(DLDDSDKKotlinThrowable * _Nullable)cause __attribute__((swift_name("init(message:cause:)"))) __attribute__((objc_designated_initializer));
-- (instancetype)initWithCause:(DLDDSDKKotlinThrowable * _Nullable)cause __attribute__((swift_name("init(cause:)"))) __attribute__((objc_designated_initializer));
-@end;
-
-__attribute__((swift_name("KotlinCancellationException")))
-@interface DLDDSDKKotlinCancellationException : DLDDSDKKotlinIllegalStateException
-- (instancetype)init __attribute__((swift_name("init()"))) __attribute__((objc_designated_initializer));
-+ (instancetype)new __attribute__((availability(swift, unavailable, message="use object initializers instead")));
-- (instancetype)initWithMessage:(NSString * _Nullable)message __attribute__((swift_name("init(message:)"))) __attribute__((objc_designated_initializer));
-- (instancetype)initWithMessage:(NSString * _Nullable)message cause:(DLDDSDKKotlinThrowable * _Nullable)cause __attribute__((swift_name("init(message:cause:)"))) __attribute__((objc_designated_initializer));
-- (instancetype)initWithCause:(DLDDSDKKotlinThrowable * _Nullable)cause __attribute__((swift_name("init(cause:)"))) __attribute__((objc_designated_initializer));
-@end;
-
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("Koin_coreModule")))
-@interface DLDDSDKKoin_coreModule : DLDDSDKBase
-- (instancetype)initWithCreateAtStart:(BOOL)createAtStart override:(BOOL)override __attribute__((swift_name("init(createAtStart:override:)"))) __attribute__((objc_designated_initializer));
-- (DLDDSDKKoin_coreBeanDefinition<id> *)factoryQualifier:(id<DLDDSDKKoin_coreQualifier> _Nullable)qualifier override:(BOOL)override definition:(id _Nullable (^)(DLDDSDKKoin_coreScope *, DLDDSDKKoin_coreDefinitionParameters *))definition __attribute__((swift_name("factory(qualifier:override:definition:)")));
-- (DLDDSDKKoin_coreOptions *)makeOptionsOverride:(BOOL)override createdAtStart:(BOOL)createdAtStart __attribute__((swift_name("makeOptions(override:createdAtStart:)")));
-- (NSArray<DLDDSDKKoin_coreModule *> *)plusModules:(NSArray<DLDDSDKKoin_coreModule *> *)modules __attribute__((swift_name("plus(modules:)")));
-- (NSArray<DLDDSDKKoin_coreModule *> *)plusModule:(DLDDSDKKoin_coreModule *)module __attribute__((swift_name("plus(module:)")));
-- (void)scopeQualifier:(id<DLDDSDKKoin_coreQualifier>)qualifier scopeSet:(void (^)(DLDDSDKKoin_coreScopeDSL *))scopeSet __attribute__((swift_name("scope(qualifier:scopeSet:)")));
-- (void)scopeScopeSet:(void (^)(DLDDSDKKoin_coreScopeDSL *))scopeSet __attribute__((swift_name("scope(scopeSet:)")));
-- (DLDDSDKKoin_coreBeanDefinition<id> *)singleQualifier:(id<DLDDSDKKoin_coreQualifier> _Nullable)qualifier createdAtStart:(BOOL)createdAtStart override:(BOOL)override definition:(id _Nullable (^)(DLDDSDKKoin_coreScope *, DLDDSDKKoin_coreDefinitionParameters *))definition __attribute__((swift_name("single(qualifier:createdAtStart:override:definition:)")));
-@property (readonly) BOOL isLoaded __attribute__((swift_name("isLoaded")));
 @end;
 
 __attribute__((swift_name("KotlinCoroutineContext")))
@@ -1040,155 +652,22 @@ __attribute__((swift_name("Kotlinx_serialization_coreDecoder")))
 @property (readonly) DLDDSDKKotlinx_serialization_coreSerializersModule *serializersModule __attribute__((swift_name("serializersModule")));
 @end;
 
-__attribute__((swift_name("KotlinByteIterator")))
-@interface DLDDSDKKotlinByteIterator : DLDDSDKBase <DLDDSDKKotlinIterator>
+__attribute__((swift_name("KotlinIllegalStateException")))
+@interface DLDDSDKKotlinIllegalStateException : DLDDSDKKotlinRuntimeException
 - (instancetype)init __attribute__((swift_name("init()"))) __attribute__((objc_designated_initializer));
 + (instancetype)new __attribute__((availability(swift, unavailable, message="use object initializers instead")));
-- (DLDDSDKByte *)next __attribute__((swift_name("next()")));
-- (int8_t)nextByte __attribute__((swift_name("nextByte()")));
+- (instancetype)initWithMessage:(NSString * _Nullable)message __attribute__((swift_name("init(message:)"))) __attribute__((objc_designated_initializer));
+- (instancetype)initWithMessage:(NSString * _Nullable)message cause:(DLDDSDKKotlinThrowable * _Nullable)cause __attribute__((swift_name("init(message:cause:)"))) __attribute__((objc_designated_initializer));
+- (instancetype)initWithCause:(DLDDSDKKotlinThrowable * _Nullable)cause __attribute__((swift_name("init(cause:)"))) __attribute__((objc_designated_initializer));
 @end;
 
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("Kotlinx_datetimeInstant")))
-@interface DLDDSDKKotlinx_datetimeInstant : DLDDSDKBase <DLDDSDKKotlinComparable>
-- (int32_t)compareToOther:(DLDDSDKKotlinx_datetimeInstant *)other __attribute__((swift_name("compareTo(other:)")));
-- (BOOL)isEqual:(id _Nullable)other __attribute__((swift_name("isEqual(_:)")));
-- (NSUInteger)hash __attribute__((swift_name("hash()")));
-- (DLDDSDKKotlinx_datetimeInstant *)minusDuration:(double)duration __attribute__((swift_name("minus(duration:)")));
-- (double)minusOther:(DLDDSDKKotlinx_datetimeInstant *)other __attribute__((swift_name("minus(other:)")));
-- (DLDDSDKKotlinx_datetimeInstant *)plusDuration:(double)duration __attribute__((swift_name("plus(duration:)")));
-- (int64_t)toEpochMilliseconds __attribute__((swift_name("toEpochMilliseconds()")));
-- (NSString *)description __attribute__((swift_name("description()")));
-@property (readonly) int64_t epochSeconds __attribute__((swift_name("epochSeconds")));
-@property (readonly) int32_t nanosecondsOfSecond __attribute__((swift_name("nanosecondsOfSecond")));
-@end;
-
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("Koin_coreBeanDefinition")))
-@interface DLDDSDKKoin_coreBeanDefinition<T> : DLDDSDKBase
-- (instancetype)initWithScopeQualifier:(id<DLDDSDKKoin_coreQualifier>)scopeQualifier primaryType:(id<DLDDSDKKotlinKClass>)primaryType qualifier:(id<DLDDSDKKoin_coreQualifier> _Nullable)qualifier definition:(T _Nullable (^)(DLDDSDKKoin_coreScope *, DLDDSDKKoin_coreDefinitionParameters *))definition kind:(DLDDSDKKoin_coreKind *)kind secondaryTypes:(NSArray<id<DLDDSDKKotlinKClass>> *)secondaryTypes options:(DLDDSDKKoin_coreOptions *)options properties:(DLDDSDKKoin_coreProperties *)properties __attribute__((swift_name("init(scopeQualifier:primaryType:qualifier:definition:kind:secondaryTypes:options:properties:)"))) __attribute__((objc_designated_initializer));
-- (BOOL)canBindPrimary:(id<DLDDSDKKotlinKClass>)primary secondary:(id<DLDDSDKKotlinKClass>)secondary __attribute__((swift_name("canBind(primary:secondary:)")));
-- (id<DLDDSDKKoin_coreQualifier>)component1 __attribute__((swift_name("component1()")));
-- (id<DLDDSDKKotlinKClass>)component2 __attribute__((swift_name("component2()")));
-- (id<DLDDSDKKoin_coreQualifier> _Nullable)component3 __attribute__((swift_name("component3()")));
-- (T _Nullable (^)(DLDDSDKKoin_coreScope *, DLDDSDKKoin_coreDefinitionParameters *))component4 __attribute__((swift_name("component4()")));
-- (DLDDSDKKoin_coreKind *)component5 __attribute__((swift_name("component5()")));
-- (NSArray<id<DLDDSDKKotlinKClass>> *)component6 __attribute__((swift_name("component6()")));
-- (DLDDSDKKoin_coreOptions *)component7 __attribute__((swift_name("component7()")));
-- (DLDDSDKKoin_coreProperties *)component8 __attribute__((swift_name("component8()")));
-- (DLDDSDKKoin_coreBeanDefinition<T> *)doCopyScopeQualifier:(id<DLDDSDKKoin_coreQualifier>)scopeQualifier primaryType:(id<DLDDSDKKotlinKClass>)primaryType qualifier:(id<DLDDSDKKoin_coreQualifier> _Nullable)qualifier definition:(T _Nullable (^)(DLDDSDKKoin_coreScope *, DLDDSDKKoin_coreDefinitionParameters *))definition kind:(DLDDSDKKoin_coreKind *)kind secondaryTypes:(NSArray<id<DLDDSDKKotlinKClass>> *)secondaryTypes options:(DLDDSDKKoin_coreOptions *)options properties:(DLDDSDKKoin_coreProperties *)properties __attribute__((swift_name("doCopy(scopeQualifier:primaryType:qualifier:definition:kind:secondaryTypes:options:properties:)")));
-- (BOOL)isEqual:(id _Nullable)other __attribute__((swift_name("isEqual(_:)")));
-- (BOOL)hasTypeClazz:(id<DLDDSDKKotlinKClass>)clazz __attribute__((swift_name("hasType(clazz:)")));
-- (NSUInteger)hash __attribute__((swift_name("hash()")));
-- (BOOL)isClazz:(id<DLDDSDKKotlinKClass>)clazz qualifier:(id<DLDDSDKKoin_coreQualifier> _Nullable)qualifier scopeDefinition:(id<DLDDSDKKoin_coreQualifier>)scopeDefinition __attribute__((swift_name("is(clazz:qualifier:scopeDefinition:)")));
-- (NSString *)description __attribute__((swift_name("description()")));
-@property DLDDSDKKoin_coreCallbacks<T> *callbacks __attribute__((swift_name("callbacks")));
-@property (readonly) T _Nullable (^definition)(DLDDSDKKoin_coreScope *, DLDDSDKKoin_coreDefinitionParameters *) __attribute__((swift_name("definition")));
-@property (readonly) DLDDSDKKoin_coreKind *kind __attribute__((swift_name("kind")));
-@property (readonly) DLDDSDKKoin_coreOptions *options __attribute__((swift_name("options")));
-@property (readonly) id<DLDDSDKKotlinKClass> primaryType __attribute__((swift_name("primaryType")));
-@property (readonly) DLDDSDKKoin_coreProperties *properties __attribute__((swift_name("properties")));
-@property (readonly) id<DLDDSDKKoin_coreQualifier> _Nullable qualifier __attribute__((swift_name("qualifier")));
-@property (readonly) id<DLDDSDKKoin_coreQualifier> scopeQualifier __attribute__((swift_name("scopeQualifier")));
-@property NSArray<id<DLDDSDKKotlinKClass>> *secondaryTypes __attribute__((swift_name("secondaryTypes")));
-@end;
-
-__attribute__((swift_name("Koin_coreQualifier")))
-@protocol DLDDSDKKoin_coreQualifier
-@required
-@property (readonly) NSString *value __attribute__((swift_name("value")));
-@end;
-
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("Koin_coreScope")))
-@interface DLDDSDKKoin_coreScope : DLDDSDKBase
-- (instancetype)initWithId:(NSString *)id _scopeDefinition:(DLDDSDKKoin_coreScopeDefinition *)_scopeDefinition _koin:(DLDDSDKKoin_coreKoin *)_koin __attribute__((swift_name("init(id:_scopeDefinition:_koin:)"))) __attribute__((objc_designated_initializer));
-- (void)addParametersParameters:(DLDDSDKKoin_coreDefinitionParameters *)parameters __attribute__((swift_name("addParameters(parameters:)")));
-- (id _Nullable)bindPrimaryType:(id<DLDDSDKKotlinKClass>)primaryType secondaryType:(id<DLDDSDKKotlinKClass>)secondaryType parameters:(DLDDSDKKoin_coreDefinitionParameters *(^ _Nullable)(void))parameters __attribute__((swift_name("bind(primaryType:secondaryType:parameters:)")));
-- (id _Nullable)bindParameters:(DLDDSDKKoin_coreDefinitionParameters *(^ _Nullable)(void))parameters __attribute__((swift_name("bind(parameters:)")));
-- (void)clearParameters __attribute__((swift_name("clearParameters()")));
-- (void)close __attribute__((swift_name("close()")));
-- (NSString *)component1 __attribute__((swift_name("component1()")));
-- (DLDDSDKKoin_coreScopeDefinition *)component2 __attribute__((swift_name("component2()")));
-- (DLDDSDKKoin_coreScope *)doCopyId:(NSString *)id _scopeDefinition:(DLDDSDKKoin_coreScopeDefinition *)_scopeDefinition _koin:(DLDDSDKKoin_coreKoin *)_koin __attribute__((swift_name("doCopy(id:_scopeDefinition:_koin:)")));
-- (void)declareInstance:(id _Nullable)instance qualifier:(id<DLDDSDKKoin_coreQualifier> _Nullable)qualifier secondaryTypes:(NSArray<id<DLDDSDKKotlinKClass>> * _Nullable)secondaryTypes override:(BOOL)override __attribute__((swift_name("declare(instance:qualifier:secondaryTypes:override:)")));
-- (void)dropInstanceBeanDefinition:(DLDDSDKKoin_coreBeanDefinition<id> *)beanDefinition __attribute__((swift_name("dropInstance(beanDefinition:)")));
-- (BOOL)isEqual:(id _Nullable)other __attribute__((swift_name("isEqual(_:)")));
-- (id _Nullable)getClazz:(id<DLDDSDKKotlinKClass>)clazz qualifier:(id<DLDDSDKKoin_coreQualifier> _Nullable)qualifier parameters:(DLDDSDKKoin_coreDefinitionParameters *(^ _Nullable)(void))parameters __attribute__((swift_name("get(clazz:qualifier:parameters:)")));
-- (id)getQualifier:(id<DLDDSDKKoin_coreQualifier> _Nullable)qualifier parameters:(DLDDSDKKoin_coreDefinitionParameters *(^ _Nullable)(void))parameters __attribute__((swift_name("get(qualifier:parameters:)")));
-- (NSArray<id> *)getAll __attribute__((swift_name("getAll()")));
-- (NSArray<id> *)getAllClazz:(id<DLDDSDKKotlinKClass>)clazz __attribute__((swift_name("getAll(clazz:)")));
-- (DLDDSDKKoin_coreKoin *)getKoin __attribute__((swift_name("getKoin()")));
-- (id _Nullable)getOrNullClazz:(id<DLDDSDKKotlinKClass>)clazz qualifier:(id<DLDDSDKKoin_coreQualifier> _Nullable)qualifier parameters:(DLDDSDKKoin_coreDefinitionParameters *(^ _Nullable)(void))parameters __attribute__((swift_name("getOrNull(clazz:qualifier:parameters:)")));
-- (id _Nullable)getOrNullQualifier:(id<DLDDSDKKoin_coreQualifier> _Nullable)qualifier parameters:(DLDDSDKKoin_coreDefinitionParameters *(^ _Nullable)(void))parameters __attribute__((swift_name("getOrNull(qualifier:parameters:)")));
-- (NSString *)getPropertyKey:(NSString *)key __attribute__((swift_name("getProperty(key:)")));
-- (NSString *)getPropertyKey:(NSString *)key defaultValue:(NSString *)defaultValue __attribute__((swift_name("getProperty(key:defaultValue:)")));
-- (NSString * _Nullable)getPropertyOrNullKey:(NSString *)key __attribute__((swift_name("getPropertyOrNull(key:)")));
-- (DLDDSDKKoin_coreScope *)getScopeScopeID:(NSString *)scopeID __attribute__((swift_name("getScope(scopeID:)")));
-- (id)getSource __attribute__((swift_name("getSource()")));
-- (NSUInteger)hash __attribute__((swift_name("hash()")));
-- (id<DLDDSDKKotlinLazy>)injectQualifier:(id<DLDDSDKKoin_coreQualifier> _Nullable)qualifier mode:(DLDDSDKKotlinLazyThreadSafetyMode *)mode parameters:(DLDDSDKKoin_coreDefinitionParameters *(^ _Nullable)(void))parameters __attribute__((swift_name("inject(qualifier:mode:parameters:)")));
-- (id<DLDDSDKKotlinLazy>)injectOrNullQualifier:(id<DLDDSDKKoin_coreQualifier> _Nullable)qualifier mode:(DLDDSDKKotlinLazyThreadSafetyMode *)mode parameters:(DLDDSDKKoin_coreDefinitionParameters *(^ _Nullable)(void))parameters __attribute__((swift_name("injectOrNull(qualifier:mode:parameters:)")));
-- (BOOL)isNotClosed __attribute__((swift_name("isNotClosed()")));
-- (void)linkToScopes:(DLDDSDKKotlinArray<DLDDSDKKoin_coreScope *> *)scopes __attribute__((swift_name("linkTo(scopes:)")));
-- (void)loadDefinitionBeanDefinition:(DLDDSDKKoin_coreBeanDefinition<id> *)beanDefinition __attribute__((swift_name("loadDefinition(beanDefinition:)")));
-- (void)registerCallbackCallback:(id<DLDDSDKKoin_coreScopeCallback>)callback __attribute__((swift_name("registerCallback(callback:)")));
-- (void)setSourceT:(id _Nullable)t __attribute__((swift_name("setSource(t:)")));
-- (NSString *)description __attribute__((swift_name("description()")));
-- (void)unlinkScopes:(DLDDSDKKotlinArray<DLDDSDKKoin_coreScope *> *)scopes __attribute__((swift_name("unlink(scopes:)")));
-@property (readonly) DLDDSDKKoin_coreScopeDefinition *_scopeDefinition __attribute__((swift_name("_scopeDefinition")));
-@property (readonly) BOOL closed __attribute__((swift_name("closed")));
-@property (readonly) NSString *id __attribute__((swift_name("id")));
-@property (readonly) DLDDSDKKoin_coreLogger *logger __attribute__((swift_name("logger")));
-@end;
-
-__attribute__((swift_name("Koin_coreDefinitionParameters")))
-@interface DLDDSDKKoin_coreDefinitionParameters : DLDDSDKBase
-- (instancetype)initWithValues:(NSArray<id> *)values __attribute__((swift_name("init(values:)"))) __attribute__((objc_designated_initializer));
-- (DLDDSDKKoin_coreDefinitionParameters *)addValue:(id)value __attribute__((swift_name("add(value:)")));
-- (id _Nullable)component1 __attribute__((swift_name("component1()")));
-- (id _Nullable)component2 __attribute__((swift_name("component2()")));
-- (id _Nullable)component3 __attribute__((swift_name("component3()")));
-- (id _Nullable)component4 __attribute__((swift_name("component4()")));
-- (id _Nullable)component5 __attribute__((swift_name("component5()")));
-- (id _Nullable)elementAtI:(int32_t)i clazz:(id<DLDDSDKKotlinKClass>)clazz __attribute__((swift_name("elementAt(i:clazz:)")));
-- (id)get __attribute__((swift_name("get()")));
-- (id _Nullable)getI:(int32_t)i __attribute__((swift_name("get(i:)")));
-- (id _Nullable)getOrNullClazz:(id<DLDDSDKKotlinKClass>)clazz __attribute__((swift_name("getOrNull(clazz:)")));
-- (DLDDSDKKoin_coreDefinitionParameters *)insertIndex:(int32_t)index value:(id)value __attribute__((swift_name("insert(index:value:)")));
-- (BOOL)isEmpty __attribute__((swift_name("isEmpty()")));
-- (BOOL)isNotEmpty __attribute__((swift_name("isNotEmpty()")));
-- (void)setI:(int32_t)i t:(id _Nullable)t __attribute__((swift_name("set(i:t:)")));
-- (int32_t)size __attribute__((swift_name("size()")));
-- (NSString *)description __attribute__((swift_name("description()")));
-@property (readonly) NSArray<id> *values __attribute__((swift_name("values")));
-@end;
-
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("Koin_coreOptions")))
-@interface DLDDSDKKoin_coreOptions : DLDDSDKBase
-- (instancetype)initWithIsCreatedAtStart:(BOOL)isCreatedAtStart override:(BOOL)override isExtraDefinition:(BOOL)isExtraDefinition __attribute__((swift_name("init(isCreatedAtStart:override:isExtraDefinition:)"))) __attribute__((objc_designated_initializer));
-- (BOOL)component1 __attribute__((swift_name("component1()")));
-- (BOOL)component2 __attribute__((swift_name("component2()")));
-- (BOOL)component3 __attribute__((swift_name("component3()")));
-- (DLDDSDKKoin_coreOptions *)doCopyIsCreatedAtStart:(BOOL)isCreatedAtStart override:(BOOL)override isExtraDefinition:(BOOL)isExtraDefinition __attribute__((swift_name("doCopy(isCreatedAtStart:override:isExtraDefinition:)")));
-- (BOOL)isEqual:(id _Nullable)other __attribute__((swift_name("isEqual(_:)")));
-- (NSUInteger)hash __attribute__((swift_name("hash()")));
-- (NSString *)description __attribute__((swift_name("description()")));
-@property BOOL isCreatedAtStart __attribute__((swift_name("isCreatedAtStart")));
-@property BOOL isExtraDefinition __attribute__((swift_name("isExtraDefinition")));
-@property BOOL override __attribute__((swift_name("override")));
-@end;
-
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("Koin_coreScopeDSL")))
-@interface DLDDSDKKoin_coreScopeDSL : DLDDSDKBase
-- (instancetype)initWithScopeQualifier:(id<DLDDSDKKoin_coreQualifier>)scopeQualifier definitions:(DLDDSDKMutableSet<DLDDSDKKoin_coreBeanDefinition<id> *> *)definitions __attribute__((swift_name("init(scopeQualifier:definitions:)"))) __attribute__((objc_designated_initializer));
-- (DLDDSDKKoin_coreBeanDefinition<id> *)factoryQualifier:(id<DLDDSDKKoin_coreQualifier> _Nullable)qualifier override:(BOOL)override definition:(id _Nullable (^)(DLDDSDKKoin_coreScope *, DLDDSDKKoin_coreDefinitionParameters *))definition __attribute__((swift_name("factory(qualifier:override:definition:)")));
-- (DLDDSDKKoin_coreBeanDefinition<id> *)scopedQualifier:(id<DLDDSDKKoin_coreQualifier> _Nullable)qualifier override:(BOOL)override definition:(id _Nullable (^)(DLDDSDKKoin_coreScope *, DLDDSDKKoin_coreDefinitionParameters *))definition __attribute__((swift_name("scoped(qualifier:override:definition:)")));
-- (DLDDSDKKoin_coreBeanDefinition<id> *)singleQualifier:(id<DLDDSDKKoin_coreQualifier> _Nullable)qualifier override:(BOOL)override definition:(id _Nullable (^)(DLDDSDKKoin_coreScope *, DLDDSDKKoin_coreDefinitionParameters *))definition __attribute__((swift_name("single(qualifier:override:definition:)"))) __attribute__((unavailable("Can't use Single in a scope. Use Scoped instead")));
-@property (readonly) DLDDSDKMutableSet<DLDDSDKKoin_coreBeanDefinition<id> *> *definitions __attribute__((swift_name("definitions")));
-@property (readonly) id<DLDDSDKKoin_coreQualifier> scopeQualifier __attribute__((swift_name("scopeQualifier")));
+__attribute__((swift_name("KotlinCancellationException")))
+@interface DLDDSDKKotlinCancellationException : DLDDSDKKotlinIllegalStateException
+- (instancetype)init __attribute__((swift_name("init()"))) __attribute__((objc_designated_initializer));
++ (instancetype)new __attribute__((availability(swift, unavailable, message="use object initializers instead")));
+- (instancetype)initWithMessage:(NSString * _Nullable)message __attribute__((swift_name("init(message:)"))) __attribute__((objc_designated_initializer));
+- (instancetype)initWithMessage:(NSString * _Nullable)message cause:(DLDDSDKKotlinThrowable * _Nullable)cause __attribute__((swift_name("init(message:cause:)"))) __attribute__((objc_designated_initializer));
+- (instancetype)initWithCause:(DLDDSDKKotlinThrowable * _Nullable)cause __attribute__((swift_name("init(cause:)"))) __attribute__((objc_designated_initializer));
 @end;
 
 __attribute__((swift_name("Kotlinx_coroutines_coreDisposableHandle")))
@@ -1321,157 +800,6 @@ __attribute__((swift_name("KotlinNothing")))
 @interface DLDDSDKKotlinNothing : DLDDSDKBase
 @end;
 
-__attribute__((swift_name("KotlinKDeclarationContainer")))
-@protocol DLDDSDKKotlinKDeclarationContainer
-@required
-@end;
-
-__attribute__((swift_name("KotlinKAnnotatedElement")))
-@protocol DLDDSDKKotlinKAnnotatedElement
-@required
-@end;
-
-__attribute__((swift_name("KotlinKClassifier")))
-@protocol DLDDSDKKotlinKClassifier
-@required
-@end;
-
-__attribute__((swift_name("KotlinKClass")))
-@protocol DLDDSDKKotlinKClass <DLDDSDKKotlinKDeclarationContainer, DLDDSDKKotlinKAnnotatedElement, DLDDSDKKotlinKClassifier>
-@required
-- (BOOL)isInstanceValue:(id _Nullable)value __attribute__((swift_name("isInstance(value:)")));
-@property (readonly) NSString * _Nullable qualifiedName __attribute__((swift_name("qualifiedName")));
-@property (readonly) NSString * _Nullable simpleName __attribute__((swift_name("simpleName")));
-@end;
-
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("Koin_coreKind")))
-@interface DLDDSDKKoin_coreKind : DLDDSDKKotlinEnum<DLDDSDKKoin_coreKind *>
-+ (instancetype)alloc __attribute__((unavailable));
-+ (instancetype)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable));
-- (instancetype)initWithName:(NSString *)name ordinal:(int32_t)ordinal __attribute__((swift_name("init(name:ordinal:)"))) __attribute__((objc_designated_initializer)) __attribute__((unavailable));
-@property (class, readonly) DLDDSDKKoin_coreKind *single __attribute__((swift_name("single")));
-@property (class, readonly) DLDDSDKKoin_coreKind *factory __attribute__((swift_name("factory")));
-+ (DLDDSDKKotlinArray<DLDDSDKKoin_coreKind *> *)values __attribute__((swift_name("values()")));
-@end;
-
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("Koin_coreProperties")))
-@interface DLDDSDKKoin_coreProperties : DLDDSDKBase
-- (instancetype)initWithData:(DLDDSDKMutableDictionary<NSString *, id> *)data __attribute__((swift_name("init(data:)"))) __attribute__((objc_designated_initializer));
-- (DLDDSDKKoin_coreProperties *)doCopyData:(DLDDSDKMutableDictionary<NSString *, id> *)data __attribute__((swift_name("doCopy(data:)")));
-- (BOOL)isEqual:(id _Nullable)other __attribute__((swift_name("isEqual(_:)")));
-- (id _Nullable)getKey:(NSString *)key __attribute__((swift_name("get(key:)")));
-- (id _Nullable)getOrNullKey:(NSString *)key __attribute__((swift_name("getOrNull(key:)")));
-- (NSUInteger)hash __attribute__((swift_name("hash()")));
-- (void)setKey:(NSString *)key value:(id _Nullable)value __attribute__((swift_name("set(key:value:)")));
-- (NSString *)description __attribute__((swift_name("description()")));
-@end;
-
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("Koin_coreCallbacks")))
-@interface DLDDSDKKoin_coreCallbacks<T> : DLDDSDKBase
-- (instancetype)initWithOnClose:(void (^ _Nullable)(T _Nullable))onClose __attribute__((swift_name("init(onClose:)"))) __attribute__((objc_designated_initializer));
-- (void (^ _Nullable)(T _Nullable))component1 __attribute__((swift_name("component1()")));
-- (DLDDSDKKoin_coreCallbacks<T> *)doCopyOnClose:(void (^ _Nullable)(T _Nullable))onClose __attribute__((swift_name("doCopy(onClose:)")));
-- (BOOL)isEqual:(id _Nullable)other __attribute__((swift_name("isEqual(_:)")));
-- (NSUInteger)hash __attribute__((swift_name("hash()")));
-- (NSString *)description __attribute__((swift_name("description()")));
-@property (readonly) void (^ _Nullable onClose)(T _Nullable) __attribute__((swift_name("onClose")));
-@end;
-
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("Koin_coreScopeDefinition")))
-@interface DLDDSDKKoin_coreScopeDefinition : DLDDSDKBase
-- (instancetype)initWithQualifier:(id<DLDDSDKKoin_coreQualifier>)qualifier isRoot:(BOOL)isRoot __attribute__((swift_name("init(qualifier:isRoot:)"))) __attribute__((objc_designated_initializer));
-- (id<DLDDSDKKoin_coreQualifier>)component1 __attribute__((swift_name("component1()")));
-- (BOOL)component2 __attribute__((swift_name("component2()")));
-- (DLDDSDKKoin_coreScopeDefinition *)doCopyQualifier:(id<DLDDSDKKoin_coreQualifier>)qualifier isRoot:(BOOL)isRoot __attribute__((swift_name("doCopy(qualifier:isRoot:)")));
-- (DLDDSDKKoin_coreBeanDefinition<id> *)declareNewDefinitionInstance:(id _Nullable)instance defQualifier:(id<DLDDSDKKoin_coreQualifier> _Nullable)defQualifier secondaryTypes:(NSArray<id<DLDDSDKKotlinKClass>> * _Nullable)secondaryTypes override:(BOOL)override __attribute__((swift_name("declareNewDefinition(instance:defQualifier:secondaryTypes:override:)")));
-- (BOOL)isEqual:(id _Nullable)other __attribute__((swift_name("isEqual(_:)")));
-- (NSUInteger)hash __attribute__((swift_name("hash()")));
-- (void)removeBeanDefinition:(DLDDSDKKoin_coreBeanDefinition<id> *)beanDefinition __attribute__((swift_name("remove(beanDefinition:)")));
-- (void)saveBeanDefinition:(DLDDSDKKoin_coreBeanDefinition<id> *)beanDefinition forceOverride:(BOOL)forceOverride __attribute__((swift_name("save(beanDefinition:forceOverride:)")));
-- (NSString *)description __attribute__((swift_name("description()")));
-@property (readonly) DLDDSDKMutableSet<DLDDSDKKoin_coreBeanDefinition<id> *> *definitions __attribute__((swift_name("definitions")));
-@property (readonly) BOOL isRoot __attribute__((swift_name("isRoot")));
-@property (readonly) id<DLDDSDKKoin_coreQualifier> qualifier __attribute__((swift_name("qualifier")));
-@end;
-
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("Koin_coreKoin")))
-@interface DLDDSDKKoin_coreKoin : DLDDSDKBase
-- (instancetype)init __attribute__((swift_name("init()"))) __attribute__((objc_designated_initializer));
-+ (instancetype)new __attribute__((availability(swift, unavailable, message="use object initializers instead")));
-- (id _Nullable)bindPrimaryType:(id<DLDDSDKKotlinKClass>)primaryType secondaryType:(id<DLDDSDKKotlinKClass>)secondaryType parameters:(DLDDSDKKoin_coreDefinitionParameters *(^ _Nullable)(void))parameters __attribute__((swift_name("bind(primaryType:secondaryType:parameters:)")));
-- (id _Nullable)bindParameters:(DLDDSDKKoin_coreDefinitionParameters *(^ _Nullable)(void))parameters __attribute__((swift_name("bind(parameters:)")));
-- (void)close __attribute__((swift_name("close()")));
-- (DLDDSDKKoin_coreScope *)createScopeT:(id<DLDDSDKKoin_coreKoinScopeComponent>)t __attribute__((swift_name("createScope(t:)")));
-- (DLDDSDKKoin_coreScope *)createScopeScopeId:(NSString *)scopeId __attribute__((swift_name("createScope(scopeId:)")));
-- (DLDDSDKKoin_coreScope *)createScopeScopeId:(NSString *)scopeId source:(id _Nullable)source __attribute__((swift_name("createScope(scopeId:source:)")));
-- (DLDDSDKKoin_coreScope *)createScopeScopeId:(NSString *)scopeId qualifier:(id<DLDDSDKKoin_coreQualifier>)qualifier source:(id _Nullable)source __attribute__((swift_name("createScope(scopeId:qualifier:source:)")));
-- (void)declareInstance:(id _Nullable)instance qualifier:(id<DLDDSDKKoin_coreQualifier> _Nullable)qualifier secondaryTypes:(NSArray<id<DLDDSDKKotlinKClass>> *)secondaryTypes override:(BOOL)override __attribute__((swift_name("declare(instance:qualifier:secondaryTypes:override:)")));
-- (void)deletePropertyKey:(NSString *)key __attribute__((swift_name("deleteProperty(key:)")));
-- (void)deleteScopeScopeId:(NSString *)scopeId __attribute__((swift_name("deleteScope(scopeId:)")));
-- (id _Nullable)getClazz:(id<DLDDSDKKotlinKClass>)clazz qualifier:(id<DLDDSDKKoin_coreQualifier> _Nullable)qualifier parameters:(DLDDSDKKoin_coreDefinitionParameters *(^ _Nullable)(void))parameters __attribute__((swift_name("get(clazz:qualifier:parameters:)")));
-- (id)getQualifier:(id<DLDDSDKKoin_coreQualifier> _Nullable)qualifier parameters:(DLDDSDKKoin_coreDefinitionParameters *(^ _Nullable)(void))parameters __attribute__((swift_name("get(qualifier:parameters:)")));
-- (NSArray<id> *)getAll __attribute__((swift_name("getAll()")));
-- (DLDDSDKKoin_coreScope *)getOrCreateScopeScopeId:(NSString *)scopeId __attribute__((swift_name("getOrCreateScope(scopeId:)")));
-- (DLDDSDKKoin_coreScope *)getOrCreateScopeScopeId:(NSString *)scopeId qualifier:(id<DLDDSDKKoin_coreQualifier>)qualifier source:(id _Nullable)source __attribute__((swift_name("getOrCreateScope(scopeId:qualifier:source:)")));
-- (id _Nullable)getOrNullClazz:(id<DLDDSDKKotlinKClass>)clazz qualifier:(id<DLDDSDKKoin_coreQualifier> _Nullable)qualifier parameters:(DLDDSDKKoin_coreDefinitionParameters *(^ _Nullable)(void))parameters __attribute__((swift_name("getOrNull(clazz:qualifier:parameters:)")));
-- (id _Nullable)getOrNullQualifier:(id<DLDDSDKKoin_coreQualifier> _Nullable)qualifier parameters:(DLDDSDKKoin_coreDefinitionParameters *(^ _Nullable)(void))parameters __attribute__((swift_name("getOrNull(qualifier:parameters:)")));
-- (id _Nullable)getPropertyKey:(NSString *)key __attribute__((swift_name("getProperty(key:)")));
-- (id)getPropertyKey:(NSString *)key defaultValue:(id)defaultValue __attribute__((swift_name("getProperty(key:defaultValue:)")));
-- (DLDDSDKKoin_coreScope *)getRootScope __attribute__((swift_name("getRootScope()")));
-- (DLDDSDKKoin_coreScope *)getScopeScopeId:(NSString *)scopeId __attribute__((swift_name("getScope(scopeId:)")));
-- (DLDDSDKKoin_coreScope * _Nullable)getScopeOrNullScopeId:(NSString *)scopeId __attribute__((swift_name("getScopeOrNull(scopeId:)")));
-- (id<DLDDSDKKotlinLazy>)injectQualifier:(id<DLDDSDKKoin_coreQualifier> _Nullable)qualifier mode:(DLDDSDKKotlinLazyThreadSafetyMode *)mode parameters:(DLDDSDKKoin_coreDefinitionParameters *(^ _Nullable)(void))parameters __attribute__((swift_name("inject(qualifier:mode:parameters:)")));
-- (id<DLDDSDKKotlinLazy>)injectOrNullQualifier:(id<DLDDSDKKoin_coreQualifier> _Nullable)qualifier mode:(DLDDSDKKotlinLazyThreadSafetyMode *)mode parameters:(DLDDSDKKoin_coreDefinitionParameters *(^ _Nullable)(void))parameters __attribute__((swift_name("injectOrNull(qualifier:mode:parameters:)")));
-- (void)loadModulesModules:(NSArray<DLDDSDKKoin_coreModule *> *)modules createEagerInstances:(BOOL)createEagerInstances __attribute__((swift_name("loadModules(modules:createEagerInstances:)")));
-- (void)setPropertyKey:(NSString *)key value:(id)value __attribute__((swift_name("setProperty(key:value:)")));
-- (void)setupLoggerLogger:(DLDDSDKKoin_coreLogger *)logger __attribute__((swift_name("setupLogger(logger:)")));
-- (void)unloadModulesModules:(NSArray<DLDDSDKKoin_coreModule *> *)modules createEagerInstances:(BOOL)createEagerInstances __attribute__((swift_name("unloadModules(modules:createEagerInstances:)")));
-@property (readonly) DLDDSDKKoin_coreLogger *logger __attribute__((swift_name("logger")));
-@property (readonly) DLDDSDKKoin_corePropertyRegistry *propertyRegistry __attribute__((swift_name("propertyRegistry")));
-@property (readonly) DLDDSDKKoin_coreScopeRegistry *scopeRegistry __attribute__((swift_name("scopeRegistry")));
-@end;
-
-__attribute__((swift_name("KotlinLazy")))
-@protocol DLDDSDKKotlinLazy
-@required
-- (BOOL)isInitialized __attribute__((swift_name("isInitialized()")));
-@property (readonly) id _Nullable value __attribute__((swift_name("value")));
-@end;
-
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("KotlinLazyThreadSafetyMode")))
-@interface DLDDSDKKotlinLazyThreadSafetyMode : DLDDSDKKotlinEnum<DLDDSDKKotlinLazyThreadSafetyMode *>
-+ (instancetype)alloc __attribute__((unavailable));
-+ (instancetype)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable));
-- (instancetype)initWithName:(NSString *)name ordinal:(int32_t)ordinal __attribute__((swift_name("init(name:ordinal:)"))) __attribute__((objc_designated_initializer)) __attribute__((unavailable));
-@property (class, readonly) DLDDSDKKotlinLazyThreadSafetyMode *synchronized __attribute__((swift_name("synchronized")));
-@property (class, readonly) DLDDSDKKotlinLazyThreadSafetyMode *publication __attribute__((swift_name("publication")));
-@property (class, readonly) DLDDSDKKotlinLazyThreadSafetyMode *none __attribute__((swift_name("none")));
-+ (DLDDSDKKotlinArray<DLDDSDKKotlinLazyThreadSafetyMode *> *)values __attribute__((swift_name("values()")));
-@end;
-
-__attribute__((swift_name("Koin_coreScopeCallback")))
-@protocol DLDDSDKKoin_coreScopeCallback
-@required
-- (void)onScopeCloseScope:(DLDDSDKKoin_coreScope *)scope __attribute__((swift_name("onScopeClose(scope:)")));
-@end;
-
-__attribute__((swift_name("Koin_coreLogger")))
-@interface DLDDSDKKoin_coreLogger : DLDDSDKBase
-- (instancetype)initWithLevel:(DLDDSDKKoin_coreLevel *)level __attribute__((swift_name("init(level:)"))) __attribute__((objc_designated_initializer));
-- (void)debugMsg:(NSString *)msg __attribute__((swift_name("debug(msg:)")));
-- (void)errorMsg:(NSString *)msg __attribute__((swift_name("error(msg:)")));
-- (void)infoMsg:(NSString *)msg __attribute__((swift_name("info(msg:)")));
-- (BOOL)isAtLvl:(DLDDSDKKoin_coreLevel *)lvl __attribute__((swift_name("isAt(lvl:)")));
-- (void)logLevel:(DLDDSDKKoin_coreLevel *)level msg:(NSString *)msg __attribute__((swift_name("log(level:msg:)")));
-@property DLDDSDKKoin_coreLevel *level __attribute__((swift_name("level")));
-@end;
-
 __attribute__((swift_name("Kotlinx_coroutines_coreParentJob")))
 @protocol DLDDSDKKotlinx_coroutines_coreParentJob <DLDDSDKKotlinx_coroutines_coreJob>
 @required
@@ -1514,56 +842,27 @@ __attribute__((swift_name("Kotlinx_serialization_coreSerializersModuleCollector"
 - (void)polymorphicDefaultBaseClass:(id<DLDDSDKKotlinKClass>)baseClass defaultSerializerProvider:(id<DLDDSDKKotlinx_serialization_coreDeserializationStrategy> _Nullable (^)(NSString * _Nullable))defaultSerializerProvider __attribute__((swift_name("polymorphicDefault(baseClass:defaultSerializerProvider:)")));
 @end;
 
-__attribute__((swift_name("Koin_coreKoinComponent")))
-@protocol DLDDSDKKoin_coreKoinComponent
+__attribute__((swift_name("KotlinKDeclarationContainer")))
+@protocol DLDDSDKKotlinKDeclarationContainer
 @required
-- (DLDDSDKKoin_coreKoin *)getKoin __attribute__((swift_name("getKoin()")));
 @end;
 
-__attribute__((swift_name("Koin_coreKoinScopeComponent")))
-@protocol DLDDSDKKoin_coreKoinScopeComponent <DLDDSDKKoin_coreKoinComponent>
+__attribute__((swift_name("KotlinKAnnotatedElement")))
+@protocol DLDDSDKKotlinKAnnotatedElement
 @required
-- (void)closeScope __attribute__((swift_name("closeScope()")));
-@property (readonly) DLDDSDKKoin_coreScope *scope __attribute__((swift_name("scope")));
 @end;
 
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("Koin_corePropertyRegistry")))
-@interface DLDDSDKKoin_corePropertyRegistry : DLDDSDKBase
-- (instancetype)initWith_koin:(DLDDSDKKoin_coreKoin *)_koin __attribute__((swift_name("init(_koin:)"))) __attribute__((objc_designated_initializer));
-- (void)close __attribute__((swift_name("close()")));
-- (void)deletePropertyKey:(NSString *)key __attribute__((swift_name("deleteProperty(key:)")));
-- (id _Nullable)getPropertyKey:(NSString *)key __attribute__((swift_name("getProperty(key:)")));
-- (void)savePropertiesProperties:(NSDictionary<NSString *, id> *)properties __attribute__((swift_name("saveProperties(properties:)")));
+__attribute__((swift_name("KotlinKClassifier")))
+@protocol DLDDSDKKotlinKClassifier
+@required
 @end;
 
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("Koin_coreScopeRegistry")))
-@interface DLDDSDKKoin_coreScopeRegistry : DLDDSDKBase
-- (instancetype)initWith_koin:(DLDDSDKKoin_coreKoin *)_koin __attribute__((swift_name("init(_koin:)"))) __attribute__((objc_designated_initializer));
-- (DLDDSDKKoin_coreScope *)createScopeScopeId:(NSString *)scopeId qualifier:(id<DLDDSDKKoin_coreQualifier>)qualifier source:(id _Nullable)source __attribute__((swift_name("createScope(scopeId:qualifier:source:)")));
-- (void)declareDefinitionBean:(DLDDSDKKoin_coreBeanDefinition<id> *)bean __attribute__((swift_name("declareDefinition(bean:)")));
-- (void)deleteScopeScope:(DLDDSDKKoin_coreScope *)scope __attribute__((swift_name("deleteScope(scope:)")));
-- (void)deleteScopeScopeId:(NSString *)scopeId __attribute__((swift_name("deleteScope(scopeId:)")));
-- (DLDDSDKKoin_coreScope * _Nullable)getScopeOrNullScopeId:(NSString *)scopeId __attribute__((swift_name("getScopeOrNull(scopeId:)")));
-- (int32_t)size __attribute__((swift_name("size()")));
-- (void)unloadModulesModules:(id)modules __attribute__((swift_name("unloadModules(modules:)")));
-- (void)unloadModulesModule:(DLDDSDKKoin_coreModule *)module __attribute__((swift_name("unloadModules(module:)")));
-@property (readonly) DLDDSDKKoin_coreScope *rootScope __attribute__((swift_name("rootScope")));
-@property (readonly) NSDictionary<NSString *, DLDDSDKKoin_coreScopeDefinition *> *scopeDefinitions __attribute__((swift_name("scopeDefinitions")));
-@end;
-
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("Koin_coreLevel")))
-@interface DLDDSDKKoin_coreLevel : DLDDSDKKotlinEnum<DLDDSDKKoin_coreLevel *>
-+ (instancetype)alloc __attribute__((unavailable));
-+ (instancetype)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable));
-- (instancetype)initWithName:(NSString *)name ordinal:(int32_t)ordinal __attribute__((swift_name("init(name:ordinal:)"))) __attribute__((objc_designated_initializer)) __attribute__((unavailable));
-@property (class, readonly) DLDDSDKKoin_coreLevel *debug __attribute__((swift_name("debug")));
-@property (class, readonly) DLDDSDKKoin_coreLevel *info __attribute__((swift_name("info")));
-@property (class, readonly) DLDDSDKKoin_coreLevel *error __attribute__((swift_name("error")));
-@property (class, readonly) DLDDSDKKoin_coreLevel *none __attribute__((swift_name("none")));
-+ (DLDDSDKKotlinArray<DLDDSDKKoin_coreLevel *> *)values __attribute__((swift_name("values()")));
+__attribute__((swift_name("KotlinKClass")))
+@protocol DLDDSDKKotlinKClass <DLDDSDKKotlinKDeclarationContainer, DLDDSDKKotlinKAnnotatedElement, DLDDSDKKotlinKClassifier>
+@required
+- (BOOL)isInstanceValue:(id _Nullable)value __attribute__((swift_name("isInstance(value:)")));
+@property (readonly) NSString * _Nullable qualifiedName __attribute__((swift_name("qualifiedName")));
+@property (readonly) NSString * _Nullable simpleName __attribute__((swift_name("simpleName")));
 @end;
 
 __attribute__((swift_name("Kotlinx_coroutines_coreAtomicDesc")))
