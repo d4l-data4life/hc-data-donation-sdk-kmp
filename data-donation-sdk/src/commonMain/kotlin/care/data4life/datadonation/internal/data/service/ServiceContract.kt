@@ -19,7 +19,6 @@ package care.data4life.datadonation.internal.data.service
 import care.data4life.datadonation.ConsentDataContract.ConsentDocument
 import care.data4life.datadonation.ConsentDataContract.UserConsent
 import care.data4life.datadonation.internal.data.model.ConsentSignature
-import care.data4life.datadonation.internal.data.model.DonationPayload
 import care.data4life.datadonation.lang.ConsentServiceError
 import care.data4life.datadonation.lang.HttpRuntimeError
 import kotlin.time.minutes
@@ -98,30 +97,6 @@ internal interface ServiceContract {
             fun handleRequestSignatureConsentRegistration(error: HttpRuntimeError): ConsentServiceError
             fun handleRequestSignatureDonation(error: HttpRuntimeError): ConsentServiceError
             fun handleRevokeUserConsent(error: HttpRuntimeError): ConsentServiceError
-        }
-    }
-
-    interface DonationService {
-        suspend fun requestToken(): String
-        suspend fun registerNewDonor(payload: ByteArray)
-        suspend fun donateResources(payload: DonationPayload)
-
-        companion object {
-            object Endpoints {
-                const val token = "token"
-                const val register = "register"
-                const val donate = "donate"
-            }
-
-            object FormDataEntries {
-                const val request = "request"
-                const val signature = "signature_"
-                const val donation = "donation_"
-            }
-
-            object FormDataHeaders {
-                const val fileName = "filename="
-            }
         }
     }
 

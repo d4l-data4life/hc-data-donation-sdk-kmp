@@ -20,7 +20,7 @@ import care.data4life.datadonation.internal.data.service.ServiceContract
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 
-class CredentialServiceStub : ServiceContract.CredentialService, MockContract.Stub {
+internal class CredentialServiceStub : ServiceContract.CredentialService, MockContract.Stub {
     var whenGetDataDonationPublicKey: (() -> String)? = null
     var whenGetAnalyticsPlatformPublicKey: (() -> String)? = null
 

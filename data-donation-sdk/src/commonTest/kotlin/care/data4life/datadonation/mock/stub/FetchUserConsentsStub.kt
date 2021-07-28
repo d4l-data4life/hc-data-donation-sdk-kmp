@@ -20,7 +20,7 @@ import care.data4life.datadonation.ConsentDataContract.UserConsent
 import care.data4life.datadonation.internal.domain.usecases.UsecaseContract.FetchUserConsents
 import care.data4life.datadonation.mock.MockContract
 
-class FetchUserConsentsStub :
+internal class FetchUserConsentsStub :
     FetchUserConsents,
     UsecaseStub<FetchUserConsents.Parameter, List<UserConsent>>(),
     MockContract.Stub

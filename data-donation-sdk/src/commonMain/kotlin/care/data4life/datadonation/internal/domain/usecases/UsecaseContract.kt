@@ -20,7 +20,7 @@ import care.data4life.datadonation.ConsentDataContract.ConsentDocument
 import care.data4life.datadonation.ConsentDataContract.UserConsent
 import care.data4life.hl7.fhir.stu3.model.FhirResource
 
-interface UsecaseContract {
+internal interface UsecaseContract {
     interface Usecase<Parameter : Any, ReturnType : Any> {
         suspend fun execute(parameter: Parameter): ReturnType
     }

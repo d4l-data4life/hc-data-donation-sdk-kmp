@@ -32,18 +32,11 @@
 
 package care.data4life.datadonation.internal.data.model
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ConsentMessage(
+internal data class ConsentMessage(
     val consentDocumentKey: String,
     val signatureType: String,
     val payload: String
-)
-
-@Serializable
-data class SignedConsentMessage(
-    @SerialName("consentMessageJSON") val consentMessageJson: String,
-    val signature: String
 )
