@@ -70,7 +70,7 @@ object Version {
     // https://github.com/InsertKoinIO/koin
     const val koin = "3.0.1"
 
-    //
+    // http://www.slf4j.org/
     const val slf4j = "1.7.31"
 
     // Network
