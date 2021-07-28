@@ -14,6 +14,7 @@
  * contact D4L by email to help@data4life.care.
  */
 
+
 buildscript {
     repositories {
         gradlePluginPortal()
@@ -35,6 +36,9 @@ plugins {
     id("scripts.publishing")
     id("scripts.quality-spotless")
     id("scripts.versioning")
+
+    // iOS
+    id("com.chromaticnoise.multiplatform-swiftpackage") version "2.0.3"
 }
 
 allprojects {

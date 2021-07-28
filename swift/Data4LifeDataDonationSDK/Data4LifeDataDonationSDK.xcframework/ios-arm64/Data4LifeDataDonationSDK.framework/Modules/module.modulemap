@@ -1,0 +1,6 @@
+framework module Data4LifeDataDonationSDK {
+    umbrella header "Data4LifeDataDonationSDK.h"
+
+    export *
+    module * { export * }
+}

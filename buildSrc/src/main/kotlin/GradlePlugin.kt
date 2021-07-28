@@ -40,3 +40,6 @@ fun PluginDependenciesSpec.androidApp(): PluginDependencySpec =
 
 fun PluginDependenciesSpec.androidLibrary(): PluginDependencySpec =
     id("com.android.library")
+
+fun PluginDependenciesSpec.swiftPackage(): PluginDependencySpec =
+    id("com.chromaticnoise.multiplatform-swiftpackage")

@@ -20,6 +20,7 @@ plugins {
 
     kotlinMultiplatform()
     kotlinSerialization()
+    swiftPackage()
 
     // Publish
     id("scripts.publishing-config")
@@ -35,8 +36,19 @@ kotlin {
     ios {
         binaries {
             framework {
-                baseName = LibraryConfig.name
+                baseName = LibraryConfig.iOSName
             }
+        }
+    }
+
+    multiplatformSwiftPackage {
+        swiftToolsVersion("5.4")
+        packageName(LibraryConfig.iOSName)
+        zipFileName(LibraryConfig.iOSName)
+        outputDirectory(File(rootDir, "/swift/" + LibraryConfig.iOSName))
+        distributionMode { local() }
+        targetPlatforms {
+            iOS { v("13") }
         }
     }
 
