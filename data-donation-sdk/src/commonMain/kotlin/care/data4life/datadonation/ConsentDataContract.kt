@@ -14,13 +14,12 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.core.model
+package care.data4life.datadonation
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-interface ModelContract {
-
+interface ConsentDataContract {
     @Serializable
     enum class ConsentEvent {
         @SerialName("consent")
@@ -33,18 +32,14 @@ interface ModelContract {
         val key: String
         val version: Int
         val processor: String
-        val description: String
+        val description: String?
         val recipient: String
         val language: String
         val text: String
-        val requiresToken: Boolean
-        val studyId: String
-        val programName: String
-    }
-
-    interface KeyPair {
-        val public: ByteArray
-        val private: ByteArray
+        val allowsAdminConsent: Boolean
+        val isIrrevocable: Boolean
+        val consentEmailTemplateKey: String?
+        val revokeEmailTemplateKey: String?
     }
 
     interface UserConsent {

@@ -19,6 +19,6 @@ package care.data4life.datadonation.mock.stub
 import care.data4life.datadonation.internal.domain.usecases.UsecaseContract
 import care.data4life.hl7.fhir.stu3.model.FhirResource
 
-class RedactSensitiveInformationStub :
+internal class RedactSensitiveInformationStub :
     UsecaseContract.RedactSensitiveInformation,
     UsecaseStub<List<FhirResource>, List<FhirResource>>()

@@ -32,7 +32,7 @@
 
 package care.data4life.datadonation.internal.domain.usecases
 
-import care.data4life.datadonation.mock.DummyData
+import care.data4life.datadonation.mock.fixture.ConsentFixtures.sampleConsentDocument
 import care.data4life.datadonation.mock.stub.repository.ConsentDocumentRepositoryStub
 import care.data4life.sdk.util.test.coroutine.runBlockingTest
 import kotlin.test.Test
@@ -57,16 +57,16 @@ class FetchConsentDocumentsTest {
 
         var capturedVersion: Int? = null
         var capturedLanguage: String? = null
-        var capturedconsentDocumentKey: String? = null
+        var capturedConsentDocumentKey: String? = null
 
-        val consentDocuments = listOf(DummyData.consentDocument)
+        val consentDocuments = listOf(sampleConsentDocument)
 
         val repo = ConsentDocumentRepositoryStub()
 
-        repo.whenFetchConsentDocuments = { delegatedLanguage, delegatedVersion, delegatedconsentDocumentKey ->
+        repo.whenFetchConsentDocuments = { delegatedLanguage, delegatedVersion, delegatedConsentDocumentKey ->
             capturedVersion = delegatedVersion
             capturedLanguage = delegatedLanguage
-            capturedconsentDocumentKey = delegatedconsentDocumentKey
+            capturedConsentDocumentKey = delegatedConsentDocumentKey
             consentDocuments
         }
 
@@ -89,7 +89,7 @@ class FetchConsentDocumentsTest {
             expected = version
         )
         assertEquals(
-            actual = capturedconsentDocumentKey,
+            actual = capturedConsentDocumentKey,
             expected = consentDocumentKey
         )
     }

@@ -32,6 +32,7 @@
 
 package care.data4life.datadonation.core.model
 
+import care.data4life.datadonation.ConsentDataContract
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -39,6 +40,6 @@ data class UserConsent(
     override val consentDocumentKey: String,
     override val consentDocumentVersion: String,
     override val accountId: String, // UUID
-    override val event: ModelContract.ConsentEvent,
-    override val createdAt: String /* Timestamp */
-) : ModelContract.UserConsent
+    override val event: ConsentDataContract.ConsentEvent,
+    override val createdAt: String = "" /* Timestamp */
+) : ConsentDataContract.UserConsent

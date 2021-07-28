@@ -21,7 +21,7 @@ import care.data4life.datadonation.internal.domain.repository.RepositoryContract
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 
-class ConsentDocumentRepositoryStub :
+internal class ConsentDocumentRepositoryStub :
     RepositoryContract.ConsentDocumentRepository,
     MockContract.Stub {
     var whenFetchConsentDocuments: ((language: String?, version: Int?, consentDocumentKey: String) -> List<ConsentDocument>)? = null

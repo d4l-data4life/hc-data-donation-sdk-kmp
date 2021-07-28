@@ -20,7 +20,7 @@ import care.data4life.datadonation.internal.domain.usecases.UsecaseContract
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 
-abstract class UsecaseStub<Parameter : Any, ReturnType : Any> :
+internal abstract class UsecaseStub<Parameter : Any, ReturnType : Any> :
     UsecaseContract.Usecase<Parameter, ReturnType>,
     MockContract.Stub {
     var whenExecute: ((Parameter) -> ReturnType)? = null

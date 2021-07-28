@@ -19,7 +19,7 @@ package care.data4life.datadonation.mock.stub
 import care.data4life.datadonation.internal.domain.usecases.UsecaseContract
 import care.data4life.datadonation.mock.MockContract
 
-class RevokeUserConsentStub :
+internal class RevokeUserConsentStub :
     UsecaseContract.RevokeUserConsent,
     UsecaseStub<UsecaseContract.RevokeUserConsent.Parameter, Unit>(),
     MockContract.Stub

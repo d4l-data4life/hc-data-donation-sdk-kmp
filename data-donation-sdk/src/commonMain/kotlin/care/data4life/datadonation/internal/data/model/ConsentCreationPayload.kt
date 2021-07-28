@@ -35,7 +35,7 @@ package care.data4life.datadonation.internal.data.model
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ConsentCreationPayload(
+internal data class ConsentCreationPayload(
     val consentDocumentKey: String,
     val consentDocumentVersion: Int,
     val consentDate: String

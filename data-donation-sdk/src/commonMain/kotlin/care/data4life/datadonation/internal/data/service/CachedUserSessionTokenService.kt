@@ -41,7 +41,7 @@ import kotlinx.datetime.Instant
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-class CachedUserSessionTokenService(
+internal class CachedUserSessionTokenService(
     private val provider: DataDonationSDKPublicAPI.UserSessionTokenProvider,
     clock: Clock
 ) : ServiceContract.UserSessionTokenService {

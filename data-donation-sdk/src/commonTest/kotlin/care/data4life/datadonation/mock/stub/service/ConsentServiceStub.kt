@@ -23,7 +23,7 @@ import care.data4life.datadonation.internal.data.service.ServiceContract
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 
-class ConsentServiceStub : ServiceContract.ConsentService, MockContract.Stub {
+internal class ConsentServiceStub : ServiceContract.ConsentService, MockContract.Stub {
     var whenCreateUserConsent: ((String, String, Int) -> Unit)? = null
     var whenFetchConsentDocuments: ((String, Int?, String?, String) -> List<ConsentDocument>)? = null
     var whenFetchUserConsents: ((String, Boolean?, String?) -> List<UserConsent>)? = null
