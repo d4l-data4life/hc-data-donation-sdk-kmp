@@ -75,8 +75,8 @@ See link:{link-repository}/compare/v0.0.1...v0.1.0[0.1.0]
 
 === Fixed
 
-* encryption NSData was not able to convert to ByteArray (iOS).
-* tests were not able to run properly in coroutine context (iOS).
+* Encryption NSData was not able to convert to ByteArray (iOS).
+* Tests were not able to run properly in coroutine context (iOS).
 * Dependencies are now resolved correctly by Koin.
 * SessionTokenService broke freezing (iOS).
 
@@ -86,7 +86,7 @@ See link:{link-repository}/compare/v0.0.1...v0.1.0[0.1.0]
 * Kotlin Coroutines 1.4.2 -> 1.4.3
 * Ktor 1.4.2 -> 1.5.4.
 * JUnit 4.13 -> 4.13.2
-* _**BREAKING**_ sdkUtil 1.7.0 -> 1.9.0
+* _**BREAKING**_ sdk-util 1.7.0 -> 1.9.0
 * _**BREAKING**_ fhir-sdk-kmp 0.1.0 -> 0.2.0
 
 == link:{link-repository}/releases/tag/v0.0.1[0.0.1]
