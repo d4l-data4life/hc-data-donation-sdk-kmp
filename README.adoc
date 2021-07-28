@@ -1,22 +1,185 @@
+= Data4Life Data-Donation SDK
+:library_version: 0.1.0
+:doctype: article
+:!showtitle:
+:toc: macro
+:toclevels: 2
+:toc-title:
+:icons: font
+:imagesdir: assets/images
+:link-repository: https://github.com/gesundheitscloud/data-donation-sdk-native
+ifdef::env-github[]
+:warning-caption: :warning:
+:caution-caption: :fire:
+:important-caption: :exclamation:
+:note-caption: :paperclip:
+:tip-caption: :bulb:
+endif::[]
 
-== Requirements
+++++
+<div align="center">
+    <p><!-- PROJECT LOGO -->
+        <a><img src="assets/images/d4l-logo.svg" width="150"/></a>
+    </p>
+    <p><!-- PROJECT TITLE -->
+        <h3>Data4Life's Data-Donation SDK for Android and iOS</h3>
+    </p>
+    <p><!-- PROJECT DESCRIPTION -->
+        A crossplatfrom SDK for Data-Donation on Android and iOS.
+    </p>
+    <p><!-- PROJECT DOCUMENTATION -->
+        <a href="README.adoc"><strong>Explore the docs »</strong></a>
+    </p>
+    <p><!-- PROJECT ISSUES/FEATURES -->
+        <a href="https://github.com/gesundheitscloud/data-donation-sdk-native/issues">Report Bug</a>
+        ·
+        <a href="https://github.com/gesundheitscloud/data-donation-sdk-native/issues">Request Feature</a>
+    </p>
+    <p><!-- PROJECT BADGES see badges.adoc how to change them -->
+        <a href="https://github.com/d4l-data4life/hc-readme-template/releases">
+            <img src="assets/images/badge-version-latest.svg" alt="Latest version"/>
+        </a>
+        <a href="https://github.com/gesundheitscloud/data-donation-sdk-native/actions">
+            <img src="https://github.com/gesundheitscloud/data-donation-sdk-native/actions/workflows/d4l-ci-latest-version.yml/badge.svg" alt="Build Status"/>
+        </a>
+        <a>
+            <img src="assets/images/badge-platform-support.svg" alt="Platform"/>
+        </a>
+        <a href="LICENSE">
+            <img src="assets/images/badge-license.svg" alt="License"/>
+        </a>
+    </p>
+</div>
+++++
 
-* Android Studio 4.2.2
-* Java 8
+[discrete]
+=== Table Of Contents
+toc::[]
 
-== Setup
+== About The Project
 
-The data-donation-sdk KMP project requires the iOSCryptoDD Xcode project to work.
-The iOSCryptoDD is a wrapper to use the CryptoSwift library and the project only implements the necessary encrypt/decrypt function for the AESGCM encryption which is used in the KMP project.
-The iOSCryptoDD is added as a gradle module to pre-build the Xcode project before the KMP one, its done by the `iOSCryptoDD/build.gradle.kts`.
-It's wired to the KMP lib using a native interop bridge, see: `data-donation-sdk/src/nativeInterop/cinterop/iOSCryptoDD.def` & `data-donation-sdk/build.gradle.kts`
+This is the Android and iOS DataDonation-SDK of Data4Life.The SDK encapsulates the backend functionality of the Data4Life Analytics Platform (ALP) and enables end-to-end encryption for donating health data. For more information about the platform, visit our website www.d4l.io.
 
-First time usage: before be able to use the project the first time you should trigger the ios build to avoid problems: `./gradlew iOSCryptoDD:buildIphoneos iOSCryptoDD:buildIphonesimulator`
+=== Dependencies
 
-_Note:_ Altho' everything is automatic sometimes when changing the `iOSCryptoDD` project it is required to build the cinterop headers with `./gradlew cinteropIOSCryptoDDIosArm64 cinteropIOSCryptoDDIosX64`.
+The SDK has the following dependencies:
 
-== Release
+* link:http://www.slf4j.org/[slf4j] (Android only)
+* link:https://github.com/Kotlin/kotlinx.coroutines[Kotlin Coroutines]
+* link:https://ktor.io/[Ktor]
+* link:https://github.com/Kotlin/kotlinx.serialization[Kotlin Serialization]
+* link:https://github.com/InsertKoinIO/koin[Koin]
+* link:https://github.com/Kotlin/kotlinx-datetime[kotlinx-datetime]
+* link:https://github.com/touchlab/Stately[Stately Isolate]
 
-We are using a custom maven publish plugin to distribute the library using the Github Package repo.
-To release a new release version just push a new tag with the format `v[0-9]+.[0-9]+.[0-9]+.`.
-Every feature branch is automatically released to the `https://github.com/d4l-data4life/maven-features` repository.
+== Installation
+
+=== Consume GitHub Packages
+
+We use GitHub Packages to distribute the SDK. In order to consume our dependencies you need to generate a GitHub Personal Access Token. Please follow the how to link:https://docs.github.com/en/packages/learn-github-packages/introduction-to-github-packages#authenticating-to-github-packages[authenticate to GitHub Packages, window="_blank"].
+
+NOTICE:: You need to have _read_ access to this repository and generate a https://github.com/settings/tokens/new/[personal access token] with `repo` and `read:packages` scope.
+
+==== Token
+
+The token needs to be made available.
+
+. Add `gpr.user = {GitHub username}` and `gpr.key = {GitHub Personal Access Token}` to your global Gradle properties `~/.gradle/gradle.properties`
+
+    gpr.user=github-username
+    gpr.key=github-token
+
+. Or add following environment variables `PACKAGE_REGISTRY_USERNAME={GitHub username}` and `PACKAGE_REGISTRY_TOKEN={GitHub Personal Access Token}`
+
+==== Setup Maven Repository
+
+Add the following maven repository configuration to your root build.gradle:
+
+[source, Gradle]
+----
+    allprojects {
+        repositories {
+            ...
+            maven {
+                url = uri("https://maven.pkg.github.com/d4l-data4life/hc-util-sdk-kmp")
+                credentials {
+                    username = project.findProperty("gpr.user") as String? ?: System.getenv("PACKAGE_REGISTRY_USERNAME")
+                    password = project.findProperty("gpr.key") as String? ?: System.getenv("PACKAGE_REGISTRY_TOKEN")
+                }
+            }
+        }
+    }
+----
+
+==== Common
+
+----
+dependencies {
+    implementation("care.data4life.d4l-data-donation-sdk-kmp:data-donation-sdk:$version") {
+        exclude group: 'care.data4life.hc-util-sdk-kmp', module: 'util'
+    }
+}
+----
+
+==== Android
+
+----
+dependencies {
+    implementation("care.data4life.d4l-data-donation-sdk-kmp:data-donation-sdk:$version") {
+        exclude group: 'care.data4life.hc-util-sdk-kmp', module: 'util'
+    }
+}
+----
+
+To ensure Java 8 compatibility, add compile options to app `build.gradle`:
+
+[source,gradle]
+----
+android {
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
+}
+----
+
+==== iOS
+
+Will be added soon.
+
+== Building and Working with the SDK
+
+There are several requirements for building the SDK.
+
+=== Requirements
+
+* Android 6.0 (API 23) to Android 11 (API 30)
+* Kotlin 1.4.32
+* Java 8 link:https://developer.android.com/studio/write/java8-support[Limitations] link:https://jakewharton.com/d8-library-desugaring/[Desugaring]
+* Gradle 6.8.3
+* link:https://developer.android.com/studio#downloads[Android Studio 4.2.2]
+* Android Emulator 23 - 30
+
+=== Built With
+
+* link:https://kotlinlang.org/docs/reference/mpp-intro.html[Kotlin Multiplatform]
+
+== Roadmap
+
+Will be added soon.
+
+== Contributing
+
+You want to help or share a proposal? You have a specific problem? Then open an issue.
+
+=== Contribution Guide
+
+Will be added soon.
+
+=== Development Guide
+
+Will be added soon.
+
+== Copyright and License
+
+Copyright (c) 2021 D4L data4life gGmbH / All rights reserved. Please refer to our link:LICENSE[License] for further details.
