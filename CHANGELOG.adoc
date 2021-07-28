@@ -64,7 +64,7 @@ See link:{link-repository}/compare/v0.0.1...v0.1.0[0.1.0]
 * _**BREAKING**_ Contract -> DataDonationSDKPublicAPI.
 * _**BREAKING**_ ClientFactory#getInstance does not use a ConfigurationBundle, instead it expects parameters one by one.
 * _**BREAKING**_ UserSessionTokenProvider#getUserSessionToken does not expect a particular Object any longer, it expects singular Closures.
-* _**BREAKING**_ Public DataModel had been adjusted to the lasted BackendAPI
+* _**BREAKING**_ Public DataModel is adjusted to the last BackendAPI version
 
 === Removed
 
