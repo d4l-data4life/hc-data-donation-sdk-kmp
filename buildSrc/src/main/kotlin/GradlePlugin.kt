@@ -20,6 +20,7 @@ import org.gradle.plugin.use.PluginDependencySpec
 object GradlePlugin {
     const val android = "com.android.tools.build:gradle:${Version.GradlePlugin.android}"
     const val kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Version.GradlePlugin.kotlin}"
+    const val swiftPackage = "com.chromaticnoise.multiplatform-swiftpackage:${Version.GradlePlugin.swiftPackage}"
 }
 
 fun PluginDependenciesSpec.kotlinMultiplatform(apply: Boolean = true): PluginDependencySpec =
@@ -40,3 +41,6 @@ fun PluginDependenciesSpec.androidApp(): PluginDependencySpec =
 
 fun PluginDependenciesSpec.androidLibrary(): PluginDependencySpec =
     id("com.android.library")
+
+fun PluginDependenciesSpec.swiftPackage(apply: Boolean = true): PluginDependencySpec =
+    id("com.chromaticnoise.multiplatform-swiftpackage").version(Version.GradlePlugin.swiftPackage).apply(apply)

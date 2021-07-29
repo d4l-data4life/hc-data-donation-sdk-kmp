@@ -23,6 +23,10 @@ object Version {
         // Android
         // https://developer.android.com/studio
         const val android = "4.2.2"
+
+        // Swift Package
+        // https://github.com/ge-org/multiplatform-swiftpackage
+        const val swiftPackage = "2.0.3"
     }
 
     // Kotlin

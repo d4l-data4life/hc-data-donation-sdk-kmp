@@ -15,11 +15,14 @@
  */
 
 plugins {
+    kotlinMultiplatform()
+    kotlinSerialization()
+
     // Android
     androidLibrary()
 
-    kotlinMultiplatform()
-    kotlinSerialization()
+    // Swift
+    swiftPackage()
 
     // Publish
     id("scripts.publishing-config")
@@ -143,6 +146,17 @@ kotlin {
             dependencies {
                 dependsOn(commonTest.get())
             }
+        }
+    }
+
+    multiplatformSwiftPackage {
+        swiftToolsVersion("5.4")
+        packageName("DataDonationSDK")
+        zipFileName("DataDonationSDK")
+        outputDirectory(File(rootDir, "/app-ios/DataDonationSDKFramework"))
+        distributionMode { local() }
+        targetPlatforms {
+            iOS { v("13") }
         }
     }
 }
