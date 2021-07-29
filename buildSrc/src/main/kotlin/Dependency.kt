@@ -20,9 +20,8 @@ import org.gradle.kotlin.dsl.exclude
 object Dependency {
 
     object Kotlin {
-        val stdLib = "org.jetbrains.kotlin:kotlin-stdlib:${Version.kotlin}"
-        val reflect = "org.jetbrains.kotlin:kotlin-reflect:${Version.kotlin}"
-        val serialization = "org.jetbrains.kotlin:kotlin-serialization:${Version.kotlin}"
+        const val stdLib = "org.jetbrains.kotlin:kotlin-stdlib:${Version.kotlin}"
+        const val serialization = "org.jetbrains.kotlin:kotlin-serialization:${Version.kotlin}"
     }
 
     val jvm = JVM

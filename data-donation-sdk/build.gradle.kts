@@ -30,6 +30,20 @@ plugins {
 
 group = LibraryConfig.group
 
+val swiftPackageName = "Data4LifeDataDonationSDK"
+val swiftModuleName = "d4l_data_donation_sdk_kmp" to "Data4LifeDataDonationSDK"
+val swiftBundleIdentifier = "care.data4life.datadonation.d4l_data_donation_sdk_kmp" to "care.data4life.sdk.d4l-data-donation-sdk"
+val swiftTargetDirectory = File(rootDir, "/ios-framework/Data4LifeDataDonationSDK")
+
+val uselessSwiftProtocols = mapOf(
+    "ConsentDataContract" to "D4l_data_donation_sdk_kmpConsentDataContract",
+    "DataDonationSDKPublicAPI" to "D4l_data_donation_sdk_kmpDataDonationSDKPublicAPI"
+)
+val swiftNameMapping = mapOf(
+    "DataDonationSDKPublicAPIUserSessionTokenProvider" to "UserSessionTokenProvider"
+)
+
+
 kotlin {
     android("android") {
         publishLibraryVariants("release", "debug")
@@ -70,11 +84,8 @@ kotlin {
                 implementation(Dependency.multiplatform.ktor.commonSerialization)
 
                 implementation(Dependency.multiplatform.serialization.common)
-                implementation(Dependency.multiplatform.serialization.protobuf)
 
                 implementation(Dependency.multiplatform.dateTime)
-
-                implementation(Dependency.multiplatform.uuid)
 
                 // D4L
                 implementation(Dependency.d4l.fhir)
@@ -151,9 +162,9 @@ kotlin {
 
     multiplatformSwiftPackage {
         swiftToolsVersion("5.4")
-        packageName("DataDonationSDK")
-        zipFileName("DataDonationSDK")
-        outputDirectory(File(rootDir, "/app-ios/DataDonationSDKFramework"))
+        packageName(swiftPackageName)
+        zipFileName(swiftPackageName)
+        outputDirectory(swiftTargetDirectory)
         distributionMode { local() }
         targetPlatforms {
             iOS { v("13") }
@@ -226,3 +237,79 @@ tasks.withType(org.jetbrains.kotlin.gradle.dsl.KotlinCompile::class.java) {
         this.dependsOn(provideTestConfig)
     }
 }
+
+
+project.afterEvaluate {
+    val swiftPackageCleaner by tasks.register("cleanXCFramework") {
+        group = "Multiplatform-swift-package"
+        description = "Custom cleaner tasks to avoid empty protocols"
+
+        dependsOn(tasks.getByName("createXCFramework"))
+        doFirst {
+            // File operation
+            project.fileTree(swiftTargetDirectory).forEach { file ->
+                if (file.absolutePath.endsWith(".h")) {
+                    var source = file.readText(Charsets.UTF_8)
+                    uselessSwiftProtocols.forEach { (swiftName, objectiveCInterfaceName) ->
+                        source = source.replace(
+                            "__attribute__((swift_name(\"$swiftName\")))\n" +
+                                "@protocol $objectiveCInterfaceName\n" +
+                                "@required\n" +
+                                "@end;\n",
+                            "// removed $swiftName\n"
+                        )
+                    }
+
+                    swiftNameMapping.forEach { (originalName, newName) ->
+                        source = source.replace(
+                            "__attribute__((swift_name(\"$originalName\")))",
+                            "__attribute__((swift_name(\"$newName\")))"
+                        )
+                    }
+                    file.writeText(source, Charsets.UTF_8)
+                }
+
+                if (file.absolutePath.endsWith(".modulemap") || file.absolutePath.endsWith(".plist")) {
+                    val source = file.readText(Charsets.UTF_8)
+                        .replace(swiftBundleIdentifier.first, swiftBundleIdentifier.second)
+                        .replace(swiftModuleName.first, swiftModuleName.second)
+
+                    file.writeText(source, Charsets.UTF_8)
+                }
+
+                if (file.absolutePath.endsWith("${swiftModuleName.first}.h")) {
+                    val newFile = File(
+                        file.absolutePath.substringBeforeLast("${swiftModuleName.first}.h") +
+                            "${swiftModuleName.second}.h"
+                    )
+                    file.copyTo(newFile, true)
+                    file.delete()
+                }
+
+                if (file.absolutePath.endsWith(swiftModuleName.first)) {
+                    val newFile = File(
+                        file.absolutePath.substringBeforeLast(swiftModuleName.first) +
+                            swiftModuleName.second
+                    )
+                    file.copyTo(newFile, true)
+                    file.delete()
+                }
+            }
+
+            // Dir operations
+            project.fileTree(swiftTargetDirectory).forEach { folder ->
+                if (folder.absolutePath.endsWith(swiftModuleName.second)) {
+                    val newFolder = File(
+                        folder.parentFile.absolutePath.replace(swiftModuleName.first, swiftModuleName.second)
+                    )
+                    folder.parentFile.renameTo(newFolder)
+                }
+            }
+        }
+    }
+
+    tasks.getByName("createSwiftPackage") {
+        dependsOn(swiftPackageCleaner)
+    }
+}
+
