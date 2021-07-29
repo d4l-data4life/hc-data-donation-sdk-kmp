@@ -9,6 +9,8 @@ gen/
 *iml
 .idea/*
 .idea/compiler.xml
+swift/Data4LifeSDK.xcconfig
+swift/Data4LifeDataDonationSDK
 
 # IDEA/Android Studio includes
 !.idea/vcs.xml
@@ -58,4 +60,3 @@ Pods/
 
 #HELPER
 *.LOG
-
