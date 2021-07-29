@@ -16,7 +16,7 @@ final class Data4LifeSDKService {
     func configure(with configuration: Data4LifeSDKConfiguration) {
         Data4LifeClient.configureWith(clientId: configuration.clientIdentifier,
                                       clientSecret: configuration.clientSecret,
-                                      redirectURLString: configuration.redirectSchemeUrlString,
+                                      redirectURLString: configuration.redirectSchemeUrlString + "://oauth/",
                                       environment: configuration.environment)
         self.client = Data4LifeClient.default
     }

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		367CC74226B1A14100660960 /* SplashRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367CC74126B1A14100660960 /* SplashRouter.swift */; };
 		36874C4A26B1630B00F03527 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36874C4926B1630B00F03527 /* AppDelegate.swift */; };
 		36874C4C26B1630B00F03527 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36874C4B26B1630B00F03527 /* SceneDelegate.swift */; };
 		36874C4E26B1630B00F03527 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36874C4D26B1630B00F03527 /* LoginViewController.swift */; };
@@ -24,6 +25,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		367CC74026B19D2D00660960 /* Data4LifeSDK.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Data4LifeSDK.xcconfig; sourceTree = "<group>"; };
+		367CC74126B1A14100660960 /* SplashRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashRouter.swift; sourceTree = "<group>"; };
 		36874C4626B1630B00F03527 /* DataDonationExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DataDonationExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		36874C4926B1630B00F03527 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		36874C4B26B1630B00F03527 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -57,6 +60,7 @@
 		36874C3D26B1630B00F03527 = {
 			isa = PBXGroup;
 			children = (
+				367CC74026B19D2D00660960 /* Data4LifeSDK.xcconfig */,
 				36874C6326B187EE00F03527 /* Data4LifeDataDonationSDK */,
 				36874C4826B1630B00F03527 /* DataDonationExample */,
 				36874C4726B1630B00F03527 /* Products */,
@@ -109,6 +113,7 @@
 				36874C6D26B18B3D00F03527 /* SplashViewController.swift */,
 				36874C6F26B18F5C00F03527 /* SplashInteractor.swift */,
 				36874C7626B1940000F03527 /* SplashPresenter.swift */,
+				367CC74126B1A14100660960 /* SplashRouter.swift */,
 			);
 			path = SplashView;
 			sourceTree = "<group>";
@@ -201,6 +206,7 @@
 			files = (
 				36874C6626B18A6300F03527 /* LoginInteractor.swift in Sources */,
 				36874C7026B18F5C00F03527 /* SplashInteractor.swift in Sources */,
+				367CC74226B1A14100660960 /* SplashRouter.swift in Sources */,
 				36874C7526B1914A00F03527 /* Data4LifeSDKConfiguration.swift in Sources */,
 				36874C4E26B1630B00F03527 /* LoginViewController.swift in Sources */,
 				36874C4A26B1630B00F03527 /* AppDelegate.swift in Sources */,
@@ -227,6 +233,7 @@
 /* Begin XCBuildConfiguration section */
 		36874C5826B1630C00F03527 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 367CC74026B19D2D00660960 /* Data4LifeSDK.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -288,6 +295,7 @@
 		};
 		36874C5926B1630C00F03527 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 367CC74026B19D2D00660960 /* Data4LifeSDK.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -343,6 +351,7 @@
 		};
 		36874C5B26B1630C00F03527 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 367CC74026B19D2D00660960 /* Data4LifeSDK.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -363,6 +372,7 @@
 		};
 		36874C5C26B1630C00F03527 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 367CC74026B19D2D00660960 /* Data4LifeSDK.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;

@@ -32,8 +32,8 @@ extension SplashInteractor {
             switch result {
             case .success:
                 self?.presenter.handleNavigation(isLoggedIn: true)
-            case .failure:
-                self?.presenter.presentLoginError()
+            case .failure(let error):
+                self?.presenter.presentLoginError(error)
             }
         }
     }

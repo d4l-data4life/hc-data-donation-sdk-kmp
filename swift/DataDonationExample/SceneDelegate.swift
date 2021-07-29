@@ -15,15 +15,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         guard let windowScene = (scene as? UIWindowScene) else { return }
 
-        let window = UIWindow(windowScene: windowScene)
-        let presenter = SplashPresenter()
-        let interactor = SplashInteractor(presenter: presenter, data4LifeSDKService: Data4LifeSDKService())
-        let viewController = SplashViewController(interactor: interactor)
-        presenter.view = viewController
-        let navigationController = UINavigationController(rootViewController: viewController)
-        window.rootViewController = navigationController
-        self.window = window
-        window.makeKeyAndVisible()
+        window = UIWindow(windowScene: windowScene)
+        window?.rootViewController = SplashRouter.assemble()
+        window?.makeKeyAndVisible()
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

@@ -20,9 +20,10 @@ final class SplashPresenter {
         }
     }
 
-    func presentLoginError() {
-        let errorMessage = "error"
-        let alertController = UIAlertController(title: "Error", message: errorMessage, preferredStyle: .alert)
+    func presentLoginError(_ error: Error) {
+        let errorMessage = error.localizedDescription
+        let alertController = UIAlertController(title: "Login Error", message: errorMessage, preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
         view?.present(alertController, animated: true, completion: nil)
     }
 }

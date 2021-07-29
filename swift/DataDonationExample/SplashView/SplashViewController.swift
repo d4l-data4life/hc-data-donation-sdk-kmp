@@ -13,7 +13,7 @@ final class SplashViewController: UIViewController {
     private let interactor: SplashInteractor
 
     private lazy var mainStackView: UIStackView = {
-        let verticalStackView = UIStackView(arrangedSubviews: [UIView(), logo, loadingIndicator, UIView()])
+        let verticalStackView = UIStackView(arrangedSubviews: [UIView(), loadingIndicator, UIView()])
         verticalStackView.axis = .vertical
         verticalStackView.translatesAutoresizingMaskIntoConstraints = false
         return verticalStackView
@@ -26,14 +26,7 @@ final class SplashViewController: UIViewController {
         return view
     }()
 
-    private lazy var logo: UIImageView = {
-        let view = UIImageView(image: UIImage(named: "Logo"))
-        view.contentMode = .scaleAspectFit
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-
-    init(interactor: SplashInteractor) {
+    init(interactor: SplashInteractor, router: SplashRouter) {
         self.interactor = interactor
         super.init(nibName: nil, bundle: nil)
     }
@@ -55,8 +48,7 @@ extension SplashViewController {
 
         view.backgroundColor = .white
         NSLayoutConstraint.activate([
-            logo.heightAnchor.constraint(equalToConstant: 40),
-            loadingIndicator.heightAnchor.constraint(equalToConstant: 40),
+            loadingIndicator.heightAnchor.constraint(equalToConstant: 60),
             mainStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             mainStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             mainStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
