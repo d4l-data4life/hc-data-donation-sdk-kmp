@@ -15,17 +15,14 @@
  */
 
 plugins {
-    kotlinMultiplatform()
-    kotlinSerialization()
-
     // Android
     androidLibrary()
 
-    // Swift
-    swiftPackage()
+    kotlinMultiplatform()
+    kotlinSerialization()
 
-    // Publish
-    id("scripts.publishing-config")
+    // SwiftPackage
+    swiftPackage(version = "2.0.3")
 }
 
 group = LibraryConfig.group
@@ -38,8 +35,21 @@ kotlin {
     ios {
         binaries {
             framework {
-                baseName = LibraryConfig.name
+                baseName = LibraryConfig.iOS.packageName
             }
+        }
+    }
+
+    multiplatformSwiftPackage {
+        swiftToolsVersion(LibraryConfig.iOS.toolVersion)
+        packageName(LibraryConfig.iOS.packageName)
+        zipFileName(LibraryConfig.iOS.packageName)
+        outputDirectory(
+            File(rootDir, "${File.separator}swift${File.separator}${LibraryConfig.iOS.packageName}")
+        )
+        distributionMode { local() }
+        targetPlatforms {
+            iOS { v(LibraryConfig.iOS.targetVersion) }
         }
     }
 
@@ -74,8 +84,6 @@ kotlin {
 
                 implementation(Dependency.multiplatform.dateTime)
 
-                implementation(Dependency.multiplatform.uuid)
-
                 // D4L
                 implementation(Dependency.d4l.fhir)
                 implementation(Dependency.d4l.sdkUtil)
@@ -100,29 +108,20 @@ kotlin {
 
         val androidMain by getting {
             dependencies {
-                //Kotlin
-                implementation(Dependency.multiplatform.kotlin.stdlibAndroid)
-                implementation(Dependency.multiplatform.coroutines.android)
-
                 //DI
-                implementation(Dependency.multiplatform.koin.android)
                 implementation(Dependency.jvm.slf4jNop)
                 implementation(Dependency.jvm.slf4jApi)
 
-                //
-                implementation(Dependency.android.threeTenABP)
+                //Ktor
                 implementation(Dependency.multiplatform.ktor.androidCore)
-                implementation(Dependency.multiplatform.ktor.androidSerialization)
-                implementation(Dependency.android.bouncyCastle)
-                implementation(Dependency.multiplatform.serialization.android)
-                implementation(Dependency.multiplatform.serialization.protobuf)
             }
         }
         val androidTest by getting {
             dependencies {
+                dependsOn(commonTest.get())
+
                 implementation(Dependency.multiplatform.kotlin.testJvm)
                 implementation(Dependency.multiplatform.kotlin.testJvmJunit)
-                dependsOn(commonTest.get())
             }
         }
 
@@ -134,7 +133,6 @@ kotlin {
                     }
                 }
                 implementation(Dependency.multiplatform.serialization.common)
-                implementation(Dependency.multiplatform.serialization.protobuf)
                 implementation(Dependency.multiplatform.ktor.iosCore)
                 implementation(Dependency.multiplatform.ktor.ios)
 
@@ -146,17 +144,6 @@ kotlin {
             dependencies {
                 dependsOn(commonTest.get())
             }
-        }
-    }
-
-    multiplatformSwiftPackage {
-        swiftToolsVersion("5.4")
-        packageName("DataDonationSDK")
-        zipFileName("DataDonationSDK")
-        outputDirectory(File(rootDir, "/app-ios/DataDonationSDKFramework"))
-        distributionMode { local() }
-        targetPlatforms {
-            iOS { v("13") }
         }
     }
 }
@@ -224,5 +211,53 @@ val provideTestConfig: Task by tasks.creating {
 tasks.withType(org.jetbrains.kotlin.gradle.dsl.KotlinCompile::class.java) {
     if (this.name.contains("Test")) {
         this.dependsOn(provideTestConfig)
+    }
+}
+
+val uselessSwiftProtocols = mapOf(
+    "ConsentDataContract" to "${LibraryConfig.iOS.packageName}ConsentDataContract",
+    "DataDonationSDKPublicAPI" to "${LibraryConfig.iOS.packageName}DataDonationSDKPublicAPI"
+)
+val swiftNameMapping = mapOf(
+    "DataDonationSDKPublicAPIUserSessionTokenProvider" to "UserSessionTokenProvider"
+)
+
+project.afterEvaluate {
+    val swiftTargetDirectory = File(rootDir, "${File.separator}swift${File.separator}${LibraryConfig.iOS.packageName}")
+
+    val swiftPackageCleaner by tasks.register("cleanXCFramework") {
+        group = "Multiplatform-swift-package"
+        description = "Custom cleaner tasks to avoid empty protocols and to provide better names for Swift"
+
+        dependsOn(tasks.getByName("createXCFramework"))
+        doFirst {
+            // File operation
+            project.fileTree(swiftTargetDirectory).forEach { file ->
+                if (file.absolutePath.endsWith(".h")) {
+                    var source = file.readText(Charsets.UTF_8)
+                    uselessSwiftProtocols.forEach { (swiftName, objectiveCInterfaceName) ->
+                        source = source.replace(
+                            "__attribute__((swift_name(\"$swiftName\")))\n" +
+                                "@protocol $objectiveCInterfaceName\n" +
+                                "@required\n" +
+                                "@end;",
+                            "// removed $swiftName"
+                        )
+                    }
+
+                    swiftNameMapping.forEach { (originalName, newName) ->
+                        source = source.replace(
+                            "__attribute__((swift_name(\"$originalName\")))",
+                            "__attribute__((swift_name(\"$newName\")))"
+                        )
+                    }
+                    file.writeText(source, Charsets.UTF_8)
+                }
+            }
+        }
+    }
+
+    tasks.getByName("createSwiftPackage") {
+        dependsOn(swiftPackageCleaner)
     }
 }

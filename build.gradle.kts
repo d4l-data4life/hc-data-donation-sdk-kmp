@@ -29,7 +29,6 @@ buildscript {
 plugins {
     kotlinMultiplatform(false)
     kotlinSerialization(false)
-    swiftPackage(false)
 
     id("scripts.dependency-updates")
     id("scripts.download-scripts")

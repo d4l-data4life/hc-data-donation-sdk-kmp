@@ -23,10 +23,6 @@ object Version {
         // Android
         // https://developer.android.com/studio
         const val android = "4.2.2"
-
-        // Swift Package
-        // https://github.com/ge-org/multiplatform-swiftpackage
-        const val swiftPackage = "2.0.3"
     }
 
     // Kotlin
@@ -35,7 +31,6 @@ object Version {
 
     // https://github.com/Kotlin/kotlinx.coroutines
     const val kotlinCoroutines = "1.4.3-native-mt"
-    const val kotlinCoroutinesIO = "0.1.16"
 
     // https://github.com/touchlab/Stately
     const val stately = "1.1.6"
