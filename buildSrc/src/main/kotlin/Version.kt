@@ -87,7 +87,7 @@ object Version {
     const val fhir = "0.2.0"
 
     // https://github.com/d4l-data4life/hc-util-sdk-kmp
-    const val sdkUtil = "1.9.0"
+    const val sdkUtil = "1.9.0-add-default-scope-SNAPSHOT"
 
     // Junit Test
     const val testJUnit = "4.13.2"

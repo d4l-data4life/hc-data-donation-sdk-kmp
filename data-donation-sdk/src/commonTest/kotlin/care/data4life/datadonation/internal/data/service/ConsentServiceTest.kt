@@ -375,7 +375,7 @@ class ConsentServiceTest {
         assertEquals(
             actual = requestTemplate.lastInstance!!.delegatedParameter,
             expected = mapOf(
-                USER_CONSENT_KEY to consentDocumentKey,
+                "key" to consentDocumentKey,
                 VERSION to version,
                 LANGUAGE to language
             )

@@ -39,6 +39,8 @@ import care.data4life.datadonation.internal.data.service.networking.resolveNetwo
 import care.data4life.datadonation.internal.data.service.resolveServiceModule
 import care.data4life.datadonation.internal.domain.repository.resolveRepositoryModule
 import care.data4life.datadonation.internal.domain.usecases.*
+import care.data4life.sdk.util.coroutine.CoroutineHelper
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.datetime.Clock
 import org.koin.core.KoinApplication
 import org.koin.core.module.Module
@@ -75,6 +77,10 @@ internal fun resolveRootModule(
 
         single<DataDonationSDKPublicAPI.UserSessionTokenProvider> {
             userSessionTokenProvider
+        }
+
+        single<CoroutineScope> {
+            CoroutineHelper.createCoroutineScope("DataDonationBackgroundThreadScope")
         }
     }
 }

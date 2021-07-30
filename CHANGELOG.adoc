@@ -19,8 +19,6 @@ All notable changes to this project will be documented in this file.
 The format is based on http://keepachangelog.com/en/1.0.0/[Keep a Changelog]
 and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioning].
 
-Template could be found here: link:https://github.com/d4l-data4life/hc-readme-template/blob/main/TEMPLATE_CHANGELOG.adoc[CHANGELOG]
-
 [discrete]
 ==== Versions
 toc::[]
@@ -28,6 +26,29 @@ toc::[]
 == link:{link-repository}/releases/latest[Unreleased]
 
 See link:{link-repository}/compare/v0.0.1...main[changeset]
+
+=== Added
+
+=== Changed
+
+=== Deprecated
+
+=== Removed
+
+=== Fixed
+
+* fetchUserDocuments used wrong url parameter.
+
+=== Security
+
+=== Bumped
+
+=== Migration
+
+
+== link:{link-repository}/releases/tag/v0.1.0[0.1.0]
+
+See link:{link-repository}/compare/v0.0.1...v0.1.0[0.1.0]
 
 === Added
 
@@ -45,8 +66,7 @@ See link:{link-repository}/compare/v0.0.1...main[changeset]
 * _**BREAKING**_ Contract -> DataDonationSDKPublicAPI.
 * _**BREAKING**_ ClientFactory#getInstance does not use a ConfigurationBundle, instead it expects parameters one by one.
 * _**BREAKING**_ UserSessionTokenProvider#getUserSessionToken does not expect a particular Object any longer, it expects singular Closures.
-
-=== Deprecated
+* _**BREAKING**_ Public DataModel is adjusted to the last BackendAPI version
 
 === Removed
 
@@ -57,12 +77,10 @@ See link:{link-repository}/compare/v0.0.1...main[changeset]
 
 === Fixed
 
-* encryption NSData was not able to convert to ByteArray (iOS).
-* tests were not able to run properly in coroutine context (iOS).
+* Encryption NSData was not able to convert to ByteArray (iOS).
+* Tests were not able to run properly in coroutine context (iOS).
 * Dependencies are now resolved correctly by Koin.
 * SessionTokenService broke freezing (iOS).
-
-=== Security
 
 === Bumped
 
@@ -70,10 +88,8 @@ See link:{link-repository}/compare/v0.0.1...main[changeset]
 * Kotlin Coroutines 1.4.2 -> 1.4.3
 * Ktor 1.4.2 -> 1.5.4.
 * JUnit 4.13 -> 4.13.2
-* _**BREAKING**_ sdkUtil 1.7.0 -> 1.9.0
+* _**BREAKING**_ sdk-util 1.7.0 -> 1.9.0
 * _**BREAKING**_ fhir-sdk-kmp 0.1.0 -> 0.2.0
-
-=== Migration
 
 == link:{link-repository}/releases/tag/v0.0.1[0.0.1]
 
