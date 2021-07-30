@@ -37,6 +37,8 @@ See link:{link-repository}/compare/v0.0.1...main[changeset]
 
 === Fixed
 
+* fetchUserDocuments used wrong url parameter.
+
 === Security
 
 === Bumped
