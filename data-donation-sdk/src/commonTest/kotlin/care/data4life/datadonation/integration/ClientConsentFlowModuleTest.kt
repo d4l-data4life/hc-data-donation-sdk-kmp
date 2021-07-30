@@ -88,7 +88,7 @@ class ClientConsentFlowModuleTest {
             // Then
             assertEquals(
                 actual = request.url.fullPath,
-                expected = "/consent/api/v1/consentDocuments?consentDocumentKey=$consentDocumentKey&version=$version&language=$language"
+                expected = "/consent/api/v1/consentDocuments?key=$consentDocumentKey&version=$version&language=$language"
             )
             assertEquals(
                 actual = request.headers,
