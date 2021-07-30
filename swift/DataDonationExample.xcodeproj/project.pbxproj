@@ -8,13 +8,15 @@
 
 /* Begin PBXBuildFile section */
 		367CC74226B1A14100660960 /* SplashRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367CC74126B1A14100660960 /* SplashRouter.swift */; };
+		367CC74426B2EB6100660960 /* ServiceContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367CC74326B2EB6100660960 /* ServiceContainer.swift */; };
+		367CC74626B2F4FB00660960 /* DataDonationSDKService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367CC74526B2F4FB00660960 /* DataDonationSDKService.swift */; };
 		36874C4A26B1630B00F03527 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36874C4926B1630B00F03527 /* AppDelegate.swift */; };
 		36874C4C26B1630B00F03527 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36874C4B26B1630B00F03527 /* SceneDelegate.swift */; };
-		36874C4E26B1630B00F03527 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36874C4D26B1630B00F03527 /* LoginViewController.swift */; };
+		36874C4E26B1630B00F03527 /* DataDonationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36874C4D26B1630B00F03527 /* DataDonationViewController.swift */; };
 		36874C5326B1630C00F03527 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 36874C5226B1630C00F03527 /* Assets.xcassets */; };
 		36874C5626B1630C00F03527 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 36874C5426B1630C00F03527 /* LaunchScreen.storyboard */; };
 		36874C6226B163C800F03527 /* Data4LifeDataDonationSDK in Frameworks */ = {isa = PBXBuildFile; productRef = 36874C6126B163C800F03527 /* Data4LifeDataDonationSDK */; };
-		36874C6626B18A6300F03527 /* LoginInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36874C6526B18A6300F03527 /* LoginInteractor.swift */; };
+		36874C6626B18A6300F03527 /* DataDonationInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36874C6526B18A6300F03527 /* DataDonationInteractor.swift */; };
 		36874C6926B18AE800F03527 /* Data4LifeSDK in Frameworks */ = {isa = PBXBuildFile; productRef = 36874C6826B18AE800F03527 /* Data4LifeSDK */; };
 		36874C6B26B18AE800F03527 /* Data4LifeCrypto in Frameworks */ = {isa = PBXBuildFile; productRef = 36874C6A26B18AE800F03527 /* Data4LifeCrypto */; };
 		36874C6E26B18B3D00F03527 /* SplashViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36874C6D26B18B3D00F03527 /* SplashViewController.swift */; };
@@ -27,15 +29,17 @@
 /* Begin PBXFileReference section */
 		367CC74026B19D2D00660960 /* Data4LifeSDK.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Data4LifeSDK.xcconfig; sourceTree = "<group>"; };
 		367CC74126B1A14100660960 /* SplashRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashRouter.swift; sourceTree = "<group>"; };
+		367CC74326B2EB6100660960 /* ServiceContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceContainer.swift; sourceTree = "<group>"; };
+		367CC74526B2F4FB00660960 /* DataDonationSDKService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDonationSDKService.swift; sourceTree = "<group>"; };
 		36874C4626B1630B00F03527 /* DataDonationExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DataDonationExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		36874C4926B1630B00F03527 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		36874C4B26B1630B00F03527 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		36874C4D26B1630B00F03527 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		36874C4D26B1630B00F03527 /* DataDonationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDonationViewController.swift; sourceTree = "<group>"; };
 		36874C5226B1630C00F03527 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		36874C5526B1630C00F03527 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		36874C5726B1630C00F03527 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		36874C6326B187EE00F03527 /* Data4LifeDataDonationSDK */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Data4LifeDataDonationSDK; sourceTree = "<group>"; };
-		36874C6526B18A6300F03527 /* LoginInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginInteractor.swift; sourceTree = "<group>"; };
+		36874C6526B18A6300F03527 /* DataDonationInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDonationInteractor.swift; sourceTree = "<group>"; };
 		36874C6D26B18B3D00F03527 /* SplashViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashViewController.swift; sourceTree = "<group>"; };
 		36874C6F26B18F5C00F03527 /* SplashInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashInteractor.swift; sourceTree = "<group>"; };
 		36874C7226B1906000F03527 /* Data4LifeSDKService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data4LifeSDKService.swift; sourceTree = "<group>"; };
@@ -101,8 +105,8 @@
 		36874C6426B189F900F03527 /* DataDonationView */ = {
 			isa = PBXGroup;
 			children = (
-				36874C4D26B1630B00F03527 /* LoginViewController.swift */,
-				36874C6526B18A6300F03527 /* LoginInteractor.swift */,
+				36874C4D26B1630B00F03527 /* DataDonationViewController.swift */,
+				36874C6526B18A6300F03527 /* DataDonationInteractor.swift */,
 			);
 			path = DataDonationView;
 			sourceTree = "<group>";
@@ -121,8 +125,10 @@
 		36874C7126B1904C00F03527 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				367CC74526B2F4FB00660960 /* DataDonationSDKService.swift */,
 				36874C7226B1906000F03527 /* Data4LifeSDKService.swift */,
 				36874C7426B1914A00F03527 /* Data4LifeSDKConfiguration.swift */,
+				367CC74326B2EB6100660960 /* ServiceContainer.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -204,13 +210,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				36874C6626B18A6300F03527 /* LoginInteractor.swift in Sources */,
+				367CC74426B2EB6100660960 /* ServiceContainer.swift in Sources */,
+				36874C6626B18A6300F03527 /* DataDonationInteractor.swift in Sources */,
 				36874C7026B18F5C00F03527 /* SplashInteractor.swift in Sources */,
 				367CC74226B1A14100660960 /* SplashRouter.swift in Sources */,
 				36874C7526B1914A00F03527 /* Data4LifeSDKConfiguration.swift in Sources */,
-				36874C4E26B1630B00F03527 /* LoginViewController.swift in Sources */,
+				36874C4E26B1630B00F03527 /* DataDonationViewController.swift in Sources */,
 				36874C4A26B1630B00F03527 /* AppDelegate.swift in Sources */,
 				36874C7326B1906000F03527 /* Data4LifeSDKService.swift in Sources */,
+				367CC74626B2F4FB00660960 /* DataDonationSDKService.swift in Sources */,
 				36874C4C26B1630B00F03527 /* SceneDelegate.swift in Sources */,
 				36874C6E26B18B3D00F03527 /* SplashViewController.swift in Sources */,
 				36874C7726B1940000F03527 /* SplashPresenter.swift in Sources */,

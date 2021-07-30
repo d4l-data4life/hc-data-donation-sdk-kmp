@@ -7,9 +7,8 @@
 
 import Foundation
 import Data4LifeDataDonationSDK
-import Data4LifeSDK
 
 final class DataDonationInteractor {
-
     
+
 }

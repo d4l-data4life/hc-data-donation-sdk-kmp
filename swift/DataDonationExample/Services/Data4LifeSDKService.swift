@@ -7,8 +7,31 @@
 
 import Foundation
 import Data4LifeSDK
+import Data4LifeDataDonationSDK
 
 final class Data4LifeSDKService {
+
+    final class UserSessionTokenProvider: DataDonationSDKPublicAPIUserSessionTokenProvider {
+
+        private let client: Data4LifeClient
+        init(client: Data4LifeClient) {
+            self.client = client
+        }
+
+        func getUserSessionToken(onSuccess: @escaping (String) -> Void, onError: @escaping (KotlinException) -> Void) {
+            client.refreshedAccessToken { result in
+                switch result {
+                case .success(.some(let token)):
+                    onSuccess(token)
+                case .success(.none):
+                    onError(KotlinException(message: "No token available"))
+                case .failure(let error):
+                    onError(KotlinException(message: error.localizedDescription))
+                }
+            }
+        }
+    }
+
     private var client: Data4LifeClient!
 
     init() { }
@@ -32,9 +55,17 @@ final class Data4LifeSDKService {
         }
     }
 
+    func handleUrl(_ url: URL) {
+        client.handle(url: url)
+    }
+
     func openLogin(from viewController: UIViewController, didLogin: @escaping (Result<Void, Error>) -> Void) {
         client.presentLogin(on: viewController, animated: true) { result in
             didLogin(result)
         }
+    }
+
+    var userSessionProvider: UserSessionTokenProvider {
+        UserSessionTokenProvider(client: client)
     }
 }

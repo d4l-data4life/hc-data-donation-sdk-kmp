@@ -7,8 +7,14 @@
 
 import UIKit
 
-class SceneDelegate: UIResponder, UIWindowSceneDelegate {
+final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
+    private lazy var serviceContainer: ServiceContainer = {
+        let container = ServiceContainer()
+        container.configureServices(d4LServiceConfiguration: Data4LifeSDKConfiguration())
+        return container
+    }()
+    
     var window: UIWindow?
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
@@ -16,7 +22,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
 
         window = UIWindow(windowScene: windowScene)
-        window?.rootViewController = SplashRouter.assemble()
+        window?.rootViewController = SplashRouter.assemble(serviceContainer)
         window?.makeKeyAndVisible()
     }
 
@@ -48,6 +54,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // to restore the scene back to its current state.
     }
 
-
+    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+        guard let url = URLContexts.first?.url else { return }
+        serviceContainer.sdkService.handleUrl(url)
+    }
 }
 

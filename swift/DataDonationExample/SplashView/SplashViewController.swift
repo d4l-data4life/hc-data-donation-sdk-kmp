@@ -11,11 +11,14 @@ import UIKit
 final class SplashViewController: UIViewController {
 
     private let interactor: SplashInteractor
+    private let router: SplashRouter
 
     private lazy var mainStackView: UIStackView = {
-        let verticalStackView = UIStackView(arrangedSubviews: [UIView(), loadingIndicator, UIView()])
-        verticalStackView.axis = .vertical
+        let verticalStackView = UIStackView(arrangedSubviews: [loadingIndicator])
+        verticalStackView.axis = .horizontal
         verticalStackView.translatesAutoresizingMaskIntoConstraints = false
+        verticalStackView.alignment = .center
+        verticalStackView.distribution = .fill
         return verticalStackView
     }()
 
@@ -28,6 +31,7 @@ final class SplashViewController: UIViewController {
 
     init(interactor: SplashInteractor, router: SplashRouter) {
         self.interactor = interactor
+        self.router = router
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -48,7 +52,6 @@ extension SplashViewController {
 
         view.backgroundColor = .white
         NSLayoutConstraint.activate([
-            loadingIndicator.heightAnchor.constraint(equalToConstant: 60),
             mainStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             mainStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             mainStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -58,5 +61,9 @@ extension SplashViewController {
 
     func openLoginScreen() {
         interactor.openLoginScreen(from: self)
+    }
+
+    func openDataDonationScreen() {
+        router.routeToDataDonation()
     }
 }
