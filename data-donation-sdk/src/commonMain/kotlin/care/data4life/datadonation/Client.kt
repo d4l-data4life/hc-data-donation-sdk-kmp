@@ -37,7 +37,7 @@ import care.data4life.datadonation.ConsentDataContract.UserConsent
 import care.data4life.datadonation.internal.di.initKoin
 import care.data4life.datadonation.internal.domain.usecases.*
 import care.data4life.sdk.util.coroutine.D4LSDKFlow
-import care.data4life.sdk.util.coroutine.D4LSDKFlowContract
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.flow
 import org.koin.core.KoinApplication
 
@@ -48,11 +48,12 @@ class Client internal constructor(
     private val fetchConsentDocuments: UsecaseContract.FetchConsentDocuments = koinApplication.koin.get()
     private val fetchUserConsents: UsecaseContract.FetchUserConsents = koinApplication.koin.get()
     private val revokeUserConsent: UsecaseContract.RevokeUserConsent = koinApplication.koin.get()
+    private val backgroundThread: CoroutineScope = koinApplication.koin.get()
 
     override fun createUserConsent(
         consentDocumentKey: String,
         consentDocumentVersion: Int
-    ): D4LSDKFlowContract<UserConsent> {
+    ): D4LSDKFlow<UserConsent> {
         val flow = flow {
             val parameter = CreateUserConsent.Parameter(
                 consentDocumentKey,
@@ -62,14 +63,14 @@ class Client internal constructor(
             emit(createUserContent.execute(parameter))
         }
 
-        return D4LSDKFlow(flow)
+        return D4LSDKFlow(backgroundThread, flow)
     }
 
     override fun fetchConsentDocuments(
         consentDocumentKey: String,
         consentDocumentVersion: Int?,
         language: String?,
-    ): D4LSDKFlowContract<List<ConsentDocument>> {
+    ): D4LSDKFlow<List<ConsentDocument>> {
         val flow = flow {
             val parameter = FetchConsentDocuments.Parameter(
                 version = consentDocumentVersion,
@@ -80,37 +81,37 @@ class Client internal constructor(
             emit(fetchConsentDocuments.execute(parameter))
         }
 
-        return D4LSDKFlow(flow)
+        return D4LSDKFlow(backgroundThread, flow)
     }
 
-    override fun fetchUserConsents(consentDocumentKey: String): D4LSDKFlowContract<List<UserConsent>> {
+    override fun fetchUserConsents(consentDocumentKey: String): D4LSDKFlow<List<UserConsent>> {
         val flow = flow {
             val parameter = FetchUserConsents.Parameter(consentDocumentKey)
 
             emit(fetchUserConsents.execute(parameter))
         }
 
-        return D4LSDKFlow(flow)
+        return D4LSDKFlow(backgroundThread, flow)
     }
 
-    override fun fetchAllUserConsents(): D4LSDKFlowContract<List<UserConsent>> {
+    override fun fetchAllUserConsents(): D4LSDKFlow<List<UserConsent>> {
         val flow = flow {
             val parameter = FetchUserConsents.Parameter()
 
             emit(fetchUserConsents.execute(parameter))
         }
 
-        return D4LSDKFlow(flow)
+        return D4LSDKFlow(backgroundThread, flow)
     }
 
-    override fun revokeUserConsent(consentDocumentKey: String): D4LSDKFlowContract<Unit> {
+    override fun revokeUserConsent(consentDocumentKey: String): D4LSDKFlow<Unit> {
         val flow = flow {
             val parameter = RevokeUserConsent.Parameter(consentDocumentKey)
 
             emit(revokeUserConsent.execute(parameter))
         }
 
-        return D4LSDKFlow(flow)
+        return D4LSDKFlow(backgroundThread, flow)
     }
 
     companion object Factory : DataDonationSDKPublicAPI.DataDonationClientFactory {

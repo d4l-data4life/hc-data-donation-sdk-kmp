@@ -19,6 +19,7 @@ package care.data4life.datadonation.di
 import care.data4life.datadonation.DataDonationSDKPublicAPI
 import care.data4life.datadonation.internal.di.resolveRootModule
 import care.data4life.datadonation.mock.stub.UserSessionTokenProviderStub
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.datetime.Clock
 import org.koin.core.context.stopKoin
 import org.koin.dsl.koinApplication
@@ -89,6 +90,26 @@ class RootKoinTest {
         }
         // Then
         val builder: DataDonationSDKPublicAPI.UserSessionTokenProvider = koin.koin.get()
+        assertNotNull(builder)
+    }
+
+    @Test
+    fun `Given resolveRootModule is called with its appropriate parameter it creates a Module, which contains a CoroutineContext`() {
+        // Given
+        val env = DataDonationSDKPublicAPI.Environment.DEV
+        val provider = UserSessionTokenProviderStub()
+
+        // When
+        val koin = koinApplication {
+            modules(
+                resolveRootModule(
+                    env,
+                    provider
+                )
+            )
+        }
+        // Then
+        val builder: CoroutineScope = koin.koin.get()
         assertNotNull(builder)
     }
 }
