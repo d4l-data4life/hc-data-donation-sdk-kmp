@@ -214,13 +214,12 @@ tasks.withType(org.jetbrains.kotlin.gradle.dsl.KotlinCompile::class.java) {
     }
 }
 
-val uselessSwiftProtocols = mapOf(
-    "ConsentDataContract" to "${LibraryConfig.iOS.packageName}ConsentDataContract",
-    "DataDonationSDKPublicAPI" to "${LibraryConfig.iOS.packageName}DataDonationSDKPublicAPI"
+val uselessSwiftProtocols = listOf(
+    "ConsentDataContract",
+    "DataDonationSDKPublicAPI"
 )
-val swiftNameMapping = mapOf(
-    "DataDonationSDKPublicAPIUserSessionTokenProvider" to "UserSessionTokenProvider"
-)
+
+val swiftNameReplacements = emptyMap<String, String>()
 
 project.afterEvaluate {
     val swiftTargetDirectory = File(rootDir, "${File.separator}swift${File.separator}${LibraryConfig.iOS.packageName}")
@@ -231,26 +230,35 @@ project.afterEvaluate {
 
         dependsOn(tasks.getByName("createXCFramework"))
         doFirst {
-            // File operation
             project.fileTree(swiftTargetDirectory).forEach { file ->
                 if (file.absolutePath.endsWith(".h")) {
                     var source = file.readText(Charsets.UTF_8)
-                    uselessSwiftProtocols.forEach { (swiftName, objectiveCInterfaceName) ->
+                    uselessSwiftProtocols.forEach { protocolName ->
+                        var replacementBarrier = source.contains("__attribute__((swift_name(\"$protocolName\")))")
                         source = source.replace(
-                            "__attribute__((swift_name(\"$swiftName\")))\n" +
-                                "@protocol $objectiveCInterfaceName\n" +
+                            "__attribute__((swift_name(\"$protocolName\")))\n" +
+                                "@protocol ${LibraryConfig.iOS.packageName}$protocolName\n" +
                                 "@required\n" +
                                 "@end;",
-                            "// removed $swiftName"
+                            "// removed $protocolName"
                         )
+                        replacementBarrier = replacementBarrier || !source.contains("__attribute__((swift_name(\"$protocolName\")))")
+
+                        if(replacementBarrier) {
+                            source = source.replace(
+                                Regex("__attribute__\\(\\(swift_name\\(\"$protocolName([A-Z][a-zA-Z]+)\"\\)\\)\\)"),
+                                "__attribute__((swift_name(\"$1\"))) //$protocolName$1 -> $1"
+                            )
+                        }
                     }
 
-                    swiftNameMapping.forEach { (originalName, newName) ->
+                    swiftNameReplacements.forEach { (originalName, newName) ->
                         source = source.replace(
                             "__attribute__((swift_name(\"$originalName\")))",
                             "__attribute__((swift_name(\"$newName\")))"
                         )
                     }
+
                     file.writeText(source, Charsets.UTF_8)
                 }
             }
