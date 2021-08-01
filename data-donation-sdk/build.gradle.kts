@@ -23,6 +23,9 @@ plugins {
 
     // SwiftPackage
     swiftPackage(version = "2.0.3")
+
+    // Publish
+    id("scripts.publishing-config")
 }
 
 group = LibraryConfig.group
