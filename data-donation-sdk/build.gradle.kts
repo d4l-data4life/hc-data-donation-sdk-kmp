@@ -59,6 +59,7 @@ kotlin {
 
                 implementation(Dependency.multiplatform.coroutines.common)
 
+                implementation(Dependency.multiplatform.stately.freeze)
                 implementation(Dependency.multiplatform.stately.isolate)
 
                 implementation(Dependency.multiplatform.ktor.commonCore)
@@ -76,7 +77,11 @@ kotlin {
                 // D4L
                 implementation(Dependency.d4l.fhir)
                 implementation(Dependency.d4l.sdkUtil)
-                implementation(Dependency.d4l.sdkUtilCoroutine)
+                implementation(Dependency.d4l.sdkUtilCoroutine) {
+                    exclude(
+                        group = "co.touchlab:stately-concurrency"
+                    )
+                }
             }
         }
         commonTest {

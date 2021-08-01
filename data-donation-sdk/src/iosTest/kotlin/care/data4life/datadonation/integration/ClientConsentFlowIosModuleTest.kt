@@ -41,13 +41,14 @@ import care.data4life.datadonation.internal.di.resolveRootModule
 import care.data4life.datadonation.internal.domain.repository.resolveRepositoryModule
 import care.data4life.datadonation.internal.domain.usecases.resolveUsecaseModule
 import care.data4life.datadonation.lang.ConsentServiceError
-import care.data4life.sdk.util.test.coroutine.runWithContextBlockingTest
+import care.data4life.sdk.util.test.coroutine.runBlockingTest
 import care.data4life.sdk.util.test.ktor.HttpMockClientFactory.createMockClientWithResponse
 import io.ktor.client.engine.mock.respond
 import io.ktor.http.HttpStatusCode
 import io.ktor.util.KtorExperimentalAPI
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.launch
 import org.koin.core.context.stopKoin
 import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
@@ -68,6 +69,8 @@ class ClientConsentFlowIosModuleTest {
         val consentDocumentKey = "tomato"
         val language = "en"
         val version = 42
+
+        val result = Channel<Throwable>()
 
         val httpClient = createMockClientWithResponse { scope, _ ->
             scope.respond(
@@ -96,24 +99,26 @@ class ClientConsentFlowIosModuleTest {
             )
         }
 
-        val client = Client(koin)
-
         // When
-        val job = client.fetchConsentDocuments(
+        val job = Client(koin).fetchConsentDocuments(
             consentDocumentKey,
             version,
             language,
         ).subscribe(
-            onEach = { },
-            onError = {},
+            onEach = {},
+            onError = { error ->
+                GlobalScope.launch {
+                    result.send(error.userInfo["kotlinError"] as Throwable)
+                }
+            },
             onComplete = {}
         )
 
-        runWithContextBlockingTest(GlobalScope.coroutineContext) {
+        runBlockingTest {
             job.join()
 
             // Then
-            // assertTrue(result is ConsentServiceError.InternalServer)
+            assertTrue(result.receive() is ConsentServiceError.InternalServer)
         }
     }
 
@@ -122,6 +127,8 @@ class ClientConsentFlowIosModuleTest {
     fun `Given revokeUserConsents is called with consentDocumentKey it fails at unexpected Response`() {
         // Given
         val consentDocumentKey = "water"
+
+        val result = Channel<Throwable>()
 
         val httpClient = createMockClientWithResponse { scope, _ ->
             // Then
@@ -151,12 +158,22 @@ class ClientConsentFlowIosModuleTest {
             )
         }
 
-        val client = Client(koin)
-
         // When
-        client.revokeUserConsent(consentDocumentKey).ktFlow.catch { result ->
+        val job = Client(koin).revokeUserConsent(consentDocumentKey).subscribe(
+            onEach = {},
+            onError = { error ->
+                GlobalScope.launch {
+                    result.send(error.userInfo["kotlinError"] as Throwable)
+                }
+            },
+            onComplete = {}
+        )
+
+        runBlockingTest {
+            job.join()
+
             // Then
-            assertTrue(result is ConsentServiceError.UnexpectedFailure)
+            assertTrue(result.receive() is ConsentServiceError.UnexpectedFailure)
         }
     }
 

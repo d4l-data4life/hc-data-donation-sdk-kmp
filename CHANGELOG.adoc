@@ -25,9 +25,11 @@ toc::[]
 
 == link:{link-repository}/releases/latest[Unreleased]
 
-See link:{link-repository}/compare/v0.0.1...main[changeset]
+See link:{link-repository}/compare/v0.1.0...main[changeset]
 
 === Added
+
+* touchlab's stately-concurrency (1.1.6) (Dependency).
 
 === Changed
 
@@ -42,6 +44,8 @@ See link:{link-repository}/compare/v0.0.1...main[changeset]
 === Security
 
 === Bumped
+
+* _**BREAKING**_ sdk-util 1.9.0 -> 1.10.0.
 
 === Migration
 

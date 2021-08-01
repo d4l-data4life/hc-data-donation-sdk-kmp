@@ -75,6 +75,7 @@ object Dependency {
         val stately = Stately
 
         object Stately {
+            const val freeze = "co.touchlab:stately-concurrency:${Version.stately}" // TODO Remove with Kotlin 1.5.x
             const val isolate = "co.touchlab:stately-isolate:${Version.stately}-a1"
         }
 

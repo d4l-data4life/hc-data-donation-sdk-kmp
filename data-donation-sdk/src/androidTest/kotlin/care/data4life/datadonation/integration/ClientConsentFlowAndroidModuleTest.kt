@@ -46,7 +46,11 @@ import care.data4life.sdk.util.test.ktor.HttpMockClientFactory.createMockClientW
 import io.ktor.client.engine.mock.respond
 import io.ktor.http.HttpStatusCode
 import io.ktor.util.KtorExperimentalAPI
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.launch
 import org.koin.core.context.stopKoin
 import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
@@ -62,11 +66,13 @@ class ClientConsentFlowAndroidModuleTest {
     }
 
     @Test
-    fun `Given fetchConsentDocuments is called with its appropriate parameter, it propagates Errors`() = runBlockingTest {
+    fun `Given fetchConsentDocuments is called with its appropriate parameter, it propagates Errors`() {
         // Given
         val consentDocumentKey = "tomato"
         val language = "en"
         val version = 42
+
+        val capturedError = Channel<Throwable>()
 
         val httpClient = createMockClientWithResponse { scope, _ ->
             scope.respond(
@@ -95,24 +101,30 @@ class ClientConsentFlowAndroidModuleTest {
             )
         }
 
-        val client = Client(koin)
-
         // When
-        client.fetchConsentDocuments(
+        Client(koin).fetchConsentDocuments(
             consentDocumentKey,
             version,
             language,
-        ).ktFlow.catch { result ->
+        ).ktFlow.catch { delegatedError ->
+            GlobalScope.launch {
+                capturedError.send(delegatedError)
+            }
+        }.launchIn(GlobalScope)
+
+        runBlockingTest {
             // Then
-            assertTrue(result is ConsentServiceError.InternalServer)
+            assertTrue(capturedError.receive() is ConsentServiceError.InternalServer)
         }
     }
 
     @KtorExperimentalAPI
     @Test
-    fun `Given revokeUserConsents is called with consentDocumentKey it fails at unexpected Response`() = runBlockingTest {
+    fun `Given revokeUserConsents is called with consentDocumentKey it fails at unexpected Response`() {
         // Given
         val consentDocumentKey = "water"
+
+        val capturedError = Channel<Throwable>()
 
         val httpClient = createMockClientWithResponse { scope, _ ->
             // Then
@@ -142,12 +154,17 @@ class ClientConsentFlowAndroidModuleTest {
             )
         }
 
-        val client = Client(koin)
-
         // When
-        client.revokeUserConsent(consentDocumentKey).ktFlow.catch { result ->
+        Client(koin).revokeUserConsent(consentDocumentKey)
+            .ktFlow.catch { delegatedError ->
+                GlobalScope.launch {
+                    capturedError.send(delegatedError)
+                }
+            }.launchIn(GlobalScope)
+
+        runBlockingTest {
             // Then
-            assertTrue(result is ConsentServiceError.UnexpectedFailure)
+            assertTrue(capturedError.receive() is ConsentServiceError.UnexpectedFailure)
         }
     }
 
