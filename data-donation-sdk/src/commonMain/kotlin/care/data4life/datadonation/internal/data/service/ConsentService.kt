@@ -64,7 +64,7 @@ internal class ConsentService constructor(
     ): List<ConsentDocumentContract> {
         val path = buildPath(CONSENTS_DOCUMENTS)
         val parameter = mapOf(
-            USER_CONSENT_KEY to consentDocumentKey,
+            "key" to consentDocumentKey,
             VERSION to version,
             LANGUAGE to language
         )
