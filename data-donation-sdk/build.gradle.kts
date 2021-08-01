@@ -80,7 +80,6 @@ kotlin {
                 implementation(Dependency.multiplatform.ktor.commonSerialization)
 
                 implementation(Dependency.multiplatform.serialization.common)
-                implementation(Dependency.multiplatform.serialization.protobuf)
 
                 implementation(Dependency.multiplatform.dateTime)
 
