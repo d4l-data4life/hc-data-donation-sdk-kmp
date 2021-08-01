@@ -217,7 +217,7 @@ val uselessSwiftProtocols = listOf(
     "ConsentDataContract",
     "DataDonationSDKPublicAPI"
 )
-
+val referencePrefix = "DLDDSDK"
 val swiftNameReplacements = emptyMap<String, String>()
 
 project.afterEvaluate {
@@ -236,12 +236,12 @@ project.afterEvaluate {
                         var replacementBarrier = source.contains("__attribute__((swift_name(\"$protocolName\")))")
                         source = source.replace(
                             "__attribute__((swift_name(\"$protocolName\")))\n" +
-                                "@protocol ${LibraryConfig.iOS.packageName}$protocolName\n" +
+                                "@protocol $referencePrefix$protocolName\n" +
                                 "@required\n" +
                                 "@end;",
                             "// removed $protocolName"
                         )
-                        replacementBarrier = replacementBarrier || !source.contains("__attribute__((swift_name(\"$protocolName\")))")
+                        replacementBarrier = replacementBarrier && !source.contains("__attribute__((swift_name(\"$protocolName\")))")
 
                         if(replacementBarrier) {
                             source = source.replace(

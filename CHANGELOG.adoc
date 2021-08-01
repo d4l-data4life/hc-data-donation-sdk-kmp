@@ -25,9 +25,11 @@ toc::[]
 
 == link:{link-repository}/releases/latest[Unreleased]
 
-See link:{link-repository}/compare/v0.0.1...main[changeset]
+See link:{link-repository}/compare/v0.1.0...main[changeset]
 
 === Added
+
+* Swift package
 
 === Changed
 
