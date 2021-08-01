@@ -37,6 +37,8 @@ import care.data4life.datadonation.ConsentDataContract.UserConsent
 import care.data4life.datadonation.internal.di.initKoin
 import care.data4life.datadonation.internal.domain.usecases.*
 import care.data4life.sdk.util.coroutine.D4LSDKFlow
+import care.data4life.sdk.util.coroutine.D4LSDKFlowFactoryContract
+import care.data4life.sdk.util.coroutine.DomainErrorMapperContract
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.flow
 import org.koin.core.KoinApplication
@@ -49,6 +51,8 @@ class Client internal constructor(
     private val fetchUserConsents: UsecaseContract.FetchUserConsents = koinApplication.koin.get()
     private val revokeUserConsent: UsecaseContract.RevokeUserConsent = koinApplication.koin.get()
     private val backgroundThread: CoroutineScope = koinApplication.koin.get()
+    private val errorMapper: DomainErrorMapperContract = koinApplication.koin.get()
+    private val flowFactory: D4LSDKFlowFactoryContract = koinApplication.koin.get()
 
     override fun createUserConsent(
         consentDocumentKey: String,
@@ -63,7 +67,11 @@ class Client internal constructor(
             emit(createUserContent.execute(parameter))
         }
 
-        return D4LSDKFlow(backgroundThread, flow)
+        return flowFactory.getInstance(
+            backgroundThread,
+            flow,
+            errorMapper
+        )
     }
 
     override fun fetchConsentDocuments(
@@ -81,7 +89,11 @@ class Client internal constructor(
             emit(fetchConsentDocuments.execute(parameter))
         }
 
-        return D4LSDKFlow(backgroundThread, flow)
+        return flowFactory.getInstance(
+            backgroundThread,
+            flow,
+            errorMapper
+        )
     }
 
     override fun fetchUserConsents(consentDocumentKey: String): D4LSDKFlow<List<UserConsent>> {
@@ -91,7 +103,11 @@ class Client internal constructor(
             emit(fetchUserConsents.execute(parameter))
         }
 
-        return D4LSDKFlow(backgroundThread, flow)
+        return flowFactory.getInstance(
+            backgroundThread,
+            flow,
+            errorMapper
+        )
     }
 
     override fun fetchAllUserConsents(): D4LSDKFlow<List<UserConsent>> {
@@ -101,7 +117,11 @@ class Client internal constructor(
             emit(fetchUserConsents.execute(parameter))
         }
 
-        return D4LSDKFlow(backgroundThread, flow)
+        return flowFactory.getInstance(
+            backgroundThread,
+            flow,
+            errorMapper
+        )
     }
 
     override fun revokeUserConsent(consentDocumentKey: String): D4LSDKFlow<Unit> {
@@ -111,7 +131,11 @@ class Client internal constructor(
             emit(revokeUserConsent.execute(parameter))
         }
 
-        return D4LSDKFlow(backgroundThread, flow)
+        return flowFactory.getInstance(
+            backgroundThread,
+            flow,
+            errorMapper
+        )
     }
 
     companion object Factory : DataDonationSDKPublicAPI.DataDonationClientFactory {

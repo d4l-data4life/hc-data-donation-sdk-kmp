@@ -163,6 +163,8 @@ object Dependency {
 
         const val uiAutomator =
             "androidx.test.uiautomator:uiautomator:${Version.androidXUiAutomator}"
+
+        const val robolectric = "org.robolectric:robolectric:${Version.robolectric}"
     }
 
     // Use for ktor dependency on ion
