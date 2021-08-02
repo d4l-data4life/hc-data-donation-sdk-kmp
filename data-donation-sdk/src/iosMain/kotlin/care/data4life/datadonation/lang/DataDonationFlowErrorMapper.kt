@@ -27,7 +27,7 @@ actual object DataDonationFlowErrorMapper : DomainErrorMapperContract {
             code = 815,
             domain = "care.data4life.datadonation",
             localizedDescription = "Internal failure",
-            kotlinError = error.freeze()
+            kotlinError = error
         )
     }
 }
