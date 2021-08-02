@@ -70,6 +70,7 @@ The SDK has the following dependencies:
 * link:https://github.com/Kotlin/kotlinx.serialization[Kotlin Serialization]
 * link:https://github.com/InsertKoinIO/koin[Koin]
 * link:https://github.com/Kotlin/kotlinx-datetime[kotlinx-datetime]
+* link:https://github.com/touchlab/Stately[Stately Common]
 * link:https://github.com/touchlab/Stately[Stately Isolate]
 
 == Installation
