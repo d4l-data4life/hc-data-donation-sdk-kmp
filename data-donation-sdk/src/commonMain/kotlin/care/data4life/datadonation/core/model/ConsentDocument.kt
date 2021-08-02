@@ -39,7 +39,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ConsentDocument(
     override val key: String,
-    override val version: Int,
+    override val version: String,
     override val processor: String,
     override val description: String? = null,
     override val recipient: String,
