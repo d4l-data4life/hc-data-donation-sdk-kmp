@@ -36,9 +36,6 @@ plugins {
     id("scripts.publishing")
     id("scripts.quality-spotless")
     id("scripts.versioning")
-
-    // iOS
-    id("com.chromaticnoise.multiplatform-swiftpackage") version "2.0.3"
 }
 
 allprojects {

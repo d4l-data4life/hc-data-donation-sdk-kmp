@@ -6,9 +6,23 @@
 //
 
 import Foundation
-import Data4LifeDataDonationSDK
 
 final class DataDonationInteractor {
     
+    private let dataDonationSDKService: DataDonationSDKService
+    weak var view: DataDonationViewController?
+    
+    init(service: DataDonationSDKService) {
+        self.dataDonationSDKService = service
+    }
+}
 
+extension DataDonationInteractor {
+    func didTapAdd() {
+        dataDonationSDKService.createUserConsent()
+    }
+
+    func didTapRemove() {
+        dataDonationSDKService.revokeUserConsent()
+    }
 }

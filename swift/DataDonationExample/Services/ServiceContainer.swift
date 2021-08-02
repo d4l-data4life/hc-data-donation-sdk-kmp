@@ -6,16 +6,22 @@
 //
 
 import Foundation
+import Data4LifeDataDonationSDK
 
 final class ServiceContainer {
 
-    let sdkService: Data4LifeSDKService
+    private(set) var sdkService: Data4LifeSDKService?
+    private(set) var userSessionProvider: UserSessionTokenProvider?
+    private(set) var dataDonationService: DataDonationSDKService?
 
-    init() {
-        self.sdkService = Data4LifeSDKService()
-    }
+    init() { }
 
     func configureServices(d4LServiceConfiguration: Data4LifeSDKConfiguration) {
-        sdkService.configure(with: d4LServiceConfiguration)
+        sdkService = Data4LifeSDKService()
+        sdkService?.configure(with: d4LServiceConfiguration)
+
+        userSessionProvider = sdkService?.userSessionProvider
+
+        dataDonationService = DataDonationSDKService(userSessionProvider: userSessionProvider!)
     }
 }

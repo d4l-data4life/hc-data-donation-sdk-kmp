@@ -14,12 +14,12 @@ final class SplashViewController: UIViewController {
     private let router: SplashRouter
 
     private lazy var mainStackView: UIStackView = {
-        let verticalStackView = UIStackView(arrangedSubviews: [loadingIndicator])
-        verticalStackView.axis = .horizontal
-        verticalStackView.translatesAutoresizingMaskIntoConstraints = false
-        verticalStackView.alignment = .center
-        verticalStackView.distribution = .fill
-        return verticalStackView
+        let stackView = UIStackView(arrangedSubviews: [loadingIndicator])
+        stackView.axis = .horizontal
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.alignment = .center
+        stackView.distribution = .fill
+        return stackView
     }()
 
     private lazy var loadingIndicator: UIActivityIndicatorView = {
@@ -49,7 +49,6 @@ final class SplashViewController: UIViewController {
 
 extension SplashViewController {
     private func configureView() {
-
         view.backgroundColor = .white
         NSLayoutConstraint.activate([
             mainStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor),

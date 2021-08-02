@@ -11,7 +11,7 @@ import Data4LifeDataDonationSDK
 
 final class Data4LifeSDKService {
 
-    final class UserSessionTokenProvider: DataDonationSDKPublicAPIUserSessionTokenProvider {
+    final class D4LTokenProvider: UserSessionTokenProvider {
 
         private let client: Data4LifeClient
         init(client: Data4LifeClient) {
@@ -66,6 +66,6 @@ final class Data4LifeSDKService {
     }
 
     var userSessionProvider: UserSessionTokenProvider {
-        UserSessionTokenProvider(client: client)
+        D4LTokenProvider(client: client)
     }
 }

@@ -10,6 +10,7 @@
 		367CC74226B1A14100660960 /* SplashRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367CC74126B1A14100660960 /* SplashRouter.swift */; };
 		367CC74426B2EB6100660960 /* ServiceContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367CC74326B2EB6100660960 /* ServiceContainer.swift */; };
 		367CC74626B2F4FB00660960 /* DataDonationSDKService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367CC74526B2F4FB00660960 /* DataDonationSDKService.swift */; };
+		367CC74826B817CD00660960 /* DataDonationRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367CC74726B817CD00660960 /* DataDonationRouter.swift */; };
 		36874C4A26B1630B00F03527 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36874C4926B1630B00F03527 /* AppDelegate.swift */; };
 		36874C4C26B1630B00F03527 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36874C4B26B1630B00F03527 /* SceneDelegate.swift */; };
 		36874C4E26B1630B00F03527 /* DataDonationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36874C4D26B1630B00F03527 /* DataDonationViewController.swift */; };
@@ -31,6 +32,7 @@
 		367CC74126B1A14100660960 /* SplashRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashRouter.swift; sourceTree = "<group>"; };
 		367CC74326B2EB6100660960 /* ServiceContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceContainer.swift; sourceTree = "<group>"; };
 		367CC74526B2F4FB00660960 /* DataDonationSDKService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDonationSDKService.swift; sourceTree = "<group>"; };
+		367CC74726B817CD00660960 /* DataDonationRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDonationRouter.swift; sourceTree = "<group>"; };
 		36874C4626B1630B00F03527 /* DataDonationExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DataDonationExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		36874C4926B1630B00F03527 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		36874C4B26B1630B00F03527 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -107,6 +109,7 @@
 			children = (
 				36874C4D26B1630B00F03527 /* DataDonationViewController.swift */,
 				36874C6526B18A6300F03527 /* DataDonationInteractor.swift */,
+				367CC74726B817CD00660960 /* DataDonationRouter.swift */,
 			);
 			path = DataDonationView;
 			sourceTree = "<group>";
@@ -219,6 +222,7 @@
 				36874C4A26B1630B00F03527 /* AppDelegate.swift in Sources */,
 				36874C7326B1906000F03527 /* Data4LifeSDKService.swift in Sources */,
 				367CC74626B2F4FB00660960 /* DataDonationSDKService.swift in Sources */,
+				367CC74826B817CD00660960 /* DataDonationRouter.swift in Sources */,
 				36874C4C26B1630B00F03527 /* SceneDelegate.swift in Sources */,
 				36874C6E26B18B3D00F03527 /* SplashViewController.swift in Sources */,
 				36874C7726B1940000F03527 /* SplashPresenter.swift in Sources */,
@@ -366,7 +370,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = D2QJWMP9SU;
 				INFOPLIST_FILE = DataDonationExample/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -387,7 +391,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = D2QJWMP9SU;
 				INFOPLIST_FILE = DataDonationExample/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
