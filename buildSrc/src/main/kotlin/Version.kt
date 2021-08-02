@@ -62,6 +62,9 @@ object Version {
     const val androidXEspresso = "3.2.0"
     const val androidXUiAutomator = "2.2.0"
 
+    // Test
+    const val robolectric = "4.6.1"
+
     // Material
     const val material = "1.1.0-rc01"
 
