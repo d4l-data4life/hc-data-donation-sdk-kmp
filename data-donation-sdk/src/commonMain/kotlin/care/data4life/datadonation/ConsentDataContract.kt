@@ -30,7 +30,7 @@ interface ConsentDataContract {
 
     interface ConsentDocument {
         val key: String
-        val version: Int
+        val version: String
         val processor: String
         val description: String?
         val recipient: String

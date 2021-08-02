@@ -29,6 +29,8 @@ See link:{link-repository}/compare/v0.1.0...main[changeset]
 
 === Added
 
+* touchlab's stately-concurrency (1.1.6) (Dependency).
+
 === Changed
 
 === Deprecated
@@ -37,7 +39,9 @@ See link:{link-repository}/compare/v0.1.0...main[changeset]
 
 === Fixed
 
-* fetchUserDocuments used wrong url parameter.
+* `fetchUserDocuments` used wrong url parameter.
+* `version` at ConsentDocument.
+* `UserSessionTokenService` was not always frozen.
 
 === Security
 

@@ -39,12 +39,8 @@ import care.data4life.datadonation.internal.data.service.networking.resolveNetwo
 import care.data4life.datadonation.internal.data.service.resolveServiceModule
 import care.data4life.datadonation.internal.domain.repository.resolveRepositoryModule
 import care.data4life.datadonation.internal.domain.usecases.*
-import care.data4life.datadonation.lang.DataDonationFlowErrorMapper
-import care.data4life.sdk.util.coroutine.CoroutineHelper
-import care.data4life.sdk.util.coroutine.D4LSDKFlow
-import care.data4life.sdk.util.coroutine.D4LSDKFlowFactoryContract
-import care.data4life.sdk.util.coroutine.DomainErrorMapperContract
-import kotlinx.coroutines.CoroutineScope
+import co.touchlab.stately.freeze
+import co.touchlab.stately.isFrozen
 import kotlinx.datetime.Clock
 import org.koin.core.KoinApplication
 import org.koin.core.module.Module
@@ -79,8 +75,14 @@ internal fun resolveRootModule(
 
         single<Clock> { Clock.System }
 
-        single<DataDonationSDKPublicAPI.UserSessionTokenProvider> {
-            userSessionTokenProvider
+        if (userSessionTokenProvider.isFrozen) {
+            single<DataDonationSDKPublicAPI.UserSessionTokenProvider> {
+                userSessionTokenProvider
+            }
+        } else {
+            single<DataDonationSDKPublicAPI.UserSessionTokenProvider> {
+                userSessionTokenProvider.freeze()
+            }
         }
 
         single<CoroutineScope> {
