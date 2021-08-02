@@ -19,59 +19,13 @@ package care.data4life.datadonation.di
 import care.data4life.datadonation.DataDonationSDKPublicAPI
 import care.data4life.datadonation.internal.di.resolveRootModule
 import care.data4life.datadonation.mock.stub.UserSessionTokenProviderStub
-import kotlinx.datetime.Clock
-import org.koin.core.context.stopKoin
+import co.touchlab.stately.isFrozen
 import org.koin.dsl.koinApplication
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
-class RootKoinTest {
-    @BeforeTest
-    fun setUp() {
-        stopKoin()
-    }
-
-    @Test
-    fun `Given resolveRootModule is called with its appropriate parameter it creates a Module, which contains a Environment`() {
-        // Given
-        val env = DataDonationSDKPublicAPI.Environment.DEV
-        val provider = UserSessionTokenProviderStub()
-
-        // When
-        val koin = koinApplication {
-            modules(
-                resolveRootModule(
-                    env,
-                    provider
-                )
-            )
-        }
-        // Then
-        val builder: DataDonationSDKPublicAPI.Environment = koin.koin.get()
-        assertNotNull(builder)
-    }
-
-    @Test
-    fun `Given resolveRootModule is called with its appropriate parameter it creates a Module, which contains a Clock`() {
-        // Given
-        val env = DataDonationSDKPublicAPI.Environment.DEV
-        val provider = UserSessionTokenProviderStub()
-
-        // When
-        val koin = koinApplication {
-            modules(
-                resolveRootModule(
-                    env,
-                    provider
-                )
-            )
-        }
-        // Then
-        val builder: Clock = koin.koin.get()
-        assertNotNull(builder)
-    }
-
+class RootKoinIosTest {
     @Test
     fun `Given resolveRootModule is called with its appropriate parameter it creates a Module, which contains a UserSessionTokenProvider, which is frozen`() {
         // Given
@@ -90,5 +44,6 @@ class RootKoinTest {
         // Then
         val item: DataDonationSDKPublicAPI.UserSessionTokenProvider = koin.koin.get()
         assertNotNull(item)
+        assertTrue(item.isFrozen)
     }
 }
