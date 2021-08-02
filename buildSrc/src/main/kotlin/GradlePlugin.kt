@@ -41,5 +41,10 @@ fun PluginDependenciesSpec.androidApp(): PluginDependencySpec =
 fun PluginDependenciesSpec.androidLibrary(): PluginDependencySpec =
     id("com.android.library")
 
-fun PluginDependenciesSpec.swiftPackage(): PluginDependencySpec =
+fun PluginDependenciesSpec.swiftPackage(version: String? = null) {
     id("com.chromaticnoise.multiplatform-swiftpackage")
+        .also {
+            val givenVersion = version ?: "2.0.3"
+            it.version(givenVersion)
+        }
+}

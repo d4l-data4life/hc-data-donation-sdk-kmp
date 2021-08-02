@@ -63,4 +63,11 @@ object LibraryConfig {
 
         const val resourcePrefix = "d4l_data_donation_"
     }
+
+    val iOS = SwiftLibraryConfig
+    object SwiftLibraryConfig {
+        const val packageName = "Data4LifeDataDonationSDK"
+        const val targetVersion = "13"
+        const val toolVersion = "5.4"
+    }
 }
