@@ -75,7 +75,6 @@ kotlin {
 
                 implementation(Dependency.multiplatform.coroutines.common)
 
-                implementation(Dependency.multiplatform.stately.freeze)
                 implementation(Dependency.multiplatform.stately.isolate)
 
                 implementation(Dependency.multiplatform.ktor.commonCore)
