@@ -25,7 +25,7 @@ import kotlin.native.concurrent.ThreadLocal
 object ConsentFixtures {
     val sampleConsentDocument = ConsentDocument(
         key = "exampleKey",
-        version = 42,
+        version = "42",
         processor = "anyProcessor",
         description = "this is an example document",
         recipient = "sombody",
