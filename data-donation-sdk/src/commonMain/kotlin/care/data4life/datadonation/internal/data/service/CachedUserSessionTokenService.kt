@@ -36,6 +36,8 @@ import care.data4life.datadonation.DataDonationSDKPublicAPI
 import care.data4life.datadonation.internal.data.service.ServiceContract.UserSessionTokenService.Companion.CACHE_LIFETIME
 import care.data4life.datadonation.lang.CoreRuntimeError
 import co.touchlab.stately.isolate.IsolateState
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlin.coroutines.resume
@@ -48,11 +50,13 @@ internal class CachedUserSessionTokenService(
     private val cache = IsolateState { Cache(clock) }
 
     private suspend fun fetchTokenFromApi(): Any {
-        return suspendCoroutine { continuation ->
-            provider.getUserSessionToken(
-                { sessionToken -> continuation.resume(sessionToken) },
-                { error -> continuation.resume(error) }
-            )
+        return withContext(Dispatchers.Main) {
+              suspendCoroutine { continuation ->
+                provider.getUserSessionToken(
+                    { sessionToken -> continuation.resume(sessionToken) },
+                    { error -> continuation.resume(error) }
+                )
+            }
         }
     }
 
