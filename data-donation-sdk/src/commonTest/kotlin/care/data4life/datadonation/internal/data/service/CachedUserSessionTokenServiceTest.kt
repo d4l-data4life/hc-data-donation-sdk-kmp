@@ -20,7 +20,9 @@ import care.data4life.datadonation.lang.CoreRuntimeError
 import care.data4life.datadonation.mock.stub.ClockStub
 import care.data4life.datadonation.mock.stub.UserSessionTokenProviderStub
 import care.data4life.sdk.util.test.coroutine.runBlockingTest
+import care.data4life.sdk.util.test.coroutine.runWithContextBlockingTest
 import co.touchlab.stately.isolate.IsolateState
+import kotlinx.coroutines.GlobalScope
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -39,7 +41,7 @@ class CachedUserSessionTokenServiceTest {
     }
 
     @Test
-    fun `Given getUserSessionToken is called, it fails, if it has no valid cached Token and the Provider delegates an Exception`() = runBlockingTest {
+    fun `Given getUserSessionToken is called, it fails, if it has no valid cached Token and the Provider delegates an Exception`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val error = RuntimeException("error")
         val provider = UserSessionTokenProviderStub()
@@ -53,22 +55,24 @@ class CachedUserSessionTokenServiceTest {
             kotlinx.datetime.Instant.fromEpochMilliseconds(1.minutes.toLongMilliseconds())
         }
 
-        val service = CachedUserSessionTokenService(provider, time)
+        runBlockingTest {
+            val service = CachedUserSessionTokenService(provider, time)
 
-        // Then
-        val result = assertFailsWith<CoreRuntimeError.MissingSession> {
-            // When
-            service.getUserSessionToken()
+            // Then
+            val result = assertFailsWith<CoreRuntimeError.MissingSession> {
+                // When
+                service.getUserSessionToken()
+            }
+
+            assertSame(
+                actual = result.cause,
+                expected = error
+            )
         }
-
-        assertSame(
-            actual = result.cause,
-            expected = error
-        )
     }
 
     @Test
-    fun `Given getUserSessionToken is called, returns a new Token, if it has no valid cached Token and the Provider delegates a SessionToken`() = runBlockingTest {
+    fun `Given getUserSessionToken is called, returns a new Token, if it has no valid cached Token and the Provider delegates a SessionToken`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val token = "tomato"
         val provider = UserSessionTokenProviderStub()
@@ -84,14 +88,16 @@ class CachedUserSessionTokenServiceTest {
 
         val service = CachedUserSessionTokenService(provider, time)
 
-        // When
-        val result = service.getUserSessionToken()
+        runBlockingTest {
+            // When
+            val result = service.getUserSessionToken()
 
-        // Then
-        assertEquals(
-            actual = result,
-            expected = token
-        )
+            // Then
+            assertEquals(
+                actual = result,
+                expected = token
+            )
+        }
     }
 
     @Test
