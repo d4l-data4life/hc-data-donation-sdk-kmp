@@ -9,8 +9,6 @@ gen/
 *iml
 .idea/*
 .idea/compiler.xml
-swift/Data4LifeSDK.xcconfig
-swift/Data4LifeDataDonationSDK
 
 # IDEA/Android Studio includes
 !.idea/vcs.xml
@@ -22,7 +20,8 @@ swift/Data4LifeDataDonationSDK
 !.idea/copyright/
 
 # iOS SwiftPackages
-swift/
+swift/Data4LifeSDK.xcconfig
+swift/Data4LifeDataDonationSDK
 
 # generated
 data-donation-sdk/src-gen/commonTest/kotlin/care/data4life/datadonation/test/config/TestConfig.kt
