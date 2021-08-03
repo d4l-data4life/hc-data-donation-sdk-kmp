@@ -61,6 +61,7 @@ kotlin {
 
                 implementation(Dependency.multiplatform.stately.freeze)
                 implementation(Dependency.multiplatform.stately.isolate)
+                implementation(Dependency.multiplatform.stately.concurrency)
 
                 implementation(Dependency.multiplatform.ktor.commonCore)
                 implementation(Dependency.multiplatform.ktor.logger)

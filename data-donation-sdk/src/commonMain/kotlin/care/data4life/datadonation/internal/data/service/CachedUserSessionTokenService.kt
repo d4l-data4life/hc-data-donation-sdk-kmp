@@ -29,12 +29,13 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package care.data4life.datadonation.internal.data.service
 
 import care.data4life.datadonation.DataDonationSDKPublicAPI
 import care.data4life.datadonation.internal.data.service.ServiceContract.UserSessionTokenService.Companion.CACHE_LIFETIME
 import care.data4life.datadonation.lang.CoreRuntimeError
+import co.touchlab.stately.concurrency.AtomicReference
+import co.touchlab.stately.freeze
 import co.touchlab.stately.isolate.IsolateState
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
@@ -46,13 +47,28 @@ internal class CachedUserSessionTokenService(
     clock: Clock
 ) : ServiceContract.UserSessionTokenService {
     private val cache = IsolateState { Cache(clock) }
+    private val bridge = AtomicReference(Bridge(""))
 
     private suspend fun fetchTokenFromApi(): Any {
         return suspendCoroutine { continuation ->
             provider.getUserSessionToken(
-                { sessionToken -> continuation.resume(sessionToken) },
-                { error -> continuation.resume(error) }
+                { sessionToken: SessionToken ->
+                    bridge.compareAndSet(
+                        bridge.get(),
+                        Bridge(sessionToken)
+                    )
+                    Unit
+                }.freeze(),
+                { error: Exception ->
+                    bridge.compareAndSet(
+                        bridge.get(),
+                        Bridge(error)
+                    )
+                    Unit
+                }.freeze()
             )
+
+            continuation.resume(bridge.get().result)
         }
     }
 
@@ -74,7 +90,6 @@ internal class CachedUserSessionTokenService(
 
     override suspend fun getUserSessionToken(): SessionToken {
         val cachedToken = fetchCachedTokenIfNotExpired()
-
         return if (cachedToken is SessionToken) {
             cachedToken
         } else {
@@ -85,22 +100,22 @@ internal class CachedUserSessionTokenService(
     private class Cache(private val clock: Clock) {
         private var cachedValue: SessionToken = ""
         private var cachedAt = Instant.fromEpochSeconds(0)
-
         fun fetch(): String {
             if (cachedValue.isEmpty()) {
                 throw CoreRuntimeError.MissingSession()
             }
-
             return cachedValue
         }
-
         fun update(sessionToken: SessionToken) {
             cachedValue = sessionToken
             cachedAt = clock.now()
         }
-
         fun isNotExpired(): Boolean {
             return cachedAt > clock.now().minus(CACHE_LIFETIME)
         }
     }
+
+    private data class Bridge(
+        val result: Any
+    )
 }
