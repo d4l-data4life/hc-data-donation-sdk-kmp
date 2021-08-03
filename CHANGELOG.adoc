@@ -29,6 +29,7 @@ See link:{link-repository}/compare/v0.1.0...main[changeset]
 
 === Added
 
+* touchlab's stately-common (1.1.6) (Dependency).
 * touchlab's stately-concurrency (1.1.6) (Dependency).
 
 === Changed
@@ -41,7 +42,7 @@ See link:{link-repository}/compare/v0.1.0...main[changeset]
 
 * `fetchUserDocuments` used wrong url parameter.
 * `version` at ConsentDocument.
-* `UserSessionTokenService` was not always frozen.
+* `UserSessionTokenService` call due to Context switch issues (iOS).
 
 === Security
 
