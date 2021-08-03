@@ -37,6 +37,9 @@ import care.data4life.datadonation.lang.CoreRuntimeError
 import co.touchlab.stately.concurrency.AtomicReference
 import co.touchlab.stately.freeze
 import co.touchlab.stately.isolate.IsolateState
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlin.coroutines.resume
@@ -47,29 +50,34 @@ internal class CachedUserSessionTokenService(
     clock: Clock
 ) : ServiceContract.UserSessionTokenService {
     private val cache = IsolateState { Cache(clock) }
-    private val bridge = AtomicReference(Bridge(""))
+    private val scope = AtomicReference<CoroutineScope?>(null)
+    private val bridge = AtomicReference<Channel<Any>>(Channel())
 
     private suspend fun fetchTokenFromApi(): Any {
-        return suspendCoroutine { continuation ->
+        val channel = Channel<Any>()
+        bridge.set(channel)
+        suspendCoroutine<Unit> { continuation ->
+            scope.set(CoroutineScope(continuation.context))
+
             provider.getUserSessionToken(
                 { sessionToken: SessionToken ->
-                    bridge.compareAndSet(
-                        bridge.get(),
-                        Bridge(sessionToken)
-                    )
+                    scope.get()!!.launch {
+                        bridge.get().send(sessionToken)
+                    }.start()
                     Unit
                 }.freeze(),
                 { error: Exception ->
-                    bridge.compareAndSet(
-                        bridge.get(),
-                        Bridge(error)
-                    )
+                    scope.get()!!.launch {
+                        bridge.get().send(error)
+                    }.start()
                     Unit
                 }.freeze()
             )
 
-            continuation.resume(bridge.get().result)
+            continuation.resume(Unit)
         }
+
+        return channel.receive()
     }
 
     private fun fetchCachedTokenIfNotExpired(): SessionToken? {
@@ -93,7 +101,7 @@ internal class CachedUserSessionTokenService(
         return if (cachedToken is SessionToken) {
             cachedToken
         } else {
-            resolveSessionToken(fetchTokenFromApi())
+            return resolveSessionToken(fetchTokenFromApi())
         }
     }
 
@@ -114,8 +122,4 @@ internal class CachedUserSessionTokenService(
             return cachedAt > clock.now().minus(CACHE_LIFETIME)
         }
     }
-
-    private data class Bridge(
-        val result: Any
-    )
 }
