@@ -12,9 +12,27 @@ final class DataDonationViewController: UIViewController {
     private let interactor: DataDonationInteractor
     private let router: DataDonationRouter
 
+    private lazy var tableView: UITableView = {
+        let tableView = UITableView(frame: .zero, style: .insetGrouped)
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.dataSource = self
+        tableView.delegate = self
+        return tableView
+    }()
+
     private lazy var mainStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [])
         stackView.axis = .vertical
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.alignment = .center
+        stackView.distribution = .fill
+        stackView.spacing = 10
+        return stackView
+    }()
+
+    private lazy var buttonStackView: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [])
+        stackView.axis = .horizontal
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.alignment = .center
         stackView.distribution = .fill
@@ -59,9 +77,11 @@ final class DataDonationViewController: UIViewController {
 private extension DataDonationViewController {
     func configureSubviews() {
         view.addSubview(mainStackView)
+        mainStackView.addArrangedSubview(tableView)
+        mainStackView.addArrangedSubview(buttonStackView)
         let spacingViewOne = UIView()
         let spacingViewTwo = UIView()
-        mainStackView.addArrangedSubview(spacingViewOne)
+        mainStackView.addArrangedSubview(tableView)
         mainStackView.addArrangedSubview(addButton)
         mainStackView.addArrangedSubview(removeButton)
         mainStackView.addArrangedSubview(spacingViewTwo)
