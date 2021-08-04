@@ -25,7 +25,7 @@ toc::[]
 
 == link:{link-repository}/releases/latest[Unreleased]
 
-See link:{link-repository}/compare/v0.1.0...main[changeset]
+See link:{link-repository}/compare/v0.1.1...main[changeset]
 
 === Added
 
@@ -35,18 +35,27 @@ See link:{link-repository}/compare/v0.1.0...main[changeset]
 
 === Removed
 
-* FHIR as dependency.
-
 === Fixed
-
-* `fetchUserDocuments` used wrong url parameter.
-* `version` at ConsentDocument.
 
 === Security
 
 === Bumped
 
 === Migration
+
+
+== link:{link-repository}/releases/tag/v0.1.1[0.1.1]
+
+See link:{link-repository}/compare/v0.1.0...v0.1.1[0.1.1]
+
+=== Removed
+
+* FHIR as dependency.
+
+=== Fixed
+
+* `fetchUserDocuments` used wrong url parameter.
+* `version` at ConsentDocument is now a String.
 
 
 == link:{link-repository}/releases/tag/v0.1.0[0.1.0]
