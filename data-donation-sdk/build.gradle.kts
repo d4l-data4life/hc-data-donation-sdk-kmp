@@ -67,14 +67,10 @@ kotlin {
                 implementation(Dependency.multiplatform.ktor.commonSerialization)
 
                 implementation(Dependency.multiplatform.serialization.common)
-                implementation(Dependency.multiplatform.serialization.protobuf)
 
                 implementation(Dependency.multiplatform.dateTime)
 
-                implementation(Dependency.multiplatform.uuid)
-
                 // D4L
-                implementation(Dependency.d4l.fhir)
                 implementation(Dependency.d4l.sdkUtil)
                 implementation(Dependency.d4l.sdkUtilCoroutine)
             }
@@ -98,21 +94,15 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 //Kotlin
-                implementation(Dependency.multiplatform.kotlin.stdlibAndroid)
                 implementation(Dependency.multiplatform.coroutines.android)
 
                 //DI
-                implementation(Dependency.multiplatform.koin.android)
                 implementation(Dependency.jvm.slf4jNop)
                 implementation(Dependency.jvm.slf4jApi)
 
-                //
-                implementation(Dependency.android.threeTenABP)
                 implementation(Dependency.multiplatform.ktor.androidCore)
                 implementation(Dependency.multiplatform.ktor.androidSerialization)
-                implementation(Dependency.android.bouncyCastle)
                 implementation(Dependency.multiplatform.serialization.android)
-                implementation(Dependency.multiplatform.serialization.protobuf)
             }
         }
         val androidTest by getting {
@@ -131,7 +121,6 @@ kotlin {
                     }
                 }
                 implementation(Dependency.multiplatform.serialization.common)
-                implementation(Dependency.multiplatform.serialization.protobuf)
                 implementation(Dependency.multiplatform.ktor.iosCore)
                 implementation(Dependency.multiplatform.ktor.ios)
 
