@@ -37,7 +37,8 @@ See link:{link-repository}/compare/v0.1.0...main[changeset]
 
 === Fixed
 
-* fetchUserDocuments used wrong url parameter.
+* `fetchUserDocuments` used wrong url parameter.
+* `version` at ConsentDocument.
 
 === Security
 
