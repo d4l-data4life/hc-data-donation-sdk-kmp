@@ -35,6 +35,8 @@ See link:{link-repository}/compare/v0.1.0...main[changeset]
 
 === Removed
 
+* FHIR as dependency.
+
 === Fixed
 
 * `fetchUserDocuments` used wrong url parameter.
