@@ -15,11 +15,11 @@
  */
 
 plugins {
-    // Android
-    androidLibrary()
-
     kotlinMultiplatform()
     kotlinSerialization()
+
+    // Android
+    androidLibrary()
 
     // Publish
     id("scripts.publishing-config")
@@ -78,7 +78,11 @@ kotlin {
                 // D4L
                 implementation(Dependency.d4l.fhir)
                 implementation(Dependency.d4l.sdkUtil)
-                implementation(Dependency.d4l.sdkUtilCoroutine)
+                implementation(Dependency.d4l.sdkUtilCoroutine) {
+                    exclude(
+                        group = "co.touchlab:stately-concurrency"
+                    )
+                }
             }
         }
         commonTest {
@@ -99,29 +103,21 @@ kotlin {
 
         val androidMain by getting {
             dependencies {
-                //Kotlin
-                implementation(Dependency.multiplatform.kotlin.stdlibAndroid)
-                implementation(Dependency.multiplatform.coroutines.android)
-
                 //DI
-                implementation(Dependency.multiplatform.koin.android)
                 implementation(Dependency.jvm.slf4jNop)
                 implementation(Dependency.jvm.slf4jApi)
 
-                //
-                implementation(Dependency.android.threeTenABP)
+                //Ktor
                 implementation(Dependency.multiplatform.ktor.androidCore)
-                implementation(Dependency.multiplatform.ktor.androidSerialization)
-                implementation(Dependency.android.bouncyCastle)
-                implementation(Dependency.multiplatform.serialization.android)
-                implementation(Dependency.multiplatform.serialization.protobuf)
             }
         }
         val androidTest by getting {
             dependencies {
+                dependsOn(commonTest.get())
+
                 implementation(Dependency.multiplatform.kotlin.testJvm)
                 implementation(Dependency.multiplatform.kotlin.testJvmJunit)
-                dependsOn(commonTest.get())
+                implementation(Dependency.androidTest.robolectric)
             }
         }
 
@@ -133,7 +129,6 @@ kotlin {
                     }
                 }
                 implementation(Dependency.multiplatform.serialization.common)
-                implementation(Dependency.multiplatform.serialization.protobuf)
                 implementation(Dependency.multiplatform.ktor.iosCore)
                 implementation(Dependency.multiplatform.ktor.ios)
 

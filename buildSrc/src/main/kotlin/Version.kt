@@ -63,6 +63,9 @@ object Version {
     const val androidXEspresso = "3.2.0"
     const val androidXUiAutomator = "2.2.0"
 
+    // Test
+    const val robolectric = "4.6.1"
+
     // Material
     const val material = "1.1.0-rc01"
 
@@ -87,7 +90,7 @@ object Version {
     const val fhir = "0.2.0"
 
     // https://github.com/d4l-data4life/hc-util-sdk-kmp
-    const val sdkUtil = "1.9.0"
+    const val sdkUtil = "1.9.0-add-default-scope-SNAPSHOT"
 
     // Junit Test
     const val testJUnit = "4.13.2"
