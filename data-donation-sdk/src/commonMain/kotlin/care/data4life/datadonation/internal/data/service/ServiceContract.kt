@@ -44,7 +44,7 @@ internal interface ServiceContract {
     interface ConsentService {
         suspend fun fetchConsentDocuments(
             accessToken: String,
-            version: Int?,
+            version: String?,
             language: String?,
             consentDocumentKey: String
         ): List<ConsentDocument>
@@ -58,7 +58,7 @@ internal interface ServiceContract {
         suspend fun createUserConsent(
             accessToken: String,
             consentDocumentKey: String,
-            version: Int
+            version: String
         )
 
         suspend fun requestSignatureConsentRegistration(

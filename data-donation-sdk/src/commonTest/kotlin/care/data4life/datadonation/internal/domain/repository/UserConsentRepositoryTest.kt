@@ -47,16 +47,16 @@ class UserConsentRepositoryTest {
 
         val sessionToken = "token"
         val consentDocumentKey = "custom-consent-key"
-        val version = 23
+        val version = "23"
 
         var capturedToken: String? = null
-        var capturedVersion: Int? = null
-        var capturedconsentDocumentKey: String? = "NotNull"
+        var capturedVersion: String? = null
+        var capturedConsentDocumentKey: String? = "NotNull"
 
         sessionService.whenSessionToken = { sessionToken }
-        consentService.whenCreateUserConsent = { delegatedToken, delegatedconsentDocumentKey, delegatedVersion ->
+        consentService.whenCreateUserConsent = { delegatedToken, delegatedConsentDocumentKey, delegatedVersion ->
             capturedToken = delegatedToken
-            capturedconsentDocumentKey = delegatedconsentDocumentKey
+            capturedConsentDocumentKey = delegatedConsentDocumentKey
             capturedVersion = delegatedVersion
         }
 
@@ -79,7 +79,7 @@ class UserConsentRepositoryTest {
             expected = version
         )
         assertEquals(
-            actual = capturedconsentDocumentKey,
+            actual = capturedConsentDocumentKey,
             expected = consentDocumentKey
         )
     }
