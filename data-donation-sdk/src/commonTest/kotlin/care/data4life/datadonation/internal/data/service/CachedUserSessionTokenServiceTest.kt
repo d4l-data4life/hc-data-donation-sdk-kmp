@@ -19,6 +19,7 @@ package care.data4life.datadonation.internal.data.service
 import care.data4life.datadonation.lang.CoreRuntimeError
 import care.data4life.datadonation.mock.stub.ClockStub
 import care.data4life.datadonation.mock.stub.UserSessionTokenProviderStub
+import care.data4life.sdk.util.coroutine.CoroutineHelper
 import care.data4life.sdk.util.test.coroutine.runBlockingTest
 import care.data4life.sdk.util.test.coroutine.runWithContextBlockingTest
 import co.touchlab.stately.isolate.IsolateState
@@ -33,9 +34,11 @@ import kotlin.time.minutes
 import kotlin.time.seconds
 
 class CachedUserSessionTokenServiceTest {
+    private val testScope = CoroutineHelper.createCoroutineScope("test2Scope")
+
     @Test
     fun `It fulfils UserSessionTokenService`() {
-        val service: Any = CachedUserSessionTokenService(UserSessionTokenProviderStub(), ClockStub())
+        val service: Any = CachedUserSessionTokenService(UserSessionTokenProviderStub(), ClockStub(), testScope)
 
         assertTrue(service is ServiceContract.UserSessionTokenService)
     }
@@ -55,9 +58,9 @@ class CachedUserSessionTokenServiceTest {
             kotlinx.datetime.Instant.fromEpochMilliseconds(1.minutes.toLongMilliseconds())
         }
 
-        runBlockingTest {
-            val service = CachedUserSessionTokenService(provider, time)
+        val service = CachedUserSessionTokenService(provider, time, testScope)
 
+        runBlockingTest {
             // Then
             val result = assertFailsWith<CoreRuntimeError.MissingSession> {
                 // When
@@ -86,7 +89,7 @@ class CachedUserSessionTokenServiceTest {
             kotlinx.datetime.Instant.fromEpochMilliseconds(1.minutes.toLongMilliseconds())
         }
 
-        val service = CachedUserSessionTokenService(provider, time)
+        val service = CachedUserSessionTokenService(provider, time, testScope)
 
         runBlockingTest {
             // When
@@ -110,7 +113,7 @@ class CachedUserSessionTokenServiceTest {
             kotlinx.datetime.Instant.fromEpochMilliseconds(0)
         }
 
-        val service = CachedUserSessionTokenService(provider, time)
+        val service = CachedUserSessionTokenService(provider, time, testScope)
 
         // Then
         val result = assertFailsWith<CoreRuntimeError.MissingSession> {
@@ -148,7 +151,7 @@ class CachedUserSessionTokenServiceTest {
             lifeTime.access { it.removeAt(0) }
         }
 
-        val service = CachedUserSessionTokenService(provider, time)
+        val service = CachedUserSessionTokenService(provider, time, testScope)
 
         // When
         service.getUserSessionToken()
@@ -189,7 +192,7 @@ class CachedUserSessionTokenServiceTest {
             lifeTime.access { it.removeAt(0) }
         }
 
-        val service = CachedUserSessionTokenService(provider, time)
+        val service = CachedUserSessionTokenService(provider, time, testScope)
 
         // When
         service.getUserSessionToken()

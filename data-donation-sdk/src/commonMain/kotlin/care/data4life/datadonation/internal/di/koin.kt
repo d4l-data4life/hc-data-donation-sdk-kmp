@@ -39,8 +39,6 @@ import care.data4life.datadonation.internal.data.service.networking.resolveNetwo
 import care.data4life.datadonation.internal.data.service.resolveServiceModule
 import care.data4life.datadonation.internal.domain.repository.resolveRepositoryModule
 import care.data4life.datadonation.internal.domain.usecases.*
-import co.touchlab.stately.freeze
-import co.touchlab.stately.isFrozen
 import care.data4life.datadonation.lang.DataDonationFlowErrorMapper
 import care.data4life.sdk.util.coroutine.CoroutineHelper
 import care.data4life.sdk.util.coroutine.D4LSDKFlow
@@ -81,14 +79,8 @@ internal fun resolveRootModule(
 
         single<Clock> { Clock.System }
 
-        if (userSessionTokenProvider.isFrozen) {
-            single<DataDonationSDKPublicAPI.UserSessionTokenProvider> {
-                userSessionTokenProvider
-            }
-        } else {
-            single<DataDonationSDKPublicAPI.UserSessionTokenProvider> {
-                userSessionTokenProvider.freeze()
-            }
+        single<DataDonationSDKPublicAPI.UserSessionTokenProvider> {
+            userSessionTokenProvider
         }
 
         single<CoroutineScope> {

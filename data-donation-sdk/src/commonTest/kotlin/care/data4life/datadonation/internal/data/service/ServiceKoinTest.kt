@@ -22,7 +22,9 @@ import care.data4life.datadonation.internal.data.service.networking.Networking
 import care.data4life.datadonation.mock.stub.ClockStub
 import care.data4life.datadonation.mock.stub.UserSessionTokenProviderStub
 import care.data4life.datadonation.mock.stub.service.networking.RequestBuilderSpy
+import care.data4life.sdk.util.coroutine.CoroutineHelper
 import care.data4life.sdk.util.test.ktor.HttpMockClientFactory.createHelloWorldMockClient
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.datetime.Clock
 import org.koin.core.context.stopKoin
 import org.koin.dsl.koinApplication
@@ -32,6 +34,8 @@ import kotlin.test.Test
 import kotlin.test.assertNotNull
 
 class ServiceKoinTest {
+    private val testScope = CoroutineHelper.createCoroutineScope("test2Scope")
+
     @BeforeTest
     fun setUp() {
         stopKoin()
@@ -80,6 +84,7 @@ class ServiceKoinTest {
                     single<DataDonationSDKPublicAPI.UserSessionTokenProvider> {
                         UserSessionTokenProviderStub()
                     }
+                    single<CoroutineScope> { testScope }
                 }
             )
         }

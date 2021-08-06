@@ -42,40 +42,32 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 internal class CachedUserSessionTokenService(
     private val provider: DataDonationSDKPublicAPI.UserSessionTokenProvider,
-    clock: Clock
+    clock: Clock,
+    scope: CoroutineScope
 ) : ServiceContract.UserSessionTokenService {
     private val cache = IsolateState { Cache(clock) }
-    private val scope = AtomicReference<CoroutineScope?>(null)
-    private val bridge = AtomicReference<Channel<Any>>(Channel())
+    private val scope = AtomicReference(scope)
 
     private suspend fun fetchTokenFromApi(): Any {
         val channel = Channel<Any>()
-        bridge.set(channel)
-        suspendCoroutine<Unit> { continuation ->
-            scope.set(CoroutineScope(continuation.context))
 
-            provider.getUserSessionToken(
-                { sessionToken: SessionToken ->
-                    scope.get()!!.launch {
-                        bridge.get().send(sessionToken)
-                    }.start()
-                    Unit
-                }.freeze(),
-                { error: Exception ->
-                    scope.get()!!.launch {
-                        bridge.get().send(error)
-                    }.start()
-                    Unit
-                }.freeze()
-            )
-
-            continuation.resume(Unit)
-        }
+        provider.getUserSessionToken(
+            { sessionToken: SessionToken ->
+                scope.get().launch {
+                    channel.send(sessionToken)
+                }.start()
+                Unit
+            }.freeze(),
+            { error: Exception ->
+                scope.get().launch {
+                    channel.send(error)
+                }.start()
+                Unit
+            }.freeze()
+        )
 
         return channel.receive()
     }
