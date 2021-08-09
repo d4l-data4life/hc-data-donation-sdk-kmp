@@ -29,6 +29,8 @@ See link:{link-repository}/compare/v0.1.0...main[changeset]
 
 === Added
 
+* support for FHIR (STU3 & R4).
+
 === Changed
 
 === Deprecated

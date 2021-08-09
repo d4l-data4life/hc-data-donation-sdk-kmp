@@ -14,31 +14,11 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.domain.usecases
+package care.data4life.datadonation.mock.stub
 
-import org.koin.core.module.Module
-import org.koin.dsl.module
+import care.data4life.datadonation.internal.domain.usecases.UsecaseContract
+import care.data4life.hl7.fhir.stu3.model.FhirResource
 
-internal fun resolveUsecaseModule(): Module {
-    return module {
-        single<UsecaseContract.FetchConsentDocuments> {
-            FetchConsentDocuments(get())
-        }
-
-        single<UsecaseContract.CreateUserConsent> {
-            CreateUserConsent(get())
-        }
-
-        single<UsecaseContract.FetchUserConsents> {
-            FetchUserConsents(get())
-        }
-
-        single<UsecaseContract.RevokeUserConsent> {
-            RevokeUserConsent(get())
-        }
-
-        single<UsecaseContract.RedactSensitiveInformation> {
-            RedactSensitiveInformation()
-        }
-    }
-}
+internal class RedactSensitiveInformationStub :
+    UsecaseContract.RedactSensitiveInformation,
+    UsecaseStub<List<FhirResource>, List<FhirResource>>()

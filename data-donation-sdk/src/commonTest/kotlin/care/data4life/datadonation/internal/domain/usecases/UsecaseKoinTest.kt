@@ -104,4 +104,15 @@ class UsecaseKoinTest {
         val instance: UsecaseContract.RevokeUserConsent = koin.koin.get()
         assertNotNull(instance)
     }
+
+    @Test
+    fun `Given resolveUsecaseModule is called it creates a Module, which contains RedactSensitiveInformation`() {
+        // When
+        val koin = koinApplication {
+            modules(resolveUsecaseModule())
+        }
+        // Then
+        val instance: UsecaseContract.RedactSensitiveInformation = koin.koin.get()
+        assertNotNull(instance)
+    }
 }
