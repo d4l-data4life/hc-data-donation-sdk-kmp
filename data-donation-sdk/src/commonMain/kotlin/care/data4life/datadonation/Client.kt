@@ -51,7 +51,7 @@ class Client internal constructor(
 
     override fun createUserConsent(
         consentDocumentKey: String,
-        consentDocumentVersion: Int
+        consentDocumentVersion: String
     ): D4LSDKFlowContract<UserConsent> {
         val flow = flow {
             val parameter = CreateUserConsent.Parameter(
@@ -67,7 +67,7 @@ class Client internal constructor(
 
     override fun fetchConsentDocuments(
         consentDocumentKey: String,
-        consentDocumentVersion: Int?,
+        consentDocumentVersion: String?,
         language: String?,
     ): D4LSDKFlowContract<List<ConsentDocument>> {
         val flow = flow {

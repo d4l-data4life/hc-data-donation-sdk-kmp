@@ -43,7 +43,7 @@ class ConsentDocumentRepositoryTest {
         val sessionTokenService = UserSessionTokenServiceStub()
 
         val consentDocumentKey = "tomato"
-        val version = 23
+        val version = "23"
         val language = "de-j-old-n-kotlin-x-done"
 
         val sessionToken = "token"
@@ -53,7 +53,7 @@ class ConsentDocumentRepositoryTest {
         )
 
         var capturedSessionToken: String? = null
-        var capturedVersion: Int? = null
+        var capturedVersion: String? = null
         var capturedLanguage: String? = null
         var capturedconsentDocumentKey: String? = null
 
