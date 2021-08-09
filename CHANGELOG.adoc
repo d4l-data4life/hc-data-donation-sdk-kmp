@@ -35,12 +35,7 @@ See link:{link-repository}/compare/v0.1.0...main[changeset]
 
 === Removed
 
-* FHIR as dependency.
-
 === Fixed
-
-* `fetchUserDocuments` used wrong url parameter.
-* `version` at ConsentDocument.
 
 === Security
 
@@ -48,6 +43,26 @@ See link:{link-repository}/compare/v0.1.0...main[changeset]
 
 === Migration
 
+== link:{link-repository}/releases/tag/v0.1.2[0.1.2]
+
+See link:{link-repository}/compare/v0.0.1...v0.1.2[0.1.2]
+
+=== Fixed
+
+* versions are now covered as Strings to reflect semantic versioning of the Backend.
+
+== link:{link-repository}/releases/tag/v0.1.1[0.1.1]
+
+See link:{link-repository}/compare/v0.0.1...v0.1.1[0.1.1]
+
+=== Removed
+
+* FHIR as dependency.
+
+=== Fixed
+
+* `fetchUserDocuments` used wrong url parameter.
+* `version` at ConsentDocument.
 
 == link:{link-repository}/releases/tag/v0.1.0[0.1.0]
 
