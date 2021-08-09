@@ -47,6 +47,6 @@ internal class CreateUserConsent(
 
     data class Parameter(
         override val consentDocumentKey: String,
-        override val version: Int
+        override val version: String
     ) : UsecaseContract.CreateUserConsent.Parameter
 }

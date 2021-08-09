@@ -58,7 +58,7 @@ internal class ConsentService constructor(
 
     override suspend fun fetchConsentDocuments(
         accessToken: String,
-        version: Int?,
+        version: String?,
         language: String?,
         consentDocumentKey: String
     ): List<ConsentDocumentContract> {
@@ -88,7 +88,7 @@ internal class ConsentService constructor(
     override suspend fun createUserConsent(
         accessToken: String,
         consentDocumentKey: String,
-        version: Int
+        version: String
     ) {
         val path = buildPath(USER_CONSENTS)
         val payload = ConsentCreationPayload(

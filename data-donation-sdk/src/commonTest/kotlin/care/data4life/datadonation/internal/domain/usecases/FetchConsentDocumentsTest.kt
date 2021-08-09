@@ -51,11 +51,11 @@ class FetchConsentDocumentsTest {
     @Test
     fun `Given a Usecase had been created and execute is called, it delegates the call to the UserContentRepository with the given parameters`() = runBlockingTest {
         // Given
-        val version = 42
+        val version = "42"
         val language = "de-j-old-n-kotlin-x-done"
         val consentDocumentKey = "tomato"
 
-        var capturedVersion: Int? = null
+        var capturedVersion: String? = null
         var capturedLanguage: String? = null
         var capturedConsentDocumentKey: String? = null
 

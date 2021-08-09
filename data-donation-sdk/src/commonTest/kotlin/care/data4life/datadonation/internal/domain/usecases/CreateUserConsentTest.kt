@@ -53,10 +53,10 @@ class CreateUserConsentTest {
     fun `Given a Usecase had been created and execute is called, it delegates the call to the UserContentRepository with the given parameters and returns the first consent`() = runBlockingTest {
         // Given
         val consentDocumentKey = "custom-consent-key"
-        val version = 42
+        val version = "42"
 
         var capturedCreationconsentDocumentKey: String? = "NotNull"
-        var capturedVersion: Int? = null
+        var capturedVersion: String? = null
 
         var capturedFetchingconsentDocumentKey: String? = null
 

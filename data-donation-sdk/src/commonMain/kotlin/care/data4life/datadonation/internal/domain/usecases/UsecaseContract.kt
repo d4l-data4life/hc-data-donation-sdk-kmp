@@ -33,7 +33,7 @@ internal interface UsecaseContract {
 
     interface FetchConsentDocuments : Usecase<FetchConsentDocuments.Parameter, List<ConsentDocument>> {
         interface Parameter {
-            val version: Int?
+            val version: String?
             val language: String?
             val consentDocumentKey: String
         }
@@ -48,7 +48,7 @@ internal interface UsecaseContract {
     interface CreateUserConsent : Usecase<CreateUserConsent.Parameter, UserConsent> {
         interface Parameter {
             val consentDocumentKey: String
-            val version: Int
+            val version: String
         }
     }
 
