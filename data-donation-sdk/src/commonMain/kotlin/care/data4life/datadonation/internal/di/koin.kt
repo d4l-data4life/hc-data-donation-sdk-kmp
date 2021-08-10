@@ -44,8 +44,6 @@ import care.data4life.sdk.flow.D4LSDKFlow
 import care.data4life.sdk.flow.D4LSDKFlowFactoryContract
 import care.data4life.sdk.util.coroutine.CoroutineScopeFactory
 import care.data4life.sdk.util.coroutine.DomainErrorMapperContract
-import co.touchlab.stately.freeze
-import co.touchlab.stately.isFrozen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.datetime.Clock
 import org.koin.core.KoinApplication

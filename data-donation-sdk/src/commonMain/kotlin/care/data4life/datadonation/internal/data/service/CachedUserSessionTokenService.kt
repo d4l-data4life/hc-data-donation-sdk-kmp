@@ -35,6 +35,8 @@ package care.data4life.datadonation.internal.data.service
 import care.data4life.datadonation.DataDonationSDKPublicAPI
 import care.data4life.datadonation.internal.data.service.ServiceContract.UserSessionTokenService.Companion.CACHE_LIFETIME
 import care.data4life.datadonation.lang.CoreRuntimeError
+import co.touchlab.stately.concurrency.AtomicReference
+import co.touchlab.stately.freeze
 import co.touchlab.stately.isolate.IsolateState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel

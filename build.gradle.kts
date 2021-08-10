@@ -14,7 +14,6 @@
  * contact D4L by email to help@data4life.care.
  */
 
-
 buildscript {
     repositories {
         gradlePluginPortal()
