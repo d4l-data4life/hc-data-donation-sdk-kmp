@@ -76,7 +76,7 @@ class RootKoinTest {
     }
 
     @Test
-    fun `Given resolveRootModule is called with its appropriate parameter it creates a Module, which contains a UserSessionTokenProvider, which is frozen`() {
+    fun `Given resolveRootModule is called with its appropriate parameter it creates a Module, which contains a UserSessionTokenProvider`() {
         // Given
         val env = DataDonationSDKPublicAPI.Environment.DEV
         val provider = UserSessionTokenProviderStub()
