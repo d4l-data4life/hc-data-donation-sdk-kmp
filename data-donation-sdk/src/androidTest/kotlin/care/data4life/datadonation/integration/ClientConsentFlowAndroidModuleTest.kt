@@ -70,7 +70,7 @@ class ClientConsentFlowAndroidModuleTest {
         // Given
         val consentDocumentKey = "tomato"
         val language = "en"
-        val version = 42
+        val version = "42"
 
         val capturedError = Channel<Throwable>()
 

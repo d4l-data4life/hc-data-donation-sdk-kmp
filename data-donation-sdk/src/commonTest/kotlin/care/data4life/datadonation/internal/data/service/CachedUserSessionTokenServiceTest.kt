@@ -19,7 +19,7 @@ package care.data4life.datadonation.internal.data.service
 import care.data4life.datadonation.lang.CoreRuntimeError
 import care.data4life.datadonation.mock.stub.ClockStub
 import care.data4life.datadonation.mock.stub.UserSessionTokenProviderStub
-import care.data4life.sdk.util.coroutine.CoroutineHelper
+import care.data4life.sdk.util.coroutine.CoroutineScopeFactory
 import care.data4life.sdk.util.test.coroutine.runBlockingTest
 import care.data4life.sdk.util.test.coroutine.runWithContextBlockingTest
 import co.touchlab.stately.isolate.IsolateState
@@ -34,7 +34,7 @@ import kotlin.time.minutes
 import kotlin.time.seconds
 
 class CachedUserSessionTokenServiceTest {
-    private val testScope = CoroutineHelper.createCoroutineScope("test2Scope")
+    private val testScope = CoroutineScopeFactory.createScope("test2Scope")
 
     @Test
     fun `It fulfils UserSessionTokenService`() {
