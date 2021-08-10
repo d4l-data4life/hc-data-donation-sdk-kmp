@@ -113,10 +113,11 @@ internal class CachedUserSessionTokenService(
         private var cachedAt = Instant.fromEpochSeconds(0)
 
         fun fetch(): String {
-            if (cachedValue.isEmpty()) {
+            return if (cachedValue.isEmpty()) {
                 throw CoreRuntimeError.MissingSession()
+            } else {
+                cachedValue
             }
-            return cachedValue
         }
 
         fun update(sessionToken: SessionToken) {
