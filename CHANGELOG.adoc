@@ -29,6 +29,8 @@ See link:{link-repository}/compare/v0.1.0...main[changeset]
 
 === Added
 
+* ConsentServiceError.NoValidConsent to improve error mapping for revoke user consent.
+
 === Changed
 
 === Deprecated
