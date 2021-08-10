@@ -90,6 +90,8 @@ kotlin {
 
                 // D4L
                 implementation(Dependency.d4l.sdkUtil)
+                implementation(Dependency.d4l.sdkFlow)
+                implementation(Dependency.d4l.sdkError)
                 implementation(Dependency.d4l.sdkUtilCoroutine) {
                     exclude(
                         group = "co.touchlab:stately-concurrency"
@@ -115,16 +117,12 @@ kotlin {
 
         val androidMain by getting {
             dependencies {
-                //Kotlin
-                implementation(Dependency.multiplatform.coroutines.android)
-
                 //DI
                 implementation(Dependency.jvm.slf4jNop)
                 implementation(Dependency.jvm.slf4jApi)
 
+                //Ktor
                 implementation(Dependency.multiplatform.ktor.androidCore)
-                implementation(Dependency.multiplatform.ktor.androidSerialization)
-                implementation(Dependency.multiplatform.serialization.android)
             }
         }
         val androidTest by getting {
@@ -149,7 +147,7 @@ kotlin {
                 implementation(Dependency.multiplatform.ktor.ios)
 
                 // D4L
-                implementation(Dependency.d4l.sdkUtil)
+                implementation(Dependency.d4l.sdkObjcUtil)
             }
         }
         val iosTest by getting {

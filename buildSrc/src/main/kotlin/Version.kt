@@ -89,7 +89,19 @@ object Version {
     const val fhir = "0.2.0"
 
     // https://github.com/d4l-data4life/hc-util-sdk-kmp
-    const val sdkUtil = "1.9.0-add-default-scope-SNAPSHOT"
+    const val sdkUtil = "1.10.0"
+
+    // https://github.com/d4l-data4life/hc-objc-util-sdk-kmp
+    const val sdkObjcUtil = "0.1.0"
+
+    // https://github.com/d4l-data4life/hc-util-coroutine-sdk-kmp
+    const val sdkCoroutineUtil = "0.1.0"
+
+    // https://github.com/d4l-data4life/hc-result-sdk-kmp
+    const val sdkResult = "0.1.0"
+
+    // https://github.com/d4l-data4life/hc-test-util-sdk-kmp
+    const val sdkTestUtil = "0.1.0"
 
     // Junit Test
     const val testJUnit = "4.13.2"

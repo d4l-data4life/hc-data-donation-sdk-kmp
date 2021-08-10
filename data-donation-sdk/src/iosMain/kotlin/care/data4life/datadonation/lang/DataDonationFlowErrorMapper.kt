@@ -16,9 +16,9 @@
 
 package care.data4life.datadonation.lang
 
-import care.data4life.sdk.util.NSErrorFactory
+import care.data4life.sdk.lang.PlatformError
 import care.data4life.sdk.util.coroutine.DomainErrorMapperContract
-import care.data4life.sdk.util.lang.PlatformError
+import care.data4life.sdk.util.objc.NSErrorFactory
 
 actual object DataDonationFlowErrorMapper : DomainErrorMapperContract {
     actual override fun mapError(error: Throwable): PlatformError {
