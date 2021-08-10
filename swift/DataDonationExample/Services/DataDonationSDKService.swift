@@ -22,8 +22,21 @@ final class DataDonationSDKService {
 
 extension DataDonationSDKService {
 
-    func createUserConsent() {
-        let flow = client.createUserConsent(consentDocumentKey: "test-key", consentDocumentVersion: 1)
+    private static var testKey = "test-key"
+
+    func fetchUserConsents() {
+        let flow = client.fetchAllUserConsents()
+        currentJob = flow.subscribe { consents in
+            print(consents)
+        } onError: { error in
+            print(error)
+        } onComplete: {
+            print("completed")
+        }.asStruct
+    }
+
+    func createUserConsent(key: String = DataDonationSDKService.testKey) {
+        let flow = client.createUserConsent(consentDocumentKey: key, consentDocumentVersion: 1)
         currentJob = flow.subscribe { consent in
             print(consent)
         } onError: { error in
@@ -33,8 +46,8 @@ extension DataDonationSDKService {
         }.asStruct
     }
 
-    func revokeUserConsent() {
-        let flow = client.revokeUserConsent(consentDocumentKey: "test-key")
+    func revokeUserConsent(key: String = DataDonationSDKService.testKey) {
+        let flow = client.revokeUserConsent(consentDocumentKey: key)
         currentJob = flow.subscribe(onEach: { unit in
             print("successfully revoked")
         }, onError: { error in

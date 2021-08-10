@@ -71,6 +71,7 @@ final class DataDonationViewController: UIViewController {
         view.backgroundColor = .white
         title = "Data Donation"
         configureSubviews()
+        interactor.viewDidLoad()
     }
 }
 

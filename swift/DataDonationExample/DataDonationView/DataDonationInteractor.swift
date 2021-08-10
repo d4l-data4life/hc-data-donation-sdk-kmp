@@ -18,6 +18,10 @@ final class DataDonationInteractor {
 }
 
 extension DataDonationInteractor {
+
+    func viewDidLoad() {
+        dataDonationSDKService.fetchUserConsents()
+    }
     func didTapAdd() {
         dataDonationSDKService.createUserConsent()
     }
