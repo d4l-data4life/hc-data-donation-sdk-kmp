@@ -51,6 +51,16 @@ internal class CachedUserSessionTokenService(
     private val cache = IsolateState { Cache(clock) }
     private val scope = AtomicReference(scope)
 
+    /*
+    * Please note the provider does not share the same Context/Scope/Thread as the SDK.
+    * This means the SDK needs to transfer the sessionToken from the Context/Scope/Thread of the provider
+    * into it's own. Additionally Closures in Swift are not blocking.
+    * Since SDK Context/Scope/Thread is known and using Atomics like constant values is safe, the
+    * SDK is able to launch a new coroutine.
+    * The channel then makes the actual transfer from the provider Context/Scope/Thread into the
+    * SDK Context/Scope/Thread. Also Channels are blocking which then take care of any asnyc issue caused
+    * by the coroutine of the Callbacks or Swift.
+    */
     private suspend fun fetchTokenFromApi(): Any {
         val channel = Channel<Any>()
 
