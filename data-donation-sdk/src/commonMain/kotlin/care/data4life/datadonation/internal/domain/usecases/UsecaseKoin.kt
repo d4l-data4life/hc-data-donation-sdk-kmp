@@ -21,10 +21,6 @@ import org.koin.dsl.module
 
 internal fun resolveUsecaseModule(): Module {
     return module {
-        single<UsecaseContract.RedactSensitiveInformation> {
-            RedactSensitiveInformation()
-        }
-
         single<UsecaseContract.FetchConsentDocuments> {
             FetchConsentDocuments(get())
         }

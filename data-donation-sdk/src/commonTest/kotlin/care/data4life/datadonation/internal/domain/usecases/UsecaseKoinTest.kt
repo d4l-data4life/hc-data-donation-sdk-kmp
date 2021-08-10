@@ -34,17 +34,6 @@ class UsecaseKoinTest {
     }
 
     @Test
-    fun `Given resolveUsecaseModule is called it creates a Module, which contains FilterSensitiveInformation`() {
-        // When
-        val koin = koinApplication {
-            modules(resolveUsecaseModule())
-        }
-        // Then
-        val instance: UsecaseContract.RedactSensitiveInformation = koin.koin.get()
-        assertNotNull(instance)
-    }
-
-    @Test
     fun `Given resolveUsecaseModule is called it creates a Module, which contains FetchConsentDocuments`() {
         // When
         val koin = koinApplication {

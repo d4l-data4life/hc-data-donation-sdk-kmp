@@ -89,7 +89,6 @@ kotlin {
                 implementation(Dependency.multiplatform.dateTime)
 
                 // D4L
-                implementation(Dependency.d4l.fhir)
                 implementation(Dependency.d4l.sdkUtil)
                 implementation(Dependency.d4l.sdkUtilCoroutine) {
                     exclude(
@@ -116,12 +115,16 @@ kotlin {
 
         val androidMain by getting {
             dependencies {
+                //Kotlin
+                implementation(Dependency.multiplatform.coroutines.android)
+
                 //DI
                 implementation(Dependency.jvm.slf4jNop)
                 implementation(Dependency.jvm.slf4jApi)
 
-                //Ktor
                 implementation(Dependency.multiplatform.ktor.androidCore)
+                implementation(Dependency.multiplatform.ktor.androidSerialization)
+                implementation(Dependency.multiplatform.serialization.android)
             }
         }
         val androidTest by getting {

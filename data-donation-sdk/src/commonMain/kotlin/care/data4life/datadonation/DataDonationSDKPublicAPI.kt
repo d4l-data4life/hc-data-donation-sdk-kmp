@@ -54,13 +54,13 @@ interface DataDonationSDKPublicAPI {
     interface DataDonationClient {
         fun fetchConsentDocuments(
             consentDocumentKey: String,
-            consentDocumentVersion: Int?,
+            consentDocumentVersion: String?,
             language: String?,
         ): D4LSDKFlow<List<ConsentDocument>>
 
         fun createUserConsent(
             consentDocumentKey: String,
-            consentDocumentVersion: Int
+            consentDocumentVersion: String
         ): D4LSDKFlow<UserConsent>
 
         fun fetchUserConsents(consentDocumentKey: String): D4LSDKFlow<List<UserConsent>>

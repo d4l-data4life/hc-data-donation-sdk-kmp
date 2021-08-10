@@ -82,7 +82,7 @@ class ClientConsentFlowModuleTest {
         // Given
         val consentDocumentKey = "potato"
         val language = "en"
-        val version = 42
+        val version = "42"
 
         val httpClient = createMockClientWithResponse { scope, request ->
             // Then
@@ -93,7 +93,7 @@ class ClientConsentFlowModuleTest {
             assertEquals(
                 actual = request.headers,
                 expected = headersOf(
-                    "Authorization" to listOf("Bearer ${UserSessionTokenProvider.sessionToken}"),
+                    "Authorization" to listOf("BearerToken ${UserSessionTokenProvider.sessionToken}"),
                     "Accept" to listOf("application/json"),
                     "Accept-Charset" to listOf("UTF-8")
                 )
@@ -149,7 +149,7 @@ class ClientConsentFlowModuleTest {
         // Given
         val consentDocumentKey = "tomato"
         val language = "en"
-        val version = 42
+        val version = "42"
 
         val httpClient = createMockClientWithResponse { scope, _ ->
             scope.respond(
@@ -205,7 +205,7 @@ class ClientConsentFlowModuleTest {
             assertEquals(
                 actual = request.headers,
                 expected = headersOf(
-                    "Authorization" to listOf("Bearer ${UserSessionTokenProvider.sessionToken}"),
+                    "Authorization" to listOf("BearerToken ${UserSessionTokenProvider.sessionToken}"),
                     "Accept" to listOf("application/json"),
                     "Accept-Charset" to listOf("UTF-8")
                 )
@@ -257,7 +257,7 @@ class ClientConsentFlowModuleTest {
     fun `Given createUserConsent is called with a consentDocumentKey and a consentDocumentVersion, it returns a UserConsent`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val consentDocumentKey = "pepper"
-        val version = 23
+        val version = "23"
 
         val httpClient = createMockClientWithResponse { scope, request ->
             // Then
@@ -269,7 +269,7 @@ class ClientConsentFlowModuleTest {
                 assertEquals(
                     actual = request.headers,
                     expected = headersOf(
-                        "Authorization" to listOf("Bearer ${UserSessionTokenProvider.sessionToken}"),
+                        "Authorization" to listOf("BearerToken ${UserSessionTokenProvider.sessionToken}"),
                         "Accept" to listOf("application/json"),
                         "Accept-Charset" to listOf("UTF-8")
                     )
@@ -281,7 +281,7 @@ class ClientConsentFlowModuleTest {
                 launch {
                     assertEquals(
                         actual = request.body.toByteReadPacket().readText(),
-                        expected = "{\"consentDocumentKey\":\"$consentDocumentKey\",\"consentDocumentVersion\":$version,\"consentDate\":\"1970-01-01T00:01:30Z\"}"
+                        expected = "{\"consentDocumentKey\":\"$consentDocumentKey\",\"consentDocumentVersion\":\"$version\",\"consentDate\":\"1970-01-01T00:01:30Z\"}"
                     )
                 }
                 scope.respond(
@@ -296,7 +296,7 @@ class ClientConsentFlowModuleTest {
                 assertEquals(
                     actual = request.headers,
                     expected = headersOf(
-                        "Authorization" to listOf("Bearer ${UserSessionTokenProvider.sessionToken}"),
+                        "Authorization" to listOf("BearerToken ${UserSessionTokenProvider.sessionToken}"),
                         "Accept" to listOf("application/json"),
                         "Accept-Charset" to listOf("UTF-8")
                     )
@@ -377,7 +377,7 @@ class ClientConsentFlowModuleTest {
             assertEquals(
                 actual = request.headers,
                 expected = headersOf(
-                    "Authorization" to listOf("Bearer ${UserSessionTokenProvider.sessionToken}"),
+                    "Authorization" to listOf("BearerToken ${UserSessionTokenProvider.sessionToken}"),
                     "Accept" to listOf("application/json"),
                     "Accept-Charset" to listOf("UTF-8")
                 )
