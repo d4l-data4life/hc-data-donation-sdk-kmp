@@ -36,28 +36,39 @@ import care.data4life.datadonation.DataDonationSDKPublicAPI
 import care.data4life.datadonation.internal.data.service.ServiceContract.UserSessionTokenService.Companion.CACHE_LIFETIME
 import care.data4life.datadonation.lang.CoreRuntimeError
 import co.touchlab.stately.isolate.IsolateState
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 internal class CachedUserSessionTokenService(
     private val provider: DataDonationSDKPublicAPI.UserSessionTokenProvider,
-    clock: Clock
+    clock: Clock,
+    scope: CoroutineScope
 ) : ServiceContract.UserSessionTokenService {
     private val cache = IsolateState { Cache(clock) }
+    private val scope = AtomicReference(scope)
 
     private suspend fun fetchTokenFromApi(): Any {
-        return withContext(Dispatchers.Main) {
-              suspendCoroutine { continuation ->
-                provider.getUserSessionToken(
-                    { sessionToken -> continuation.resume(sessionToken) },
-                    { error -> continuation.resume(error) }
-                )
-            }
-        }
+        val channel = Channel<Any>()
+
+        provider.getUserSessionToken(
+            { sessionToken: SessionToken ->
+                scope.get().launch {
+                    channel.send(sessionToken)
+                }.start()
+                Unit
+            }.freeze(),
+            { error: Exception ->
+                scope.get().launch {
+                    channel.send(error)
+                }.start()
+                Unit
+            }.freeze()
+        )
+
+        return channel.receive()
     }
 
     private fun fetchCachedTokenIfNotExpired(): SessionToken? {
@@ -82,7 +93,7 @@ internal class CachedUserSessionTokenService(
         return if (cachedToken is SessionToken) {
             cachedToken
         } else {
-            resolveSessionToken(fetchTokenFromApi())
+            return resolveSessionToken(fetchTokenFromApi())
         }
     }
 

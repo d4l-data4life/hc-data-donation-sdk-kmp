@@ -30,7 +30,7 @@ internal fun resolveServiceModule(): Module {
         }
 
         single<ServiceContract.UserSessionTokenService> {
-            CachedUserSessionTokenService(get(), get())
+            CachedUserSessionTokenService(get(), get(), get())
         }
     }
 }

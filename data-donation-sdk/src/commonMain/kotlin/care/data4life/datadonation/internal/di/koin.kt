@@ -81,14 +81,8 @@ internal fun resolveRootModule(
 
         single<Clock> { Clock.System }
 
-        if (userSessionTokenProvider.isFrozen) {
-            single<DataDonationSDKPublicAPI.UserSessionTokenProvider> {
-                userSessionTokenProvider
-            }
-        } else {
-            single<DataDonationSDKPublicAPI.UserSessionTokenProvider> {
-                userSessionTokenProvider.freeze()
-            }
+        single<DataDonationSDKPublicAPI.UserSessionTokenProvider> {
+            userSessionTokenProvider
         }
 
         single<CoroutineScope> {
