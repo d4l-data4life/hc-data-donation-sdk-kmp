@@ -23,7 +23,7 @@ internal typealias Signature = String
 
 internal interface RepositoryContract {
     interface UserConsentRepository {
-        suspend fun createUserConsent(consentDocumentKey: String, version: Int)
+        suspend fun createUserConsent(consentDocumentKey: String, version: String)
         suspend fun fetchUserConsents(consentDocumentKey: String? = null): List<UserConsent>
         suspend fun signUserConsentRegistration(message: String): Signature
         suspend fun signUserConsentDonation(message: String): Signature
@@ -33,7 +33,7 @@ internal interface RepositoryContract {
     interface ConsentDocumentRepository {
         suspend fun fetchConsentDocuments(
             language: String?,
-            version: Int?,
+            version: String?,
             consentDocumentKey: String
         ): List<ConsentDocument>
     }

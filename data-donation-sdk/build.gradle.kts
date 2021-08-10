@@ -67,14 +67,10 @@ kotlin {
                 implementation(Dependency.multiplatform.ktor.commonSerialization)
 
                 implementation(Dependency.multiplatform.serialization.common)
-                implementation(Dependency.multiplatform.serialization.protobuf)
 
                 implementation(Dependency.multiplatform.dateTime)
 
-                implementation(Dependency.multiplatform.uuid)
-
                 // D4L
-                implementation(Dependency.d4l.fhir)
                 implementation(Dependency.d4l.sdkUtil)
                 implementation(Dependency.d4l.sdkFlow)
                 implementation(Dependency.d4l.sdkError)

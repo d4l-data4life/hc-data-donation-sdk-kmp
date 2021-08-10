@@ -40,7 +40,7 @@ internal class UserConsentRepository(
     private val sessionTokenService: ServiceContract.UserSessionTokenService
 ) : RepositoryContract.UserConsentRepository {
 
-    override suspend fun createUserConsent(consentDocumentKey: String, version: Int) {
+    override suspend fun createUserConsent(consentDocumentKey: String, version: String) {
         val sessionToken = sessionTokenService.getUserSessionToken()
         consentService.createUserConsent(
             sessionToken,

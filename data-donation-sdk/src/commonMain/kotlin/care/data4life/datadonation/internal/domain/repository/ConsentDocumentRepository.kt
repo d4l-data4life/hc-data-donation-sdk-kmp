@@ -42,7 +42,7 @@ internal class ConsentDocumentRepository(
 
     override suspend fun fetchConsentDocuments(
         language: String?,
-        version: Int?,
+        version: String?,
         consentDocumentKey: String
     ): List<ConsentDocument> {
         val sessionToken = sessionTokenService.getUserSessionToken()
