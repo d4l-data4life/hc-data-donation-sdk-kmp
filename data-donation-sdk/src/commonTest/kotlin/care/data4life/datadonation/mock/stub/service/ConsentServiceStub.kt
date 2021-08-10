@@ -24,8 +24,8 @@ import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 
 internal class ConsentServiceStub : ServiceContract.ConsentService, MockContract.Stub {
-    var whenCreateUserConsent: ((String, String, Int) -> Unit)? = null
-    var whenFetchConsentDocuments: ((String, Int?, String?, String) -> List<ConsentDocument>)? = null
+    var whenCreateUserConsent: ((String, String, String) -> Unit)? = null
+    var whenFetchConsentDocuments: ((String, String?, String?, String) -> List<ConsentDocument>)? = null
     var whenFetchUserConsents: ((String, Boolean?, String?) -> List<UserConsent>)? = null
     var whenRequestSignatureConsentRegistration: ((String, String) -> ConsentSignature)? = null
     var whenRequestSignatureDonation: ((String, String) -> ConsentSignature)? = null
@@ -34,7 +34,7 @@ internal class ConsentServiceStub : ServiceContract.ConsentService, MockContract
     override suspend fun createUserConsent(
         accessToken: String,
         consentDocumentKey: String,
-        version: Int
+        version: String
     ) {
         return whenCreateUserConsent?.invoke(
             accessToken,
@@ -45,7 +45,7 @@ internal class ConsentServiceStub : ServiceContract.ConsentService, MockContract
 
     override suspend fun fetchConsentDocuments(
         accessToken: String,
-        version: Int?,
+        version: String?,
         language: String?,
         consentDocumentKey: String
     ): List<ConsentDocument> {

@@ -37,6 +37,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 internal data class ConsentCreationPayload(
     val consentDocumentKey: String,
-    val consentDocumentVersion: Int,
+    val consentDocumentVersion: String,
     val consentDate: String
 )

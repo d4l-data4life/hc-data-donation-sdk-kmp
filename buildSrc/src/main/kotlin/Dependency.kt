@@ -35,10 +35,13 @@ object Dependency {
     val d4l = D4L
     object D4L {
         const val sdkUtil = "care.data4life.hc-util-sdk-kmp:util:${Version.sdkUtil}"
-        const val sdkUtilCoroutine = "care.data4life.hc-util-sdk-kmp:util-coroutine:${Version.sdkUtil}"
-        const val sdkTestUtil = "care.data4life.hc-util-sdk-kmp:util-test:${Version.sdkUtil}"
-        const val sdkTestCoroutineUtil = "care.data4life.hc-util-sdk-kmp:util-coroutine-test:${Version.sdkUtil}"
-        const val sdkTestKtorUtil = "care.data4life.hc-util-sdk-kmp:util-ktor-test:${Version.sdkUtil}"
+        const val sdkObjcUtil = "care.data4life.hc-objc-util-sdk-kmp:objc-util:${Version.sdkObjcUtil}"
+        const val sdkUtilCoroutine = "care.data4life.hc-coroutine-util-sdk-kmp:coroutine-util:${Version.sdkCoroutineUtil}"
+        const val sdkFlow = "care.data4life.hc-result-sdk-kmp:flow:${Version.sdkResult}"
+        const val sdkError = "care.data4life.hc-result-sdk-kmp:error:${Version.sdkResult}"
+        const val sdkTestUtil = "care.data4life.hc-test-util-sdk-kmp:test-util:${Version.sdkTestUtil}"
+        const val sdkTestCoroutineUtil = "care.data4life.hc-test-util-sdk-kmp:test-util-coroutine:${Version.sdkTestUtil}"
+        const val sdkTestKtorUtil = "care.data4life.hc-test-util-sdk-kmp:test-util-ktor:${Version.sdkTestUtil}"
         const val fhir = "care.data4life.hc-fhir-sdk-kmp:fhir:${Version.fhir}"
     }
 

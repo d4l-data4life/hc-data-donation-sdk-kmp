@@ -36,8 +36,8 @@ import care.data4life.datadonation.ConsentDataContract.ConsentDocument
 import care.data4life.datadonation.ConsentDataContract.UserConsent
 import care.data4life.datadonation.internal.di.initKoin
 import care.data4life.datadonation.internal.domain.usecases.*
-import care.data4life.sdk.util.coroutine.D4LSDKFlow
-import care.data4life.sdk.util.coroutine.D4LSDKFlowFactoryContract
+import care.data4life.sdk.flow.D4LSDKFlow
+import care.data4life.sdk.flow.D4LSDKFlowFactoryContract
 import care.data4life.sdk.util.coroutine.DomainErrorMapperContract
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.flow
@@ -56,7 +56,7 @@ class Client internal constructor(
 
     override fun createUserConsent(
         consentDocumentKey: String,
-        consentDocumentVersion: Int
+        consentDocumentVersion: String
     ): D4LSDKFlow<UserConsent> {
         val flow = flow {
             val parameter = CreateUserConsent.Parameter(
@@ -76,7 +76,7 @@ class Client internal constructor(
 
     override fun fetchConsentDocuments(
         consentDocumentKey: String,
-        consentDocumentVersion: Int?,
+        consentDocumentVersion: String?,
         language: String?,
     ): D4LSDKFlow<List<ConsentDocument>> {
         val flow = flow {

@@ -40,9 +40,9 @@ import care.data4life.datadonation.internal.data.service.resolveServiceModule
 import care.data4life.datadonation.internal.domain.repository.resolveRepositoryModule
 import care.data4life.datadonation.internal.domain.usecases.*
 import care.data4life.datadonation.lang.DataDonationFlowErrorMapper
-import care.data4life.sdk.util.coroutine.CoroutineHelper
-import care.data4life.sdk.util.coroutine.D4LSDKFlow
-import care.data4life.sdk.util.coroutine.D4LSDKFlowFactoryContract
+import care.data4life.sdk.flow.D4LSDKFlow
+import care.data4life.sdk.flow.D4LSDKFlowFactoryContract
+import care.data4life.sdk.util.coroutine.CoroutineScopeFactory
 import care.data4life.sdk.util.coroutine.DomainErrorMapperContract
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.datetime.Clock
@@ -84,7 +84,7 @@ internal fun resolveRootModule(
         }
 
         single<CoroutineScope> {
-            CoroutineHelper.createCoroutineScope("DataDonationBackgroundThreadScope")
+            CoroutineScopeFactory.createScope("DataDonationBackgroundThreadScope")
         }
 
         single<DomainErrorMapperContract> {

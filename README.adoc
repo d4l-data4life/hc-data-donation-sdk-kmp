@@ -1,5 +1,5 @@
 = Data4Life Data-Donation SDK
-:library_version: 0.1.0
+:library_version: 0.1.2
 :doctype: article
 :!showtitle:
 :toc: macro
@@ -72,6 +72,11 @@ The SDK has the following dependencies:
 * link:https://github.com/Kotlin/kotlinx-datetime[kotlinx-datetime]
 * link:https://github.com/touchlab/Stately[Stately Common]
 * link:https://github.com/touchlab/Stately[Stately Isolate]
+* link:https://github.com/d4l-data4life/hc-fhir-sdk-kmp[D4L-FHIR-SDK-KMP]
+* link:https://github.com/d4l-data4life/hc-util-sdk-kmp[D4L-Util-SDK-KMP]
+* link:https://github.com/d4l-data4life/hc-objc-util-sdk-kmp[D4L-ObjC-Util-SDK-KMP]
+* link:https://github.com/d4l-data4life/hc-coroutine-util-sdk-kmp[D4L-Coroutine-Util-SDK-KMP]
+* link:https://github.com/d4l-data4life/hc-result-sdk-kmp[D4L-Result-SDK-KMP]
 
 == Installation
 
@@ -114,35 +119,11 @@ Add the following maven repository configuration to your root build.gradle:
 
 ==== Common
 
-----
-dependencies {
-    implementation("care.data4life.d4l-data-donation-sdk-kmp:data-donation-sdk:$version") {
-        exclude group: 'care.data4life.hc-util-sdk-kmp', module: 'util'
-    }
-}
-----
+Will be added soon.
 
 ==== Android
 
-----
-dependencies {
-    implementation("care.data4life.d4l-data-donation-sdk-kmp:data-donation-sdk:$version") {
-        exclude group: 'care.data4life.hc-util-sdk-kmp', module: 'util'
-    }
-}
-----
-
-To ensure Java 8 compatibility, add compile options to app `build.gradle`:
-
-[source,gradle]
-----
-android {
-    compileOptions {
-        sourceCompatibility 1.8
-        targetCompatibility 1.8
-    }
-}
-----
+Will be added soon.
 
 ==== iOS
 

@@ -16,8 +16,8 @@
 
 package care.data4life.datadonation.lang
 
+import care.data4life.sdk.lang.PlatformError
 import care.data4life.sdk.util.coroutine.DomainErrorMapperContract
-import care.data4life.sdk.util.lang.PlatformError
 
 actual object DataDonationFlowErrorMapper : DomainErrorMapperContract {
     actual override fun mapError(error: Throwable): PlatformError = error

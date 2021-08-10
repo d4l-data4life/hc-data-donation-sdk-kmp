@@ -74,7 +74,7 @@ class ConsentServiceTest {
         val clock = ClockStub()
         val accessToken = "potato"
         val consentDocumentKey = "custom-consent-key"
-        val version = 23
+        val version = "23"
 
         val error = HttpRuntimeError(HttpStatusCode.TooManyRequests)
         val outgoingError = ConsentServiceError.Forbidden()
@@ -132,7 +132,7 @@ class ConsentServiceTest {
 
         val accessToken = "potato"
         val consentDocumentKey = "custom-consent-key"
-        val version = 23
+        val version = "23"
 
         var capturedMethod: Networking.Method? = null
         var capturedPath: Path? = null
@@ -212,7 +212,7 @@ class ConsentServiceTest {
     fun `Given fetchConsentDocuments was called with a AccessToken, Version, Language and a consentDocumentKey it delegates HttpRequestErrors to its ErrorHandler`() = runBlockingTest {
         // Given
         val accessToken = "potato"
-        val version = 23
+        val version = "23"
         val language = "zh-TW-hans-de-informal-x-old"
         val consentDocumentKey = "tomato"
 
@@ -274,7 +274,7 @@ class ConsentServiceTest {
         }
 
         val accessToken = "potato"
-        val version = 23
+        val version = "23"
         val language = "zh-TW-hans-de-informal-x-old"
         val consentDocumentKey = "tomato"
 
@@ -312,7 +312,7 @@ class ConsentServiceTest {
         // Given
         val requestTemplate = RequestBuilderSpy.Factory()
         val accessToken = "potato"
-        val version = 23
+        val version = "23"
         val language = "zh-TW-hans-de-informal-x-old"
         val consentDocumentKey = "tomato"
 

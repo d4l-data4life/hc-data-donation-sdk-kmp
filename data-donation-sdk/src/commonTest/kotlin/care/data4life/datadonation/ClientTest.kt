@@ -31,7 +31,7 @@ import care.data4life.datadonation.mock.stub.FetchConsentDocumentsStub
 import care.data4life.datadonation.mock.stub.FetchUserConsentsStub
 import care.data4life.datadonation.mock.stub.RevokeUserConsentStub
 import care.data4life.datadonation.mock.stub.UserSessionTokenProviderStub
-import care.data4life.sdk.util.coroutine.D4LSDKFlowFactoryContract
+import care.data4life.sdk.flow.D4LSDKFlowFactoryContract
 import care.data4life.sdk.util.coroutine.DomainErrorMapperContract
 import care.data4life.sdk.util.test.coroutine.runWithContextBlockingTest
 import care.data4life.sdk.util.test.coroutine.testCoroutineContext
@@ -81,7 +81,7 @@ class ClientTest {
         val consent = sampleUserConsent
         val scope = CoroutineScope(testCoroutineContext)
 
-        val version = 23
+        val version = "23"
         val consentDocumentKey = "custom-consent-key"
 
         val capturedParameter = Channel<UsecaseContract.CreateUserConsent.Parameter>()
@@ -161,7 +161,7 @@ class ClientTest {
         val documents = listOf(sampleConsentDocument)
         val scope = CoroutineScope(testCoroutineContext)
 
-        val version = 23
+        val version = "23"
         val language = "de-j-old-n-kotlin-x-done"
         val consentDocumentKey = "abc"
 

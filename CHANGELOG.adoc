@@ -31,6 +31,9 @@ See link:{link-repository}/compare/v0.1.0...main[changeset]
 
 * touchlab's stately-common (1.1.6) (Dependency).
 * touchlab's stately-concurrency (1.1.6) (Dependency).
+* Coroutine-Util (see: https://github.com/d4l-data4life/hc-coroutine-util-sdk-kmp) (Dependency)
+* Result-SDK (see: https://github.com/d4l-data4life/hc-result-sdk-kmp) (Dependency)
+* ObjC-SDK (see: https://github.com/d4l-data4life/hc-objc-util-sdk-kmp) (Dependency)
 
 === Changed
 
@@ -40,10 +43,6 @@ See link:{link-repository}/compare/v0.1.0...main[changeset]
 
 === Fixed
 
-* `fetchUserDocuments` used wrong url parameter.
-* `version` at ConsentDocument.
-* `UserSessionTokenService` call due to Context switch issues (iOS).
-
 === Security
 
 === Bumped
@@ -52,6 +51,26 @@ See link:{link-repository}/compare/v0.1.0...main[changeset]
 
 === Migration
 
+== link:{link-repository}/releases/tag/v0.1.2[0.1.2]
+
+See link:{link-repository}/compare/v0.0.1...v0.1.2[0.1.2]
+
+=== Fixed
+
+* versions are now covered as Strings to reflect semantic versioning of the Backend.
+
+== link:{link-repository}/releases/tag/v0.1.1[0.1.1]
+
+See link:{link-repository}/compare/v0.0.1...v0.1.1[0.1.1]
+
+=== Removed
+
+* FHIR as dependency.
+
+=== Fixed
+
+* `fetchUserDocuments` used wrong url parameter.
+* `version` at ConsentDocument.
 
 == link:{link-repository}/releases/tag/v0.1.0[0.1.0]
 
