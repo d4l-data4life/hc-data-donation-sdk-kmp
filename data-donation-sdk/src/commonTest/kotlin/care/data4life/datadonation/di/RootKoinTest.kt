@@ -19,7 +19,7 @@ package care.data4life.datadonation.di
 import care.data4life.datadonation.DataDonationSDKPublicAPI
 import care.data4life.datadonation.internal.di.resolveRootModule
 import care.data4life.datadonation.mock.stub.UserSessionTokenProviderStub
-import care.data4life.sdk.util.coroutine.D4LSDKFlowFactoryContract
+import care.data4life.sdk.flow.D4LSDKFlowFactoryContract
 import care.data4life.sdk.util.coroutine.DomainErrorMapperContract
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.datetime.Clock
