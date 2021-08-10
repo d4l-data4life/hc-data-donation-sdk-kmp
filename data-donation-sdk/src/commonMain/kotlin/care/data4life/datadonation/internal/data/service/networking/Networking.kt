@@ -65,7 +65,7 @@ internal interface Networking {
 
         companion object {
             const val ACCESS_TOKEN_FIELD = "Authorization"
-            const val ACCESS_TOKEN_VALUE_PREFIX = "Bearer"
+            const val ACCESS_TOKEN_VALUE_PREFIX = "BearerToken"
         }
     }
 

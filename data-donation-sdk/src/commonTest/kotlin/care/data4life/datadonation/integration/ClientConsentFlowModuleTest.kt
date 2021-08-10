@@ -93,7 +93,7 @@ class ClientConsentFlowModuleTest {
             assertEquals(
                 actual = request.headers,
                 expected = headersOf(
-                    "Authorization" to listOf("Bearer ${UserSessionTokenProvider.sessionToken}"),
+                    "Authorization" to listOf("BearerToken ${UserSessionTokenProvider.sessionToken}"),
                     "Accept" to listOf("application/json"),
                     "Accept-Charset" to listOf("UTF-8")
                 )
@@ -205,7 +205,7 @@ class ClientConsentFlowModuleTest {
             assertEquals(
                 actual = request.headers,
                 expected = headersOf(
-                    "Authorization" to listOf("Bearer ${UserSessionTokenProvider.sessionToken}"),
+                    "Authorization" to listOf("BearerToken ${UserSessionTokenProvider.sessionToken}"),
                     "Accept" to listOf("application/json"),
                     "Accept-Charset" to listOf("UTF-8")
                 )
@@ -269,7 +269,7 @@ class ClientConsentFlowModuleTest {
                 assertEquals(
                     actual = request.headers,
                     expected = headersOf(
-                        "Authorization" to listOf("Bearer ${UserSessionTokenProvider.sessionToken}"),
+                        "Authorization" to listOf("BearerToken ${UserSessionTokenProvider.sessionToken}"),
                         "Accept" to listOf("application/json"),
                         "Accept-Charset" to listOf("UTF-8")
                     )
@@ -296,7 +296,7 @@ class ClientConsentFlowModuleTest {
                 assertEquals(
                     actual = request.headers,
                     expected = headersOf(
-                        "Authorization" to listOf("Bearer ${UserSessionTokenProvider.sessionToken}"),
+                        "Authorization" to listOf("BearerToken ${UserSessionTokenProvider.sessionToken}"),
                         "Accept" to listOf("application/json"),
                         "Accept-Charset" to listOf("UTF-8")
                     )
@@ -377,7 +377,7 @@ class ClientConsentFlowModuleTest {
             assertEquals(
                 actual = request.headers,
                 expected = headersOf(
-                    "Authorization" to listOf("Bearer ${UserSessionTokenProvider.sessionToken}"),
+                    "Authorization" to listOf("BearerToken ${UserSessionTokenProvider.sessionToken}"),
                     "Accept" to listOf("application/json"),
                     "Accept-Charset" to listOf("UTF-8")
                 )

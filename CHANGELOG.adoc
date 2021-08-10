@@ -37,6 +37,8 @@ See link:{link-repository}/compare/v0.1.0...main[changeset]
 
 === Fixed
 
+* SessionToken propagation.
+
 === Security
 
 === Bumped
