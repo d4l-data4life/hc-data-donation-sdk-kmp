@@ -36,7 +36,7 @@ extension DataDonationSDKService {
     }
 
     func createUserConsent(key: String = DataDonationSDKService.testKey) {
-        let flow = client.createUserConsent(consentDocumentKey: key, consentDocumentVersion: 1)
+        let flow = client.createUserConsent(consentDocumentKey: key, consentDocumentVersion: "1.0.0")
         currentJob = flow.subscribe { consent in
             print(consent)
         } onError: { error in

@@ -11,11 +11,17 @@ final class DataDonationViewController: UIViewController {
 
     private let interactor: DataDonationInteractor
     private let router: DataDonationRouter
+    private lazy var dataDonationDiffableDataSource: DataDonationDiffableDataSource = {
+        let dataSource = DataDonationDiffableDataSource(tableView: tableView) { tableView, indexPath, consentItem in
+            return UITableViewCell()
+        }
+
+        return dataSource
+    }()
 
     private lazy var tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .insetGrouped)
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.dataSource = self
         tableView.delegate = self
         return tableView
     }()
@@ -80,18 +86,39 @@ private extension DataDonationViewController {
         view.addSubview(mainStackView)
         mainStackView.addArrangedSubview(tableView)
         mainStackView.addArrangedSubview(buttonStackView)
+
         let spacingViewOne = UIView()
         let spacingViewTwo = UIView()
-        mainStackView.addArrangedSubview(tableView)
-        mainStackView.addArrangedSubview(addButton)
-        mainStackView.addArrangedSubview(removeButton)
-        mainStackView.addArrangedSubview(spacingViewTwo)
+        buttonStackView.addArrangedSubview(spacingViewOne)
+        buttonStackView.addArrangedSubview(addButton)
+        buttonStackView.addArrangedSubview(removeButton)
+        buttonStackView.addArrangedSubview(spacingViewTwo)
         NSLayoutConstraint.activate([
-            spacingViewOne.heightAnchor.constraint(equalTo: spacingViewTwo.heightAnchor),
+            buttonStackView.heightAnchor.constraint(equalToConstant: 44),
+            spacingViewOne.widthAnchor.constraint(equalTo: spacingViewTwo.widthAnchor),
             mainStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             mainStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             mainStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             mainStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
         ])
+
+        tableView.dataSource = dataDonationDiffableDataSource
     }
+}
+
+
+enum ConsentSection: Hashable  {
+    case main
+}
+
+struct ConsentItem: Hashable {
+    let item: String
+}
+
+extension DataDonationViewController: UITableViewDelegate {
+
+}
+
+final class DataDonationDiffableDataSource: UITableViewDiffableDataSource<ConsentSection, ConsentItem> {
+
 }
