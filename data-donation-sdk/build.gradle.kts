@@ -256,7 +256,7 @@ project.afterEvaluate {
                     swiftNameReplacements.forEach { (originalName, newName) ->
                         source = source.replace(
                             "__attribute__((swift_name(\"$originalName\")))",
-                            "__attribute__((swift_name(\"$newName\"))) // $originalName -> newName"
+                            "__attribute__((swift_name(\"$newName\"))) // $originalName -> $newName"
                         )
                     }
 
