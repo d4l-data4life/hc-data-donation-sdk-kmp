@@ -70,6 +70,7 @@ The SDK has the following dependencies:
 * link:https://github.com/Kotlin/kotlinx.serialization[Kotlin Serialization]
 * link:https://github.com/InsertKoinIO/koin[Koin]
 * link:https://github.com/Kotlin/kotlinx-datetime[kotlinx-datetime]
+* link:https://github.com/touchlab/Stately[Stately Common]
 * link:https://github.com/touchlab/Stately[Stately Isolate]
 * link:https://github.com/d4l-data4life/hc-fhir-sdk-kmp[D4L-FHIR-SDK-KMP]
 * link:https://github.com/d4l-data4life/hc-util-sdk-kmp[D4L-Util-SDK-KMP]

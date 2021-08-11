@@ -91,8 +91,8 @@ class RootKoinTest {
             )
         }
         // Then
-        val builder: DataDonationSDKPublicAPI.UserSessionTokenProvider = koin.koin.get()
-        assertNotNull(builder)
+        val item: DataDonationSDKPublicAPI.UserSessionTokenProvider = koin.koin.get()
+        assertNotNull(item)
     }
 
     @Test
