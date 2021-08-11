@@ -125,6 +125,8 @@ internal class ConsentService constructor(
             USER_CONSENT_KEY to consentDocumentKey,
         )
 
+        println("launching fetchUserContents with key:" + consentDocumentKey + "accessToken: " + accessToken + "isLatestConsent: " + latestConsent)
+
         val request = requestBuilderFactory
             .create()
             .setAccessToken(accessToken)
@@ -134,9 +136,12 @@ internal class ConsentService constructor(
                 path
             )
 
+        println(request)
         return try {
             receive<List<UserConsent>>(request)
         } catch (error: HttpRuntimeError) {
+            println(error)
+            println(error.statusCode)
             throw errorHandler.handleFetchUserConsents(error)
         }
     }

@@ -68,4 +68,10 @@ final class Data4LifeSDKService {
     var userSessionProvider: UserSessionTokenProvider {
         D4LTokenProvider(client: client)
     }
+
+    func logOut(didLogout: @escaping ()->Void) {
+        client.logout { result in
+            didLogout()
+        }
+    }
 }

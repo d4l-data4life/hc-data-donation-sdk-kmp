@@ -22,7 +22,7 @@ final class DataDonationSDKService {
 
 extension DataDonationSDKService {
 
-    private static var testKey = "test-key"
+    private static var testKey = "d4l.ecov"
 
     func fetchUserConsents() {
         let flow = client.fetchAllUserConsents()

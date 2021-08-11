@@ -10,16 +10,20 @@ import Foundation
 final class DataDonationInteractor {
     
     private let dataDonationSDKService: DataDonationSDKService
+    private let coreSDKService: Data4LifeSDKService
+
     weak var view: DataDonationViewController?
     
-    init(service: DataDonationSDKService) {
-        self.dataDonationSDKService = service
+    init(dataDonationSDKService: DataDonationSDKService, coreSDKService: Data4LifeSDKService) {
+        self.dataDonationSDKService = dataDonationSDKService
+        self.coreSDKService = coreSDKService
     }
 }
 
 extension DataDonationInteractor {
 
     func viewDidLoad() {
+        view?.setCanLogoutState()
         dataDonationSDKService.fetchUserConsents()
     }
     func didTapAdd() {
@@ -28,5 +32,17 @@ extension DataDonationInteractor {
 
     func didTapRemove() {
         dataDonationSDKService.revokeUserConsent()
+    }
+
+    func didTapLogOut() {
+        coreSDKService.logOut { [weak self] in
+            self?.view?.setNeedsLoginState()
+        }
+    }
+
+    func didTapLogin() {
+        coreSDKService.openLogin(from: view!, didLogin: { [weak self] result in
+            self?.viewDidLoad()
+        })
     }
 }

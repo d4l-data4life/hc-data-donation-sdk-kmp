@@ -187,7 +187,6 @@ class ClientConsentFlowModuleTest {
             version,
             language,
         ).subscribe(
-            scope = GlobalScope,
             onEach = {},
             onError = { error ->
                 GlobalScope.launch {
@@ -473,11 +472,10 @@ class ClientConsentFlowModuleTest {
         // When
         val client = Client(koin)
         val job = client.revokeUserConsent(consentDocumentKey).subscribe(
-            scope = GlobalScope,
             onEach = {},
             onError = { error ->
                 GlobalScope.launch {
-                    result.send(error)
+                    result.send(error.userInfo["kotlinError"] as Throwable)
                 }
             },
             onComplete = {}

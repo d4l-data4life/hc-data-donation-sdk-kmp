@@ -62,6 +62,20 @@ final class DataDonationViewController: UIViewController {
         return button
     }()
 
+    private lazy var logOutButton: UIBarButtonItem = {
+        let buttonItem = UIBarButtonItem(title: "Log Out", image: nil, primaryAction: UIAction.init(handler: { _ in
+            self.interactor.didTapLogOut()
+        }), menu: nil)
+        return buttonItem
+    }()
+
+    private lazy var loginButton: UIBarButtonItem = {
+        let buttonItem = UIBarButtonItem(title: "Log In", image: nil, primaryAction: UIAction.init(handler: { _ in
+            self.interactor.didTapLogin()
+        }), menu: nil)
+        return buttonItem
+    }()
+
     init(interactor: DataDonationInteractor, router: DataDonationRouter) {
         self.interactor = interactor
         self.router = router
@@ -79,10 +93,20 @@ final class DataDonationViewController: UIViewController {
         configureSubviews()
         interactor.viewDidLoad()
     }
+
+    func setNeedsLoginState() {
+        navigationItem.setRightBarButton(loginButton, animated: true)
+    }
+    func setCanLogoutState() {
+        navigationItem.setRightBarButton(logOutButton, animated: true)
+    }
 }
 
 private extension DataDonationViewController {
     func configureSubviews() {
+
+        setCanLogoutState()
+
         view.addSubview(mainStackView)
         mainStackView.addArrangedSubview(tableView)
         mainStackView.addArrangedSubview(buttonStackView)
@@ -103,6 +127,9 @@ private extension DataDonationViewController {
         ])
 
         tableView.dataSource = dataDonationDiffableDataSource
+        tableView.refreshControl = UIRefreshControl(frame: .zero, primaryAction: UIAction.init(handler: { [unowned self] _ in
+            self.interactor.viewDidLoad()
+        }))
     }
 }
 
