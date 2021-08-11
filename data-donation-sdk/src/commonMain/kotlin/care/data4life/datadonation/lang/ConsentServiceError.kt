@@ -21,7 +21,6 @@ import care.data4life.sdk.lang.D4LRuntimeException
 sealed class ConsentServiceError(
     open val httpStatus: Int
 ) : D4LRuntimeException() {
-
     class UnexpectedFailure(override val httpStatus: Int) : ConsentServiceError(httpStatus)
     class NoValidConsent : ConsentServiceError(200)
     class BadRequest : ConsentServiceError(400)
