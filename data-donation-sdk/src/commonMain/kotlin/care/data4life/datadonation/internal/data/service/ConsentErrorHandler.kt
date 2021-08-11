@@ -93,6 +93,7 @@ internal object ConsentErrorHandler : ServiceContract.ConsentService.ConsentErro
         return mapError(
             error,
             mapOf(
+                HttpStatusCode.OK to ConsentServiceError.NoValidConsent(),
                 HttpStatusCode.Unauthorized to ConsentServiceError.Unauthorized(),
                 HttpStatusCode.Forbidden to ConsentServiceError.Forbidden(),
                 HttpStatusCode.NotFound to ConsentServiceError.NotFound(),
