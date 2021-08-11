@@ -164,7 +164,7 @@ class ClientConsentFlowAndroidModuleTest {
 
         runBlockingTest {
             // Then
-            assertTrue(capturedError.receive() is ConsentServiceError.UnexpectedFailure)
+            assertTrue(capturedError.receive() is ConsentServiceError.NoValidConsent)
         }
     }
 
