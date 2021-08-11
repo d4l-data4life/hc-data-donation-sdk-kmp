@@ -45,6 +45,7 @@ import care.data4life.datadonation.lang.ConsentServiceError
 import care.data4life.datadonation.mock.ResourceLoader
 import care.data4life.datadonation.mock.fixture.ConsentFixtures
 import care.data4life.datadonation.mock.stub.ClockStub
+import care.data4life.sdk.util.test.coroutine.runBlockingTest
 import care.data4life.sdk.util.test.coroutine.runWithContextBlockingTest
 import care.data4life.sdk.util.test.ktor.HttpMockClientFactory.createMockClientWithResponse
 import io.ktor.client.engine.mock.respond
@@ -55,7 +56,7 @@ import io.ktor.http.fullPath
 import io.ktor.http.headersOf
 import io.ktor.util.KtorExperimentalAPI
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
@@ -82,7 +83,7 @@ class ClientConsentFlowModuleTest {
         // Given
         val consentDocumentKey = "potato"
         val language = "en"
-        val version = 42
+        val version = "42"
 
         val httpClient = createMockClientWithResponse { scope, request ->
             // Then
@@ -145,11 +146,12 @@ class ClientConsentFlowModuleTest {
     }
 
     @Test
-    fun `Given fetchConsentDocuments is called with its appropriate parameter, it propagates Errors`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+    fun `Given fetchConsentDocuments is called with its appropriate parameter, it propagates Errors`() {
         // Given
         val consentDocumentKey = "tomato"
         val language = "en"
-        val version = 42
+        val version = "42"
+        val result = Channel<Any> { }
 
         val httpClient = createMockClientWithResponse { scope, _ ->
             scope.respond(
@@ -178,16 +180,28 @@ class ClientConsentFlowModuleTest {
             )
         }
 
-        val client = Client(koin)
-
         // When
-        client.fetchConsentDocuments(
+        val client = Client(koin)
+        val job = client.fetchConsentDocuments(
             consentDocumentKey,
             version,
             language,
-        ).ktFlow.catch { result ->
+        ).subscribe(
+            scope = GlobalScope,
+            onEach = {},
+            onError = { error ->
+                GlobalScope.launch {
+                    result.send(error)
+                }
+            },
+            onComplete = {}
+        )
+
+        runBlockingTest {
+            job.join()
+
             // Then
-            assertTrue(result is ConsentServiceError.InternalServer)
+            assertTrue(result.receive() is ConsentServiceError.InternalServer)
         }
     }
 
@@ -257,7 +271,7 @@ class ClientConsentFlowModuleTest {
     fun `Given createUserConsent is called with a consentDocumentKey and a consentDocumentVersion, it returns a UserConsent`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val consentDocumentKey = "pepper"
-        val version = 23
+        val version = "23"
 
         val httpClient = createMockClientWithResponse { scope, request ->
             // Then
@@ -281,7 +295,7 @@ class ClientConsentFlowModuleTest {
                 launch {
                     assertEquals(
                         actual = request.body.toByteReadPacket().readText(),
-                        expected = "{\"consentDocumentKey\":\"$consentDocumentKey\",\"consentDocumentVersion\":$version,\"consentDate\":\"1970-01-01T00:01:30Z\"}"
+                        expected = "{\"consentDocumentKey\":\"$consentDocumentKey\",\"consentDocumentVersion\":\"$version\",\"consentDate\":\"1970-01-01T00:01:30Z\"}"
                     )
                 }
                 scope.respond(
@@ -423,9 +437,10 @@ class ClientConsentFlowModuleTest {
 
     @KtorExperimentalAPI
     @Test
-    fun `Given revokeUserConsents is called with consentDocumentKey it fails at unexpected Resonse`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+    fun `Given revokeUserConsents is called with consentDocumentKey it fails at unexpected Resonse`() {
         // Given
         val consentDocumentKey = "water"
+        val result = Channel<Throwable>()
 
         val httpClient = createMockClientWithResponse { scope, _ ->
             // Then
@@ -455,12 +470,24 @@ class ClientConsentFlowModuleTest {
             )
         }
 
-        val client = Client(koin)
-
         // When
-        client.revokeUserConsent(consentDocumentKey).ktFlow.catch { result ->
+        val client = Client(koin)
+        val job = client.revokeUserConsent(consentDocumentKey).subscribe(
+            scope = GlobalScope,
+            onEach = {},
+            onError = { error ->
+                GlobalScope.launch {
+                    result.send(error)
+                }
+            },
+            onComplete = {}
+        )
+
+        runBlockingTest {
+            job.join()
+
             // Then
-            assertTrue(result is ConsentServiceError.UnexpectedFailure)
+            assertTrue(result.receive() is ConsentServiceError.NoValidConsent)
         }
     }
 

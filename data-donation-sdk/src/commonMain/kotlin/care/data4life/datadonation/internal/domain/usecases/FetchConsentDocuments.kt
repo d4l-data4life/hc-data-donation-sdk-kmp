@@ -49,7 +49,7 @@ internal class FetchConsentDocuments(
     }
 
     data class Parameter(
-        override val version: Int?,
+        override val version: String?,
         override val language: String?,
         override val consentDocumentKey: String
     ) : UsecaseContract.FetchConsentDocuments.Parameter

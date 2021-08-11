@@ -72,7 +72,7 @@ class ClientTest {
         val usecase = CreateUserConsentStub()
         val consent = sampleUserConsent
 
-        val version = 23
+        val version = "23"
         val consentDocumentKey = "custom-consent-key"
 
         val capturedParameter = Channel<UsecaseContract.CreateUserConsent.Parameter>()
@@ -132,7 +132,7 @@ class ClientTest {
         val usecase = FetchConsentDocumentsStub()
         val documents = listOf(sampleConsentDocument)
 
-        val version = 23
+        val version = "23"
         val language = "de-j-old-n-kotlin-x-done"
         val consentDocumentKey = "abc"
 
