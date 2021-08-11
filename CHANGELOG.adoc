@@ -25,7 +25,7 @@ toc::[]
 
 == link:{link-repository}/releases/latest[Unreleased]
 
-See link:{link-repository}/compare/v0.1.0...main[changeset]
+See link:{link-repository}/compare/v0.1.2...main[changeset]
 
 === Added
 

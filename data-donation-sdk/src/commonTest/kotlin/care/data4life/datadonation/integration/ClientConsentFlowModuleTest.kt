@@ -41,11 +41,9 @@ import care.data4life.datadonation.internal.data.service.resolveServiceModule
 import care.data4life.datadonation.internal.di.resolveRootModule
 import care.data4life.datadonation.internal.domain.repository.resolveRepositoryModule
 import care.data4life.datadonation.internal.domain.usecases.resolveUsecaseModule
-import care.data4life.datadonation.lang.ConsentServiceError
 import care.data4life.datadonation.mock.ResourceLoader
 import care.data4life.datadonation.mock.fixture.ConsentFixtures
 import care.data4life.datadonation.mock.stub.ClockStub
-import care.data4life.sdk.util.test.coroutine.runBlockingTest
 import care.data4life.sdk.util.test.coroutine.runWithContextBlockingTest
 import care.data4life.sdk.util.test.ktor.HttpMockClientFactory.createMockClientWithResponse
 import io.ktor.client.engine.mock.respond
@@ -56,7 +54,6 @@ import io.ktor.http.fullPath
 import io.ktor.http.headersOf
 import io.ktor.util.KtorExperimentalAPI
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
@@ -69,7 +66,6 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertSame
-import kotlin.test.assertTrue
 import kotlin.time.seconds
 
 class ClientConsentFlowModuleTest {
@@ -94,7 +90,7 @@ class ClientConsentFlowModuleTest {
             assertEquals(
                 actual = request.headers,
                 expected = headersOf(
-                    "Authorization" to listOf("BearerToken ${UserSessionTokenProvider.sessionToken}"),
+                    "Authorization" to listOf("Bearer ${UserSessionTokenProvider.sessionToken}"),
                     "Accept" to listOf("application/json"),
                     "Accept-Charset" to listOf("UTF-8")
                 )
@@ -146,65 +142,6 @@ class ClientConsentFlowModuleTest {
     }
 
     @Test
-    fun `Given fetchConsentDocuments is called with its appropriate parameter, it propagates Errors`() {
-        // Given
-        val consentDocumentKey = "tomato"
-        val language = "en"
-        val version = "42"
-        val result = Channel<Any> { }
-
-        val httpClient = createMockClientWithResponse { scope, _ ->
-            scope.respond(
-                content = "potato",
-                status = HttpStatusCode.InternalServerError
-            )
-        }
-
-        val koin = koinApplication {
-            modules(
-                resolveRootModule(
-                    DataDonationSDKPublicAPI.Environment.DEV,
-                    UserSessionTokenProvider
-                ),
-                resolveNetworking(),
-                resolveKtorPlugins(),
-                resolveUsecaseModule(),
-                resolveRepositoryModule(),
-                resolveServiceModule(),
-                module {
-                    factory(
-                        override = true,
-                        qualifier = named("blankHttpClient")
-                    ) { httpClient }
-                }
-            )
-        }
-
-        // When
-        val client = Client(koin)
-        val job = client.fetchConsentDocuments(
-            consentDocumentKey,
-            version,
-            language,
-        ).subscribe(
-            onEach = {},
-            onError = { error ->
-                GlobalScope.launch {
-                    result.send(error)
-                }
-            },
-            onComplete = {}
-        )
-
-        runBlockingTest {
-            job.join()
-
-            // Then
-            assertTrue(result.receive() is ConsentServiceError.InternalServer)
-        }
-    }
-
-    @Test
     fun `Given fetchUserConsents is called with a consentDocumentKey it returns a List of UserConsent`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val consentDocumentKey = "salt"
@@ -218,7 +155,7 @@ class ClientConsentFlowModuleTest {
             assertEquals(
                 actual = request.headers,
                 expected = headersOf(
-                    "Authorization" to listOf("BearerToken ${UserSessionTokenProvider.sessionToken}"),
+                    "Authorization" to listOf("Bearer ${UserSessionTokenProvider.sessionToken}"),
                     "Accept" to listOf("application/json"),
                     "Accept-Charset" to listOf("UTF-8")
                 )
@@ -282,7 +219,7 @@ class ClientConsentFlowModuleTest {
                 assertEquals(
                     actual = request.headers,
                     expected = headersOf(
-                        "Authorization" to listOf("BearerToken ${UserSessionTokenProvider.sessionToken}"),
+                        "Authorization" to listOf("Bearer ${UserSessionTokenProvider.sessionToken}"),
                         "Accept" to listOf("application/json"),
                         "Accept-Charset" to listOf("UTF-8")
                     )
@@ -309,7 +246,7 @@ class ClientConsentFlowModuleTest {
                 assertEquals(
                     actual = request.headers,
                     expected = headersOf(
-                        "Authorization" to listOf("BearerToken ${UserSessionTokenProvider.sessionToken}"),
+                        "Authorization" to listOf("Bearer ${UserSessionTokenProvider.sessionToken}"),
                         "Accept" to listOf("application/json"),
                         "Accept-Charset" to listOf("UTF-8")
                     )
@@ -390,7 +327,7 @@ class ClientConsentFlowModuleTest {
             assertEquals(
                 actual = request.headers,
                 expected = headersOf(
-                    "Authorization" to listOf("BearerToken ${UserSessionTokenProvider.sessionToken}"),
+                    "Authorization" to listOf("Bearer ${UserSessionTokenProvider.sessionToken}"),
                     "Accept" to listOf("application/json"),
                     "Accept-Charset" to listOf("UTF-8")
                 )
@@ -431,61 +368,6 @@ class ClientConsentFlowModuleTest {
                 actual = result,
                 expected = Unit
             )
-        }
-    }
-
-    @KtorExperimentalAPI
-    @Test
-    fun `Given revokeUserConsents is called with consentDocumentKey it fails at unexpected Resonse`() {
-        // Given
-        val consentDocumentKey = "water"
-        val result = Channel<Throwable>()
-
-        val httpClient = createMockClientWithResponse { scope, _ ->
-            // Then
-            scope.respond(
-                content = "",
-                status = HttpStatusCode.OK
-            )
-        }
-
-        val koin = koinApplication {
-            modules(
-                resolveRootModule(
-                    DataDonationSDKPublicAPI.Environment.DEV,
-                    UserSessionTokenProvider
-                ),
-                resolveNetworking(),
-                resolveKtorPlugins(),
-                resolveUsecaseModule(),
-                resolveRepositoryModule(),
-                resolveServiceModule(),
-                module {
-                    factory(
-                        override = true,
-                        qualifier = named("blankHttpClient")
-                    ) { httpClient }
-                }
-            )
-        }
-
-        // When
-        val client = Client(koin)
-        val job = client.revokeUserConsent(consentDocumentKey).subscribe(
-            onEach = {},
-            onError = { error ->
-                GlobalScope.launch {
-                    result.send(error.userInfo["kotlinError"] as Throwable)
-                }
-            },
-            onComplete = {}
-        )
-
-        runBlockingTest {
-            job.join()
-
-            // Then
-            assertTrue(result.receive() is ConsentServiceError.NoValidConsent)
         }
     }
 

@@ -173,7 +173,7 @@ class ClientConsentFlowIosModuleTest {
             job.join()
 
             // Then
-            assertTrue(result.receive() is ConsentServiceError.UnexpectedFailure)
+            assertTrue(result.receive() is ConsentServiceError.NoValidConsent)
         }
     }
 
