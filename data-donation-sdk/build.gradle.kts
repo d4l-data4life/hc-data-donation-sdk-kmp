@@ -249,7 +249,7 @@ project.afterEvaluate {
                         if(replacementBarrier) {
                             source = source.replace(
                                 Regex("__attribute__\\(\\(swift_name\\(\"$protocolName([A-Z][a-zA-Z]+)\"\\)\\)\\)"),
-                                "__attribute__((swift_name(\"$1\"))) //$protocolName$1 -> $1"
+                                "__attribute__((swift_name(\"$1Protocol\"))) // $protocolName$1 -> $1Protocol"
                             )
                         }
                     }
@@ -257,7 +257,7 @@ project.afterEvaluate {
                     swiftNameReplacements.forEach { (originalName, newName) ->
                         source = source.replace(
                             "__attribute__((swift_name(\"$originalName\")))",
-                            "__attribute__((swift_name(\"$newName\")))"
+                            "__attribute__((swift_name(\"$newName\"))) // $originalName -> newName"
                         )
                     }
 
