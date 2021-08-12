@@ -36,7 +36,7 @@ internal interface ServiceContract {
         suspend fun getUserSessionToken(): SessionToken
 
         companion object {
-            const val CACHE_LIFETIME_SECONDS = 60
+            const val CACHE_LIFETIME_IN_SECONDS = 60
         }
     }
 
