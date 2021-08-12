@@ -399,7 +399,7 @@ class ClientConsentFlowModuleTest {
 
             scope.respond(
                 content = "",
-                status = HttpStatusCode.NoContent
+                status = HttpStatusCode.OK
             )
         }
 
@@ -432,62 +432,6 @@ class ClientConsentFlowModuleTest {
                 actual = result,
                 expected = Unit
             )
-        }
-    }
-
-    @KtorExperimentalAPI
-    @Test
-    fun `Given revokeUserConsents is called with consentDocumentKey it fails at unexpected Resonse`() {
-        // Given
-        val consentDocumentKey = "water"
-        val result = Channel<Throwable>()
-
-        val httpClient = createMockClientWithResponse { scope, _ ->
-            // Then
-            scope.respond(
-                content = "",
-                status = HttpStatusCode.OK
-            )
-        }
-
-        val koin = koinApplication {
-            modules(
-                resolveRootModule(
-                    DataDonationSDKPublicAPI.Environment.DEV,
-                    UserSessionTokenProvider
-                ),
-                resolveNetworking(),
-                resolveKtorPlugins(),
-                resolveUsecaseModule(),
-                resolveRepositoryModule(),
-                resolveServiceModule(),
-                module {
-                    factory(
-                        override = true,
-                        qualifier = named("blankHttpClient")
-                    ) { httpClient }
-                }
-            )
-        }
-
-        // When
-        val client = Client(koin)
-        val job = client.revokeUserConsent(consentDocumentKey).subscribe(
-            scope = GlobalScope,
-            onEach = {},
-            onError = { error ->
-                GlobalScope.launch {
-                    result.send(error)
-                }
-            },
-            onComplete = {}
-        )
-
-        runBlockingTest {
-            job.join()
-
-            // Then
-            assertTrue(result.receive() is ConsentServiceError.NoValidConsent)
         }
     }
 

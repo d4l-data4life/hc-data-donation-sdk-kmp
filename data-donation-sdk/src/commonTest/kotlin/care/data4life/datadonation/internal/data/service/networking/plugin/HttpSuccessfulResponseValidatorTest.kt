@@ -23,7 +23,6 @@ import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
 import io.ktor.client.features.HttpResponseValidator
-import io.ktor.client.request.delete
 import io.ktor.client.request.request
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpStatusCode
@@ -96,65 +95,6 @@ class HttpSuccessfulResponseValidatorTest {
         assertEquals(
             actual = error.statusCode,
             expected = HttpStatusCode.NoContent
-        )
-    }
-
-    @Test
-    fun `Given, validate is called with a response, the requests uses DELETE it ignores 204 status`() = runBlockingTest {
-        // Given
-        val client = HttpClient(MockEngine) {
-            HttpResponseValidator {
-                validateResponse { response ->
-                    HttpSuccessfulResponseValidator.validate(response)
-                }
-            }
-
-            engine {
-                addHandler {
-                    respond(
-                        content = "",
-                        status = HttpStatusCode.NoContent
-                    )
-                }
-            }
-        }
-
-        // When
-        val response = client.delete<HttpResponse>("/not/important")
-
-        // Then
-        assertEquals(
-            actual = response.status,
-            expected = HttpStatusCode.NoContent
-        )
-    }
-
-    @Test
-    fun `Given, validate is called with a response, the requests uses DELETE it fails for non 204 status`() = runBlockingTest {
-        // Given
-        val client = HttpClient(MockEngine) {
-            HttpResponseValidator {
-                validateResponse { response ->
-                    HttpSuccessfulResponseValidator.validate(response)
-                }
-            }
-
-            engine {
-                addHandler {
-                    createHelloWorldOkResponse(this)
-                }
-            }
-        }
-
-        // Then
-        val error = assertFailsWith<HttpRuntimeError> {
-            // When
-            client.delete<HttpResponse>("/not/important")
-        }
-
-        assertEquals(
-            actual = error.statusCode,
-            expected = HttpStatusCode.OK
         )
     }
 }

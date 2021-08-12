@@ -29,8 +29,6 @@ See link:{link-repository}/compare/v0.1.0...main[changeset]
 
 === Added
 
-* ConsentServiceError.NoValidConsent to improve error mapping for revoke user consent.
-
 === Changed
 
 === Deprecated
@@ -38,6 +36,8 @@ See link:{link-repository}/compare/v0.1.0...main[changeset]
 === Removed
 
 === Fixed
+
+* ErrorMapping for revoke consent did not accepted 200 as valid response.
 
 === Security
 
