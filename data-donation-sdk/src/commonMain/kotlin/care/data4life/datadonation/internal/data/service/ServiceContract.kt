@@ -21,8 +21,6 @@ import care.data4life.datadonation.ConsentDataContract.UserConsent
 import care.data4life.datadonation.internal.data.model.ConsentSignature
 import care.data4life.datadonation.lang.ConsentServiceError
 import care.data4life.datadonation.lang.HttpRuntimeError
-import kotlin.time.DurationUnit
-import kotlin.time.toDuration
 
 internal typealias SessionToken = String
 internal typealias PublicDataDonationCryptoKey = String
@@ -38,7 +36,7 @@ internal interface ServiceContract {
         suspend fun getUserSessionToken(): SessionToken
 
         companion object {
-            val CACHE_LIFETIME = 1.toDuration(DurationUnit.MINUTES)
+            const val CACHE_LIFETIME_SECONDS = 60
         }
     }
 
