@@ -34,7 +34,7 @@ package care.data4life.datadonation.integration
 
 import care.data4life.datadonation.Client
 import care.data4life.datadonation.DataDonationSDKPublicAPI
-import care.data4life.datadonation.internal.data.service.ServiceContract.UserSessionTokenService.Companion.CACHE_LIFETIME_IN_SECONDS
+import care.data4life.datadonation.internal.data.service.ServiceContract.UserSessionTokenService.Companion.CACHE_LIFETIME_SECONDS
 import care.data4life.datadonation.internal.data.service.networking.plugin.resolveKtorPlugins
 import care.data4life.datadonation.internal.data.service.networking.resolveNetworking
 import care.data4life.datadonation.internal.data.service.resolveServiceModule
@@ -343,7 +343,7 @@ class ClientConsentFlowModuleTest {
                     ) { httpClient }
                     single<Clock>(override = true) {
                         ClockStub().also {
-                            it.whenNow = { Instant.fromEpochSeconds(CACHE_LIFETIME_IN_SECONDS.toLong() + 30) }
+                            it.whenNow = { Instant.fromEpochSeconds(CACHE_LIFETIME_SECONDS.toLong() + 30) }
                         }
                     }
                 }
