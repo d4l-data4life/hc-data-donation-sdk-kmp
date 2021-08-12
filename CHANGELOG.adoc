@@ -39,6 +39,8 @@ See link:{link-repository}/compare/v0.1.0...main[changeset]
 
 === Fixed
 
+* Kotlin-date Duration usages in CachedUserSessionTokenService and ServiceContract removed
+
 === Security
 
 === Bumped
@@ -93,7 +95,6 @@ See link:{link-repository}/compare/v0.0.1...v0.1.0[0.1.0]
 * _**BREAKING**_ Configuration
 * _**BREAKING**_ Client#registerDonor and Client#donateResources
 * _**BREAKING**_ Callbacks and ResultListener in the PublicAPI
-* Kotlin-date Duration usages in CachedUserSessionTokenService and ServiceContract
 * touchlab's stately (Dependency)
 
 === Fixed
