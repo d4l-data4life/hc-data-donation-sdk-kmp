@@ -37,6 +37,7 @@ See link:{link-repository}/compare/v0.1.0...main[changeset]
 
 === Fixed
 
+* Kotlin-date Duration usages in CachedUserSessionTokenService and ServiceContract removed
 * ErrorMapping for revoke consent did not accepted 200 as valid response.
 
 === Security
