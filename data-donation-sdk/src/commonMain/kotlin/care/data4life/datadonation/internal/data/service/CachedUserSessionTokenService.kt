@@ -102,7 +102,6 @@ internal class CachedUserSessionTokenService(
             return cachedAt > nowMinusLifeTime()
         }
 
-        private fun nowMinusLifeTime() =
-            clock.now().epochSeconds - CACHE_LIFETIME_IN_SECONDS
+        private fun nowMinusLifeTime() = clock.now().epochSeconds - CACHE_LIFETIME_IN_SECONDS
     }
 }
