@@ -22,7 +22,6 @@ sealed class ConsentServiceError(
     open val httpStatus: Int
 ) : D4LRuntimeException() {
     class UnexpectedFailure(override val httpStatus: Int) : ConsentServiceError(httpStatus)
-    class NoValidConsent : ConsentServiceError(200)
     class BadRequest : ConsentServiceError(400)
     class Unauthorized : ConsentServiceError(401)
     class Forbidden : ConsentServiceError(403)

@@ -332,18 +332,6 @@ class ConsentErrorHandlerTest {
     }
 
     @Test
-    fun `Given handleRevokeUserConsent is called with HttpRuntimeError,  it propagates it as 200 as NoValidConsent`() {
-        // Given
-        val error = HttpRuntimeError(HttpStatusCode.OK)
-
-        // When
-        val result = ConsentErrorHandler.handleRevokeUserConsent(error)
-
-        // Then
-        assertTrue(result is ConsentServiceError.NoValidConsent)
-    }
-
-    @Test
     fun `Given handleRevokeUserConsent is called with HttpRuntimeError, it propagates it as 401 as UnauthorizedError`() {
         // Given
         val error = HttpRuntimeError(HttpStatusCode.Unauthorized)
