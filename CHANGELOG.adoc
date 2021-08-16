@@ -25,12 +25,14 @@ toc::[]
 
 == link:{link-repository}/releases/latest[Unreleased]
 
-See link:{link-repository}/compare/v0.1.0...main[changeset]
-
 === Added
 
 * Swift package.
-* ConsentServiceError.NoValidConsent to improve error mapping for revoke user consent.
+* touchlab's stately-common (1.1.6) (Dependency).
+* touchlab's stately-concurrency (1.1.6) (Dependency).
+* Coroutine-Util (see: https://github.com/d4l-data4life/hc-coroutine-util-sdk-kmp) (Dependency).
+* Result-SDK (see: https://github.com/d4l-data4life/hc-result-sdk-kmp) (Dependency).
+* ObjC-SDK (see: https://github.com/d4l-data4life/hc-objc-util-sdk-kmp) (Dependency).
 
 === Changed
 
@@ -44,11 +46,22 @@ See link:{link-repository}/compare/v0.1.0...main[changeset]
 
 === Bumped
 
+* _**BREAKING**_ sdk-util 1.9.0 -> 1.10.0.
+
 === Migration
+
+== link:{link-repository}/releases/tag/v0.1.3[0.1.3]
+
+See link:{link-repository}/compare/v0.1.2...v0.1.3[0.1.3]
+
+=== Fixed
+
+* Kotlin-date Duration usages caused App crashes.
+* ErrorMapping for revoke consent did not accepted 200 as valid response.
 
 == link:{link-repository}/releases/tag/v0.1.2[0.1.2]
 
-See link:{link-repository}/compare/v0.0.1...v0.1.2[0.1.2]
+See link:{link-repository}/compare/v0.1.1...v0.1.2[0.1.2]
 
 === Fixed
 
@@ -56,7 +69,7 @@ See link:{link-repository}/compare/v0.0.1...v0.1.2[0.1.2]
 
 == link:{link-repository}/releases/tag/v0.1.1[0.1.1]
 
-See link:{link-repository}/compare/v0.0.1...v0.1.1[0.1.1]
+See link:{link-repository}/compare/v0.1.0...v0.1.1[0.1.1]
 
 === Removed
 

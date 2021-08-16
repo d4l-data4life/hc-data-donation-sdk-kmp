@@ -15,14 +15,13 @@
  */
 
 plugins {
-    // Android
-    androidLibrary()
-
     kotlinMultiplatform()
     kotlinSerialization()
 
     // SwiftPackage
     swiftPackage(version = "2.0.3")
+    // Android
+    androidLibrary()
 
     // Publish
     id("scripts.publishing-config")
@@ -75,7 +74,9 @@ kotlin {
 
                 implementation(Dependency.multiplatform.coroutines.common)
 
+                implementation(Dependency.multiplatform.stately.freeze)
                 implementation(Dependency.multiplatform.stately.isolate)
+                implementation(Dependency.multiplatform.stately.concurrency)
 
                 implementation(Dependency.multiplatform.ktor.commonCore)
                 implementation(Dependency.multiplatform.ktor.logger)
@@ -88,7 +89,13 @@ kotlin {
 
                 // D4L
                 implementation(Dependency.d4l.sdkUtil)
-                implementation(Dependency.d4l.sdkUtilCoroutine)
+                implementation(Dependency.d4l.sdkFlow)
+                implementation(Dependency.d4l.sdkError)
+                implementation(Dependency.d4l.sdkUtilCoroutine) {
+                    exclude(
+                        group = "co.touchlab:stately-concurrency"
+                    )
+                }
             }
         }
         commonTest {
@@ -123,6 +130,7 @@ kotlin {
 
                 implementation(Dependency.multiplatform.kotlin.testJvm)
                 implementation(Dependency.multiplatform.kotlin.testJvmJunit)
+                implementation(Dependency.androidTest.robolectric)
             }
         }
 
@@ -138,7 +146,7 @@ kotlin {
                 implementation(Dependency.multiplatform.ktor.ios)
 
                 // D4L
-                implementation(Dependency.d4l.sdkUtil)
+                implementation(Dependency.d4l.sdkObjcUtil)
             }
         }
         val iosTest by getting {

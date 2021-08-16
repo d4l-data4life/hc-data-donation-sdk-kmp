@@ -34,7 +34,7 @@ package care.data4life.datadonation
 
 import care.data4life.datadonation.ConsentDataContract.ConsentDocument
 import care.data4life.datadonation.ConsentDataContract.UserConsent
-import care.data4life.sdk.util.coroutine.D4LSDKFlowContract
+import care.data4life.sdk.flow.D4LSDKFlow
 
 interface DataDonationSDKPublicAPI {
     enum class Environment(val url: String) {
@@ -56,18 +56,18 @@ interface DataDonationSDKPublicAPI {
             consentDocumentKey: String,
             consentDocumentVersion: String?,
             language: String?,
-        ): D4LSDKFlowContract<List<ConsentDocument>>
+        ): D4LSDKFlow<List<ConsentDocument>>
 
         fun createUserConsent(
             consentDocumentKey: String,
             consentDocumentVersion: String
-        ): D4LSDKFlowContract<UserConsent>
+        ): D4LSDKFlow<UserConsent>
 
-        fun fetchUserConsents(consentDocumentKey: String): D4LSDKFlowContract<List<UserConsent>>
+        fun fetchUserConsents(consentDocumentKey: String): D4LSDKFlow<List<UserConsent>>
 
-        fun fetchAllUserConsents(): D4LSDKFlowContract<List<UserConsent>>
+        fun fetchAllUserConsents(): D4LSDKFlow<List<UserConsent>>
 
-        fun revokeUserConsent(consentDocumentKey: String): D4LSDKFlowContract<Unit>
+        fun revokeUserConsent(consentDocumentKey: String): D4LSDKFlow<Unit>
     }
 
     interface DataDonationClientFactory {
