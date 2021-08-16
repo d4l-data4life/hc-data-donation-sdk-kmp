@@ -7,7 +7,33 @@
 
 import UIKit
 
-final class UserConsentCell: UITableViewCell {
+struct UserConsentItem: UIContentConfiguration, Hashable {
+    func makeContentView() -> UIView & UIContentView {
+        UserConsentCell(configuration: self)
+    }
+
+    func updated(for state: UIConfigurationState) -> UserConsentItem {
+        self
+    }
+
+    let key: String
+    let version: String
+    let date: String
+    let eventType: String
+}
+
+final class UserConsentCell: UITableViewCell, UIContentView {
+
+    var configuration: UIContentConfiguration {
+        didSet {
+            guard let configuration = configuration as? UserConsentItem else {
+                return
+            }
+
+            configure(with: configuration)
+        }
+    }
+
 
     private lazy var mainStackView: UIStackView = {
         let stackView = UIStackView()
@@ -51,14 +77,13 @@ final class UserConsentCell: UITableViewCell {
 
     private var onTap: (() -> Void)?
 
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        setupViews()
+    init(configuration: UserConsentItem) {
+        self.configuration = configuration
+        super.init(style: .default, reuseIdentifier: nil)
     }
 
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        setupViews()
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
     override func prepareForReuse() {
@@ -67,6 +92,15 @@ final class UserConsentCell: UITableViewCell {
         versionLabel.text = ""
         dateLabel.text = ""
         eventTypeLabel.text = ""
+    }
+}
+
+extension UserConsentCell {
+    func configure(with userConsentItem: UserConsentItem) {
+        keyLabel.text = userConsentItem.key
+        versionLabel.text = userConsentItem.version
+        dateLabel.text = userConsentItem.date
+        eventTypeLabel.text = userConsentItem.eventType
     }
 }
 

@@ -7,13 +7,19 @@
 
 import UIKit
 
+struct DataDonationViewModel {
+    let userConsents: [UserConsentItem]
+}
+
 final class DataDonationViewController: UIViewController {
 
     private let interactor: DataDonationInteractor
     private let router: DataDonationRouter
     private lazy var dataDonationDiffableDataSource: DataDonationDiffableDataSource = {
         let dataSource = DataDonationDiffableDataSource(tableView: tableView) { tableView, indexPath, consentItem in
-            return UITableViewCell()
+            let cell = tableView.dequeueReusableCell(withIdentifier: "UserConsentCell", for: indexPath)
+            cell.contentConfiguration = consentItem
+            return cell
         }
 
         return dataSource
@@ -134,18 +140,15 @@ private extension DataDonationViewController {
 }
 
 
-enum ConsentSection: Hashable  {
+enum UserConsentSection: Hashable  {
     case main
 }
 
-struct ConsentItem: Hashable {
-    let item: String
-}
 
 extension DataDonationViewController: UITableViewDelegate {
 
 }
 
-final class DataDonationDiffableDataSource: UITableViewDiffableDataSource<ConsentSection, ConsentItem> {
+final class DataDonationDiffableDataSource: UITableViewDiffableDataSource<UserConsentSection, UserConsentItem> {
 
 }

@@ -24,14 +24,20 @@ extension DataDonationInteractor {
 
     func viewDidLoad() {
         view?.setCanLogoutState()
-        dataDonationSDKService.fetchUserConsents()
+        dataDonationSDKService.fetchUserConsents { result in
+            
+        }
     }
     func didTapAdd() {
-        dataDonationSDKService.createUserConsent()
+        dataDonationSDKService.createUserConsent { result in
+
+        }
     }
 
     func didTapRemove() {
-        dataDonationSDKService.revokeUserConsent()
+        dataDonationSDKService.revokeUserConsent { result in
+
+        }
     }
 
     func didTapLogOut() {

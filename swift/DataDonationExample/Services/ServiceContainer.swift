@@ -11,7 +11,7 @@ import Data4LifeDataDonationSDK
 final class ServiceContainer {
 
     private(set) var sdkService: Data4LifeSDKService?
-    private(set) var userSessionProvider: UserSessionTokenProvider?
+    private(set) var userSessionProvider: UserSessionTokenProviderProtocol?
     private(set) var dataDonationService: DataDonationSDKService?
 
     init() { }
