@@ -182,9 +182,9 @@ class UserConsentInteractorTest {
         // Given
         val sessionTokenRepository = UserSessionTokenRepositoryStub()
 
-        val accessTokenCreate = "session"
+        val accessTokenRevoke = "session"
         val accessTokenFetch = "token"
-        val tokens = mutableListOf(accessTokenCreate, accessTokenFetch)
+        val tokens = mutableListOf(accessTokenRevoke, accessTokenFetch)
 
         var capturedTokenRevoke: String? = null
         val consentDocumentKey = "custom-consent-key"
@@ -219,9 +219,17 @@ class UserConsentInteractorTest {
             expected = result
         )
         assertEquals(
+            actual = capturedTokenRevoke,
+            expected = accessTokenRevoke
+        )
+        assertEquals(
             actual = capturedConsentDocumentKeyRevoke,
             expected = consentDocumentKey
         )
         assertNull(capturedConsentDocumentKeyFetch)
+        assertEquals(
+            actual = capturedTokenFetch,
+            expected = accessTokenFetch
+        )
     }
 }

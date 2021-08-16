@@ -19,8 +19,11 @@ package care.data4life.datadonation.session
 import care.data4life.datadonation.error.CoreRuntimeError
 import care.data4life.datadonation.mock.stub.ClockStub
 import care.data4life.datadonation.mock.stub.UserSessionTokenProviderStub
+import care.data4life.sdk.util.coroutine.CoroutineScopeFactory
 import care.data4life.sdk.util.test.coroutine.runBlockingTest
+import care.data4life.sdk.util.test.coroutine.runWithContextBlockingTest
 import co.touchlab.stately.isolate.IsolateState
+import kotlinx.coroutines.GlobalScope
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -31,15 +34,21 @@ import kotlin.time.minutes
 import kotlin.time.seconds
 
 class CachedUserSessionTokenRepositoryTest {
-    @Test
-    fun `It fulfils UserSessionTokenService`() {
-        val service: Any = CachedUserSessionTokenRepository(UserSessionTokenProviderStub(), ClockStub())
+    private val testScope = CoroutineScopeFactory.createScope("test2Scope")
 
-        assertTrue(service is SessionTokenRepositoryContract)
+    @Test
+    fun `It fulfils UserSessionTokenRepository`() {
+        val repo: Any = CachedUserSessionTokenRepository(
+            UserSessionTokenProviderStub(),
+            ClockStub(),
+            testScope
+        )
+
+        assertTrue(repo is SessionTokenRepositoryContract)
     }
 
     @Test
-    fun `Given getUserSessionToken is called, it fails, if it has no valid cached Token and the Provider delegates an Exception`() = runBlockingTest {
+    fun `Given getUserSessionToken is called, it fails, if it has no valid cached Token and the Provider delegates an Exception`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val error = RuntimeException("error")
         val provider = UserSessionTokenProviderStub()
@@ -53,22 +62,24 @@ class CachedUserSessionTokenRepositoryTest {
             kotlinx.datetime.Instant.fromEpochMilliseconds(1.minutes.toLongMilliseconds())
         }
 
-        val service = CachedUserSessionTokenRepository(provider, time)
+        val repo = CachedUserSessionTokenRepository(provider, time, testScope)
 
-        // Then
-        val result = assertFailsWith<CoreRuntimeError.MissingSession> {
-            // When
-            service.getUserSessionToken()
+        runBlockingTest {
+            // Then
+            val result = assertFailsWith<CoreRuntimeError.MissingSession> {
+                // When
+                repo.getUserSessionToken()
+            }
+
+            assertSame(
+                actual = result.cause,
+                expected = error
+            )
         }
-
-        assertSame(
-            actual = result.cause,
-            expected = error
-        )
     }
 
     @Test
-    fun `Given getUserSessionToken is called, returns a new Token, if it has no valid cached Token and the Provider delegates a SessionToken`() = runBlockingTest {
+    fun `Given getUserSessionToken is called, returns a new Token, if it has no valid cached Token and the Provider delegates a SessionToken`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val token = "tomato"
         val provider = UserSessionTokenProviderStub()
@@ -82,16 +93,18 @@ class CachedUserSessionTokenRepositoryTest {
             kotlinx.datetime.Instant.fromEpochMilliseconds(1.minutes.toLongMilliseconds())
         }
 
-        val service = CachedUserSessionTokenRepository(provider, time)
+        val repo = CachedUserSessionTokenRepository(provider, time, testScope)
 
-        // When
-        val result = service.getUserSessionToken()
+        runBlockingTest {
+            // When
+            val result = repo.getUserSessionToken()
 
-        // Then
-        assertEquals(
-            actual = result,
-            expected = token
-        )
+            // Then
+            assertEquals(
+                actual = result,
+                expected = token
+            )
+        }
     }
 
     @Test
@@ -104,12 +117,12 @@ class CachedUserSessionTokenRepositoryTest {
             kotlinx.datetime.Instant.fromEpochMilliseconds(0)
         }
 
-        val service = CachedUserSessionTokenRepository(provider, time)
+        val repo = CachedUserSessionTokenRepository(provider, time, testScope)
 
         // Then
         val result = assertFailsWith<CoreRuntimeError.MissingSession> {
             // When
-            service.getUserSessionToken()
+            repo.getUserSessionToken()
         }
 
         assertNull(result.cause)
@@ -142,11 +155,11 @@ class CachedUserSessionTokenRepositoryTest {
             lifeTime.access { it.removeAt(0) }
         }
 
-        val service = CachedUserSessionTokenRepository(provider, time)
+        val repo = CachedUserSessionTokenRepository(provider, time, testScope)
 
         // When
-        service.getUserSessionToken()
-        val result = service.getUserSessionToken()
+        repo.getUserSessionToken()
+        val result = repo.getUserSessionToken()
 
         // Then
         assertEquals(
@@ -183,11 +196,11 @@ class CachedUserSessionTokenRepositoryTest {
             lifeTime.access { it.removeAt(0) }
         }
 
-        val service = CachedUserSessionTokenRepository(provider, time)
+        val repo = CachedUserSessionTokenRepository(provider, time, testScope)
 
         // When
-        service.getUserSessionToken()
-        val result = service.getUserSessionToken()
+        repo.getUserSessionToken()
+        val result = repo.getUserSessionToken()
 
         // Then
         assertEquals(

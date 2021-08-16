@@ -19,24 +19,51 @@ package care.data4life.datadonation.session
 import care.data4life.datadonation.DataDonationSDK
 import care.data4life.datadonation.error.CoreRuntimeError
 import care.data4life.datadonation.session.SessionTokenRepositoryContract.Companion.CACHE_LIFETIME_IN_SECONDS
+import co.touchlab.stately.concurrency.AtomicReference
+import co.touchlab.stately.freeze
 import co.touchlab.stately.isolate.IsolateState
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 internal class CachedUserSessionTokenRepository(
     private val provider: DataDonationSDK.UserSessionTokenProvider,
-    clock: Clock
+    clock: Clock,
+    scope: CoroutineScope
 ) : SessionTokenRepositoryContract {
     private val cache = IsolateState { Cache(clock) }
+    private val scope = AtomicReference(scope)
 
+    /*
+    * Please note the provider does not share the same Context/Scope/Thread as the SDK.
+    * This means the SDK needs to transfer the sessionToken from the Context/Scope/Thread of the provider
+    * into it's own. Additionally Closures in Swift are not blocking.
+    * Since the SDK Context/Scope/Thread is known and using Atomics like constant values is safe, the
+    * SDK is able to launch a new coroutine.
+    * The channel then makes the actual transfer from the provider Context/Scope/Thread into the
+    * SDK Context/Scope/Thread. Also Channels are blocking which then take care of any async delay caused
+    * by the coroutine of the Callbacks or Swift.
+    */
     private suspend fun fetchTokenFromApi(): Any {
-        return suspendCoroutine { continuation ->
-            provider.getUserSessionToken(
-                { sessionToken -> continuation.resume(sessionToken) },
-                { error -> continuation.resume(error) }
-            )
-        }
+        val channel = Channel<Any>()
+
+        provider.getUserSessionToken(
+            { sessionToken: SessionToken ->
+                scope.get().launch {
+                    channel.send(sessionToken)
+                }.start()
+                Unit
+            }.freeze(),
+            { error: Exception ->
+                scope.get().launch {
+                    channel.send(error)
+                }.start()
+                Unit
+            }.freeze()
+        )
+
+        return channel.receive()
     }
 
     private fun fetchCachedTokenIfNotExpired(): SessionToken? {
@@ -61,7 +88,7 @@ internal class CachedUserSessionTokenRepository(
         return if (cachedToken is SessionToken) {
             cachedToken
         } else {
-            resolveSessionToken(fetchTokenFromApi())
+            return resolveSessionToken(fetchTokenFromApi())
         }
     }
 
@@ -70,11 +97,11 @@ internal class CachedUserSessionTokenRepository(
         private var cachedAt = 0L
 
         fun fetch(): String {
-            if (cachedValue.isEmpty()) {
+            return if (cachedValue.isEmpty()) {
                 throw CoreRuntimeError.MissingSession()
+            } else {
+                cachedValue
             }
-
-            return cachedValue
         }
 
         fun update(sessionToken: SessionToken) {

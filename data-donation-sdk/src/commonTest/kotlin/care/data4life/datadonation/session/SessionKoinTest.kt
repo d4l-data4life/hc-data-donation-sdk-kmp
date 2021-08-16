@@ -19,6 +19,8 @@ package care.data4life.datadonation.session
 import care.data4life.datadonation.DataDonationSDK
 import care.data4life.datadonation.mock.stub.ClockStub
 import care.data4life.datadonation.mock.stub.UserSessionTokenProviderStub
+import care.data4life.sdk.util.coroutine.CoroutineScopeFactory
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.datetime.Clock
 import org.koin.core.context.stopKoin
 import org.koin.dsl.koinApplication
@@ -28,6 +30,8 @@ import kotlin.test.Test
 import kotlin.test.assertNotNull
 
 class SessionKoinTest {
+    private val testScope = CoroutineScopeFactory.createScope("test2Scope")
+
     @BeforeTest
     fun setUp() {
         stopKoin()
@@ -44,6 +48,7 @@ class SessionKoinTest {
                     single<DataDonationSDK.UserSessionTokenProvider> {
                         UserSessionTokenProviderStub()
                     }
+                    single<CoroutineScope> { testScope }
                 }
             )
         }

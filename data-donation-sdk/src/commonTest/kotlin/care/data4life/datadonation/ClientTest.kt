@@ -18,13 +18,19 @@ package care.data4life.datadonation
 
 import care.data4life.datadonation.DataDonationSDK.Environment
 import care.data4life.datadonation.consentdocument.ConsentDocumentContract
+import care.data4life.datadonation.lang.DataDonationFlowErrorMapper
 import care.data4life.datadonation.mock.fixture.ConsentFixtures.sampleConsentDocument
 import care.data4life.datadonation.mock.fixture.ConsentFixtures.sampleUserConsent
+import care.data4life.datadonation.mock.spy.D4LFlowFactorySpy
 import care.data4life.datadonation.mock.stub.UserSessionTokenProviderStub
 import care.data4life.datadonation.mock.stub.consentdocument.ConsentDocumentInteractorStub
 import care.data4life.datadonation.mock.stub.userconsent.UserConsentInteractorStub
 import care.data4life.datadonation.userconsent.UserConsentContract
+import care.data4life.sdk.flow.D4LSDKFlowFactoryContract
+import care.data4life.sdk.util.coroutine.DomainErrorMapperContract
 import care.data4life.sdk.util.test.coroutine.runWithContextBlockingTest
+import care.data4life.sdk.util.test.coroutine.testCoroutineContext
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.collect
@@ -40,6 +46,8 @@ import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 class ClientTest {
+    private var flowSpy = D4LFlowFactorySpy()
+
     @BeforeTest
     fun setUp() {
         stopKoin()
@@ -67,6 +75,7 @@ class ClientTest {
         // Given
         val consentFlow = UserConsentInteractorStub()
         val consent = sampleUserConsent
+        val scope = CoroutineScope(testCoroutineContext)
 
         val version = "23"
         val consentDocumentKey = "custom-consent-key"
@@ -87,6 +96,15 @@ class ClientTest {
                 module {
                     single<UserConsentContract.Interactor> {
                         consentFlow
+                    }
+                    single<CoroutineScope> {
+                        scope
+                    }
+                    single<DomainErrorMapperContract> {
+                        DataDonationFlowErrorMapper
+                    }
+                    single<D4LSDKFlowFactoryContract> {
+                        flowSpy
                     }
 
                     single<ConsentDocumentContract.Interactor> {
@@ -119,6 +137,15 @@ class ClientTest {
             actual = capturedVersion.receive(),
             expected = version,
         )
+
+        assertSame(
+            actual = flowSpy.capturedErrorMapper,
+            expected = DataDonationFlowErrorMapper
+        )
+        assertSame(
+            actual = flowSpy.capturedScope,
+            expected = scope
+        )
     }
 
     @Test
@@ -126,6 +153,7 @@ class ClientTest {
         // Given
         val consentDocumentFlow = ConsentDocumentInteractorStub()
         val documents = listOf(sampleConsentDocument)
+        val scope = CoroutineScope(testCoroutineContext)
 
         val version = "23"
         val language = "de-j-old-n-kotlin-x-done"
@@ -149,6 +177,16 @@ class ClientTest {
                 module {
                     single<UserConsentContract.Interactor> {
                         UserConsentInteractorStub()
+                    }
+
+                    single<CoroutineScope> {
+                        scope
+                    }
+                    single<DomainErrorMapperContract> {
+                        DataDonationFlowErrorMapper
+                    }
+                    single<D4LSDKFlowFactoryContract> {
+                        flowSpy
                     }
 
                     single<ConsentDocumentContract.Interactor> {
@@ -187,6 +225,15 @@ class ClientTest {
             actual = capturedLanguage.receive(),
             expected = language,
         )
+
+        assertSame(
+            actual = flowSpy.capturedErrorMapper,
+            expected = DataDonationFlowErrorMapper
+        )
+        assertSame(
+            actual = flowSpy.capturedScope,
+            expected = scope
+        )
     }
 
     @Test
@@ -194,6 +241,7 @@ class ClientTest {
         // Given
         val consentFlow = UserConsentInteractorStub()
         val consents = listOf(sampleUserConsent)
+        val scope = CoroutineScope(testCoroutineContext)
 
         val capturedKey = Channel<String?>()
 
@@ -209,6 +257,16 @@ class ClientTest {
                 module {
                     single<UserConsentContract.Interactor> {
                         consentFlow
+                    }
+
+                    single<CoroutineScope> {
+                        scope
+                    }
+                    single<DomainErrorMapperContract> {
+                        DataDonationFlowErrorMapper
+                    }
+                    single<D4LSDKFlowFactoryContract> {
+                        flowSpy
                     }
 
                     single<ConsentDocumentContract.Interactor> {
@@ -236,6 +294,15 @@ class ClientTest {
             actual = capturedKey.receive(),
             expected = consentDocumentKey
         )
+
+        assertSame(
+            actual = flowSpy.capturedErrorMapper,
+            expected = DataDonationFlowErrorMapper
+        )
+        assertSame(
+            actual = flowSpy.capturedScope,
+            expected = scope
+        )
     }
 
     @Test
@@ -243,6 +310,7 @@ class ClientTest {
         // Given
         val consentFlow = UserConsentInteractorStub()
         val consents = listOf(sampleUserConsent)
+        val scope = CoroutineScope(testCoroutineContext)
 
         val capturedKey = Channel<String?>()
 
@@ -258,6 +326,15 @@ class ClientTest {
                 module {
                     single<UserConsentContract.Interactor> {
                         consentFlow
+                    }
+                    single<CoroutineScope> {
+                        scope
+                    }
+                    single<DomainErrorMapperContract> {
+                        DataDonationFlowErrorMapper
+                    }
+                    single<D4LSDKFlowFactoryContract> {
+                        flowSpy
                     }
 
                     single<ConsentDocumentContract.Interactor> {
@@ -279,12 +356,22 @@ class ClientTest {
         }
 
         assertNull(capturedKey.receive())
+
+        assertSame(
+            actual = flowSpy.capturedErrorMapper,
+            expected = DataDonationFlowErrorMapper
+        )
+        assertSame(
+            actual = flowSpy.capturedScope,
+            expected = scope
+        )
     }
 
     @Test
     fun `Given revokeUserConsent is called with a consentDocumentKey it builds and delegates its Parameter to the Usecase and returns a runnable Flow which just runs`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val consentFlow = UserConsentInteractorStub()
+        val scope = CoroutineScope(testCoroutineContext)
 
         val consentDocumentKey = "custom-consent-key"
 
@@ -302,6 +389,16 @@ class ClientTest {
                 module {
                     single<UserConsentContract.Interactor> {
                         consentFlow
+                    }
+
+                    single<CoroutineScope> {
+                        scope
+                    }
+                    single<DomainErrorMapperContract> {
+                        DataDonationFlowErrorMapper
+                    }
+                    single<D4LSDKFlowFactoryContract> {
+                        flowSpy
                     }
 
                     single<ConsentDocumentContract.Interactor> {
@@ -325,6 +422,15 @@ class ClientTest {
         assertEquals(
             actual = capturedKey.receive(),
             expected = consentDocumentKey
+        )
+
+        assertSame(
+            actual = flowSpy.capturedErrorMapper,
+            expected = DataDonationFlowErrorMapper
+        )
+        assertSame(
+            actual = flowSpy.capturedScope,
+            expected = scope
         )
     }
 }

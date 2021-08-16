@@ -34,7 +34,6 @@ package care.data4life.datadonation.integration
 
 import care.data4life.datadonation.Client
 import care.data4life.datadonation.DataDonationSDK
-import care.data4life.datadonation.consentdocument.ConsentDocumentError
 import care.data4life.datadonation.consentdocument.resolveConsentDocumentKoinModule
 import care.data4life.datadonation.di.resolveRootModule
 import care.data4life.datadonation.mock.ResourceLoader
@@ -45,7 +44,6 @@ import care.data4life.datadonation.networking.resolveNetworking
 import care.data4life.datadonation.session.SessionTokenRepositoryContract.Companion.CACHE_LIFETIME_IN_SECONDS
 import care.data4life.datadonation.session.resolveSessionKoinModule
 import care.data4life.datadonation.userconsent.resolveConsentKoinModule
-import care.data4life.sdk.util.test.coroutine.runBlockingTest
 import care.data4life.sdk.util.test.coroutine.runWithContextBlockingTest
 import care.data4life.sdk.util.test.ktor.HttpMockClientFactory.createMockClientWithResponse
 import io.ktor.client.engine.mock.respond
@@ -56,7 +54,6 @@ import io.ktor.http.fullPath
 import io.ktor.http.headersOf
 import io.ktor.util.KtorExperimentalAPI
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
@@ -68,7 +65,6 @@ import org.koin.dsl.module
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 class ClientConsentFlowModuleTest {
     @BeforeTest
@@ -140,66 +136,6 @@ class ClientConsentFlowModuleTest {
                 actual = result,
                 expected = listOf(ConsentFixtures.sampleConsentDocument)
             )
-        }
-    }
-
-    @Test
-    fun `Given fetchConsentDocuments is called with its appropriate parameter, it propagates Errors`() {
-        // Given
-        val consentDocumentKey = "tomato"
-        val language = "en"
-        val version = "42"
-        val result = Channel<Any> { }
-
-        val httpClient = createMockClientWithResponse { scope, _ ->
-            scope.respond(
-                content = "potato",
-                status = HttpStatusCode.InternalServerError
-            )
-        }
-
-        val koin = koinApplication {
-            modules(
-                resolveRootModule(
-                    DataDonationSDK.Environment.DEV,
-                    UserSessionTokenProvider
-                ),
-                resolveNetworking(),
-                resolveKtorPlugins(),
-                resolveConsentKoinModule(),
-                resolveConsentDocumentKoinModule(),
-                resolveSessionKoinModule(),
-                module {
-                    factory(
-                        override = true,
-                        qualifier = named("blankHttpClient")
-                    ) { httpClient }
-                }
-            )
-        }
-
-        // When
-        val client = Client(koin)
-        val job = client.fetchConsentDocuments(
-            consentDocumentKey,
-            version,
-            language,
-        ).subscribe(
-            scope = GlobalScope,
-            onEach = {},
-            onError = { error ->
-                GlobalScope.launch {
-                    result.send(error)
-                }
-            },
-            onComplete = {}
-        )
-
-        runBlockingTest {
-            job.join()
-
-            // Then
-            assertTrue(result.receive() is ConsentDocumentError.InternalServer)
         }
     }
 

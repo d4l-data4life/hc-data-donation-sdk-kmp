@@ -34,7 +34,7 @@ internal fun resolveNetworking(): Module {
             HttpClientConfigurator
         }
 
-        factory(named("blankHttpClient")) { HttpClient() }
+        factory(named("blankHttpClient")) { HttpClient {} }
 
         single(named("configuredHttpClient")) {
             get<HttpClient>(qualifier = named("blankHttpClient")).config {
