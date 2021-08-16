@@ -30,16 +30,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.core.model
+package care.data4life.datadonation.consent.model
 
-import care.data4life.datadonation.ConsentDataContract
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class UserConsent(
-    override val consentDocumentKey: String,
-    override val consentDocumentVersion: String,
-    override val accountId: String, // UUID
-    override val event: ConsentDataContract.ConsentEvent,
-    override val createdAt: String = "" /* Timestamp */
-) : ConsentDataContract.UserConsent
+internal data class ConsentMessage(
+    val consentDocumentKey: String,
+    val signatureType: String,
+    val payload: String
+)

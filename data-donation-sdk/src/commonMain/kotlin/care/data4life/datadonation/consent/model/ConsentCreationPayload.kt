@@ -30,28 +30,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.domain.repository
+package care.data4life.datadonation.consent.model
 
-import care.data4life.datadonation.ConsentDataContract.ConsentDocument
-import care.data4life.datadonation.internal.data.service.ServiceContract
+import kotlinx.serialization.Serializable
 
-internal class ConsentDocumentRepository(
-    private val consentService: ServiceContract.ConsentService,
-    private val sessionTokenService: ServiceContract.UserSessionTokenService
-) : RepositoryContract.ConsentDocumentRepository {
-
-    override suspend fun fetchConsentDocuments(
-        language: String?,
-        version: String?,
-        consentDocumentKey: String
-    ): List<ConsentDocument> {
-        val sessionToken = sessionTokenService.getUserSessionToken()
-
-        return consentService.fetchConsentDocuments(
-            sessionToken,
-            version,
-            language,
-            consentDocumentKey
-        )
-    }
-}
+@Serializable
+internal data class ConsentCreationPayload(
+    val consentDocumentKey: String,
+    val consentDocumentVersion: String,
+    val consentDate: String
+)

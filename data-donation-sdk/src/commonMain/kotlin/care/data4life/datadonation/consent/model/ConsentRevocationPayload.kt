@@ -30,13 +30,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package care.data4life.datadonation.internal.data.model
+package care.data4life.datadonation.consent.model
 
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal data class ConsentCreationPayload(
-    val consentDocumentKey: String,
-    val consentDocumentVersion: String,
-    val consentDate: String
+internal data class ConsentRevocationPayload(
+    val consentDocumentKey: String
 )

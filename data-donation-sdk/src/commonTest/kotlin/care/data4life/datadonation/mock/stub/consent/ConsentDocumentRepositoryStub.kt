@@ -14,15 +14,15 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.mock.stub.repository
+package care.data4life.datadonation.mock.stub.consent
 
-import care.data4life.datadonation.core.model.ConsentDocument
-import care.data4life.datadonation.internal.domain.repository.RepositoryContract
+import care.data4life.datadonation.consent.ConsentContract
+import care.data4life.datadonation.consent.model.ConsentDocument
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 
 internal class ConsentDocumentRepositoryStub :
-    RepositoryContract.ConsentDocumentRepository,
+    ConsentContract.ConsentDocumentRepository,
     MockContract.Stub {
     var whenFetchConsentDocuments: ((language: String?, version: String?, consentDocumentKey: String) -> List<ConsentDocument>)? = null
 

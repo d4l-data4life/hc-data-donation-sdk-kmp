@@ -14,17 +14,16 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.mock.stub.repository
+package care.data4life.datadonation.mock.stub.consent
 
-import care.data4life.datadonation.core.model.UserConsent
-import care.data4life.datadonation.internal.domain.repository.RepositoryContract
+import care.data4life.datadonation.consent.ConsentContract
+import care.data4life.datadonation.consent.model.UserConsent
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 
-internal class UserConsentRepositoryStub : RepositoryContract.UserConsentRepository, MockContract.Stub {
+internal class UserConsentRepositoryStub : ConsentContract.UserConsentRepository, MockContract.Stub {
     var whenCreateUserConsent: ((consentDocumentKey: String, version: String) -> Unit)? = null
     var whenFetchUserConsents: ((consentDocumentKey: String?) -> List<UserConsent>)? = null
-    var whenSignUserConsent: ((message: String) -> String)? = null
     var whenRevokeUserConsent: ((consentDocumentKey: String) -> Unit)? = null
 
     override suspend fun createUserConsent(consentDocumentKey: String, version: String) {
@@ -35,14 +34,6 @@ internal class UserConsentRepositoryStub : RepositoryContract.UserConsentReposit
         return whenFetchUserConsents?.invoke(consentDocumentKey) ?: throw MockException()
     }
 
-    override suspend fun signUserConsentRegistration(message: String): String {
-        return whenSignUserConsent?.invoke(message) ?: throw MockException()
-    }
-
-    override suspend fun signUserConsentDonation(message: String): String {
-        return whenSignUserConsent?.invoke(message) ?: throw MockException()
-    }
-
     override suspend fun revokeUserConsent(consentDocumentKey: String) {
         whenRevokeUserConsent?.invoke(consentDocumentKey) ?: throw MockException()
     }
@@ -50,7 +41,6 @@ internal class UserConsentRepositoryStub : RepositoryContract.UserConsentReposit
     override fun clear() {
         whenCreateUserConsent = null
         whenFetchUserConsents = null
-        whenSignUserConsent = null
         whenRevokeUserConsent = null
     }
 }

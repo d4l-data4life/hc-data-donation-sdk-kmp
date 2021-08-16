@@ -14,7 +14,7 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.lang
+package care.data4life.datadonation.consent
 
 import care.data4life.sdk.lang.D4LRuntimeException
 

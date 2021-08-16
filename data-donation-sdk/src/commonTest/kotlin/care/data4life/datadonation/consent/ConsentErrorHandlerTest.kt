@@ -14,10 +14,9 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.data.service
+package care.data4life.datadonation.consent
 
-import care.data4life.datadonation.lang.ConsentServiceError
-import care.data4life.datadonation.lang.HttpRuntimeError
+import care.data4life.datadonation.networking.HttpRuntimeError
 import io.ktor.http.HttpStatusCode
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -28,7 +27,7 @@ class ConsentErrorHandlerTest {
     fun `It fulfils ConsentErrorHandler`() {
         val switch: Any = ConsentErrorHandler
 
-        assertTrue(switch is ServiceContract.ConsentService.ConsentErrorHandler)
+        assertTrue(switch is ConsentContract.ConsentApiService.ConsentErrorHandler)
     }
 
     @Test

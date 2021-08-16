@@ -14,11 +14,11 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.lang
+package care.data4life.datadonation.networking
 
 import care.data4life.sdk.lang.D4LRuntimeException
 import io.ktor.http.HttpStatusCode
 
-internal class HttpRuntimeError(
+class HttpRuntimeError(
     val statusCode: HttpStatusCode
 ) : D4LRuntimeException()

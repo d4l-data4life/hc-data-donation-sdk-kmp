@@ -16,7 +16,7 @@
 
 package care.data4life.datadonation.networking.plugin
 
-import care.data4life.datadonation.lang.HttpRuntimeError
+import care.data4life.datadonation.networking.HttpRuntimeError
 import io.ktor.client.features.ResponseException
 
 internal object HttpErrorMapper : KtorPluginsContract.HttpErrorMapper {

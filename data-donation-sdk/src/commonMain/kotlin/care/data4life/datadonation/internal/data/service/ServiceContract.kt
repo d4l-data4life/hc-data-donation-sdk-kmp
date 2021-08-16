@@ -16,12 +16,6 @@
 
 package care.data4life.datadonation.internal.data.service
 
-import care.data4life.datadonation.ConsentDataContract.ConsentDocument
-import care.data4life.datadonation.ConsentDataContract.UserConsent
-import care.data4life.datadonation.internal.data.model.ConsentSignature
-import care.data4life.datadonation.lang.ConsentServiceError
-import care.data4life.datadonation.lang.HttpRuntimeError
-
 internal typealias SessionToken = String
 internal typealias PublicDataDonationCryptoKey = String
 internal typealias PublicAnalyticsCryptoKey = String
@@ -37,65 +31,6 @@ internal interface ServiceContract {
 
         companion object {
             const val CACHE_LIFETIME_IN_SECONDS = 60
-        }
-    }
-
-    interface ConsentService {
-        suspend fun fetchConsentDocuments(
-            accessToken: String,
-            version: String?,
-            language: String?,
-            consentDocumentKey: String
-        ): List<ConsentDocument>
-
-        suspend fun fetchUserConsents(
-            accessToken: String,
-            latestConsent: Boolean?,
-            consentDocumentKey: String? = null
-        ): List<UserConsent>
-
-        suspend fun createUserConsent(
-            accessToken: String,
-            consentDocumentKey: String,
-            version: String
-        )
-
-        suspend fun requestSignatureConsentRegistration(
-            accessToken: String,
-            message: String
-        ): ConsentSignature
-
-        suspend fun requestSignatureDonation(
-            accessToken: String,
-            message: String
-        ): ConsentSignature
-
-        suspend fun revokeUserConsent(accessToken: String, consentDocumentKey: String)
-
-        companion object {
-            val ROOT = listOf("consent", "api", "v1")
-
-            object PARAMETER {
-                const val USER_CONSENT_KEY = "consentDocumentKey"
-                const val LANGUAGE = "language"
-                const val VERSION = "version"
-                const val LATEST_CONSENT = "latest"
-            }
-
-            object PATH {
-                const val USER_CONSENTS = "userConsents"
-                const val CONSENTS_DOCUMENTS = "consentDocuments"
-                const val SIGNATURES = "signatures"
-            }
-        }
-
-        interface ConsentErrorHandler {
-            fun handleFetchConsentDocuments(error: HttpRuntimeError): ConsentServiceError
-            fun handleFetchUserConsents(error: HttpRuntimeError): ConsentServiceError
-            fun handleCreateUserConsent(error: HttpRuntimeError): ConsentServiceError
-            fun handleRequestSignatureConsentRegistration(error: HttpRuntimeError): ConsentServiceError
-            fun handleRequestSignatureDonation(error: HttpRuntimeError): ConsentServiceError
-            fun handleRevokeUserConsent(error: HttpRuntimeError): ConsentServiceError
         }
     }
 

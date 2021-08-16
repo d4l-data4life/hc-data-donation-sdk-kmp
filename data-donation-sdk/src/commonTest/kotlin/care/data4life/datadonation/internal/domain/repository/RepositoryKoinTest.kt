@@ -16,8 +16,9 @@
 
 package care.data4life.datadonation.internal.domain.repository
 
+import care.data4life.datadonation.consent.ConsentContract
 import care.data4life.datadonation.internal.data.service.ServiceContract
-import care.data4life.datadonation.mock.stub.service.ConsentServiceStub
+import care.data4life.datadonation.mock.stub.consent.ConsentApiServiceStub
 import care.data4life.datadonation.mock.stub.service.UserSessionTokenServiceStub
 import org.koin.core.context.stopKoin
 import org.koin.dsl.koinApplication
@@ -39,8 +40,8 @@ class RepositoryKoinTest {
             modules(
                 resolveRepositoryModule(),
                 module {
-                    single<ServiceContract.ConsentService> {
-                        ConsentServiceStub()
+                    single<ConsentContract.ConsentApiService> {
+                        ConsentApiServiceStub()
                     }
 
                     single<ServiceContract.UserSessionTokenService> {
@@ -51,7 +52,7 @@ class RepositoryKoinTest {
         }
 
         // Then
-        val repo: RepositoryContract.UserConsentRepository = koin.koin.get()
+        val repo: ConsentContract.UserConsentRepository = koin.koin.get()
         assertNotNull(repo)
     }
 
@@ -62,8 +63,8 @@ class RepositoryKoinTest {
             modules(
                 resolveRepositoryModule(),
                 module {
-                    single<ServiceContract.ConsentService> {
-                        ConsentServiceStub()
+                    single<ConsentContract.ConsentApiService> {
+                        ConsentApiServiceStub()
                     }
 
                     single<ServiceContract.UserSessionTokenService> {
@@ -74,7 +75,7 @@ class RepositoryKoinTest {
         }
 
         // Then
-        val repo: RepositoryContract.ConsentDocumentRepository = koin.koin.get()
+        val repo: ConsentContract.ConsentDocumentRepository = koin.koin.get()
         assertNotNull(repo)
     }
 }

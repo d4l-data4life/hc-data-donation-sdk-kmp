@@ -14,15 +14,15 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.mock.stub.service
+package care.data4life.datadonation.mock.stub.consent
 
-import care.data4life.datadonation.internal.data.service.ServiceContract
-import care.data4life.datadonation.lang.ConsentServiceError
-import care.data4life.datadonation.lang.HttpRuntimeError
+import care.data4life.datadonation.consent.ConsentContract
+import care.data4life.datadonation.consent.ConsentServiceError
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
+import care.data4life.datadonation.networking.HttpRuntimeError
 
-internal class ConsentErrorHandlerStub : ServiceContract.ConsentService.ConsentErrorHandler, MockContract.Stub {
+internal class ConsentErrorHandlerStub : ConsentContract.ConsentApiService.ConsentErrorHandler, MockContract.Stub {
     var whenHandleFetchConsentDocuments: ((HttpRuntimeError) -> ConsentServiceError)? = null
     var whenHandleFetchUserConsents: ((HttpRuntimeError) -> ConsentServiceError)? = null
     var whenHandleCreateUserConsent: ((HttpRuntimeError) -> ConsentServiceError)? = null

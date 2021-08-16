@@ -14,26 +14,16 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.data.service
+package care.data4life.datadonation.consent.model
 
-import care.data4life.datadonation.consent.ConsentApiService
-import care.data4life.datadonation.consent.ConsentContract
-import care.data4life.datadonation.consent.ConsentErrorHandler
-import org.koin.core.module.Module
-import org.koin.dsl.module
+import care.data4life.datadonation.ConsentDataContract
+import kotlinx.serialization.Serializable
 
-internal fun resolveServiceModule(): Module {
-    return module {
-        single<ConsentContract.ConsentApiService> {
-            ConsentApiService(get(), get(), get())
-        }
-
-        single<ConsentContract.ConsentApiService.ConsentErrorHandler> {
-            ConsentErrorHandler
-        }
-
-        single<ServiceContract.UserSessionTokenService> {
-            CachedUserSessionTokenService(get(), get())
-        }
-    }
-}
+@Serializable
+data class UserConsent(
+    override val consentDocumentKey: String,
+    override val consentDocumentVersion: String,
+    override val accountId: String, // UUID
+    override val event: ConsentDataContract.ConsentEvent,
+    override val createdAt: String = "" /* Timestamp */
+) : ConsentDataContract.UserConsent

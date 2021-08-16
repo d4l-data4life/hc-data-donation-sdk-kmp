@@ -16,16 +16,19 @@
 
 package care.data4life.datadonation.internal.domain.repository
 
+import care.data4life.datadonation.consent.ConsentContract
+import care.data4life.datadonation.consent.ConsentDocumentRepository
+import care.data4life.datadonation.consent.UserConsentRepository
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
 internal fun resolveRepositoryModule(): Module {
     return module {
-        single<RepositoryContract.UserConsentRepository> {
+        single<ConsentContract.UserConsentRepository> {
             UserConsentRepository(get(), get())
         }
 
-        single<RepositoryContract.ConsentDocumentRepository> {
+        single<ConsentContract.ConsentDocumentRepository> {
             ConsentDocumentRepository(get(), get())
         }
     }

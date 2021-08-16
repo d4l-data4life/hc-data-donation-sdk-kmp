@@ -16,9 +16,9 @@
 
 package care.data4life.datadonation.internal.domain.usecases
 
-import care.data4life.datadonation.internal.domain.repository.RepositoryContract
-import care.data4life.datadonation.mock.stub.repository.ConsentDocumentRepositoryStub
-import care.data4life.datadonation.mock.stub.repository.UserConsentRepositoryStub
+import care.data4life.datadonation.consent.ConsentContract
+import care.data4life.datadonation.mock.stub.consent.ConsentDocumentRepositoryStub
+import care.data4life.datadonation.mock.stub.consent.UserConsentRepositoryStub
 import org.koin.core.context.stopKoin
 import org.koin.dsl.bind
 import org.koin.dsl.koinApplication
@@ -40,9 +40,9 @@ class UsecaseKoinTest {
             modules(
                 resolveUsecaseModule(),
                 module {
-                    single<RepositoryContract.ConsentDocumentRepository> {
+                    single<ConsentContract.ConsentDocumentRepository> {
                         ConsentDocumentRepositoryStub()
-                    } bind RepositoryContract.ConsentDocumentRepository::class
+                    } bind ConsentContract.ConsentDocumentRepository::class
                 }
             )
         }
@@ -58,9 +58,9 @@ class UsecaseKoinTest {
             modules(
                 resolveUsecaseModule(),
                 module {
-                    single<RepositoryContract.UserConsentRepository> {
+                    single<ConsentContract.UserConsentRepository> {
                         UserConsentRepositoryStub()
-                    } bind RepositoryContract.UserConsentRepository::class
+                    } bind ConsentContract.UserConsentRepository::class
                 }
             )
         }
@@ -76,9 +76,9 @@ class UsecaseKoinTest {
             modules(
                 resolveUsecaseModule(),
                 module {
-                    single<RepositoryContract.UserConsentRepository> {
+                    single<ConsentContract.UserConsentRepository> {
                         UserConsentRepositoryStub()
-                    } bind RepositoryContract.UserConsentRepository::class
+                    } bind ConsentContract.UserConsentRepository::class
                 }
             )
         }
@@ -94,9 +94,9 @@ class UsecaseKoinTest {
             modules(
                 resolveUsecaseModule(),
                 module {
-                    single<RepositoryContract.UserConsentRepository> {
+                    single<ConsentContract.UserConsentRepository> {
                         UserConsentRepositoryStub()
-                    } bind RepositoryContract.UserConsentRepository::class
+                    } bind ConsentContract.UserConsentRepository::class
                 }
             )
         }

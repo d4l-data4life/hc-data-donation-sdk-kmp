@@ -14,21 +14,18 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.mock.stub.service
+package care.data4life.datadonation.mock.stub.consent
 
-import care.data4life.datadonation.core.model.ConsentDocument
-import care.data4life.datadonation.core.model.UserConsent
-import care.data4life.datadonation.internal.data.model.ConsentSignature
-import care.data4life.datadonation.internal.data.service.ServiceContract
+import care.data4life.datadonation.consent.ConsentContract
+import care.data4life.datadonation.consent.model.ConsentDocument
+import care.data4life.datadonation.consent.model.UserConsent
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 
-internal class ConsentServiceStub : ServiceContract.ConsentService, MockContract.Stub {
+internal class ConsentApiServiceStub : ConsentContract.ConsentApiService, MockContract.Stub {
     var whenCreateUserConsent: ((String, String, String) -> Unit)? = null
     var whenFetchConsentDocuments: ((String, String?, String?, String) -> List<ConsentDocument>)? = null
     var whenFetchUserConsents: ((String, Boolean?, String?) -> List<UserConsent>)? = null
-    var whenRequestSignatureConsentRegistration: ((String, String) -> ConsentSignature)? = null
-    var whenRequestSignatureDonation: ((String, String) -> ConsentSignature)? = null
     var whenRevokeUserConsent: ((String, String) -> Unit)? = null
 
     override suspend fun createUserConsent(
@@ -69,20 +66,6 @@ internal class ConsentServiceStub : ServiceContract.ConsentService, MockContract
         ) ?: throw MockException()
     }
 
-    override suspend fun requestSignatureConsentRegistration(
-        accessToken: String,
-        message: String
-    ): ConsentSignature {
-        return whenRequestSignatureConsentRegistration?.invoke(accessToken, message) ?: throw MockException()
-    }
-
-    override suspend fun requestSignatureDonation(
-        accessToken: String,
-        message: String
-    ): ConsentSignature {
-        return whenRequestSignatureDonation?.invoke(accessToken, message) ?: throw MockException()
-    }
-
     override suspend fun revokeUserConsent(accessToken: String, consentDocumentKey: String) {
         return whenRevokeUserConsent?.invoke(accessToken, consentDocumentKey) ?: throw MockException()
     }
@@ -91,8 +74,6 @@ internal class ConsentServiceStub : ServiceContract.ConsentService, MockContract
         whenCreateUserConsent = null
         whenFetchConsentDocuments = null
         whenFetchUserConsents = null
-        whenRequestSignatureConsentRegistration = null
-        whenRequestSignatureDonation = null
         whenRevokeUserConsent = null
     }
 }

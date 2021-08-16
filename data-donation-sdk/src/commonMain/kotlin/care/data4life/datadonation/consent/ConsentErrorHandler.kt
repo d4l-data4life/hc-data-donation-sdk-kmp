@@ -14,13 +14,12 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.data.service
+package care.data4life.datadonation.consent
 
-import care.data4life.datadonation.lang.ConsentServiceError
-import care.data4life.datadonation.lang.HttpRuntimeError
+import care.data4life.datadonation.networking.HttpRuntimeError
 import io.ktor.http.HttpStatusCode
 
-internal object ConsentErrorHandler : ServiceContract.ConsentService.ConsentErrorHandler {
+internal object ConsentErrorHandler : ConsentContract.ConsentApiService.ConsentErrorHandler {
     private fun mapError(
         error: HttpRuntimeError,
         map: Map<HttpStatusCode, ConsentServiceError>

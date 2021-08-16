@@ -16,7 +16,7 @@
 
 package care.data4life.datadonation.networking.plugin
 
-import care.data4life.datadonation.lang.HttpRuntimeError
+import care.data4life.datadonation.networking.HttpRuntimeError
 import care.data4life.sdk.util.test.coroutine.runBlockingTest
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine

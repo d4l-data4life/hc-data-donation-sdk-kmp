@@ -14,36 +14,31 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.data.service
+package care.data4life.datadonation.consent
 
-import care.data4life.datadonation.core.model.ConsentDocument
-import care.data4life.datadonation.core.model.UserConsent
-import care.data4life.datadonation.internal.data.model.ConsentCreationPayload
-import care.data4life.datadonation.internal.data.model.ConsentRevocationPayload
-import care.data4life.datadonation.internal.data.model.ConsentSignature
-import care.data4life.datadonation.internal.data.model.ConsentSignatureType
-import care.data4life.datadonation.internal.data.model.ConsentSigningRequest
-import care.data4life.datadonation.internal.data.service.ServiceContract.Companion.DEFAULT_DONATION_CONSENT_KEY
-import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PARAMETER.LANGUAGE
-import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PARAMETER.LATEST_CONSENT
-import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PARAMETER.USER_CONSENT_KEY
-import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PARAMETER.VERSION
-import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PATH.CONSENTS_DOCUMENTS
-import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PATH.SIGNATURES
-import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PATH.USER_CONSENTS
-import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.ROOT
-import care.data4life.datadonation.lang.HttpRuntimeError
+import care.data4life.datadonation.consent.ConsentContract.ConsentApiService.Companion.PARAMETER.LANGUAGE
+import care.data4life.datadonation.consent.ConsentContract.ConsentApiService.Companion.PARAMETER.LATEST_CONSENT
+import care.data4life.datadonation.consent.ConsentContract.ConsentApiService.Companion.PARAMETER.USER_CONSENT_KEY
+import care.data4life.datadonation.consent.ConsentContract.ConsentApiService.Companion.PARAMETER.VERSION
+import care.data4life.datadonation.consent.ConsentContract.ConsentApiService.Companion.PATH.CONSENTS_DOCUMENTS
+import care.data4life.datadonation.consent.ConsentContract.ConsentApiService.Companion.PATH.USER_CONSENTS
+import care.data4life.datadonation.consent.ConsentContract.ConsentApiService.Companion.ROOT
+import care.data4life.datadonation.consent.model.ConsentCreationPayload
+import care.data4life.datadonation.consent.model.ConsentDocument
+import care.data4life.datadonation.consent.model.ConsentRevocationPayload
+import care.data4life.datadonation.consent.model.UserConsent
+import care.data4life.datadonation.networking.HttpRuntimeError
 import care.data4life.datadonation.networking.Networking
 import care.data4life.datadonation.networking.receive
 import kotlinx.datetime.Clock
 import care.data4life.datadonation.ConsentDataContract.ConsentDocument as ConsentDocumentContract
 import care.data4life.datadonation.ConsentDataContract.UserConsent as UserConsentContract
 
-internal class ConsentService constructor(
+internal class ConsentApiService constructor(
     private val requestBuilderFactory: Networking.RequestBuilderFactory,
-    private val errorHandler: ServiceContract.ConsentService.ConsentErrorHandler,
+    private val errorHandler: ConsentContract.ConsentApiService.ConsentErrorHandler,
     private val clock: Clock
-) : ServiceContract.ConsentService {
+) : ConsentContract.ConsentApiService {
     private fun buildPath(
         endpoint: String,
         vararg tail: String
@@ -138,73 +133,6 @@ internal class ConsentService constructor(
             receive<List<UserConsent>>(request)
         } catch (error: HttpRuntimeError) {
             throw errorHandler.handleFetchUserConsents(error)
-        }
-    }
-
-    // see: https://github.com/gesundheitscloud/consent-management/blob/master/swagger/api.yml#L356
-    override suspend fun requestSignatureConsentRegistration(
-        accessToken: String,
-        message: String
-    ): ConsentSignature {
-        val consentDocumentKey = DEFAULT_DONATION_CONSENT_KEY
-        val path = buildPath(
-            USER_CONSENTS,
-            consentDocumentKey,
-            SIGNATURES
-        )
-        val payload = ConsentSigningRequest(
-            consentDocumentKey,
-            message,
-            ConsentSignatureType.CONSENT_ONCE.apiValue
-        )
-
-        val request = requestBuilderFactory
-            .create()
-            .setAccessToken(accessToken)
-            .useJsonContentType()
-            .setBody(payload)
-            .prepare(
-                Networking.Method.POST,
-                path
-            )
-
-        return try {
-            receive(request)
-        } catch (error: HttpRuntimeError) {
-            throw errorHandler.handleRequestSignatureConsentRegistration(error)
-        }
-    }
-
-    override suspend fun requestSignatureDonation(
-        accessToken: String,
-        message: String
-    ): ConsentSignature {
-        val consentDocumentKey = DEFAULT_DONATION_CONSENT_KEY
-        val path = buildPath(
-            USER_CONSENTS,
-            consentDocumentKey,
-            SIGNATURES
-        )
-        val payload = ConsentSigningRequest(
-            consentDocumentKey,
-            message,
-            ConsentSignatureType.NORMAL_USE.apiValue
-        )
-
-        val request = requestBuilderFactory
-            .create()
-            .setAccessToken(accessToken)
-            .useJsonContentType()
-            .setBody(payload)
-            .prepare(
-                Networking.Method.PUT,
-                path
-            )
-
-        return try {
-            receive(request)
-        } catch (error: HttpRuntimeError) {
-            throw errorHandler.handleRequestSignatureDonation(error)
         }
     }
 

@@ -18,6 +18,7 @@ package care.data4life.datadonation.internal.data.service
 
 import care.data4life.datadonation.DataDonationSDKPublicAPI
 import care.data4life.datadonation.DataDonationSDKPublicAPI.Environment
+import care.data4life.datadonation.consent.ConsentContract
 import care.data4life.datadonation.mock.stub.ClockStub
 import care.data4life.datadonation.mock.stub.UserSessionTokenProviderStub
 import care.data4life.datadonation.mock.stub.networking.RequestBuilderSpy
@@ -44,7 +45,7 @@ class ServiceKoinTest {
             modules(resolveServiceModule())
         }
         // Then
-        val builder: ServiceContract.ConsentService.ConsentErrorHandler = koin.koin.get()
+        val builder: ConsentContract.ConsentApiService.ConsentErrorHandler = koin.koin.get()
         assertNotNull(builder)
     }
 
@@ -65,7 +66,7 @@ class ServiceKoinTest {
             )
         }
         // Then
-        val builder: ServiceContract.ConsentService = koin.koin.get()
+        val builder: ConsentContract.ConsentApiService = koin.koin.get()
         assertNotNull(builder)
     }
 

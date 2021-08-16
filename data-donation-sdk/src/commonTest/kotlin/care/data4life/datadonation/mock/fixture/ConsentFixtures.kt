@@ -17,8 +17,8 @@
 package care.data4life.datadonation.mock.fixture
 
 import care.data4life.datadonation.ConsentDataContract
-import care.data4life.datadonation.core.model.ConsentDocument
-import care.data4life.datadonation.core.model.UserConsent
+import care.data4life.datadonation.consent.model.ConsentDocument
+import care.data4life.datadonation.consent.model.UserConsent
 import kotlin.native.concurrent.ThreadLocal
 
 @ThreadLocal
