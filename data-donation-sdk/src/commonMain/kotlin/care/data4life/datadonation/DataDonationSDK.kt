@@ -36,7 +36,7 @@ import care.data4life.datadonation.ConsentDataContract.ConsentDocument
 import care.data4life.datadonation.ConsentDataContract.UserConsent
 import care.data4life.sdk.util.coroutine.D4LSDKFlowContract
 
-interface DataDonationSDKPublicAPI {
+interface DataDonationSDK {
     enum class Environment(val url: String) {
         DEV("api-phdp-dev.hpsgc.de"),
         SANDBOX("api-phdp-sandbox.hpsgc.de"),

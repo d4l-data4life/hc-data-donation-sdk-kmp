@@ -16,7 +16,7 @@
 
 package care.data4life.datadonation.consentdocument
 
-import care.data4life.datadonation.DataDonationSDKPublicAPI
+import care.data4life.datadonation.DataDonationSDK
 import care.data4life.datadonation.internal.data.service.ServiceContract
 import care.data4life.datadonation.mock.stub.ClockStub
 import care.data4life.datadonation.mock.stub.consentdocument.ConsentDocumentApiServiceStub
@@ -85,7 +85,7 @@ class ConsentDocumentKoinTest {
                         RequestBuilderSpy.Factory()
                     }
                     single { HttpMockClientFactory.createHelloWorldMockClient() }
-                    single<DataDonationSDKPublicAPI.Environment> { DataDonationSDKPublicAPI.Environment.DEV }
+                    single<DataDonationSDK.Environment> { DataDonationSDK.Environment.DEV }
                 }
             )
         }

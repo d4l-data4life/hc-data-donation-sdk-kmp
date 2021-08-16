@@ -16,7 +16,7 @@
 
 package care.data4life.datadonation.internal.data.service
 
-import care.data4life.datadonation.DataDonationSDKPublicAPI
+import care.data4life.datadonation.DataDonationSDK
 import care.data4life.datadonation.mock.stub.ClockStub
 import care.data4life.datadonation.mock.stub.UserSessionTokenProviderStub
 import kotlinx.datetime.Clock
@@ -41,7 +41,7 @@ class ServiceKoinTest {
                 resolveServiceModule(),
                 module {
                     single<Clock> { ClockStub() }
-                    single<DataDonationSDKPublicAPI.UserSessionTokenProvider> {
+                    single<DataDonationSDK.UserSessionTokenProvider> {
                         UserSessionTokenProviderStub()
                     }
                 }

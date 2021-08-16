@@ -16,7 +16,7 @@
 
 package care.data4life.datadonation.di
 
-import care.data4life.datadonation.DataDonationSDKPublicAPI.Environment
+import care.data4life.datadonation.DataDonationSDK.Environment
 import care.data4life.datadonation.consent.ConsentContract
 import care.data4life.datadonation.consentdocument.ConsentDocumentContract
 import care.data4life.datadonation.mock.stub.UserSessionTokenProviderStub

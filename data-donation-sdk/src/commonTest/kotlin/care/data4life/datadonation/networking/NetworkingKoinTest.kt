@@ -16,7 +16,7 @@
 
 package care.data4life.datadonation.networking
 
-import care.data4life.datadonation.DataDonationSDKPublicAPI
+import care.data4life.datadonation.DataDonationSDK
 import care.data4life.datadonation.mock.stub.networking.HttpClientConfiguratorStub
 import care.data4life.datadonation.mock.stub.networking.HttpPluginConfiguratorStub
 import care.data4life.sdk.util.test.ktor.HttpMockClientFactory.createHelloWorldMockClient
@@ -48,7 +48,7 @@ class NetworkingKoinTest {
                 resolveNetworking(),
                 module(override = true) {
                     single { createHelloWorldMockClient() }
-                    single { DataDonationSDKPublicAPI.Environment.DEV }
+                    single { DataDonationSDK.Environment.DEV }
                 }
             )
         }
@@ -65,7 +65,7 @@ class NetworkingKoinTest {
                 resolveNetworking(),
                 module(override = true) {
                     single { createHelloWorldMockClient() }
-                    single { DataDonationSDKPublicAPI.Environment.DEV }
+                    single { DataDonationSDK.Environment.DEV }
                 }
             )
         }
@@ -83,7 +83,7 @@ class NetworkingKoinTest {
                 resolveNetworking(),
                 module(override = true) {
                     single { createHelloWorldMockClient() }
-                    single { DataDonationSDKPublicAPI.Environment.DEV }
+                    single { DataDonationSDK.Environment.DEV }
                 }
             )
         }
@@ -123,7 +123,7 @@ class NetworkingKoinTest {
                     single<List<Networking.HttpPluginInstaller<out Any, out Any?>>> {
                         features
                     }
-                    single { DataDonationSDKPublicAPI.Environment.DEV }
+                    single { DataDonationSDK.Environment.DEV }
                 }
             )
         }

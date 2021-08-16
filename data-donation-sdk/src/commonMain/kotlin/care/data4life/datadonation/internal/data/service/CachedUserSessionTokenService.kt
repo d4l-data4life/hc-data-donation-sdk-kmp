@@ -32,16 +32,16 @@
 
 package care.data4life.datadonation.internal.data.service
 
-import care.data4life.datadonation.DataDonationSDKPublicAPI
-import care.data4life.datadonation.internal.data.service.ServiceContract.UserSessionTokenService.Companion.CACHE_LIFETIME_IN_SECONDS
+import care.data4life.datadonation.DataDonationSDK
 import care.data4life.datadonation.error.CoreRuntimeError
+import care.data4life.datadonation.internal.data.service.ServiceContract.UserSessionTokenService.Companion.CACHE_LIFETIME_IN_SECONDS
 import co.touchlab.stately.isolate.IsolateState
 import kotlinx.datetime.Clock
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 internal class CachedUserSessionTokenService(
-    private val provider: DataDonationSDKPublicAPI.UserSessionTokenProvider,
+    private val provider: DataDonationSDK.UserSessionTokenProvider,
     clock: Clock
 ) : ServiceContract.UserSessionTokenService {
     private val cache = IsolateState { Cache(clock) }

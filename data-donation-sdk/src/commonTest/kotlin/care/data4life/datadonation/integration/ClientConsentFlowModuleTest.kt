@@ -33,7 +33,7 @@
 package care.data4life.datadonation.integration
 
 import care.data4life.datadonation.Client
-import care.data4life.datadonation.DataDonationSDKPublicAPI
+import care.data4life.datadonation.DataDonationSDK
 import care.data4life.datadonation.consent.resolveConsentKoinModule
 import care.data4life.datadonation.consentdocument.ConsentDocumentServiceError
 import care.data4life.datadonation.consentdocument.resolveConsentDocumentKoinModule
@@ -110,7 +110,7 @@ class ClientConsentFlowModuleTest {
         val koin = koinApplication {
             modules(
                 resolveRootModule(
-                    DataDonationSDKPublicAPI.Environment.DEV,
+                    DataDonationSDK.Environment.DEV,
                     UserSessionTokenProvider
                 ),
                 resolveNetworking(),
@@ -161,7 +161,7 @@ class ClientConsentFlowModuleTest {
         val koin = koinApplication {
             modules(
                 resolveRootModule(
-                    DataDonationSDKPublicAPI.Environment.DEV,
+                    DataDonationSDK.Environment.DEV,
                     UserSessionTokenProvider
                 ),
                 resolveNetworking(),
@@ -235,7 +235,7 @@ class ClientConsentFlowModuleTest {
         val koin = koinApplication {
             modules(
                 resolveRootModule(
-                    DataDonationSDKPublicAPI.Environment.DEV,
+                    DataDonationSDK.Environment.DEV,
                     UserSessionTokenProvider
                 ),
                 resolveNetworking(),
@@ -327,7 +327,7 @@ class ClientConsentFlowModuleTest {
         val koin = koinApplication {
             modules(
                 resolveRootModule(
-                    DataDonationSDKPublicAPI.Environment.DEV,
+                    DataDonationSDK.Environment.DEV,
                     UserSessionTokenProvider
                 ),
                 resolveNetworking(),
@@ -427,7 +427,7 @@ class ClientConsentFlowModuleTest {
         val koin = koinApplication {
             modules(
                 resolveRootModule(
-                    DataDonationSDKPublicAPI.Environment.DEV,
+                    DataDonationSDK.Environment.DEV,
                     UserSessionTokenProvider
                 ),
                 resolveNetworking(),
@@ -456,7 +456,7 @@ class ClientConsentFlowModuleTest {
         }
     }
 
-    private object UserSessionTokenProvider : DataDonationSDKPublicAPI.UserSessionTokenProvider {
+    private object UserSessionTokenProvider : DataDonationSDK.UserSessionTokenProvider {
         const val sessionToken = "sessionToken"
 
         override fun getUserSessionToken(

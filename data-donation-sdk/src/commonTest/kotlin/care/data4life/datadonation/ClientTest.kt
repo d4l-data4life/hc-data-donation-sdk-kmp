@@ -16,7 +16,7 @@
 
 package care.data4life.datadonation
 
-import care.data4life.datadonation.DataDonationSDKPublicAPI.Environment
+import care.data4life.datadonation.DataDonationSDK.Environment
 import care.data4life.datadonation.consent.ConsentContract
 import care.data4life.datadonation.consentdocument.ConsentDocumentContract
 import care.data4life.datadonation.mock.fixture.ConsentFixtures.sampleConsentDocument
@@ -49,7 +49,7 @@ class ClientTest {
     fun `It fulfils DataDonationFactory`() {
         val factory: Any = Client
 
-        assertTrue(factory is DataDonationSDKPublicAPI.DataDonationClientFactory)
+        assertTrue(factory is DataDonationSDK.DataDonationClientFactory)
     }
 
     @Test
@@ -59,7 +59,7 @@ class ClientTest {
             UserSessionTokenProviderStub()
         )
 
-        assertTrue(client is DataDonationSDKPublicAPI.DataDonationClient)
+        assertTrue(client is DataDonationSDK.DataDonationClient)
     }
 
     @Test
