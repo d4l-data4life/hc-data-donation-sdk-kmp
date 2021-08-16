@@ -14,11 +14,10 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.lang
+package care.data4life.datadonation.error
 
 import care.data4life.sdk.util.coroutine.DomainErrorMapperContract
-import kotlin.test.Test
-import kotlin.test.assertEquals
+import org.junit.Test
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
@@ -39,20 +38,8 @@ class DataDonationFlowErrorMapperTest {
         val result = DataDonationFlowErrorMapper.mapError(error)
 
         // Then
-        assertEquals(
-            actual = result.code,
-            expected = 815
-        )
-        assertEquals(
-            actual = result.domain,
-            expected = "care.data4life.datadonation"
-        )
-        assertEquals(
-            actual = result.localizedDescription,
-            expected = "Internal failure"
-        )
         assertSame(
-            actual = result.userInfo["kotlinError"],
+            actual = result,
             expected = error
         )
     }

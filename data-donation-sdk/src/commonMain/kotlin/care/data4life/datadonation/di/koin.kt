@@ -19,7 +19,7 @@ package care.data4life.datadonation.di
 import care.data4life.datadonation.DataDonationSDK
 import care.data4life.datadonation.DataDonationSDK.Environment
 import care.data4life.datadonation.consentdocument.resolveConsentDocumentKoinModule
-import care.data4life.datadonation.lang.DataDonationFlowErrorMapper
+import care.data4life.datadonation.error.DataDonationFlowErrorMapper
 import care.data4life.datadonation.networking.plugin.resolveKtorPlugins
 import care.data4life.datadonation.networking.resolveNetworking
 import care.data4life.datadonation.session.resolveSessionKoinModule
