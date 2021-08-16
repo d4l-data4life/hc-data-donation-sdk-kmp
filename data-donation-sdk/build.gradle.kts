@@ -15,11 +15,11 @@
  */
 
 plugins {
-    // Android
-    androidLibrary()
-
     kotlinMultiplatform()
     kotlinSerialization()
+
+    // Android
+    androidLibrary()
 
     // Publish
     id("scripts.publishing-config")
@@ -59,7 +59,9 @@ kotlin {
 
                 implementation(Dependency.multiplatform.coroutines.common)
 
+                implementation(Dependency.multiplatform.stately.freeze)
                 implementation(Dependency.multiplatform.stately.isolate)
+                implementation(Dependency.multiplatform.stately.concurrency)
 
                 implementation(Dependency.multiplatform.ktor.commonCore)
                 implementation(Dependency.multiplatform.ktor.logger)
@@ -72,7 +74,13 @@ kotlin {
 
                 // D4L
                 implementation(Dependency.d4l.sdkUtil)
-                implementation(Dependency.d4l.sdkUtilCoroutine)
+                implementation(Dependency.d4l.sdkFlow)
+                implementation(Dependency.d4l.sdkError)
+                implementation(Dependency.d4l.sdkUtilCoroutine) {
+                    exclude(
+                        group = "co.touchlab:stately-concurrency"
+                    )
+                }
             }
         }
         commonTest {
@@ -93,23 +101,21 @@ kotlin {
 
         val androidMain by getting {
             dependencies {
-                //Kotlin
-                implementation(Dependency.multiplatform.coroutines.android)
-
                 //DI
                 implementation(Dependency.jvm.slf4jNop)
                 implementation(Dependency.jvm.slf4jApi)
 
+                //Ktor
                 implementation(Dependency.multiplatform.ktor.androidCore)
-                implementation(Dependency.multiplatform.ktor.androidSerialization)
-                implementation(Dependency.multiplatform.serialization.android)
             }
         }
         val androidTest by getting {
             dependencies {
+                dependsOn(commonTest.get())
+
                 implementation(Dependency.multiplatform.kotlin.testJvm)
                 implementation(Dependency.multiplatform.kotlin.testJvmJunit)
-                dependsOn(commonTest.get())
+                implementation(Dependency.androidTest.robolectric)
             }
         }
 
@@ -125,7 +131,7 @@ kotlin {
                 implementation(Dependency.multiplatform.ktor.ios)
 
                 // D4L
-                implementation(Dependency.d4l.sdkUtil)
+                implementation(Dependency.d4l.sdkObjcUtil)
             }
         }
         val iosTest by getting {

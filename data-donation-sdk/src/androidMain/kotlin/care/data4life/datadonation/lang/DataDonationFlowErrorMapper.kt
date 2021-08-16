@@ -14,23 +14,11 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.data.service
+package care.data4life.datadonation.lang
 
-import org.koin.core.module.Module
-import org.koin.dsl.module
+import care.data4life.sdk.lang.PlatformError
+import care.data4life.sdk.util.coroutine.DomainErrorMapperContract
 
-internal fun resolveServiceModule(): Module {
-    return module {
-        single<ServiceContract.ConsentService> {
-            ConsentService(get(), get(), get())
-        }
-
-        single<ServiceContract.ConsentService.ConsentErrorHandler> {
-            ConsentErrorHandler
-        }
-
-        single<ServiceContract.UserSessionTokenService> {
-            CachedUserSessionTokenService(get(), get(), get())
-        }
-    }
+actual object DataDonationFlowErrorMapper : DomainErrorMapperContract {
+    actual override fun mapError(error: Throwable): PlatformError = error
 }

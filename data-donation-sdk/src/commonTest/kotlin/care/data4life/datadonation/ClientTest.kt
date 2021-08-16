@@ -22,14 +22,20 @@ import care.data4life.datadonation.internal.domain.usecases.FetchConsentDocument
 import care.data4life.datadonation.internal.domain.usecases.FetchUserConsents
 import care.data4life.datadonation.internal.domain.usecases.RevokeUserConsent
 import care.data4life.datadonation.internal.domain.usecases.UsecaseContract
+import care.data4life.datadonation.lang.DataDonationFlowErrorMapper
 import care.data4life.datadonation.mock.fixture.ConsentFixtures.sampleConsentDocument
 import care.data4life.datadonation.mock.fixture.ConsentFixtures.sampleUserConsent
+import care.data4life.datadonation.mock.spy.D4LFlowFactorySpy
 import care.data4life.datadonation.mock.stub.CreateUserConsentStub
 import care.data4life.datadonation.mock.stub.FetchConsentDocumentsStub
 import care.data4life.datadonation.mock.stub.FetchUserConsentsStub
 import care.data4life.datadonation.mock.stub.RevokeUserConsentStub
 import care.data4life.datadonation.mock.stub.UserSessionTokenProviderStub
+import care.data4life.sdk.flow.D4LSDKFlowFactoryContract
+import care.data4life.sdk.util.coroutine.DomainErrorMapperContract
 import care.data4life.sdk.util.test.coroutine.runWithContextBlockingTest
+import care.data4life.sdk.util.test.coroutine.testCoroutineContext
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.collect
@@ -44,6 +50,8 @@ import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 class ClientTest {
+    private var flowSpy = D4LFlowFactorySpy()
+
     @BeforeTest
     fun setUp() {
         stopKoin()
@@ -71,6 +79,7 @@ class ClientTest {
         // Given
         val usecase = CreateUserConsentStub()
         val consent = sampleUserConsent
+        val scope = CoroutineScope(testCoroutineContext)
 
         val version = "23"
         val consentDocumentKey = "custom-consent-key"
@@ -87,6 +96,16 @@ class ClientTest {
         val di = koinApplication {
             modules(
                 module {
+                    single<CoroutineScope> {
+                        scope
+                    }
+                    single<DomainErrorMapperContract> {
+                        DataDonationFlowErrorMapper
+                    }
+                    single<D4LSDKFlowFactoryContract> {
+                        flowSpy
+                    }
+
                     single<UsecaseContract.CreateUserConsent> {
                         usecase
                     }
@@ -124,6 +143,15 @@ class ClientTest {
                 version = version
             )
         )
+
+        assertSame(
+            actual = flowSpy.capturedErrorMapper,
+            expected = DataDonationFlowErrorMapper
+        )
+        assertSame(
+            actual = flowSpy.capturedScope,
+            expected = scope
+        )
     }
 
     @Test
@@ -131,6 +159,7 @@ class ClientTest {
         // Given
         val usecase = FetchConsentDocumentsStub()
         val documents = listOf(sampleConsentDocument)
+        val scope = CoroutineScope(testCoroutineContext)
 
         val version = "23"
         val language = "de-j-old-n-kotlin-x-done"
@@ -148,6 +177,16 @@ class ClientTest {
         val di = koinApplication {
             modules(
                 module {
+                    single<CoroutineScope> {
+                        scope
+                    }
+                    single<DomainErrorMapperContract> {
+                        DataDonationFlowErrorMapper
+                    }
+                    single<D4LSDKFlowFactoryContract> {
+                        flowSpy
+                    }
+
                     single<UsecaseContract.FetchConsentDocuments> {
                         usecase
                     }
@@ -187,6 +226,15 @@ class ClientTest {
                 consentDocumentKey = consentDocumentKey
             )
         )
+
+        assertSame(
+            actual = flowSpy.capturedErrorMapper,
+            expected = DataDonationFlowErrorMapper
+        )
+        assertSame(
+            actual = flowSpy.capturedScope,
+            expected = scope
+        )
     }
 
     @Test
@@ -194,6 +242,7 @@ class ClientTest {
         // Given
         val usecase = FetchUserConsentsStub()
         val consents = listOf(sampleUserConsent)
+        val scope = CoroutineScope(testCoroutineContext)
 
         val capturedParameter = Channel<UsecaseContract.FetchUserConsents.Parameter>()
 
@@ -207,6 +256,16 @@ class ClientTest {
         val di = koinApplication {
             modules(
                 module {
+                    single<CoroutineScope> {
+                        scope
+                    }
+                    single<DomainErrorMapperContract> {
+                        DataDonationFlowErrorMapper
+                    }
+                    single<D4LSDKFlowFactoryContract> {
+                        flowSpy
+                    }
+
                     single<UsecaseContract.FetchUserConsents> {
                         usecase
                     }
@@ -243,6 +302,15 @@ class ClientTest {
                 consentDocumentKey = consentDocumentKey
             )
         )
+
+        assertSame(
+            actual = flowSpy.capturedErrorMapper,
+            expected = DataDonationFlowErrorMapper
+        )
+        assertSame(
+            actual = flowSpy.capturedScope,
+            expected = scope
+        )
     }
 
     @Test
@@ -250,6 +318,7 @@ class ClientTest {
         // Given
         val usecase = FetchUserConsentsStub()
         val consents = listOf(sampleUserConsent)
+        val scope = CoroutineScope(testCoroutineContext)
 
         val capturedParameter = Channel<UsecaseContract.FetchUserConsents.Parameter>()
 
@@ -263,6 +332,16 @@ class ClientTest {
         val di = koinApplication {
             modules(
                 module {
+                    single<CoroutineScope> {
+                        scope
+                    }
+                    single<DomainErrorMapperContract> {
+                        DataDonationFlowErrorMapper
+                    }
+                    single<D4LSDKFlowFactoryContract> {
+                        flowSpy
+                    }
+
                     single<UsecaseContract.FetchUserConsents> {
                         usecase
                     }
@@ -294,12 +373,22 @@ class ClientTest {
             actual = capturedParameter.receive(),
             expected = FetchUserConsents.Parameter()
         )
+
+        assertSame(
+            actual = flowSpy.capturedErrorMapper,
+            expected = DataDonationFlowErrorMapper
+        )
+        assertSame(
+            actual = flowSpy.capturedScope,
+            expected = scope
+        )
     }
 
     @Test
     fun `Given revokeUserConsent is called with a consentDocumentKey it builds and delegates its Parameter to the Usecase and returns a runnable Flow which just runs`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val usecase = RevokeUserConsentStub()
+        val scope = CoroutineScope(testCoroutineContext)
 
         val consentDocumentKey = "custom-consent-key"
 
@@ -315,6 +404,16 @@ class ClientTest {
         val di = koinApplication {
             modules(
                 module {
+                    single<CoroutineScope> {
+                        scope
+                    }
+                    single<DomainErrorMapperContract> {
+                        DataDonationFlowErrorMapper
+                    }
+                    single<D4LSDKFlowFactoryContract> {
+                        flowSpy
+                    }
+
                     single<UsecaseContract.RevokeUserConsent> {
                         usecase
                     }
@@ -347,6 +446,15 @@ class ClientTest {
             expected = RevokeUserConsent.Parameter(
                 consentDocumentKey = consentDocumentKey,
             )
+        )
+
+        assertSame(
+            actual = flowSpy.capturedErrorMapper,
+            expected = DataDonationFlowErrorMapper
+        )
+        assertSame(
+            actual = flowSpy.capturedScope,
+            expected = scope
         )
     }
 }
