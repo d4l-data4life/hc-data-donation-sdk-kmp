@@ -45,7 +45,6 @@ import care.data4life.sdk.util.test.coroutine.runBlockingTest
 import care.data4life.sdk.util.test.ktor.HttpMockClientFactory.createMockClientWithResponse
 import io.ktor.client.engine.mock.respond
 import io.ktor.http.HttpStatusCode
-import io.ktor.util.KtorExperimentalAPI
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
@@ -119,61 +118,6 @@ class ClientConsentFlowIosModuleTest {
 
             // Then
             assertTrue(result.receive() is ConsentServiceError.InternalServer)
-        }
-    }
-
-    @KtorExperimentalAPI
-    @Test
-    fun `Given revokeUserConsents is called with consentDocumentKey it fails at unexpected Response`() {
-        // Given
-        val consentDocumentKey = "water"
-
-        val result = Channel<Throwable>()
-
-        val httpClient = createMockClientWithResponse { scope, _ ->
-            // Then
-            scope.respond(
-                content = "",
-                status = HttpStatusCode.OK
-            )
-        }
-
-        val koin = koinApplication {
-            modules(
-                resolveRootModule(
-                    DataDonationSDKPublicAPI.Environment.DEV,
-                    UserSessionTokenProvider
-                ),
-                resolveNetworking(),
-                resolveKtorPlugins(),
-                resolveUsecaseModule(),
-                resolveRepositoryModule(),
-                resolveServiceModule(),
-                module {
-                    factory(
-                        override = true,
-                        qualifier = named("blankHttpClient")
-                    ) { httpClient }
-                }
-            )
-        }
-
-        // When
-        val job = Client(koin).revokeUserConsent(consentDocumentKey).subscribe(
-            onEach = {},
-            onError = { error ->
-                GlobalScope.launch {
-                    result.send(error.userInfo["kotlinError"] as Throwable)
-                }
-            },
-            onComplete = {}
-        )
-
-        runBlockingTest {
-            job.join()
-
-            // Then
-            assertTrue(result.receive() is ConsentServiceError.NoValidConsent)
         }
     }
 

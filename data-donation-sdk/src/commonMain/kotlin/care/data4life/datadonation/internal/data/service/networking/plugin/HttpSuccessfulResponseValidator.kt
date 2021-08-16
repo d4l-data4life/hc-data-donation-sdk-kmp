@@ -18,8 +18,6 @@ package care.data4life.datadonation.internal.data.service.networking.plugin
 
 import care.data4life.datadonation.lang.HttpRuntimeError
 import io.ktor.client.statement.HttpResponse
-import io.ktor.client.statement.request
-import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 
 internal object HttpSuccessfulResponseValidator : KtorPluginsContract.HttpSuccessfulResponseValidator {
@@ -29,17 +27,7 @@ internal object HttpSuccessfulResponseValidator : KtorPluginsContract.HttpSucces
         }
     }
 
-    private fun validateDelete(response: HttpResponse) {
-        if (response.status != HttpStatusCode.NoContent) {
-            throw HttpRuntimeError(response.status)
-        }
-    }
-
     override fun validate(response: HttpResponse) {
-        if (response.request.method == HttpMethod.Delete) {
-            validateDelete(response)
-        } else {
-            validateNonDelete(response)
-        }
+        validateNonDelete(response)
     }
 }
