@@ -17,23 +17,27 @@
 package care.data4life.datadonation.consent
 
 import care.data4life.datadonation.ConsentDataContract
+import care.data4life.datadonation.networking.AccessToken
 import care.data4life.datadonation.networking.HttpRuntimeError
 
 internal interface ConsentContract {
     interface ApiService {
         suspend fun fetchUserConsents(
-            accessToken: String,
+            accessToken: AccessToken,
             latestConsent: Boolean?,
             consentDocumentKey: String? = null
         ): List<ConsentDataContract.UserConsent>
 
         suspend fun createUserConsent(
-            accessToken: String,
+            accessToken: AccessToken,
             consentDocumentKey: String,
             version: String
         )
 
-        suspend fun revokeUserConsent(accessToken: String, consentDocumentKey: String)
+        suspend fun revokeUserConsent(
+            accessToken: AccessToken,
+            consentDocumentKey: String
+        )
 
         companion object {
             val PATH = listOf("consent", "api", "v1", "userConsents")
@@ -54,9 +58,21 @@ internal interface ConsentContract {
     }
 
     interface Repository {
-        suspend fun createUserConsent(consentDocumentKey: String, consentDocumentVersion: String)
-        suspend fun fetchUserConsents(consentDocumentKey: String?): List<ConsentDataContract.UserConsent>
-        suspend fun revokeUserConsent(consentDocumentKey: String)
+        suspend fun createUserConsent(
+            accessToken: AccessToken,
+            consentDocumentKey: String,
+            consentDocumentVersion: String
+        )
+
+        suspend fun fetchUserConsents(
+            accessToken: AccessToken,
+            consentDocumentKey: String?
+        ): List<ConsentDataContract.UserConsent>
+
+        suspend fun revokeUserConsent(
+            accessToken: AccessToken,
+            consentDocumentKey: String
+        )
     }
 
     interface Interactor {

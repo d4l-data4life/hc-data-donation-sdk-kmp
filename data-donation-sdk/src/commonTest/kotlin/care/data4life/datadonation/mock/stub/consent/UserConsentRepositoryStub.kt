@@ -20,22 +20,43 @@ import care.data4life.datadonation.consent.ConsentContract
 import care.data4life.datadonation.consent.model.UserConsent
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
+import care.data4life.datadonation.networking.AccessToken
 
 internal class UserConsentRepositoryStub : ConsentContract.Repository, MockContract.Stub {
-    var whenCreateUserConsent: ((consentDocumentKey: String, version: String) -> Unit)? = null
-    var whenFetchUserConsents: ((consentDocumentKey: String?) -> List<UserConsent>)? = null
-    var whenRevokeUserConsent: ((consentDocumentKey: String) -> Unit)? = null
+    var whenCreateUserConsent: ((AccessToken, String, String) -> Unit)? = null
+    var whenFetchUserConsents: ((AccessToken, String?) -> List<UserConsent>)? = null
+    var whenRevokeUserConsent: ((AccessToken, String) -> Unit)? = null
 
-    override suspend fun createUserConsent(consentDocumentKey: String, consentDocumentVersion: String) {
-        whenCreateUserConsent?.invoke(consentDocumentKey, consentDocumentVersion) ?: throw MockException()
+    override suspend fun createUserConsent(
+        accessToken: AccessToken,
+        consentDocumentKey: String,
+        consentDocumentVersion: String
+    ) {
+        whenCreateUserConsent?.invoke(
+            accessToken,
+            consentDocumentKey,
+            consentDocumentVersion
+        ) ?: throw MockException()
     }
 
-    override suspend fun fetchUserConsents(consentDocumentKey: String?): List<UserConsent> {
-        return whenFetchUserConsents?.invoke(consentDocumentKey) ?: throw MockException()
+    override suspend fun fetchUserConsents(
+        accessToken: AccessToken,
+        consentDocumentKey: String?
+    ): List<UserConsent> {
+        return whenFetchUserConsents?.invoke(
+            accessToken,
+            consentDocumentKey
+        ) ?: throw MockException()
     }
 
-    override suspend fun revokeUserConsent(consentDocumentKey: String) {
-        whenRevokeUserConsent?.invoke(consentDocumentKey) ?: throw MockException()
+    override suspend fun revokeUserConsent(
+        accessToken: AccessToken,
+        consentDocumentKey: String
+    ) {
+        whenRevokeUserConsent?.invoke(
+            accessToken,
+            consentDocumentKey
+        ) ?: throw MockException()
     }
 
     override fun clear() {

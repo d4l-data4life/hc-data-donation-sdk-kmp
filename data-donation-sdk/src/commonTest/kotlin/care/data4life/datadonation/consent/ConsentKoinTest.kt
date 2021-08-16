@@ -46,10 +46,6 @@ class ConsentKoinTest {
             modules(
                 resolveConsentKoinModule(),
                 module {
-                    single<SessionTokenRepositoryContract> {
-                        UserSessionTokenRepositoryStub()
-                    }
-
                     single<ConsentContract.ApiService>(override = true) {
                         ConsentApiServiceStub()
                     }
@@ -103,6 +99,10 @@ class ConsentKoinTest {
                 module {
                     single<ConsentContract.Repository>(override = true) {
                         UserConsentRepositoryStub()
+                    }
+
+                    single<SessionTokenRepositoryContract> {
+                        UserSessionTokenRepositoryStub()
                     }
                 }
             )

@@ -17,28 +17,43 @@
 package care.data4life.datadonation.consent
 
 import care.data4life.datadonation.ConsentDataContract
+import care.data4life.datadonation.session.SessionTokenRepositoryContract
 
 internal class UserConsentService(
-    private val repository: ConsentContract.Repository
+    private val repository: ConsentContract.Repository,
+    private val sessionTokenRepository: SessionTokenRepositoryContract
 ) : ConsentContract.Interactor {
     override suspend fun createUserConsent(
         consentDocumentKey: String,
         consentDocumentVersion: String
     ): ConsentDataContract.UserConsent {
-        repository.createUserConsent(consentDocumentKey, consentDocumentVersion)
+        repository.createUserConsent(
+            accessToken = sessionTokenRepository.getUserSessionToken(),
+            consentDocumentKey = consentDocumentKey,
+            consentDocumentVersion = consentDocumentVersion
+        )
         return fetchAllUserConsents().first()
     }
 
     override suspend fun fetchUserConsents(consentDocumentKey: String): List<ConsentDataContract.UserConsent> {
-        return repository.fetchUserConsents(consentDocumentKey)
+        return repository.fetchUserConsents(
+            accessToken = sessionTokenRepository.getUserSessionToken(),
+            consentDocumentKey = consentDocumentKey
+        )
     }
 
     override suspend fun fetchAllUserConsents(): List<ConsentDataContract.UserConsent> {
-        return repository.fetchUserConsents(null)
+        return repository.fetchUserConsents(
+            accessToken = sessionTokenRepository.getUserSessionToken(),
+            consentDocumentKey = null
+        )
     }
 
     override suspend fun revokeUserConsent(consentDocumentKey: String): ConsentDataContract.UserConsent {
-        repository.revokeUserConsent(consentDocumentKey)
+        repository.revokeUserConsent(
+            accessToken = sessionTokenRepository.getUserSessionToken(),
+            consentDocumentKey = consentDocumentKey
+        )
         return fetchAllUserConsents().first()
     }
 }
