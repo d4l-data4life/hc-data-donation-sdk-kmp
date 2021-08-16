@@ -33,7 +33,7 @@
 package care.data4life.datadonation.internal.data.service
 
 import care.data4life.datadonation.DataDonationSDKPublicAPI
-import care.data4life.datadonation.internal.data.service.ServiceContract.UserSessionTokenService.Companion.CACHE_LIFETIME
+import care.data4life.datadonation.internal.data.service.ServiceContract.UserSessionTokenService.Companion.CACHE_LIFETIME_IN_SECONDS
 import care.data4life.datadonation.lang.CoreRuntimeError
 import co.touchlab.stately.concurrency.AtomicReference
 import co.touchlab.stately.freeze
@@ -42,7 +42,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
 
 internal class CachedUserSessionTokenService(
     private val provider: DataDonationSDKPublicAPI.UserSessionTokenProvider,
@@ -111,7 +110,7 @@ internal class CachedUserSessionTokenService(
 
     private class Cache(private val clock: Clock) {
         private var cachedValue: SessionToken = ""
-        private var cachedAt = Instant.fromEpochSeconds(0)
+        private var cachedAt = 0L
 
         fun fetch(): String {
             return if (cachedValue.isEmpty()) {
@@ -123,11 +122,13 @@ internal class CachedUserSessionTokenService(
 
         fun update(sessionToken: SessionToken) {
             cachedValue = sessionToken
-            cachedAt = clock.now()
+            cachedAt = clock.now().epochSeconds
         }
 
         fun isNotExpired(): Boolean {
-            return cachedAt > clock.now().minus(CACHE_LIFETIME)
+            return cachedAt > nowMinusLifeTime()
         }
+
+        private fun nowMinusLifeTime() = clock.now().epochSeconds - CACHE_LIFETIME_IN_SECONDS
     }
 }
