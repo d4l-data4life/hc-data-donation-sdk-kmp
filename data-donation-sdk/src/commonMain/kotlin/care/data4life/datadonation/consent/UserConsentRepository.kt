@@ -17,11 +17,11 @@
 package care.data4life.datadonation.consent
 
 import care.data4life.datadonation.ConsentDataContract.UserConsent
-import care.data4life.datadonation.internal.data.service.ServiceContract
+import care.data4life.datadonation.session.SessionTokenRepositoryContract
 
 internal class UserConsentRepository(
     private val apiService: ConsentContract.ApiService,
-    private val sessionTokenService: ServiceContract.UserSessionTokenService
+    private val sessionTokenService: SessionTokenRepositoryContract
 ) : ConsentContract.Repository {
 
     override suspend fun createUserConsent(consentDocumentKey: String, consentDocumentVersion: String) {

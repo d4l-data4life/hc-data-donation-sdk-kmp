@@ -14,15 +14,14 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.data.service
+package care.data4life.datadonation.session
 
-import org.koin.core.module.Module
-import org.koin.dsl.module
+internal typealias SessionToken = String
 
-internal fun resolveServiceModule(): Module {
-    return module {
-        single<ServiceContract.UserSessionTokenService> {
-            CachedUserSessionTokenService(get(), get())
-        }
+internal interface SessionTokenRepositoryContract {
+    suspend fun getUserSessionToken(): SessionToken
+
+    companion object {
+        const val CACHE_LIFETIME_IN_SECONDS = 60
     }
 }

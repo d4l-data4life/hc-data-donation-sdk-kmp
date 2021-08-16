@@ -14,20 +14,15 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.mock.stub.service
+package care.data4life.datadonation.session
 
-import care.data4life.datadonation.internal.data.service.ServiceContract
-import care.data4life.datadonation.mock.MockContract
-import care.data4life.datadonation.mock.MockException
+import org.koin.core.module.Module
+import org.koin.dsl.module
 
-internal class UserSessionTokenServiceStub : ServiceContract.UserSessionTokenService, MockContract.Stub {
-    var whenSessionToken: (() -> String)? = null
-
-    override suspend fun getUserSessionToken(): String {
-        return whenSessionToken?.invoke() ?: throw MockException()
-    }
-
-    override fun clear() {
-        whenSessionToken = null
+internal fun resolveSessionKoinModule(): Module {
+    return module {
+        single<SessionTokenRepositoryContract> {
+            CachedUserSessionTokenRepository(get(), get())
+        }
     }
 }

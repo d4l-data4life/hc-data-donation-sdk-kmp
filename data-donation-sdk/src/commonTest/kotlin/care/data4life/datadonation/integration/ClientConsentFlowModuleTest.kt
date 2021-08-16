@@ -38,13 +38,13 @@ import care.data4life.datadonation.consent.resolveConsentKoinModule
 import care.data4life.datadonation.consentdocument.ConsentDocumentServiceError
 import care.data4life.datadonation.consentdocument.resolveConsentDocumentKoinModule
 import care.data4life.datadonation.di.resolveRootModule
-import care.data4life.datadonation.internal.data.service.ServiceContract.UserSessionTokenService.Companion.CACHE_LIFETIME_IN_SECONDS
-import care.data4life.datadonation.internal.data.service.resolveServiceModule
 import care.data4life.datadonation.mock.ResourceLoader
 import care.data4life.datadonation.mock.fixture.ConsentFixtures
 import care.data4life.datadonation.mock.stub.ClockStub
 import care.data4life.datadonation.networking.plugin.resolveKtorPlugins
 import care.data4life.datadonation.networking.resolveNetworking
+import care.data4life.datadonation.session.SessionTokenRepositoryContract.Companion.CACHE_LIFETIME_IN_SECONDS
+import care.data4life.datadonation.session.resolveSessionKoinModule
 import care.data4life.sdk.util.test.coroutine.runBlockingTest
 import care.data4life.sdk.util.test.coroutine.runWithContextBlockingTest
 import care.data4life.sdk.util.test.ktor.HttpMockClientFactory.createMockClientWithResponse
@@ -117,7 +117,7 @@ class ClientConsentFlowModuleTest {
                 resolveKtorPlugins(),
                 resolveConsentKoinModule(),
                 resolveConsentDocumentKoinModule(),
-                resolveServiceModule(),
+                resolveSessionKoinModule(),
                 module {
                     factory(
                         override = true,
@@ -168,7 +168,7 @@ class ClientConsentFlowModuleTest {
                 resolveKtorPlugins(),
                 resolveConsentKoinModule(),
                 resolveConsentDocumentKoinModule(),
-                resolveServiceModule(),
+                resolveSessionKoinModule(),
                 module {
                     factory(
                         override = true,
@@ -242,7 +242,7 @@ class ClientConsentFlowModuleTest {
                 resolveKtorPlugins(),
                 resolveConsentKoinModule(),
                 resolveConsentDocumentKoinModule(),
-                resolveServiceModule(),
+                resolveSessionKoinModule(),
                 module {
                     factory(
                         override = true,
@@ -334,7 +334,7 @@ class ClientConsentFlowModuleTest {
                 resolveKtorPlugins(),
                 resolveConsentKoinModule(),
                 resolveConsentDocumentKoinModule(),
-                resolveServiceModule(),
+                resolveSessionKoinModule(),
                 module {
                     factory(
                         override = true,
@@ -434,7 +434,7 @@ class ClientConsentFlowModuleTest {
                 resolveKtorPlugins(),
                 resolveConsentKoinModule(),
                 resolveConsentDocumentKoinModule(),
-                resolveServiceModule(),
+                resolveSessionKoinModule(),
                 module {
                     factory(
                         override = true,

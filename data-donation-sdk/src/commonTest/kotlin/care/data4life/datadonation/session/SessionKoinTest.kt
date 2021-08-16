@@ -14,7 +14,7 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.data.service
+package care.data4life.datadonation.session
 
 import care.data4life.datadonation.DataDonationSDK
 import care.data4life.datadonation.mock.stub.ClockStub
@@ -27,18 +27,18 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 
-class ServiceKoinTest {
+class SessionKoinTest {
     @BeforeTest
     fun setUp() {
         stopKoin()
     }
 
     @Test
-    fun `Given resolveServiceModule is called it creates a Module, which contains a UserSessionTokenService`() {
+    fun `Given resolveSessionKoinModule is called it creates a Module, which contains a UserSessionTokenRepository`() {
         // When
         val koin = koinApplication {
             modules(
-                resolveServiceModule(),
+                resolveSessionKoinModule(),
                 module {
                     single<Clock> { ClockStub() }
                     single<DataDonationSDK.UserSessionTokenProvider> {
@@ -48,7 +48,7 @@ class ServiceKoinTest {
             )
         }
         // Then
-        val builder: ServiceContract.UserSessionTokenService = koin.koin.get()
+        val builder: SessionTokenRepositoryContract = koin.koin.get()
         assertNotNull(builder)
     }
 }

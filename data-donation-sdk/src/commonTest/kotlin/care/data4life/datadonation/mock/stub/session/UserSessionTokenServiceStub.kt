@@ -14,27 +14,20 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.data.service
+package care.data4life.datadonation.mock.stub.session
 
-internal typealias SessionToken = String
-internal typealias PublicDataDonationCryptoKey = String
-internal typealias PublicAnalyticsCryptoKey = String
+import care.data4life.datadonation.mock.MockContract
+import care.data4life.datadonation.mock.MockException
+import care.data4life.datadonation.session.SessionTokenRepositoryContract
 
-internal interface ServiceContract {
-    interface CredentialService {
-        fun getDataDonationPublicKey(): PublicDataDonationCryptoKey
-        fun getAnalyticsPlatformPublicKey(): PublicAnalyticsCryptoKey
+internal class UserSessionTokenServiceStub : SessionTokenRepositoryContract, MockContract.Stub {
+    var whenSessionToken: (() -> String)? = null
+
+    override suspend fun getUserSessionToken(): String {
+        return whenSessionToken?.invoke() ?: throw MockException()
     }
 
-    interface UserSessionTokenService {
-        suspend fun getUserSessionToken(): SessionToken
-
-        companion object {
-            const val CACHE_LIFETIME_IN_SECONDS = 60
-        }
-    }
-
-    companion object {
-        const val DEFAULT_DONATION_CONSENT_KEY = "d4l.data-donation.broad"
+    override fun clear() {
+        whenSessionToken = null
     }
 }

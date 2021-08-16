@@ -14,7 +14,7 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.data.service
+package care.data4life.datadonation.session
 
 import care.data4life.datadonation.error.CoreRuntimeError
 import care.data4life.datadonation.mock.stub.ClockStub
@@ -30,12 +30,12 @@ import kotlin.test.assertTrue
 import kotlin.time.minutes
 import kotlin.time.seconds
 
-class CachedUserSessionTokenServiceTest {
+class CachedUserSessionTokenRepositoryTest {
     @Test
     fun `It fulfils UserSessionTokenService`() {
-        val service: Any = CachedUserSessionTokenService(UserSessionTokenProviderStub(), ClockStub())
+        val service: Any = CachedUserSessionTokenRepository(UserSessionTokenProviderStub(), ClockStub())
 
-        assertTrue(service is ServiceContract.UserSessionTokenService)
+        assertTrue(service is SessionTokenRepositoryContract)
     }
 
     @Test
@@ -53,7 +53,7 @@ class CachedUserSessionTokenServiceTest {
             kotlinx.datetime.Instant.fromEpochMilliseconds(1.minutes.toLongMilliseconds())
         }
 
-        val service = CachedUserSessionTokenService(provider, time)
+        val service = CachedUserSessionTokenRepository(provider, time)
 
         // Then
         val result = assertFailsWith<CoreRuntimeError.MissingSession> {
@@ -82,7 +82,7 @@ class CachedUserSessionTokenServiceTest {
             kotlinx.datetime.Instant.fromEpochMilliseconds(1.minutes.toLongMilliseconds())
         }
 
-        val service = CachedUserSessionTokenService(provider, time)
+        val service = CachedUserSessionTokenRepository(provider, time)
 
         // When
         val result = service.getUserSessionToken()
@@ -104,7 +104,7 @@ class CachedUserSessionTokenServiceTest {
             kotlinx.datetime.Instant.fromEpochMilliseconds(0)
         }
 
-        val service = CachedUserSessionTokenService(provider, time)
+        val service = CachedUserSessionTokenRepository(provider, time)
 
         // Then
         val result = assertFailsWith<CoreRuntimeError.MissingSession> {
@@ -142,7 +142,7 @@ class CachedUserSessionTokenServiceTest {
             lifeTime.access { it.removeAt(0) }
         }
 
-        val service = CachedUserSessionTokenService(provider, time)
+        val service = CachedUserSessionTokenRepository(provider, time)
 
         // When
         service.getUserSessionToken()
@@ -183,7 +183,7 @@ class CachedUserSessionTokenServiceTest {
             lifeTime.access { it.removeAt(0) }
         }
 
-        val service = CachedUserSessionTokenService(provider, time)
+        val service = CachedUserSessionTokenRepository(provider, time)
 
         // When
         service.getUserSessionToken()
