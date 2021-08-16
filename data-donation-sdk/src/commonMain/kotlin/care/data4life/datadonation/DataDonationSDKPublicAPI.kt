@@ -67,7 +67,7 @@ interface DataDonationSDKPublicAPI {
 
         fun fetchAllUserConsents(): D4LSDKFlowContract<List<UserConsent>>
 
-        fun revokeUserConsent(consentDocumentKey: String): D4LSDKFlowContract<Unit>
+        fun revokeUserConsent(consentDocumentKey: String): D4LSDKFlowContract<UserConsent>
     }
 
     interface DataDonationClientFactory {

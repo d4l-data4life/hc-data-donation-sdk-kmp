@@ -69,7 +69,6 @@ import org.koin.dsl.module
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 class ClientConsentFlowModuleTest {
@@ -377,34 +376,57 @@ class ClientConsentFlowModuleTest {
         val consentDocumentKey = "water"
 
         val httpClient = createMockClientWithResponse { scope, request ->
-            // Then
-            assertEquals(
-                actual = request.url.fullPath,
-                expected = "/consent/api/v1/userConsents"
-            )
-            assertEquals(
-                actual = request.method,
-                expected = HttpMethod.Delete
-            )
-            launch {
+            if (request.method == HttpMethod.Delete) {
+                // Then
                 assertEquals(
-                    actual = request.body.toByteReadPacket().readText(),
-                    expected = "{\"consentDocumentKey\":\"$consentDocumentKey\"}"
+                    actual = request.url.fullPath,
+                    expected = "/consent/api/v1/userConsents"
+                )
+                assertEquals(
+                    actual = request.method,
+                    expected = HttpMethod.Delete
+                )
+                launch {
+                    assertEquals(
+                        actual = request.body.toByteReadPacket().readText(),
+                        expected = "{\"consentDocumentKey\":\"$consentDocumentKey\"}"
+                    )
+                }
+                assertEquals(
+                    actual = request.headers,
+                    expected = headersOf(
+                        "Authorization" to listOf("Bearer ${UserSessionTokenProvider.sessionToken}"),
+                        "Accept" to listOf("application/json"),
+                        "Accept-Charset" to listOf("UTF-8")
+                    )
+                )
+
+                scope.respond(
+                    content = "",
+                    status = HttpStatusCode.OK
+                )
+            } else {
+                assertEquals(
+                    actual = request.url.fullPath,
+                    expected = "/consent/api/v1/userConsents?latest=false"
+                )
+                assertEquals(
+                    actual = request.headers,
+                    expected = headersOf(
+                        "Authorization" to listOf("Bearer ${UserSessionTokenProvider.sessionToken}"),
+                        "Accept" to listOf("application/json"),
+                        "Accept-Charset" to listOf("UTF-8")
+                    )
+                )
+
+                scope.respond(
+                    content = ResourceLoader.loader.load("/fixture/consent/UserConsents.json"),
+                    status = HttpStatusCode.OK,
+                    headers = headersOf(
+                        "Content-Type" to listOf("application/json")
+                    )
                 )
             }
-            assertEquals(
-                actual = request.headers,
-                expected = headersOf(
-                    "Authorization" to listOf("Bearer ${UserSessionTokenProvider.sessionToken}"),
-                    "Accept" to listOf("application/json"),
-                    "Accept-Charset" to listOf("UTF-8")
-                )
-            )
-
-            scope.respond(
-                content = "",
-                status = HttpStatusCode.OK
-            )
         }
 
         val koin = koinApplication {
@@ -433,9 +455,9 @@ class ClientConsentFlowModuleTest {
         // When
         client.revokeUserConsent(consentDocumentKey).ktFlow.collect { result ->
             // Then
-            assertSame(
+            assertEquals(
                 actual = result,
-                expected = Unit
+                expected = ConsentFixtures.sampleUserConsent
             )
         }
     }

@@ -34,6 +34,8 @@ package care.data4life.datadonation
 
 import care.data4life.datadonation.ConsentDataContract.ConsentDocument
 import care.data4life.datadonation.ConsentDataContract.UserConsent
+import care.data4life.datadonation.consent.ConsentContract
+import care.data4life.datadonation.consentdocument.ConsentDocumentContract
 import care.data4life.datadonation.di.initKoin
 import care.data4life.datadonation.internal.domain.usecases.*
 import care.data4life.sdk.util.coroutine.D4LSDKFlow
@@ -44,22 +46,20 @@ import org.koin.core.KoinApplication
 class Client internal constructor(
     koinApplication: KoinApplication
 ) : DataDonationSDKPublicAPI.DataDonationClient {
-    private val createUserContent: UsecaseContract.CreateUserConsent = koinApplication.koin.get()
-    private val fetchConsentDocuments: UsecaseContract.FetchConsentDocuments = koinApplication.koin.get()
-    private val fetchUserConsents: UsecaseContract.FetchUserConsents = koinApplication.koin.get()
-    private val revokeUserConsent: UsecaseContract.RevokeUserConsent = koinApplication.koin.get()
+    private val userConsent: ConsentContract.Interactor = koinApplication.koin.get()
+    private val consentDocuments: ConsentDocumentContract.Interactor = koinApplication.koin.get()
 
     override fun createUserConsent(
         consentDocumentKey: String,
         consentDocumentVersion: String
     ): D4LSDKFlowContract<UserConsent> {
         val flow = flow {
-            val parameter = CreateUserConsent.Parameter(
-                consentDocumentKey,
-                consentDocumentVersion
+            emit(
+                userConsent.createUserConsent(
+                    consentDocumentKey = consentDocumentKey,
+                    consentDocumentVersion = consentDocumentVersion
+                )
             )
-
-            emit(createUserContent.execute(parameter))
         }
 
         return D4LSDKFlow(flow)
@@ -71,13 +71,13 @@ class Client internal constructor(
         language: String?,
     ): D4LSDKFlowContract<List<ConsentDocument>> {
         val flow = flow {
-            val parameter = FetchConsentDocuments.Parameter(
-                version = consentDocumentVersion,
-                language = language,
-                consentDocumentKey = consentDocumentKey
+            emit(
+                consentDocuments.fetchConsentDocuments(
+                    consentDocumentKey = consentDocumentKey,
+                    consentDocumentVersion = consentDocumentVersion,
+                    language = language
+                )
             )
-
-            emit(fetchConsentDocuments.execute(parameter))
         }
 
         return D4LSDKFlow(flow)
@@ -85,9 +85,11 @@ class Client internal constructor(
 
     override fun fetchUserConsents(consentDocumentKey: String): D4LSDKFlowContract<List<UserConsent>> {
         val flow = flow {
-            val parameter = FetchUserConsents.Parameter(consentDocumentKey)
-
-            emit(fetchUserConsents.execute(parameter))
+            emit(
+                userConsent.fetchUserConsents(
+                    consentDocumentKey = consentDocumentKey
+                )
+            )
         }
 
         return D4LSDKFlow(flow)
@@ -95,19 +97,21 @@ class Client internal constructor(
 
     override fun fetchAllUserConsents(): D4LSDKFlowContract<List<UserConsent>> {
         val flow = flow {
-            val parameter = FetchUserConsents.Parameter()
-
-            emit(fetchUserConsents.execute(parameter))
+            emit(
+                userConsent.fetchAllUserConsents()
+            )
         }
 
         return D4LSDKFlow(flow)
     }
 
-    override fun revokeUserConsent(consentDocumentKey: String): D4LSDKFlowContract<Unit> {
+    override fun revokeUserConsent(consentDocumentKey: String): D4LSDKFlowContract<UserConsent> {
         val flow = flow {
-            val parameter = RevokeUserConsent.Parameter(consentDocumentKey)
-
-            emit(revokeUserConsent.execute(parameter))
+            emit(
+                userConsent.revokeUserConsent(
+                    consentDocumentKey = consentDocumentKey
+                )
+            )
         }
 
         return D4LSDKFlow(flow)
