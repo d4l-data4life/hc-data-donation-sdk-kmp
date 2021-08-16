@@ -16,16 +16,12 @@
 
 package care.data4life.datadonation.consent
 
-import care.data4life.datadonation.consent.ConsentContract.ConsentApiService.Companion.PARAMETER.LANGUAGE
-import care.data4life.datadonation.consent.ConsentContract.ConsentApiService.Companion.PARAMETER.LATEST_CONSENT
-import care.data4life.datadonation.consent.ConsentContract.ConsentApiService.Companion.PARAMETER.USER_CONSENT_KEY
-import care.data4life.datadonation.consent.ConsentContract.ConsentApiService.Companion.PARAMETER.VERSION
-import care.data4life.datadonation.consent.ConsentContract.ConsentApiService.Companion.PATH.CONSENTS_DOCUMENTS
-import care.data4life.datadonation.consent.ConsentContract.ConsentApiService.Companion.PATH.USER_CONSENTS
+import care.data4life.datadonation.consent.ConsentContract.ApiService.Companion.PARAMETER.LATEST_CONSENT
+import care.data4life.datadonation.consent.ConsentContract.ApiService.Companion.PARAMETER.USER_CONSENT_KEY
+import care.data4life.datadonation.consent.ConsentContract.ApiService.Companion.PATH
 import care.data4life.datadonation.consent.model.ConsentCreationPayload
 import care.data4life.datadonation.consent.model.ConsentRevocationPayload
 import care.data4life.datadonation.lang.CoreRuntimeError
-import care.data4life.datadonation.mock.fixture.ConsentFixtures.sampleConsentDocument
 import care.data4life.datadonation.mock.fixture.ConsentFixtures.sampleUserConsent
 import care.data4life.datadonation.mock.stub.ClockStub
 import care.data4life.datadonation.mock.stub.consent.ConsentErrorHandlerStub
@@ -51,14 +47,14 @@ class ConsentApiServiceTest {
     private val dummyKtor = HttpRequestBuilder()
 
     @Test
-    fun `It fulfils ConsentService`() {
+    fun `It fulfils ConsentApiService`() {
         val service: Any = ConsentApiService(
             RequestBuilderSpy.Factory(),
             ConsentErrorHandlerStub(),
             ClockStub()
         )
 
-        assertTrue(service is ConsentContract.ConsentApiService)
+        assertTrue(service is ConsentContract.ApiService)
     }
 
     @Test
@@ -178,9 +174,7 @@ class ConsentApiServiceTest {
         )
         assertEquals(
             actual = capturedPath,
-            expected = ConsentContract.ConsentApiService.ROOT.toMutableList().also {
-                it.add(USER_CONSENTS)
-            }
+            expected = PATH
         )
 
         assertEquals(
@@ -198,180 +192,6 @@ class ConsentApiServiceTest {
                 consentDocumentKey,
                 version,
                 expectedTime.toString()
-            )
-        )
-    }
-
-    @Test
-    fun `Given fetchConsentDocuments was called with a AccessToken, Version, Language and a consentDocumentKey it delegates HttpRequestErrors to its ErrorHandler`() = runBlockingTest {
-        // Given
-        val accessToken = "potato"
-        val version = "23"
-        val language = "zh-TW-hans-de-informal-x-old"
-        val consentDocumentKey = "tomato"
-
-        val requestTemplate = RequestBuilderSpy.Factory()
-        val error = HttpRuntimeError(HttpStatusCode.TooManyRequests)
-        val outgoingError = ConsentServiceError.Forbidden()
-        var capturedError: HttpRuntimeError? = null
-
-        val client = createErrorMockClient(error)
-
-        val errorHandler = ConsentErrorHandlerStub()
-
-        errorHandler.whenHandleFetchConsentDocuments = { delegatedError ->
-            capturedError = delegatedError
-            outgoingError
-        }
-
-        requestTemplate.onPrepare = { _, _ ->
-            HttpStatement(
-                dummyKtor,
-                client
-            )
-        }
-
-        // Then
-        val result = assertFailsWith<ConsentServiceError.Forbidden> {
-            val service = ConsentApiService(
-                requestTemplate,
-                errorHandler,
-                ClockStub()
-            )
-            service.fetchConsentDocuments(
-                accessToken = accessToken,
-                version = version,
-                language = language,
-                consentDocumentKey = consentDocumentKey
-            )
-        }
-
-        // Then
-        assertSame(
-            actual = capturedError,
-            expected = error
-        )
-        assertSame(
-            actual = result,
-            expected = outgoingError
-        )
-    }
-
-    @Test
-    fun `Given fetchConsentDocuments was called with a AccessToken, Version, Language and a consentDocumentKey it fails due to unexpected response`() = runBlockingTest {
-        // Given
-        val requestTemplate = RequestBuilderSpy.Factory()
-        val client = createMockClientWithResponse { scope, _ ->
-            return@createMockClientWithResponse scope.respond(
-                content = "something"
-            )
-        }
-
-        val accessToken = "potato"
-        val version = "23"
-        val language = "zh-TW-hans-de-informal-x-old"
-        val consentDocumentKey = "tomato"
-
-        requestTemplate.onPrepare = { _, _ ->
-            HttpStatement(
-                dummyKtor,
-                client
-            )
-        }
-
-        // Then
-        val error = assertFailsWith<CoreRuntimeError.ResponseTransformFailure> {
-            // When
-            val service = ConsentApiService(
-                requestTemplate,
-                ConsentErrorHandlerStub(),
-                ClockStub()
-            )
-            service.fetchConsentDocuments(
-                accessToken = accessToken,
-                version = version,
-                language = language,
-                consentDocumentKey = consentDocumentKey
-            )
-        }
-
-        assertEquals(
-            actual = error.message,
-            expected = "Unexpected Response"
-        )
-    }
-
-    @Test
-    fun `Given fetchConsentDocuments was called with a AccessToken, Version, Language and a consentDocumentKey it returns a List of ConsentDocument`() = runBlockingTest {
-        // Given
-        val requestTemplate = RequestBuilderSpy.Factory()
-        val accessToken = "potato"
-        val version = "23"
-        val language = "zh-TW-hans-de-informal-x-old"
-        val consentDocumentKey = "tomato"
-
-        var capturedMethod: Networking.Method? = null
-        var capturedPath: Path? = null
-        val response = listOf(
-            sampleConsentDocument,
-            sampleConsentDocument.copy(key = "soup")
-        )
-
-        val client = createMockClientWithResponse(listOf(response)) { scope, _ ->
-            return@createMockClientWithResponse scope.respond(
-                content = "[]"
-            )
-        }
-
-        requestTemplate.onPrepare = { method, path ->
-            capturedMethod = method
-            capturedPath = path
-            HttpStatement(dummyKtor, client)
-        }
-
-        // When
-        val service = ConsentApiService(
-            requestTemplate,
-            ConsentErrorHandlerStub(),
-            ClockStub()
-        )
-        val result = service.fetchConsentDocuments(
-            accessToken = accessToken,
-            version = version,
-            language = language,
-            consentDocumentKey = consentDocumentKey
-        )
-
-        // Then
-        assertSame(
-            actual = result,
-            expected = response
-        )
-        assertEquals(
-            actual = capturedMethod,
-            expected = Networking.Method.GET
-        )
-        assertEquals(
-            actual = capturedPath,
-            expected = ConsentContract.ConsentApiService.ROOT.toMutableList().also {
-                it.add(CONSENTS_DOCUMENTS)
-            }
-        )
-
-        assertEquals(
-            actual = requestTemplate.createdInstances,
-            expected = 1
-        )
-        assertEquals(
-            actual = requestTemplate.lastInstance!!.delegatedAccessToken,
-            expected = accessToken
-        )
-        assertEquals(
-            actual = requestTemplate.lastInstance!!.delegatedParameter,
-            expected = mapOf(
-                "key" to consentDocumentKey,
-                VERSION to version,
-                LANGUAGE to language
             )
         )
     }
@@ -522,9 +342,7 @@ class ConsentApiServiceTest {
         )
         assertEquals(
             actual = capturedPath,
-            expected = ConsentContract.ConsentApiService.ROOT.toMutableList().also {
-                it.add(USER_CONSENTS)
-            }
+            expected = PATH
         )
 
         assertEquals(
@@ -646,9 +464,7 @@ class ConsentApiServiceTest {
         )
         assertEquals(
             actual = capturedPath,
-            expected = ConsentContract.ConsentApiService.ROOT.toMutableList().also {
-                it.add(USER_CONSENTS)
-            }
+            expected = PATH
         )
 
         assertEquals(

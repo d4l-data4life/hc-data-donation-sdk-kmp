@@ -17,8 +17,9 @@
 package care.data4life.datadonation.internal.domain.usecases
 
 import care.data4life.datadonation.consent.ConsentContract
-import care.data4life.datadonation.mock.stub.consent.ConsentDocumentRepositoryStub
+import care.data4life.datadonation.consentdocument.ConsentDocumentContract
 import care.data4life.datadonation.mock.stub.consent.UserConsentRepositoryStub
+import care.data4life.datadonation.mock.stub.consentdocument.ConsentDocumentRepositoryStub
 import org.koin.core.context.stopKoin
 import org.koin.dsl.bind
 import org.koin.dsl.koinApplication
@@ -40,9 +41,9 @@ class UsecaseKoinTest {
             modules(
                 resolveUsecaseModule(),
                 module {
-                    single<ConsentContract.ConsentDocumentRepository> {
+                    single<ConsentDocumentContract.ConsentDocumentRepository> {
                         ConsentDocumentRepositoryStub()
-                    } bind ConsentContract.ConsentDocumentRepository::class
+                    }
                 }
             )
         }

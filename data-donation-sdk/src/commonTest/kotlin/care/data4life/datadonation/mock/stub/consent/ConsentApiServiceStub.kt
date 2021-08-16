@@ -17,14 +17,12 @@
 package care.data4life.datadonation.mock.stub.consent
 
 import care.data4life.datadonation.consent.ConsentContract
-import care.data4life.datadonation.consent.model.ConsentDocument
 import care.data4life.datadonation.consent.model.UserConsent
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 
-internal class ConsentApiServiceStub : ConsentContract.ConsentApiService, MockContract.Stub {
+internal class ConsentApiServiceStub : ConsentContract.ApiService, MockContract.Stub {
     var whenCreateUserConsent: ((String, String, String) -> Unit)? = null
-    var whenFetchConsentDocuments: ((String, String?, String?, String) -> List<ConsentDocument>)? = null
     var whenFetchUserConsents: ((String, Boolean?, String?) -> List<UserConsent>)? = null
     var whenRevokeUserConsent: ((String, String) -> Unit)? = null
 
@@ -37,20 +35,6 @@ internal class ConsentApiServiceStub : ConsentContract.ConsentApiService, MockCo
             accessToken,
             consentDocumentKey,
             version
-        ) ?: throw MockException()
-    }
-
-    override suspend fun fetchConsentDocuments(
-        accessToken: String,
-        version: String?,
-        language: String?,
-        consentDocumentKey: String
-    ): List<ConsentDocument> {
-        return whenFetchConsentDocuments?.invoke(
-            accessToken,
-            version,
-            language,
-            consentDocumentKey
         ) ?: throw MockException()
     }
 
@@ -72,7 +56,6 @@ internal class ConsentApiServiceStub : ConsentContract.ConsentApiService, MockCo
 
     override fun clear() {
         whenCreateUserConsent = null
-        whenFetchConsentDocuments = null
         whenFetchUserConsents = null
         whenRevokeUserConsent = null
     }

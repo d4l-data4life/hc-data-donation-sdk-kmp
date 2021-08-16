@@ -19,6 +19,7 @@ package care.data4life.datadonation.di
 import care.data4life.datadonation.DataDonationSDKPublicAPI
 import care.data4life.datadonation.DataDonationSDKPublicAPI.Environment
 import care.data4life.datadonation.consent.resolveConsentKoinModule
+import care.data4life.datadonation.consentdocument.resolveConsentDocumentKoinModule
 import care.data4life.datadonation.internal.data.service.resolveServiceModule
 import care.data4life.datadonation.internal.domain.usecases.*
 import care.data4life.datadonation.networking.plugin.resolveKtorPlugins
@@ -43,6 +44,7 @@ internal fun initKoin(
             resolveKtorPlugins(),
             resolveUsecaseModule(),
             resolveConsentKoinModule(),
+            resolveConsentDocumentKoinModule(),
             resolveServiceModule()
         )
     }

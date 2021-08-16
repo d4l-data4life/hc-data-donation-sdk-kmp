@@ -14,7 +14,7 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.consent
+package care.data4life.datadonation.consentdocument
 
 import care.data4life.datadonation.DataDonationSDKPublicAPI
 import care.data4life.datadonation.internal.data.service.ServiceContract
@@ -31,18 +31,18 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 
-class ConsentKoinTest {
+class ConsentDocumentKoinTest {
     @BeforeTest
     fun setUp() {
         stopKoin()
     }
 
     @Test
-    fun `Given resolveConsentKoinModule is called it creates a Module, which contains a UserConsentRepository`() {
+    fun `Given resolveConsentDocumentKoinModule is called it creates a Module, which contains a ConsentDocumentRepository`() {
         // When
         val koin = koinApplication {
             modules(
-                resolveConsentKoinModule(),
+                resolveConsentDocumentKoinModule(),
                 module {
                     single<ServiceContract.UserSessionTokenService> {
                         UserSessionTokenServiceStub()
@@ -57,27 +57,27 @@ class ConsentKoinTest {
         }
 
         // Then
-        val repo: ConsentContract.UserConsentRepository = koin.koin.get()
+        val repo: ConsentDocumentContract.ConsentDocumentRepository = koin.koin.get()
         assertNotNull(repo)
     }
 
     @Test
-    fun `Given resolveConsentKoinModule is called it creates a Module, which contains a ConsentErrorHandler`() {
+    fun `Given resolveConsentDocumentKoinModule is called it creates a Module, which contains a ConsentDocumentErrorHandler`() {
         // When
         val koin = koinApplication {
-            modules(resolveConsentKoinModule())
+            modules(resolveConsentDocumentKoinModule())
         }
         // Then
-        val builder: ConsentContract.ApiService.ErrorHandler = koin.koin.get()
+        val builder: ConsentDocumentContract.ApiService.ErrorHandler = koin.koin.get()
         assertNotNull(builder)
     }
 
     @Test
-    fun `Given resolveConsentKoinModule is called it creates a Module, which contains a ConsentApiService`() {
+    fun `Given resolveConsentDocumentKoinModule is called it creates a Module, which contains a ConsentDocumentApiService`() {
         // When
         val koin = koinApplication {
             modules(
-                resolveConsentKoinModule(),
+                resolveConsentDocumentKoinModule(),
                 module {
                     single<Clock> { ClockStub() }
                     single<Networking.RequestBuilderFactory> {
@@ -89,7 +89,7 @@ class ConsentKoinTest {
             )
         }
         // Then
-        val builder: ConsentContract.ApiService = koin.koin.get()
+        val builder: ConsentDocumentContract.ApiService = koin.koin.get()
         assertNotNull(builder)
     }
 }

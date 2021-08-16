@@ -14,8 +14,6 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.domain.repository
+package care.data4life.datadonation.consentdocument
 
-internal typealias Signature = String
-
-internal interface RepositoryContract
+class ConsentDocumentService

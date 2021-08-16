@@ -33,10 +33,10 @@
 package care.data4life.datadonation.internal.domain.usecases
 
 import care.data4life.datadonation.ConsentDataContract.ConsentDocument
-import care.data4life.datadonation.consent.ConsentContract
+import care.data4life.datadonation.consentdocument.ConsentDocumentContract
 
 internal class FetchConsentDocuments(
-    private val consentDocumentRepository: ConsentContract.ConsentDocumentRepository
+    private val consentDocumentRepository: ConsentDocumentContract.ConsentDocumentRepository
 ) : UsecaseContract.FetchConsentDocuments {
     override suspend fun execute(
         parameter: UsecaseContract.FetchConsentDocuments.Parameter

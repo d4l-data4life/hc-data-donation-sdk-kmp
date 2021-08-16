@@ -14,23 +14,13 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.consent
+package care.data4life.datadonation.consentdocument
 
-import org.koin.core.module.Module
-import org.koin.dsl.module
+import care.data4life.sdk.lang.D4LRuntimeException
 
-internal fun resolveConsentKoinModule(): Module {
-    return module {
-        single<ConsentContract.UserConsentRepository> {
-            UserConsentRepository(get(), get())
-        }
-
-        single<ConsentContract.ApiService> {
-            ConsentApiService(get(), get(), get())
-        }
-
-        single<ConsentContract.ApiService.ErrorHandler> {
-            ConsentErrorHandler
-        }
-    }
+sealed class ConsentDocumentServiceError(
+    open val httpStatus: Int
+) : D4LRuntimeException() {
+    class UnexpectedFailure(override val httpStatus: Int) : ConsentDocumentServiceError(httpStatus)
+    class InternalServer : ConsentDocumentServiceError(500)
 }

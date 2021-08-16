@@ -19,7 +19,7 @@ package care.data4life.datadonation.consent
 import care.data4life.datadonation.networking.HttpRuntimeError
 import io.ktor.http.HttpStatusCode
 
-internal object ConsentErrorHandler : ConsentContract.ConsentApiService.ConsentErrorHandler {
+internal object ConsentErrorHandler : ConsentContract.ApiService.ErrorHandler {
     private fun mapError(
         error: HttpRuntimeError,
         map: Map<HttpStatusCode, ConsentServiceError>
@@ -27,15 +27,6 @@ internal object ConsentErrorHandler : ConsentContract.ConsentApiService.ConsentE
         return map.getOrElse(error.statusCode) {
             ConsentServiceError.UnexpectedFailure(error.statusCode.value)
         }
-    }
-
-    override fun handleFetchConsentDocuments(error: HttpRuntimeError): ConsentServiceError {
-        return mapError(
-            error,
-            mapOf(
-                HttpStatusCode.InternalServerError to ConsentServiceError.InternalServer()
-            )
-        )
     }
 
     override fun handleFetchUserConsents(error: HttpRuntimeError): ConsentServiceError {
@@ -53,35 +44,6 @@ internal object ConsentErrorHandler : ConsentContract.ConsentApiService.ConsentE
             mapOf(
                 HttpStatusCode.BadRequest to ConsentServiceError.BadRequest(),
                 HttpStatusCode.NotFound to ConsentServiceError.NotFound(),
-                HttpStatusCode.UnprocessableEntity to ConsentServiceError.UnprocessableEntity(),
-                HttpStatusCode.InternalServerError to ConsentServiceError.InternalServer()
-            )
-        )
-    }
-
-    override fun handleRequestSignatureConsentRegistration(
-        error: HttpRuntimeError
-    ): ConsentServiceError {
-        return mapError(
-            error,
-            mapOf(
-                HttpStatusCode.Unauthorized to ConsentServiceError.Unauthorized(),
-                HttpStatusCode.Forbidden to ConsentServiceError.Forbidden(),
-                HttpStatusCode.NotFound to ConsentServiceError.NotFound(),
-                HttpStatusCode.Conflict to ConsentServiceError.DocumentConflict(),
-                HttpStatusCode.UnprocessableEntity to ConsentServiceError.UnprocessableEntity(),
-                HttpStatusCode.TooManyRequests to ConsentServiceError.TooManyRequests(),
-                HttpStatusCode.InternalServerError to ConsentServiceError.InternalServer()
-            )
-        )
-    }
-
-    override fun handleRequestSignatureDonation(error: HttpRuntimeError): ConsentServiceError {
-        return mapError(
-            error,
-            mapOf(
-                HttpStatusCode.Unauthorized to ConsentServiceError.Unauthorized(),
-                HttpStatusCode.Conflict to ConsentServiceError.DocumentConflict(),
                 HttpStatusCode.UnprocessableEntity to ConsentServiceError.UnprocessableEntity(),
                 HttpStatusCode.InternalServerError to ConsentServiceError.InternalServer()
             )

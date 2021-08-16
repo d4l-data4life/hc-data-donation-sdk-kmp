@@ -20,13 +20,13 @@ import care.data4life.datadonation.ConsentDataContract.UserConsent
 import care.data4life.datadonation.internal.data.service.ServiceContract
 
 internal class UserConsentRepository(
-    private val consentApiService: ConsentContract.ConsentApiService,
+    private val apiService: ConsentContract.ApiService,
     private val sessionTokenService: ServiceContract.UserSessionTokenService
 ) : ConsentContract.UserConsentRepository {
 
     override suspend fun createUserConsent(consentDocumentKey: String, version: String) {
         val sessionToken = sessionTokenService.getUserSessionToken()
-        consentApiService.createUserConsent(
+        apiService.createUserConsent(
             sessionToken,
             consentDocumentKey,
             version
@@ -35,7 +35,7 @@ internal class UserConsentRepository(
 
     override suspend fun fetchUserConsents(consentDocumentKey: String?): List<UserConsent> {
         val sessionToken = sessionTokenService.getUserSessionToken()
-        return consentApiService.fetchUserConsents(
+        return apiService.fetchUserConsents(
             sessionToken,
             false,
             consentDocumentKey
@@ -45,6 +45,6 @@ internal class UserConsentRepository(
     override suspend fun revokeUserConsent(consentDocumentKey: String) {
         val sessionToken = sessionTokenService.getUserSessionToken()
 
-        return consentApiService.revokeUserConsent(sessionToken, consentDocumentKey)
+        return apiService.revokeUserConsent(sessionToken, consentDocumentKey)
     }
 }

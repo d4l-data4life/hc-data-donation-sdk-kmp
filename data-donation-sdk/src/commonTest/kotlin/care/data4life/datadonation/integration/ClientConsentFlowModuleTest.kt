@@ -34,8 +34,9 @@ package care.data4life.datadonation.integration
 
 import care.data4life.datadonation.Client
 import care.data4life.datadonation.DataDonationSDKPublicAPI
-import care.data4life.datadonation.consent.ConsentServiceError
 import care.data4life.datadonation.consent.resolveConsentKoinModule
+import care.data4life.datadonation.consentdocument.ConsentDocumentServiceError
+import care.data4life.datadonation.consentdocument.resolveConsentDocumentKoinModule
 import care.data4life.datadonation.di.resolveRootModule
 import care.data4life.datadonation.internal.data.service.ServiceContract.UserSessionTokenService.Companion.CACHE_LIFETIME_IN_SECONDS
 import care.data4life.datadonation.internal.data.service.resolveServiceModule
@@ -118,6 +119,7 @@ class ClientConsentFlowModuleTest {
                 resolveKtorPlugins(),
                 resolveUsecaseModule(),
                 resolveConsentKoinModule(),
+                resolveConsentDocumentKoinModule(),
                 resolveServiceModule(),
                 module {
                     factory(
@@ -169,6 +171,7 @@ class ClientConsentFlowModuleTest {
                 resolveKtorPlugins(),
                 resolveUsecaseModule(),
                 resolveConsentKoinModule(),
+                resolveConsentDocumentKoinModule(),
                 resolveServiceModule(),
                 module {
                     factory(
@@ -200,7 +203,7 @@ class ClientConsentFlowModuleTest {
             job.join()
 
             // Then
-            assertTrue(result.receive() is ConsentServiceError.InternalServer)
+            assertTrue(result.receive() is ConsentDocumentServiceError.InternalServer)
         }
     }
 
@@ -243,6 +246,7 @@ class ClientConsentFlowModuleTest {
                 resolveKtorPlugins(),
                 resolveUsecaseModule(),
                 resolveConsentKoinModule(),
+                resolveConsentDocumentKoinModule(),
                 resolveServiceModule(),
                 module {
                     factory(
@@ -335,6 +339,7 @@ class ClientConsentFlowModuleTest {
                 resolveKtorPlugins(),
                 resolveUsecaseModule(),
                 resolveConsentKoinModule(),
+                resolveConsentDocumentKoinModule(),
                 resolveServiceModule(),
                 module {
                     factory(
@@ -412,6 +417,7 @@ class ClientConsentFlowModuleTest {
                 resolveKtorPlugins(),
                 resolveUsecaseModule(),
                 resolveConsentKoinModule(),
+                resolveConsentDocumentKoinModule(),
                 resolveServiceModule(),
                 module {
                     factory(

@@ -14,10 +14,10 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.consent
+package care.data4life.datadonation.consentdocument
 
 import care.data4life.datadonation.mock.fixture.ConsentFixtures.sampleConsentDocument
-import care.data4life.datadonation.mock.stub.consent.ConsentApiServiceStub
+import care.data4life.datadonation.mock.stub.consentdocument.ConsentDocumentApiServiceStub
 import care.data4life.datadonation.mock.stub.service.UserSessionTokenServiceStub
 import care.data4life.sdk.util.test.coroutine.runBlockingTest
 import kotlin.test.Test
@@ -29,17 +29,17 @@ class ConsentDocumentRepositoryTest {
     @Test
     fun `It fulfils ConsentDocumentRepository`() {
         val repo: Any = ConsentDocumentRepository(
-            ConsentApiServiceStub(),
+            ConsentDocumentApiServiceStub(),
             UserSessionTokenServiceStub()
         )
 
-        assertTrue(repo is ConsentContract.ConsentDocumentRepository)
+        assertTrue(repo is ConsentDocumentContract.ConsentDocumentRepository)
     }
 
     @Test
     fun `Given fetchConsentDocuments is called with a AccessToken, a Version and a consentDocumentKey, it resolves the SessionToken and delegates that to the ConsentService and returns a List of ConsentDocuments`() = runBlockingTest {
         // Given
-        val consentService = ConsentApiServiceStub()
+        val consentService = ConsentDocumentApiServiceStub()
         val sessionTokenService = UserSessionTokenServiceStub()
 
         val consentDocumentKey = "tomato"

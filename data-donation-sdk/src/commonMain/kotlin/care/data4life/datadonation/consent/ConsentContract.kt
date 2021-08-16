@@ -20,14 +20,7 @@ import care.data4life.datadonation.ConsentDataContract
 import care.data4life.datadonation.networking.HttpRuntimeError
 
 internal interface ConsentContract {
-    interface ConsentApiService {
-        suspend fun fetchConsentDocuments(
-            accessToken: String,
-            version: String?,
-            language: String?,
-            consentDocumentKey: String
-        ): List<ConsentDataContract.ConsentDocument>
-
+    interface ApiService {
         suspend fun fetchUserConsents(
             accessToken: String,
             latestConsent: Boolean?,
@@ -43,7 +36,7 @@ internal interface ConsentContract {
         suspend fun revokeUserConsent(accessToken: String, consentDocumentKey: String)
 
         companion object {
-            val ROOT = listOf("consent", "api", "v1")
+            val PATH = listOf("consent", "api", "v1", "userConsents")
 
             object PARAMETER {
                 const val USER_CONSENT_KEY = "consentDocumentKey"
@@ -51,29 +44,13 @@ internal interface ConsentContract {
                 const val VERSION = "version"
                 const val LATEST_CONSENT = "latest"
             }
-
-            object PATH {
-                const val USER_CONSENTS = "userConsents"
-                const val CONSENTS_DOCUMENTS = "consentDocuments"
-            }
         }
 
-        interface ConsentErrorHandler {
-            fun handleFetchConsentDocuments(error: HttpRuntimeError): ConsentServiceError
+        interface ErrorHandler {
             fun handleFetchUserConsents(error: HttpRuntimeError): ConsentServiceError
             fun handleCreateUserConsent(error: HttpRuntimeError): ConsentServiceError
-            fun handleRequestSignatureConsentRegistration(error: HttpRuntimeError): ConsentServiceError
-            fun handleRequestSignatureDonation(error: HttpRuntimeError): ConsentServiceError
             fun handleRevokeUserConsent(error: HttpRuntimeError): ConsentServiceError
         }
-    }
-
-    interface ConsentDocumentRepository {
-        suspend fun fetchConsentDocuments(
-            language: String?,
-            version: String?,
-            consentDocumentKey: String
-        ): List<ConsentDataContract.ConsentDocument>
     }
 
     interface UserConsentRepository {

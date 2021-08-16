@@ -14,15 +14,15 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.consent
+package care.data4life.datadonation.consentdocument
 
 import care.data4life.datadonation.ConsentDataContract.ConsentDocument
 import care.data4life.datadonation.internal.data.service.ServiceContract
 
 internal class ConsentDocumentRepository(
-    private val consentApiService: ConsentContract.ConsentApiService,
+    private val consentApiService: ConsentDocumentContract.ApiService,
     private val sessionTokenService: ServiceContract.UserSessionTokenService
-) : ConsentContract.ConsentDocumentRepository {
+) : ConsentDocumentContract.ConsentDocumentRepository {
 
     override suspend fun fetchConsentDocuments(
         language: String?,

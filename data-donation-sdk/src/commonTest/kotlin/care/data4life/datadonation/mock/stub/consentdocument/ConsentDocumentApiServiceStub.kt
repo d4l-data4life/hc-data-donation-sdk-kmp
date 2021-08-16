@@ -14,24 +14,28 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.mock.stub.consent
+package care.data4life.datadonation.mock.stub.consentdocument
 
-import care.data4life.datadonation.consent.ConsentContract
 import care.data4life.datadonation.consent.model.ConsentDocument
+import care.data4life.datadonation.consentdocument.ConsentDocumentContract
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 
-internal class ConsentDocumentRepositoryStub :
-    ConsentContract.ConsentDocumentRepository,
-    MockContract.Stub {
-    var whenFetchConsentDocuments: ((language: String?, version: String?, consentDocumentKey: String) -> List<ConsentDocument>)? = null
+internal class ConsentDocumentApiServiceStub : ConsentDocumentContract.ApiService, MockContract.Stub {
+    var whenFetchConsentDocuments: ((String, String?, String?, String) -> List<ConsentDocument>)? = null
 
     override suspend fun fetchConsentDocuments(
-        language: String?,
+        accessToken: String,
         version: String?,
+        language: String?,
         consentDocumentKey: String
     ): List<ConsentDocument> {
-        return whenFetchConsentDocuments?.invoke(language, version, consentDocumentKey) ?: throw MockException()
+        return whenFetchConsentDocuments?.invoke(
+            accessToken,
+            version,
+            language,
+            consentDocumentKey
+        ) ?: throw MockException()
     }
 
     override fun clear() {
