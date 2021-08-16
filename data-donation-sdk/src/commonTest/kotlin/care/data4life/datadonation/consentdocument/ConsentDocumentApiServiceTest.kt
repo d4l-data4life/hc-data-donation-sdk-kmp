@@ -17,7 +17,7 @@
 package care.data4life.datadonation.consentdocument
 
 import care.data4life.datadonation.consentdocument.ConsentDocumentContract.ApiService.Companion.PATH
-import care.data4life.datadonation.lang.CoreRuntimeError
+import care.data4life.datadonation.error.CoreRuntimeError
 import care.data4life.datadonation.mock.fixture.ConsentFixtures.sampleConsentDocument
 import care.data4life.datadonation.mock.stub.consentdocument.ConsentDocumentErrorHandlerStub
 import care.data4life.datadonation.mock.stub.networking.RequestBuilderSpy

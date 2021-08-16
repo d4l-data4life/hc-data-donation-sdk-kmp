@@ -16,7 +16,7 @@
 
 package care.data4life.datadonation.networking
 
-import care.data4life.datadonation.lang.CoreRuntimeError
+import care.data4life.datadonation.error.CoreRuntimeError
 import io.ktor.client.call.NoTransformationFoundException
 import io.ktor.client.statement.HttpStatement
 

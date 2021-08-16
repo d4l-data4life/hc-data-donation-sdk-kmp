@@ -21,7 +21,7 @@ import care.data4life.datadonation.consent.ConsentContract.ApiService.Companion.
 import care.data4life.datadonation.consent.ConsentContract.ApiService.Companion.PATH
 import care.data4life.datadonation.consent.model.ConsentCreationPayload
 import care.data4life.datadonation.consent.model.ConsentRevocationPayload
-import care.data4life.datadonation.lang.CoreRuntimeError
+import care.data4life.datadonation.error.CoreRuntimeError
 import care.data4life.datadonation.mock.fixture.ConsentFixtures.sampleUserConsent
 import care.data4life.datadonation.mock.stub.ClockStub
 import care.data4life.datadonation.mock.stub.consent.ConsentErrorHandlerStub
