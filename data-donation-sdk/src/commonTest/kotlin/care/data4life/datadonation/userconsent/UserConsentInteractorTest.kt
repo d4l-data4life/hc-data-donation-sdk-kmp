@@ -16,7 +16,7 @@
 
 package care.data4life.datadonation.userconsent
 
-import care.data4life.datadonation.mock.fixture.ConsentFixtures
+import care.data4life.datadonation.mock.fixture.UserConsentFixture
 import care.data4life.datadonation.mock.stub.session.UserSessionTokenRepositoryStub
 import care.data4life.datadonation.mock.stub.userconsent.UserConsentRepositoryStub
 import care.data4life.sdk.util.test.coroutine.runBlockingTest
@@ -56,7 +56,7 @@ class UserConsentInteractorTest {
         var capturedTokenFetch: String? = null
         var capturedConsentDocumentKeyFetch: String? = null
 
-        val consent = ConsentFixtures.sampleUserConsent
+        val consent = UserConsentFixture.sampleUserConsent
 
         val repo = UserConsentRepositoryStub()
 
@@ -70,7 +70,7 @@ class UserConsentInteractorTest {
         repo.whenFetchUserConsents = { delegatedToken, delegatedConsentDocumentKey ->
             capturedConsentDocumentKeyFetch = delegatedConsentDocumentKey
             capturedTokenFetch = delegatedToken
-            listOf(consent, ConsentFixtures.sampleUserConsent.copy(accountId = "not expected"))
+            listOf(consent, UserConsentFixture.sampleUserConsent.copy(accountId = "not expected"))
         }
 
         // When
@@ -109,7 +109,7 @@ class UserConsentInteractorTest {
         val sessionTokenRepository = UserSessionTokenRepositoryStub()
 
         val accessToken = "session"
-        val dummyConsentList = listOf(ConsentFixtures.sampleUserConsent)
+        val dummyConsentList = listOf(UserConsentFixture.sampleUserConsent)
 
         var capturedToken: String? = null
         var capturedConsentDocumentKey: String? = null
@@ -145,7 +145,7 @@ class UserConsentInteractorTest {
 
         val accessToken = "session"
         val consentDocumentKey = "key"
-        val dummyConsentList = listOf(ConsentFixtures.sampleUserConsent)
+        val dummyConsentList = listOf(UserConsentFixture.sampleUserConsent)
 
         var capturedToken: String? = null
         var capturedConsentDocumentKey: String? = null
@@ -193,7 +193,7 @@ class UserConsentInteractorTest {
         var capturedTokenFetch: String? = null
         var capturedConsentDocumentKeyFetch: String? = null
 
-        val consent = ConsentFixtures.sampleUserConsent
+        val consent = UserConsentFixture.sampleUserConsent
 
         val repo = UserConsentRepositoryStub()
 
@@ -207,7 +207,7 @@ class UserConsentInteractorTest {
         repo.whenFetchUserConsents = { delegatedToken, delegatedConsentDocumentKey ->
             capturedTokenFetch = delegatedToken
             capturedConsentDocumentKeyFetch = delegatedConsentDocumentKey
-            listOf(consent, ConsentFixtures.sampleUserConsent.copy(accountId = "not expected"))
+            listOf(consent, UserConsentFixture.sampleUserConsent.copy(accountId = "not expected"))
         }
 
         // When

@@ -16,7 +16,7 @@
 
 package care.data4life.datadonation.userconsent
 
-import care.data4life.datadonation.mock.fixture.ConsentFixtures.sampleUserConsent
+import care.data4life.datadonation.mock.fixture.UserConsentFixture.sampleUserConsent
 import care.data4life.datadonation.mock.stub.userconsent.UserConsentApiServiceStub
 import care.data4life.sdk.util.test.coroutine.runBlockingTest
 import kotlin.test.Test

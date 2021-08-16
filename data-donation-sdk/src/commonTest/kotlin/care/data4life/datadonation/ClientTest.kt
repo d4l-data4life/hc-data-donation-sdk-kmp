@@ -19,8 +19,8 @@ package care.data4life.datadonation
 import care.data4life.datadonation.DataDonationSDK.Environment
 import care.data4life.datadonation.consentdocument.ConsentDocumentContract
 import care.data4life.datadonation.error.DataDonationFlowErrorMapper
-import care.data4life.datadonation.mock.fixture.ConsentFixtures.sampleConsentDocument
-import care.data4life.datadonation.mock.fixture.ConsentFixtures.sampleUserConsent
+import care.data4life.datadonation.mock.fixture.ConsentDocumentFixture.sampleConsentDocument
+import care.data4life.datadonation.mock.fixture.UserConsentFixture.sampleUserConsent
 import care.data4life.datadonation.mock.spy.D4LFlowFactorySpy
 import care.data4life.datadonation.mock.stub.UserSessionTokenProviderStub
 import care.data4life.datadonation.mock.stub.consentdocument.ConsentDocumentInteractorStub

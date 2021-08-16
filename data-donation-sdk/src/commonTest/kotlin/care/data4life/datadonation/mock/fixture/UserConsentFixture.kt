@@ -17,22 +17,11 @@
 package care.data4life.datadonation.mock.fixture
 
 import care.data4life.datadonation.ConsentDataContract
-import care.data4life.datadonation.userconsent.model.ConsentDocument
 import care.data4life.datadonation.userconsent.model.UserConsent
 import kotlin.native.concurrent.ThreadLocal
 
 @ThreadLocal
-object ConsentFixtures {
-    val sampleConsentDocument = ConsentDocument(
-        key = "exampleKey",
-        version = "42",
-        processor = "anyProcessor",
-        description = "this is an example document",
-        recipient = "sombody",
-        language = "zxx-Hant-CN-x-private1-private2",
-        text = "ExampleText",
-    )
-
+object UserConsentFixture {
     val sampleUserConsent = UserConsent(
         consentDocumentKey = "soup",
         consentDocumentVersion = "23",

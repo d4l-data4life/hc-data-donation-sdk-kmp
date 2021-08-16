@@ -17,7 +17,7 @@
 package care.data4life.datadonation.userconsent
 
 import care.data4life.datadonation.error.CoreRuntimeError
-import care.data4life.datadonation.mock.fixture.ConsentFixtures.sampleUserConsent
+import care.data4life.datadonation.mock.fixture.UserConsentFixture.sampleUserConsent
 import care.data4life.datadonation.mock.stub.ClockStub
 import care.data4life.datadonation.mock.stub.networking.RequestBuilderSpy
 import care.data4life.datadonation.mock.stub.userconsent.UserConsentErrorHandlerStub

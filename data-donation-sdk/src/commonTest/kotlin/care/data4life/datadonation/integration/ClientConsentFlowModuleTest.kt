@@ -37,7 +37,8 @@ import care.data4life.datadonation.DataDonationSDK
 import care.data4life.datadonation.consentdocument.resolveConsentDocumentKoinModule
 import care.data4life.datadonation.di.resolveRootModule
 import care.data4life.datadonation.mock.ResourceLoader
-import care.data4life.datadonation.mock.fixture.ConsentFixtures
+import care.data4life.datadonation.mock.fixture.ConsentDocumentFixture
+import care.data4life.datadonation.mock.fixture.UserConsentFixture
 import care.data4life.datadonation.mock.stub.ClockStub
 import care.data4life.datadonation.networking.plugin.resolveKtorPlugins
 import care.data4life.datadonation.networking.resolveNetworking
@@ -134,7 +135,7 @@ class ClientConsentFlowModuleTest {
             // Then
             assertEquals(
                 actual = result,
-                expected = listOf(ConsentFixtures.sampleConsentDocument)
+                expected = listOf(ConsentDocumentFixture.sampleConsentDocument)
             )
         }
     }
@@ -195,7 +196,7 @@ class ClientConsentFlowModuleTest {
             // Then
             assertEquals(
                 actual = result,
-                expected = listOf(ConsentFixtures.sampleUserConsent)
+                expected = listOf(UserConsentFixture.sampleUserConsent)
             )
         }
     }
@@ -295,7 +296,7 @@ class ClientConsentFlowModuleTest {
             // Then
             assertEquals(
                 actual = result,
-                expected = ConsentFixtures.sampleUserConsent
+                expected = UserConsentFixture.sampleUserConsent
             )
         }
     }
@@ -387,7 +388,7 @@ class ClientConsentFlowModuleTest {
             // Then
             assertEquals(
                 actual = result,
-                expected = ConsentFixtures.sampleUserConsent
+                expected = UserConsentFixture.sampleUserConsent
             )
         }
     }

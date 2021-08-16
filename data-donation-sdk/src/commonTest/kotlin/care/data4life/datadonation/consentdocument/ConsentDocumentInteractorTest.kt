@@ -32,7 +32,7 @@
 
 package care.data4life.datadonation.consentdocument
 
-import care.data4life.datadonation.mock.fixture.ConsentFixtures.sampleConsentDocument
+import care.data4life.datadonation.mock.fixture.ConsentDocumentFixture.sampleConsentDocument
 import care.data4life.datadonation.mock.stub.consentdocument.ConsentDocumentRepositoryStub
 import care.data4life.datadonation.mock.stub.session.UserSessionTokenRepositoryStub
 import care.data4life.sdk.util.test.coroutine.runBlockingTest
