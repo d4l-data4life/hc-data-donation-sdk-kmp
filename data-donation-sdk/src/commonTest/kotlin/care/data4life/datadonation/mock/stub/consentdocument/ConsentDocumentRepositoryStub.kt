@@ -16,11 +16,11 @@
 
 package care.data4life.datadonation.mock.stub.consentdocument
 
-import care.data4life.datadonation.consent.model.ConsentDocument
 import care.data4life.datadonation.consentdocument.ConsentDocumentContract
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 import care.data4life.datadonation.networking.AccessToken
+import care.data4life.datadonation.userconsent.model.ConsentDocument
 
 internal class ConsentDocumentRepositoryStub :
     ConsentDocumentContract.Repository,

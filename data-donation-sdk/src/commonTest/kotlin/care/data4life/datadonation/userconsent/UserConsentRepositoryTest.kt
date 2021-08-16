@@ -14,10 +14,10 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.consent
+package care.data4life.datadonation.userconsent
 
 import care.data4life.datadonation.mock.fixture.ConsentFixtures.sampleUserConsent
-import care.data4life.datadonation.mock.stub.consent.ConsentApiServiceStub
+import care.data4life.datadonation.mock.stub.userconsent.UserConsentApiServiceStub
 import care.data4life.sdk.util.test.coroutine.runBlockingTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -29,15 +29,15 @@ import kotlin.test.assertTrue
 class UserConsentRepositoryTest {
     @Test
     fun `It fulfils UserConsentRepository`() {
-        val repo: Any = UserConsentRepository(ConsentApiServiceStub())
+        val repo: Any = UserConsentRepository(UserConsentApiServiceStub())
 
-        assertTrue(repo is ConsentContract.Repository)
+        assertTrue(repo is UserConsentContract.Repository)
     }
 
     @Test
     fun `Given createUserConsent is called with a Version and a consentDocumentKey, it resolves the SessionToken and delegates everything to the UserConsentRemote and just runs`() = runBlockingTest {
         // Given
-        val consentService = ConsentApiServiceStub()
+        val consentService = UserConsentApiServiceStub()
 
         val accessToken = "token"
         val consentDocumentKey = "custom-consent-key"
@@ -82,7 +82,7 @@ class UserConsentRepositoryTest {
     @Test
     fun `Given fetchUserConsents is called without a consentDocumentKey, it resolves the SessionToken and delegates it to the ConsentService and returns a List of UserConsent`() = runBlockingTest {
         // Given
-        val consentService = ConsentApiServiceStub()
+        val consentService = UserConsentApiServiceStub()
 
         val accessToken = "token"
         val userConsents = listOf(
@@ -120,7 +120,7 @@ class UserConsentRepositoryTest {
     @Test
     fun `Given fetchUserConsents is called with a consentDocumentKey, it resolves the SessionToken and delegates it to the ConsentService and returns a List of UserConsent`() = runBlockingTest {
         // Given
-        val consentService = ConsentApiServiceStub()
+        val consentService = UserConsentApiServiceStub()
 
         val accessToken = "token"
         val consentDocumentKey = "soup"
@@ -166,7 +166,7 @@ class UserConsentRepositoryTest {
     @Test
     fun `Given revokeUserConsent is called with a consentDocumentKey, it resolves the SessionToken and delegates that to the ConsentService and just runs`() = runBlockingTest {
         // Given
-        val consentService = ConsentApiServiceStub()
+        val consentService = UserConsentApiServiceStub()
 
         val accessToken = "token"
         val consentDocumentKey = "custom-consent-key"

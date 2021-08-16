@@ -14,27 +14,27 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.consent
+package care.data4life.datadonation.userconsent
 
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
 internal fun resolveConsentKoinModule(): Module {
     return module {
-        single<ConsentContract.Repository> {
+        single<UserConsentContract.Repository> {
             UserConsentRepository(get())
         }
 
-        single<ConsentContract.ApiService> {
-            ConsentApiService(get(), get(), get())
+        single<UserConsentContract.ApiService> {
+            UserConsentApiService(get(), get(), get())
         }
 
-        single<ConsentContract.ApiService.ErrorHandler> {
-            ConsentErrorHandler
+        single<UserConsentContract.ApiService.ErrorHandler> {
+            UserConsentErrorHandler
         }
 
-        single<ConsentContract.Interactor> {
-            UserConsentService(get(), get())
+        single<UserConsentContract.Interactor> {
+            UserConsentInteractor(get(), get())
         }
     }
 }

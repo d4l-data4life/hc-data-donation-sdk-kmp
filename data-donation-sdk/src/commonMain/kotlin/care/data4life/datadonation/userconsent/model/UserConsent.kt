@@ -14,20 +14,16 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.consent
+package care.data4life.datadonation.userconsent.model
 
-import care.data4life.sdk.lang.D4LRuntimeException
+import care.data4life.datadonation.ConsentDataContract
+import kotlinx.serialization.Serializable
 
-sealed class ConsentServiceError(
-    open val httpStatus: Int
-) : D4LRuntimeException() {
-    class UnexpectedFailure(override val httpStatus: Int) : ConsentServiceError(httpStatus)
-    class BadRequest : ConsentServiceError(400)
-    class Unauthorized : ConsentServiceError(401)
-    class Forbidden : ConsentServiceError(403)
-    class NotFound : ConsentServiceError(404)
-    class DocumentConflict : ConsentServiceError(409)
-    class UnprocessableEntity : ConsentServiceError(422)
-    class TooManyRequests : ConsentServiceError(429)
-    class InternalServer : ConsentServiceError(500)
-}
+@Serializable
+data class UserConsent(
+    override val consentDocumentKey: String,
+    override val consentDocumentVersion: String,
+    override val accountId: String, // UUID
+    override val event: ConsentDataContract.ConsentEvent,
+    override val createdAt: String = "" /* Timestamp */
+) : ConsentDataContract.UserConsent

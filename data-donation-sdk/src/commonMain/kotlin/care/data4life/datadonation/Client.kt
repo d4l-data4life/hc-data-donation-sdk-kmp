@@ -34,9 +34,9 @@ package care.data4life.datadonation
 
 import care.data4life.datadonation.ConsentDataContract.ConsentDocument
 import care.data4life.datadonation.ConsentDataContract.UserConsent
-import care.data4life.datadonation.consent.ConsentContract
 import care.data4life.datadonation.consentdocument.ConsentDocumentContract
 import care.data4life.datadonation.di.initKoin
+import care.data4life.datadonation.userconsent.UserConsentContract
 import care.data4life.sdk.util.coroutine.D4LSDKFlow
 import care.data4life.sdk.util.coroutine.D4LSDKFlowContract
 import kotlinx.coroutines.flow.flow
@@ -45,7 +45,7 @@ import org.koin.core.KoinApplication
 class Client internal constructor(
     koinApplication: KoinApplication
 ) : DataDonationSDK.DataDonationClient {
-    private val userConsent: ConsentContract.Interactor = koinApplication.koin.get()
+    private val userConsent: UserConsentContract.Interactor = koinApplication.koin.get()
     private val consentDocuments: ConsentDocumentContract.Interactor = koinApplication.koin.get()
 
     private inline fun <T> wrapResult(

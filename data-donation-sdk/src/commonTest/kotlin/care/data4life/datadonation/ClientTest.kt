@@ -17,13 +17,13 @@
 package care.data4life.datadonation
 
 import care.data4life.datadonation.DataDonationSDK.Environment
-import care.data4life.datadonation.consent.ConsentContract
 import care.data4life.datadonation.consentdocument.ConsentDocumentContract
 import care.data4life.datadonation.mock.fixture.ConsentFixtures.sampleConsentDocument
 import care.data4life.datadonation.mock.fixture.ConsentFixtures.sampleUserConsent
 import care.data4life.datadonation.mock.stub.UserSessionTokenProviderStub
-import care.data4life.datadonation.mock.stub.consent.UserConsentServiceStub
-import care.data4life.datadonation.mock.stub.consentdocument.ConsentDocumentServiceStub
+import care.data4life.datadonation.mock.stub.consentdocument.ConsentDocumentInteractorStub
+import care.data4life.datadonation.mock.stub.userconsent.UserConsentInteractorStub
+import care.data4life.datadonation.userconsent.UserConsentContract
 import care.data4life.sdk.util.test.coroutine.runWithContextBlockingTest
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
@@ -65,7 +65,7 @@ class ClientTest {
     @Test
     fun `Given createUserConsent is called with a ConsentDocumentVersion and a Language it builds and delegates its Parameter to the Usecase and returns a runnable Flow which emits a UserConsent`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
-        val consentFlow = UserConsentServiceStub()
+        val consentFlow = UserConsentInteractorStub()
         val consent = sampleUserConsent
 
         val version = "23"
@@ -85,12 +85,12 @@ class ClientTest {
         val di = koinApplication {
             modules(
                 module {
-                    single<ConsentContract.Interactor> {
+                    single<UserConsentContract.Interactor> {
                         consentFlow
                     }
 
                     single<ConsentDocumentContract.Interactor> {
-                        ConsentDocumentServiceStub()
+                        ConsentDocumentInteractorStub()
                     }
                 }
             )
@@ -124,7 +124,7 @@ class ClientTest {
     @Test
     fun `Given fetchConsentDocuments is called with a consentDocumentKey it builds and delegates its Parameter to the Usecase and returns a runnable Flow which emits a List of ConsentDocument`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
-        val consentDocumentFlow = ConsentDocumentServiceStub()
+        val consentDocumentFlow = ConsentDocumentInteractorStub()
         val documents = listOf(sampleConsentDocument)
 
         val version = "23"
@@ -147,8 +147,8 @@ class ClientTest {
         val di = koinApplication {
             modules(
                 module {
-                    single<ConsentContract.Interactor> {
-                        UserConsentServiceStub()
+                    single<UserConsentContract.Interactor> {
+                        UserConsentInteractorStub()
                     }
 
                     single<ConsentDocumentContract.Interactor> {
@@ -192,7 +192,7 @@ class ClientTest {
     @Test
     fun `Given fetchUserConsents is called with a consentDocumentKey it builds and delegates its Parameter to the Usecase and returns a runnable Flow which emits a List of UserConsent`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
-        val consentFlow = UserConsentServiceStub()
+        val consentFlow = UserConsentInteractorStub()
         val consents = listOf(sampleUserConsent)
 
         val capturedKey = Channel<String?>()
@@ -207,12 +207,12 @@ class ClientTest {
         val di = koinApplication {
             modules(
                 module {
-                    single<ConsentContract.Interactor> {
+                    single<UserConsentContract.Interactor> {
                         consentFlow
                     }
 
                     single<ConsentDocumentContract.Interactor> {
-                        ConsentDocumentServiceStub()
+                        ConsentDocumentInteractorStub()
                     }
                 }
             )
@@ -241,7 +241,7 @@ class ClientTest {
     @Test
     fun `Given fetchAllUserConsents is called it builds and delegates its Parameter to the Usecase and returns a runnable Flow which emits a List of UserConsent`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
-        val consentFlow = UserConsentServiceStub()
+        val consentFlow = UserConsentInteractorStub()
         val consents = listOf(sampleUserConsent)
 
         val capturedKey = Channel<String?>()
@@ -256,12 +256,12 @@ class ClientTest {
         val di = koinApplication {
             modules(
                 module {
-                    single<ConsentContract.Interactor> {
+                    single<UserConsentContract.Interactor> {
                         consentFlow
                     }
 
                     single<ConsentDocumentContract.Interactor> {
-                        ConsentDocumentServiceStub()
+                        ConsentDocumentInteractorStub()
                     }
                 }
             )
@@ -284,7 +284,7 @@ class ClientTest {
     @Test
     fun `Given revokeUserConsent is called with a consentDocumentKey it builds and delegates its Parameter to the Usecase and returns a runnable Flow which just runs`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
-        val consentFlow = UserConsentServiceStub()
+        val consentFlow = UserConsentInteractorStub()
 
         val consentDocumentKey = "custom-consent-key"
 
@@ -300,12 +300,12 @@ class ClientTest {
         val di = koinApplication {
             modules(
                 module {
-                    single<ConsentContract.Interactor> {
+                    single<UserConsentContract.Interactor> {
                         consentFlow
                     }
 
                     single<ConsentDocumentContract.Interactor> {
-                        ConsentDocumentServiceStub()
+                        ConsentDocumentInteractorStub()
                     }
                 }
             )

@@ -14,13 +14,20 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.consentdocument
+package care.data4life.datadonation.userconsent
 
 import care.data4life.sdk.lang.D4LRuntimeException
 
-sealed class ConsentDocumentServiceError(
+sealed class UserConsentError(
     open val httpStatus: Int
 ) : D4LRuntimeException() {
-    class UnexpectedFailure(override val httpStatus: Int) : ConsentDocumentServiceError(httpStatus)
-    class InternalServer : ConsentDocumentServiceError(500)
+    class UnexpectedFailure(override val httpStatus: Int) : UserConsentError(httpStatus)
+    class BadRequest : UserConsentError(400)
+    class Unauthorized : UserConsentError(401)
+    class Forbidden : UserConsentError(403)
+    class NotFound : UserConsentError(404)
+    class DocumentConflict : UserConsentError(409)
+    class UnprocessableEntity : UserConsentError(422)
+    class TooManyRequests : UserConsentError(429)
+    class InternalServer : UserConsentError(500)
 }

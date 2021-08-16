@@ -14,11 +14,11 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.consent
+package care.data4life.datadonation.userconsent
 
 import care.data4life.datadonation.mock.fixture.ConsentFixtures
-import care.data4life.datadonation.mock.stub.consent.UserConsentRepositoryStub
 import care.data4life.datadonation.mock.stub.session.UserSessionTokenRepositoryStub
+import care.data4life.datadonation.mock.stub.userconsent.UserConsentRepositoryStub
 import care.data4life.sdk.util.test.coroutine.runBlockingTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -26,15 +26,15 @@ import kotlin.test.assertNull
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
-class UserConsentServiceTest {
+class UserConsentInteractorTest {
     @Test
-    fun `It fulfils ConsentInteractor`() {
-        val interactor: Any = UserConsentService(
+    fun `It fulfils UserConsentInteractor`() {
+        val interactor: Any = UserConsentInteractor(
             UserConsentRepositoryStub(),
             UserSessionTokenRepositoryStub()
         )
 
-        assertTrue(interactor is ConsentContract.Interactor)
+        assertTrue(interactor is UserConsentContract.Interactor)
     }
 
     @Test
@@ -74,7 +74,7 @@ class UserConsentServiceTest {
         }
 
         // When
-        val result = UserConsentService(repo, sessionTokenRepository).createUserConsent(
+        val result = UserConsentInteractor(repo, sessionTokenRepository).createUserConsent(
             consentDocumentKey,
             consentDocumentVersion
         )
@@ -124,7 +124,7 @@ class UserConsentServiceTest {
         sessionTokenRepository.whenSessionToken = { accessToken }
 
         // When
-        val result = UserConsentService(repo, sessionTokenRepository).fetchAllUserConsents()
+        val result = UserConsentInteractor(repo, sessionTokenRepository).fetchAllUserConsents()
 
         // Then
         assertEquals(
@@ -160,7 +160,7 @@ class UserConsentServiceTest {
         sessionTokenRepository.whenSessionToken = { accessToken }
 
         // When
-        val result = UserConsentService(repo, sessionTokenRepository).fetchUserConsents(consentDocumentKey)
+        val result = UserConsentInteractor(repo, sessionTokenRepository).fetchUserConsents(consentDocumentKey)
 
         // Then
         assertEquals(
@@ -211,7 +211,7 @@ class UserConsentServiceTest {
         }
 
         // When
-        val result = UserConsentService(repo, sessionTokenRepository).revokeUserConsent(consentDocumentKey)
+        val result = UserConsentInteractor(repo, sessionTokenRepository).revokeUserConsent(consentDocumentKey)
 
         // Then
         assertSame(

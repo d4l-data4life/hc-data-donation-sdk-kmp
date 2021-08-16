@@ -14,14 +14,14 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.consent
+package care.data4life.datadonation.userconsent
 
 import care.data4life.datadonation.DataDonationSDK
 import care.data4life.datadonation.mock.stub.ClockStub
-import care.data4life.datadonation.mock.stub.consent.ConsentApiServiceStub
-import care.data4life.datadonation.mock.stub.consent.UserConsentRepositoryStub
 import care.data4life.datadonation.mock.stub.networking.RequestBuilderSpy
 import care.data4life.datadonation.mock.stub.session.UserSessionTokenRepositoryStub
+import care.data4life.datadonation.mock.stub.userconsent.UserConsentApiServiceStub
+import care.data4life.datadonation.mock.stub.userconsent.UserConsentRepositoryStub
 import care.data4life.datadonation.networking.Networking
 import care.data4life.datadonation.session.SessionTokenRepositoryContract
 import care.data4life.sdk.util.test.ktor.HttpMockClientFactory
@@ -33,7 +33,7 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 
-class ConsentKoinTest {
+class UserConsentKoinTest {
     @BeforeTest
     fun setUp() {
         stopKoin()
@@ -46,15 +46,15 @@ class ConsentKoinTest {
             modules(
                 resolveConsentKoinModule(),
                 module {
-                    single<ConsentContract.ApiService>(override = true) {
-                        ConsentApiServiceStub()
+                    single<UserConsentContract.ApiService>(override = true) {
+                        UserConsentApiServiceStub()
                     }
                 }
             )
         }
 
         // Then
-        val repo: ConsentContract.Repository = koin.koin.get()
+        val repo: UserConsentContract.Repository = koin.koin.get()
         assertNotNull(repo)
     }
 
@@ -65,7 +65,7 @@ class ConsentKoinTest {
             modules(resolveConsentKoinModule())
         }
         // Then
-        val builder: ConsentContract.ApiService.ErrorHandler = koin.koin.get()
+        val builder: UserConsentContract.ApiService.ErrorHandler = koin.koin.get()
         assertNotNull(builder)
     }
 
@@ -86,7 +86,7 @@ class ConsentKoinTest {
             )
         }
         // Then
-        val builder: ConsentContract.ApiService = koin.koin.get()
+        val builder: UserConsentContract.ApiService = koin.koin.get()
         assertNotNull(builder)
     }
 
@@ -97,7 +97,7 @@ class ConsentKoinTest {
             modules(
                 resolveConsentKoinModule(),
                 module {
-                    single<ConsentContract.Repository>(override = true) {
+                    single<UserConsentContract.Repository>(override = true) {
                         UserConsentRepositoryStub()
                     }
 
@@ -108,7 +108,7 @@ class ConsentKoinTest {
             )
         }
         // Then
-        val builder: ConsentContract.Interactor = koin.koin.get()
+        val builder: UserConsentContract.Interactor = koin.koin.get()
         assertNotNull(builder)
     }
 }

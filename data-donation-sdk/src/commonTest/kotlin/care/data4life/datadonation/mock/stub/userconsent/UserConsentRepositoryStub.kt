@@ -14,15 +14,15 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.mock.stub.consent
+package care.data4life.datadonation.mock.stub.userconsent
 
-import care.data4life.datadonation.consent.ConsentContract
-import care.data4life.datadonation.consent.model.UserConsent
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 import care.data4life.datadonation.networking.AccessToken
+import care.data4life.datadonation.userconsent.UserConsentContract
+import care.data4life.datadonation.userconsent.model.UserConsent
 
-internal class UserConsentRepositoryStub : ConsentContract.Repository, MockContract.Stub {
+internal class UserConsentRepositoryStub : UserConsentContract.Repository, MockContract.Stub {
     var whenCreateUserConsent: ((AccessToken, String, String) -> Unit)? = null
     var whenFetchUserConsents: ((AccessToken, String?) -> List<UserConsent>)? = null
     var whenRevokeUserConsent: ((AccessToken, String) -> Unit)? = null

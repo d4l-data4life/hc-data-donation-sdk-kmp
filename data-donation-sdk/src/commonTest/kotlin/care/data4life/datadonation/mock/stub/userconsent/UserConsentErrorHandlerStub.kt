@@ -14,28 +14,28 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.mock.stub.consent
+package care.data4life.datadonation.mock.stub.userconsent
 
-import care.data4life.datadonation.consent.ConsentContract
-import care.data4life.datadonation.consent.ConsentServiceError
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 import care.data4life.datadonation.networking.HttpRuntimeError
+import care.data4life.datadonation.userconsent.UserConsentContract
+import care.data4life.datadonation.userconsent.UserConsentError
 
-internal class ConsentErrorHandlerStub : ConsentContract.ApiService.ErrorHandler, MockContract.Stub {
-    var whenHandleFetchUserConsents: ((HttpRuntimeError) -> ConsentServiceError)? = null
-    var whenHandleCreateUserConsent: ((HttpRuntimeError) -> ConsentServiceError)? = null
-    var whenHandleRevokeUserConsent: ((HttpRuntimeError) -> ConsentServiceError)? = null
+internal class UserConsentErrorHandlerStub : UserConsentContract.ApiService.ErrorHandler, MockContract.Stub {
+    var whenHandleFetchUserConsents: ((HttpRuntimeError) -> UserConsentError)? = null
+    var whenHandleCreateUserConsent: ((HttpRuntimeError) -> UserConsentError)? = null
+    var whenHandleRevokeUserConsent: ((HttpRuntimeError) -> UserConsentError)? = null
 
-    override fun handleFetchUserConsents(error: HttpRuntimeError): ConsentServiceError {
+    override fun handleFetchUserConsents(error: HttpRuntimeError): UserConsentError {
         return whenHandleFetchUserConsents?.invoke(error) ?: throw MockException()
     }
 
-    override fun handleCreateUserConsent(error: HttpRuntimeError): ConsentServiceError {
+    override fun handleCreateUserConsent(error: HttpRuntimeError): UserConsentError {
         return whenHandleCreateUserConsent?.invoke(error) ?: throw MockException()
     }
 
-    override fun handleRevokeUserConsent(error: HttpRuntimeError): ConsentServiceError {
+    override fun handleRevokeUserConsent(error: HttpRuntimeError): UserConsentError {
         return whenHandleRevokeUserConsent?.invoke(error) ?: throw MockException()
     }
 

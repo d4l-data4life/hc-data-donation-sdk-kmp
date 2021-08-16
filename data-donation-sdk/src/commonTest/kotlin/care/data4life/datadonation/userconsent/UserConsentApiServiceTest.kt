@@ -14,21 +14,21 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.consent
+package care.data4life.datadonation.userconsent
 
-import care.data4life.datadonation.consent.ConsentContract.ApiService.Companion.PARAMETER.LATEST_CONSENT
-import care.data4life.datadonation.consent.ConsentContract.ApiService.Companion.PARAMETER.USER_CONSENT_KEY
-import care.data4life.datadonation.consent.ConsentContract.ApiService.Companion.PATH
-import care.data4life.datadonation.consent.model.ConsentCreationPayload
-import care.data4life.datadonation.consent.model.ConsentRevocationPayload
 import care.data4life.datadonation.error.CoreRuntimeError
 import care.data4life.datadonation.mock.fixture.ConsentFixtures.sampleUserConsent
 import care.data4life.datadonation.mock.stub.ClockStub
-import care.data4life.datadonation.mock.stub.consent.ConsentErrorHandlerStub
 import care.data4life.datadonation.mock.stub.networking.RequestBuilderSpy
+import care.data4life.datadonation.mock.stub.userconsent.UserConsentErrorHandlerStub
 import care.data4life.datadonation.networking.HttpRuntimeError
 import care.data4life.datadonation.networking.Networking
 import care.data4life.datadonation.networking.Path
+import care.data4life.datadonation.userconsent.UserConsentContract.ApiService.Companion.PARAMETER.LATEST_CONSENT
+import care.data4life.datadonation.userconsent.UserConsentContract.ApiService.Companion.PARAMETER.USER_CONSENT_KEY
+import care.data4life.datadonation.userconsent.UserConsentContract.ApiService.Companion.PATH
+import care.data4life.datadonation.userconsent.model.ConsentCreationPayload
+import care.data4life.datadonation.userconsent.model.ConsentRevocationPayload
 import care.data4life.sdk.util.test.coroutine.runBlockingTest
 import care.data4life.sdk.util.test.ktor.HttpMockClientFactory.createErrorMockClient
 import care.data4life.sdk.util.test.ktor.HttpMockClientFactory.createMockClientWithResponse
@@ -43,18 +43,18 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
-class ConsentApiServiceTest {
+class UserConsentApiServiceTest {
     private val dummyKtor = HttpRequestBuilder()
 
     @Test
     fun `It fulfils ConsentApiService`() {
-        val service: Any = ConsentApiService(
+        val service: Any = UserConsentApiService(
             RequestBuilderSpy.Factory(),
-            ConsentErrorHandlerStub(),
+            UserConsentErrorHandlerStub(),
             ClockStub()
         )
 
-        assertTrue(service is ConsentContract.ApiService)
+        assertTrue(service is UserConsentContract.ApiService)
     }
 
     @Test
@@ -67,12 +67,12 @@ class ConsentApiServiceTest {
         val version = "23"
 
         val error = HttpRuntimeError(HttpStatusCode.TooManyRequests)
-        val outgoingError = ConsentServiceError.Forbidden()
+        val outgoingError = UserConsentError.Forbidden()
         var capturedError: HttpRuntimeError? = null
 
         val client = createErrorMockClient(error)
 
-        val errorHandler = ConsentErrorHandlerStub()
+        val errorHandler = UserConsentErrorHandlerStub()
 
         errorHandler.whenHandleCreateUserConsent = { delegatedError ->
             capturedError = delegatedError
@@ -89,9 +89,9 @@ class ConsentApiServiceTest {
         clock.whenNow = { Instant.DISTANT_FUTURE }
 
         // Then
-        val result = assertFailsWith<ConsentServiceError.Forbidden> {
+        val result = assertFailsWith<UserConsentError.Forbidden> {
             // When
-            val service = ConsentApiService(
+            val service = UserConsentApiService(
                 requestTemplate,
                 errorHandler,
                 clock
@@ -147,9 +147,9 @@ class ConsentApiServiceTest {
         }
 
         // When
-        val service = ConsentApiService(
+        val service = UserConsentApiService(
             requestTemplate,
-            ConsentErrorHandlerStub(),
+            UserConsentErrorHandlerStub(),
             clock
         )
         val result = service.createUserConsent(
@@ -204,12 +204,12 @@ class ConsentApiServiceTest {
         val consentDocumentKey = "tomato"
 
         val error = HttpRuntimeError(HttpStatusCode.TooManyRequests)
-        val outgoingError = ConsentServiceError.Forbidden()
+        val outgoingError = UserConsentError.Forbidden()
         var capturedError: HttpRuntimeError? = null
 
         val client = createErrorMockClient(error)
 
-        val errorHandler = ConsentErrorHandlerStub()
+        val errorHandler = UserConsentErrorHandlerStub()
 
         errorHandler.whenHandleFetchUserConsents = { delegatedError ->
             capturedError = delegatedError
@@ -224,9 +224,9 @@ class ConsentApiServiceTest {
         }
 
         // Then
-        val result = assertFailsWith<ConsentServiceError.Forbidden> {
+        val result = assertFailsWith<UserConsentError.Forbidden> {
             // When
-            val service = ConsentApiService(
+            val service = UserConsentApiService(
                 requestTemplate,
                 errorHandler,
                 ClockStub()
@@ -271,9 +271,9 @@ class ConsentApiServiceTest {
         // Then
         val error = assertFailsWith<CoreRuntimeError.ResponseTransformFailure> {
             // When
-            val service = ConsentApiService(
+            val service = UserConsentApiService(
                 requestTemplate,
-                ConsentErrorHandlerStub(),
+                UserConsentErrorHandlerStub(),
                 ClockStub()
             )
             service.fetchUserConsents(
@@ -320,9 +320,9 @@ class ConsentApiServiceTest {
         }
 
         // When
-        val service = ConsentApiService(
+        val service = UserConsentApiService(
             requestTemplate,
-            ConsentErrorHandlerStub(),
+            UserConsentErrorHandlerStub(),
             ClockStub()
         )
         val result = service.fetchUserConsents(
@@ -370,12 +370,12 @@ class ConsentApiServiceTest {
         val consentDocumentKey = "custom-consent-key"
 
         val error = HttpRuntimeError(HttpStatusCode.TooManyRequests)
-        val outgoingError = ConsentServiceError.Forbidden()
+        val outgoingError = UserConsentError.Forbidden()
         var capturedError: HttpRuntimeError? = null
 
         val client = createErrorMockClient(error)
 
-        val errorHandler = ConsentErrorHandlerStub()
+        val errorHandler = UserConsentErrorHandlerStub()
 
         errorHandler.whenHandleRevokeUserConsent = { delegatedError ->
             capturedError = delegatedError
@@ -390,9 +390,9 @@ class ConsentApiServiceTest {
         }
 
         // Then
-        val result = assertFailsWith<ConsentServiceError.Forbidden> {
+        val result = assertFailsWith<UserConsentError.Forbidden> {
             // When
-            val service = ConsentApiService(
+            val service = UserConsentApiService(
                 requestTemplate,
                 errorHandler,
                 ClockStub()
@@ -441,9 +441,9 @@ class ConsentApiServiceTest {
         }
 
         // When
-        val service = ConsentApiService(
+        val service = UserConsentApiService(
             requestTemplate,
-            ConsentErrorHandlerStub(),
+            UserConsentErrorHandlerStub(),
             ClockStub()
         )
         val result = service.revokeUserConsent(accessToken = accessToken, consentDocumentKey = consentDocumentKey)

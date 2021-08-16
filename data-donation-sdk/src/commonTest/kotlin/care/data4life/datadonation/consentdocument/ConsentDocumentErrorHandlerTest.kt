@@ -39,7 +39,7 @@ class ConsentDocumentErrorHandlerTest {
         val result = ConsentDocumentErrorHandler.handleFetchConsentDocuments(error)
 
         // Then
-        assertTrue(result is ConsentDocumentServiceError.UnexpectedFailure)
+        assertTrue(result is ConsentDocumentError.UnexpectedFailure)
         assertEquals(
             actual = result.httpStatus,
             expected = 503
@@ -55,6 +55,6 @@ class ConsentDocumentErrorHandlerTest {
         val result = ConsentDocumentErrorHandler.handleFetchConsentDocuments(error)
 
         // Then
-        assertTrue(result is ConsentDocumentServiceError.InternalServer)
+        assertTrue(result is ConsentDocumentError.InternalServer)
     }
 }

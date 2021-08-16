@@ -16,25 +16,11 @@
 
 package care.data4life.datadonation.consentdocument
 
-import org.koin.core.module.Module
-import org.koin.dsl.module
+import care.data4life.sdk.lang.D4LRuntimeException
 
-internal fun resolveConsentDocumentKoinModule(): Module {
-    return module {
-        single<ConsentDocumentContract.Repository> {
-            ConsentDocumentRepository(get())
-        }
-
-        single<ConsentDocumentContract.ApiService> {
-            ConsentDocumentApiService(get(), get())
-        }
-
-        single<ConsentDocumentContract.ApiService.ErrorHandler> {
-            ConsentDocumentErrorHandler
-        }
-
-        single<ConsentDocumentContract.Interactor> {
-            ConsentDocumentInteractor(get(), get())
-        }
-    }
+sealed class ConsentDocumentError(
+    open val httpStatus: Int
+) : D4LRuntimeException() {
+    class UnexpectedFailure(override val httpStatus: Int) : ConsentDocumentError(httpStatus)
+    class InternalServer : ConsentDocumentError(500)
 }

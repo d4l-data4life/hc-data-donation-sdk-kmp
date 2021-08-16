@@ -14,40 +14,46 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.mock.stub.consent
+package care.data4life.datadonation.userconsent
 
 import care.data4life.datadonation.ConsentDataContract
-import care.data4life.datadonation.consent.ConsentContract
-import care.data4life.datadonation.mock.MockContract
-import care.data4life.datadonation.mock.MockException
+import care.data4life.datadonation.session.SessionTokenRepositoryContract
 
-internal class UserConsentServiceStub : ConsentContract.Interactor, MockContract.Stub {
-    var whenCreateUserConsent: ((String, String) -> ConsentDataContract.UserConsent)? = null
-    var whenFetchUserConsents: ((String?) -> List<ConsentDataContract.UserConsent>)? = null
-    var whenRevokeUserConsent: ((String) -> ConsentDataContract.UserConsent)? = null
-
+internal class UserConsentInteractor(
+    private val repository: UserConsentContract.Repository,
+    private val sessionTokenRepository: SessionTokenRepositoryContract
+) : UserConsentContract.Interactor {
     override suspend fun createUserConsent(
         consentDocumentKey: String,
         consentDocumentVersion: String
     ): ConsentDataContract.UserConsent {
-        return whenCreateUserConsent?.invoke(consentDocumentKey, consentDocumentVersion) ?: throw MockException()
+        repository.createUserConsent(
+            accessToken = sessionTokenRepository.getUserSessionToken(),
+            consentDocumentKey = consentDocumentKey,
+            consentDocumentVersion = consentDocumentVersion
+        )
+        return fetchAllUserConsents().first()
     }
 
     override suspend fun fetchUserConsents(consentDocumentKey: String): List<ConsentDataContract.UserConsent> {
-        return whenFetchUserConsents?.invoke(consentDocumentKey) ?: throw MockException()
+        return repository.fetchUserConsents(
+            accessToken = sessionTokenRepository.getUserSessionToken(),
+            consentDocumentKey = consentDocumentKey
+        )
     }
 
     override suspend fun fetchAllUserConsents(): List<ConsentDataContract.UserConsent> {
-        return whenFetchUserConsents?.invoke(null) ?: throw MockException()
+        return repository.fetchUserConsents(
+            accessToken = sessionTokenRepository.getUserSessionToken(),
+            consentDocumentKey = null
+        )
     }
 
     override suspend fun revokeUserConsent(consentDocumentKey: String): ConsentDataContract.UserConsent {
-        return whenRevokeUserConsent?.invoke(consentDocumentKey) ?: throw MockException()
-    }
-
-    override fun clear() {
-        whenCreateUserConsent = null
-        whenFetchUserConsents = null
-        whenRevokeUserConsent = null
+        repository.revokeUserConsent(
+            accessToken = sessionTokenRepository.getUserSessionToken(),
+            consentDocumentKey = consentDocumentKey
+        )
+        return fetchAllUserConsents().first()
     }
 }

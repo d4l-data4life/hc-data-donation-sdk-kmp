@@ -34,7 +34,7 @@ internal interface ConsentDocumentContract {
         }
 
         interface ErrorHandler {
-            fun handleFetchConsentDocuments(error: HttpRuntimeError): ConsentDocumentServiceError
+            fun handleFetchConsentDocuments(error: HttpRuntimeError): ConsentDocumentError
         }
     }
 

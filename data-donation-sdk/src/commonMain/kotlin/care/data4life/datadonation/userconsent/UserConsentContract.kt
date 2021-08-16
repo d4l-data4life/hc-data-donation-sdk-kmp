@@ -14,13 +14,13 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.consent
+package care.data4life.datadonation.userconsent
 
 import care.data4life.datadonation.ConsentDataContract
 import care.data4life.datadonation.networking.AccessToken
 import care.data4life.datadonation.networking.HttpRuntimeError
 
-internal interface ConsentContract {
+internal interface UserConsentContract {
     interface ApiService {
         suspend fun fetchUserConsents(
             accessToken: AccessToken,
@@ -51,9 +51,9 @@ internal interface ConsentContract {
         }
 
         interface ErrorHandler {
-            fun handleFetchUserConsents(error: HttpRuntimeError): ConsentServiceError
-            fun handleCreateUserConsent(error: HttpRuntimeError): ConsentServiceError
-            fun handleRevokeUserConsent(error: HttpRuntimeError): ConsentServiceError
+            fun handleFetchUserConsents(error: HttpRuntimeError): UserConsentError
+            fun handleCreateUserConsent(error: HttpRuntimeError): UserConsentError
+            fun handleRevokeUserConsent(error: HttpRuntimeError): UserConsentError
         }
     }
 

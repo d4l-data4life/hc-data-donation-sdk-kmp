@@ -14,25 +14,25 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.consent
+package care.data4life.datadonation.userconsent
 
-import care.data4life.datadonation.consent.ConsentContract.ApiService.Companion.PARAMETER.LATEST_CONSENT
-import care.data4life.datadonation.consent.ConsentContract.ApiService.Companion.PARAMETER.USER_CONSENT_KEY
-import care.data4life.datadonation.consent.ConsentContract.ApiService.Companion.PATH
-import care.data4life.datadonation.consent.model.ConsentCreationPayload
-import care.data4life.datadonation.consent.model.ConsentRevocationPayload
-import care.data4life.datadonation.consent.model.UserConsent
 import care.data4life.datadonation.networking.HttpRuntimeError
 import care.data4life.datadonation.networking.Networking
 import care.data4life.datadonation.networking.receive
+import care.data4life.datadonation.userconsent.UserConsentContract.ApiService.Companion.PARAMETER.LATEST_CONSENT
+import care.data4life.datadonation.userconsent.UserConsentContract.ApiService.Companion.PARAMETER.USER_CONSENT_KEY
+import care.data4life.datadonation.userconsent.UserConsentContract.ApiService.Companion.PATH
+import care.data4life.datadonation.userconsent.model.ConsentCreationPayload
+import care.data4life.datadonation.userconsent.model.ConsentRevocationPayload
+import care.data4life.datadonation.userconsent.model.UserConsent
 import kotlinx.datetime.Clock
 import care.data4life.datadonation.ConsentDataContract.UserConsent as UserConsentContract
 
-internal class ConsentApiService constructor(
+internal class UserConsentApiService constructor(
     private val requestBuilderFactory: Networking.RequestBuilderFactory,
-    private val errorHandler: ConsentContract.ApiService.ErrorHandler,
+    private val errorHandler: care.data4life.datadonation.userconsent.UserConsentContract.ApiService.ErrorHandler,
     private val clock: Clock
-) : ConsentContract.ApiService {
+) : care.data4life.datadonation.userconsent.UserConsentContract.ApiService {
 
     override suspend fun createUserConsent(
         accessToken: String,

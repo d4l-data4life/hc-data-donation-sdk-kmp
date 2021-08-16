@@ -16,23 +16,11 @@
 
 package care.data4life.datadonation.userconsent.model
 
-import care.data4life.datadonation.ConsentDataContract
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ConsentDocument(
-    override val key: String,
-    override val version: String,
-    override val processor: String,
-    override val description: String? = null,
-    override val recipient: String,
-    override val language: String,
-    override val text: String,
-    @SerialName("allowAdminConsent")
-    override val allowsAdminConsent: Boolean = false,
-    @SerialName("irrevocable")
-    override val isIrrevocable: Boolean = false,
-    override val consentEmailTemplateKey: String? = null,
-    override val revokeEmailTemplateKey: String? = null,
-) : ConsentDataContract.ConsentDocument
+internal data class ConsentCreationPayload(
+    val consentDocumentKey: String,
+    val consentDocumentVersion: String,
+    val consentDate: String
+)

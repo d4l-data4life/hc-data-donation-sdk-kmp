@@ -60,7 +60,7 @@ class ConsentDocumentApiServiceTest {
 
         val requestTemplate = RequestBuilderSpy.Factory()
         val error = HttpRuntimeError(HttpStatusCode.TooManyRequests)
-        val outgoingError = ConsentDocumentServiceError.UnexpectedFailure(23)
+        val outgoingError = ConsentDocumentError.UnexpectedFailure(23)
         var capturedError: HttpRuntimeError? = null
 
         val client = createErrorMockClient(error)
@@ -80,7 +80,7 @@ class ConsentDocumentApiServiceTest {
         }
 
         // Then
-        val result = assertFailsWith<ConsentDocumentServiceError.UnexpectedFailure> {
+        val result = assertFailsWith<ConsentDocumentError.UnexpectedFailure> {
             val service = ConsentDocumentApiService(
                 requestTemplate,
                 errorHandler

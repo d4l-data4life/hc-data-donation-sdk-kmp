@@ -41,10 +41,10 @@ import kotlin.test.assertEquals
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
-class ConsentDocumentServiceTest {
+class ConsentDocumentInteractorTest {
     @Test
     fun `It fulfils ConsentDocumentInteractor`() {
-        val interactor: Any = ConsentDocumentService(
+        val interactor: Any = ConsentDocumentInteractor(
             ConsentDocumentRepositoryStub(),
             UserSessionTokenRepositoryStub()
         )
@@ -82,7 +82,7 @@ class ConsentDocumentServiceTest {
         }
 
         // When
-        val result = ConsentDocumentService(
+        val result = ConsentDocumentInteractor(
             repo,
             sessionTokenRepository
         ).fetchConsentDocuments(

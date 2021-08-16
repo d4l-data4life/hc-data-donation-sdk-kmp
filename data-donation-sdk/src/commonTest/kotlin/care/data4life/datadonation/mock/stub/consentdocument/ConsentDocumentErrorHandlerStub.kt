@@ -17,15 +17,15 @@
 package care.data4life.datadonation.mock.stub.consentdocument
 
 import care.data4life.datadonation.consentdocument.ConsentDocumentContract
-import care.data4life.datadonation.consentdocument.ConsentDocumentServiceError
+import care.data4life.datadonation.consentdocument.ConsentDocumentError
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 import care.data4life.datadonation.networking.HttpRuntimeError
 
 internal class ConsentDocumentErrorHandlerStub : ConsentDocumentContract.ApiService.ErrorHandler, MockContract.Stub {
-    var whenHandleFetchConsentDocuments: ((HttpRuntimeError) -> ConsentDocumentServiceError)? = null
+    var whenHandleFetchConsentDocuments: ((HttpRuntimeError) -> ConsentDocumentError)? = null
 
-    override fun handleFetchConsentDocuments(error: HttpRuntimeError): ConsentDocumentServiceError {
+    override fun handleFetchConsentDocuments(error: HttpRuntimeError): ConsentDocumentError {
         return whenHandleFetchConsentDocuments?.invoke(error) ?: throw MockException()
     }
 

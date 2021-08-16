@@ -22,18 +22,18 @@ import io.ktor.http.HttpStatusCode
 internal object ConsentDocumentErrorHandler : ConsentDocumentContract.ApiService.ErrorHandler {
     private fun mapError(
         error: HttpRuntimeError,
-        map: Map<HttpStatusCode, ConsentDocumentServiceError>
-    ): ConsentDocumentServiceError {
+        map: Map<HttpStatusCode, ConsentDocumentError>
+    ): ConsentDocumentError {
         return map.getOrElse(error.statusCode) {
-            ConsentDocumentServiceError.UnexpectedFailure(error.statusCode.value)
+            ConsentDocumentError.UnexpectedFailure(error.statusCode.value)
         }
     }
 
-    override fun handleFetchConsentDocuments(error: HttpRuntimeError): ConsentDocumentServiceError {
+    override fun handleFetchConsentDocuments(error: HttpRuntimeError): ConsentDocumentError {
         return mapError(
             error,
             mapOf(
-                HttpStatusCode.InternalServerError to ConsentDocumentServiceError.InternalServer()
+                HttpStatusCode.InternalServerError to ConsentDocumentError.InternalServer()
             )
         )
     }

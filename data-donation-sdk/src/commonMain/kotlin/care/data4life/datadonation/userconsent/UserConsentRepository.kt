@@ -14,14 +14,14 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.consent
+package care.data4life.datadonation.userconsent
 
 import care.data4life.datadonation.ConsentDataContract.UserConsent
 import care.data4life.datadonation.networking.AccessToken
 
 internal class UserConsentRepository(
-    private val apiService: ConsentContract.ApiService
-) : ConsentContract.Repository {
+    private val apiService: UserConsentContract.ApiService
+) : UserConsentContract.Repository {
 
     override suspend fun createUserConsent(
         accessToken: AccessToken,
