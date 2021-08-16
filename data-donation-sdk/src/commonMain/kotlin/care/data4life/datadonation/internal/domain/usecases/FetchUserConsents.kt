@@ -36,7 +36,7 @@ import care.data4life.datadonation.ConsentDataContract.UserConsent
 import care.data4life.datadonation.consent.ConsentContract
 
 internal class FetchUserConsents(
-    private val consentRepository: ConsentContract.UserConsentRepository
+    private val consentRepository: ConsentContract.Repository
 ) : UsecaseContract.FetchUserConsents {
 
     override suspend fun execute(

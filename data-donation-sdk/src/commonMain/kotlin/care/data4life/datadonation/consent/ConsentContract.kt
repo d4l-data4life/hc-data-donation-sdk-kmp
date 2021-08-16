@@ -53,9 +53,24 @@ internal interface ConsentContract {
         }
     }
 
-    interface UserConsentRepository {
-        suspend fun createUserConsent(consentDocumentKey: String, version: String)
-        suspend fun fetchUserConsents(consentDocumentKey: String? = null): List<ConsentDataContract.UserConsent>
+    interface Repository {
+        suspend fun createUserConsent(consentDocumentKey: String, consentDocumentVersion: String)
+        suspend fun fetchUserConsents(consentDocumentKey: String?): List<ConsentDataContract.UserConsent>
         suspend fun revokeUserConsent(consentDocumentKey: String)
+    }
+
+    interface Interactor {
+        suspend fun createUserConsent(
+            consentDocumentKey: String,
+            consentDocumentVersion: String
+        ): ConsentDataContract.UserConsent
+
+        suspend fun fetchUserConsents(
+            consentDocumentKey: String
+        ): List<ConsentDataContract.UserConsent>
+
+        suspend fun fetchAllUserConsents(): List<ConsentDataContract.UserConsent>
+
+        suspend fun revokeUserConsent(consentDocumentKey: String): ConsentDataContract.UserConsent
     }
 }

@@ -57,7 +57,7 @@ class ConsentKoinTest {
         }
 
         // Then
-        val repo: ConsentContract.UserConsentRepository = koin.koin.get()
+        val repo: ConsentContract.Repository = koin.koin.get()
         assertNotNull(repo)
     }
 
@@ -90,6 +90,30 @@ class ConsentKoinTest {
         }
         // Then
         val builder: ConsentContract.ApiService = koin.koin.get()
+        assertNotNull(builder)
+    }
+
+    @Test
+    fun `Given resolveConsentKoinModule is called it creates a Module, which contains a ConsentInteractor`() {
+        // When
+        val koin = koinApplication {
+            modules(
+                resolveConsentKoinModule(),
+                module {
+                    single<Clock> { ClockStub() }
+                    single<Networking.RequestBuilderFactory> {
+                        RequestBuilderSpy.Factory()
+                    }
+                    single { HttpMockClientFactory.createHelloWorldMockClient() }
+                    single<DataDonationSDKPublicAPI.Environment> { DataDonationSDKPublicAPI.Environment.DEV }
+                    single<ServiceContract.UserSessionTokenService> {
+                        UserSessionTokenServiceStub()
+                    }
+                }
+            )
+        }
+        // Then
+        val builder: ConsentContract.Interactor = koin.koin.get()
         assertNotNull(builder)
     }
 }

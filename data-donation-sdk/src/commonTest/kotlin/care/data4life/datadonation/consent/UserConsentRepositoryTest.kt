@@ -35,7 +35,7 @@ class UserConsentRepositoryTest {
             UserSessionTokenServiceStub()
         )
 
-        assertTrue(repo is ConsentContract.UserConsentRepository)
+        assertTrue(repo is ConsentContract.Repository)
     }
 
     @Test
@@ -97,20 +97,20 @@ class UserConsentRepositoryTest {
 
         var capturedToken: String? = null
         var capturedFlag: Boolean? = null
-        var capturedconsentDocumentKey: String? = "NotNull"
+        var capturedConsentDocumentKey: String? = "NotNull"
 
         sessionService.whenSessionToken = { sessionToken }
-        consentService.whenFetchUserConsents = { delegatedToken, delegatedFlag, delegatedconsentDocumentKey ->
+        consentService.whenFetchUserConsents = { delegatedToken, delegatedFlag, delegatedConsentDocumentKey ->
             capturedToken = delegatedToken
             capturedFlag = delegatedFlag
-            capturedconsentDocumentKey = delegatedconsentDocumentKey
+            capturedConsentDocumentKey = delegatedConsentDocumentKey
             userConsents
         }
 
         val repo = UserConsentRepository(consentService, sessionService)
 
         // When
-        val result = repo.fetchUserConsents()
+        val result = repo.fetchUserConsents(null)
 
         // Then
         assertSame(
@@ -122,7 +122,7 @@ class UserConsentRepositoryTest {
             expected = sessionToken
         )
         assertFalse(capturedFlag!!)
-        assertNull(capturedconsentDocumentKey)
+        assertNull(capturedConsentDocumentKey)
     }
 
     @Test
@@ -140,13 +140,13 @@ class UserConsentRepositoryTest {
 
         var capturedToken: String? = null
         var capturedFlag: Boolean? = null
-        var capturedconsentDocumentKey: String? = null
+        var capturedConsentDocumentKey: String? = null
 
         sessionService.whenSessionToken = { sessionToken }
-        consentService.whenFetchUserConsents = { delegatedToken, delegatedFlag, delegatedconsentDocumentKey ->
+        consentService.whenFetchUserConsents = { delegatedToken, delegatedFlag, delegatedConsentDocumentKey ->
             capturedToken = delegatedToken
             capturedFlag = delegatedFlag
-            capturedconsentDocumentKey = delegatedconsentDocumentKey
+            capturedConsentDocumentKey = delegatedConsentDocumentKey
             userConsents
         }
 
@@ -167,7 +167,7 @@ class UserConsentRepositoryTest {
 
         assertFalse(capturedFlag!!)
         assertEquals(
-            actual = capturedconsentDocumentKey,
+            actual = capturedConsentDocumentKey,
             expected = consentDocumentKey
         )
     }
@@ -182,12 +182,12 @@ class UserConsentRepositoryTest {
         val consentDocumentKey = "custom-consent-key"
 
         var capturedToken: String? = null
-        var capturedconsentDocumentKey: String? = "NotNull"
+        var capturedConsentDocumentKey: String? = "NotNull"
 
         sessionService.whenSessionToken = { sessionToken }
-        consentService.whenRevokeUserConsent = { delegatedToken, delegatedconsentDocumentKey ->
+        consentService.whenRevokeUserConsent = { delegatedToken, delegatedConsentDocumentKey ->
             capturedToken = delegatedToken
-            capturedconsentDocumentKey = delegatedconsentDocumentKey
+            capturedConsentDocumentKey = delegatedConsentDocumentKey
         }
 
         val repo = UserConsentRepository(consentService, sessionService)
@@ -201,7 +201,7 @@ class UserConsentRepositoryTest {
             expected = sessionToken
         )
         assertEquals(
-            actual = capturedconsentDocumentKey,
+            actual = capturedConsentDocumentKey,
             expected = consentDocumentKey
         )
     }

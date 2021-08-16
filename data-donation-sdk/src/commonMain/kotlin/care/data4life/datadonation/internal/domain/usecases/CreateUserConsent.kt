@@ -36,13 +36,13 @@ import care.data4life.datadonation.ConsentDataContract.UserConsent
 import care.data4life.datadonation.consent.ConsentContract
 
 internal class CreateUserConsent(
-    private val consentRepository: ConsentContract.UserConsentRepository
+    private val consentRepository: ConsentContract.Repository
 ) : UsecaseContract.CreateUserConsent {
     override suspend fun execute(
         parameter: UsecaseContract.CreateUserConsent.Parameter
     ): UserConsent {
         consentRepository.createUserConsent(parameter.consentDocumentKey, parameter.version)
-        return consentRepository.fetchUserConsents().first()
+        return consentRepository.fetchUserConsents(null).first()
     }
 
     data class Parameter(

@@ -21,7 +21,7 @@ import org.koin.dsl.module
 
 internal fun resolveConsentKoinModule(): Module {
     return module {
-        single<ConsentContract.UserConsentRepository> {
+        single<ConsentContract.Repository> {
             UserConsentRepository(get(), get())
         }
 
@@ -31,6 +31,10 @@ internal fun resolveConsentKoinModule(): Module {
 
         single<ConsentContract.ApiService.ErrorHandler> {
             ConsentErrorHandler
+        }
+
+        single<ConsentContract.Interactor> {
+            UserConsentService(get())
         }
     }
 }
