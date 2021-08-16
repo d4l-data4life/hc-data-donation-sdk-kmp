@@ -21,7 +21,6 @@ import care.data4life.datadonation.DataDonationSDKPublicAPI.Environment
 import care.data4life.datadonation.consent.resolveConsentKoinModule
 import care.data4life.datadonation.consentdocument.resolveConsentDocumentKoinModule
 import care.data4life.datadonation.internal.data.service.resolveServiceModule
-import care.data4life.datadonation.internal.domain.usecases.*
 import care.data4life.datadonation.networking.plugin.resolveKtorPlugins
 import care.data4life.datadonation.networking.resolveNetworking
 import kotlinx.datetime.Clock
@@ -42,7 +41,6 @@ internal fun initKoin(
             ),
             resolveNetworking(),
             resolveKtorPlugins(),
-            resolveUsecaseModule(),
             resolveConsentKoinModule(),
             resolveConsentDocumentKoinModule(),
             resolveServiceModule()

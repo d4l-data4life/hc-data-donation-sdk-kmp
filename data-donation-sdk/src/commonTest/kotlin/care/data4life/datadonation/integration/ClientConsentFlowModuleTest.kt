@@ -40,7 +40,6 @@ import care.data4life.datadonation.consentdocument.resolveConsentDocumentKoinMod
 import care.data4life.datadonation.di.resolveRootModule
 import care.data4life.datadonation.internal.data.service.ServiceContract.UserSessionTokenService.Companion.CACHE_LIFETIME_IN_SECONDS
 import care.data4life.datadonation.internal.data.service.resolveServiceModule
-import care.data4life.datadonation.internal.domain.usecases.resolveUsecaseModule
 import care.data4life.datadonation.mock.ResourceLoader
 import care.data4life.datadonation.mock.fixture.ConsentFixtures
 import care.data4life.datadonation.mock.stub.ClockStub
@@ -116,7 +115,6 @@ class ClientConsentFlowModuleTest {
                 ),
                 resolveNetworking(),
                 resolveKtorPlugins(),
-                resolveUsecaseModule(),
                 resolveConsentKoinModule(),
                 resolveConsentDocumentKoinModule(),
                 resolveServiceModule(),
@@ -168,7 +166,6 @@ class ClientConsentFlowModuleTest {
                 ),
                 resolveNetworking(),
                 resolveKtorPlugins(),
-                resolveUsecaseModule(),
                 resolveConsentKoinModule(),
                 resolveConsentDocumentKoinModule(),
                 resolveServiceModule(),
@@ -243,7 +240,6 @@ class ClientConsentFlowModuleTest {
                 ),
                 resolveNetworking(),
                 resolveKtorPlugins(),
-                resolveUsecaseModule(),
                 resolveConsentKoinModule(),
                 resolveConsentDocumentKoinModule(),
                 resolveServiceModule(),
@@ -336,7 +332,6 @@ class ClientConsentFlowModuleTest {
                 ),
                 resolveNetworking(),
                 resolveKtorPlugins(),
-                resolveUsecaseModule(),
                 resolveConsentKoinModule(),
                 resolveConsentDocumentKoinModule(),
                 resolveServiceModule(),
@@ -437,7 +432,6 @@ class ClientConsentFlowModuleTest {
                 ),
                 resolveNetworking(),
                 resolveKtorPlugins(),
-                resolveUsecaseModule(),
                 resolveConsentKoinModule(),
                 resolveConsentDocumentKoinModule(),
                 resolveServiceModule(),

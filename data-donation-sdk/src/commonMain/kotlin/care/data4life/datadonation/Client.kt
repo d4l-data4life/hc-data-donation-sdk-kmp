@@ -37,7 +37,6 @@ import care.data4life.datadonation.ConsentDataContract.UserConsent
 import care.data4life.datadonation.consent.ConsentContract
 import care.data4life.datadonation.consentdocument.ConsentDocumentContract
 import care.data4life.datadonation.di.initKoin
-import care.data4life.datadonation.internal.domain.usecases.*
 import care.data4life.sdk.util.coroutine.D4LSDKFlow
 import care.data4life.sdk.util.coroutine.D4LSDKFlowContract
 import kotlinx.coroutines.flow.flow

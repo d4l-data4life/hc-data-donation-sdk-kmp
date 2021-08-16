@@ -16,7 +16,6 @@
 
 package care.data4life.datadonation.consent
 
-import care.data4life.datadonation.internal.domain.usecases.RevokeUserConsent
 import care.data4life.datadonation.mock.fixture.ConsentFixtures
 import care.data4life.datadonation.mock.stub.consent.UserConsentRepositoryStub
 import care.data4life.sdk.util.test.coroutine.runBlockingTest
@@ -136,7 +135,6 @@ class UserConsentServiceTest {
     fun `Given revokeUserConsentis called, it delegates the call to the ConsentRepository with the given consentDocumentKey and return the latest consent`() = runBlockingTest {
         // Given
         val consentDocumentKey = "custom-consent-key"
-        val parameter = RevokeUserConsent.Parameter(consentDocumentKey)
         var capturedConsentDocumentKeyRevoke: String? = "NotNull"
 
         var capturedConsentDocumentKeyFetch: String? = null
