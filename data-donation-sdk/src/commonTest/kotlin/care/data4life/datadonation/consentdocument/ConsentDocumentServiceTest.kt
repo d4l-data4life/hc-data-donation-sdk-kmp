@@ -34,6 +34,7 @@ package care.data4life.datadonation.consentdocument
 
 import care.data4life.datadonation.mock.fixture.ConsentFixtures.sampleConsentDocument
 import care.data4life.datadonation.mock.stub.consentdocument.ConsentDocumentRepositoryStub
+import care.data4life.datadonation.mock.stub.session.UserSessionTokenRepositoryStub
 import care.data4life.sdk.util.test.coroutine.runBlockingTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -43,7 +44,10 @@ import kotlin.test.assertTrue
 class ConsentDocumentServiceTest {
     @Test
     fun `It fulfils ConsentDocumentInteractor`() {
-        val interactor: Any = ConsentDocumentService(ConsentDocumentRepositoryStub())
+        val interactor: Any = ConsentDocumentService(
+            ConsentDocumentRepositoryStub(),
+            UserSessionTokenRepositoryStub()
+        )
 
         assertTrue(interactor is ConsentDocumentContract.Interactor)
     }
@@ -51,6 +55,9 @@ class ConsentDocumentServiceTest {
     @Test
     fun `Given fetchConsentDocuments is called, it delegates the call to the ConsentDocumentRepository with the given parameters`() = runBlockingTest {
         // Given
+        val sessionTokenRepository = UserSessionTokenRepositoryStub()
+
+        val accessToken = "session"
         val consentDocumentVersion = "42"
         val language = "de-j-old-n-kotlin-x-done"
         val consentDocumentKey = "tomato"
@@ -58,20 +65,27 @@ class ConsentDocumentServiceTest {
         var capturedVersion: String? = null
         var capturedLanguage: String? = null
         var capturedConsentDocumentKey: String? = null
+        var capturedAccessToken: String? = null
 
         val consentDocuments = listOf(sampleConsentDocument)
 
         val repo = ConsentDocumentRepositoryStub()
 
-        repo.whenFetchConsentDocuments = { delegatedLanguage, delegatedVersion, delegatedConsentDocumentKey ->
+        sessionTokenRepository.whenSessionToken = { accessToken }
+
+        repo.whenFetchConsentDocuments = { delegatedToken, delegatedKey, delegatedVersion, delegatedLanguage ->
             capturedVersion = delegatedVersion
             capturedLanguage = delegatedLanguage
-            capturedConsentDocumentKey = delegatedConsentDocumentKey
+            capturedConsentDocumentKey = delegatedKey
+            capturedAccessToken = delegatedToken
             consentDocuments
         }
 
         // When
-        val result = ConsentDocumentService(repo).fetchConsentDocuments(
+        val result = ConsentDocumentService(
+            repo,
+            sessionTokenRepository
+        ).fetchConsentDocuments(
             consentDocumentKey = consentDocumentKey,
             consentDocumentVersion = consentDocumentVersion,
             language = language
@@ -93,6 +107,10 @@ class ConsentDocumentServiceTest {
         assertEquals(
             actual = capturedConsentDocumentKey,
             expected = consentDocumentKey
+        )
+        assertEquals(
+            actual = capturedAccessToken,
+            expected = accessToken
         )
     }
 }

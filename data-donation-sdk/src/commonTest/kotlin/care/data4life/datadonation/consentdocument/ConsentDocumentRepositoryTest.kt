@@ -18,7 +18,6 @@ package care.data4life.datadonation.consentdocument
 
 import care.data4life.datadonation.mock.fixture.ConsentFixtures.sampleConsentDocument
 import care.data4life.datadonation.mock.stub.consentdocument.ConsentDocumentApiServiceStub
-import care.data4life.datadonation.mock.stub.session.UserSessionTokenServiceStub
 import care.data4life.sdk.util.test.coroutine.runBlockingTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -29,8 +28,7 @@ class ConsentDocumentRepositoryTest {
     @Test
     fun `It fulfils ConsentDocumentRepository`() {
         val repo: Any = ConsentDocumentRepository(
-            ConsentDocumentApiServiceStub(),
-            UserSessionTokenServiceStub()
+            ConsentDocumentApiServiceStub()
         )
 
         assertTrue(repo is ConsentDocumentContract.Repository)
@@ -40,13 +38,12 @@ class ConsentDocumentRepositoryTest {
     fun `Given fetchConsentDocuments is called with a AccessToken, a Version and a consentDocumentKey, it resolves the SessionToken and delegates that to the ConsentService and returns a List of ConsentDocuments`() = runBlockingTest {
         // Given
         val consentService = ConsentDocumentApiServiceStub()
-        val sessionTokenService = UserSessionTokenServiceStub()
 
+        val accessToken = "session"
         val consentDocumentKey = "tomato"
         val version = "23"
         val language = "de-j-old-n-kotlin-x-done"
 
-        val sessionToken = "token"
         val consentDocuments = listOf(
             sampleConsentDocument,
             sampleConsentDocument.copy(key = "potato")
@@ -55,22 +52,25 @@ class ConsentDocumentRepositoryTest {
         var capturedSessionToken: String? = null
         var capturedVersion: String? = null
         var capturedLanguage: String? = null
-        var capturedconsentDocumentKey: String? = null
+        var capturedConsentDocumentKey: String? = null
 
-        sessionTokenService.whenSessionToken = { sessionToken }
-
-        consentService.whenFetchConsentDocuments = { delegatedSessionToken, delegatedVersion, delegatedLanguage, delegatedconsentDocumentKey ->
+        consentService.whenFetchConsentDocuments = { delegatedSessionToken, delegatedConsentDocumentKey, delegatedVersion, delegatedLanguage ->
             capturedSessionToken = delegatedSessionToken
             capturedLanguage = delegatedLanguage
             capturedVersion = delegatedVersion
-            capturedconsentDocumentKey = delegatedconsentDocumentKey
+            capturedConsentDocumentKey = delegatedConsentDocumentKey
             consentDocuments
         }
 
-        val repo = ConsentDocumentRepository(consentService, sessionTokenService)
+        val repo = ConsentDocumentRepository(consentService)
 
         // When
-        val result = repo.fetchConsentDocuments(language, version, consentDocumentKey)
+        val result = repo.fetchConsentDocuments(
+            accessToken,
+            consentDocumentKey,
+            version,
+            language
+        )
 
         // Then
         assertSame(
@@ -79,10 +79,10 @@ class ConsentDocumentRepositoryTest {
         )
         assertEquals(
             actual = capturedSessionToken,
-            expected = sessionToken
+            expected = accessToken
         )
         assertEquals(
-            actual = capturedconsentDocumentKey,
+            actual = capturedConsentDocumentKey,
             expected = consentDocumentKey
         )
         assertEquals(

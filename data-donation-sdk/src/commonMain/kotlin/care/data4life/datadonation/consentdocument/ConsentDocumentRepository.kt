@@ -17,25 +17,23 @@
 package care.data4life.datadonation.consentdocument
 
 import care.data4life.datadonation.ConsentDataContract.ConsentDocument
-import care.data4life.datadonation.session.SessionTokenRepositoryContract
+import care.data4life.datadonation.networking.AccessToken
 
 internal class ConsentDocumentRepository(
-    private val apiService: ConsentDocumentContract.ApiService,
-    private val sessionTokenService: SessionTokenRepositoryContract
+    private val apiService: ConsentDocumentContract.ApiService
 ) : ConsentDocumentContract.Repository {
 
     override suspend fun fetchConsentDocuments(
-        language: String?,
+        accessToken: AccessToken,
+        consentDocumentKey: String,
         consentDocumentVersion: String?,
-        consentDocumentKey: String
+        language: String?,
     ): List<ConsentDocument> {
-        val sessionToken = sessionTokenService.getUserSessionToken()
-
         return apiService.fetchConsentDocuments(
-            sessionToken,
+            accessToken,
+            consentDocumentKey,
             consentDocumentVersion,
             language,
-            consentDocumentKey
         )
     }
 }

@@ -20,21 +20,22 @@ import care.data4life.datadonation.consent.model.ConsentDocument
 import care.data4life.datadonation.consentdocument.ConsentDocumentContract
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
+import care.data4life.datadonation.session.SessionToken
 
 internal class ConsentDocumentApiServiceStub : ConsentDocumentContract.ApiService, MockContract.Stub {
-    var whenFetchConsentDocuments: ((String, String?, String?, String) -> List<ConsentDocument>)? = null
+    var whenFetchConsentDocuments: ((String, String, String?, String?) -> List<ConsentDocument>)? = null
 
     override suspend fun fetchConsentDocuments(
-        accessToken: String,
+        accessToken: SessionToken,
+        consentDocumentKey: String,
         version: String?,
-        language: String?,
-        consentDocumentKey: String
+        language: String?
     ): List<ConsentDocument> {
         return whenFetchConsentDocuments?.invoke(
             accessToken,
+            consentDocumentKey,
             version,
             language,
-            consentDocumentKey
         ) ?: throw MockException()
     }
 

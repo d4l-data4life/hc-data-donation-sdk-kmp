@@ -29,9 +29,9 @@ internal class ConsentDocumentApiService constructor(
 ) : care.data4life.datadonation.consentdocument.ConsentDocumentContract.ApiService {
     override suspend fun fetchConsentDocuments(
         accessToken: String,
+        consentDocumentKey: String,
         version: String?,
         language: String?,
-        consentDocumentKey: String
     ): List<ConsentDocumentContract> {
         val parameter = mapOf(
             "key" to consentDocumentKey,

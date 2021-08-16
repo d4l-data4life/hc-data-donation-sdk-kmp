@@ -20,18 +20,25 @@ import care.data4life.datadonation.consent.model.ConsentDocument
 import care.data4life.datadonation.consentdocument.ConsentDocumentContract
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
+import care.data4life.datadonation.networking.AccessToken
 
 internal class ConsentDocumentRepositoryStub :
     ConsentDocumentContract.Repository,
     MockContract.Stub {
-    var whenFetchConsentDocuments: ((language: String?, version: String?, consentDocumentKey: String) -> List<ConsentDocument>)? = null
+    var whenFetchConsentDocuments: ((AccessToken, String, String?, String?) -> List<ConsentDocument>)? = null
 
     override suspend fun fetchConsentDocuments(
+        accessToken: AccessToken,
+        consentDocumentKey: String,
+        consentDocumentVersion: String?,
         language: String?,
-        version: String?,
-        consentDocumentKey: String
     ): List<ConsentDocument> {
-        return whenFetchConsentDocuments?.invoke(language, version, consentDocumentKey) ?: throw MockException()
+        return whenFetchConsentDocuments?.invoke(
+            accessToken,
+            consentDocumentKey,
+            consentDocumentVersion,
+            language
+        ) ?: throw MockException()
     }
 
     override fun clear() {

@@ -21,7 +21,7 @@ import care.data4life.datadonation.mock.stub.ClockStub
 import care.data4life.datadonation.mock.stub.consentdocument.ConsentDocumentApiServiceStub
 import care.data4life.datadonation.mock.stub.consentdocument.ConsentDocumentRepositoryStub
 import care.data4life.datadonation.mock.stub.networking.RequestBuilderSpy
-import care.data4life.datadonation.mock.stub.session.UserSessionTokenServiceStub
+import care.data4life.datadonation.mock.stub.session.UserSessionTokenRepositoryStub
 import care.data4life.datadonation.networking.Networking
 import care.data4life.datadonation.session.SessionTokenRepositoryContract
 import care.data4life.sdk.util.test.ktor.HttpMockClientFactory
@@ -46,10 +46,6 @@ class ConsentDocumentKoinTest {
             modules(
                 resolveConsentDocumentKoinModule(),
                 module {
-                    single<SessionTokenRepositoryContract> {
-                        UserSessionTokenServiceStub()
-                    }
-
                     single<ConsentDocumentContract.ApiService>(override = true) {
                         ConsentDocumentApiServiceStub()
                     }
@@ -103,6 +99,10 @@ class ConsentDocumentKoinTest {
                 module {
                     single<ConsentDocumentContract.Repository>(override = true) {
                         ConsentDocumentRepositoryStub()
+                    }
+
+                    single<SessionTokenRepositoryContract> {
+                        UserSessionTokenRepositoryStub()
                     }
                 }
             )

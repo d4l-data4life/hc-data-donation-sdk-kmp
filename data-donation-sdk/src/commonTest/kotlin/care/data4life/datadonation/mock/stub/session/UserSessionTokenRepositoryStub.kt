@@ -20,7 +20,7 @@ import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 import care.data4life.datadonation.session.SessionTokenRepositoryContract
 
-internal class UserSessionTokenServiceStub : SessionTokenRepositoryContract, MockContract.Stub {
+internal class UserSessionTokenRepositoryStub : SessionTokenRepositoryContract, MockContract.Stub {
     var whenSessionToken: (() -> String)? = null
 
     override suspend fun getUserSessionToken(): String {
