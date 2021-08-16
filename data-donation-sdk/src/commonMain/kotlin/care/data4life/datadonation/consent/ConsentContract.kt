@@ -19,7 +19,7 @@ package care.data4life.datadonation.consent
 import care.data4life.datadonation.ConsentDataContract
 import care.data4life.datadonation.networking.HttpRuntimeError
 
-interface ConsentContract {
+internal interface ConsentContract {
     interface ConsentApiService {
         suspend fun fetchConsentDocuments(
             accessToken: String,
@@ -55,7 +55,6 @@ interface ConsentContract {
             object PATH {
                 const val USER_CONSENTS = "userConsents"
                 const val CONSENTS_DOCUMENTS = "consentDocuments"
-                const val SIGNATURES = "signatures"
             }
         }
 

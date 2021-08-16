@@ -17,7 +17,6 @@
 package care.data4life.datadonation.di
 
 import care.data4life.datadonation.DataDonationSDKPublicAPI
-import care.data4life.datadonation.internal.di.resolveRootModule
 import care.data4life.datadonation.mock.stub.UserSessionTokenProviderStub
 import kotlinx.datetime.Clock
 import org.koin.core.context.stopKoin

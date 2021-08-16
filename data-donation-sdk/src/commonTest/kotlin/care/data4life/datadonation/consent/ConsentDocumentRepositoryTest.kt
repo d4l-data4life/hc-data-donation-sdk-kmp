@@ -14,10 +14,8 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.domain.repository
+package care.data4life.datadonation.consent
 
-import care.data4life.datadonation.consent.ConsentContract
-import care.data4life.datadonation.consent.ConsentDocumentRepository
 import care.data4life.datadonation.mock.fixture.ConsentFixtures.sampleConsentDocument
 import care.data4life.datadonation.mock.stub.consent.ConsentApiServiceStub
 import care.data4life.datadonation.mock.stub.service.UserSessionTokenServiceStub

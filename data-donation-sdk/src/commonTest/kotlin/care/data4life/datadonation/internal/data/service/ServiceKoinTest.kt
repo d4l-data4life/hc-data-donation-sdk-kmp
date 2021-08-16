@@ -17,13 +17,8 @@
 package care.data4life.datadonation.internal.data.service
 
 import care.data4life.datadonation.DataDonationSDKPublicAPI
-import care.data4life.datadonation.DataDonationSDKPublicAPI.Environment
-import care.data4life.datadonation.consent.ConsentContract
 import care.data4life.datadonation.mock.stub.ClockStub
 import care.data4life.datadonation.mock.stub.UserSessionTokenProviderStub
-import care.data4life.datadonation.mock.stub.networking.RequestBuilderSpy
-import care.data4life.datadonation.networking.Networking
-import care.data4life.sdk.util.test.ktor.HttpMockClientFactory.createHelloWorldMockClient
 import kotlinx.datetime.Clock
 import org.koin.core.context.stopKoin
 import org.koin.dsl.koinApplication
@@ -36,38 +31,6 @@ class ServiceKoinTest {
     @BeforeTest
     fun setUp() {
         stopKoin()
-    }
-
-    @Test
-    fun `Given resolveServiceModule is called it creates a Module, which contains a ConsentErrorHandler`() {
-        // When
-        val koin = koinApplication {
-            modules(resolveServiceModule())
-        }
-        // Then
-        val builder: ConsentContract.ConsentApiService.ConsentErrorHandler = koin.koin.get()
-        assertNotNull(builder)
-    }
-
-    @Test
-    fun `Given resolveServiceModule is called it creates a Module, which contains a ConsentService`() {
-        // When
-        val koin = koinApplication {
-            modules(
-                resolveServiceModule(),
-                module {
-                    single<Clock> { ClockStub() }
-                    single<Networking.RequestBuilderFactory> {
-                        RequestBuilderSpy.Factory()
-                    }
-                    single { createHelloWorldMockClient() }
-                    single<Environment> { Environment.DEV }
-                }
-            )
-        }
-        // Then
-        val builder: ConsentContract.ConsentApiService = koin.koin.get()
-        assertNotNull(builder)
     }
 
     @Test

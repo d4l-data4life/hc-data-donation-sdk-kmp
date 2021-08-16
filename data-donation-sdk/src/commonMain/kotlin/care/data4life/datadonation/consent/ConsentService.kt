@@ -14,15 +14,6 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.internal.data.service
+package care.data4life.datadonation.consent
 
-import org.koin.core.module.Module
-import org.koin.dsl.module
-
-internal fun resolveServiceModule(): Module {
-    return module {
-        single<ServiceContract.UserSessionTokenService> {
-            CachedUserSessionTokenService(get(), get())
-        }
-    }
-}
+class ConsentService
