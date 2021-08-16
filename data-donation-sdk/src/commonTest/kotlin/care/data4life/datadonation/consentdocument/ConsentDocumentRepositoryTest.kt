@@ -33,7 +33,7 @@ class ConsentDocumentRepositoryTest {
             UserSessionTokenServiceStub()
         )
 
-        assertTrue(repo is ConsentDocumentContract.ConsentDocumentRepository)
+        assertTrue(repo is ConsentDocumentContract.Repository)
     }
 
     @Test

@@ -16,4 +16,20 @@
 
 package care.data4life.datadonation.consentdocument
 
-class ConsentDocumentService
+import care.data4life.datadonation.ConsentDataContract
+
+internal class ConsentDocumentService(
+    private val repository: ConsentDocumentContract.Repository
+) : ConsentDocumentContract.Interactor {
+    override suspend fun fetchConsentDocuments(
+        consentDocumentKey: String,
+        consentDocumentVersion: String?,
+        language: String?
+    ): List<ConsentDataContract.ConsentDocument> {
+        return repository.fetchConsentDocuments(
+            consentDocumentKey = consentDocumentKey,
+            consentDocumentVersion = consentDocumentVersion,
+            language = language
+        )
+    }
+}

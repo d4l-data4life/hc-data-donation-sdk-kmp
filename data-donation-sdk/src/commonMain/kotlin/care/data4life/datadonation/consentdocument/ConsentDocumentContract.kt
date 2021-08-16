@@ -37,11 +37,19 @@ internal interface ConsentDocumentContract {
         }
     }
 
-    interface ConsentDocumentRepository {
+    interface Repository {
         suspend fun fetchConsentDocuments(
             language: String?,
-            version: String?,
+            consentDocumentVersion: String?,
             consentDocumentKey: String
+        ): List<ConsentDataContract.ConsentDocument>
+    }
+
+    interface Interactor {
+        suspend fun fetchConsentDocuments(
+            consentDocumentKey: String,
+            consentDocumentVersion: String?,
+            language: String?,
         ): List<ConsentDataContract.ConsentDocument>
     }
 }

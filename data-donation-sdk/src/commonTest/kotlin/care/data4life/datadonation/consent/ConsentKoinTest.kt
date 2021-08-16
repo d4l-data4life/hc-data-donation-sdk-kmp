@@ -19,6 +19,8 @@ package care.data4life.datadonation.consent
 import care.data4life.datadonation.DataDonationSDKPublicAPI
 import care.data4life.datadonation.internal.data.service.ServiceContract
 import care.data4life.datadonation.mock.stub.ClockStub
+import care.data4life.datadonation.mock.stub.consent.ConsentApiServiceStub
+import care.data4life.datadonation.mock.stub.consent.UserConsentRepositoryStub
 import care.data4life.datadonation.mock.stub.networking.RequestBuilderSpy
 import care.data4life.datadonation.mock.stub.service.UserSessionTokenServiceStub
 import care.data4life.datadonation.networking.Networking
@@ -48,10 +50,9 @@ class ConsentKoinTest {
                         UserSessionTokenServiceStub()
                     }
 
-                    single<Networking.RequestBuilderFactory> {
-                        RequestBuilderSpy.Factory()
+                    single<ConsentContract.ApiService>(override = true) {
+                        ConsentApiServiceStub()
                     }
-                    single<Clock> { ClockStub() }
                 }
             )
         }
@@ -100,14 +101,8 @@ class ConsentKoinTest {
             modules(
                 resolveConsentKoinModule(),
                 module {
-                    single<Clock> { ClockStub() }
-                    single<Networking.RequestBuilderFactory> {
-                        RequestBuilderSpy.Factory()
-                    }
-                    single { HttpMockClientFactory.createHelloWorldMockClient() }
-                    single<DataDonationSDKPublicAPI.Environment> { DataDonationSDKPublicAPI.Environment.DEV }
-                    single<ServiceContract.UserSessionTokenService> {
-                        UserSessionTokenServiceStub()
+                    single<ConsentContract.Repository>(override = true) {
+                        UserConsentRepositoryStub()
                     }
                 }
             )

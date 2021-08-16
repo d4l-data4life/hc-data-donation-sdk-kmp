@@ -19,6 +19,8 @@ package care.data4life.datadonation.consentdocument
 import care.data4life.datadonation.DataDonationSDKPublicAPI
 import care.data4life.datadonation.internal.data.service.ServiceContract
 import care.data4life.datadonation.mock.stub.ClockStub
+import care.data4life.datadonation.mock.stub.consentdocument.ConsentDocumentApiServiceStub
+import care.data4life.datadonation.mock.stub.consentdocument.ConsentDocumentRepositoryStub
 import care.data4life.datadonation.mock.stub.networking.RequestBuilderSpy
 import care.data4life.datadonation.mock.stub.service.UserSessionTokenServiceStub
 import care.data4life.datadonation.networking.Networking
@@ -48,16 +50,15 @@ class ConsentDocumentKoinTest {
                         UserSessionTokenServiceStub()
                     }
 
-                    single<Networking.RequestBuilderFactory> {
-                        RequestBuilderSpy.Factory()
+                    single<ConsentDocumentContract.ApiService>(override = true) {
+                        ConsentDocumentApiServiceStub()
                     }
-                    single<Clock> { ClockStub() }
                 }
             )
         }
 
         // Then
-        val repo: ConsentDocumentContract.ConsentDocumentRepository = koin.koin.get()
+        val repo: ConsentDocumentContract.Repository = koin.koin.get()
         assertNotNull(repo)
     }
 
@@ -90,6 +91,24 @@ class ConsentDocumentKoinTest {
         }
         // Then
         val builder: ConsentDocumentContract.ApiService = koin.koin.get()
+        assertNotNull(builder)
+    }
+
+    @Test
+    fun `Given resolveConsentDocumentKoinModule is called it creates a Module, which contains a ConsentDocumentInteractor`() {
+        // When
+        val koin = koinApplication {
+            modules(
+                resolveConsentDocumentKoinModule(),
+                module {
+                    single<ConsentDocumentContract.Repository>(override = true) {
+                        ConsentDocumentRepositoryStub()
+                    }
+                }
+            )
+        }
+        // Then
+        val builder: ConsentDocumentContract.Interactor = koin.koin.get()
         assertNotNull(builder)
     }
 }

@@ -20,20 +20,20 @@ import care.data4life.datadonation.ConsentDataContract.ConsentDocument
 import care.data4life.datadonation.internal.data.service.ServiceContract
 
 internal class ConsentDocumentRepository(
-    private val consentApiService: ConsentDocumentContract.ApiService,
+    private val apiService: ConsentDocumentContract.ApiService,
     private val sessionTokenService: ServiceContract.UserSessionTokenService
-) : ConsentDocumentContract.ConsentDocumentRepository {
+) : ConsentDocumentContract.Repository {
 
     override suspend fun fetchConsentDocuments(
         language: String?,
-        version: String?,
+        consentDocumentVersion: String?,
         consentDocumentKey: String
     ): List<ConsentDocument> {
         val sessionToken = sessionTokenService.getUserSessionToken()
 
-        return consentApiService.fetchConsentDocuments(
+        return apiService.fetchConsentDocuments(
             sessionToken,
-            version,
+            consentDocumentVersion,
             language,
             consentDocumentKey
         )

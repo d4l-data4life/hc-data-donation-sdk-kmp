@@ -41,7 +41,7 @@ class UsecaseKoinTest {
             modules(
                 resolveUsecaseModule(),
                 module {
-                    single<ConsentDocumentContract.ConsentDocumentRepository> {
+                    single<ConsentDocumentContract.Repository> {
                         ConsentDocumentRepositoryStub()
                     }
                 }
