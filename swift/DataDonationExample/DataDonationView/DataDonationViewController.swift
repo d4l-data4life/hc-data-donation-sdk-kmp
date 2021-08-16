@@ -8,22 +8,14 @@
 import UIKit
 
 struct DataDonationViewModel {
-    let userConsents: [UserConsentItem]
+    let userConsents: [UserConsentRowModel]
 }
 
 final class DataDonationViewController: UIViewController {
 
     private let interactor: DataDonationInteractor
     private let router: DataDonationRouter
-    private lazy var dataDonationDiffableDataSource: DataDonationDiffableDataSource = {
-        let dataSource = DataDonationDiffableDataSource(tableView: tableView) { tableView, indexPath, consentItem in
-            let cell = tableView.dequeueReusableCell(withIdentifier: "UserConsentCell", for: indexPath)
-            cell.contentConfiguration = consentItem
-            return cell
-        }
-
-        return dataSource
-    }()
+    private lazy var dataDonationDiffableDataSource = DataDonationViewDiffableDataSource(tableView: tableView)
 
     private lazy var tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .insetGrouped)
@@ -36,7 +28,6 @@ final class DataDonationViewController: UIViewController {
         let stackView = UIStackView(arrangedSubviews: [])
         stackView.axis = .vertical
         stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.alignment = .center
         stackView.distribution = .fill
         stackView.spacing = 10
         return stackView
@@ -106,6 +97,14 @@ final class DataDonationViewController: UIViewController {
     func setCanLogoutState() {
         navigationItem.setRightBarButton(logOutButton, animated: true)
     }
+
+    func configure(with viewModel: DataDonationViewModel) {
+        var snapshot = NSDiffableDataSourceSnapshot<UserConsentSection, UserConsentRowModel>()
+        snapshot.appendSections([.main])
+        snapshot.appendItems(viewModel.userConsents, toSection: .main)
+        dataDonationDiffableDataSource.apply(snapshot, animatingDifferences: true)
+        tableView.refreshControl?.endRefreshing()
+    }
 }
 
 private extension DataDonationViewController {
@@ -139,16 +138,12 @@ private extension DataDonationViewController {
     }
 }
 
-
-enum UserConsentSection: Hashable  {
-    case main
-}
-
-
 extension DataDonationViewController: UITableViewDelegate {
 
-}
-
-final class DataDonationDiffableDataSource: UITableViewDiffableDataSource<UserConsentSection, UserConsentItem> {
-
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        UITableView.automaticDimension
+    }
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        200.0
+    }
 }

@@ -16,7 +16,6 @@
 		36874C4E26B1630B00F03527 /* DataDonationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36874C4D26B1630B00F03527 /* DataDonationViewController.swift */; };
 		36874C5326B1630C00F03527 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 36874C5226B1630C00F03527 /* Assets.xcassets */; };
 		36874C5626B1630C00F03527 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 36874C5426B1630C00F03527 /* LaunchScreen.storyboard */; };
-		36874C6226B163C800F03527 /* Data4LifeDataDonationSDK in Frameworks */ = {isa = PBXBuildFile; productRef = 36874C6126B163C800F03527 /* Data4LifeDataDonationSDK */; };
 		36874C6626B18A6300F03527 /* DataDonationInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36874C6526B18A6300F03527 /* DataDonationInteractor.swift */; };
 		36874C6926B18AE800F03527 /* Data4LifeSDK in Frameworks */ = {isa = PBXBuildFile; productRef = 36874C6826B18AE800F03527 /* Data4LifeSDK */; };
 		36874C6B26B18AE800F03527 /* Data4LifeCrypto in Frameworks */ = {isa = PBXBuildFile; productRef = 36874C6A26B18AE800F03527 /* Data4LifeCrypto */; };
@@ -25,7 +24,9 @@
 		36874C7326B1906000F03527 /* Data4LifeSDKService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36874C7226B1906000F03527 /* Data4LifeSDKService.swift */; };
 		36874C7526B1914A00F03527 /* Data4LifeSDKConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36874C7426B1914A00F03527 /* Data4LifeSDKConfiguration.swift */; };
 		36874C7726B1940000F03527 /* SplashPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36874C7626B1940000F03527 /* SplashPresenter.swift */; };
-		36F0171526C3FB53008C0621 /* UserConsentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36F0171426C3FB53008C0621 /* UserConsentCell.swift */; };
+		36EB81A026CAC240006B8022 /* Data4LifeDataDonationSDK in Frameworks */ = {isa = PBXBuildFile; productRef = 36EB819F26CAC240006B8022 /* Data4LifeDataDonationSDK */; };
+		36EB81A226CAD2DC006B8022 /* DataDonationViewDiffableDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36EB81A126CAD2DC006B8022 /* DataDonationViewDiffableDataSource.swift */; };
+		36F0171526C3FB53008C0621 /* UserConsentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36F0171426C3FB53008C0621 /* UserConsentView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -48,7 +49,8 @@
 		36874C7226B1906000F03527 /* Data4LifeSDKService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data4LifeSDKService.swift; sourceTree = "<group>"; };
 		36874C7426B1914A00F03527 /* Data4LifeSDKConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data4LifeSDKConfiguration.swift; sourceTree = "<group>"; };
 		36874C7626B1940000F03527 /* SplashPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashPresenter.swift; sourceTree = "<group>"; };
-		36F0171426C3FB53008C0621 /* UserConsentCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserConsentCell.swift; sourceTree = "<group>"; };
+		36EB81A126CAD2DC006B8022 /* DataDonationViewDiffableDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDonationViewDiffableDataSource.swift; sourceTree = "<group>"; };
+		36F0171426C3FB53008C0621 /* UserConsentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserConsentView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,8 +59,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				36874C6B26B18AE800F03527 /* Data4LifeCrypto in Frameworks */,
+				36EB81A026CAC240006B8022 /* Data4LifeDataDonationSDK in Frameworks */,
 				36874C6926B18AE800F03527 /* Data4LifeSDK in Frameworks */,
-				36874C6226B163C800F03527 /* Data4LifeDataDonationSDK in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,7 +114,8 @@
 				36874C4D26B1630B00F03527 /* DataDonationViewController.swift */,
 				36874C6526B18A6300F03527 /* DataDonationInteractor.swift */,
 				367CC74726B817CD00660960 /* DataDonationRouter.swift */,
-				36F0171426C3FB53008C0621 /* UserConsentCell.swift */,
+				36F0171426C3FB53008C0621 /* UserConsentView.swift */,
+				36EB81A126CAD2DC006B8022 /* DataDonationViewDiffableDataSource.swift */,
 			);
 			path = DataDonationView;
 			sourceTree = "<group>";
@@ -156,9 +159,9 @@
 			);
 			name = DataDonationExample;
 			packageProductDependencies = (
-				36874C6126B163C800F03527 /* Data4LifeDataDonationSDK */,
 				36874C6826B18AE800F03527 /* Data4LifeSDK */,
 				36874C6A26B18AE800F03527 /* Data4LifeCrypto */,
+				36EB819F26CAC240006B8022 /* Data4LifeDataDonationSDK */,
 			);
 			productName = DataDonationExample;
 			productReference = 36874C4626B1630B00F03527 /* DataDonationExample.app */;
@@ -217,11 +220,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				367CC74426B2EB6100660960 /* ServiceContainer.swift in Sources */,
+				36EB81A226CAD2DC006B8022 /* DataDonationViewDiffableDataSource.swift in Sources */,
 				36874C6626B18A6300F03527 /* DataDonationInteractor.swift in Sources */,
 				36874C7026B18F5C00F03527 /* SplashInteractor.swift in Sources */,
 				367CC74226B1A14100660960 /* SplashRouter.swift in Sources */,
 				36874C7526B1914A00F03527 /* Data4LifeSDKConfiguration.swift in Sources */,
-				36F0171526C3FB53008C0621 /* UserConsentCell.swift in Sources */,
+				36F0171526C3FB53008C0621 /* UserConsentView.swift in Sources */,
 				36874C4E26B1630B00F03527 /* DataDonationViewController.swift in Sources */,
 				36874C4A26B1630B00F03527 /* AppDelegate.swift in Sources */,
 				36874C7326B1906000F03527 /* Data4LifeSDKService.swift in Sources */,
@@ -442,10 +446,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		36874C6126B163C800F03527 /* Data4LifeDataDonationSDK */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Data4LifeDataDonationSDK;
-		};
 		36874C6826B18AE800F03527 /* Data4LifeSDK */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 36874C6726B18AE800F03527 /* XCRemoteSwiftPackageReference "d4l-sdk-ios" */;
@@ -455,6 +455,10 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 36874C6726B18AE800F03527 /* XCRemoteSwiftPackageReference "d4l-sdk-ios" */;
 			productName = Data4LifeCrypto;
+		};
+		36EB819F26CAC240006B8022 /* Data4LifeDataDonationSDK */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Data4LifeDataDonationSDK;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

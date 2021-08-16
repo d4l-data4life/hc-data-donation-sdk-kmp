@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Data4LifeDataDonationSDK
 
 final class DataDonationInteractor {
     
@@ -24,13 +25,19 @@ extension DataDonationInteractor {
 
     func viewDidLoad() {
         view?.setCanLogoutState()
-        dataDonationSDKService.fetchUserConsents { result in
-            
+        dataDonationSDKService.fetchUserConsents { [weak view] result in
+            let consents = (try? result.get()) ?? []
+            let viewModel = DataDonationViewModel(userConsents: consents.map { $0.asItem })
+            DispatchQueue.main.async {
+                view?.configure(with: viewModel)
+            }
         }
     }
     func didTapAdd() {
         dataDonationSDKService.createUserConsent { result in
-
+            DispatchQueue.main.async {
+                self.viewDidLoad()
+            }
         }
     }
 
@@ -50,5 +57,19 @@ extension DataDonationInteractor {
         coreSDKService.openLogin(from: view!, didLogin: { [weak self] result in
             self?.viewDidLoad()
         })
+    }
+}
+
+private extension UserConsentProtocol {
+    var asItem: UserConsentRowModel {
+//        let dateFormatter = DateFormatter()
+//        dateFormatter.dateStyle = .medium
+//        dateFormatter.dateFormat = ""
+//        let date = dateFormatter.date(from: createdAt)!
+//        let formattedDate = dateFormatter.string(from: date)
+        return UserConsentRowModel(key: self.consentDocumentKey,
+                            version: consentDocumentVersion,
+                            formattedDate: createdAt,
+                            eventType: self.event.name)
     }
 }

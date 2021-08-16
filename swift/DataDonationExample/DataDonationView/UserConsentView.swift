@@ -7,26 +7,12 @@
 
 import UIKit
 
-struct UserConsentItem: UIContentConfiguration, Hashable {
-    func makeContentView() -> UIView & UIContentView {
-        UserConsentCell(configuration: self)
-    }
 
-    func updated(for state: UIConfigurationState) -> UserConsentItem {
-        self
-    }
-
-    let key: String
-    let version: String
-    let date: String
-    let eventType: String
-}
-
-final class UserConsentCell: UITableViewCell, UIContentView {
+final class UserConsentView: UIView, UIContentView {
 
     var configuration: UIContentConfiguration {
         didSet {
-            guard let configuration = configuration as? UserConsentItem else {
+            guard let configuration = configuration as? UserConsentRowModel else {
                 return
             }
 
@@ -38,8 +24,9 @@ final class UserConsentCell: UITableViewCell, UIContentView {
     private lazy var mainStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.axis = .horizontal
+        stackView.axis = .vertical
         stackView.spacing = 8
+        stackView.distribution = .fill
         return stackView
     }()
 
@@ -48,6 +35,8 @@ final class UserConsentCell: UITableViewCell, UIContentView {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.setContentHuggingPriority(.required, for: .vertical)
         label.setContentCompressionResistancePriority(.required, for: .vertical)
+        label.textColor = .black
+        label.numberOfLines = 0
         return label
     }()
 
@@ -56,6 +45,8 @@ final class UserConsentCell: UITableViewCell, UIContentView {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.setContentHuggingPriority(.required, for: .vertical)
         label.setContentCompressionResistancePriority(.required, for: .vertical)
+        label.textColor = .black
+        label.numberOfLines = 0
         return label
     }()
 
@@ -64,6 +55,8 @@ final class UserConsentCell: UITableViewCell, UIContentView {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.setContentHuggingPriority(.required, for: .vertical)
         label.setContentCompressionResistancePriority(.required, for: .vertical)
+        label.textColor = .black
+        label.numberOfLines = 0
         return label
     }()
 
@@ -72,51 +65,55 @@ final class UserConsentCell: UITableViewCell, UIContentView {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.setContentHuggingPriority(.required, for: .vertical)
         label.setContentCompressionResistancePriority(.required, for: .vertical)
+        label.textColor = .black
+        label.numberOfLines = 0
         return label
     }()
 
     private var onTap: (() -> Void)?
 
-    init(configuration: UserConsentItem) {
+    init(configuration: UserConsentRowModel) {
         self.configuration = configuration
-        super.init(style: .default, reuseIdentifier: nil)
+        super.init(frame: .zero)
+        setupViews()
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        keyLabel.text = ""
-        versionLabel.text = ""
-        dateLabel.text = ""
-        eventTypeLabel.text = ""
-    }
 }
 
-extension UserConsentCell {
-    func configure(with userConsentItem: UserConsentItem) {
-        keyLabel.text = userConsentItem.key
-        versionLabel.text = userConsentItem.version
-        dateLabel.text = userConsentItem.date
-        eventTypeLabel.text = userConsentItem.eventType
-    }
-}
-
-private extension UserConsentCell {
+private extension UserConsentView {
     func setupViews() {
-        contentView.addSubview(mainStackView)
+        addSubview(mainStackView)
         NSLayoutConstraint.activate([
-            mainStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 15),
-            mainStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: 15),
-            mainStackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 15),
-            mainStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: 15)
+            mainStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8),
+            mainStackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8),
+            mainStackView.topAnchor.constraint(equalTo: topAnchor, constant: 15),
+            mainStackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -15)
         ])
 
         mainStackView.addArrangedSubview(keyLabel)
         mainStackView.addArrangedSubview(versionLabel)
         mainStackView.addArrangedSubview(dateLabel)
         mainStackView.addArrangedSubview(eventTypeLabel)
+    }
+
+
+    func configure(with rowModel: UserConsentRowModel) {
+        keyLabel.text = rowModel.key
+        versionLabel.text = rowModel.version
+        dateLabel.text = rowModel.formattedDate
+        eventTypeLabel.text = rowModel.eventType
+    }
+}
+
+extension UserConsentRowModel: UIContentConfiguration {
+    func makeContentView() -> UIView & UIContentView {
+        UserConsentView(configuration: self)
+    }
+
+    func updated(for state: UIConfigurationState) -> UserConsentRowModel {
+        self
     }
 }
