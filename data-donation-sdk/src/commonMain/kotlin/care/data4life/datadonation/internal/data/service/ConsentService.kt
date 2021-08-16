@@ -32,9 +32,9 @@ import care.data4life.datadonation.internal.data.service.ServiceContract.Consent
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PATH.SIGNATURES
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.PATH.USER_CONSENTS
 import care.data4life.datadonation.internal.data.service.ServiceContract.ConsentService.Companion.ROOT
-import care.data4life.datadonation.internal.data.service.networking.Networking
-import care.data4life.datadonation.internal.data.service.networking.receive
 import care.data4life.datadonation.lang.HttpRuntimeError
+import care.data4life.datadonation.networking.Networking
+import care.data4life.datadonation.networking.receive
 import kotlinx.datetime.Clock
 import care.data4life.datadonation.ConsentDataContract.ConsentDocument as ConsentDocumentContract
 import care.data4life.datadonation.ConsentDataContract.UserConsent as UserConsentContract

@@ -34,11 +34,11 @@ package care.data4life.datadonation.internal.di
 
 import care.data4life.datadonation.DataDonationSDKPublicAPI
 import care.data4life.datadonation.DataDonationSDKPublicAPI.Environment
-import care.data4life.datadonation.internal.data.service.networking.plugin.resolveKtorPlugins
-import care.data4life.datadonation.internal.data.service.networking.resolveNetworking
 import care.data4life.datadonation.internal.data.service.resolveServiceModule
 import care.data4life.datadonation.internal.domain.repository.resolveRepositoryModule
 import care.data4life.datadonation.internal.domain.usecases.*
+import care.data4life.datadonation.networking.plugin.resolveKtorPlugins
+import care.data4life.datadonation.networking.resolveNetworking
 import kotlinx.datetime.Clock
 import org.koin.core.KoinApplication
 import org.koin.core.module.Module
