@@ -22,6 +22,7 @@ enum UserConsentSection: Hashable  {
 }
 
 struct UserConsentRow: Hashable {
+    let id: String = UUID().uuidString
     let key: String
     let version: String
     let formattedDate: String
