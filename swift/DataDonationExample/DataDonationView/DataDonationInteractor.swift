@@ -26,9 +26,10 @@ extension DataDonationInteractor {
     func viewDidLoad() {
         view?.setCanLogoutState()
         dataDonationSDKService.fetchUserConsents { [weak view] result in
-            let consents = (try? result.get()) ?? []
-            let viewModel = DataDonationViewModel(userConsents: consents.map { $0.asItem })
             DispatchQueue.main.async {
+                let consents = (try? result.get()) ?? []
+                let viewModel = DataDonationViewModel(userConsents: consents.map { $0.asItem })
+
                 view?.configure(with: viewModel)
             }
         }
@@ -61,15 +62,20 @@ extension DataDonationInteractor {
 }
 
 private extension UserConsentProtocol {
+
+
     var asItem: UserConsentRowModel {
-//        let dateFormatter = DateFormatter()
-//        dateFormatter.dateStyle = .medium
-//        dateFormatter.dateFormat = ""
-//        let date = dateFormatter.date(from: createdAt)!
-//        let formattedDate = dateFormatter.string(from: date)
+        let jsonDateFormatter = DateFormatter()
+        jsonDateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+        let date = jsonDateFormatter.date(from: createdAt)!
+
+        let stringDateFormatter = DateFormatter()
+        stringDateFormatter.dateStyle = .short
+        stringDateFormatter.timeStyle = .short
+
         return UserConsentRowModel(key: self.consentDocumentKey,
-                            version: consentDocumentVersion,
-                            formattedDate: createdAt,
-                            eventType: self.event.name)
+                                   version: consentDocumentVersion,
+                                   formattedDate: stringDateFormatter.string(from: date),
+                                   eventType: self.event.name)
     }
 }
