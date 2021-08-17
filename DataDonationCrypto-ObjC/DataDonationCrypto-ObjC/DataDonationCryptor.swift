@@ -6,15 +6,15 @@
 //
 
 import Foundation
-import Data4LifeCrypto
+@_implementationOnly import Data4LifeCrypto
 
-@objc final class DataDonationCryptor: NSObject {
+@objc public final class DataDonationCryptor: NSObject {
 
-    @objc static func encrypt(_ data: Data, using key: Data) -> Data {
+    @objc public static func encrypt(_ data: Data, using key: Data) -> Data {
         return data
     }
 
-    @objc static func decrypt(_ data: Data, using key: Data) -> Data {
+    @objc public static func decrypt(_ data: Data, using key: Data) -> Data {
         return data
     }
 }

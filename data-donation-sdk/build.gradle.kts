@@ -42,6 +42,36 @@ kotlin {
         }
     }
 
+    iosArm64 {
+        compilations.getByName("main") {
+            cinterops {
+                val DataDonationCryptoObjC by cinterops.creating {
+                    defFile("src/nativeInterop/cinterop/DataDonationCryptoObjC.def")
+                    compilerOpts("-framework", "DataDonationCrypto_ObjC", "-FDDCrypto-iphoneos.xcarchive/Products/Library/Framework/DataDonationCrypto_ObjC.framework")
+                }
+            }
+        }
+
+        binaries.all {
+            linkerOpts("-framework", "DataDonationCrypto_ObjC", "-FDDCrypto-iphoneos.xcarchive/Products/Library/Framework/DataDonationCrypto_ObjC.framework")
+        }
+    }
+
+    iosX64 {
+        compilations.getByName("main") {
+            cinterops {
+                val DataDonationCryptoObjC by cinterops.creating {
+                    defFile("src/nativeInterop/cinterop/DataDonationCryptoObjC.def")
+                    compilerOpts("-framework", "DataDonationCrypto_ObjC", "-FDDCrypto-iphonesimulator.xcarchive/Products/Library/Framework/DataDonationCrypto_ObjC.framework")
+                }
+            }
+        }
+
+        binaries.all {
+            linkerOpts("-framework", "DataDonationCrypto_ObjC", "-FDDCrypto-iphonesimulator.xcarchive/Products/Library/Framework/DataDonationCrypto_ObjC.framework")
+        }
+    }
+
     multiplatformSwiftPackage {
         swiftToolsVersion(LibraryConfig.iOS.toolVersion)
         packageName(LibraryConfig.iOS.packageName)
