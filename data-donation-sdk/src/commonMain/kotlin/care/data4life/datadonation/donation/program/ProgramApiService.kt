@@ -25,13 +25,13 @@ import care.data4life.datadonation.networking.receive
 
 internal class ProgramApiService constructor(
     private val requestBuilderFactory: Networking.RequestBuilderFactory,
-    private val errorMapper: ProgramContract.ProgramErrorMapper,
-) : ProgramContract.ProgramApiService {
+    private val errorMapper: ProgramContract.ErrorMapper,
+) : ProgramContract.ApiService {
     override suspend fun fetchProgram(
         accessToken: AccessToken,
         programName: String,
     ): ProgramModelContract.Program {
-        val path = ProgramContract.ProgramApiService.ROUTE.toMutableList().also {
+        val path = ProgramContract.ApiService.ROUTE.toMutableList().also {
             it.add(programName)
         }
 

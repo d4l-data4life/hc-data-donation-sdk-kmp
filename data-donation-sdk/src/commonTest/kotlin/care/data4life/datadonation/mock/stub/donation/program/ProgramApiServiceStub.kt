@@ -21,7 +21,7 @@ import care.data4life.datadonation.donation.program.model.ProgramModelContract
 import care.data4life.datadonation.mock.MockException
 import care.data4life.datadonation.networking.AccessToken
 
-internal class ProgramApiServiceStub : ProgramContract.ProgramApiService {
+internal class ProgramApiServiceStub : ProgramContract.ApiService {
     var whenFetchProgram: ((AccessToken, String) -> ProgramModelContract.Program)? = null
 
     override suspend fun fetchProgram(

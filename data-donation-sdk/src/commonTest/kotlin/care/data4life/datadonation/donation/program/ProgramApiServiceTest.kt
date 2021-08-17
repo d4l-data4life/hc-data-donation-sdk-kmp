@@ -45,7 +45,7 @@ class ProgramApiServiceTest {
             ProgramErrorMapperStub(),
         )
 
-        assertTrue(service is ProgramContract.ProgramApiService)
+        assertTrue(service is ProgramContract.ApiService)
     }
 
     @Test
@@ -185,7 +185,7 @@ class ProgramApiServiceTest {
         )
         assertEquals(
             actual = capturedPath,
-            expected = ProgramContract.ProgramApiService.ROUTE.toMutableList().also {
+            expected = ProgramContract.ApiService.ROUTE.toMutableList().also {
                 it.add(programName)
             }
         )

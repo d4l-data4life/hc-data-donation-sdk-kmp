@@ -20,8 +20,8 @@ import care.data4life.datadonation.donation.program.model.ProgramModelContract
 import care.data4life.datadonation.networking.AccessToken
 
 internal class ProgramRepository(
-    private val apiService: ProgramContract.ProgramApiService
-) : ProgramContract.ProgramRepository {
+    private val apiService: ProgramContract.ApiService
+) : ProgramContract.Repository {
     override suspend fun fetchProgram(
         accessToken: AccessToken,
         programName: String

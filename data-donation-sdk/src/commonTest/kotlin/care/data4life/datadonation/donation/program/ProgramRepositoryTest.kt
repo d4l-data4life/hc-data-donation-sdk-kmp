@@ -32,7 +32,7 @@ class ProgramRepositoryTest {
     fun `It fulfils ProgramRepository`() {
         val repo: Any = ProgramRepository(ProgramApiServiceStub())
 
-        assertTrue(repo is ProgramContract.ProgramRepository)
+        assertTrue(repo is ProgramContract.Repository)
     }
 
     @Test

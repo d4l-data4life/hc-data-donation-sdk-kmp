@@ -27,7 +27,7 @@ class ProgramErrorMapperTest {
     fun `It fulfils ProgramErrorMapper`() {
         val handler: Any = ProgramErrorMapper
 
-        assertTrue(handler is ProgramContract.ProgramErrorMapper)
+        assertTrue(handler is ProgramContract.ErrorMapper)
     }
 
     @Test

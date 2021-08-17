@@ -16,30 +16,21 @@
 
 package care.data4life.datadonation.donation.program
 
-import care.data4life.datadonation.donation.program.model.ProgramModelContract
-import care.data4life.datadonation.networking.AccessToken
-import care.data4life.datadonation.networking.HttpRuntimeError
+import org.koin.core.module.Module
+import org.koin.dsl.module
 
-internal interface ProgramContract {
-    interface ApiService {
-        suspend fun fetchProgram(
-            accessToken: AccessToken,
-            programName: String
-        ): ProgramModelContract.Program
-
-        companion object {
-            val ROUTE = listOf("program", "api", "v1", "programs")
+internal fun resolveProgramKoinModule(): Module {
+    return module {
+        single<ProgramContract.ErrorMapper> {
+            ProgramErrorMapper
         }
-    }
 
-    interface ErrorMapper {
-        fun mapFetchProgram(error: HttpRuntimeError): ProgramError
-    }
+        single<ProgramContract.ApiService> {
+            ProgramApiService(get(), get())
+        }
 
-    interface Repository {
-        suspend fun fetchProgram(
-            accessToken: AccessToken,
-            programName: String
-        ): ProgramModelContract.Program
+        single<ProgramContract.Repository> {
+            ProgramRepository(get())
+        }
     }
 }

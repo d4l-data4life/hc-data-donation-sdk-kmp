@@ -20,7 +20,7 @@ import care.data4life.datadonation.networking.HttpRuntimeError
 import io.ktor.http.HttpStatusCode
 
 internal object ProgramErrorMapper :
-    ProgramContract.ProgramErrorMapper {
+    ProgramContract.ErrorMapper {
     override fun mapFetchProgram(error: HttpRuntimeError): ProgramError {
         return if (error.statusCode == HttpStatusCode.NotFound) {
             ProgramError.NotFoundError()
