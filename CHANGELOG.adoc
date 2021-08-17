@@ -35,7 +35,7 @@ toc::[]
 * Result-SDK (see: https://github.com/d4l-data4life/hc-result-sdk-kmp) (Dependency)
 * ObjC-SDK (see: https://github.com/d4l-data4life/hc-objc-util-sdk-kmp) (Dependency)
 * Swift package.
-
+* Example iOS App.
 * ConsentServiceError.NoValidConsent to improve error mapping for revoke user consent.
 
 === Changed
