@@ -33,8 +33,8 @@ internal fun resolveConsentDocumentKoinModule(): Module {
             ConsentDocumentErrorHandler
         }
 
-        single<ConsentDocumentContract.Interactor> {
-            ConsentDocumentInteractor(get(), get())
+        single<ConsentDocumentContract.Controller> {
+            ConsentDocumentController(get(), get())
         }
     }
 }

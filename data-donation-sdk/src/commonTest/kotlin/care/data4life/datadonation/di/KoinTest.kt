@@ -39,8 +39,8 @@ class KoinTest {
             UserSessionTokenProviderStub()
         )
         // Then
-        val interactor: UserConsentContract.Interactor = app.koin.get()
-        assertNotNull(interactor)
+        val controller: UserConsentContract.Controller = app.koin.get()
+        assertNotNull(controller)
     }
 
     @Test
@@ -51,7 +51,7 @@ class KoinTest {
             UserSessionTokenProviderStub()
         )
         // Then
-        val interactor: ConsentDocumentContract.Interactor = app.koin.get()
-        assertNotNull(interactor)
+        val controller: ConsentDocumentContract.Controller = app.koin.get()
+        assertNotNull(controller)
     }
 }

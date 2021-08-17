@@ -75,7 +75,7 @@ internal interface UserConsentContract {
         )
     }
 
-    interface Interactor {
+    interface Controller {
         suspend fun createUserConsent(
             consentDocumentKey: String,
             consentDocumentVersion: String

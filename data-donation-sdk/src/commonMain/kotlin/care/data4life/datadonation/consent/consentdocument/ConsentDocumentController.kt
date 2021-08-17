@@ -19,10 +19,10 @@ package care.data4life.datadonation.consent.consentdocument
 import care.data4life.datadonation.ConsentDataContract
 import care.data4life.datadonation.session.SessionTokenRepositoryContract
 
-internal class ConsentDocumentInteractor(
+internal class ConsentDocumentController(
     private val repository: ConsentDocumentContract.Repository,
     private val sessionTokenRepository: SessionTokenRepositoryContract
-) : ConsentDocumentContract.Interactor {
+) : ConsentDocumentContract.Controller {
     override suspend fun fetchConsentDocuments(
         consentDocumentKey: String,
         consentDocumentVersion: String?,

@@ -33,8 +33,8 @@ internal fun resolveConsentKoinModule(): Module {
             UserConsentErrorHandler
         }
 
-        single<UserConsentContract.Interactor> {
-            UserConsentInteractor(get(), get())
+        single<UserConsentContract.Controller> {
+            UserConsentController(get(), get())
         }
     }
 }

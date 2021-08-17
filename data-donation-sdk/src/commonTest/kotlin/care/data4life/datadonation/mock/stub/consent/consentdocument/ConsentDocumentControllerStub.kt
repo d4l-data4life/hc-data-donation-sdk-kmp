@@ -21,7 +21,7 @@ import care.data4life.datadonation.consent.consentdocument.ConsentDocumentContra
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 
-internal class ConsentDocumentInteractorStub : ConsentDocumentContract.Interactor, MockContract.Stub {
+internal class ConsentDocumentControllerStub : ConsentDocumentContract.Controller, MockContract.Stub {
     var whenFetchConsentDocuments: ((String, String?, String?) -> List<ConsentDataContract.ConsentDocument>)? = null
 
     override suspend fun fetchConsentDocuments(

@@ -47,8 +47,8 @@ import org.koin.core.KoinApplication
 class Client internal constructor(
     koinApplication: KoinApplication
 ) : DataDonationSDK.DataDonationClient {
-    private val userConsent: UserConsentContract.Interactor = koinApplication.koin.get()
-    private val consentDocuments: ConsentDocumentContract.Interactor = koinApplication.koin.get()
+    private val userConsent: UserConsentContract.Controller = koinApplication.koin.get()
+    private val consentDocuments: ConsentDocumentContract.Controller = koinApplication.koin.get()
     private val backgroundThread: CoroutineScope = koinApplication.koin.get()
     private val errorMapper: DomainErrorMapperContract = koinApplication.koin.get()
     private val flowFactory: D4LSDKFlowFactoryContract = koinApplication.koin.get()

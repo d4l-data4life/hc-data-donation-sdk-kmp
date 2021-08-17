@@ -47,7 +47,7 @@ internal interface ConsentDocumentContract {
         ): List<ConsentDataContract.ConsentDocument>
     }
 
-    interface Interactor {
+    interface Controller {
         suspend fun fetchConsentDocuments(
             consentDocumentKey: String,
             consentDocumentVersion: String?,

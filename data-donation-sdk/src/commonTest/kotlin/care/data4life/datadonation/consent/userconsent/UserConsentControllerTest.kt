@@ -26,15 +26,15 @@ import kotlin.test.assertNull
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
-class UserConsentInteractorTest {
+class UserConsentControllerTest {
     @Test
-    fun `It fulfils UserConsentInteractor`() {
-        val interactor: Any = UserConsentInteractor(
+    fun `It fulfils UserConsentController`() {
+        val controller: Any = UserConsentController(
             UserConsentRepositoryStub(),
             UserSessionTokenRepositoryStub()
         )
 
-        assertTrue(interactor is UserConsentContract.Interactor)
+        assertTrue(controller is UserConsentContract.Controller)
     }
 
     @Test
@@ -74,7 +74,7 @@ class UserConsentInteractorTest {
         }
 
         // When
-        val result = UserConsentInteractor(repo, sessionTokenRepository).createUserConsent(
+        val result = UserConsentController(repo, sessionTokenRepository).createUserConsent(
             consentDocumentKey,
             consentDocumentVersion
         )
@@ -124,7 +124,7 @@ class UserConsentInteractorTest {
         sessionTokenRepository.whenSessionToken = { accessToken }
 
         // When
-        val result = UserConsentInteractor(repo, sessionTokenRepository).fetchAllUserConsents()
+        val result = UserConsentController(repo, sessionTokenRepository).fetchAllUserConsents()
 
         // Then
         assertEquals(
@@ -160,7 +160,7 @@ class UserConsentInteractorTest {
         sessionTokenRepository.whenSessionToken = { accessToken }
 
         // When
-        val result = UserConsentInteractor(repo, sessionTokenRepository).fetchUserConsents(consentDocumentKey)
+        val result = UserConsentController(repo, sessionTokenRepository).fetchUserConsents(consentDocumentKey)
 
         // Then
         assertEquals(
@@ -211,7 +211,7 @@ class UserConsentInteractorTest {
         }
 
         // When
-        val result = UserConsentInteractor(repo, sessionTokenRepository).revokeUserConsent(consentDocumentKey)
+        val result = UserConsentController(repo, sessionTokenRepository).revokeUserConsent(consentDocumentKey)
 
         // Then
         assertSame(

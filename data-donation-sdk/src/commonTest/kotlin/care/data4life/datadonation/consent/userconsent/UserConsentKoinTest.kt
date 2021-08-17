@@ -108,7 +108,7 @@ class UserConsentKoinTest {
             )
         }
         // Then
-        val builder: UserConsentContract.Interactor = koin.koin.get()
+        val builder: UserConsentContract.Controller = koin.koin.get()
         assertNotNull(builder)
     }
 }
