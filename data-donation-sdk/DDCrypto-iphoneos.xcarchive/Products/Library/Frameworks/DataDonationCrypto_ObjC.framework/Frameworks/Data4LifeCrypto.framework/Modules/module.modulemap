@@ -1,0 +1,11 @@
+framework module Data4LifeCrypto {
+  umbrella header "Data4LifeCrypto.h"
+
+  export *
+  module * { export * }
+}
+
+module Data4LifeCrypto.Swift {
+    header "Data4LifeCrypto-Swift.h"
+    requires objc
+}

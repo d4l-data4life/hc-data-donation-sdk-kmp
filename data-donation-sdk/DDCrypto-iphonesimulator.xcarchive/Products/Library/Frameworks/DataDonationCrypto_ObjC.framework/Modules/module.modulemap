@@ -1,0 +1,11 @@
+framework module DataDonationCrypto_ObjC {
+  umbrella header "DataDonationCrypto_ObjC.h"
+
+  export *
+  module * { export * }
+}
+
+module DataDonationCrypto_ObjC.Swift {
+    header "DataDonationCrypto_ObjC-Swift.h"
+    requires objc
+}

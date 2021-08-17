@@ -63,13 +63,13 @@ kotlin {
             cinterops {
                 val DataDonationCryptoObjC by cinterops.creating {
                     defFile("src/nativeInterop/cinterop/DataDonationCryptoObjC.def")
-                    compilerOpts("-framework", "DataDonationCrypto_ObjC", "-FDDCrypto-iphonesimulator.xcarchive/Products/Library/Framework/DataDonationCrypto_ObjC.framework")
+                    compilerOpts("-framework", "DataDonationCryptoObjC", "-FDDCrypto-iphonesimulator.xcarchive/Products/Library/Framework/DataDonationCrypto_ObjC.framework")
                 }
             }
         }
 
         binaries.all {
-            linkerOpts("-framework", "DataDonationCrypto_ObjC", "-FDDCrypto-iphonesimulator.xcarchive/Products/Library/Framework/DataDonationCrypto_ObjC.framework")
+            linkerOpts("-framework", "DataDonationCryptoObjC", "-FDDCrypto-iphonesimulator.xcarchive/Products/Library/Framework/DataDonationCrypto_ObjC.framework")
         }
     }
 
