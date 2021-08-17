@@ -20,7 +20,8 @@ gen/
 !.idea/copyright/
 
 # iOS SwiftPackages
-swift/
+swift/Data4LifeSDK.xcconfig
+swift/Data4LifeDataDonationSDK
 
 # generated
 data-donation-sdk/src-gen/commonTest/kotlin/care/data4life/datadonation/test/config/TestConfig.kt
@@ -61,4 +62,3 @@ Pods/
 
 #HELPER
 *.LOG
-
