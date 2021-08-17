@@ -17,9 +17,9 @@
 package care.data4life.datadonation.di
 
 import care.data4life.datadonation.DataDonationSDK.Environment
-import care.data4life.datadonation.consentdocument.ConsentDocumentContract
+import care.data4life.datadonation.consent.consentdocument.ConsentDocumentContract
+import care.data4life.datadonation.consent.userconsent.UserConsentContract
 import care.data4life.datadonation.mock.stub.UserSessionTokenProviderStub
-import care.data4life.datadonation.userconsent.UserConsentContract
 import org.koin.core.context.stopKoin
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -39,8 +39,8 @@ class KoinTest {
             UserSessionTokenProviderStub()
         )
         // Then
-        val interactor: UserConsentContract.Interactor = app.koin.get()
-        assertNotNull(interactor)
+        val controller: UserConsentContract.Controller = app.koin.get()
+        assertNotNull(controller)
     }
 
     @Test
@@ -51,7 +51,7 @@ class KoinTest {
             UserSessionTokenProviderStub()
         )
         // Then
-        val interactor: ConsentDocumentContract.Interactor = app.koin.get()
-        assertNotNull(interactor)
+        val controller: ConsentDocumentContract.Controller = app.koin.get()
+        assertNotNull(controller)
     }
 }

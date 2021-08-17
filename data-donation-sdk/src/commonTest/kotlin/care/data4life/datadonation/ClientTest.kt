@@ -17,15 +17,15 @@
 package care.data4life.datadonation
 
 import care.data4life.datadonation.DataDonationSDK.Environment
-import care.data4life.datadonation.consentdocument.ConsentDocumentContract
+import care.data4life.datadonation.consent.consentdocument.ConsentDocumentContract
+import care.data4life.datadonation.consent.userconsent.UserConsentContract
 import care.data4life.datadonation.error.DataDonationFlowErrorMapper
 import care.data4life.datadonation.mock.fixture.ConsentDocumentFixture.sampleConsentDocument
 import care.data4life.datadonation.mock.fixture.UserConsentFixture.sampleUserConsent
 import care.data4life.datadonation.mock.spy.D4LFlowFactorySpy
 import care.data4life.datadonation.mock.stub.UserSessionTokenProviderStub
-import care.data4life.datadonation.mock.stub.consentdocument.ConsentDocumentInteractorStub
-import care.data4life.datadonation.mock.stub.userconsent.UserConsentInteractorStub
-import care.data4life.datadonation.userconsent.UserConsentContract
+import care.data4life.datadonation.mock.stub.consent.consentdocument.ConsentDocumentControllerStub
+import care.data4life.datadonation.mock.stub.consent.userconsent.UserConsentControllerStub
 import care.data4life.sdk.flow.D4LSDKFlowFactoryContract
 import care.data4life.sdk.util.coroutine.DomainErrorMapperContract
 import care.data4life.sdk.util.test.coroutine.runWithContextBlockingTest
@@ -73,7 +73,7 @@ class ClientTest {
     @Test
     fun `Given createUserConsent is called with a ConsentDocumentVersion and a Language it builds and delegates its Parameter to the Usecase and returns a runnable Flow which emits a UserConsent`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
-        val consentFlow = UserConsentInteractorStub()
+        val consentFlow = UserConsentControllerStub()
         val consent = sampleUserConsent
         val scope = CoroutineScope(testCoroutineContext)
 
@@ -94,7 +94,7 @@ class ClientTest {
         val di = koinApplication {
             modules(
                 module {
-                    single<UserConsentContract.Interactor> {
+                    single<UserConsentContract.Controller> {
                         consentFlow
                     }
                     single<CoroutineScope> {
@@ -107,8 +107,8 @@ class ClientTest {
                         flowSpy
                     }
 
-                    single<ConsentDocumentContract.Interactor> {
-                        ConsentDocumentInteractorStub()
+                    single<ConsentDocumentContract.Controller> {
+                        ConsentDocumentControllerStub()
                     }
                 }
             )
@@ -151,7 +151,7 @@ class ClientTest {
     @Test
     fun `Given fetchConsentDocuments is called with a consentDocumentKey it builds and delegates its Parameter to the Usecase and returns a runnable Flow which emits a List of ConsentDocument`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
-        val consentDocumentFlow = ConsentDocumentInteractorStub()
+        val consentDocumentFlow = ConsentDocumentControllerStub()
         val documents = listOf(sampleConsentDocument)
         val scope = CoroutineScope(testCoroutineContext)
 
@@ -175,8 +175,8 @@ class ClientTest {
         val di = koinApplication {
             modules(
                 module {
-                    single<UserConsentContract.Interactor> {
-                        UserConsentInteractorStub()
+                    single<UserConsentContract.Controller> {
+                        UserConsentControllerStub()
                     }
 
                     single<CoroutineScope> {
@@ -189,7 +189,7 @@ class ClientTest {
                         flowSpy
                     }
 
-                    single<ConsentDocumentContract.Interactor> {
+                    single<ConsentDocumentContract.Controller> {
                         consentDocumentFlow
                     }
                 }
@@ -239,7 +239,7 @@ class ClientTest {
     @Test
     fun `Given fetchUserConsents is called with a consentDocumentKey it builds and delegates its Parameter to the Usecase and returns a runnable Flow which emits a List of UserConsent`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
-        val consentFlow = UserConsentInteractorStub()
+        val consentFlow = UserConsentControllerStub()
         val consents = listOf(sampleUserConsent)
         val scope = CoroutineScope(testCoroutineContext)
 
@@ -255,7 +255,7 @@ class ClientTest {
         val di = koinApplication {
             modules(
                 module {
-                    single<UserConsentContract.Interactor> {
+                    single<UserConsentContract.Controller> {
                         consentFlow
                     }
 
@@ -269,8 +269,8 @@ class ClientTest {
                         flowSpy
                     }
 
-                    single<ConsentDocumentContract.Interactor> {
-                        ConsentDocumentInteractorStub()
+                    single<ConsentDocumentContract.Controller> {
+                        ConsentDocumentControllerStub()
                     }
                 }
             )
@@ -308,7 +308,7 @@ class ClientTest {
     @Test
     fun `Given fetchAllUserConsents is called it builds and delegates its Parameter to the Usecase and returns a runnable Flow which emits a List of UserConsent`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
-        val consentFlow = UserConsentInteractorStub()
+        val consentFlow = UserConsentControllerStub()
         val consents = listOf(sampleUserConsent)
         val scope = CoroutineScope(testCoroutineContext)
 
@@ -324,7 +324,7 @@ class ClientTest {
         val di = koinApplication {
             modules(
                 module {
-                    single<UserConsentContract.Interactor> {
+                    single<UserConsentContract.Controller> {
                         consentFlow
                     }
                     single<CoroutineScope> {
@@ -337,8 +337,8 @@ class ClientTest {
                         flowSpy
                     }
 
-                    single<ConsentDocumentContract.Interactor> {
-                        ConsentDocumentInteractorStub()
+                    single<ConsentDocumentContract.Controller> {
+                        ConsentDocumentControllerStub()
                     }
                 }
             )
@@ -370,7 +370,7 @@ class ClientTest {
     @Test
     fun `Given revokeUserConsent is called with a consentDocumentKey it builds and delegates its Parameter to the Usecase and returns a runnable Flow which just runs`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
-        val consentFlow = UserConsentInteractorStub()
+        val consentFlow = UserConsentControllerStub()
         val scope = CoroutineScope(testCoroutineContext)
 
         val consentDocumentKey = "custom-consent-key"
@@ -387,7 +387,7 @@ class ClientTest {
         val di = koinApplication {
             modules(
                 module {
-                    single<UserConsentContract.Interactor> {
+                    single<UserConsentContract.Controller> {
                         consentFlow
                     }
 
@@ -401,8 +401,8 @@ class ClientTest {
                         flowSpy
                     }
 
-                    single<ConsentDocumentContract.Interactor> {
-                        ConsentDocumentInteractorStub()
+                    single<ConsentDocumentContract.Controller> {
+                        ConsentDocumentControllerStub()
                     }
                 }
             )

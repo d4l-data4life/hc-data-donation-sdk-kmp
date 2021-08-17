@@ -14,19 +14,11 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.mock.fixture
+package care.data4life.datadonation.consent.userconsent.model
 
-import care.data4life.datadonation.ConsentDataContract
-import care.data4life.datadonation.consent.userconsent.model.UserConsent
-import kotlin.native.concurrent.ThreadLocal
+import kotlinx.serialization.Serializable
 
-@ThreadLocal
-object UserConsentFixture {
-    val sampleUserConsent = UserConsent(
-        consentDocumentKey = "soup",
-        consentDocumentVersion = "23",
-        accountId = "123e4567-e89b-12d3-a456-426614174000",
-        event = ConsentDataContract.ConsentEvent.Consent,
-        createdAt = "2020-07-06T10:18:12.601Z"
-    )
-}
+@Serializable
+internal data class ConsentRevocationPayload(
+    val consentDocumentKey: String
+)

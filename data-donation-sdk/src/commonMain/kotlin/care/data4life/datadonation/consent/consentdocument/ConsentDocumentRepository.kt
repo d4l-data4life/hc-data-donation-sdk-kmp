@@ -14,19 +14,26 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.mock.fixture
+package care.data4life.datadonation.consent.consentdocument
 
-import care.data4life.datadonation.ConsentDataContract
-import care.data4life.datadonation.consent.userconsent.model.UserConsent
-import kotlin.native.concurrent.ThreadLocal
+import care.data4life.datadonation.ConsentDataContract.ConsentDocument
+import care.data4life.datadonation.networking.AccessToken
 
-@ThreadLocal
-object UserConsentFixture {
-    val sampleUserConsent = UserConsent(
-        consentDocumentKey = "soup",
-        consentDocumentVersion = "23",
-        accountId = "123e4567-e89b-12d3-a456-426614174000",
-        event = ConsentDataContract.ConsentEvent.Consent,
-        createdAt = "2020-07-06T10:18:12.601Z"
-    )
+internal class ConsentDocumentRepository(
+    private val apiService: ConsentDocumentContract.ApiService
+) : ConsentDocumentContract.Repository {
+
+    override suspend fun fetchConsentDocuments(
+        accessToken: AccessToken,
+        consentDocumentKey: String,
+        consentDocumentVersion: String?,
+        language: String?,
+    ): List<ConsentDocument> {
+        return apiService.fetchConsentDocuments(
+            accessToken,
+            consentDocumentKey,
+            consentDocumentVersion,
+            language,
+        )
+    }
 }
