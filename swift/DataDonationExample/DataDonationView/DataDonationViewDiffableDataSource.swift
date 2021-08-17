@@ -18,7 +18,7 @@ import Foundation
 import UIKit
 
 enum UserConsentSection: Hashable  {
-    case main
+    case userConsents
 }
 
 struct UserConsentRow: Hashable {
@@ -31,8 +31,9 @@ struct UserConsentRow: Hashable {
 final class DataDonationViewDiffableDataSource: UITableViewDiffableDataSource<UserConsentSection, UserConsentRow> {
 
     init(tableView: UITableView) {
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: UITableViewCell.cellIdentifier)
         super.init(tableView: tableView) { tableView, indexPath, row in
-            let cell = UITableViewCell()
+            let cell = tableView.dequeueReusableCell(withIdentifier: UITableViewCell.cellIdentifier, for: indexPath)
             cell.contentConfiguration = row
             return cell
         }
@@ -40,5 +41,11 @@ final class DataDonationViewDiffableDataSource: UITableViewDiffableDataSource<Us
 
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         "User Consents"
+    }
+}
+
+extension UITableViewCell {
+    static var cellIdentifier: String {
+        "DefaultCell"
     }
 }

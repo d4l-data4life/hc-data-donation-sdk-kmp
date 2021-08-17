@@ -42,7 +42,7 @@ extension DataDonationSDKService {
             completion(.failure(error))
         } onComplete: {
             print("fetch completed")
-        }.asStruct
+        }
     }
 
     func createUserConsent(key: String = DataDonationSDKService.testKey, completion: @escaping (Result<UserConsentProtocol, Error>) -> Void) {
@@ -53,7 +53,7 @@ extension DataDonationSDKService {
             completion(.failure(error))
         } onComplete: {
             print("fetch completed")
-        }.asStruct
+        }
     }
 
     func revokeUserConsent(key: String = DataDonationSDKService.testKey, completion: @escaping (Result<Void, Error>) -> Void)  {
@@ -64,37 +64,10 @@ extension DataDonationSDKService {
             completion(.failure(error))
         }, onComplete: {
             print("fetch completed")
-        }).asStruct
+        })
     }
 
     func cancelCurrentJob() {
-        currentJob?.cancel()
-    }
-}
-
-
-struct KotlinJob {
-    private let coreJob: Kotlinx_coroutines_coreJob
-    init(coreJob: Kotlinx_coroutines_coreJob) {
-        self.coreJob = coreJob
-    }
-
-    func cancel() {
-        coreJob.cancel(cause: nil)
-    }
-}
-
-extension Kotlinx_coroutines_coreJob {
-    var asStruct: KotlinJob {
-        KotlinJob(coreJob: self)
-    }
-}
-
-extension NSArray {
-    func array<T>(of type: T.Type = T.self) -> [T] {
-        guard let array = Array(self) as? [T] else {
-            fatalError("Cant convert NSArray into [\(type)]")
-        }
-        return array
+        currentJob?.cancel(cause: KotlinCancellationError(message: "User canceled job"))
     }
 }

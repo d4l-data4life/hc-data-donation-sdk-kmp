@@ -8,8 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		3670E92326CBBC8800FD5B79 /* DataDonationPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3670E92226CBBC8800FD5B79 /* DataDonationPresenter.swift */; };
-		3670E92626CBBF8E00FD5B79 /* FormatterBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3670E92526CBBF8E00FD5B79 /* FormatterBuilder.swift */; };
+		3670E92626CBBF8E00FD5B79 /* FormatterService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3670E92526CBBF8E00FD5B79 /* FormatterService.swift */; };
 		3670E92926CBC21700FD5B79 /* DataDonationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3670E92826CBC21700FD5B79 /* DataDonationViewModel.swift */; };
+		3670E92C26CBC89200FD5B79 /* Common+Swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3670E92B26CBC89200FD5B79 /* Common+Swift.swift */; };
 		367CC74226B1A14100660960 /* SplashRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367CC74126B1A14100660960 /* SplashRouter.swift */; };
 		367CC74426B2EB6100660960 /* ServiceContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367CC74326B2EB6100660960 /* ServiceContainer.swift */; };
 		367CC74626B2F4FB00660960 /* DataDonationSDKService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367CC74526B2F4FB00660960 /* DataDonationSDKService.swift */; };
@@ -34,8 +35,9 @@
 
 /* Begin PBXFileReference section */
 		3670E92226CBBC8800FD5B79 /* DataDonationPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDonationPresenter.swift; sourceTree = "<group>"; };
-		3670E92526CBBF8E00FD5B79 /* FormatterBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormatterBuilder.swift; sourceTree = "<group>"; };
+		3670E92526CBBF8E00FD5B79 /* FormatterService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormatterService.swift; sourceTree = "<group>"; };
 		3670E92826CBC21700FD5B79 /* DataDonationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDonationViewModel.swift; sourceTree = "<group>"; };
+		3670E92B26CBC89200FD5B79 /* Common+Swift.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Common+Swift.swift"; sourceTree = "<group>"; };
 		367CC74026B19D2D00660960 /* Data4LifeSDK.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Data4LifeSDK.xcconfig; sourceTree = "<group>"; };
 		367CC74126B1A14100660960 /* SplashRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashRouter.swift; sourceTree = "<group>"; };
 		367CC74326B2EB6100660960 /* ServiceContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceContainer.swift; sourceTree = "<group>"; };
@@ -81,12 +83,20 @@
 			path = Subviews;
 			sourceTree = "<group>";
 		};
-		3670E92726CBC20700FD5B79 /* ViewModel */ = {
+		3670E92A26CBC87200FD5B79 /* Common */ = {
 			isa = PBXGroup;
 			children = (
-				3670E92826CBC21700FD5B79 /* DataDonationViewModel.swift */,
+				3670E92B26CBC89200FD5B79 /* Common+Swift.swift */,
 			);
-			path = ViewModel;
+			path = Common;
+			sourceTree = "<group>";
+		};
+		3670E92D26CBC94100FD5B79 /* DI */ = {
+			isa = PBXGroup;
+			children = (
+				367CC74326B2EB6100660960 /* ServiceContainer.swift */,
+			);
+			path = DI;
 			sourceTree = "<group>";
 		};
 		36874C3D26B1630B00F03527 = {
@@ -111,6 +121,7 @@
 		36874C4826B1630B00F03527 /* DataDonationExample */ = {
 			isa = PBXGroup;
 			children = (
+				3670E92A26CBC87200FD5B79 /* Common */,
 				36874C7126B1904C00F03527 /* Services */,
 				36874C6C26B18B2A00F03527 /* SplashView */,
 				36874C6426B189F900F03527 /* DataDonationView */,
@@ -133,12 +144,12 @@
 		36874C6426B189F900F03527 /* DataDonationView */ = {
 			isa = PBXGroup;
 			children = (
-				3670E92726CBC20700FD5B79 /* ViewModel */,
 				3670E92426CBBC8F00FD5B79 /* Subviews */,
 				36874C4D26B1630B00F03527 /* DataDonationViewController.swift */,
+				3670E92826CBC21700FD5B79 /* DataDonationViewModel.swift */,
+				36EB81A126CAD2DC006B8022 /* DataDonationViewDiffableDataSource.swift */,
 				36874C6526B18A6300F03527 /* DataDonationInteractor.swift */,
 				367CC74726B817CD00660960 /* DataDonationRouter.swift */,
-				36EB81A126CAD2DC006B8022 /* DataDonationViewDiffableDataSource.swift */,
 				3670E92226CBBC8800FD5B79 /* DataDonationPresenter.swift */,
 			);
 			path = DataDonationView;
@@ -158,11 +169,11 @@
 		36874C7126B1904C00F03527 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				3670E92D26CBC94100FD5B79 /* DI */,
 				367CC74526B2F4FB00660960 /* DataDonationSDKService.swift */,
 				36874C7226B1906000F03527 /* Data4LifeSDKService.swift */,
 				36874C7426B1914A00F03527 /* Data4LifeSDKConfiguration.swift */,
-				367CC74326B2EB6100660960 /* ServiceContainer.swift */,
-				3670E92526CBBF8E00FD5B79 /* FormatterBuilder.swift */,
+				3670E92526CBBF8E00FD5B79 /* FormatterService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -253,11 +264,12 @@
 				36874C7526B1914A00F03527 /* Data4LifeSDKConfiguration.swift in Sources */,
 				36F0171526C3FB53008C0621 /* UserConsentView.swift in Sources */,
 				36874C4E26B1630B00F03527 /* DataDonationViewController.swift in Sources */,
+				3670E92C26CBC89200FD5B79 /* Common+Swift.swift in Sources */,
 				36874C4A26B1630B00F03527 /* AppDelegate.swift in Sources */,
 				36874C7326B1906000F03527 /* Data4LifeSDKService.swift in Sources */,
 				367CC74626B2F4FB00660960 /* DataDonationSDKService.swift in Sources */,
 				367CC74826B817CD00660960 /* DataDonationRouter.swift in Sources */,
-				3670E92626CBBF8E00FD5B79 /* FormatterBuilder.swift in Sources */,
+				3670E92626CBBF8E00FD5B79 /* FormatterService.swift in Sources */,
 				36874C4C26B1630B00F03527 /* SceneDelegate.swift in Sources */,
 				36874C6E26B18B3D00F03527 /* SplashViewController.swift in Sources */,
 				3670E92926CBC21700FD5B79 /* DataDonationViewModel.swift in Sources */,

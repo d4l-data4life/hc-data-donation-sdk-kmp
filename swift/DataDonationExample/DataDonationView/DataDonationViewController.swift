@@ -104,8 +104,8 @@ final class DataDonationViewController: UIViewController {
         case .loggedIn(let userConsents):
             showLogoutButton()
             var snapshot = NSDiffableDataSourceSnapshot<UserConsentSection, UserConsentRow>()
-            snapshot.appendSections([.main])
-            snapshot.appendItems(userConsents, toSection: .main)
+            snapshot.appendSections([.userConsents])
+            snapshot.appendItems(userConsents, toSection: .userConsents)
             dataDonationDiffableDataSource.apply(snapshot, animatingDifferences: true)
             buttonStackView.isHidden = false
         case .loggedOut:
