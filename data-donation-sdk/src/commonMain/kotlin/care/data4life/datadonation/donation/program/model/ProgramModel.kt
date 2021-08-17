@@ -59,7 +59,8 @@ internal data class ProgramDonationConfiguration(
     override val anonymization: ProgramAnonymization? = null,
     override val triggerList: List<String>? = null,
     override val delay: Double,
-    override val studyID: String
+    override val studyID: String,
+    override val revocation: String = "delete"
 ) : ProgramModelContract.ProgramDonationConfiguration
 
 @Serializable

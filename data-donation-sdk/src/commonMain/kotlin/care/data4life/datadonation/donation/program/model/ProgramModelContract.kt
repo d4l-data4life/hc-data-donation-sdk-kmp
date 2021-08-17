@@ -63,6 +63,7 @@ internal interface ProgramModelContract {
         val triggerList: List<String>?
         val delay: Double
         val studyID: String
+        val revocation: String
     }
 
     interface Program {
