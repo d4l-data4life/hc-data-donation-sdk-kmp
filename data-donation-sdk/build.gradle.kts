@@ -229,7 +229,11 @@ val uselessSwiftProtocols = listOf(
     "DataDonationSDK"
 )
 val referencePrefix = "DLDDSDK"
-val swiftNameReplacements = emptyMap<String, String>()
+
+val swiftNameReplacements = mapOf<String,String>(
+    "Kotlinx_coroutines_coreCancellationException" to "KotlinCancellationError",
+    "Kotlinx_coroutines_coreJob" to "KotlinJob"
+)
 
 project.afterEvaluate {
     val swiftTargetDirectory = File(rootDir, "${File.separator}swift${File.separator}${LibraryConfig.iOS.packageName}")

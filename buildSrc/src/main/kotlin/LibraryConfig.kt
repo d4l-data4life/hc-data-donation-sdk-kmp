@@ -18,7 +18,6 @@ object LibraryConfig {
 
     const val group = "care.data4life"
     const val name = "d4l-data-donation-sdk-kmp"
-    const val iOSName = "Data4LifeDataDonationSDK"
 
     const val githubOwner = "gesundheitscloud"
     const val githubRepository = "data-donation-sdk-native"
