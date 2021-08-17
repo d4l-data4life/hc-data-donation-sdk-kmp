@@ -14,11 +14,16 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.mock.stub
+package care.data4life.datadonation.donation.anonymization
 
-import care.data4life.datadonation.internal.domain.usecases.UsecaseContract
 import care.data4life.hl7.fhir.stu3.model.FhirResource
 
-internal class RedactSensitiveInformationStub :
-    UsecaseContract.RedactSensitiveInformation,
-    UsecaseStub<List<FhirResource>, List<FhirResource>>()
+internal interface AnonymizationContract {
+    interface Redaction {
+        suspend fun redact(resources: List<FhirResource>): List<FhirResource>
+
+        companion object {
+            const val REDACTED = "REDACTED"
+        }
+    }
+}

@@ -36,9 +36,5 @@ internal fun resolveConsentKoinModule(): Module {
         single<UserConsentContract.Controller> {
             UserConsentController(get(), get())
         }
-
-        single<UsecaseContract.RedactSensitiveInformation> {
-            RedactSensitiveInformation()
-        }
     }
 }
