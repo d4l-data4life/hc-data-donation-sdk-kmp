@@ -15,11 +15,13 @@
  */
 
 plugins {
-    // Android
-    androidLibrary()
-
     kotlinMultiplatform()
     kotlinSerialization()
+
+    // SwiftPackage
+    swiftPackage(version = "2.0.3")
+    // Android
+    androidLibrary()
 
     // Publish
     id("scripts.publishing-config")
@@ -35,8 +37,21 @@ kotlin {
     ios {
         binaries {
             framework {
-                baseName = LibraryConfig.name
+                baseName = LibraryConfig.iOS.packageName
             }
+        }
+    }
+
+    multiplatformSwiftPackage {
+        swiftToolsVersion(LibraryConfig.iOS.toolVersion)
+        packageName(LibraryConfig.iOS.packageName)
+        zipFileName(LibraryConfig.iOS.packageName)
+        outputDirectory(
+            File(rootDir, "${File.separator}swift${File.separator}${LibraryConfig.iOS.packageName}")
+        )
+        distributionMode { local() }
+        targetPlatforms {
+            iOS { v(LibraryConfig.iOS.targetVersion) }
         }
     }
 
@@ -59,7 +74,9 @@ kotlin {
 
                 implementation(Dependency.multiplatform.coroutines.common)
 
+                implementation(Dependency.multiplatform.stately.freeze)
                 implementation(Dependency.multiplatform.stately.isolate)
+                implementation(Dependency.multiplatform.stately.concurrency)
 
                 implementation(Dependency.multiplatform.ktor.commonCore)
                 implementation(Dependency.multiplatform.ktor.logger)
@@ -73,7 +90,13 @@ kotlin {
                 // D4L
                 implementation(Dependency.d4l.fhir)
                 implementation(Dependency.d4l.sdkUtil)
-                implementation(Dependency.d4l.sdkUtilCoroutine)
+                implementation(Dependency.d4l.sdkFlow)
+                implementation(Dependency.d4l.sdkError)
+                implementation(Dependency.d4l.sdkUtilCoroutine) {
+                    exclude(
+                        group = "co.touchlab:stately-concurrency"
+                    )
+                }
             }
         }
         commonTest {
@@ -94,23 +117,21 @@ kotlin {
 
         val androidMain by getting {
             dependencies {
-                //Kotlin
-                implementation(Dependency.multiplatform.coroutines.android)
-
                 //DI
                 implementation(Dependency.jvm.slf4jNop)
                 implementation(Dependency.jvm.slf4jApi)
 
+                //Ktor
                 implementation(Dependency.multiplatform.ktor.androidCore)
-                implementation(Dependency.multiplatform.ktor.androidSerialization)
-                implementation(Dependency.multiplatform.serialization.android)
             }
         }
         val androidTest by getting {
             dependencies {
+                dependsOn(commonTest.get())
+
                 implementation(Dependency.multiplatform.kotlin.testJvm)
                 implementation(Dependency.multiplatform.kotlin.testJvmJunit)
-                dependsOn(commonTest.get())
+                implementation(Dependency.androidTest.robolectric)
             }
         }
 
@@ -126,7 +147,7 @@ kotlin {
                 implementation(Dependency.multiplatform.ktor.ios)
 
                 // D4L
-                implementation(Dependency.d4l.sdkUtil)
+                implementation(Dependency.d4l.sdkObjcUtil)
             }
         }
         val iosTest by getting {
@@ -200,5 +221,61 @@ val provideTestConfig: Task by tasks.creating {
 tasks.withType(org.jetbrains.kotlin.gradle.dsl.KotlinCompile::class.java) {
     if (this.name.contains("Test")) {
         this.dependsOn(provideTestConfig)
+    }
+}
+
+val uselessSwiftProtocols = listOf(
+    "ConsentDataContract",
+    "DataDonationSDK"
+)
+val referencePrefix = "DLDDSDK"
+val swiftNameReplacements = emptyMap<String, String>()
+
+project.afterEvaluate {
+    val swiftTargetDirectory = File(rootDir, "${File.separator}swift${File.separator}${LibraryConfig.iOS.packageName}")
+
+    val swiftPackageCleaner by tasks.register("cleanXCFramework") {
+        group = "Multiplatform-swift-package"
+        description = "Custom cleaner tasks to avoid empty protocols and to provide better names for Swift"
+
+        dependsOn(tasks.getByName("createXCFramework"))
+        doFirst {
+            project.fileTree(swiftTargetDirectory).forEach { file ->
+                if (file.absolutePath.endsWith(".h")) {
+                    var source = file.readText(Charsets.UTF_8)
+                    uselessSwiftProtocols.forEach { protocolName ->
+                        var replacementBarrier = source.contains("__attribute__((swift_name(\"$protocolName\")))")
+                        source = source.replace(
+                            "__attribute__((swift_name(\"$protocolName\")))\n" +
+                                "@protocol $referencePrefix$protocolName\n" +
+                                "@required\n" +
+                                "@end;",
+                            "// removed $protocolName"
+                        )
+                        replacementBarrier = replacementBarrier && !source.contains("__attribute__((swift_name(\"$protocolName\")))")
+
+                        if(replacementBarrier) {
+                            source = source.replace(
+                                Regex("__attribute__\\(\\(swift_name\\(\"$protocolName([A-Z][a-zA-Z]+)\"\\)\\)\\)"),
+                                "__attribute__((swift_name(\"$1Protocol\"))) // $protocolName$1 -> $1Protocol"
+                            )
+                        }
+                    }
+
+                    swiftNameReplacements.forEach { (originalName, newName) ->
+                        source = source.replace(
+                            "__attribute__((swift_name(\"$originalName\")))",
+                            "__attribute__((swift_name(\"$newName\"))) // $originalName -> $newName"
+                        )
+                    }
+
+                    file.writeText(source, Charsets.UTF_8)
+                }
+            }
+        }
+    }
+
+    tasks.getByName("createSwiftPackage") {
+        dependsOn(swiftPackageCleaner)
     }
 }

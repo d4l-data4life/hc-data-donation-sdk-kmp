@@ -16,9 +16,11 @@
 
 package care.data4life.datadonation.di
 
-import care.data4life.datadonation.DataDonationSDKPublicAPI
-import care.data4life.datadonation.internal.di.resolveRootModule
+import care.data4life.datadonation.DataDonationSDK
 import care.data4life.datadonation.mock.stub.UserSessionTokenProviderStub
+import care.data4life.sdk.flow.D4LSDKFlowFactoryContract
+import care.data4life.sdk.util.coroutine.DomainErrorMapperContract
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.datetime.Clock
 import org.koin.core.context.stopKoin
 import org.koin.dsl.koinApplication
@@ -35,7 +37,7 @@ class RootKoinTest {
     @Test
     fun `Given resolveRootModule is called with its appropriate parameter it creates a Module, which contains a Environment`() {
         // Given
-        val env = DataDonationSDKPublicAPI.Environment.DEV
+        val env = DataDonationSDK.Environment.DEV
         val provider = UserSessionTokenProviderStub()
 
         // When
@@ -48,14 +50,14 @@ class RootKoinTest {
             )
         }
         // Then
-        val builder: DataDonationSDKPublicAPI.Environment = koin.koin.get()
+        val builder: DataDonationSDK.Environment = koin.koin.get()
         assertNotNull(builder)
     }
 
     @Test
     fun `Given resolveRootModule is called with its appropriate parameter it creates a Module, which contains a Clock`() {
         // Given
-        val env = DataDonationSDKPublicAPI.Environment.DEV
+        val env = DataDonationSDK.Environment.DEV
         val provider = UserSessionTokenProviderStub()
 
         // When
@@ -68,14 +70,14 @@ class RootKoinTest {
             )
         }
         // Then
-        val builder: Clock = koin.koin.get()
-        assertNotNull(builder)
+        val clock: Clock = koin.koin.get()
+        assertNotNull(clock)
     }
 
     @Test
     fun `Given resolveRootModule is called with its appropriate parameter it creates a Module, which contains a UserSessionTokenProvider`() {
         // Given
-        val env = DataDonationSDKPublicAPI.Environment.DEV
+        val env = DataDonationSDK.Environment.DEV
         val provider = UserSessionTokenProviderStub()
 
         // When
@@ -88,7 +90,67 @@ class RootKoinTest {
             )
         }
         // Then
-        val builder: DataDonationSDKPublicAPI.UserSessionTokenProvider = koin.koin.get()
-        assertNotNull(builder)
+        val item: DataDonationSDK.UserSessionTokenProvider = koin.koin.get()
+        assertNotNull(item)
+    }
+
+    @Test
+    fun `Given resolveRootModule is called with its appropriate parameter it creates a Module, which contains a CoroutineContext`() {
+        // Given
+        val env = DataDonationSDK.Environment.DEV
+        val provider = UserSessionTokenProviderStub()
+
+        // When
+        val koin = koinApplication {
+            modules(
+                resolveRootModule(
+                    env,
+                    provider
+                )
+            )
+        }
+        // Then
+        val scope: CoroutineScope = koin.koin.get()
+        assertNotNull(scope)
+    }
+
+    @Test
+    fun `Given resolveRootModule is called with its appropriate parameter it creates a Module, which contains a DomainErrorMapperContract object`() {
+        // Given
+        val env = DataDonationSDK.Environment.DEV
+        val provider = UserSessionTokenProviderStub()
+
+        // When
+        val koin = koinApplication {
+            modules(
+                resolveRootModule(
+                    env,
+                    provider
+                )
+            )
+        }
+        // Then
+        val mapper: DomainErrorMapperContract = koin.koin.get()
+        assertNotNull(mapper)
+    }
+
+    @Test
+    fun `Given resolveRootModule is called with its appropriate parameter it creates a Module, which contains a D4LSDKFlowFactoryContract object`() {
+        // Given
+        val env = DataDonationSDK.Environment.DEV
+        val provider = UserSessionTokenProviderStub()
+
+        // When
+        val koin = koinApplication {
+            modules(
+                resolveRootModule(
+                    env,
+                    provider
+                )
+            )
+        }
+        // Then
+        val factory: D4LSDKFlowFactoryContract = koin.koin.get()
+        assertNotNull(factory)
     }
 }

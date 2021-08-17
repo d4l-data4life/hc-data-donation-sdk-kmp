@@ -19,10 +19,11 @@ import org.gradle.kotlin.dsl.exclude
 
 object Dependency {
 
+    val kotlin = Kotlin
+
     object Kotlin {
-        val stdLib = "org.jetbrains.kotlin:kotlin-stdlib:${Version.kotlin}"
-        val reflect = "org.jetbrains.kotlin:kotlin-reflect:${Version.kotlin}"
-        val serialization = "org.jetbrains.kotlin:kotlin-serialization:${Version.kotlin}"
+        const val stdLib = "org.jetbrains.kotlin:kotlin-stdlib:${Version.kotlin}"
+        const val serialization = "org.jetbrains.kotlin:kotlin-serialization:${Version.kotlin}"
     }
 
     val jvm = JVM
@@ -35,10 +36,13 @@ object Dependency {
     val d4l = D4L
     object D4L {
         const val sdkUtil = "care.data4life.hc-util-sdk-kmp:util:${Version.sdkUtil}"
-        const val sdkUtilCoroutine = "care.data4life.hc-util-sdk-kmp:util-coroutine:${Version.sdkUtil}"
-        const val sdkTestUtil = "care.data4life.hc-util-sdk-kmp:util-test:${Version.sdkUtil}"
-        const val sdkTestCoroutineUtil = "care.data4life.hc-util-sdk-kmp:util-coroutine-test:${Version.sdkUtil}"
-        const val sdkTestKtorUtil = "care.data4life.hc-util-sdk-kmp:util-ktor-test:${Version.sdkUtil}"
+        const val sdkObjcUtil = "care.data4life.hc-objc-util-sdk-kmp:objc-util:${Version.sdkObjcUtil}"
+        const val sdkUtilCoroutine = "care.data4life.hc-coroutine-util-sdk-kmp:coroutine-util:${Version.sdkCoroutineUtil}"
+        const val sdkFlow = "care.data4life.hc-result-sdk-kmp:flow:${Version.sdkResult}"
+        const val sdkError = "care.data4life.hc-result-sdk-kmp:error:${Version.sdkResult}"
+        const val sdkTestUtil = "care.data4life.hc-test-util-sdk-kmp:test-util:${Version.sdkTestUtil}"
+        const val sdkTestCoroutineUtil = "care.data4life.hc-test-util-sdk-kmp:test-util-coroutine:${Version.sdkTestUtil}"
+        const val sdkTestKtorUtil = "care.data4life.hc-test-util-sdk-kmp:test-util-ktor:${Version.sdkTestUtil}"
         const val fhir = "care.data4life.hc-fhir-sdk-kmp:fhir:${Version.fhir}"
     }
 
@@ -76,6 +80,8 @@ object Dependency {
 
         object Stately {
             const val isolate = "co.touchlab:stately-isolate:${Version.stately}-a1"
+            const val freeze = "co.touchlab:stately-common:${Version.stately}" // TODO Remove with Kotlin 1.5.x
+            const val concurrency = "co.touchlab:stately-concurrency:${Version.stately}"
         }
 
         val ktor = Ktor
@@ -163,6 +169,8 @@ object Dependency {
 
         const val uiAutomator =
             "androidx.test.uiautomator:uiautomator:${Version.androidXUiAutomator}"
+
+        const val robolectric = "org.robolectric:robolectric:${Version.robolectric}"
     }
 
     // Use for ktor dependency on ion

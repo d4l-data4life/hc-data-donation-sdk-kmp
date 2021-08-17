@@ -16,20 +16,21 @@
 
 package care.data4life.datadonation
 
-import care.data4life.datadonation.DataDonationSDKPublicAPI.Environment
-import care.data4life.datadonation.internal.domain.usecases.CreateUserConsent
-import care.data4life.datadonation.internal.domain.usecases.FetchConsentDocuments
-import care.data4life.datadonation.internal.domain.usecases.FetchUserConsents
-import care.data4life.datadonation.internal.domain.usecases.RevokeUserConsent
-import care.data4life.datadonation.internal.domain.usecases.UsecaseContract
-import care.data4life.datadonation.mock.fixture.ConsentFixtures.sampleConsentDocument
-import care.data4life.datadonation.mock.fixture.ConsentFixtures.sampleUserConsent
-import care.data4life.datadonation.mock.stub.CreateUserConsentStub
-import care.data4life.datadonation.mock.stub.FetchConsentDocumentsStub
-import care.data4life.datadonation.mock.stub.FetchUserConsentsStub
-import care.data4life.datadonation.mock.stub.RevokeUserConsentStub
+import care.data4life.datadonation.DataDonationSDK.Environment
+import care.data4life.datadonation.consent.consentdocument.ConsentDocumentContract
+import care.data4life.datadonation.consent.userconsent.UserConsentContract
+import care.data4life.datadonation.error.DataDonationFlowErrorMapper
+import care.data4life.datadonation.mock.fixture.ConsentDocumentFixture.sampleConsentDocument
+import care.data4life.datadonation.mock.fixture.UserConsentFixture.sampleUserConsent
+import care.data4life.datadonation.mock.spy.D4LFlowFactorySpy
 import care.data4life.datadonation.mock.stub.UserSessionTokenProviderStub
+import care.data4life.datadonation.mock.stub.consent.consentdocument.ConsentDocumentControllerStub
+import care.data4life.datadonation.mock.stub.consent.userconsent.UserConsentControllerStub
+import care.data4life.sdk.flow.D4LSDKFlowFactoryContract
+import care.data4life.sdk.util.coroutine.DomainErrorMapperContract
 import care.data4life.sdk.util.test.coroutine.runWithContextBlockingTest
+import care.data4life.sdk.util.test.coroutine.testCoroutineContext
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.collect
@@ -40,10 +41,13 @@ import org.koin.dsl.module
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 class ClientTest {
+    private var flowSpy = D4LFlowFactorySpy()
+
     @BeforeTest
     fun setUp() {
         stopKoin()
@@ -53,7 +57,7 @@ class ClientTest {
     fun `It fulfils DataDonationFactory`() {
         val factory: Any = Client
 
-        assertTrue(factory is DataDonationSDKPublicAPI.DataDonationClientFactory)
+        assertTrue(factory is DataDonationSDK.DataDonationClientFactory)
     }
 
     @Test
@@ -63,23 +67,26 @@ class ClientTest {
             UserSessionTokenProviderStub()
         )
 
-        assertTrue(client is DataDonationSDKPublicAPI.DataDonationClient)
+        assertTrue(client is DataDonationSDK.DataDonationClient)
     }
 
     @Test
     fun `Given createUserConsent is called with a ConsentDocumentVersion and a Language it builds and delegates its Parameter to the Usecase and returns a runnable Flow which emits a UserConsent`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
-        val usecase = CreateUserConsentStub()
+        val consentFlow = UserConsentControllerStub()
         val consent = sampleUserConsent
+        val scope = CoroutineScope(testCoroutineContext)
 
         val version = "23"
         val consentDocumentKey = "custom-consent-key"
 
-        val capturedParameter = Channel<UsecaseContract.CreateUserConsent.Parameter>()
+        val capturedKey = Channel<String>()
+        val capturedVersion = Channel<String>()
 
-        usecase.whenExecute = { delegatedParameter ->
+        consentFlow.whenCreateUserConsent = { delegatedKey, delegatedVersion ->
             launch {
-                capturedParameter.send(delegatedParameter)
+                capturedKey.send(delegatedKey)
+                capturedVersion.send(delegatedVersion)
             }
             consent
         }
@@ -87,17 +94,21 @@ class ClientTest {
         val di = koinApplication {
             modules(
                 module {
-                    single<UsecaseContract.CreateUserConsent> {
-                        usecase
+                    single<UserConsentContract.Controller> {
+                        consentFlow
                     }
-                    single<UsecaseContract.FetchConsentDocuments> {
-                        FetchConsentDocumentsStub()
+                    single<CoroutineScope> {
+                        scope
                     }
-                    single<UsecaseContract.FetchUserConsents> {
-                        FetchUserConsentsStub()
+                    single<DomainErrorMapperContract> {
+                        DataDonationFlowErrorMapper
                     }
-                    single<UsecaseContract.RevokeUserConsent> {
-                        RevokeUserConsentStub()
+                    single<D4LSDKFlowFactoryContract> {
+                        flowSpy
+                    }
+
+                    single<ConsentDocumentContract.Controller> {
+                        ConsentDocumentControllerStub()
                     }
                 }
             )
@@ -118,29 +129,45 @@ class ClientTest {
         }
 
         assertEquals(
-            actual = capturedParameter.receive(),
-            expected = CreateUserConsent.Parameter(
-                consentDocumentKey = consentDocumentKey,
-                version = version
-            )
+            actual = capturedKey.receive(),
+            expected = consentDocumentKey,
+        )
+
+        assertEquals(
+            actual = capturedVersion.receive(),
+            expected = version,
+        )
+
+        assertSame(
+            actual = flowSpy.capturedErrorMapper,
+            expected = DataDonationFlowErrorMapper
+        )
+        assertSame(
+            actual = flowSpy.capturedScope,
+            expected = scope
         )
     }
 
     @Test
     fun `Given fetchConsentDocuments is called with a consentDocumentKey it builds and delegates its Parameter to the Usecase and returns a runnable Flow which emits a List of ConsentDocument`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
-        val usecase = FetchConsentDocumentsStub()
+        val consentDocumentFlow = ConsentDocumentControllerStub()
         val documents = listOf(sampleConsentDocument)
+        val scope = CoroutineScope(testCoroutineContext)
 
         val version = "23"
         val language = "de-j-old-n-kotlin-x-done"
         val consentDocumentKey = "abc"
 
-        val capturedParameter = Channel<UsecaseContract.FetchConsentDocuments.Parameter>()
+        val capturedKey = Channel<String>()
+        val capturedVersion = Channel<String?>()
+        val capturedLanguage = Channel<String?>()
 
-        usecase.whenExecute = { delegatedParameter ->
+        consentDocumentFlow.whenFetchConsentDocuments = { delegatedKey, delegatedVersion, delegatedLangauge ->
             launch {
-                capturedParameter.send(delegatedParameter)
+                capturedKey.send(delegatedKey)
+                capturedVersion.send(delegatedVersion)
+                capturedLanguage.send(delegatedLangauge)
             }
             documents
         }
@@ -148,17 +175,22 @@ class ClientTest {
         val di = koinApplication {
             modules(
                 module {
-                    single<UsecaseContract.FetchConsentDocuments> {
-                        usecase
+                    single<UserConsentContract.Controller> {
+                        UserConsentControllerStub()
                     }
-                    single<UsecaseContract.CreateUserConsent> {
-                        CreateUserConsentStub()
+
+                    single<CoroutineScope> {
+                        scope
                     }
-                    single<UsecaseContract.FetchUserConsents> {
-                        FetchUserConsentsStub()
+                    single<DomainErrorMapperContract> {
+                        DataDonationFlowErrorMapper
                     }
-                    single<UsecaseContract.RevokeUserConsent> {
-                        RevokeUserConsentStub()
+                    single<D4LSDKFlowFactoryContract> {
+                        flowSpy
+                    }
+
+                    single<ConsentDocumentContract.Controller> {
+                        consentDocumentFlow
                     }
                 }
             )
@@ -180,26 +212,42 @@ class ClientTest {
         }
 
         assertEquals(
-            actual = capturedParameter.receive(),
-            expected = FetchConsentDocuments.Parameter(
-                version = version,
-                language = language,
-                consentDocumentKey = consentDocumentKey
-            )
+            actual = capturedKey.receive(),
+            expected = consentDocumentKey
+        )
+
+        assertEquals(
+            actual = capturedVersion.receive(),
+            expected = version,
+        )
+
+        assertEquals(
+            actual = capturedLanguage.receive(),
+            expected = language,
+        )
+
+        assertSame(
+            actual = flowSpy.capturedErrorMapper,
+            expected = DataDonationFlowErrorMapper
+        )
+        assertSame(
+            actual = flowSpy.capturedScope,
+            expected = scope
         )
     }
 
     @Test
     fun `Given fetchUserConsents is called with a consentDocumentKey it builds and delegates its Parameter to the Usecase and returns a runnable Flow which emits a List of UserConsent`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
-        val usecase = FetchUserConsentsStub()
+        val consentFlow = UserConsentControllerStub()
         val consents = listOf(sampleUserConsent)
+        val scope = CoroutineScope(testCoroutineContext)
 
-        val capturedParameter = Channel<UsecaseContract.FetchUserConsents.Parameter>()
+        val capturedKey = Channel<String?>()
 
-        usecase.whenExecute = { delegatedParameter ->
+        consentFlow.whenFetchUserConsents = { delegatedKey ->
             launch {
-                capturedParameter.send(delegatedParameter)
+                capturedKey.send(delegatedKey)
             }
             consents
         }
@@ -207,17 +255,22 @@ class ClientTest {
         val di = koinApplication {
             modules(
                 module {
-                    single<UsecaseContract.FetchUserConsents> {
-                        usecase
+                    single<UserConsentContract.Controller> {
+                        consentFlow
                     }
-                    single<UsecaseContract.FetchConsentDocuments> {
-                        FetchConsentDocumentsStub()
+
+                    single<CoroutineScope> {
+                        scope
                     }
-                    single<UsecaseContract.CreateUserConsent> {
-                        CreateUserConsentStub()
+                    single<DomainErrorMapperContract> {
+                        DataDonationFlowErrorMapper
                     }
-                    single<UsecaseContract.RevokeUserConsent> {
-                        RevokeUserConsentStub()
+                    single<D4LSDKFlowFactoryContract> {
+                        flowSpy
+                    }
+
+                    single<ConsentDocumentContract.Controller> {
+                        ConsentDocumentControllerStub()
                     }
                 }
             )
@@ -238,24 +291,32 @@ class ClientTest {
         }
 
         assertEquals(
-            actual = capturedParameter.receive(),
-            expected = FetchUserConsents.Parameter(
-                consentDocumentKey = consentDocumentKey
-            )
+            actual = capturedKey.receive(),
+            expected = consentDocumentKey
+        )
+
+        assertSame(
+            actual = flowSpy.capturedErrorMapper,
+            expected = DataDonationFlowErrorMapper
+        )
+        assertSame(
+            actual = flowSpy.capturedScope,
+            expected = scope
         )
     }
 
     @Test
     fun `Given fetchAllUserConsents is called it builds and delegates its Parameter to the Usecase and returns a runnable Flow which emits a List of UserConsent`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
-        val usecase = FetchUserConsentsStub()
+        val consentFlow = UserConsentControllerStub()
         val consents = listOf(sampleUserConsent)
+        val scope = CoroutineScope(testCoroutineContext)
 
-        val capturedParameter = Channel<UsecaseContract.FetchUserConsents.Parameter>()
+        val capturedKey = Channel<String?>()
 
-        usecase.whenExecute = { delegatedParameter ->
+        consentFlow.whenFetchUserConsents = { delegatedKey ->
             launch {
-                capturedParameter.send(delegatedParameter)
+                capturedKey.send(delegatedKey)
             }
             consents
         }
@@ -263,17 +324,21 @@ class ClientTest {
         val di = koinApplication {
             modules(
                 module {
-                    single<UsecaseContract.FetchUserConsents> {
-                        usecase
+                    single<UserConsentContract.Controller> {
+                        consentFlow
                     }
-                    single<UsecaseContract.FetchConsentDocuments> {
-                        FetchConsentDocumentsStub()
+                    single<CoroutineScope> {
+                        scope
                     }
-                    single<UsecaseContract.CreateUserConsent> {
-                        CreateUserConsentStub()
+                    single<DomainErrorMapperContract> {
+                        DataDonationFlowErrorMapper
                     }
-                    single<UsecaseContract.RevokeUserConsent> {
-                        RevokeUserConsentStub()
+                    single<D4LSDKFlowFactoryContract> {
+                        flowSpy
+                    }
+
+                    single<ConsentDocumentContract.Controller> {
+                        ConsentDocumentControllerStub()
                     }
                 }
             )
@@ -290,42 +355,54 @@ class ClientTest {
             )
         }
 
-        assertEquals(
-            actual = capturedParameter.receive(),
-            expected = FetchUserConsents.Parameter()
+        assertNull(capturedKey.receive())
+
+        assertSame(
+            actual = flowSpy.capturedErrorMapper,
+            expected = DataDonationFlowErrorMapper
+        )
+        assertSame(
+            actual = flowSpy.capturedScope,
+            expected = scope
         )
     }
 
     @Test
     fun `Given revokeUserConsent is called with a consentDocumentKey it builds and delegates its Parameter to the Usecase and returns a runnable Flow which just runs`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
-        val usecase = RevokeUserConsentStub()
+        val consentFlow = UserConsentControllerStub()
+        val scope = CoroutineScope(testCoroutineContext)
 
         val consentDocumentKey = "custom-consent-key"
 
-        val capturedParameter = Channel<UsecaseContract.RevokeUserConsent.Parameter>()
+        val capturedKey = Channel<String>()
 
-        usecase.whenExecute = { delegatedParameter ->
+        consentFlow.whenRevokeUserConsent = { delegatedKey ->
             launch {
-                capturedParameter.send(delegatedParameter)
+                capturedKey.send(delegatedKey)
             }
-            Unit
+            sampleUserConsent
         }
 
         val di = koinApplication {
             modules(
                 module {
-                    single<UsecaseContract.RevokeUserConsent> {
-                        usecase
+                    single<UserConsentContract.Controller> {
+                        consentFlow
                     }
-                    single<UsecaseContract.FetchConsentDocuments> {
-                        FetchConsentDocumentsStub()
+
+                    single<CoroutineScope> {
+                        scope
                     }
-                    single<UsecaseContract.CreateUserConsent> {
-                        CreateUserConsentStub()
+                    single<DomainErrorMapperContract> {
+                        DataDonationFlowErrorMapper
                     }
-                    single<UsecaseContract.FetchUserConsents> {
-                        FetchUserConsentsStub()
+                    single<D4LSDKFlowFactoryContract> {
+                        flowSpy
+                    }
+
+                    single<ConsentDocumentContract.Controller> {
+                        ConsentDocumentControllerStub()
                     }
                 }
             )
@@ -338,15 +415,22 @@ class ClientTest {
             // Then
             assertSame(
                 actual = result,
-                expected = Unit
+                expected = sampleUserConsent
             )
         }
 
         assertEquals(
-            actual = capturedParameter.receive(),
-            expected = RevokeUserConsent.Parameter(
-                consentDocumentKey = consentDocumentKey,
-            )
+            actual = capturedKey.receive(),
+            expected = consentDocumentKey
+        )
+
+        assertSame(
+            actual = flowSpy.capturedErrorMapper,
+            expected = DataDonationFlowErrorMapper
+        )
+        assertSame(
+            actual = flowSpy.capturedScope,
+            expected = scope
         )
     }
 }
