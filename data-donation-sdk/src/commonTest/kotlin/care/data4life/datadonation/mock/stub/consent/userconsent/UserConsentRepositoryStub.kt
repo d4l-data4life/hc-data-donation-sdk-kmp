@@ -25,6 +25,8 @@ import care.data4life.datadonation.networking.AccessToken
 internal class UserConsentRepositoryStub : UserConsentContract.Repository, MockContract.Stub {
     var whenCreateUserConsent: ((AccessToken, String, String) -> Unit)? = null
     var whenFetchUserConsents: ((AccessToken, String?) -> List<UserConsent>)? = null
+    var whenFetchLatestUserConsents: ((AccessToken) -> List<UserConsent>)? = null
+    var whenFetchAllUserConsents: ((AccessToken) -> List<UserConsent>)? = null
     var whenRevokeUserConsent: ((AccessToken, String) -> Unit)? = null
 
     override suspend fun createUserConsent(
@@ -41,11 +43,27 @@ internal class UserConsentRepositoryStub : UserConsentContract.Repository, MockC
 
     override suspend fun fetchUserConsents(
         accessToken: AccessToken,
-        consentDocumentKey: String?
+        consentDocumentKey: String
     ): List<UserConsent> {
         return whenFetchUserConsents?.invoke(
             accessToken,
             consentDocumentKey
+        ) ?: throw MockException()
+    }
+
+    override suspend fun fetchLatestUserConsents(
+        accessToken: AccessToken,
+    ): List<UserConsent> {
+        return whenFetchLatestUserConsents?.invoke(
+            accessToken,
+        ) ?: throw MockException()
+    }
+
+    override suspend fun fetchAllUserConsents(
+        accessToken: AccessToken,
+    ): List<UserConsent> {
+        return whenFetchAllUserConsents?.invoke(
+            accessToken,
         ) ?: throw MockException()
     }
 
@@ -62,6 +80,7 @@ internal class UserConsentRepositoryStub : UserConsentContract.Repository, MockC
     override fun clear() {
         whenCreateUserConsent = null
         whenFetchUserConsents = null
+        whenFetchAllUserConsents = null
         whenRevokeUserConsent = null
     }
 }

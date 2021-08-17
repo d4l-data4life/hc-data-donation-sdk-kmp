@@ -1,0 +1,34 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "Data4LifeFHIR",
+        "repositoryURL": "git@github.com:d4l-data4life/d4l-fhir-ios.git",
+        "state": {
+          "branch": null,
+          "revision": "2120c7cf148161691f63d285bd76bfd165067796",
+          "version": "0.21.1"
+        }
+      },
+      {
+        "package": "Data4LifeSDK",
+        "repositoryURL": "https://github.com/d4l-data4life/d4l-sdk-ios.git",
+        "state": {
+          "branch": null,
+          "revision": "3890093deb4c33be8e4c993fa1f17b1e99967fb8",
+          "version": "1.14.3"
+        }
+      },
+      {
+        "package": "Data4LifeSDKUtils",
+        "repositoryURL": "git@github.com:d4l-data4life/d4l-utils-ios.git",
+        "state": {
+          "branch": null,
+          "revision": "4cc48b98b1112ce680b91ee81bb4c38559b3116f",
+          "version": "0.6.0"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

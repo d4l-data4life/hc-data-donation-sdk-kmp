@@ -23,6 +23,12 @@ internal class UserConsentController(
     private val repository: UserConsentContract.Repository,
     private val sessionTokenRepository: SessionTokenRepositoryContract
 ) : UserConsentContract.Controller {
+    private suspend fun fetchLatestConsent(): ConsentDataContract.UserConsent {
+        return repository.fetchLatestUserConsents(
+            accessToken = sessionTokenRepository.getUserSessionToken(),
+        ).first()
+    }
+
     override suspend fun createUserConsent(
         consentDocumentKey: String,
         consentDocumentVersion: String
@@ -32,7 +38,7 @@ internal class UserConsentController(
             consentDocumentKey = consentDocumentKey,
             consentDocumentVersion = consentDocumentVersion
         )
-        return fetchAllUserConsents().first()
+        return fetchLatestConsent()
     }
 
     override suspend fun fetchUserConsents(consentDocumentKey: String): List<ConsentDataContract.UserConsent> {
@@ -43,9 +49,8 @@ internal class UserConsentController(
     }
 
     override suspend fun fetchAllUserConsents(): List<ConsentDataContract.UserConsent> {
-        return repository.fetchUserConsents(
-            accessToken = sessionTokenRepository.getUserSessionToken(),
-            consentDocumentKey = null
+        return repository.fetchAllUserConsents(
+            accessToken = sessionTokenRepository.getUserSessionToken()
         )
     }
 
@@ -54,6 +59,6 @@ internal class UserConsentController(
             accessToken = sessionTokenRepository.getUserSessionToken(),
             consentDocumentKey = consentDocumentKey
         )
-        return fetchAllUserConsents().first()
+        return fetchLatestConsent()
     }
 }
