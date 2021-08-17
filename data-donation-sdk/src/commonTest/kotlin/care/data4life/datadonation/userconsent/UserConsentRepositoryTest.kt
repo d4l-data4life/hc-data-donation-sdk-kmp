@@ -80,7 +80,7 @@ class UserConsentRepositoryTest {
     }
 
     @Test
-    fun `Given fetchUserConsents is called without a consentDocumentKey, it resolves the SessionToken and delegates it to the ConsentService and returns a List of UserConsent`() = runBlockingTest {
+    fun `Given fetchAllUserConsents is called, it resolves the SessionToken and delegates it to the ConsentService and returns a List of UserConsent`() = runBlockingTest {
         // Given
         val consentService = UserConsentApiServiceStub()
 
@@ -102,7 +102,7 @@ class UserConsentRepositoryTest {
         }
 
         // When
-        val result = UserConsentRepository(consentService).fetchUserConsents(accessToken, null)
+        val result = UserConsentRepository(consentService).fetchAllUserConsents(accessToken)
 
         // Then
         assertSame(
@@ -114,6 +114,44 @@ class UserConsentRepositoryTest {
             expected = accessToken
         )
         assertFalse(capturedFlag!!)
+        assertNull(capturedConsentDocumentKey)
+    }
+
+    @Test
+    fun `Given fetchLatestUserConsents is called, it resolves the SessionToken and delegates it to the ConsentService and returns a List of UserConsent`() = runBlockingTest {
+        // Given
+        val consentService = UserConsentApiServiceStub()
+
+        val accessToken = "token"
+        val userConsents = listOf(
+            sampleUserConsent,
+            sampleUserConsent.copy(accountId = "tomato")
+        )
+
+        var capturedToken: String? = null
+        var capturedFlag: Boolean? = null
+        var capturedConsentDocumentKey: String? = "NotNull"
+
+        consentService.whenFetchUserConsents = { delegatedToken, delegatedFlag, delegatedConsentDocumentKey ->
+            capturedToken = delegatedToken
+            capturedFlag = delegatedFlag
+            capturedConsentDocumentKey = delegatedConsentDocumentKey
+            userConsents
+        }
+
+        // When
+        val result = UserConsentRepository(consentService).fetchLatestUserConsents(accessToken)
+
+        // Then
+        assertSame(
+            actual = result,
+            expected = userConsents
+        )
+        assertEquals(
+            actual = capturedToken,
+            expected = accessToken
+        )
+        assertTrue(capturedFlag!!)
         assertNull(capturedConsentDocumentKey)
     }
 

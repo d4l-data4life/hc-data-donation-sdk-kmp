@@ -37,12 +37,32 @@ internal class UserConsentRepository(
 
     override suspend fun fetchUserConsents(
         accessToken: AccessToken,
-        consentDocumentKey: String?
+        consentDocumentKey: String
     ): List<UserConsent> {
         return apiService.fetchUserConsents(
             accessToken,
             false,
             consentDocumentKey
+        )
+    }
+
+    override suspend fun fetchLatestUserConsents(
+        accessToken: AccessToken
+    ): List<UserConsent> {
+        return apiService.fetchUserConsents(
+            accessToken,
+            true,
+            null
+        )
+    }
+
+    override suspend fun fetchAllUserConsents(
+        accessToken: AccessToken,
+    ): List<UserConsent> {
+        return apiService.fetchUserConsents(
+            accessToken,
+            false,
+            null
         )
     }
 
