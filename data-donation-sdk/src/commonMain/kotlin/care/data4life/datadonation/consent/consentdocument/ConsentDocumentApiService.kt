@@ -20,7 +20,7 @@ import care.data4life.datadonation.consent.consentdocument.ConsentDocumentContra
 import care.data4life.datadonation.networking.HttpRuntimeError
 import care.data4life.datadonation.networking.Networking
 import care.data4life.datadonation.networking.receive
-import care.data4life.datadonation.userconsent.model.ConsentDocument
+import care.data4life.datadonation.consent.consentdocument.model.ConsentDocument
 import care.data4life.datadonation.ConsentDataContract.ConsentDocument as ConsentDocumentContract
 
 internal class ConsentDocumentApiService constructor(

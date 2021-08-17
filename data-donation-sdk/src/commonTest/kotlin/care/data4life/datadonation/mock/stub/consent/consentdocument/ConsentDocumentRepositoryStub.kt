@@ -20,7 +20,7 @@ import care.data4life.datadonation.consent.consentdocument.ConsentDocumentContra
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 import care.data4life.datadonation.networking.AccessToken
-import care.data4life.datadonation.userconsent.model.ConsentDocument
+import care.data4life.datadonation.consent.consentdocument.model.ConsentDocument
 
 internal class ConsentDocumentRepositoryStub :
     ConsentDocumentContract.Repository,
