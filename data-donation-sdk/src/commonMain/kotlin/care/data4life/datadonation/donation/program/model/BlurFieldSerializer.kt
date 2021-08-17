@@ -16,6 +16,7 @@
 
 package care.data4life.datadonation.donation.program.model
 
+import care.data4life.datadonation.error.CoreRuntimeError
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
@@ -25,17 +26,16 @@ import kotlinx.serialization.encoding.Encoder
 
 internal object BlurFieldSerializer : KSerializer<ProgramModelContract.BlurField> {
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("BlurField", PrimitiveKind.STRING)
+    private val mapping = ProgramModelContract.BlurField.values().associateBy { it.value }
 
     override fun serialize(encoder: Encoder, value: ProgramModelContract.BlurField) {
         encoder.encodeString(value.value)
     }
 
     override fun deserialize(decoder: Decoder): ProgramModelContract.BlurField {
-        val string = decoder.decodeString().replace(
-            "Of",
-            "_of_"
-        ).toUpperCase()
-
-        return ProgramModelContract.BlurField.valueOf(string)
+        val key = decoder.decodeString()
+        return mapping.getOrElse(key) {
+            throw CoreRuntimeError.InternalFailure("Unknown blur function $key.")
+        }
     }
 }
