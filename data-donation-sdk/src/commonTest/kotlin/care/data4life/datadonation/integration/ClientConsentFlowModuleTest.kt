@@ -240,7 +240,7 @@ class ClientConsentFlowModuleTest {
             } else {
                 assertEquals(
                     actual = request.url.fullPath,
-                    expected = "/consent/api/v1/userConsents?latest=false"
+                    expected = "/consent/api/v1/userConsents?latest=true"
                 )
                 assertEquals(
                     actual = request.headers,
@@ -340,7 +340,7 @@ class ClientConsentFlowModuleTest {
             } else {
                 assertEquals(
                     actual = request.url.fullPath,
-                    expected = "/consent/api/v1/userConsents?latest=false"
+                    expected = "/consent/api/v1/userConsents?latest=true"
                 )
                 assertEquals(
                     actual = request.headers,
