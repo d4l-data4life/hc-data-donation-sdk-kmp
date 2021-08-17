@@ -30,14 +30,14 @@ internal data class ProgramItemBlur(
 internal data class ProgramResourceBlur(
     override val location: String? = null,
     override val authored: ProgramModelContract.BlurField? = null,
-    override val items: List<ProgramModelContract.ProgramItemBlur>
+    override val items: List<ProgramItemBlur>
 ) : ProgramModelContract.ProgramResourceBlur
 
 @Serializable
 internal data class ProgramResource(
     override val url: String,
     override val versions: List<String>? = null,
-    override val blur: ProgramModelContract.ProgramResourceBlur? = null
+    override val blur: ProgramResourceBlur? = null
 ) : ProgramModelContract.ProgramResource
 
 @Serializable
@@ -49,14 +49,14 @@ internal data class ProgramAnonymizationBlurValue(
 
 @Serializable
 internal data class ProgramAnonymization(
-    override val blur: ProgramModelContract.ProgramAnonymizationBlurValue? = null
+    override val blur: ProgramAnonymizationBlurValue? = null
 ) : ProgramModelContract.ProgramAnonymization
 
 @Serializable
 internal data class ProgramConfiguration(
     override val consentKey: String,
-    override val resources: List<ProgramModelContract.ProgramResource>,
-    override val anonymization: ProgramModelContract.ProgramAnonymization? = null,
+    override val resources: List<ProgramResource>,
+    override val anonymization: ProgramAnonymization? = null,
     override val triggerList: List<String>? = null,
     override val delay: Double,
     override val studyID: String
@@ -67,5 +67,5 @@ internal data class Program(
     override val name: String,
     override val slug: String,
     override val tenantID: String,
-    override val donation: ProgramModelContract.ProgramConfiguration? = null
+    override val donation: ProgramConfiguration? = null
 ) : ProgramModelContract.Program
