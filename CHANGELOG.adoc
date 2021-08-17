@@ -28,6 +28,7 @@ toc::[]
 === Added
 
 * Client#revokeUserConsent returns the latest UserConsent.
+* Example iOS app.
 * Swift package.
 * touchlab's stately-common (1.1.6) (Dependency).
 * touchlab's stately-concurrency (1.1.6) (Dependency).
