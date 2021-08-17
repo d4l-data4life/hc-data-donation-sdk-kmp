@@ -18,7 +18,7 @@ package care.data4life.datadonation.consent.userconsent
 
 import care.data4life.datadonation.consent.userconsent.UserConsentContract.ApiService.Companion.PARAMETER.LATEST_CONSENT
 import care.data4life.datadonation.consent.userconsent.UserConsentContract.ApiService.Companion.PARAMETER.USER_CONSENT_KEY
-import care.data4life.datadonation.consent.userconsent.UserConsentContract.ApiService.Companion.PATH
+import care.data4life.datadonation.consent.userconsent.UserConsentContract.ApiService.Companion.ROUTE
 import care.data4life.datadonation.consent.userconsent.model.ConsentCreationPayload
 import care.data4life.datadonation.consent.userconsent.model.ConsentRevocationPayload
 import care.data4life.datadonation.consent.userconsent.model.UserConsent
@@ -52,7 +52,7 @@ internal class UserConsentApiService constructor(
             .setBody(payload)
             .prepare(
                 Networking.Method.POST,
-                PATH
+                ROUTE
             )
 
         return try {
@@ -78,7 +78,7 @@ internal class UserConsentApiService constructor(
             .setParameter(parameter)
             .prepare(
                 Networking.Method.GET,
-                PATH
+                ROUTE
             )
 
         return try {
@@ -98,7 +98,7 @@ internal class UserConsentApiService constructor(
             .setBody(payload)
             .prepare(
                 Networking.Method.DELETE,
-                PATH
+                ROUTE
             )
 
         return try {

@@ -18,7 +18,7 @@ package care.data4life.datadonation.consent.userconsent
 
 import care.data4life.datadonation.consent.userconsent.UserConsentContract.ApiService.Companion.PARAMETER.LATEST_CONSENT
 import care.data4life.datadonation.consent.userconsent.UserConsentContract.ApiService.Companion.PARAMETER.USER_CONSENT_KEY
-import care.data4life.datadonation.consent.userconsent.UserConsentContract.ApiService.Companion.PATH
+import care.data4life.datadonation.consent.userconsent.UserConsentContract.ApiService.Companion.ROUTE
 import care.data4life.datadonation.consent.userconsent.model.ConsentCreationPayload
 import care.data4life.datadonation.consent.userconsent.model.ConsentRevocationPayload
 import care.data4life.datadonation.error.CoreRuntimeError
@@ -174,7 +174,7 @@ class UserConsentApiServiceTest {
         )
         assertEquals(
             actual = capturedPath,
-            expected = PATH
+            expected = ROUTE
         )
 
         assertEquals(
@@ -342,7 +342,7 @@ class UserConsentApiServiceTest {
         )
         assertEquals(
             actual = capturedPath,
-            expected = PATH
+            expected = ROUTE
         )
 
         assertEquals(
@@ -464,7 +464,7 @@ class UserConsentApiServiceTest {
         )
         assertEquals(
             actual = capturedPath,
-            expected = PATH
+            expected = ROUTE
         )
 
         assertEquals(

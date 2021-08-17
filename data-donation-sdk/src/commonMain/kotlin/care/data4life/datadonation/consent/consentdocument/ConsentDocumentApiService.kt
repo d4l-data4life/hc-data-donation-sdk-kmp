@@ -16,7 +16,7 @@
 
 package care.data4life.datadonation.consent.consentdocument
 
-import care.data4life.datadonation.consent.consentdocument.ConsentDocumentContract.ApiService.Companion.PATH
+import care.data4life.datadonation.consent.consentdocument.ConsentDocumentContract.ApiService.Companion.ROUTE
 import care.data4life.datadonation.networking.HttpRuntimeError
 import care.data4life.datadonation.networking.Networking
 import care.data4life.datadonation.networking.receive
@@ -45,7 +45,7 @@ internal class ConsentDocumentApiService constructor(
             .setParameter(parameter)
             .prepare(
                 Networking.Method.GET,
-                PATH
+                ROUTE
             )
 
         return try {

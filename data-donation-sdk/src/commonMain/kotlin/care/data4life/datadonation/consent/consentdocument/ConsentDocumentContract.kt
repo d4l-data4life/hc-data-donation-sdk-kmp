@@ -30,7 +30,7 @@ internal interface ConsentDocumentContract {
         ): List<ConsentDataContract.ConsentDocument>
 
         companion object {
-            val PATH = listOf("consent", "api", "v1", "consentDocuments")
+            val ROUTE = listOf("consent", "api", "v1", "consentDocuments")
         }
 
         interface ErrorHandler {

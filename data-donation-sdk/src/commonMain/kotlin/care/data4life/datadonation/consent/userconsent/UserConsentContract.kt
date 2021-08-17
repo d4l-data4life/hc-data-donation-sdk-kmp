@@ -40,12 +40,10 @@ internal interface UserConsentContract {
         )
 
         companion object {
-            val PATH = listOf("consent", "api", "v1", "userConsents")
+            val ROUTE = listOf("consent", "api", "v1", "userConsents")
 
             object PARAMETER {
                 const val USER_CONSENT_KEY = "consentDocumentKey"
-                const val LANGUAGE = "language"
-                const val VERSION = "version"
                 const val LATEST_CONSENT = "latest"
             }
         }

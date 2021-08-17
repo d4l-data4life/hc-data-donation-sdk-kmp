@@ -16,7 +16,7 @@
 
 package care.data4life.datadonation.consent.consentdocument
 
-import care.data4life.datadonation.consent.consentdocument.ConsentDocumentContract.ApiService.Companion.PATH
+import care.data4life.datadonation.consent.consentdocument.ConsentDocumentContract.ApiService.Companion.ROUTE
 import care.data4life.datadonation.error.CoreRuntimeError
 import care.data4life.datadonation.mock.fixture.ConsentDocumentFixture.sampleConsentDocument
 import care.data4life.datadonation.mock.stub.consent.consentdocument.ConsentDocumentErrorHandlerStub
@@ -198,7 +198,7 @@ class ConsentDocumentApiServiceTest {
         )
         assertEquals(
             actual = capturedPath,
-            expected = PATH
+            expected = ROUTE
         )
 
         assertEquals(
