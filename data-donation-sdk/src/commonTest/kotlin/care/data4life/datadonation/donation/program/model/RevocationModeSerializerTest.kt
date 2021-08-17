@@ -16,7 +16,6 @@
 
 package care.data4life.datadonation.donation.program.model
 
-import care.data4life.datadonation.error.CoreRuntimeError
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.descriptors.PrimitiveKind
@@ -26,14 +25,13 @@ import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.contextual
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
-internal class BlurFunctionSerializerTest {
+internal class RevocationModeSerializerTest {
     @Test
     fun `It fulfils KSerializer`() {
-        val serializer: Any = BlurFunctionSerializer
+        val serializer: Any = RevocationModeSerializer
 
         assertTrue(serializer is KSerializer<*>)
     }
@@ -41,26 +39,26 @@ internal class BlurFunctionSerializerTest {
     @Test
     fun `It has a proper descriptor`() {
         assertEquals(
-            actual = BlurFunctionSerializer.descriptor.kind,
+            actual = RevocationModeSerializer.descriptor.kind,
             expected = PrimitiveKind.STRING
         )
 
         assertEquals(
-            actual = BlurFunctionSerializer.descriptor.serialName,
-            expected = "BlurFunction"
+            actual = RevocationModeSerializer.descriptor.serialName,
+            expected = "RevocationMode"
         )
     }
 
     @Test
-    fun `Given a Serializer is called with a BlurFunction, it encodes it`() {
+    fun `Given a Serializer is called with a RevocationMode, it encodes it`() {
         // Given
         val serializer = Json {
             serializersModule = SerializersModule {
-                contextual(BlurFunctionSerializer)
+                contextual(RevocationModeSerializer)
             }
         }
 
-        for (field in ProgramModelContract.BlurFunction.values()) {
+        for (field in ProgramModelContract.RevocationMode.values()) {
             // When
             val result = serializer.encodeToString(field)
 
@@ -73,39 +71,17 @@ internal class BlurFunctionSerializerTest {
     }
 
     @Test
-    fun `Given a Serializer is called with a serialized BlurFunction, it fails with a Internal Failure if the blur function is unknown`() {
+    fun `Given a Serializer is called with a serialized RevocationMode, it decodes it`() {
         // Given
         val serializer = Json {
             serializersModule = SerializersModule {
-                contextual(BlurFunctionSerializer)
+                contextual(RevocationModeSerializer)
             }
         }
 
-        // Then
-        val error = assertFailsWith<CoreRuntimeError.InternalFailure> {
+        for (field in ProgramModelContract.RevocationMode.values()) {
             // When
-            val result =
-                serializer.decodeFromString<ProgramModelContract.BlurFunction>("\"notJS\"")
-        }
-
-        assertEquals(
-            actual = error.message,
-            expected = "Unknown blur function notJS."
-        )
-    }
-
-    @Test
-    fun `Given a Serializer is called with a serialized BlurFunction, it decodes it`() {
-        // Given
-        val serializer = Json {
-            serializersModule = SerializersModule {
-                contextual(BlurFunctionSerializer)
-            }
-        }
-
-        for (field in ProgramModelContract.BlurFunction.values()) {
-            // When
-            val result = serializer.decodeFromString<ProgramModelContract.BlurFunction>("\"${field.value}\"")
+            val result = serializer.decodeFromString<ProgramModelContract.RevocationMode>("\"${field.value}\"")
 
             // Then
             assertSame(

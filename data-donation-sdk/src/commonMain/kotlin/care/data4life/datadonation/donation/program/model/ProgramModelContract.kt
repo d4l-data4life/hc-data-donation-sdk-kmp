@@ -29,8 +29,10 @@ internal interface ProgramModelContract {
         END_OF_MONTH("endOfMonth")
     }
 
-    enum class RevocationMode {
-
+    @Serializable(with = BlurFunctionSerializer::class)
+    enum class RevocationMode(val value: String) {
+        DELETE("delete"),
+        ANONYMIZE("anonymize")
     }
 
     interface ProgramResourceBlurItem {
@@ -67,7 +69,7 @@ internal interface ProgramModelContract {
         val triggerList: List<String>?
         val delay: Double
         val studyID: String
-        val revocation: String
+        val revocation: RevocationMode
     }
 
     interface Program {

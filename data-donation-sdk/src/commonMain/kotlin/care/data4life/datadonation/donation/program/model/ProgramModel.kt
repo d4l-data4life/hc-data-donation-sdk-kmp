@@ -65,7 +65,8 @@ internal data class ProgramDonationConfiguration(
     override val triggerList: List<String>? = null,
     override val delay: Double,
     override val studyID: String,
-    override val revocation: String = "delete"
+    @Contextual
+    override val revocation: ProgramModelContract.RevocationMode = ProgramModelContract.RevocationMode.DELETE
 ) : ProgramModelContract.ProgramDonationConfiguration
 
 @Serializable

@@ -16,7 +16,6 @@
 
 package care.data4life.datadonation.donation.program.model
 
-import care.data4life.datadonation.error.CoreRuntimeError
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
@@ -24,18 +23,15 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
-internal object BlurFunctionSerializer : KSerializer<ProgramModelContract.BlurFunction> {
-    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("BlurFunction", PrimitiveKind.STRING)
-    private val mapping = ProgramModelContract.BlurFunction.values().associateBy { it.value }
+internal object RevocationModeSerializer : KSerializer<ProgramModelContract.RevocationMode> {
+    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("RevocationMode", PrimitiveKind.STRING)
 
-    override fun serialize(encoder: Encoder, value: ProgramModelContract.BlurFunction) {
+    override fun serialize(encoder: Encoder, value: ProgramModelContract.RevocationMode) {
         encoder.encodeString(value.value)
     }
 
-    override fun deserialize(decoder: Decoder): ProgramModelContract.BlurFunction {
-        val key = decoder.decodeString()
-        return mapping.getOrElse(key) {
-            throw CoreRuntimeError.InternalFailure("Unknown blur function $key.")
-        }
+    override fun deserialize(decoder: Decoder): ProgramModelContract.RevocationMode {
+        val value = decoder.decodeString().toUpperCase()
+        return ProgramModelContract.RevocationMode.valueOf(value)
     }
 }
