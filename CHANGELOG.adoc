@@ -28,6 +28,7 @@ toc::[]
 === Added
 
 * Client#revokeUserConsent returns the latest UserConsent.
+* Swift package.
 * touchlab's stately-common (1.1.6) (Dependency).
 * touchlab's stately-concurrency (1.1.6) (Dependency).
 * Coroutine-Util (see: https://github.com/d4l-data4life/hc-coroutine-util-sdk-kmp) (Dependency).
