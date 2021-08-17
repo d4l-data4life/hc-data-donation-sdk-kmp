@@ -20,60 +20,76 @@ import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+@Serializable(with = BlurFunctionSerializer::class)
+enum class BlurFunction(val value: String) {
+    START_OF_DAY("startOfDay"),
+    END_OF_DAY("endOfDay"),
+    START_OF_WEEK("startOfWeek"),
+    END_OF_WEEK("endOfWeek"),
+    START_OF_MONTH("startOfMonth"),
+    END_OF_MONTH("endOfMonth")
+}
+
+@Serializable(with = BlurFunctionSerializer::class)
+enum class RevocationMode(val value: String) {
+    DELETE("delete"),
+    ANONYMIZE("anonymize")
+}
+
 @Serializable
 internal data class ProgramResourceBlurItem(
-    override val linkId: String,
+    val linkId: String,
     @SerialName("fn")
     @Contextual
-    override val function: ProgramModelContract.BlurFunction
-) : ProgramModelContract.ProgramResourceBlurItem
+    val function: BlurFunction
+)
 
 @Serializable
 internal data class ProgramResourceBlur(
-    override val location: String? = null,
+    val location: String? = null,
     @Contextual
-    override val authored: ProgramModelContract.BlurFunction? = null,
-    override val items: List<ProgramResourceBlurItem>
-) : ProgramModelContract.ProgramResourceBlur
+    val authored: BlurFunction? = null,
+    val items: List<ProgramResourceBlurItem>
+)
 
 @Serializable
 internal data class ProgramResource(
-    override val url: String,
-    override val versions: List<String>? = null,
-    override val blur: ProgramResourceBlur? = null
-) : ProgramModelContract.ProgramResource
+    val url: String,
+    val versions: List<String>? = null,
+    val blur: ProgramResourceBlur? = null
+)
 
 @Serializable
 internal data class ProgramAnonymizationBlur(
-    override val location: String,
+    val location: String,
     @Contextual
-    override val authored: ProgramModelContract.BlurFunction? = null,
+    val authored: BlurFunction? = null,
     @Contextual
-    override val researchSubject: ProgramModelContract.BlurFunction? = null
-) : ProgramModelContract.ProgramAnonymizationBlur
+    val researchSubject: BlurFunction? = null
+)
 
 @Serializable
 internal data class ProgramAnonymization(
-    override val blur: ProgramAnonymizationBlur? = null
-) : ProgramModelContract.ProgramAnonymization
+    val blur: ProgramAnonymizationBlur? = null
+)
 
 @Serializable
 internal data class ProgramDonationConfiguration(
-    override val consentKey: String,
-    override val resources: List<ProgramResource>,
-    override val anonymization: ProgramAnonymization? = null,
-    override val triggerList: List<String>? = null,
-    override val delay: Double,
-    override val studyID: String,
+    val consentKey: String,
+    val resources: List<ProgramResource>,
+    val anonymization: ProgramAnonymization? = null,
+    val triggerList: List<String>? = null,
+    val delay: Double,
+    val studyID: String,
     @Contextual
-    override val revocation: ProgramModelContract.RevocationMode = ProgramModelContract.RevocationMode.DELETE
-) : ProgramModelContract.ProgramDonationConfiguration
+    val revocation: RevocationMode = RevocationMode.DELETE
+)
 
 @Serializable
 internal data class Program(
-    override val name: String,
-    override val slug: String,
-    override val tenantID: String,
+    val name: String,
+    val slug: String,
+    val tenantID: String,
     @SerialName("donation")
-    override val configuration: ProgramDonationConfiguration? = null
-) : ProgramModelContract.Program
+    val configuration: ProgramDonationConfiguration? = null
+)

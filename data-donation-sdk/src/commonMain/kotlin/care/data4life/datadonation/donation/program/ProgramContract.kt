@@ -16,7 +16,7 @@
 
 package care.data4life.datadonation.donation.program
 
-import care.data4life.datadonation.donation.program.model.ProgramModelContract
+import care.data4life.datadonation.donation.program.model.Program
 import care.data4life.datadonation.networking.AccessToken
 import care.data4life.datadonation.networking.HttpRuntimeError
 
@@ -25,7 +25,7 @@ internal interface ProgramContract {
         suspend fun fetchProgram(
             accessToken: AccessToken,
             programName: String
-        ): ProgramModelContract.Program
+        ): Program
 
         companion object {
             val ROUTE = listOf("program", "api", "v1", "programs")
@@ -40,6 +40,6 @@ internal interface ProgramContract {
         suspend fun fetchProgram(
             accessToken: AccessToken,
             programName: String
-        ): ProgramModelContract.Program
+        ): Program
     }
 }

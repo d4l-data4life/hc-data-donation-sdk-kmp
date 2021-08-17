@@ -60,7 +60,7 @@ internal class BlurFunctionSerializerTest {
             }
         }
 
-        for (field in ProgramModelContract.BlurFunction.values()) {
+        for (field in BlurFunction.values()) {
             // When
             val result = serializer.encodeToString(field)
 
@@ -85,7 +85,7 @@ internal class BlurFunctionSerializerTest {
         val error = assertFailsWith<CoreRuntimeError.InternalFailure> {
             // When
             val result =
-                serializer.decodeFromString<ProgramModelContract.BlurFunction>("\"notJS\"")
+                serializer.decodeFromString<BlurFunction>("\"notJS\"")
         }
 
         assertEquals(
@@ -103,9 +103,9 @@ internal class BlurFunctionSerializerTest {
             }
         }
 
-        for (field in ProgramModelContract.BlurFunction.values()) {
+        for (field in BlurFunction.values()) {
             // When
-            val result = serializer.decodeFromString<ProgramModelContract.BlurFunction>("\"${field.value}\"")
+            val result = serializer.decodeFromString<BlurFunction>("\"${field.value}\"")
 
             // Then
             assertSame(

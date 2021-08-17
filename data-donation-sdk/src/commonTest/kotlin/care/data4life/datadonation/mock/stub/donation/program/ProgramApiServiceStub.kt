@@ -17,17 +17,17 @@
 package care.data4life.datadonation.mock.stub.donation.program
 
 import care.data4life.datadonation.donation.program.ProgramContract
-import care.data4life.datadonation.donation.program.model.ProgramModelContract
+import care.data4life.datadonation.donation.program.model.Program
 import care.data4life.datadonation.mock.MockException
 import care.data4life.datadonation.networking.AccessToken
 
 internal class ProgramApiServiceStub : ProgramContract.ApiService {
-    var whenFetchProgram: ((AccessToken, String) -> ProgramModelContract.Program)? = null
+    var whenFetchProgram: ((AccessToken, String) -> Program)? = null
 
     override suspend fun fetchProgram(
         accessToken: AccessToken,
         programName: String
-    ): ProgramModelContract.Program {
+    ): Program {
         return whenFetchProgram?.invoke(accessToken, programName) ?: throw MockException()
     }
 }

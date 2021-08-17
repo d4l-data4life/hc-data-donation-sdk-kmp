@@ -58,7 +58,7 @@ internal class RevocationModeSerializerTest {
             }
         }
 
-        for (field in ProgramModelContract.RevocationMode.values()) {
+        for (field in RevocationMode.values()) {
             // When
             val result = serializer.encodeToString(field)
 
@@ -79,9 +79,9 @@ internal class RevocationModeSerializerTest {
             }
         }
 
-        for (field in ProgramModelContract.RevocationMode.values()) {
+        for (field in RevocationMode.values()) {
             // When
-            val result = serializer.decodeFromString<ProgramModelContract.RevocationMode>("\"${field.value}\"")
+            val result = serializer.decodeFromString<RevocationMode>("\"${field.value}\"")
 
             // Then
             assertSame(

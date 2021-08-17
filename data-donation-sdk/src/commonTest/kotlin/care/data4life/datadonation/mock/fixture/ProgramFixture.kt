@@ -16,11 +16,11 @@
 
 package care.data4life.datadonation.mock.fixture
 
+import care.data4life.datadonation.donation.program.model.BlurFunction
 import care.data4life.datadonation.donation.program.model.Program
 import care.data4life.datadonation.donation.program.model.ProgramAnonymization
 import care.data4life.datadonation.donation.program.model.ProgramAnonymizationBlur
 import care.data4life.datadonation.donation.program.model.ProgramDonationConfiguration
-import care.data4life.datadonation.donation.program.model.ProgramModelContract
 import care.data4life.datadonation.donation.program.model.ProgramResource
 import care.data4life.datadonation.donation.program.model.ProgramResourceBlur
 import care.data4life.datadonation.donation.program.model.ProgramResourceBlurItem
@@ -37,8 +37,8 @@ internal object ProgramFixture {
             anonymization = ProgramAnonymization(
                 blur = ProgramAnonymizationBlur(
                     location = "Europe/Berlin",
-                    authored = ProgramModelContract.BlurFunction.START_OF_DAY,
-                    researchSubject = ProgramModelContract.BlurFunction.START_OF_DAY
+                    authored = BlurFunction.START_OF_DAY,
+                    researchSubject = BlurFunction.START_OF_DAY
                 )
             ),
             resources = listOf(
@@ -83,7 +83,7 @@ internal object ProgramFixture {
                         items = listOf(
                             ProgramResourceBlurItem(
                                 linkId = "when_done_something_first_time",
-                                function = ProgramModelContract.BlurFunction.START_OF_DAY
+                                function = BlurFunction.START_OF_DAY
                             )
                         )
                     )
@@ -99,7 +99,7 @@ internal object ProgramFixture {
                         items = listOf(
                             ProgramResourceBlurItem(
                                 linkId = "when_done_something_second_time",
-                                function = ProgramModelContract.BlurFunction.START_OF_DAY
+                                function = BlurFunction.START_OF_DAY
                             )
                         )
                     )

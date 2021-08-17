@@ -17,7 +17,6 @@
 package care.data4life.datadonation.donation.program
 
 import care.data4life.datadonation.donation.program.model.Program
-import care.data4life.datadonation.donation.program.model.ProgramModelContract
 import care.data4life.datadonation.networking.AccessToken
 import care.data4life.datadonation.networking.HttpRuntimeError
 import care.data4life.datadonation.networking.Networking
@@ -30,7 +29,7 @@ internal class ProgramApiService constructor(
     override suspend fun fetchProgram(
         accessToken: AccessToken,
         programName: String,
-    ): ProgramModelContract.Program {
+    ): Program {
         val path = ProgramContract.ApiService.ROUTE.toMutableList().also {
             it.add(programName)
         }

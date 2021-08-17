@@ -16,7 +16,7 @@
 
 package care.data4life.datadonation.donation.program
 
-import care.data4life.datadonation.donation.program.model.ProgramModelContract
+import care.data4life.datadonation.donation.program.model.Program
 import care.data4life.datadonation.networking.AccessToken
 
 internal class ProgramRepository(
@@ -25,5 +25,5 @@ internal class ProgramRepository(
     override suspend fun fetchProgram(
         accessToken: AccessToken,
         programName: String
-    ): ProgramModelContract.Program = apiService.fetchProgram(accessToken, programName)
+    ): Program = apiService.fetchProgram(accessToken, programName)
 }

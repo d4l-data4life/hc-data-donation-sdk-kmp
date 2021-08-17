@@ -23,15 +23,15 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
-internal object RevocationModeSerializer : KSerializer<ProgramModelContract.RevocationMode> {
+internal object RevocationModeSerializer : KSerializer<RevocationMode> {
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("RevocationMode", PrimitiveKind.STRING)
 
-    override fun serialize(encoder: Encoder, value: ProgramModelContract.RevocationMode) {
+    override fun serialize(encoder: Encoder, value: RevocationMode) {
         encoder.encodeString(value.value)
     }
 
-    override fun deserialize(decoder: Decoder): ProgramModelContract.RevocationMode {
+    override fun deserialize(decoder: Decoder): RevocationMode {
         val value = decoder.decodeString().toUpperCase()
-        return ProgramModelContract.RevocationMode.valueOf(value)
+        return RevocationMode.valueOf(value)
     }
 }
