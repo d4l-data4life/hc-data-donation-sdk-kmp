@@ -170,7 +170,7 @@ To build the iOS app, following steps need to be taken:
 
 [source, terminal]
 ----
-./gradlew createSwiftPackage     
+./gradlew createSwiftPackage
 ----
 
 - Add an xcconfig file for the login configuration of the Core SDK in the `swift/` folder and name it `Data4LifeSDK.xcconfig`:
