@@ -33,14 +33,14 @@
 package care.data4life.datadonation.integration
 
 import care.data4life.datadonation.Client
-import care.data4life.datadonation.DataDonationSDKPublicAPI
-import care.data4life.datadonation.internal.data.service.networking.plugin.resolveKtorPlugins
-import care.data4life.datadonation.internal.data.service.networking.resolveNetworking
-import care.data4life.datadonation.internal.data.service.resolveServiceModule
-import care.data4life.datadonation.internal.di.resolveRootModule
-import care.data4life.datadonation.internal.domain.repository.resolveRepositoryModule
-import care.data4life.datadonation.internal.domain.usecases.resolveUsecaseModule
-import care.data4life.datadonation.lang.ConsentServiceError
+import care.data4life.datadonation.DataDonationSDK
+import care.data4life.datadonation.consent.consentdocument.ConsentDocumentError
+import care.data4life.datadonation.consent.consentdocument.resolveConsentDocumentKoinModule
+import care.data4life.datadonation.consent.userconsent.resolveConsentKoinModule
+import care.data4life.datadonation.di.resolveRootModule
+import care.data4life.datadonation.networking.plugin.resolveKtorPlugins
+import care.data4life.datadonation.networking.resolveNetworking
+import care.data4life.datadonation.session.resolveSessionKoinModule
 import care.data4life.sdk.util.test.coroutine.runBlockingTest
 import care.data4life.sdk.util.test.ktor.HttpMockClientFactory.createMockClientWithResponse
 import io.ktor.client.engine.mock.respond
@@ -83,14 +83,14 @@ class ClientConsentFlowAndroidModuleTest {
         val koin = koinApplication {
             modules(
                 resolveRootModule(
-                    DataDonationSDKPublicAPI.Environment.DEV,
+                    DataDonationSDK.Environment.DEV,
                     UserSessionTokenProvider
                 ),
                 resolveNetworking(),
                 resolveKtorPlugins(),
-                resolveUsecaseModule(),
-                resolveRepositoryModule(),
-                resolveServiceModule(),
+                resolveConsentKoinModule(),
+                resolveConsentDocumentKoinModule(),
+                resolveSessionKoinModule(),
                 module {
                     factory(
                         override = true,
@@ -113,11 +113,11 @@ class ClientConsentFlowAndroidModuleTest {
 
         runBlockingTest {
             // Then
-            assertTrue(capturedError.receive() is ConsentServiceError.InternalServer)
+            assertTrue(capturedError.receive() is ConsentDocumentError.InternalServer)
         }
     }
 
-    private object UserSessionTokenProvider : DataDonationSDKPublicAPI.UserSessionTokenProvider {
+    private object UserSessionTokenProvider : DataDonationSDK.UserSessionTokenProvider {
         const val sessionToken = "sessionToken"
 
         override fun getUserSessionToken(

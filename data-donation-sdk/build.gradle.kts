@@ -225,7 +225,7 @@ tasks.withType(org.jetbrains.kotlin.gradle.dsl.KotlinCompile::class.java) {
 
 val uselessSwiftProtocols = listOf(
     "ConsentDataContract",
-    "DataDonationSDKPublicAPI"
+    "DataDonationSDK"
 )
 val referencePrefix = "DLDDSDK"
 val swiftNameReplacements = emptyMap<String, String>()

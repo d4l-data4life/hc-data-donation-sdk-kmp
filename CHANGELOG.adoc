@@ -27,6 +27,7 @@ toc::[]
 
 === Added
 
+* Client#revokeUserConsent returns the latest UserConsent.
 * Swift package.
 * touchlab's stately-common (1.1.6) (Dependency).
 * touchlab's stately-concurrency (1.1.6) (Dependency).
@@ -35,6 +36,8 @@ toc::[]
 * ObjC-SDK (see: https://github.com/d4l-data4life/hc-objc-util-sdk-kmp) (Dependency).
 
 === Changed
+
+* _**BREAKING**_ DataDonationSDKPublicApi -> DataDonationSDK.
 
 === Deprecated
 
