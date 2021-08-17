@@ -22,7 +22,6 @@ import care.data4life.datadonation.mock.stub.session.UserSessionTokenRepositoryS
 import care.data4life.sdk.util.test.coroutine.runBlockingTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNull
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
@@ -54,7 +53,6 @@ class UserConsentControllerTest {
         var capturedVersion: String? = null
 
         var capturedTokenFetch: String? = null
-        var capturedConsentDocumentKeyFetch: String? = null
 
         val consent = UserConsentFixture.sampleUserConsent
 
@@ -67,8 +65,7 @@ class UserConsentControllerTest {
             capturedVersion = delegatedVersion
             capturedTokenCreate = delegatedToken
         }
-        repo.whenFetchUserConsents = { delegatedToken, delegatedConsentDocumentKey ->
-            capturedConsentDocumentKeyFetch = delegatedConsentDocumentKey
+        repo.whenFetchLatestUserConsents = { delegatedToken ->
             capturedTokenFetch = delegatedToken
             listOf(consent, UserConsentFixture.sampleUserConsent.copy(accountId = "not expected"))
         }
@@ -96,7 +93,6 @@ class UserConsentControllerTest {
             actual = capturedVersion,
             expected = consentDocumentVersion
         )
-        assertNull(capturedConsentDocumentKeyFetch)
         assertEquals(
             actual = capturedTokenFetch,
             expected = accessTokenFetch
@@ -112,12 +108,10 @@ class UserConsentControllerTest {
         val dummyConsentList = listOf(UserConsentFixture.sampleUserConsent)
 
         var capturedToken: String? = null
-        var capturedConsentDocumentKey: String? = null
         val repo = UserConsentRepositoryStub()
 
-        repo.whenFetchUserConsents = { delegatedToken, delegatedConsentDocumentKey ->
+        repo.whenFetchAllUserConsents = { delegatedToken ->
             capturedToken = delegatedToken
-            capturedConsentDocumentKey = delegatedConsentDocumentKey
             dummyConsentList
         }
 
@@ -135,7 +129,6 @@ class UserConsentControllerTest {
             actual = result,
             expected = dummyConsentList
         )
-        assertNull(capturedConsentDocumentKey)
     }
 
     @Test
@@ -178,7 +171,7 @@ class UserConsentControllerTest {
     }
 
     @Test
-    fun `Given revokeUserConsentis called, it delegates the call to the ConsentRepository with the given consentDocumentKey and return the latest consent`() = runBlockingTest {
+    fun `Given revokeUserConsents called, it delegates the call to the ConsentRepository with the given consentDocumentKey and return the latest consent`() = runBlockingTest {
         // Given
         val sessionTokenRepository = UserSessionTokenRepositoryStub()
 
@@ -191,7 +184,6 @@ class UserConsentControllerTest {
         var capturedConsentDocumentKeyRevoke: String? = "NotNull"
 
         var capturedTokenFetch: String? = null
-        var capturedConsentDocumentKeyFetch: String? = null
 
         val consent = UserConsentFixture.sampleUserConsent
 
@@ -204,9 +196,8 @@ class UserConsentControllerTest {
             capturedConsentDocumentKeyRevoke = delegatedConsentDocumentKey
         }
 
-        repo.whenFetchUserConsents = { delegatedToken, delegatedConsentDocumentKey ->
+        repo.whenFetchLatestUserConsents = { delegatedToken ->
             capturedTokenFetch = delegatedToken
-            capturedConsentDocumentKeyFetch = delegatedConsentDocumentKey
             listOf(consent, UserConsentFixture.sampleUserConsent.copy(accountId = "not expected"))
         }
 
@@ -226,7 +217,6 @@ class UserConsentControllerTest {
             actual = capturedConsentDocumentKeyRevoke,
             expected = consentDocumentKey
         )
-        assertNull(capturedConsentDocumentKeyFetch)
         assertEquals(
             actual = capturedTokenFetch,
             expected = accessTokenFetch
