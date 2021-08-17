@@ -50,30 +50,30 @@ final class DataDonationViewController: UIViewController {
 
     private lazy var addButton: UIButton = {
         let button = UIButton(type: .roundedRect, primaryAction: UIAction(handler: { action in
-            self.interactor.didTapAdd()
+            self.interactor.tappedAddButton()
         }))
-        button.setTitle("Add test UC", for: .normal)
+        button.setTitle("Accept", for: .normal)
         return button
     }()
 
-    private lazy var removeButton: UIButton = {
+    private lazy var revokeButton: UIButton = {
         let button = UIButton(type: .roundedRect, primaryAction: UIAction(handler: { action in
-            self.interactor.didTapRemove()
+            self.interactor.tappedRevokeButton()
         }))
-        button.setTitle("Remove test UC", for: .normal)
+        button.setTitle("Revoke", for: .normal)
         return button
     }()
 
     private lazy var logOutButton: UIBarButtonItem = {
         let buttonItem = UIBarButtonItem(title: "Log Out", image: nil, primaryAction: UIAction.init(handler: { _ in
-            self.interactor.didTapLogOut()
+            self.interactor.tappedLogOutButton()
         }), menu: nil)
         return buttonItem
     }()
 
     private lazy var loginButton: UIBarButtonItem = {
         let buttonItem = UIBarButtonItem(title: "Log In", image: nil, primaryAction: UIAction.init(handler: { _ in
-            self.interactor.didTapLogin(from: self)
+            self.interactor.tappedLogInButton(from: self)
         }), menu: nil)
         return buttonItem
     }()
@@ -130,7 +130,7 @@ private extension DataDonationViewController {
         let spacingViewTwo = UIView()
         buttonStackView.addArrangedSubview(spacingViewOne)
         buttonStackView.addArrangedSubview(addButton)
-        buttonStackView.addArrangedSubview(removeButton)
+        buttonStackView.addArrangedSubview(revokeButton)
         buttonStackView.addArrangedSubview(spacingViewTwo)
         NSLayoutConstraint.activate([
             buttonStackView.heightAnchor.constraint(equalToConstant: 44),
@@ -142,9 +142,10 @@ private extension DataDonationViewController {
         ])
 
         tableView.dataSource = dataDonationDiffableDataSource
-        tableView.refreshControl = UIRefreshControl(frame: .zero, primaryAction: UIAction.init(handler: { [unowned self] _ in
-            self.interactor.viewDidLoad()
-        }))
+        tableView.refreshControl = UIRefreshControl(frame: .zero,
+                                                    primaryAction: UIAction { [unowned self] _ in
+                                                        self.interactor.viewDidLoad()
+                                                    })
     }
 
     private func showLoginButton() {

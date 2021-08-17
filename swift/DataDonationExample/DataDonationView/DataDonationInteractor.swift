@@ -40,7 +40,7 @@ extension DataDonationInteractor {
             }
         }
     }
-    func didTapAdd() {
+    func tappedAddButton() {
         dataDonationSDKService.createUserConsent { result in
             DispatchQueue.main.async {
                 self.viewDidLoad()
@@ -48,7 +48,7 @@ extension DataDonationInteractor {
         }
     }
 
-    func didTapRemove() {
+    func tappedRevokeButton() {
         dataDonationSDKService.revokeUserConsent { result in
             DispatchQueue.main.async {
                 self.viewDidLoad()
@@ -56,13 +56,13 @@ extension DataDonationInteractor {
         }
     }
 
-    func didTapLogOut() {
+    func tappedLogOutButton() {
         coreSDKService.logOut { [weak presenter] in
             presenter?.presentLoggedOut()
         }
     }
 
-    func didTapLogin(from view: UIViewController) {
+    func tappedLogInButton(from view: UIViewController) {
         coreSDKService.openLogin(from: view, didLogin: { [weak self] result in
             self?.viewDidLoad()
         })
