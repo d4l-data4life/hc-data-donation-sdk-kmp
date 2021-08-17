@@ -37,45 +37,10 @@ final class UserConsentView: UIView, UIContentView {
         return stackView
     }()
 
-    private lazy var keyLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.setContentHuggingPriority(.required, for: .vertical)
-        label.setContentCompressionResistancePriority(.required, for: .vertical)
-        label.textColor = .black
-        label.numberOfLines = 0
-        return label
-    }()
-
-    private lazy var versionLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.setContentHuggingPriority(.required, for: .vertical)
-        label.setContentCompressionResistancePriority(.required, for: .vertical)
-        label.textColor = .black
-        label.numberOfLines = 0
-        return label
-    }()
-
-    private lazy var dateLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.setContentHuggingPriority(.required, for: .vertical)
-        label.setContentCompressionResistancePriority(.required, for: .vertical)
-        label.textColor = .black
-        label.numberOfLines = 0
-        return label
-    }()
-
-    private lazy var eventTypeLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.setContentHuggingPriority(.required, for: .vertical)
-        label.setContentCompressionResistancePriority(.required, for: .vertical)
-        label.textColor = .black
-        label.numberOfLines = 0
-        return label
-    }()
+    private lazy var keyLabel: UILabel = UILabel.default.constrainedToFit(on: .vertical)
+    private lazy var versionLabel: UILabel = UILabel.default.constrainedToFit(on: .vertical)
+    private lazy var dateLabel: UILabel = UILabel.default.constrainedToFit(on: .vertical)
+    private lazy var eventTypeLabel: UILabel = UILabel.default.constrainedToFit(on: .vertical)
 
     private var onTap: (() -> Void)?
 
