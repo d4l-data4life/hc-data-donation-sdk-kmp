@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3670E92326CBBC8800FD5B79 /* DataDonationPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3670E92226CBBC8800FD5B79 /* DataDonationPresenter.swift */; };
+		3670E92626CBBF8E00FD5B79 /* FormatterBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3670E92526CBBF8E00FD5B79 /* FormatterBuilder.swift */; };
+		3670E92926CBC21700FD5B79 /* DataDonationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3670E92826CBC21700FD5B79 /* DataDonationViewModel.swift */; };
 		367CC74226B1A14100660960 /* SplashRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367CC74126B1A14100660960 /* SplashRouter.swift */; };
 		367CC74426B2EB6100660960 /* ServiceContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367CC74326B2EB6100660960 /* ServiceContainer.swift */; };
 		367CC74626B2F4FB00660960 /* DataDonationSDKService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367CC74526B2F4FB00660960 /* DataDonationSDKService.swift */; };
@@ -30,6 +33,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3670E92226CBBC8800FD5B79 /* DataDonationPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDonationPresenter.swift; sourceTree = "<group>"; };
+		3670E92526CBBF8E00FD5B79 /* FormatterBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormatterBuilder.swift; sourceTree = "<group>"; };
+		3670E92826CBC21700FD5B79 /* DataDonationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDonationViewModel.swift; sourceTree = "<group>"; };
 		367CC74026B19D2D00660960 /* Data4LifeSDK.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Data4LifeSDK.xcconfig; sourceTree = "<group>"; };
 		367CC74126B1A14100660960 /* SplashRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashRouter.swift; sourceTree = "<group>"; };
 		367CC74326B2EB6100660960 /* ServiceContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceContainer.swift; sourceTree = "<group>"; };
@@ -67,6 +73,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3670E92426CBBC8F00FD5B79 /* Subviews */ = {
+			isa = PBXGroup;
+			children = (
+				36F0171426C3FB53008C0621 /* UserConsentView.swift */,
+			);
+			path = Subviews;
+			sourceTree = "<group>";
+		};
+		3670E92726CBC20700FD5B79 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				3670E92826CBC21700FD5B79 /* DataDonationViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
 		36874C3D26B1630B00F03527 = {
 			isa = PBXGroup;
 			children = (
@@ -111,11 +133,13 @@
 		36874C6426B189F900F03527 /* DataDonationView */ = {
 			isa = PBXGroup;
 			children = (
+				3670E92726CBC20700FD5B79 /* ViewModel */,
+				3670E92426CBBC8F00FD5B79 /* Subviews */,
 				36874C4D26B1630B00F03527 /* DataDonationViewController.swift */,
 				36874C6526B18A6300F03527 /* DataDonationInteractor.swift */,
 				367CC74726B817CD00660960 /* DataDonationRouter.swift */,
-				36F0171426C3FB53008C0621 /* UserConsentView.swift */,
 				36EB81A126CAD2DC006B8022 /* DataDonationViewDiffableDataSource.swift */,
+				3670E92226CBBC8800FD5B79 /* DataDonationPresenter.swift */,
 			);
 			path = DataDonationView;
 			sourceTree = "<group>";
@@ -138,6 +162,7 @@
 				36874C7226B1906000F03527 /* Data4LifeSDKService.swift */,
 				36874C7426B1914A00F03527 /* Data4LifeSDKConfiguration.swift */,
 				367CC74326B2EB6100660960 /* ServiceContainer.swift */,
+				3670E92526CBBF8E00FD5B79 /* FormatterBuilder.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -223,6 +248,7 @@
 				36EB81A226CAD2DC006B8022 /* DataDonationViewDiffableDataSource.swift in Sources */,
 				36874C6626B18A6300F03527 /* DataDonationInteractor.swift in Sources */,
 				36874C7026B18F5C00F03527 /* SplashInteractor.swift in Sources */,
+				3670E92326CBBC8800FD5B79 /* DataDonationPresenter.swift in Sources */,
 				367CC74226B1A14100660960 /* SplashRouter.swift in Sources */,
 				36874C7526B1914A00F03527 /* Data4LifeSDKConfiguration.swift in Sources */,
 				36F0171526C3FB53008C0621 /* UserConsentView.swift in Sources */,
@@ -231,8 +257,10 @@
 				36874C7326B1906000F03527 /* Data4LifeSDKService.swift in Sources */,
 				367CC74626B2F4FB00660960 /* DataDonationSDKService.swift in Sources */,
 				367CC74826B817CD00660960 /* DataDonationRouter.swift in Sources */,
+				3670E92626CBBF8E00FD5B79 /* FormatterBuilder.swift in Sources */,
 				36874C4C26B1630B00F03527 /* SceneDelegate.swift in Sources */,
 				36874C6E26B18B3D00F03527 /* SplashViewController.swift in Sources */,
+				3670E92926CBC21700FD5B79 /* DataDonationViewModel.swift in Sources */,
 				36874C7726B1940000F03527 /* SplashPresenter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -16,9 +16,9 @@
 
 package care.data4life.datadonation.di
 
-import care.data4life.datadonation.DataDonationSDKPublicAPI.Environment
-import care.data4life.datadonation.internal.di.initKoin
-import care.data4life.datadonation.internal.domain.usecases.UsecaseContract
+import care.data4life.datadonation.DataDonationSDK.Environment
+import care.data4life.datadonation.consent.consentdocument.ConsentDocumentContract
+import care.data4life.datadonation.consent.userconsent.UserConsentContract
 import care.data4life.datadonation.mock.stub.UserSessionTokenProviderStub
 import org.koin.core.context.stopKoin
 import kotlin.test.BeforeTest
@@ -32,50 +32,26 @@ class KoinTest {
     }
 
     @Test
-    fun `Given initKoin is called with its appropriate parameter, the resulting KoinApplication contains a CreateUserConsent`() {
+    fun `Given initKoin is called with its appropriate parameter, the resulting KoinApplication contains a ConsentInteractor`() {
         // When
         val app = initKoin(
             Environment.DEV,
             UserSessionTokenProviderStub()
         )
         // Then
-        val usecase: UsecaseContract.CreateUserConsent = app.koin.get()
-        assertNotNull(usecase)
+        val controller: UserConsentContract.Controller = app.koin.get()
+        assertNotNull(controller)
     }
 
     @Test
-    fun `Given initKoin is called with its appropriate parameter, the resulting KoinApplication contains a FetchConsentDocuments`() {
+    fun `Given initKoin is called with its appropriate parameter, the resulting KoinApplication contains a ConsentDocumentsInteractor`() {
         // When
         val app = initKoin(
             Environment.DEV,
             UserSessionTokenProviderStub()
         )
         // Then
-        val usecase: UsecaseContract.FetchConsentDocuments = app.koin.get()
-        assertNotNull(usecase)
-    }
-
-    @Test
-    fun `Given initKoin is called with its appropriate parameter, the resulting KoinApplication contains a FetchUserConsents`() {
-        // When
-        val app = initKoin(
-            Environment.DEV,
-            UserSessionTokenProviderStub()
-        )
-        // Then
-        val usecase: UsecaseContract.FetchUserConsents = app.koin.get()
-        assertNotNull(usecase)
-    }
-
-    @Test
-    fun `Given initKoin is called with its appropriate parameter, the resulting KoinApplication contains a RevokeUserConsent`() {
-        // When
-        val app = initKoin(
-            Environment.DEV,
-            UserSessionTokenProviderStub()
-        )
-        // Then
-        val usecase: UsecaseContract.RevokeUserConsent = app.koin.get()
-        assertNotNull(usecase)
+        val controller: ConsentDocumentContract.Controller = app.koin.get()
+        assertNotNull(controller)
     }
 }

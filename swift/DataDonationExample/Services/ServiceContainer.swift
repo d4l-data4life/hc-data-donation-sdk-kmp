@@ -13,6 +13,7 @@ final class ServiceContainer {
     private(set) var sdkService: Data4LifeSDKService?
     private(set) var userSessionProvider: UserSessionTokenProviderProtocol?
     private(set) var dataDonationService: DataDonationSDKService?
+    private(set) var formatterService: FormatterService?
 
     init() { }
 
@@ -23,5 +24,6 @@ final class ServiceContainer {
         userSessionProvider = sdkService?.userSessionProvider
 
         dataDonationService = DataDonationSDKService(userSessionProvider: userSessionProvider!)
+        formatterService = FormatterService()
     }
 }

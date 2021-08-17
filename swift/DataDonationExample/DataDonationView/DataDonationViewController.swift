@@ -7,10 +7,6 @@
 
 import UIKit
 
-struct DataDonationViewModel {
-    let userConsents: [UserConsentRowModel]
-}
-
 final class DataDonationViewController: UIViewController {
 
     private let interactor: DataDonationInteractor
@@ -68,7 +64,7 @@ final class DataDonationViewController: UIViewController {
 
     private lazy var loginButton: UIBarButtonItem = {
         let buttonItem = UIBarButtonItem(title: "Log In", image: nil, primaryAction: UIAction.init(handler: { _ in
-            self.interactor.didTapLogin()
+            self.interactor.didTapLogin(from: self)
         }), menu: nil)
         return buttonItem
     }()
@@ -91,26 +87,31 @@ final class DataDonationViewController: UIViewController {
         interactor.viewDidLoad()
     }
 
-    func setNeedsLoginState() {
-        navigationItem.setRightBarButton(loginButton, animated: true)
-    }
-    func setCanLogoutState() {
-        navigationItem.setRightBarButton(logOutButton, animated: true)
-    }
-
     func configure(with viewModel: DataDonationViewModel) {
-        var snapshot = NSDiffableDataSourceSnapshot<UserConsentSection, UserConsentRowModel>()
-        snapshot.appendSections([.main])
-        snapshot.appendItems(viewModel.userConsents, toSection: .main)
-        dataDonationDiffableDataSource.apply(snapshot, animatingDifferences: true)
+
         tableView.refreshControl?.endRefreshing()
+
+        switch viewModel.state {
+        case .loggedIn(let userConsents):
+            showLogoutButton()
+            var snapshot = NSDiffableDataSourceSnapshot<UserConsentSection, UserConsentRowModel>()
+            snapshot.appendSections([.main])
+            snapshot.appendItems(userConsents, toSection: .main)
+            dataDonationDiffableDataSource.apply(snapshot, animatingDifferences: true)
+            buttonStackView.isHidden = false
+        case .loggedOut:
+            showLoginButton()
+            let emptySnapshot = NSDiffableDataSourceSnapshot<UserConsentSection, UserConsentRowModel>()
+            dataDonationDiffableDataSource.apply(emptySnapshot, animatingDifferences: false)
+            buttonStackView.isHidden = true
+        }
     }
 }
 
 private extension DataDonationViewController {
     func configureSubviews() {
 
-        setCanLogoutState()
+        showLogoutButton()
 
         view.addSubview(mainStackView)
         mainStackView.addArrangedSubview(tableView)
@@ -136,6 +137,13 @@ private extension DataDonationViewController {
             self.interactor.viewDidLoad()
         }))
     }
+
+    private func showLoginButton() {
+        navigationItem.setRightBarButton(loginButton, animated: true)
+    }
+    private func showLogoutButton() {
+        navigationItem.setRightBarButton(logOutButton, animated: true)
+    }
 }
 
 extension DataDonationViewController: UITableViewDelegate {
@@ -144,6 +152,6 @@ extension DataDonationViewController: UITableViewDelegate {
         UITableView.automaticDimension
     }
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        200.0
+        44
     }
 }

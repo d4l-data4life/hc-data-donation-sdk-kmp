@@ -11,9 +11,10 @@ final class DataDonationRouter {
 
     static func assemble(container: ServiceContainer) -> DataDonationViewController {
         let router = DataDonationRouter()
-        let interactor = DataDonationInteractor(dataDonationSDKService: container.dataDonationService!, coreSDKService: container.sdkService!)
+        let presenter = DataDonationPresenter(formatterService: container.formatterService!)
+        let interactor = DataDonationInteractor(presenter: presenter, dataDonationSDKService: container.dataDonationService!, coreSDKService: container.sdkService!)
         let viewController = DataDonationViewController(interactor: interactor, router: router)
-        interactor.view = viewController
+        presenter.view = viewController
         return viewController
     }
 }
