@@ -1,8 +1,17 @@
+//  Copyright (c) 2020 D4L data4life gGmbH
+//  All rights reserved.
 //
-//  UserConsentCell.swift
-//  DataDonationExample
+//  D4L owns all legal rights, title and interest in and to the Software Development Kit ("SDK"),
+//  including any intellectual property rights that subsist in the SDK.
 //
-//  Created by Alessio Borraccino on 11.08.21.
+//  The SDK and its documentation may be accessed and used for viewing/review purposes only.
+//  Any usage of the SDK for other purposes, including usage for the development of
+//  applications/third-party applications shall require the conclusion of a license agreement
+//  between you and D4L.
+//
+//  If you are interested in licensing the SDK for your own applications/third-party
+//  applications and/or if you’d like to contribute to the development of the SDK, please
+//  contact D4L by email to help@data4life.care.
 //
 
 import UIKit
@@ -11,7 +20,7 @@ final class UserConsentView: UIView, UIContentView {
 
     var configuration: UIContentConfiguration {
         didSet {
-            guard let configuration = configuration as? UserConsentRowModel else {
+            guard let configuration = configuration as? UserConsentRow else {
                 return
             }
 
@@ -70,7 +79,7 @@ final class UserConsentView: UIView, UIContentView {
 
     private var onTap: (() -> Void)?
 
-    init(configuration: UserConsentRowModel) {
+    init(configuration: UserConsentRow) {
         self.configuration = configuration
         super.init(frame: .zero)
         setupViews()
@@ -108,7 +117,7 @@ private extension UserConsentView {
         onTap?()
     }
 
-    func configure(with rowModel: UserConsentRowModel) {
+    func configure(with rowModel: UserConsentRow) {
         keyLabel.text = rowModel.key
         versionLabel.text = rowModel.version
         dateLabel.text = rowModel.formattedDate
@@ -117,12 +126,12 @@ private extension UserConsentView {
     }
 }
 
-extension UserConsentRowModel: UIContentConfiguration {
+extension UserConsentRow: UIContentConfiguration {
     func makeContentView() -> UIView & UIContentView {
         UserConsentView(configuration: self)
     }
 
-    func updated(for state: UIConfigurationState) -> UserConsentRowModel {
+    func updated(for state: UIConfigurationState) -> UserConsentRow {
         self
     }
 }
