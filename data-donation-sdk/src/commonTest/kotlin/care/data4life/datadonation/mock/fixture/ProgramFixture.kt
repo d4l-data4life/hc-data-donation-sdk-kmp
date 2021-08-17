@@ -18,12 +18,12 @@ package care.data4life.datadonation.mock.fixture
 
 import care.data4life.datadonation.donation.program.model.Program
 import care.data4life.datadonation.donation.program.model.ProgramAnonymization
-import care.data4life.datadonation.donation.program.model.ProgramAnonymizationBlurValue
-import care.data4life.datadonation.donation.program.model.ProgramConfiguration
-import care.data4life.datadonation.donation.program.model.ProgramItemBlur
+import care.data4life.datadonation.donation.program.model.ProgramAnonymizationBlur
+import care.data4life.datadonation.donation.program.model.ProgramDonationConfiguration
 import care.data4life.datadonation.donation.program.model.ProgramModelContract
 import care.data4life.datadonation.donation.program.model.ProgramResource
 import care.data4life.datadonation.donation.program.model.ProgramResourceBlur
+import care.data4life.datadonation.donation.program.model.ProgramResourceBlurItem
 import kotlin.native.concurrent.ThreadLocal
 
 @ThreadLocal
@@ -32,13 +32,13 @@ internal object ProgramFixture {
         name = "sample",
         slug = "sample",
         tenantID = "d4l",
-        donation = ProgramConfiguration(
+        configuration = ProgramDonationConfiguration(
             consentKey = "d4l.sample",
             anonymization = ProgramAnonymization(
-                blur = ProgramAnonymizationBlurValue(
+                blur = ProgramAnonymizationBlur(
                     location = "Europe/Berlin",
-                    authored = ProgramModelContract.BlurField.START_OF_DAY,
-                    researchSubject = ProgramModelContract.BlurField.START_OF_DAY
+                    authored = ProgramModelContract.BlurFunction.START_OF_DAY,
+                    researchSubject = ProgramModelContract.BlurFunction.START_OF_DAY
                 )
             ),
             resources = listOf(
@@ -81,9 +81,9 @@ internal object ProgramFixture {
                     ),
                     blur = ProgramResourceBlur(
                         items = listOf(
-                            ProgramItemBlur(
+                            ProgramResourceBlurItem(
                                 linkId = "when_done_something_first_time",
-                                field = ProgramModelContract.BlurField.START_OF_DAY
+                                function = ProgramModelContract.BlurFunction.START_OF_DAY
                             )
                         )
                     )
@@ -97,9 +97,9 @@ internal object ProgramFixture {
                     ),
                     blur = ProgramResourceBlur(
                         items = listOf(
-                            ProgramItemBlur(
+                            ProgramResourceBlurItem(
                                 linkId = "when_done_something_second_time",
-                                field = ProgramModelContract.BlurField.START_OF_DAY
+                                function = ProgramModelContract.BlurFunction.START_OF_DAY
                             )
                         )
                     )

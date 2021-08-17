@@ -19,8 +19,8 @@ package care.data4life.datadonation.donation.program.model
 import kotlinx.serialization.Serializable
 
 internal interface ProgramModelContract {
-    @Serializable(with = BlurFieldSerializer::class)
-    enum class BlurField(val value: String) {
+    @Serializable(with = BlurFunctionSerializer::class)
+    enum class BlurFunction(val value: String) {
         START_OF_DAY("startOfDay"),
         END_OF_DAY("endOfDay"),
         START_OF_WEEK("startOfWeek"),
@@ -29,15 +29,15 @@ internal interface ProgramModelContract {
         END_OF_MONTH("endOfMonth")
     }
 
-    interface ProgramItemBlur {
+    interface ProgramResourceBlurItem {
         val linkId: String
-        val field: BlurField
+        val function: BlurFunction
     }
 
     interface ProgramResourceBlur {
         val location: String?
-        val authored: BlurField?
-        val items: List<ProgramItemBlur>
+        val authored: BlurFunction?
+        val items: List<ProgramResourceBlurItem>
     }
 
     interface ProgramResource {
@@ -46,17 +46,17 @@ internal interface ProgramModelContract {
         val blur: ProgramResourceBlur?
     }
 
-    interface ProgramAnonymizationBlurValue {
+    interface ProgramAnonymizationBlur {
         val location: String
-        val authored: BlurField?
-        val researchSubject: BlurField?
+        val authored: BlurFunction?
+        val researchSubject: BlurFunction?
     }
 
     interface ProgramAnonymization {
-        val blur: ProgramAnonymizationBlurValue?
+        val blur: ProgramAnonymizationBlur?
     }
 
-    interface ProgramConfiguration {
+    interface ProgramDonationConfiguration {
         val consentKey: String
         val resources: List<ProgramResource>
         val anonymization: ProgramAnonymization?
@@ -69,6 +69,6 @@ internal interface ProgramModelContract {
         val name: String
         val slug: String
         val tenantID: String
-        val donation: ProgramConfiguration?
+        val configuration: ProgramDonationConfiguration?
     }
 }

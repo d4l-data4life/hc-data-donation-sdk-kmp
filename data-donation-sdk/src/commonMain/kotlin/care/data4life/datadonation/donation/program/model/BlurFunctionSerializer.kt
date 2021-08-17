@@ -24,15 +24,15 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
-internal object BlurFieldSerializer : KSerializer<ProgramModelContract.BlurField> {
+internal object BlurFunctionSerializer : KSerializer<ProgramModelContract.BlurFunction> {
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("BlurField", PrimitiveKind.STRING)
-    private val mapping = ProgramModelContract.BlurField.values().associateBy { it.value }
+    private val mapping = ProgramModelContract.BlurFunction.values().associateBy { it.value }
 
-    override fun serialize(encoder: Encoder, value: ProgramModelContract.BlurField) {
+    override fun serialize(encoder: Encoder, value: ProgramModelContract.BlurFunction) {
         encoder.encodeString(value.value)
     }
 
-    override fun deserialize(decoder: Decoder): ProgramModelContract.BlurField {
+    override fun deserialize(decoder: Decoder): ProgramModelContract.BlurFunction {
         val key = decoder.decodeString()
         return mapping.getOrElse(key) {
             throw CoreRuntimeError.InternalFailure("Unknown blur function $key.")

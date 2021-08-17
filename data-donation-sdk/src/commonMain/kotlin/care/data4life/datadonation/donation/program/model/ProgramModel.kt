@@ -20,17 +20,17 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal data class ProgramItemBlur(
+internal data class ProgramResourceBlurItem(
     override val linkId: String,
     @SerialName("fn")
-    override val field: ProgramModelContract.BlurField
-) : ProgramModelContract.ProgramItemBlur
+    override val function: ProgramModelContract.BlurFunction
+) : ProgramModelContract.ProgramResourceBlurItem
 
 @Serializable
 internal data class ProgramResourceBlur(
     override val location: String? = null,
-    override val authored: ProgramModelContract.BlurField? = null,
-    override val items: List<ProgramItemBlur>
+    override val authored: ProgramModelContract.BlurFunction? = null,
+    override val items: List<ProgramResourceBlurItem>
 ) : ProgramModelContract.ProgramResourceBlur
 
 @Serializable
@@ -41,31 +41,32 @@ internal data class ProgramResource(
 ) : ProgramModelContract.ProgramResource
 
 @Serializable
-internal data class ProgramAnonymizationBlurValue(
+internal data class ProgramAnonymizationBlur(
     override val location: String,
-    override val authored: ProgramModelContract.BlurField? = null,
-    override val researchSubject: ProgramModelContract.BlurField? = null
-) : ProgramModelContract.ProgramAnonymizationBlurValue
+    override val authored: ProgramModelContract.BlurFunction? = null,
+    override val researchSubject: ProgramModelContract.BlurFunction? = null
+) : ProgramModelContract.ProgramAnonymizationBlur
 
 @Serializable
 internal data class ProgramAnonymization(
-    override val blur: ProgramAnonymizationBlurValue? = null
+    override val blur: ProgramAnonymizationBlur? = null
 ) : ProgramModelContract.ProgramAnonymization
 
 @Serializable
-internal data class ProgramConfiguration(
+internal data class ProgramDonationConfiguration(
     override val consentKey: String,
     override val resources: List<ProgramResource>,
     override val anonymization: ProgramAnonymization? = null,
     override val triggerList: List<String>? = null,
     override val delay: Double,
     override val studyID: String
-) : ProgramModelContract.ProgramConfiguration
+) : ProgramModelContract.ProgramDonationConfiguration
 
 @Serializable
 internal data class Program(
     override val name: String,
     override val slug: String,
     override val tenantID: String,
-    override val donation: ProgramConfiguration? = null
+    @SerialName("donation")
+    override val configuration: ProgramDonationConfiguration? = null
 ) : ProgramModelContract.Program

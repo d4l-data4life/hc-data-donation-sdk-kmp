@@ -34,7 +34,7 @@ class ProgramModelTest {
 
         val serializer = Json {
             serializersModule = SerializersModule {
-                contextual(BlurFieldSerializer)
+                contextual(BlurFunctionSerializer)
 
                 ignoreUnknownKeys = true
             }

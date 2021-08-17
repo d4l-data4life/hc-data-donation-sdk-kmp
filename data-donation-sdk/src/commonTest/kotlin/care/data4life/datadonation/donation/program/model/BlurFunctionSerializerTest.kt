@@ -30,10 +30,10 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
-internal class BlurFieldSerializerTest {
+internal class BlurFunctionSerializerTest {
     @Test
     fun `It fulfils KSerializer`() {
-        val serializer: Any = BlurFieldSerializer
+        val serializer: Any = BlurFunctionSerializer
 
         assertTrue(serializer is KSerializer<*>)
     }
@@ -41,12 +41,12 @@ internal class BlurFieldSerializerTest {
     @Test
     fun `It has a proper descriptor`() {
         assertEquals(
-            actual = BlurFieldSerializer.descriptor.kind,
+            actual = BlurFunctionSerializer.descriptor.kind,
             expected = PrimitiveKind.STRING
         )
 
         assertEquals(
-            actual = BlurFieldSerializer.descriptor.serialName,
+            actual = BlurFunctionSerializer.descriptor.serialName,
             expected = "BlurField"
         )
     }
@@ -56,11 +56,11 @@ internal class BlurFieldSerializerTest {
         // Given
         val serializer = Json {
             serializersModule = SerializersModule {
-                contextual(BlurFieldSerializer)
+                contextual(BlurFunctionSerializer)
             }
         }
 
-        for (field in ProgramModelContract.BlurField.values()) {
+        for (field in ProgramModelContract.BlurFunction.values()) {
             // When
             val result = serializer.encodeToString(field)
 
@@ -77,7 +77,7 @@ internal class BlurFieldSerializerTest {
         // Given
         val serializer = Json {
             serializersModule = SerializersModule {
-                contextual(BlurFieldSerializer)
+                contextual(BlurFunctionSerializer)
             }
         }
 
@@ -85,7 +85,7 @@ internal class BlurFieldSerializerTest {
         val error = assertFailsWith<CoreRuntimeError.InternalFailure> {
             // When
             val result =
-                serializer.decodeFromString<ProgramModelContract.BlurField>("\"notJS\"")
+                serializer.decodeFromString<ProgramModelContract.BlurFunction>("\"notJS\"")
         }
 
         assertEquals(
@@ -99,13 +99,13 @@ internal class BlurFieldSerializerTest {
         // Given
         val serializer = Json {
             serializersModule = SerializersModule {
-                contextual(BlurFieldSerializer)
+                contextual(BlurFunctionSerializer)
             }
         }
 
-        for (field in ProgramModelContract.BlurField.values()) {
+        for (field in ProgramModelContract.BlurFunction.values()) {
             // When
-            val result = serializer.decodeFromString<ProgramModelContract.BlurField>("\"${field.value}\"")
+            val result = serializer.decodeFromString<ProgramModelContract.BlurFunction>("\"${field.value}\"")
 
             // Then
             assertSame(
