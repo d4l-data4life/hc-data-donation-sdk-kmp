@@ -20,7 +20,6 @@ import care.data4life.datadonation.mock.ResourceLoader
 import care.data4life.datadonation.mock.fixture.ProgramFixture
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
-import kotlinx.serialization.modules.contextual
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -34,8 +33,6 @@ class ProgramModelTest {
 
         val serializer = Json {
             serializersModule = SerializersModule {
-                contextual(BlurFunctionSerializer)
-
                 ignoreUnknownKeys = true
             }
         }

@@ -29,6 +29,10 @@ internal interface ProgramModelContract {
         END_OF_MONTH("endOfMonth")
     }
 
+    enum class RevocationMode {
+
+    }
+
     interface ProgramResourceBlurItem {
         val linkId: String
         val function: BlurFunction

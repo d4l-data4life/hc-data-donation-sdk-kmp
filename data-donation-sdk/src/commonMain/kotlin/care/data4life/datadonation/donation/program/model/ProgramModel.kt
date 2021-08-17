@@ -16,6 +16,7 @@
 
 package care.data4life.datadonation.donation.program.model
 
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -23,12 +24,14 @@ import kotlinx.serialization.Serializable
 internal data class ProgramResourceBlurItem(
     override val linkId: String,
     @SerialName("fn")
+    @Contextual
     override val function: ProgramModelContract.BlurFunction
 ) : ProgramModelContract.ProgramResourceBlurItem
 
 @Serializable
 internal data class ProgramResourceBlur(
     override val location: String? = null,
+    @Contextual
     override val authored: ProgramModelContract.BlurFunction? = null,
     override val items: List<ProgramResourceBlurItem>
 ) : ProgramModelContract.ProgramResourceBlur
@@ -43,7 +46,9 @@ internal data class ProgramResource(
 @Serializable
 internal data class ProgramAnonymizationBlur(
     override val location: String,
+    @Contextual
     override val authored: ProgramModelContract.BlurFunction? = null,
+    @Contextual
     override val researchSubject: ProgramModelContract.BlurFunction? = null
 ) : ProgramModelContract.ProgramAnonymizationBlur
 
