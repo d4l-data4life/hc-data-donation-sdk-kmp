@@ -16,8 +16,7 @@
 
 package care.data4life.datadonation.donation.program
 
-import care.data4life.datadonation.lang.HttpRuntimeError
-import care.data4life.datadonation.lang.ProgramServiceError
+import care.data4life.datadonation.networking.HttpRuntimeError
 import io.ktor.http.HttpStatusCode
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -40,7 +39,7 @@ class ProgramErrorMapperTest {
         val result = ProgramErrorMapper.mapFetchProgram(error)
 
         // Then
-        assertTrue(result is ProgramServiceError.UnexpectedError)
+        assertTrue(result is ProgramError.UnexpectedError)
         assertEquals(
             actual = result.httpStatus,
             expected = 503
@@ -56,6 +55,6 @@ class ProgramErrorMapperTest {
         val result = ProgramErrorMapper.mapFetchProgram(error)
 
         // Then
-        assertTrue(result is ProgramServiceError.NotFoundError)
+        assertTrue(result is ProgramError.NotFoundError)
     }
 }

@@ -14,20 +14,13 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.mock.stub.donation.program
+package care.data4life.datadonation.donation.program
 
-import care.data4life.datadonation.donation.program.ProgramContract
-import care.data4life.datadonation.donation.program.model.ProgramModelContract
-import care.data4life.datadonation.mock.MockException
-import care.data4life.datadonation.networking.AccessToken
+import care.data4life.sdk.lang.D4LRuntimeException
 
-internal class ProgramApiServiceStub : ProgramContract.ProgramApiService {
-    var whenFetchProgram: ((AccessToken, String) -> ProgramModelContract.Program)? = null
-
-    override suspend fun fetchProgram(
-        accessToken: AccessToken,
-        programName: String
-    ): ProgramModelContract.Program {
-        return whenFetchProgram?.invoke(accessToken, programName) ?: throw MockException()
-    }
+sealed class ProgramError(
+    open val httpStatus: Int
+) : D4LRuntimeException() {
+    class UnexpectedError(override val httpStatus: Int) : ProgramError(httpStatus)
+    class NotFoundError : ProgramError(404)
 }

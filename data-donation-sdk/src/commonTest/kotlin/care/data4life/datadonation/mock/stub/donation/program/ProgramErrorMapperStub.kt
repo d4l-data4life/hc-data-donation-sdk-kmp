@@ -16,15 +16,15 @@
 
 package care.data4life.datadonation.mock.stub.donation.program
 
-import care.data4life.datadonation.lang.HttpRuntimeError
-import care.data4life.datadonation.lang.ProgramServiceError
-import care.data4life.datadonation.mock.MockException
 import care.data4life.datadonation.donation.program.ProgramContract
+import care.data4life.datadonation.donation.program.ProgramError
+import care.data4life.datadonation.mock.MockException
+import care.data4life.datadonation.networking.HttpRuntimeError
 
 internal class ProgramErrorMapperStub : ProgramContract.ProgramErrorMapper {
-    var whenMapFetchProgram: ((HttpRuntimeError) -> ProgramServiceError)? = null
+    var whenMapFetchProgram: ((HttpRuntimeError) -> ProgramError)? = null
 
-    override fun mapFetchProgram(error: HttpRuntimeError): ProgramServiceError {
+    override fun mapFetchProgram(error: HttpRuntimeError): ProgramError {
         return whenMapFetchProgram?.invoke(error) ?: throw MockException()
     }
 }

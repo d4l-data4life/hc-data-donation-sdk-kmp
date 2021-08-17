@@ -16,17 +16,16 @@
 
 package care.data4life.datadonation.donation.program
 
-import care.data4life.datadonation.lang.HttpRuntimeError
-import care.data4life.datadonation.lang.ProgramServiceError
+import care.data4life.datadonation.networking.HttpRuntimeError
 import io.ktor.http.HttpStatusCode
 
 internal object ProgramErrorMapper :
     ProgramContract.ProgramErrorMapper {
-    override fun mapFetchProgram(error: HttpRuntimeError): ProgramServiceError {
+    override fun mapFetchProgram(error: HttpRuntimeError): ProgramError {
         return if (error.statusCode == HttpStatusCode.NotFound) {
-            ProgramServiceError.NotFoundError()
+            ProgramError.NotFoundError()
         } else {
-            ProgramServiceError.UnexpectedError(error.statusCode.value)
+            ProgramError.UnexpectedError(error.statusCode.value)
         }
     }
 }

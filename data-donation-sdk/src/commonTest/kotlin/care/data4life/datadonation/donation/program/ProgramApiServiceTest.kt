@@ -16,13 +16,13 @@
 
 package care.data4life.datadonation.donation.program
 
-import care.data4life.datadonation.internal.data.service.networking.Networking
-import care.data4life.datadonation.internal.data.service.networking.Path
-import care.data4life.datadonation.lang.CoreRuntimeError
-import care.data4life.datadonation.lang.HttpRuntimeError
+import care.data4life.datadonation.error.CoreRuntimeError
 import care.data4life.datadonation.mock.fixture.ProgramFixture
 import care.data4life.datadonation.mock.stub.donation.program.ProgramErrorMapperStub
-import care.data4life.datadonation.mock.stub.service.networking.RequestBuilderSpy
+import care.data4life.datadonation.mock.stub.networking.RequestBuilderSpy
+import care.data4life.datadonation.networking.HttpRuntimeError
+import care.data4life.datadonation.networking.Networking
+import care.data4life.datadonation.networking.Path
 import care.data4life.sdk.util.test.coroutine.runBlockingTest
 import care.data4life.sdk.util.test.ktor.HttpMockClientFactory
 import io.ktor.client.engine.mock.respond
@@ -35,7 +35,7 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
-class ProgramServiceTest {
+class ProgramApiServiceTest {
     private val dummyKtor = HttpRequestBuilder()
 
     @Test

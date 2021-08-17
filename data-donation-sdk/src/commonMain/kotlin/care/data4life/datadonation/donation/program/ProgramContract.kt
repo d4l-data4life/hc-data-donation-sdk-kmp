@@ -33,7 +33,7 @@ internal interface ProgramContract {
     }
 
     interface ProgramErrorMapper {
-        fun mapFetchProgram(error: HttpRuntimeError): ProgramServiceError
+        fun mapFetchProgram(error: HttpRuntimeError): ProgramError
     }
 
     interface ProgramRepository {

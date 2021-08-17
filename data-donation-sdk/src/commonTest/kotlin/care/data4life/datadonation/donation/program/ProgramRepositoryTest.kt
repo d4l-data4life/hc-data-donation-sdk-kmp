@@ -16,9 +16,9 @@
 
 package care.data4life.datadonation.donation.program
 
-import care.data4life.datadonation.internal.data.service.networking.AccessToken
 import care.data4life.datadonation.mock.fixture.ProgramFixture
 import care.data4life.datadonation.mock.stub.donation.program.ProgramApiServiceStub
+import care.data4life.datadonation.networking.AccessToken
 import care.data4life.sdk.util.test.coroutine.runBlockingTest
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch

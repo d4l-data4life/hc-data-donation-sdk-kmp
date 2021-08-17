@@ -16,8 +16,8 @@
 
 package care.data4life.datadonation.donation.program
 
-import care.data4life.datadonation.internal.data.service.networking.AccessToken
 import care.data4life.datadonation.donation.program.model.ProgramModelContract
+import care.data4life.datadonation.networking.AccessToken
 
 internal class ProgramRepository(
     private val apiService: ProgramContract.ProgramApiService
