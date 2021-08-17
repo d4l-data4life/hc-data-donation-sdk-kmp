@@ -99,7 +99,7 @@ class UserConsentApiServiceTest {
             service.createUserConsent(
                 accessToken = accessToken,
                 consentDocumentKey = consentDocumentKey,
-                version = version
+                consentDocumentVersion = version
             )
         }
 
@@ -155,7 +155,7 @@ class UserConsentApiServiceTest {
         val result = service.createUserConsent(
             accessToken = accessToken,
             consentDocumentKey = consentDocumentKey,
-            version = version
+            consentDocumentVersion = version
         )
 
         // Then
