@@ -34,9 +34,9 @@ package care.data4life.datadonation
 
 import care.data4life.datadonation.ConsentDataContract.ConsentDocument
 import care.data4life.datadonation.ConsentDataContract.UserConsent
-import care.data4life.datadonation.consentdocument.ConsentDocumentContract
+import care.data4life.datadonation.consent.consentdocument.ConsentDocumentContract
+import care.data4life.datadonation.consent.userconsent.UserConsentContract
 import care.data4life.datadonation.di.initKoin
-import care.data4life.datadonation.userconsent.UserConsentContract
 import care.data4life.sdk.flow.D4LSDKFlow
 import care.data4life.sdk.flow.D4LSDKFlowFactoryContract
 import care.data4life.sdk.util.coroutine.DomainErrorMapperContract
