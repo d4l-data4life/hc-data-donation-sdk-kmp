@@ -20,19 +20,17 @@ listOf("iphoneos", "iphonesimulator").forEach { sdk ->
 
         commandLine(
             "xcodebuild",
-            "archive",
-            "-project", "DataDonationCrypto-ObjC.xcodeproj",
-            "-scheme", "DataDonationCrypto-ObjC",
-            "-configuration", "Release",
-            "-destination", "'generic/platform=iOS" + (if (sdk == "iphonesimulator") " Simulator" else "") + "'",
-            "SKIP_INSTALL=NO"
+            "-project", "DataDonationCryptoObjC.xcodeproj",
+            "-target", "DataDonationCryptoObjC",
+            "-sdk", sdk
         )
+        workingDir(projectDir)
 
         workingDir(projectDir)
 
         inputs.files(
-            fileTree("$projectDir/DataDonationCrypto-ObjC.xcodeproj") { exclude("**/xcuserdata") },
-            fileTree("$projectDir/DataDonationCrypto-ObjC")
+            fileTree("$projectDir/DataDonationCryptoObjC.xcodeproj") { exclude("**/xcuserdata") },
+            fileTree("$projectDir/DataDonationCryptoObjC")
         )
         outputs.files(
             fileTree("$projectDir/build/Release-${sdk}")

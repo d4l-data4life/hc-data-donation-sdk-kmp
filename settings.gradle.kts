@@ -19,5 +19,5 @@ rootProject.name = "mpp-data-donation-sdk"
 include(
     ":data-donation-sdk",
     ":docs",
-    ":DataDonationCrypto-ObjC"
+    ":DataDonationCryptoObjC"
 )

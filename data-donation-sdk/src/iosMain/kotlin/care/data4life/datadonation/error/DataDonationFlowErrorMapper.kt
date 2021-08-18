@@ -13,15 +13,17 @@
  * applications and/or if you’d like to contribute to the development of the SDK, please
  * contact D4L by email to help@data4life.care.
  */
-
 package care.data4life.datadonation.error
 
 import care.data4life.sdk.lang.PlatformError
 import care.data4life.sdk.util.coroutine.DomainErrorMapperContract
 import care.data4life.sdk.util.objc.NSErrorFactory
+import objc.datadonation.crypto.DataDonationCryptor
 
 actual object DataDonationFlowErrorMapper : DomainErrorMapperContract {
     actual override fun mapError(error: Throwable): PlatformError {
+        val cryptor = DataDonationCryptor()
+
         return NSErrorFactory.create(
             code = 815,
             domain = "care.data4life.datadonation",
