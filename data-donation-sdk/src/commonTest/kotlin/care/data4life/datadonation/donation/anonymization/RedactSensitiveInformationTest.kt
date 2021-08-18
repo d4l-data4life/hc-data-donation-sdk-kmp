@@ -51,18 +51,18 @@ class RedactSensitiveInformationTest {
     @Test
     fun `Given a redact is called, it will pass through non QuestionnaireResponses`() = runBlockingTest {
         // Given
-        val parameter = listOf(DomainResource(), DomainResource())
+        val resource = listOf(DomainResource(), DomainResource())
 
         // When
-        val result = RedactSensitiveInformation().redact(parameter)
+        val result = RedactSensitiveInformation().redact(resource)
 
         // Then
         assertSame(
-            actual = parameter[0],
+            actual = resource[0],
             expected = result[0]
         )
         assertSame(
-            actual = parameter[1],
+            actual = resource[1],
             expected = result[1]
         )
     }
@@ -70,26 +70,38 @@ class RedactSensitiveInformationTest {
     @Test
     fun `Given a redact is called, it will pass through QuestionnaireResponses, which do not match the domain criteria`() = runBlockingTest {
         // Given
-        val parameter = listOf(questionnaireResponseTemplate.copy(), questionnaireResponseTemplate.copy())
+        val resource = listOf(
+            questionnaireResponseTemplate.copy(),
+            questionnaireResponseTemplate.copy(
+                questionnaire = Reference()
+            ),
+            questionnaireResponseTemplate.copy(
+                questionnaire = Reference(reference = "not the thing you are looking for")
+            )
+        )
 
         // When
-        val result = RedactSensitiveInformation().redact(parameter)
+        val result = RedactSensitiveInformation().redact(resource)
 
         // Then
         assertSame(
-            actual = parameter[0],
+            actual = resource[0],
             expected = result[0]
         )
         assertSame(
-            actual = parameter[1],
+            actual = resource[1],
             expected = result[1]
+        )
+        assertSame(
+            actual = resource[2],
+            expected = result[2]
         )
     }
 
     @Test
     fun `Given a redact is called, it maps Items of a QuestionnaireResponses to null, if they are null`() = runBlockingTest {
         // Given
-        val parameter = listOf(
+        val resource = listOf(
             questionnaireResponseTemplate.copy(
                 questionnaire = referenceTemplate,
                 item = null
@@ -97,7 +109,7 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val result = RedactSensitiveInformation().redact(parameter).first()
+        val result = RedactSensitiveInformation().redact(resource).first()
 
         // Then
         assertTrue(result is QuestionnaireResponse)
@@ -107,7 +119,7 @@ class RedactSensitiveInformationTest {
     @Test
     fun `Given a redact is called, it maps Items of a QuestionnaireResponses to null, if they are empty`() = runBlockingTest {
         // Given
-        val parameter = listOf(
+        val resource = listOf(
             questionnaireResponseTemplate.copy(
                 questionnaire = referenceTemplate,
                 item = emptyList()
@@ -115,7 +127,7 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val result = RedactSensitiveInformation().redact(parameter).first()
+        val result = RedactSensitiveInformation().redact(resource).first()
 
         // Then
         assertTrue(result is QuestionnaireResponse)
@@ -125,7 +137,7 @@ class RedactSensitiveInformationTest {
     @Test
     fun `Given a redact is called, it maps Items of a QuestionnaireResponses, if they are not null or empty`() = runBlockingTest {
         // Given
-        val parameter = listOf(
+        val resource = listOf(
             questionnaireResponseTemplate.copy(
                 questionnaire = referenceTemplate,
                 item = listOf(questionnaireResponseItemTemplate)
@@ -133,7 +145,7 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val result = RedactSensitiveInformation().redact(parameter).first()
+        val result = RedactSensitiveInformation().redact(resource).first()
 
         // Then
         assertTrue(result is QuestionnaireResponse)
@@ -143,7 +155,7 @@ class RedactSensitiveInformationTest {
     @Test
     fun `Given a redact is called, it maps Items of a QuestionnaireResponseItem to null, if they are null`() = runBlockingTest {
         // Given
-        val parameter = listOf(
+        val resource = listOf(
             questionnaireResponseTemplate.copy(
                 questionnaire = referenceTemplate,
                 item = listOf(
@@ -155,7 +167,7 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val result = RedactSensitiveInformation().redact(parameter).first()
+        val result = RedactSensitiveInformation().redact(resource).first()
 
         // Then
         assertTrue(result is QuestionnaireResponse)
@@ -165,7 +177,7 @@ class RedactSensitiveInformationTest {
     @Test
     fun `Given a redact is called, it maps Items of a QuestionnaireResponseItem to null, if they are empty`() = runBlockingTest {
         // Given
-        val parameter = listOf(
+        val resource = listOf(
             questionnaireResponseTemplate.copy(
                 questionnaire = referenceTemplate,
                 item = listOf(
@@ -177,7 +189,7 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val result = RedactSensitiveInformation().redact(parameter).first()
+        val result = RedactSensitiveInformation().redact(resource).first()
 
         // Then
         assertTrue(result is QuestionnaireResponse)
@@ -187,7 +199,7 @@ class RedactSensitiveInformationTest {
     @Test
     fun `Given a redact is called, it maps Items of a QuestionnaireResponseItem, if they are not null or empty`() = runBlockingTest {
         // Given
-        val parameter = listOf(
+        val resource = listOf(
             questionnaireResponseTemplate.copy(
                 questionnaire = referenceTemplate,
                 item = listOf(
@@ -199,7 +211,7 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val result = RedactSensitiveInformation().redact(parameter).first()
+        val result = RedactSensitiveInformation().redact(resource).first()
 
         // Then
         assertTrue(result is QuestionnaireResponse)
@@ -214,7 +226,7 @@ class RedactSensitiveInformationTest {
             item = null
         )
 
-        val parameter = listOf(
+        val resource = listOf(
             questionnaireResponseTemplate.copy(
                 questionnaire = referenceTemplate,
                 item = listOf(
@@ -230,7 +242,7 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val result = RedactSensitiveInformation().redact(parameter).first()
+        val result = RedactSensitiveInformation().redact(resource).first()
 
         // Then
         assertTrue(result is QuestionnaireResponse)
@@ -243,7 +255,7 @@ class RedactSensitiveInformationTest {
     @Test
     fun `Given a redact is called, it maps Answers of a QuestionnaireResponseItem to null, if they are null`() = runBlockingTest {
         // Given
-        val parameter = listOf(
+        val resource = listOf(
             questionnaireResponseTemplate.copy(
                 questionnaire = referenceTemplate,
                 item = listOf(
@@ -255,7 +267,7 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val result = RedactSensitiveInformation().redact(parameter).first()
+        val result = RedactSensitiveInformation().redact(resource).first()
 
         // Then
         assertTrue(result is QuestionnaireResponse)
@@ -263,75 +275,9 @@ class RedactSensitiveInformationTest {
     }
 
     @Test
-    fun `Given a redact is called, it maps Answers of a QuestionnaireResponseItem to null, if they are empty`() = runBlockingTest {
+    fun `Given a redact is called, it ignores ItemAnswers, which are not FreeTextFields `() = runBlockingTest {
         // Given
-        val parameter = listOf(
-            questionnaireResponseTemplate.copy(
-                questionnaire = referenceTemplate,
-                item = listOf(
-                    questionnaireResponseItemTemplate.copy(
-                        answer = emptyList()
-                    )
-                )
-            )
-        )
-
-        // When
-        val result = RedactSensitiveInformation().redact(parameter).first()
-
-        // Then
-        assertTrue(result is QuestionnaireResponse)
-        assertNull(result.item!!.first().answer)
-    }
-
-    @Test
-    fun `Given a redact is called, it maps Answers of a QuestionnaireResponseItem, if they are not empty or null`() = runBlockingTest {
-        // Given
-        val parameter = listOf(
-            questionnaireResponseTemplate.copy(
-                questionnaire = referenceTemplate,
-                item = listOf(
-                    questionnaireResponseItemTemplate.copy(
-                        answer = listOf(questionnaireResponseItemAnswerTemplate)
-                    )
-                )
-            )
-        )
-
-        // When
-        val result = RedactSensitiveInformation().redact(parameter).first()
-
-        // Then
-        assertTrue(result is QuestionnaireResponse)
-        assertNotNull(result.item!!.first().answer)
-    }
-
-    @Test
-    fun `Given a redact is called, it maps Item of the QuestionnaireResponseItemAnswer to null, if they are null`() = runBlockingTest {
-        // Given
-        val parameter = listOf(
-            questionnaireResponseTemplate.copy(
-                questionnaire = referenceTemplate,
-                item = listOf(
-                    questionnaireResponseItemTemplate.copy(
-                        answer = listOf(questionnaireResponseItemAnswerTemplate)
-                    )
-                )
-            )
-        )
-
-        // When
-        val result = RedactSensitiveInformation().redact(parameter).first()
-
-        // Then
-        assertTrue(result is QuestionnaireResponse)
-        assertNull(result.item!!.first().answer!!.first().item)
-    }
-
-    @Test
-    fun `Given a redact is called, it maps Item of the QuestionnaireResponseItemAnswer to null, if they are empty`() = runBlockingTest {
-        // Given
-        val parameter = listOf(
+        val resource = listOf(
             questionnaireResponseTemplate.copy(
                 questionnaire = referenceTemplate,
                 item = listOf(
@@ -347,7 +293,106 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val result = RedactSensitiveInformation().redact(parameter).first()
+        val result = RedactSensitiveInformation().redact(resource).first()
+
+        // Then
+        assertTrue(result is QuestionnaireResponse)
+        assertSame(
+            expected = resource.first().item!!.first().answer,
+            actual = result.item!!.first().answer
+        )
+    }
+
+    @Test
+    fun `Given a redact is called, it maps Answers of a QuestionnaireResponseItem to null, if they are empty`() = runBlockingTest {
+        // Given
+        val resource = listOf(
+            questionnaireResponseTemplate.copy(
+                questionnaire = referenceTemplate,
+                item = listOf(
+                    questionnaireResponseItemTemplate.copy(
+                        linkId = "FN",
+                        answer = emptyList()
+                    )
+                )
+            )
+        )
+
+        // When
+        val result = RedactSensitiveInformation().redact(resource).first()
+
+        // Then
+        assertTrue(result is QuestionnaireResponse)
+        assertNull(result.item!!.first().answer)
+    }
+
+    @Test
+    fun `Given a redact is called, it maps Answers of a QuestionnaireResponseItem, if they are not empty or null`() = runBlockingTest {
+        // Given
+        val resource = listOf(
+            questionnaireResponseTemplate.copy(
+                questionnaire = referenceTemplate,
+                item = listOf(
+                    questionnaireResponseItemTemplate.copy(
+                        linkId = "FN",
+                        answer = listOf(questionnaireResponseItemAnswerTemplate)
+                    )
+                )
+            )
+        )
+
+        // When
+        val result = RedactSensitiveInformation().redact(resource).first()
+
+        // Then
+        assertTrue(result is QuestionnaireResponse)
+        assertNotNull(result.item!!.first().answer)
+    }
+
+    @Test
+    fun `Given a redact is called, it maps Item of the QuestionnaireResponseItemAnswer to null, if they are null`() = runBlockingTest {
+        // Given
+        val resource = listOf(
+            questionnaireResponseTemplate.copy(
+                questionnaire = referenceTemplate,
+                item = listOf(
+                    questionnaireResponseItemTemplate.copy(
+                        linkId = "FN",
+                        answer = listOf(questionnaireResponseItemAnswerTemplate)
+                    )
+                )
+            )
+        )
+
+        // When
+        val result = RedactSensitiveInformation().redact(resource).first()
+
+        // Then
+        assertTrue(result is QuestionnaireResponse)
+        assertNull(result.item!!.first().answer!!.first().item)
+    }
+
+    @Test
+    fun `Given a redact is called, it maps Item of the QuestionnaireResponseItemAnswer to null, if they are empty`() = runBlockingTest {
+        // Given
+        val resource = listOf(
+            questionnaireResponseTemplate.copy(
+                questionnaire = referenceTemplate,
+                item = listOf(
+                    questionnaireResponseItemTemplate.copy(
+                        linkId = "FN",
+                        answer = listOf(
+                            questionnaireResponseItemAnswerTemplate.copy(
+                                item = emptyList()
+                            )
+                        )
+                    )
+                )
+            )
+        )
+
+        // When
+        val result = RedactSensitiveInformation().redact(resource).first()
 
         // Then
         assertTrue(result is QuestionnaireResponse)
@@ -357,11 +402,12 @@ class RedactSensitiveInformationTest {
     @Test
     fun `Given a redact is called, it maps Item of the QuestionnaireResponseItemAnswer, if they are not null or empty`() = runBlockingTest {
         // Given
-        val parameter = listOf(
+        val resource = listOf(
             questionnaireResponseTemplate.copy(
                 questionnaire = referenceTemplate,
                 item = listOf(
                     questionnaireResponseItemTemplate.copy(
+                        linkId = "FN",
                         answer = listOf(
                             questionnaireResponseItemAnswerTemplate.copy(
                                 item = listOf(questionnaireResponseItemTemplate)
@@ -373,7 +419,7 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val result = RedactSensitiveInformation().redact(parameter).first()
+        val result = RedactSensitiveInformation().redact(resource).first()
 
         // Then
         assertTrue(result is QuestionnaireResponse)
@@ -383,11 +429,12 @@ class RedactSensitiveInformationTest {
     @Test
     fun `Given a redact is called, it maps ValueStrings of the QuestionnaireResponseItemAnswer to null, if they are null`() = runBlockingTest {
         // Given
-        val parameter = listOf(
+        val resource = listOf(
             questionnaireResponseTemplate.copy(
                 questionnaire = referenceTemplate,
                 item = listOf(
                     questionnaireResponseItemTemplate.copy(
+                        linkId = "FN",
                         answer = listOf(
                             questionnaireResponseItemAnswerTemplate.copy(
                                 valueString = null
@@ -399,7 +446,7 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val result = RedactSensitiveInformation().redact(parameter).first()
+        val result = RedactSensitiveInformation().redact(resource).first()
 
         // Then
         assertTrue(result is QuestionnaireResponse)
@@ -409,11 +456,12 @@ class RedactSensitiveInformationTest {
     @Test
     fun `Given a redact is called, it maps ValueStrings of the QuestionnaireResponseItemAnswer to REDACTED, if they are not null`() = runBlockingTest {
         // Given
-        val parameter = listOf(
+        val resource = listOf(
             questionnaireResponseTemplate.copy(
                 questionnaire = referenceTemplate,
                 item = listOf(
                     questionnaireResponseItemTemplate.copy(
+                        linkId = "FN",
                         answer = listOf(
                             questionnaireResponseItemAnswerTemplate.copy(
                                 valueString = "tomato"
@@ -425,7 +473,7 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val result = RedactSensitiveInformation().redact(parameter).first()
+        val result = RedactSensitiveInformation().redact(resource).first()
 
         // Then
         assertTrue(result is QuestionnaireResponse)

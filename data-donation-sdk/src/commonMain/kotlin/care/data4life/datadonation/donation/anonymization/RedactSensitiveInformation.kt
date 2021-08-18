@@ -17,6 +17,7 @@
 package care.data4life.datadonation.donation.anonymization
 
 import care.data4life.datadonation.donation.anonymization.AnonymizationContract.Redaction.Companion.REDACTABLE_DOMAINS
+import care.data4life.datadonation.donation.anonymization.AnonymizationContract.Redaction.Companion.REDACTABLE_FIELDS
 import care.data4life.datadonation.donation.anonymization.AnonymizationContract.Redaction.Companion.REDACTED
 import care.data4life.hl7.fhir.stu3.model.FhirResource
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
@@ -63,11 +64,21 @@ internal class RedactSensitiveInformation : AnonymizationContract.Redaction {
         )
     }
 
+    private fun filterResponseItemsAnswersByField(
+        responseItem: QuestionnaireResponseItem
+    ): List<QuestionnaireResponseItemAnswer>? {
+        return if (REDACTABLE_FIELDS.contains(responseItem.linkId)) {
+            mapOrNull(responseItem.answer, ::mapQuestionnaireResponseItemAnswer)
+        } else {
+            responseItem.answer
+        }
+    }
+
     private fun mapQuestionnaireResponseItem(
         responseItem: QuestionnaireResponseItem
     ): QuestionnaireResponseItem {
         val item = mapOrNull(responseItem.item, ::mapQuestionnaireResponseItem)
-        val answer = mapOrNull(responseItem.answer, ::mapQuestionnaireResponseItemAnswer)
+        val answer = filterResponseItemsAnswersByField(responseItem)
 
         return responseItem.copy(
             item = item,
