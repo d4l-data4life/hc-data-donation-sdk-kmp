@@ -43,9 +43,9 @@ class RedactSensitiveInformationTest {
 
     @Test
     fun `It fulfils Redaction`() {
-        val factory: Any = RedactSensitiveInformation()
+        val redaction: Any = RedactSensitiveInformation
 
-        assertTrue(factory is AnonymizationContract.Redaction)
+        assertTrue(redaction is AnonymizationContract.Redaction)
     }
 
     @Test
@@ -54,7 +54,7 @@ class RedactSensitiveInformationTest {
         val resource = listOf(DomainResource(), DomainResource())
 
         // When
-        val result = RedactSensitiveInformation().redact(resource)
+        val result = RedactSensitiveInformation.redact(resource)
 
         // Then
         assertSame(
@@ -81,7 +81,7 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val result = RedactSensitiveInformation().redact(resource)
+        val result = RedactSensitiveInformation.redact(resource)
 
         // Then
         assertSame(
@@ -109,7 +109,7 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val result = RedactSensitiveInformation().redact(resource).first()
+        val result = RedactSensitiveInformation.redact(resource).first()
 
         // Then
         assertTrue(result is QuestionnaireResponse)
@@ -127,7 +127,7 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val result = RedactSensitiveInformation().redact(resource).first()
+        val result = RedactSensitiveInformation.redact(resource).first()
 
         // Then
         assertTrue(result is QuestionnaireResponse)
@@ -145,7 +145,7 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val result = RedactSensitiveInformation().redact(resource).first()
+        val result = RedactSensitiveInformation.redact(resource).first()
 
         // Then
         assertTrue(result is QuestionnaireResponse)
@@ -167,7 +167,7 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val result = RedactSensitiveInformation().redact(resource).first()
+        val result = RedactSensitiveInformation.redact(resource).first()
 
         // Then
         assertTrue(result is QuestionnaireResponse)
@@ -189,7 +189,7 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val result = RedactSensitiveInformation().redact(resource).first()
+        val result = RedactSensitiveInformation.redact(resource).first()
 
         // Then
         assertTrue(result is QuestionnaireResponse)
@@ -211,7 +211,7 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val result = RedactSensitiveInformation().redact(resource).first()
+        val result = RedactSensitiveInformation.redact(resource).first()
 
         // Then
         assertTrue(result is QuestionnaireResponse)
@@ -242,7 +242,7 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val result = RedactSensitiveInformation().redact(resource).first()
+        val result = RedactSensitiveInformation.redact(resource).first()
 
         // Then
         assertTrue(result is QuestionnaireResponse)
@@ -267,7 +267,7 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val result = RedactSensitiveInformation().redact(resource).first()
+        val result = RedactSensitiveInformation.redact(resource).first()
 
         // Then
         assertTrue(result is QuestionnaireResponse)
@@ -293,7 +293,7 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val result = RedactSensitiveInformation().redact(resource).first()
+        val result = RedactSensitiveInformation.redact(resource).first()
 
         // Then
         assertTrue(result is QuestionnaireResponse)
@@ -319,7 +319,7 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val result = RedactSensitiveInformation().redact(resource).first()
+        val result = RedactSensitiveInformation.redact(resource).first()
 
         // Then
         assertTrue(result is QuestionnaireResponse)
@@ -342,7 +342,7 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val result = RedactSensitiveInformation().redact(resource).first()
+        val result = RedactSensitiveInformation.redact(resource).first()
 
         // Then
         assertTrue(result is QuestionnaireResponse)
@@ -365,7 +365,7 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val result = RedactSensitiveInformation().redact(resource).first()
+        val result = RedactSensitiveInformation.redact(resource).first()
 
         // Then
         assertTrue(result is QuestionnaireResponse)
@@ -392,7 +392,7 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val result = RedactSensitiveInformation().redact(resource).first()
+        val result = RedactSensitiveInformation.redact(resource).first()
 
         // Then
         assertTrue(result is QuestionnaireResponse)
@@ -419,7 +419,7 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val result = RedactSensitiveInformation().redact(resource).first()
+        val result = RedactSensitiveInformation.redact(resource).first()
 
         // Then
         assertTrue(result is QuestionnaireResponse)
@@ -446,7 +446,7 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val result = RedactSensitiveInformation().redact(resource).first()
+        val result = RedactSensitiveInformation.redact(resource).first()
 
         // Then
         assertTrue(result is QuestionnaireResponse)
@@ -473,7 +473,7 @@ class RedactSensitiveInformationTest {
         )
 
         // When
-        val result = RedactSensitiveInformation().redact(resource).first()
+        val result = RedactSensitiveInformation.redact(resource).first()
 
         // Then
         assertTrue(result is QuestionnaireResponse)
