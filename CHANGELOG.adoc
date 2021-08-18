@@ -27,7 +27,7 @@ toc::[]
 
 === Added
 
-* support for FHIR (STU3 & R4).
+* FHIR Library (STU3 & R4).
 * Client#revokeUserConsent returns the latest UserConsent.
 * Example iOS app.
 * Swift package.
