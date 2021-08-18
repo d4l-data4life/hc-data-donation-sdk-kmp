@@ -42,6 +42,7 @@ import care.data4life.sdk.flow.D4LSDKFlowFactoryContract
 import care.data4life.sdk.util.coroutine.DomainErrorMapperContract
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.flow
+import objc.datadonation.crypto.DataDonationCryptor
 import org.koin.core.KoinApplication
 
 class Client internal constructor(
@@ -58,6 +59,7 @@ class Client internal constructor(
     ): D4LSDKFlow<T> {
         val flow = flow { emit(call()) }
 
+        val cryptor = DataDonationCryptor()
         return flowFactory.getInstance(
             backgroundThread,
             flow,
@@ -69,6 +71,7 @@ class Client internal constructor(
         consentDocumentKey: String,
         consentDocumentVersion: String
     ): D4LSDKFlow<UserConsent> {
+
         return wrapResult {
             userConsent.createUserConsent(
                 consentDocumentKey = consentDocumentKey,
