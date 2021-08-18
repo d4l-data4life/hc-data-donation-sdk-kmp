@@ -1,8 +1,8 @@
 package = objc.datadonation.crypto
 language = Objective-C
 
-headers = DataDonationCryptoObjC/DataDonationCryptoObjC-Swift.h
-headerFilter = DataDonationCryptoObjC/*
+headers = include/DataDonationCryptoObjC/DataDonationCryptoObjC-Swift.h
+headerFilter = include/DataDonationCryptoObjC/*
 
 staticLibraries = libDataDonationCryptoObjC.a
 libraryPaths.ios_x64 = DataDonationCryptoObjC/Products/Release-iphonesimulator

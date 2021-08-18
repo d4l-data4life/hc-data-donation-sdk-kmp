@@ -14,32 +14,26 @@
  * contact D4L by email to help@data4life.care.
  */
 
-listOf("iphoneos", "iphonesimulator").forEach { sdk ->
-    tasks.create<Exec>("build${sdk.capitalize()}") {
-        group = "build"
-
-        commandLine(
-            "xcodebuild",
-            "-project", "DataDonationCryptoObjC.xcodeproj",
-            "-target", "DataDonationCryptoObjC",
-            "-sdk", sdk
-        )
-        workingDir(projectDir)
-
-        workingDir(projectDir)
-
-        inputs.files(
-            fileTree("$projectDir/DataDonationCryptoObjC.xcodeproj") { exclude("**/xcuserdata") },
-            fileTree("$projectDir/DataDonationCryptoObjC")
-        )
-        outputs.files(
-            fileTree("$projectDir/build/Release-${sdk}")
-        )
-    }
-}
-
-tasks.create<Delete>("clean") {
+tasks.create<Exec>("buildCryptoLibraries") {
     group = "build"
 
-    delete("$projectDir/build")
+    workingDir(rootDir)
+    commandLine(
+        "./createCryptoLibs.sh"
+    )
+
+    inputs.files(
+        fileTree("$rootDir/createCryptoLibs.sh")
+    )
+    outputs.files(
+        fileTree("$rootDir/DataDonationCryptoObjC/Products")
+    )
+}
+
+tasks.create<Delete>("cleanCryptoLibraries") {
+    group = "build"
+
+    delete("$rootDir/build/release-iphoneos")
+    delete("$rootDir/build/release-iphonesimulator")
+    delete("$rootDir/DataDonationCryptoObjC/Products")
 }

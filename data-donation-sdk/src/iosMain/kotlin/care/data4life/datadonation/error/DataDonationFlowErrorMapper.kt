@@ -19,11 +19,13 @@ import care.data4life.sdk.lang.PlatformError
 import care.data4life.sdk.util.coroutine.DomainErrorMapperContract
 import care.data4life.sdk.util.objc.NSErrorFactory
 import objc.datadonation.crypto.DataDonationCryptor
+import platform.Foundation.NSData
 
 actual object DataDonationFlowErrorMapper : DomainErrorMapperContract {
     actual override fun mapError(error: Throwable): PlatformError {
-        val cryptor = DataDonationCryptor()
-
+        val encryptedData = NSData()
+        val keyData = NSData()
+        val decryptedData = DataDonationCryptor.decrypt(encryptedData, keyData)
         return NSErrorFactory.create(
             code = 815,
             domain = "care.data4life.datadonation",

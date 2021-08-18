@@ -45,27 +45,48 @@ kotlin {
 
     iosArm64 {
         val platform = "iphoneos"
+        val libraryPath = "$rootDir/DataDonationCryptoObjC/Products/Release-$platform"
+        val libraryName = "DataDonationCryptoObjC"
+
         compilations.getByName("main") {
+            //kotlinOptions.freeCompilerArgs += mutableListOf("-include-binary","$libraryPath/$libraryName")
             cinterops.create("DataDonationCryptoObjC") {
-                 val interopTask = tasks[interopProcessingTaskName]
-                interopTask.dependsOn(":DataDonationCryptoObjC:build${platform.capitalize()}")
-                includeDirs.headerFilterOnly(
-                    "$rootDir/DataDonationCryptoObjC/Products/Release-$platform/include"
-                )
+                //val interopTask = tasks[interopProcessingTaskName]
+                //interopTask.dependsOn(":DataDonationCryptoObjC:build${platform.capitalize()}")
+                defFile("src/nativeinterop/cinterop/DataDonationCryptoObjC.def")
+                includeDirs(libraryPath)
             }
+        }
+
+        binaries.all {
+            linkerOpts(
+                "-rpath", "/urs/lib/swift",
+                "-L$libraryPath", "-l$libraryName"
+            )
         }
     }
 
     iosX64 {
         val platform = "iphonesimulator"
+        val libraryPath = "$rootDir/DataDonationCryptoObjC/Products/Release-$platform"
+        val libraryName = "DataDonationCryptoObjC"
+
         compilations.getByName("main") {
+            // kotlinOptions.freeCompilerArgs += mutableListOf("-include-binary","$libraryPath/$libraryName")
             cinterops.create("DataDonationCryptoObjC") {
-                val interopTask = tasks[interopProcessingTaskName]
-                interopTask.dependsOn(":DataDonationCryptoObjC:build${platform.capitalize()}")
-                includeDirs.headerFilterOnly(
-                    "$rootDir/DataDonationCryptoObjC/Products/Release-$platform/include"
-                )
+                //val interopTask = tasks[interopProcessingTaskName]
+                //interopTask.dependsOn(":DataDonationCryptoObjC:build${platform.capitalize()}")
+                defFile("src/nativeinterop/cinterop/DataDonationCryptoObjC.def")
+                includeDirs(libraryPath)
             }
+
+        }
+
+        binaries.all {
+            linkerOpts(
+                "-rpath", "/urs/lib/swift",
+                "-L$libraryPath", "-l$libraryName"
+            )
         }
     }
 
