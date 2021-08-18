@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:/Users/alessio.borraccino/Documents/workspace/data-donation-sdk-native/DataDonationCrypto-ObjC/DataDonationCryptoObjC.xcodeproj">
+      location = "self:">
    </FileRef>
 </Workspace>

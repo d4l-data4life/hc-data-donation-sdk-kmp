@@ -14,8 +14,8 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "3670E93926CBF02700FD5B79"
-               BuildableName = "DataDonationCryptoObjC.framework"
+               BlueprintIdentifier = "3670E95C26CD1E4A00FD5B79"
+               BuildableName = "libDataDonationCryptoObjC.a"
                BlueprintName = "DataDonationCryptoObjC"
                ReferencedContainer = "container:DataDonationCryptoObjC.xcodeproj">
             </BuildableReference>
@@ -60,8 +60,8 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "3670E93926CBF02700FD5B79"
-            BuildableName = "DataDonationCryptoObjC.framework"
+            BlueprintIdentifier = "3670E95C26CD1E4A00FD5B79"
+            BuildableName = "libDataDonationCryptoObjC.a"
             BlueprintName = "DataDonationCryptoObjC"
             ReferencedContainer = "container:DataDonationCryptoObjC.xcodeproj">
          </BuildableReference>
