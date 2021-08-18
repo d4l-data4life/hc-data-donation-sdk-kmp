@@ -43,28 +43,42 @@ kotlin {
         }
     }
 
-    iosArm64 {
+    /*iosArm64 {
+        val platform = "iphoneos"
         compilations.getByName("main") {
-            cinterops {
-                val DataDonationCryptoObjC by cinterops.creating {
-                    defFile("src/nativeInterop/cinterop/DataDonationCryptoObjC.def")
-                    compilerOpts("-framework", "DataDonationCrypto_ObjC", "-FDDCrypto-iphoneos.xcarchive/Products/Library/Framework/DataDonationCrypto_ObjC.framework")
-                }
+            cinterops.create("DataDonationCryptoObjC") {
+                val interopTask = tasks[interopProcessingTaskName]
+                // interopTask.dependsOn(":DataDonationCrypto-ObjC:build${platform.capitalize()}")
+                includeDirs.headerFilterOnly("$rootDir/DataDonationCrypto-ObjC/build/Release-$platform")
+
+                defFile("src/nativeInterop/cinterop/DataDonationCryptoObjC.def")
+                compilerOpts("-framework", "DataDonationCrypto_ObjC", "-FDDCrypto-iphoneos.xcarchive/Products/Library/Framework/DataDonationCrypto_ObjC.framework")
             }
         }
 
         binaries.all {
-            linkerOpts("-framework", "DataDonationCrypto_ObjC", "-FDDCrypto-iphoneos.xcarchive/Products/Library/Framework/DataDonationCrypto_ObjC.framework")
+            linkerOpts(
+                "-framework",
+                "DataDonationCrypto_ObjC",
+                "-FDDCrypto-iphoneos.xcarchive/Products/Library/Framework/DataDonationCrypto_ObjC.framework"
+            )
         }
-    }
+    }*/
 
     iosX64 {
+        val platform = "iphonesimulator"
         compilations.getByName("main") {
-            cinterops {
-                val DataDonationCryptoObjC by cinterops.creating {
-                    defFile("src/nativeInterop/cinterop/DataDonationCryptoObjC.def")
-                    compilerOpts("-framework", "DataDonationCryptoObjC", "-FDDCrypto-iphonesimulator.xcarchive/Products/Library/Framework/DataDonationCrypto_ObjC.framework")
-                }
+            cinterops.create("DataDonationCryptoObjC") {
+                val interopTask = tasks[interopProcessingTaskName]
+                // interopTask.dependsOn(":DataDonationCrypto-ObjC:build${platform.capitalize()}")
+                includeDirs.headerFilterOnly("$rootDir/DataDonationCrypto-ObjC/DDCrypto-iphonesimulator.xcarchive/Products/Library/Frameworks/DataDonationCrypto_ObjC.framework/Headers/")
+
+                defFile("src/nativeInterop/cinterop/DataDonationCryptoObjC.def")
+                compilerOpts(
+                    "-framework",
+                    "DataDonationCryptoObjC",
+                    "-FDDCrypto-iphonesimulator.xcarchive/Products/Library/Framework/DataDonationCrypto_ObjC.framework"
+                )
             }
         }
 

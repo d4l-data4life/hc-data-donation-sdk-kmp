@@ -14,10 +14,30 @@
  * contact D4L by email to help@data4life.care.
  */
 
-rootProject.name = "mpp-data-donation-sdk"
+listOf("iphoneos", "iphonesimulator").forEach { sdk ->
+    tasks.create<Exec>("build${sdk.capitalize()}") {
+        group = "build"
 
-include(
-    ":data-donation-sdk",
-    ":docs",
-    ":DataDonationCrypto-ObjC"
-)
+        commandLine(
+            "xcodebuild",
+            "-project", "DataDonationCrypto-ObjC.xcodeproj",
+            "-target", "DataDonationCrypto-ObjC",
+            "-sdk", sdk
+        )
+        workingDir(projectDir)
+
+        inputs.files(
+            fileTree("$projectDir/DataDonationCrypto-ObjC.xcodeproj") { exclude("**/xcuserdata") },
+            fileTree("$projectDir/DataDonationCrypto-ObjC")
+        )
+        outputs.files(
+            fileTree("$projectDir/build/Release-${sdk}")
+        )
+    }
+}
+
+tasks.create<Delete>("clean") {
+    group = "build"
+
+    delete("$projectDir/build")
+}
