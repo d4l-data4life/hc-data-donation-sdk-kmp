@@ -24,6 +24,8 @@ jobs:
         run: ./gradlew clean
       - name: Version
         run: ./gradlew versionInfo
+      - name: Build ObjC Crypto library
+        run: ./gradlew buildCryptoLibraries
       - name: Build project
         run: ./gradlew build
       - name: Publish to GitHub Packages
