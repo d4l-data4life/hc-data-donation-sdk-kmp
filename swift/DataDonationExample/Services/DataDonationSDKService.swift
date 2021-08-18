@@ -31,7 +31,7 @@ final class DataDonationSDKService {
 
 extension DataDonationSDKService {
 
-    private static var testKey = "d4l.ecov"
+    private static var testKey = "d4l.ecov.ppp"
 
     func fetchUserConsents(_ completion: @escaping (Result<[UserConsent], Error>) -> Void) {
         let flow = client.fetchAllUserConsents()

@@ -1,14 +1,13 @@
 //
-//  DataDonationCrypto_ObjCTests.swift
-//  DataDonationCrypto-ObjCTests
+//  DataDonationCryptoObjCTests.swift
+//  DataDonationCryptoObjCTests
 //
-//  Created by Alessio Borraccino on 17.08.21.
+//  Created by Alessio Borraccino on 18.08.21.
 //
 
 import XCTest
-@testable import DataDonationCrypto_ObjC
 
-class DataDonationCrypto_ObjCTests: XCTestCase {
+class DataDonationCryptoObjCTests: XCTestCase {
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -18,16 +17,13 @@ class DataDonationCrypto_ObjCTests: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
-    func testExample() throws {
+    func testEncrypt() throws {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
     }
 
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
+    func testDecrypt() throws {
+        // This is an example of a functional test case.
+        // Use XCTAssert and related functions to verify your tests produce the correct results.
     }
-
 }

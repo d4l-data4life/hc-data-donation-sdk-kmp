@@ -9,7 +9,18 @@
 /* Begin PBXBuildFile section */
 		3670E96426CD1E5D00FD5B79 /* DataDonationCryptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3670E95726CBF11200FD5B79 /* DataDonationCryptor.swift */; };
 		3670E96726CD1E6E00FD5B79 /* Data4LifeCrypto in Frameworks */ = {isa = PBXBuildFile; productRef = 3670E96626CD1E6E00FD5B79 /* Data4LifeCrypto */; };
+		3670E97326CD5FC100FD5B79 /* libDataDonationCryptoObjC.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3670E95D26CD1E4A00FD5B79 /* libDataDonationCryptoObjC.a */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		3670E97426CD5FC100FD5B79 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3670E93126CBF02700FD5B79 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3670E95C26CD1E4A00FD5B79;
+			remoteInfo = DataDonationCryptoObjC;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		3670E95B26CD1E4A00FD5B79 /* CopyFiles */ = {
@@ -30,8 +41,8 @@
 		3670E94A26CBF02800FD5B79 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3670E95726CBF11200FD5B79 /* DataDonationCryptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDonationCryptor.swift; sourceTree = "<group>"; };
 		3670E95D26CD1E4A00FD5B79 /* libDataDonationCryptoObjC.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libDataDonationCryptoObjC.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		3670E95F26CD1E4A00FD5B79 /* DataDonationCryptoObjC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDonationCryptoObjC.swift; sourceTree = "<group>"; };
 		3670E96826CD286D00FD5B79 /* DataDonationCryptoObjC-BridgingHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "DataDonationCryptoObjC-BridgingHeader.h"; sourceTree = "<group>"; };
+		3670E96E26CD5FC100FD5B79 /* DataDonationCryptoObjCTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DataDonationCryptoObjCTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -43,6 +54,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		3670E96B26CD5FC100FD5B79 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3670E97326CD5FC100FD5B79 /* libDataDonationCryptoObjC.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -51,7 +70,6 @@
 			children = (
 				3670E93C26CBF02700FD5B79 /* DataDonationCryptoObjC */,
 				3670E94726CBF02700FD5B79 /* DataDonationCryptoObjCTests */,
-				3670E95E26CD1E4A00FD5B79 /* DataDonationCryptoObjC */,
 				3670E93B26CBF02700FD5B79 /* Products */,
 				3670E96526CD1E6E00FD5B79 /* Frameworks */,
 			);
@@ -61,6 +79,7 @@
 			isa = PBXGroup;
 			children = (
 				3670E95D26CD1E4A00FD5B79 /* libDataDonationCryptoObjC.a */,
+				3670E96E26CD5FC100FD5B79 /* DataDonationCryptoObjCTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -83,14 +102,6 @@
 				3670E94A26CBF02800FD5B79 /* Info.plist */,
 			);
 			path = DataDonationCryptoObjCTests;
-			sourceTree = "<group>";
-		};
-		3670E95E26CD1E4A00FD5B79 /* DataDonationCryptoObjC */ = {
-			isa = PBXGroup;
-			children = (
-				3670E95F26CD1E4A00FD5B79 /* DataDonationCryptoObjC.swift */,
-			);
-			path = DataDonationCryptoObjC;
 			sourceTree = "<group>";
 		};
 		3670E96526CD1E6E00FD5B79 /* Frameworks */ = {
@@ -124,6 +135,24 @@
 			productReference = 3670E95D26CD1E4A00FD5B79 /* libDataDonationCryptoObjC.a */;
 			productType = "com.apple.product-type.library.static";
 		};
+		3670E96D26CD5FC100FD5B79 /* DataDonationCryptoObjCTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3670E97826CD5FC100FD5B79 /* Build configuration list for PBXNativeTarget "DataDonationCryptoObjCTests" */;
+			buildPhases = (
+				3670E96A26CD5FC100FD5B79 /* Sources */,
+				3670E96B26CD5FC100FD5B79 /* Frameworks */,
+				3670E96C26CD5FC100FD5B79 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				3670E97526CD5FC100FD5B79 /* PBXTargetDependency */,
+			);
+			name = DataDonationCryptoObjCTests;
+			productName = DataDonationCryptoObjCTests;
+			productReference = 3670E96E26CD5FC100FD5B79 /* DataDonationCryptoObjCTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -134,6 +163,9 @@
 				LastUpgradeCheck = 1250;
 				TargetAttributes = {
 					3670E95C26CD1E4A00FD5B79 = {
+						CreatedOnToolsVersion = 12.5;
+					};
+					3670E96D26CD5FC100FD5B79 = {
 						CreatedOnToolsVersion = 12.5;
 					};
 				};
@@ -155,9 +187,20 @@
 			projectRoot = "";
 			targets = (
 				3670E95C26CD1E4A00FD5B79 /* DataDonationCryptoObjC */,
+				3670E96D26CD5FC100FD5B79 /* DataDonationCryptoObjCTests */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		3670E96C26CD5FC100FD5B79 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
 		3670E96926CD28C900FD5B79 /* Export Swift Generated Header */ = {
@@ -189,7 +232,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		3670E96A26CD5FC100FD5B79 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		3670E97526CD5FC100FD5B79 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3670E95C26CD1E4A00FD5B79 /* DataDonationCryptoObjC */;
+			targetProxy = 3670E97426CD5FC100FD5B79 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		3670E94C26CBF02800FD5B79 /* Debug */ = {
@@ -348,6 +406,42 @@
 			};
 			name = Release;
 		};
+		3670E97626CD5FC100FD5B79 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = D2QJWMP9SU;
+				INFOPLIST_FILE = DataDonationCryptoObjCTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = de.gesundheitscloud.DataDonationCryptoObjCTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		3670E97726CD5FC100FD5B79 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = D2QJWMP9SU;
+				INFOPLIST_FILE = DataDonationCryptoObjCTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = de.gesundheitscloud.DataDonationCryptoObjCTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -365,6 +459,15 @@
 			buildConfigurations = (
 				3670E96226CD1E4A00FD5B79 /* Debug */,
 				3670E96326CD1E4A00FD5B79 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3670E97826CD5FC100FD5B79 /* Build configuration list for PBXNativeTarget "DataDonationCryptoObjCTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3670E97626CD5FC100FD5B79 /* Debug */,
+				3670E97726CD5FC100FD5B79 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

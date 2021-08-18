@@ -49,10 +49,7 @@ kotlin {
         val libraryName = "DataDonationCryptoObjC"
 
         compilations.getByName("main") {
-            //kotlinOptions.freeCompilerArgs += mutableListOf("-include-binary","$libraryPath/$libraryName")
             cinterops.create("DataDonationCryptoObjC") {
-                //val interopTask = tasks[interopProcessingTaskName]
-                //interopTask.dependsOn(":DataDonationCryptoObjC:build${platform.capitalize()}")
                 defFile("src/nativeinterop/cinterop/DataDonationCryptoObjC.def")
                 includeDirs(libraryPath)
             }
@@ -72,14 +69,10 @@ kotlin {
         val libraryName = "DataDonationCryptoObjC"
 
         compilations.getByName("main") {
-            // kotlinOptions.freeCompilerArgs += mutableListOf("-include-binary","$libraryPath/$libraryName")
             cinterops.create("DataDonationCryptoObjC") {
-                //val interopTask = tasks[interopProcessingTaskName]
-                //interopTask.dependsOn(":DataDonationCryptoObjC:build${platform.capitalize()}")
                 defFile("src/nativeinterop/cinterop/DataDonationCryptoObjC.def")
                 includeDirs(libraryPath)
             }
-
         }
 
         binaries.all {
