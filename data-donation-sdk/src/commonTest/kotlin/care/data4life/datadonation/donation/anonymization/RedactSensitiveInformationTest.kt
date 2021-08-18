@@ -22,6 +22,7 @@ import care.data4life.hl7.fhir.stu3.model.DomainResource
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponseItem
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponseItemAnswer
+import care.data4life.hl7.fhir.stu3.model.Reference
 import care.data4life.sdk.util.test.coroutine.runBlockingTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -31,7 +32,12 @@ import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 class RedactSensitiveInformationTest {
-    private val questionnaireResponseTemplate = QuestionnaireResponse(status = QuestionnaireResponseStatus.COMPLETED)
+    private val questionnaireResponseTemplate = QuestionnaireResponse(
+        status = QuestionnaireResponseStatus.COMPLETED
+    )
+    private val referenceTemplate = Reference(
+        reference = "http://fhir.data4life.care/covid-19/stu3/Questionnaire/covid19-covhub-symptom-tracking|someNotSoIntresting"
+    )
     private val questionnaireResponseItemTemplate = QuestionnaireResponseItem(linkId = "does not matter")
     private val questionnaireResponseItemAnswerTemplate = QuestionnaireResponseItemAnswer()
 
@@ -43,7 +49,7 @@ class RedactSensitiveInformationTest {
     }
 
     @Test
-    fun `Given a Usecase had been create with and execute is called, it will pass through non QuestionnaireResponses`() = runBlockingTest {
+    fun `Given a redact is called, it will pass through non QuestionnaireResponses`() = runBlockingTest {
         // Given
         val parameter = listOf(DomainResource(), DomainResource())
 
@@ -62,10 +68,30 @@ class RedactSensitiveInformationTest {
     }
 
     @Test
-    fun `Given a Usecase had been create with and execute is called, it maps Items of a QuestionnaireResponses to null, if they are null`() = runBlockingTest {
+    fun `Given a redact is called, it will pass through QuestionnaireResponses, which do not match the domain criteria`() = runBlockingTest {
+        // Given
+        val parameter = listOf(questionnaireResponseTemplate.copy(), questionnaireResponseTemplate.copy())
+
+        // When
+        val result = RedactSensitiveInformation().redact(parameter)
+
+        // Then
+        assertSame(
+            actual = parameter[0],
+            expected = result[0]
+        )
+        assertSame(
+            actual = parameter[1],
+            expected = result[1]
+        )
+    }
+
+    @Test
+    fun `Given a redact is called, it maps Items of a QuestionnaireResponses to null, if they are null`() = runBlockingTest {
         // Given
         val parameter = listOf(
             questionnaireResponseTemplate.copy(
+                questionnaire = referenceTemplate,
                 item = null
             )
         )
@@ -79,10 +105,11 @@ class RedactSensitiveInformationTest {
     }
 
     @Test
-    fun `Given a Usecase had been create with and execute is called, it maps Items of a QuestionnaireResponses to null, if they are empty`() = runBlockingTest {
+    fun `Given a redact is called, it maps Items of a QuestionnaireResponses to null, if they are empty`() = runBlockingTest {
         // Given
         val parameter = listOf(
             questionnaireResponseTemplate.copy(
+                questionnaire = referenceTemplate,
                 item = emptyList()
             )
         )
@@ -96,10 +123,11 @@ class RedactSensitiveInformationTest {
     }
 
     @Test
-    fun `Given a Usecase had been create with and execute is called, it maps Items of a QuestionnaireResponses, if they are not null or empty`() = runBlockingTest {
+    fun `Given a redact is called, it maps Items of a QuestionnaireResponses, if they are not null or empty`() = runBlockingTest {
         // Given
         val parameter = listOf(
             questionnaireResponseTemplate.copy(
+                questionnaire = referenceTemplate,
                 item = listOf(questionnaireResponseItemTemplate)
             )
         )
@@ -113,10 +141,11 @@ class RedactSensitiveInformationTest {
     }
 
     @Test
-    fun `Given a Usecase had been create with and execute is called, it maps Items of a QuestionnaireResponseItem to null, if they are null`() = runBlockingTest {
+    fun `Given a redact is called, it maps Items of a QuestionnaireResponseItem to null, if they are null`() = runBlockingTest {
         // Given
         val parameter = listOf(
             questionnaireResponseTemplate.copy(
+                questionnaire = referenceTemplate,
                 item = listOf(
                     questionnaireResponseItemTemplate.copy(
                         item = null
@@ -134,10 +163,11 @@ class RedactSensitiveInformationTest {
     }
 
     @Test
-    fun `Given a Usecase had been create with and execute is called, it maps Items of a QuestionnaireResponseItem to null, if they are empty`() = runBlockingTest {
+    fun `Given a redact is called, it maps Items of a QuestionnaireResponseItem to null, if they are empty`() = runBlockingTest {
         // Given
         val parameter = listOf(
             questionnaireResponseTemplate.copy(
+                questionnaire = referenceTemplate,
                 item = listOf(
                     questionnaireResponseItemTemplate.copy(
                         item = emptyList()
@@ -155,10 +185,11 @@ class RedactSensitiveInformationTest {
     }
 
     @Test
-    fun `Given a Usecase had been create with and execute is called, it maps Items of a QuestionnaireResponseItem, if they are not null or empty`() = runBlockingTest {
+    fun `Given a redact is called, it maps Items of a QuestionnaireResponseItem, if they are not null or empty`() = runBlockingTest {
         // Given
         val parameter = listOf(
             questionnaireResponseTemplate.copy(
+                questionnaire = referenceTemplate,
                 item = listOf(
                     questionnaireResponseItemTemplate.copy(
                         item = listOf(questionnaireResponseItemTemplate)
@@ -185,6 +216,7 @@ class RedactSensitiveInformationTest {
 
         val parameter = listOf(
             questionnaireResponseTemplate.copy(
+                questionnaire = referenceTemplate,
                 item = listOf(
                     questionnaireResponseItemTemplate.copy(
                         item = listOf(
@@ -209,10 +241,11 @@ class RedactSensitiveInformationTest {
     }
 
     @Test
-    fun `Given a Usecase had been create with and execute is called, it maps Answers of a QuestionnaireResponseItem to null, if they are null`() = runBlockingTest {
+    fun `Given a redact is called, it maps Answers of a QuestionnaireResponseItem to null, if they are null`() = runBlockingTest {
         // Given
         val parameter = listOf(
             questionnaireResponseTemplate.copy(
+                questionnaire = referenceTemplate,
                 item = listOf(
                     questionnaireResponseItemTemplate.copy(
                         answer = null
@@ -230,10 +263,11 @@ class RedactSensitiveInformationTest {
     }
 
     @Test
-    fun `Given a Usecase had been create with and execute is called, it maps Answers of a QuestionnaireResponseItem to null, if they are empty`() = runBlockingTest {
+    fun `Given a redact is called, it maps Answers of a QuestionnaireResponseItem to null, if they are empty`() = runBlockingTest {
         // Given
         val parameter = listOf(
             questionnaireResponseTemplate.copy(
+                questionnaire = referenceTemplate,
                 item = listOf(
                     questionnaireResponseItemTemplate.copy(
                         answer = emptyList()
@@ -251,10 +285,11 @@ class RedactSensitiveInformationTest {
     }
 
     @Test
-    fun `Given a Usecase had been create with and execute is called, it maps Answers of a QuestionnaireResponseItem, if they are not empty or null`() = runBlockingTest {
+    fun `Given a redact is called, it maps Answers of a QuestionnaireResponseItem, if they are not empty or null`() = runBlockingTest {
         // Given
         val parameter = listOf(
             questionnaireResponseTemplate.copy(
+                questionnaire = referenceTemplate,
                 item = listOf(
                     questionnaireResponseItemTemplate.copy(
                         answer = listOf(questionnaireResponseItemAnswerTemplate)
@@ -272,10 +307,11 @@ class RedactSensitiveInformationTest {
     }
 
     @Test
-    fun `Given a Usecase had been create with and execute is called, it maps Item of the QuestionnaireResponseItemAnswer to null, if they are null`() = runBlockingTest {
+    fun `Given a redact is called, it maps Item of the QuestionnaireResponseItemAnswer to null, if they are null`() = runBlockingTest {
         // Given
         val parameter = listOf(
             questionnaireResponseTemplate.copy(
+                questionnaire = referenceTemplate,
                 item = listOf(
                     questionnaireResponseItemTemplate.copy(
                         answer = listOf(questionnaireResponseItemAnswerTemplate)
@@ -293,10 +329,11 @@ class RedactSensitiveInformationTest {
     }
 
     @Test
-    fun `Given a Usecase had been create with and execute is called, it maps Item of the QuestionnaireResponseItemAnswer to null, if they are empty`() = runBlockingTest {
+    fun `Given a redact is called, it maps Item of the QuestionnaireResponseItemAnswer to null, if they are empty`() = runBlockingTest {
         // Given
         val parameter = listOf(
             questionnaireResponseTemplate.copy(
+                questionnaire = referenceTemplate,
                 item = listOf(
                     questionnaireResponseItemTemplate.copy(
                         answer = listOf(
@@ -318,10 +355,11 @@ class RedactSensitiveInformationTest {
     }
 
     @Test
-    fun `Given a Usecase had been create with and execute is called, it maps Item of the QuestionnaireResponseItemAnswer, if they are not null or empty`() = runBlockingTest {
+    fun `Given a redact is called, it maps Item of the QuestionnaireResponseItemAnswer, if they are not null or empty`() = runBlockingTest {
         // Given
         val parameter = listOf(
             questionnaireResponseTemplate.copy(
+                questionnaire = referenceTemplate,
                 item = listOf(
                     questionnaireResponseItemTemplate.copy(
                         answer = listOf(
@@ -343,10 +381,11 @@ class RedactSensitiveInformationTest {
     }
 
     @Test
-    fun `Given a Usecase had been create with and execute is called, it maps ValueStrings of the QuestionnaireResponseItemAnswer to null, if they are null`() = runBlockingTest {
+    fun `Given a redact is called, it maps ValueStrings of the QuestionnaireResponseItemAnswer to null, if they are null`() = runBlockingTest {
         // Given
         val parameter = listOf(
             questionnaireResponseTemplate.copy(
+                questionnaire = referenceTemplate,
                 item = listOf(
                     questionnaireResponseItemTemplate.copy(
                         answer = listOf(
@@ -368,10 +407,11 @@ class RedactSensitiveInformationTest {
     }
 
     @Test
-    fun `Given a Usecase had been create with and execute is called, it maps ValueStrings of the QuestionnaireResponseItemAnswer to REDACTED, if they are not null`() = runBlockingTest {
+    fun `Given a redact is called, it maps ValueStrings of the QuestionnaireResponseItemAnswer to REDACTED, if they are not null`() = runBlockingTest {
         // Given
         val parameter = listOf(
             questionnaireResponseTemplate.copy(
+                questionnaire = referenceTemplate,
                 item = listOf(
                     questionnaireResponseItemTemplate.copy(
                         answer = listOf(

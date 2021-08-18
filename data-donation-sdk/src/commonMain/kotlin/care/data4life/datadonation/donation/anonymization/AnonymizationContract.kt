@@ -24,6 +24,12 @@ internal interface AnonymizationContract {
 
         companion object {
             const val REDACTED = "REDACTED"
+            val REDACTABLE_DOMAINS = listOf(
+                "http://fhir.data4life.care/covid-19/stu3/Questionnaire/covid19-covhub-symptom-tracking"
+            )
+            val REDACTABLE_FIELDS = listOf(
+                "FN"
+            )
         }
     }
 }
