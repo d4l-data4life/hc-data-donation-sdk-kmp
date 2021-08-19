@@ -479,8 +479,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/d4l-data4life/d4l-sdk-ios.git";
 			requirement = {
-				kind = upToNextMinorVersion;
-				minimumVersion = 1.14.0;
+				branch = "feature/update-dependencies";
+				kind = branch;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
