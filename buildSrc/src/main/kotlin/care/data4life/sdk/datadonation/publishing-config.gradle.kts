@@ -34,7 +34,7 @@ import org.gradle.api.publish.maven.MavenPublication
  * - ./gradlew publishSnapshot
  * - ./gradlew publishRelease
  *
- * This requires a care.data4life.sdk.result.care.data4life.sdk.result.LibraryConfig configured
+ * This requires a care.data4life.sdk.result.care.data4life.sdk.datadonation.LibraryConfig configured
  */
 plugins {
     `maven-publish`
