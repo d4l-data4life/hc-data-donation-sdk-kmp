@@ -22,7 +22,6 @@ import care.data4life.hl7.fhir.stu3.model.DomainResource
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponseItem
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponseItemAnswer
-import care.data4life.hl7.fhir.stu3.model.Reference
 import care.data4life.sdk.util.test.coroutine.runBlockingTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -34,9 +33,6 @@ import kotlin.test.assertTrue
 class RedactSensitiveInformationTest {
     private val questionnaireResponseTemplate = QuestionnaireResponse(
         status = QuestionnaireResponseStatus.COMPLETED
-    )
-    private val referenceTemplate = Reference(
-        reference = "http://fhir.data4life.care/covid-19/stu3/Questionnaire/covid19-covhub-symptom-tracking|someNotSoIntresting"
     )
     private val questionnaireResponseItemTemplate = QuestionnaireResponseItem(linkId = "does not matter")
     private val questionnaireResponseItemAnswerTemplate = QuestionnaireResponseItemAnswer()
@@ -68,42 +64,10 @@ class RedactSensitiveInformationTest {
     }
 
     @Test
-    fun `Given a redact is called, it will pass through QuestionnaireResponses, which do not match the domain criteria`() = runBlockingTest {
-        // Given
-        val resource = listOf(
-            questionnaireResponseTemplate.copy(),
-            questionnaireResponseTemplate.copy(
-                questionnaire = Reference()
-            ),
-            questionnaireResponseTemplate.copy(
-                questionnaire = Reference(reference = "not the thing you are looking for")
-            )
-        )
-
-        // When
-        val result = RedactSensitiveInformation.redact(resource)
-
-        // Then
-        assertSame(
-            actual = resource[0],
-            expected = result[0]
-        )
-        assertSame(
-            actual = resource[1],
-            expected = result[1]
-        )
-        assertSame(
-            actual = resource[2],
-            expected = result[2]
-        )
-    }
-
-    @Test
     fun `Given a redact is called, it maps Items of a QuestionnaireResponses to null, if they are null`() = runBlockingTest {
         // Given
         val resource = listOf(
             questionnaireResponseTemplate.copy(
-                questionnaire = referenceTemplate,
                 item = null
             )
         )
@@ -121,7 +85,6 @@ class RedactSensitiveInformationTest {
         // Given
         val resource = listOf(
             questionnaireResponseTemplate.copy(
-                questionnaire = referenceTemplate,
                 item = emptyList()
             )
         )
@@ -139,7 +102,6 @@ class RedactSensitiveInformationTest {
         // Given
         val resource = listOf(
             questionnaireResponseTemplate.copy(
-                questionnaire = referenceTemplate,
                 item = listOf(questionnaireResponseItemTemplate)
             )
         )
@@ -157,7 +119,6 @@ class RedactSensitiveInformationTest {
         // Given
         val resource = listOf(
             questionnaireResponseTemplate.copy(
-                questionnaire = referenceTemplate,
                 item = listOf(
                     questionnaireResponseItemTemplate.copy(
                         item = null
@@ -179,7 +140,6 @@ class RedactSensitiveInformationTest {
         // Given
         val resource = listOf(
             questionnaireResponseTemplate.copy(
-                questionnaire = referenceTemplate,
                 item = listOf(
                     questionnaireResponseItemTemplate.copy(
                         item = emptyList()
@@ -201,7 +161,6 @@ class RedactSensitiveInformationTest {
         // Given
         val resource = listOf(
             questionnaireResponseTemplate.copy(
-                questionnaire = referenceTemplate,
                 item = listOf(
                     questionnaireResponseItemTemplate.copy(
                         item = listOf(questionnaireResponseItemTemplate)
@@ -228,7 +187,6 @@ class RedactSensitiveInformationTest {
 
         val resource = listOf(
             questionnaireResponseTemplate.copy(
-                questionnaire = referenceTemplate,
                 item = listOf(
                     questionnaireResponseItemTemplate.copy(
                         item = listOf(
@@ -257,7 +215,6 @@ class RedactSensitiveInformationTest {
         // Given
         val resource = listOf(
             questionnaireResponseTemplate.copy(
-                questionnaire = referenceTemplate,
                 item = listOf(
                     questionnaireResponseItemTemplate.copy(
                         answer = null
@@ -279,7 +236,6 @@ class RedactSensitiveInformationTest {
         // Given
         val resource = listOf(
             questionnaireResponseTemplate.copy(
-                questionnaire = referenceTemplate,
                 item = listOf(
                     questionnaireResponseItemTemplate.copy(
                         answer = listOf(
@@ -308,7 +264,6 @@ class RedactSensitiveInformationTest {
         // Given
         val resource = listOf(
             questionnaireResponseTemplate.copy(
-                questionnaire = referenceTemplate,
                 item = listOf(
                     questionnaireResponseItemTemplate.copy(
                         linkId = "FN",
@@ -331,7 +286,6 @@ class RedactSensitiveInformationTest {
         // Given
         val resource = listOf(
             questionnaireResponseTemplate.copy(
-                questionnaire = referenceTemplate,
                 item = listOf(
                     questionnaireResponseItemTemplate.copy(
                         linkId = "FN",
@@ -354,7 +308,6 @@ class RedactSensitiveInformationTest {
         // Given
         val resource = listOf(
             questionnaireResponseTemplate.copy(
-                questionnaire = referenceTemplate,
                 item = listOf(
                     questionnaireResponseItemTemplate.copy(
                         linkId = "FN",
@@ -377,7 +330,6 @@ class RedactSensitiveInformationTest {
         // Given
         val resource = listOf(
             questionnaireResponseTemplate.copy(
-                questionnaire = referenceTemplate,
                 item = listOf(
                     questionnaireResponseItemTemplate.copy(
                         linkId = "FN",
@@ -404,7 +356,6 @@ class RedactSensitiveInformationTest {
         // Given
         val resource = listOf(
             questionnaireResponseTemplate.copy(
-                questionnaire = referenceTemplate,
                 item = listOf(
                     questionnaireResponseItemTemplate.copy(
                         linkId = "FN",
@@ -431,7 +382,6 @@ class RedactSensitiveInformationTest {
         // Given
         val resource = listOf(
             questionnaireResponseTemplate.copy(
-                questionnaire = referenceTemplate,
                 item = listOf(
                     questionnaireResponseItemTemplate.copy(
                         linkId = "FN",
@@ -458,7 +408,6 @@ class RedactSensitiveInformationTest {
         // Given
         val resource = listOf(
             questionnaireResponseTemplate.copy(
-                questionnaire = referenceTemplate,
                 item = listOf(
                     questionnaireResponseItemTemplate.copy(
                         linkId = "FN",

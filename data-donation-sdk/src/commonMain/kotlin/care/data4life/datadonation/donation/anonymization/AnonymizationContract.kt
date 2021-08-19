@@ -24,10 +24,6 @@ internal interface AnonymizationContract {
 
         companion object {
             const val REDACTED = "REDACTED"
-            // see: https://github.com/gesundheitscloud/data-donation-sdk-js/blob/25d36dde0a7ff7761f0d6d7c74d43773d8781d2e/src/lib/anonymization/redact.ts#L62
-            val REDACTABLE_DOMAINS = listOf(
-                "http://fhir.data4life.care/covid-19/stu3/Questionnaire/covid19-covhub-symptom-tracking"
-            )
             // see: https://github.com/gesundheitscloud/delphi/blob/8c2b45aabf79e5f73c8e4c0c9439b58f7c998335/src/global/constants.ts#L6
             val REDACTABLE_FIELDS = listOf(
                 "FN"

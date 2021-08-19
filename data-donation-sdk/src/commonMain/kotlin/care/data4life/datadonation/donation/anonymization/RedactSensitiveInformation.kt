@@ -16,7 +16,6 @@
 
 package care.data4life.datadonation.donation.anonymization
 
-import care.data4life.datadonation.donation.anonymization.AnonymizationContract.Redaction.Companion.REDACTABLE_DOMAINS
 import care.data4life.datadonation.donation.anonymization.AnonymizationContract.Redaction.Companion.REDACTABLE_FIELDS
 import care.data4life.datadonation.donation.anonymization.AnonymizationContract.Redaction.Companion.REDACTED
 import care.data4life.hl7.fhir.stu3.model.FhirResource
@@ -40,17 +39,9 @@ internal object RedactSensitiveInformation : AnonymizationContract.Redaction {
         return questionnaireResponse.questionnaire?.reference?.substringBefore('|')
     }
 
-    private fun isRedactableResource(resource: FhirResource): Boolean {
-        return when {
-            resource !is QuestionnaireResponse -> false
-            !REDACTABLE_DOMAINS.contains(extractQuestionnaireReference(resource)) -> false
-            else -> true
-        }
-    }
-
     private fun mapFhir(resource: FhirResource): FhirResource {
-        return if (isRedactableResource(resource)) {
-            mapQuestionnaireResponse(resource as QuestionnaireResponse)
+        return if (resource is QuestionnaireResponse) {
+            mapQuestionnaireResponse(resource)
         } else {
             resource
         }
