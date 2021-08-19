@@ -193,6 +193,7 @@ kotlin {
         val iosTest by getting {
             dependencies {
                 dependsOn(commonTest.get())
+                implementation(Dependency.multiplatform.kotlin.stdlibNative)
             }
         }
     }
