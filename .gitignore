@@ -5,7 +5,6 @@ local.properties
 gen/
 */build/
 */build/*
-DataDonationCryptoObjC/Products
 
 # IDEA/Android Studio ignores
 *iml

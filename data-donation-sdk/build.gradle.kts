@@ -45,12 +45,31 @@ kotlin {
 
     iosArm64 {
         val platform = "iphoneos"
-        val libraryPath = "$rootDir/DataDonationCryptoObjC/Products/Release-$platform"
         val libraryName = "DataDonationCryptoObjC"
+        val libraryPath = "$rootDir/$libraryName/build/Build/Products/Release-$platform/include"
 
         compilations.getByName("main") {
             cinterops.create("DataDonationCryptoObjC") {
-                defFile("src/nativeinterop/cinterop/DataDonationCryptoObjC.def")
+                val interopTask = tasks[interopProcessingTaskName]
+                interopTask.dependsOn(":DataDonationCryptoObjC:build${platform.capitalize()}")
+
+                includeDirs.headerFilterOnly(libraryPath)
+
+                // Path to .def file
+                defFile("$projectDir/src/nativeInterop/cinterop/DataDonationCryptoObjC.def")
+                includeDirs(libraryPath)
+            }
+        }
+
+        compilations.getByName("test") {
+            cinterops.create("DataDonationCryptoObjC") {
+                val interopTask = tasks[interopProcessingTaskName]
+                interopTask.dependsOn(":DataDonationCryptoObjC:build${platform.capitalize()}")
+
+                includeDirs.headerFilterOnly(libraryPath)
+
+                // Path to .def file
+                defFile("$projectDir/src/nativeInterop/cinterop/DataDonationCryptoObjC.def")
                 includeDirs(libraryPath)
             }
         }
@@ -65,12 +84,30 @@ kotlin {
 
     iosX64 {
         val platform = "iphonesimulator"
-        val libraryPath = "$rootDir/DataDonationCryptoObjC/Products/Release-$platform"
         val libraryName = "DataDonationCryptoObjC"
+        val libraryPath = "$rootDir/$libraryName/build/Build/Products/Release-$platform/include"
 
         compilations.getByName("main") {
             cinterops.create("DataDonationCryptoObjC") {
-                defFile("src/nativeinterop/cinterop/DataDonationCryptoObjC.def")
+                val interopTask = tasks[interopProcessingTaskName]
+                interopTask.dependsOn(":DataDonationCryptoObjC:build${platform.capitalize()}")
+
+                includeDirs.headerFilterOnly(libraryPath)
+
+                // Path to .def file
+                defFile("$projectDir/src/nativeInterop/cinterop/DataDonationCryptoObjC.def")
+                includeDirs(libraryPath)
+            }
+        }
+
+        compilations.getByName("test") {
+            cinterops.create("DataDonationCryptoObjC") {
+                val interopTask = tasks[interopProcessingTaskName]
+                interopTask.dependsOn(":DataDonationCryptoObjC:build${platform.capitalize()}")
+                includeDirs.headerFilterOnly(libraryPath)
+
+                // Path to .def file
+                defFile("$projectDir/src/nativeInterop/cinterop/DataDonationCryptoObjC.def")
                 includeDirs(libraryPath)
             }
         }
