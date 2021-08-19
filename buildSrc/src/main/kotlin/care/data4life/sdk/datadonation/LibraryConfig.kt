@@ -26,7 +26,7 @@ object LibraryConfig {
 
     object PublishConfig {
         const val name = LibraryConfig.name
-        const val groupId =  "care.data4life.datadonation"
+        const val groupId = "care.data4life.datadonation"
 
         const val description = "Kotlin multi platform library implementing Data Donation on the Data4life ecosystem."
         const val year = "2021"
