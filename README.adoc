@@ -7,7 +7,7 @@
 :toc-title:
 :icons: font
 :imagesdir: assets/images
-:link-repository: https://github.com/gesundheitscloud/data-donation-sdk-native
+:link-repository: https://github.com/d4l-data4life/hc-data-donation-sdk-kmp
 ifdef::env-github[]
 :warning-caption: :warning:
 :caution-caption: :fire:
@@ -31,16 +31,16 @@ endif::[]
         <a href="README.adoc"><strong>Explore the docs »</strong></a>
     </p>
     <p><!-- PROJECT ISSUES/FEATURES -->
-        <a href="https://github.com/gesundheitscloud/data-donation-sdk-native/issues">Report Bug</a>
+        <a href="https://github.com/d4l-data4life/hc-data-donation-sdk-kmp/issues">Report Bug</a>
         ·
-        <a href="https://github.com/gesundheitscloud/data-donation-sdk-native/issues">Request Feature</a>
+        <a href="https://github.com/d4l-data4life/hc-data-donation-sdk-kmp/issues">Request Feature</a>
     </p>
     <p><!-- PROJECT BADGES see badges.adoc how to change them -->
-        <a href="https://github.com/gesundheitscloud/data-donation-sdk-native/releases">
+        <a href="https://github.com/d4l-data4life/hc-data-donation-sdk-kmp/releases">
             <img src="assets/images/badge-release-latest.svg" alt="Latest version"/>
         </a>
-        <a href="https://github.com/gesundheitscloud/data-donation-sdk-native/actions">
-            <img src="https://github.com/gesundheitscloud/data-donation-sdk-native/actions/workflows/d4l-ci-latest-version.yml/badge.svg" alt="Build Status"/>
+        <a href="https://github.com/d4l-data4life/hc-data-donation-sdk-kmp/actions">
+            <img src="https://github.com/d4l-data4life/hc-data-donation-sdk-kmp/actions/workflows/d4l-ci-latest-version.yml/badge.svg" alt="Build Status"/>
         </a>
         <a>
             <img src="assets/images/badge-platform-support.svg" alt="Platform"/>
@@ -154,50 +154,27 @@ For the iOS example app is also required:
 
 Will be added soon.
 
+== Changelog
+
+See link:CHANGELOG.adoc[changelog]
+
+== Versioning
+
+We use http://semver.org/[Semantic Versioning] as a guideline for our versioning.
+
+Releases use this format: `{major}.{minor}.{patch}`
+
+* Breaking changes bump `{major}` and reset `{minor}` & `{patch}`
+* Backward compatible changes bump `{minor}` and reset `{patch}`
+* Bug fixes bump `{patch}`
+
 == Contributing
 
-You want to help or share a proposal? You have a specific problem? Then open an issue.
+You want to help or share a proposal? You have a specific problem? Read the following:
 
-=== Contribution Guide
-
-Will be added soon.
-
-=== Development Guide
-
-To build the iOS app, following steps need to be taken:
-
-- Create the swift package from the KMP build by running the following command:
-
-[source, terminal]
-----
-./gradlew createSwiftPackage
-----
-
-- Add an xcconfig file for the login configuration of the Core SDK in the `swift/` folder and name it `Data4LifeSDK.xcconfig`:
-[source, terminal]
-----
-//  Copyright (c) 2020 D4L data4life gGmbH
-//  All rights reserved.
-//
-//  D4L owns all legal rights, title and interest in and to the Software Development Kit (SDK),
-//  including any intellectual property rights that subsist in the SDK.
-//
-//  The SDK and its documentation may be accessed and used for viewing/review purposes only.
-//  Any usage of the SDK for other purposes, including usage for the development of
-//  applications/third-party applications shall require the conclusion of a license agreement
-//  between you and D4L.
-//
-//  If you are interested in licensing the SDK for your own applications/third-party
-//  applications and/or if you’d like to contribute to the development of the SDK, please
-//  contact D4L by email to help@data4life.care.
-
-D4L_ID = xxxxxx
-D4L_SECRET = xxxxxx
-D4L_REDIRECT_SCHEME = xxxxxx
-D4L_ENVIRONMENT = xxxxxx
-----
-
-- Run the project in Xcode
+* link:CODE-OF-CONDUCT.adoc[Code of conduct] for details on our code of conduct.
+* link:CONTRIBUTING.adoc[Contributing] for details about how to report bugs and propose features.
+* link:DEVELOPING.adoc[Developing] for details about our development process and how to build and test the project.
 
 == Copyright and License
 
