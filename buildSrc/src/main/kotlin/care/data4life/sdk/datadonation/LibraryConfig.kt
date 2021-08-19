@@ -16,7 +16,7 @@
 package care.data4life.sdk.datadonation
 
 object LibraryConfig {
-    const val group = "care.data4life"
+    const val group = "data donation"
     const val name = "hc-data-donation-sdk-kmp"
 
     const val githubOwner = "d4l-data4life"
@@ -26,7 +26,7 @@ object LibraryConfig {
 
     object PublishConfig {
         const val name = LibraryConfig.name
-        const val groupId = "care.data4life.datadonation"
+        const val groupId = "care.data4life.hc-data-donation-sdk-kmp"
 
         const val description = "Kotlin multi platform library implementing Data Donation on the Data4life ecosystem."
         const val year = "2021"
