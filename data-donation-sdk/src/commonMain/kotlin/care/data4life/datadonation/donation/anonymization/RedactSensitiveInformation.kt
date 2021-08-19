@@ -16,7 +16,6 @@
 
 package care.data4life.datadonation.donation.anonymization
 
-import care.data4life.datadonation.donation.anonymization.AnonymizationContract.Redaction.Companion.REDACTABLE_FIELDS
 import care.data4life.datadonation.donation.anonymization.AnonymizationContract.Redaction.Companion.REDACTED
 import care.data4life.hl7.fhir.stu3.model.FhirResource
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
@@ -35,10 +34,6 @@ internal object RedactSensitiveInformation : AnonymizationContract.Redaction {
         }
     }
 
-    private fun extractQuestionnaireReference(questionnaireResponse: QuestionnaireResponse): String? {
-        return questionnaireResponse.questionnaire?.reference?.substringBefore('|')
-    }
-
     private fun mapFhir(resource: FhirResource): FhirResource {
         return if (resource is QuestionnaireResponse) {
             mapQuestionnaireResponse(resource)
@@ -55,21 +50,11 @@ internal object RedactSensitiveInformation : AnonymizationContract.Redaction {
         )
     }
 
-    private fun filterResponseItemsAnswersByField(
-        responseItem: QuestionnaireResponseItem
-    ): List<QuestionnaireResponseItemAnswer>? {
-        return if (REDACTABLE_FIELDS.contains(responseItem.linkId)) {
-            mapOrNull(responseItem.answer, ::mapQuestionnaireResponseItemAnswer)
-        } else {
-            responseItem.answer
-        }
-    }
-
     private fun mapQuestionnaireResponseItem(
         responseItem: QuestionnaireResponseItem
     ): QuestionnaireResponseItem {
         val item = mapOrNull(responseItem.item, ::mapQuestionnaireResponseItem)
-        val answer = filterResponseItemsAnswersByField(responseItem)
+        val answer = mapOrNull(responseItem.answer, ::mapQuestionnaireResponseItemAnswer)
 
         return responseItem.copy(
             item = item,

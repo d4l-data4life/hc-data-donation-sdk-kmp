@@ -232,41 +232,12 @@ class RedactSensitiveInformationTest {
     }
 
     @Test
-    fun `Given a redact is called, it ignores ItemAnswers, which are not FreeTextFields `() = runBlockingTest {
-        // Given
-        val resource = listOf(
-            questionnaireResponseTemplate.copy(
-                item = listOf(
-                    questionnaireResponseItemTemplate.copy(
-                        answer = listOf(
-                            questionnaireResponseItemAnswerTemplate.copy(
-                                item = emptyList()
-                            )
-                        )
-                    )
-                )
-            )
-        )
-
-        // When
-        val result = RedactSensitiveInformation.redact(resource).first()
-
-        // Then
-        assertTrue(result is QuestionnaireResponse)
-        assertSame(
-            expected = resource.first().item!!.first().answer,
-            actual = result.item!!.first().answer
-        )
-    }
-
-    @Test
     fun `Given a redact is called, it maps Answers of a QuestionnaireResponseItem to null, if they are empty`() = runBlockingTest {
         // Given
         val resource = listOf(
             questionnaireResponseTemplate.copy(
                 item = listOf(
                     questionnaireResponseItemTemplate.copy(
-                        linkId = "FN",
                         answer = emptyList()
                     )
                 )
@@ -288,7 +259,6 @@ class RedactSensitiveInformationTest {
             questionnaireResponseTemplate.copy(
                 item = listOf(
                     questionnaireResponseItemTemplate.copy(
-                        linkId = "FN",
                         answer = listOf(questionnaireResponseItemAnswerTemplate)
                     )
                 )
@@ -310,7 +280,6 @@ class RedactSensitiveInformationTest {
             questionnaireResponseTemplate.copy(
                 item = listOf(
                     questionnaireResponseItemTemplate.copy(
-                        linkId = "FN",
                         answer = listOf(questionnaireResponseItemAnswerTemplate)
                     )
                 )
@@ -332,7 +301,6 @@ class RedactSensitiveInformationTest {
             questionnaireResponseTemplate.copy(
                 item = listOf(
                     questionnaireResponseItemTemplate.copy(
-                        linkId = "FN",
                         answer = listOf(
                             questionnaireResponseItemAnswerTemplate.copy(
                                 item = emptyList()
@@ -358,7 +326,6 @@ class RedactSensitiveInformationTest {
             questionnaireResponseTemplate.copy(
                 item = listOf(
                     questionnaireResponseItemTemplate.copy(
-                        linkId = "FN",
                         answer = listOf(
                             questionnaireResponseItemAnswerTemplate.copy(
                                 item = listOf(questionnaireResponseItemTemplate)
@@ -384,7 +351,6 @@ class RedactSensitiveInformationTest {
             questionnaireResponseTemplate.copy(
                 item = listOf(
                     questionnaireResponseItemTemplate.copy(
-                        linkId = "FN",
                         answer = listOf(
                             questionnaireResponseItemAnswerTemplate.copy(
                                 valueString = null
@@ -410,7 +376,6 @@ class RedactSensitiveInformationTest {
             questionnaireResponseTemplate.copy(
                 item = listOf(
                     questionnaireResponseItemTemplate.copy(
-                        linkId = "FN",
                         answer = listOf(
                             questionnaireResponseItemAnswerTemplate.copy(
                                 valueString = "tomato"

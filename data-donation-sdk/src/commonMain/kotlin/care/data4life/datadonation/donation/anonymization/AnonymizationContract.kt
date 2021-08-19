@@ -24,10 +24,6 @@ internal interface AnonymizationContract {
 
         companion object {
             const val REDACTED = "REDACTED"
-            // see: https://github.com/gesundheitscloud/delphi/blob/8c2b45aabf79e5f73c8e4c0c9439b58f7c998335/src/global/constants.ts#L6
-            val REDACTABLE_FIELDS = listOf(
-                "FN"
-            )
         }
     }
 }
