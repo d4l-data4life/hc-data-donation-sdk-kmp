@@ -5,7 +5,7 @@
 :toc-title:
 :icons: font
 :imagesdir: assets/images
-:link-repository: https://github.com/gesundheitscloud/data-donation-sdk-native
+:link-repository: https://github.com/d4l-data4life/hc-data-donation-sdk-kmp
 ifdef::env-github[]
 :warning-caption: :warning:
 :caution-caption: :fire:

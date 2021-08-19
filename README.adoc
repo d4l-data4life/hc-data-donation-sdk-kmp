@@ -7,7 +7,7 @@
 :toc-title:
 :icons: font
 :imagesdir: assets/images
-:link-repository: https://github.com/gesundheitscloud/data-donation-sdk-native
+:link-repository: https://github.com/d4l-data4life/hc-data-donation-sdk-kmp
 ifdef::env-github[]
 :warning-caption: :warning:
 :caution-caption: :fire:
@@ -31,16 +31,17 @@ endif::[]
         <a href="README.adoc"><strong>Explore the docs »</strong></a>
     </p>
     <p><!-- PROJECT ISSUES/FEATURES -->
-        <a href="https://github.com/gesundheitscloud/data-donation-sdk-native/issues">Report Bug</a>
+        <a href="https://github.com/d4l-data4life/hc-data-donation-sdk-kmp/issues">Report Bug</a>
         ·
-        <a href="https://github.com/gesundheitscloud/data-donation-sdk-native/issues">Request Feature</a>
+        <a href="https://github.com/d4l-data4life/hc-data-donation-sdk-kmp/issues">Request Feature</a>
     </p>
     <p><!-- PROJECT BADGES see badges.adoc how to change them -->
-        <a href="https://github.com/gesundheitscloud/data-donation-sdk-native/releases">
+        <a href="https://github.com/d4l-data4life/hc-data-donation-sdk-kmp/releases">
             <img src="assets/images/badge-release-latest.svg" alt="Latest version"/>
         </a>
-        <a href="https://github.com/gesundheitscloud/data-donation-sdk-native/actions">
-            <img src="https://github.com/gesundheitscloud/data-donation-sdk-native/actions/workflows/d4l-ci-latest-version.yml/badge.svg" alt="Build Status"/>
+        <a href="https://github.com/d4l-data4life/hc-data-donation-sdk-kmp/actions">
+            <img src="https://github.com/d4l-data4life
+/hc-data-donation-sdk-kmp/actions/workflows/d4l-ci-latest-version.yml/badge.svg" alt="Build Status"/>
         </a>
         <a>
             <img src="assets/images/badge-platform-support.svg" alt="Platform"/>
