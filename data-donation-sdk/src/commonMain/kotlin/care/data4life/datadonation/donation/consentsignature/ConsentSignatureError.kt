@@ -14,17 +14,20 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.error
+package care.data4life.datadonation.donation.consentsignature
 
 import care.data4life.sdk.lang.D4LRuntimeException
 
-sealed class CoreRuntimeError(
-    message: String?,
-    cause: Throwable?
-) : D4LRuntimeException(message = message, cause = cause) {
-    class InternalFailure(message: String? = null) : CoreRuntimeError(message = message ?: "Internal failure", cause = null)
-    class RequestValidationFailure(message: String) : CoreRuntimeError(message = message, cause = null)
-    class ResponseTransformFailure : CoreRuntimeError(message = "Unexpected Response", cause = null)
-    class MissingCredentials(cause: Throwable? = null) : CoreRuntimeError(cause = cause, message = null)
-    class MissingSession(cause: Throwable? = null) : CoreRuntimeError(cause = cause, message = null)
+sealed class ConsentSignatureError(
+    open val httpStatus: Int
+) : D4LRuntimeException() {
+    class UnexpectedFailure(override val httpStatus: Int) : ConsentSignatureError(httpStatus)
+    class BadRequest : ConsentSignatureError(400)
+    class Unauthorized : ConsentSignatureError(401)
+    class Forbidden : ConsentSignatureError(403)
+    class NotFound : ConsentSignatureError(404)
+    class DocumentConflict : ConsentSignatureError(409)
+    class UnprocessableEntity : ConsentSignatureError(422)
+    class TooManyRequests : ConsentSignatureError(429)
+    class InternalServer : ConsentSignatureError(500)
 }

@@ -19,6 +19,6 @@ package care.data4life.datadonation.consent.userconsent.model
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal data class ConsentRevocationPayload(
+data class ConsentRevocationPayload(
     val consentDocumentKey: String
 )

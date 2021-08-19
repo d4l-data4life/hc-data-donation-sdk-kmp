@@ -14,13 +14,12 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.consent.userconsent.model
+package care.data4life.datadonation.donation.consentsignature.model
 
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal data class ConsentMessage(
-    val consentDocumentKey: String,
-    val signatureType: String,
-    val payload: String
+internal data class ConsentSignature(
+    val signature: String
 )
+
