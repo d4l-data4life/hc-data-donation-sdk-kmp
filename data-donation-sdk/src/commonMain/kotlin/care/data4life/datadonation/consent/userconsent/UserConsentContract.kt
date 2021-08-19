@@ -64,7 +64,15 @@ internal interface UserConsentContract {
 
         suspend fun fetchUserConsents(
             accessToken: AccessToken,
-            consentDocumentKey: String?
+            consentDocumentKey: String
+        ): List<ConsentDataContract.UserConsent>
+
+        suspend fun fetchLatestUserConsents(
+            accessToken: AccessToken
+        ): List<ConsentDataContract.UserConsent>
+
+        suspend fun fetchAllUserConsents(
+            accessToken: AccessToken
         ): List<ConsentDataContract.UserConsent>
 
         suspend fun revokeUserConsent(

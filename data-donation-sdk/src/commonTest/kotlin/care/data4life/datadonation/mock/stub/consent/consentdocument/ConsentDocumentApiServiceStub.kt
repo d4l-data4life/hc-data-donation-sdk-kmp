@@ -17,10 +17,10 @@
 package care.data4life.datadonation.mock.stub.consent.consentdocument
 
 import care.data4life.datadonation.consent.consentdocument.ConsentDocumentContract
+import care.data4life.datadonation.consent.consentdocument.model.ConsentDocument
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 import care.data4life.datadonation.session.SessionToken
-import care.data4life.datadonation.userconsent.model.ConsentDocument
 
 internal class ConsentDocumentApiServiceStub : ConsentDocumentContract.ApiService, MockContract.Stub {
     var whenFetchConsentDocuments: ((String, String, String?, String?) -> List<ConsentDocument>)? = null
