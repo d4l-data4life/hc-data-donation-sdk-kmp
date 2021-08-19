@@ -93,7 +93,7 @@ Every change has to branch of from `main` and use this branch naming convention:
 
 - *add* for new features or functionality
 - *change* for changes in existing features or functionality
-- *remove* | for removed features or functionality
+- *remove* for removed features or functionality
 - *fix* for any bug fixes
 - *bump* for dependency updates
 - *security* in case of vulnerabilities
