@@ -16,7 +16,7 @@
 package care.data4life.sdk.datadonation
 
 object LibraryConfig {
-    const val group = "data donation"
+    const val group = "care.data4life.datadonation"
     const val name = "hc-data-donation-sdk-kmp"
 
     const val githubOwner = "d4l-data4life"
