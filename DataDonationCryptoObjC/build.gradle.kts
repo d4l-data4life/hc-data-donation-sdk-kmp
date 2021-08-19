@@ -13,10 +13,13 @@
  * applications and/or if you’d like to contribute to the development of the SDK, please
  * contact D4L by email to help@data4life.care.
  */
+val sdks = listOf("iphoneos", "iphonesimulator")
 
-listOf("iphoneos", "iphonesimulator").forEach { sdk ->
+sdks.forEach { sdk ->
     tasks.create<Exec>("build${sdk.capitalize()}") {
         group = "build"
+        description = "Builds $sdk"
+
         val libraryName = "DataDonationCryptoObjC"
 
         commandLine(
@@ -41,4 +44,12 @@ listOf("iphoneos", "iphonesimulator").forEach { sdk ->
 tasks.create<Delete>("clean") {
     group = "build"
     delete("$projectDir/build")
+}
+
+tasks.register("buildCryptoLibrary") {
+    group = "build"
+    description = "Builds all iOS dependencies"
+
+    val dependencies = sdks.map { name -> "build${name.capitalize()}" }
+    dependsOn(dependencies)
 }

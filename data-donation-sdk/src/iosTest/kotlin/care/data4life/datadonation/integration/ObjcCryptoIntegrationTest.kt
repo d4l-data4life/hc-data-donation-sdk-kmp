@@ -14,16 +14,28 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.deleteme
+package care.data4life.datadonation.integration
 
 import objc.datadonation.crypto.DataDonationCryptor
+import platform.Foundation.NSData
 import kotlin.test.Test
-import kotlin.test.assertTrue
+import kotlin.test.assertEquals
 
-class SampleBridgeTest {
+class ObjcCryptoIntegrationTest {
+
     @Test
-    fun `Just a sample bridge invocation`() {
-        DataDonationCryptor()
-        assertTrue(true)
+    fun `Given plain NSData and a key, it gets encrypted using objective C lib`() {
+        // Given
+        val plainData = NSData()
+        val keyData = NSData()
+
+        // When
+        val result = DataDonationCryptor.encrypt(plainData, keyData)
+
+        // Then
+        assertEquals(
+            actual = result,
+            expected = NSData()
+        )
     }
 }
