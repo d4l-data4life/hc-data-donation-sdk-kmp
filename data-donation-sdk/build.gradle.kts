@@ -75,6 +75,13 @@ kotlin {
             }
         }
 
+        compilations.getByName("test") {
+            cinterops.create("DataDonationCryptoObjC") {
+                defFile("src/nativeinterop/cinterop/DataDonationCryptoObjC.def")
+                includeDirs(libraryPath)
+            }
+        }
+
         binaries.all {
             linkerOpts(
                 "-rpath", "/urs/lib/swift",
