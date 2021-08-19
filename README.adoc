@@ -40,8 +40,7 @@ endif::[]
             <img src="assets/images/badge-release-latest.svg" alt="Latest version"/>
         </a>
         <a href="https://github.com/d4l-data4life/hc-data-donation-sdk-kmp/actions">
-            <img src="https://github.com/d4l-data4life
-/hc-data-donation-sdk-kmp/actions/workflows/d4l-ci-latest-version.yml/badge.svg" alt="Build Status"/>
+            <img src="https://github.com/d4l-data4life/hc-data-donation-sdk-kmp/actions/workflows/d4l-ci-latest-version.yml/badge.svg" alt="Build Status"/>
         </a>
         <a>
             <img src="assets/images/badge-platform-support.svg" alt="Platform"/>
