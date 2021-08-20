@@ -31,7 +31,7 @@ internal interface UserConsentContract {
         suspend fun createUserConsent(
             accessToken: AccessToken,
             consentDocumentKey: String,
-            version: String
+            consentDocumentVersion: String
         )
 
         suspend fun revokeUserConsent(

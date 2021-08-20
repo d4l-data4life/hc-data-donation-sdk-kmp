@@ -29,12 +29,12 @@ internal class UserConsentApiServiceStub : UserConsentContract.ApiService, MockC
     override suspend fun createUserConsent(
         accessToken: String,
         consentDocumentKey: String,
-        version: String
+        consentDocumentVersion: String
     ) {
         return whenCreateUserConsent?.invoke(
             accessToken,
             consentDocumentKey,
-            version
+            consentDocumentVersion
         ) ?: throw MockException()
     }
 
