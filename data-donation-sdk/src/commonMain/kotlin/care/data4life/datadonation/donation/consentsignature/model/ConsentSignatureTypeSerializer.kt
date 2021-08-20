@@ -26,11 +26,10 @@ import kotlinx.serialization.encoding.Encoder
 
 internal object ConsentSignatureTypeSerializer : KSerializer<ConsentSignatureType> {
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor(
-            "ConsentSignatureType",
-            PrimitiveKind.STRING
-        )
+        "ConsentSignatureType",
+        PrimitiveKind.STRING
+    )
     private val mapping = ConsentSignatureType.values().associateBy { it.value }
-
 
     override fun serialize(encoder: Encoder, value: ConsentSignatureType) {
         encoder.encodeString(value.value)

@@ -14,64 +14,60 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.consent.userconsent
+package care.data4life.datadonation.donation.consentsignature
 
-import care.data4life.datadonation.consent.userconsent.model.ConsentCreationPayload
-import care.data4life.datadonation.consent.userconsent.model.ConsentRevocationPayload
-import care.data4life.datadonation.error.CoreRuntimeError
-import care.data4life.datadonation.mock.fixture.UserConsentFixture.sampleUserConsent
-import care.data4life.datadonation.mock.stub.ClockStub
-import care.data4life.datadonation.mock.stub.consent.userconsent.UserConsentErrorHandlerStub
+import care.data4life.datadonation.donation.consentsignature.model.ConsentSignatureType
+import care.data4life.datadonation.donation.consentsignature.model.ConsentSigningRequest
+import care.data4life.datadonation.donation.consentsignature.model.SignedDeletionMessage
+import care.data4life.datadonation.mock.fixture.ConsentSignatureFixture
+import care.data4life.datadonation.mock.stub.donation.consentsignature.ConsentSignatureErrorHandlerStub
 import care.data4life.datadonation.mock.stub.networking.RequestBuilderSpy
 import care.data4life.datadonation.networking.HttpRuntimeError
 import care.data4life.datadonation.networking.Networking
 import care.data4life.datadonation.networking.Path
 import care.data4life.sdk.util.test.coroutine.runBlockingTest
-import care.data4life.sdk.util.test.ktor.HttpMockClientFactory.createErrorMockClient
-import care.data4life.sdk.util.test.ktor.HttpMockClientFactory.createMockClientWithResponse
+import care.data4life.sdk.util.test.ktor.HttpMockClientFactory
 import io.ktor.client.engine.mock.respond
+import io.ktor.client.engine.mock.respondOk
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.statement.HttpStatement
 import io.ktor.http.HttpStatusCode
-import kotlinx.datetime.Instant
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
-class UserConsentApiServiceTest {
+class ConsentSignatureApiServiceTest {
     private val dummyKtor = HttpRequestBuilder()
 
     @Test
-    fun `It fulfils ConsentApiService`() {
-        val service: Any = UserConsentApiService(
+    fun `It fulfils ConsentSignatureApiService`() {
+        val service: Any = ConsentSignatureApiService(
             RequestBuilderSpy.Factory(),
-            UserConsentErrorHandlerStub(),
-            ClockStub()
+            ConsentSignatureErrorHandlerStub()
         )
 
-        assertTrue(service is UserConsentContract.ApiService)
+        assertTrue(service is ConsentSignatureContract.ApiService)
     }
 
     @Test
-    fun `Given createUserConsent was called with a AccessToken and a Version it delegates HttpRequestErrors to its ErrorHandler`() = runBlockingTest {
+    fun `Given enableSigning was called with a AccessToken, a ConsentDocumentKey and a Message it delegates HttpRequestErrors to its ErrorHandler`() = runBlockingTest {
         // Given
         val requestTemplate = RequestBuilderSpy.Factory()
-        val clock = ClockStub()
         val accessToken = "potato"
         val consentDocumentKey = "custom-consent-key"
-        val version = "23"
+        val message = "23"
 
         val error = HttpRuntimeError(HttpStatusCode.TooManyRequests)
-        val outgoingError = UserConsentError.Forbidden()
+        val outgoingError = ConsentSignatureError.Forbidden()
         var capturedError: HttpRuntimeError? = null
 
-        val client = createErrorMockClient(error)
+        val client = HttpMockClientFactory.createErrorMockClient(error)
 
-        val errorHandler = UserConsentErrorHandlerStub()
+        val errorHandler = ConsentSignatureErrorHandlerStub()
 
-        errorHandler.whenHandleCreateUserConsent = { delegatedError ->
+        errorHandler.whenHandleEnableSigning = { delegatedError ->
             capturedError = delegatedError
             outgoingError
         }
@@ -83,19 +79,16 @@ class UserConsentApiServiceTest {
             )
         }
 
-        clock.whenNow = { Instant.DISTANT_FUTURE }
-
         // Then
-        val result = assertFailsWith<UserConsentError.Forbidden> {
+        val result = assertFailsWith<ConsentSignatureError.Forbidden> {
             // When
-            UserConsentApiService(
+            ConsentSignatureApiService(
                 requestTemplate,
                 errorHandler,
-                clock
-            ).createUserConsent(
+            ).enableSigning(
                 accessToken = accessToken,
                 consentDocumentKey = consentDocumentKey,
-                version = version
+                message = message
             )
         }
 
@@ -104,32 +97,28 @@ class UserConsentApiServiceTest {
             actual = capturedError,
             expected = error
         )
-        assertSame(
+        assertSame<Any>(
             actual = result,
             expected = outgoingError
         )
     }
 
     @Test
-    fun `Given createUserConsent was called with a AccessToken and a Version it just runs`() = runBlockingTest {
+    fun `Given enableSigning was called with a AccessToken, a ConsentDocumentKey and a Message, it calls the API and returns a ConsentSignature`() = runBlockingTest {
         // Given
         val requestTemplate = RequestBuilderSpy.Factory()
-        val clock = ClockStub()
-
         val accessToken = "potato"
         val consentDocumentKey = "custom-consent-key"
-        val version = "23"
+        val message = "soup"
+
+        val response = ConsentSignatureFixture.sampleConsentSignature
 
         var capturedMethod: Networking.Method? = null
         var capturedPath: Path? = null
-        val expectedTime = Instant.DISTANT_PAST
 
-        clock.whenNow = { expectedTime }
-
-        val client = createMockClientWithResponse { scope, _ ->
-            return@createMockClientWithResponse scope.respond(
-                content = "",
-                status = HttpStatusCode.NoContent
+        val client = HttpMockClientFactory.createMockClientWithResponse(listOf(response)) { scope, _ ->
+            return@createMockClientWithResponse scope.respondOk(
+                content = ""
             )
         }
 
@@ -143,20 +132,19 @@ class UserConsentApiServiceTest {
         }
 
         // When
-        val result = UserConsentApiService(
+        val result = ConsentSignatureApiService(
             requestTemplate,
-            UserConsentErrorHandlerStub(),
-            clock
-        ).createUserConsent(
+            ConsentSignatureErrorHandlerStub(),
+        ).enableSigning(
             accessToken = accessToken,
             consentDocumentKey = consentDocumentKey,
-            version = version
+            message = message
         )
 
         // Then
         assertSame(
             actual = result,
-            expected = Unit
+            expected = response
         )
 
         assertEquals(
@@ -165,7 +153,10 @@ class UserConsentApiServiceTest {
         )
         assertEquals(
             actual = capturedPath,
-            expected = listOf("consent", "api", "v1", "userConsents")
+            expected = listOf("consent", "api", "v1", "userConsents").toMutableList().also {
+                it.add(consentDocumentKey)
+                it.add("signatures")
+            }
         )
 
         assertEquals(
@@ -179,30 +170,31 @@ class UserConsentApiServiceTest {
         assertTrue(requestTemplate.lastInstance!!.delegatedJsonFlag)
         assertEquals(
             actual = requestTemplate.lastInstance!!.delegatedBody,
-            expected = ConsentCreationPayload(
+            expected = ConsentSigningRequest(
                 consentDocumentKey,
-                version,
-                expectedTime.toString()
+                message,
+                ConsentSignatureType.CONSENT_ONCE
             )
         )
     }
 
     @Test
-    fun `Given fetchUserConsents was called with a AccessToken, Latest and a consentDocumentKey it delegates HttpRequestErrors to its ErrorHandler`() = runBlockingTest {
+    fun `Given sign was called with a AccessToken, a ConsentDocumentKey and a Message it delegates HttpRequestErrors to its ErrorHandler`() = runBlockingTest {
         // Given
         val requestTemplate = RequestBuilderSpy.Factory()
         val accessToken = "potato"
-        val consentDocumentKey = "tomato"
+        val consentDocumentKey = "custom-consent-key"
+        val message = "23"
 
         val error = HttpRuntimeError(HttpStatusCode.TooManyRequests)
-        val outgoingError = UserConsentError.Forbidden()
+        val outgoingError = ConsentSignatureError.Forbidden()
         var capturedError: HttpRuntimeError? = null
 
-        val client = createErrorMockClient(error)
+        val client = HttpMockClientFactory.createErrorMockClient(error)
 
-        val errorHandler = UserConsentErrorHandlerStub()
+        val errorHandler = ConsentSignatureErrorHandlerStub()
 
-        errorHandler.whenHandleFetchUserConsents = { delegatedError ->
+        errorHandler.whenHandleSigning = { delegatedError ->
             capturedError = delegatedError
             outgoingError
         }
@@ -215,16 +207,15 @@ class UserConsentApiServiceTest {
         }
 
         // Then
-        val result = assertFailsWith<UserConsentError.Forbidden> {
+        val result = assertFailsWith<ConsentSignatureError.Forbidden> {
             // When
-            UserConsentApiService(
+            ConsentSignatureApiService(
                 requestTemplate,
                 errorHandler,
-                ClockStub()
-            ).fetchUserConsents(
+            ).sign(
                 accessToken = accessToken,
-                latestConsent = false,
-                consentDocumentKey = consentDocumentKey
+                consentDocumentKey = consentDocumentKey,
+                message = message
             )
         }
 
@@ -233,70 +224,28 @@ class UserConsentApiServiceTest {
             actual = capturedError,
             expected = error
         )
-        assertSame(
+        assertSame<Any>(
             actual = result,
             expected = outgoingError
         )
     }
 
     @Test
-    fun `Given fetchUserConsents was called with a AccessToken, Latest and a consentDocumentKey it fails due to unexpected response`() = runBlockingTest {
-        // Given
-        val requestTemplate = RequestBuilderSpy.Factory()
-        val client = createMockClientWithResponse { scope, _ ->
-            return@createMockClientWithResponse scope.respond(
-                content = "something"
-            )
-        }
-        val accessToken = "potato"
-        val consentDocumentKey = "tomato"
-
-        requestTemplate.onPrepare = { _, _ ->
-            HttpStatement(
-                dummyKtor,
-                client
-            )
-        }
-
-        // Then
-        val error = assertFailsWith<CoreRuntimeError.ResponseTransformFailure> {
-            // When
-            val service = UserConsentApiService(
-                requestTemplate,
-                UserConsentErrorHandlerStub(),
-                ClockStub()
-            )
-            service.fetchUserConsents(
-                accessToken = accessToken,
-                latestConsent = false,
-                consentDocumentKey = consentDocumentKey
-            )
-        }
-
-        assertEquals(
-            actual = error.message,
-            expected = "Unexpected Response"
-        )
-    }
-
-    @Test
-    fun `Given fetchUserConsents was called with a AccessToken, LatestConsent and a consentDocumentKey it returns a List of UserConsents`() = runBlockingTest {
+    fun `Given sign was called with a AccessTokenwith a AccessToken, a ConsentDocumentKey and a Message, it calls the API and returns a ConsentSignature`() = runBlockingTest {
         // Given
         val requestTemplate = RequestBuilderSpy.Factory()
         val accessToken = "potato"
-        val lastedConsent = true
-        val consentDocumentKey = "tomato"
+        val consentDocumentKey = "custom-consent-key"
+        val message = "soup"
+
+        val response = ConsentSignatureFixture.sampleConsentSignature
 
         var capturedMethod: Networking.Method? = null
         var capturedPath: Path? = null
-        val response = listOf(
-            sampleUserConsent,
-            sampleUserConsent.copy(accountId = "potato")
-        )
 
-        val client = createMockClientWithResponse(listOf(response)) { scope, _ ->
-            return@createMockClientWithResponse scope.respond(
-                content = "something"
+        val client = HttpMockClientFactory.createMockClientWithResponse(listOf(response)) { scope, _ ->
+            return@createMockClientWithResponse scope.respondOk(
+                content = ""
             )
         }
 
@@ -310,14 +259,13 @@ class UserConsentApiServiceTest {
         }
 
         // When
-        val result = UserConsentApiService(
+        val result = ConsentSignatureApiService(
             requestTemplate,
-            UserConsentErrorHandlerStub(),
-            ClockStub()
-        ).fetchUserConsents(
+            ConsentSignatureErrorHandlerStub(),
+        ).sign(
             accessToken = accessToken,
-            latestConsent = lastedConsent,
-            consentDocumentKey = consentDocumentKey
+            consentDocumentKey = consentDocumentKey,
+            message = message
         )
 
         // Then
@@ -325,13 +273,17 @@ class UserConsentApiServiceTest {
             actual = result,
             expected = response
         )
+
         assertEquals(
             actual = capturedMethod,
-            expected = Networking.Method.GET
+            expected = Networking.Method.PUT
         )
         assertEquals(
             actual = capturedPath,
-            expected = listOf("consent", "api", "v1", "userConsents")
+            expected = listOf("consent", "api", "v1", "userConsents").toMutableList().also {
+                it.add(consentDocumentKey)
+                it.add("signatures")
+            }
         )
 
         assertEquals(
@@ -342,31 +294,37 @@ class UserConsentApiServiceTest {
             actual = requestTemplate.lastInstance!!.delegatedAccessToken,
             expected = accessToken
         )
+        assertTrue(requestTemplate.lastInstance!!.delegatedJsonFlag)
         assertEquals(
-            actual = requestTemplate.lastInstance!!.delegatedParameter,
-            expected = mapOf(
-                "latest" to lastedConsent,
-                "consentDocumentKey" to consentDocumentKey
+            actual = requestTemplate.lastInstance!!.delegatedBody,
+            expected = ConsentSigningRequest(
+                consentDocumentKey,
+                message,
+                ConsentSignatureType.NORMAL_USE
             )
         )
     }
 
     @Test
-    fun `Given revokeUserConsent was called with a AccessToken it delegates HttpRequestErrors to its ErrorHandler`() = runBlockingTest {
+    fun `Given disableSigning was called with a AccessToken, a ConsentDocumentKey and a SignedDeletionMessage it delegates HttpRequestErrors to its ErrorHandler`() = runBlockingTest {
         // Given
         val requestTemplate = RequestBuilderSpy.Factory()
         val accessToken = "potato"
         val consentDocumentKey = "custom-consent-key"
+        val message = SignedDeletionMessage(
+            message = "soup",
+            signature = "super-secret"
+        )
 
         val error = HttpRuntimeError(HttpStatusCode.TooManyRequests)
-        val outgoingError = UserConsentError.Forbidden()
+        val outgoingError = ConsentSignatureError.Forbidden()
         var capturedError: HttpRuntimeError? = null
 
-        val client = createErrorMockClient(error)
+        val client = HttpMockClientFactory.createErrorMockClient(error)
 
-        val errorHandler = UserConsentErrorHandlerStub()
+        val errorHandler = ConsentSignatureErrorHandlerStub()
 
-        errorHandler.whenHandleRevokeUserConsent = { delegatedError ->
+        errorHandler.whenHandleDisableSigning = { delegatedError ->
             capturedError = delegatedError
             outgoingError
         }
@@ -379,15 +337,15 @@ class UserConsentApiServiceTest {
         }
 
         // Then
-        val result = assertFailsWith<UserConsentError.Forbidden> {
+        val result = assertFailsWith<ConsentSignatureError.Forbidden> {
             // When
-            UserConsentApiService(
+            ConsentSignatureApiService(
                 requestTemplate,
                 errorHandler,
-                ClockStub()
-            ).revokeUserConsent(
+            ).disableSigning(
                 accessToken = accessToken,
-                consentDocumentKey = consentDocumentKey
+                consentDocumentKey = consentDocumentKey,
+                message = message
             )
         }
 
@@ -396,23 +354,29 @@ class UserConsentApiServiceTest {
             actual = capturedError,
             expected = error
         )
-        assertSame(
+        assertSame<Any>(
             actual = result,
             expected = outgoingError
         )
     }
 
     @Test
-    fun `Given revokeUserConsent was called with a AccessToken it just runs`() = runBlockingTest {
+    fun `Given sign was called with a AccessTokenwith a AccessToken, a ConsentDocumentKey and a SignedDeletionMessage, it calls the API and just runs`() = runBlockingTest {
         // Given
         val requestTemplate = RequestBuilderSpy.Factory()
         val accessToken = "potato"
         val consentDocumentKey = "custom-consent-key"
+        val message = SignedDeletionMessage(
+            message = "soup",
+            signature = "super-secret"
+        )
+
+        val response = ConsentSignatureFixture.sampleConsentSignature
 
         var capturedMethod: Networking.Method? = null
         var capturedPath: Path? = null
 
-        val client = createMockClientWithResponse { scope, _ ->
+        val client = HttpMockClientFactory.createMockClientWithResponse { scope, _ ->
             return@createMockClientWithResponse scope.respond(
                 content = "",
                 status = HttpStatusCode.NoContent
@@ -429,14 +393,13 @@ class UserConsentApiServiceTest {
         }
 
         // When
-        val result = UserConsentApiService(
+        val result = ConsentSignatureApiService(
             requestTemplate,
-            UserConsentErrorHandlerStub(),
-            ClockStub()
-        ).revokeUserConsent(
+            ConsentSignatureErrorHandlerStub(),
+        ).disableSigning(
             accessToken = accessToken,
-            consentDocumentKey =
-            consentDocumentKey
+            consentDocumentKey = consentDocumentKey,
+            message = message
         )
 
         // Then
@@ -451,7 +414,10 @@ class UserConsentApiServiceTest {
         )
         assertEquals(
             actual = capturedPath,
-            expected = listOf("consent", "api", "v1", "userConsents")
+            expected = listOf("consent", "api", "v1", "userConsents").toMutableList().also {
+                it.add(consentDocumentKey)
+                it.add("signatures")
+            }
         )
 
         assertEquals(
@@ -465,7 +431,7 @@ class UserConsentApiServiceTest {
         assertTrue(requestTemplate.lastInstance!!.delegatedJsonFlag)
         assertEquals(
             actual = requestTemplate.lastInstance!!.delegatedBody,
-            expected = ConsentRevocationPayload(consentDocumentKey)
+            expected = message
         )
     }
 }

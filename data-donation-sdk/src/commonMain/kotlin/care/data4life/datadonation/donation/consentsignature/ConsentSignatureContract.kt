@@ -38,8 +38,8 @@ internal interface ConsentSignatureContract {
         suspend fun disableSigning(
             accessToken: String,
             consentDocumentKey: String,
-            message: String
-        ) : Unit
+            message: SignedDeletionMessage
+        )
 
         interface ErrorHandler {
             fun handleEnableSigning(error: HttpRuntimeError): ConsentSignatureError
@@ -53,9 +53,5 @@ internal interface ConsentSignatureContract {
         }
     }
 
-    interface Repository {
-    }
-
-    interface Controller {
-    }
+    interface Repository
 }

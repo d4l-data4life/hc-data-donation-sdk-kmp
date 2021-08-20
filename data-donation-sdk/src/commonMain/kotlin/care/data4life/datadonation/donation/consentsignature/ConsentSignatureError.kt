@@ -22,7 +22,6 @@ sealed class ConsentSignatureError(
     open val httpStatus: Int
 ) : D4LRuntimeException() {
     class UnexpectedFailure(override val httpStatus: Int) : ConsentSignatureError(httpStatus)
-    class BadRequest : ConsentSignatureError(400)
     class Unauthorized : ConsentSignatureError(401)
     class Forbidden : ConsentSignatureError(403)
     class NotFound : ConsentSignatureError(404)

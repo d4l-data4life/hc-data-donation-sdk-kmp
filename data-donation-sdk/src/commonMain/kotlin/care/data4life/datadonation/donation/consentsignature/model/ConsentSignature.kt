@@ -22,4 +22,3 @@ import kotlinx.serialization.Serializable
 internal data class ConsentSignature(
     val signature: String
 )
-

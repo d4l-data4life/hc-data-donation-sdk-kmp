@@ -14,13 +14,14 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.donation.consentsignature.model
+package care.data4life.datadonation.mock.fixture
 
-import kotlinx.serialization.Serializable
+import care.data4life.datadonation.donation.consentsignature.model.ConsentSignature
+import kotlin.native.concurrent.ThreadLocal
 
-@Serializable
-internal data class ConsentMessage(
-    val consentDocumentKey: String,
-    val signatureType: String,
-    val payload: String
-)
+@ThreadLocal
+internal object ConsentSignatureFixture {
+    val sampleConsentSignature = ConsentSignature(
+        signature = "secret-signature"
+    )
+}
