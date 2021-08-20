@@ -14,17 +14,18 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.error
+package care.data4life.datadonation.donation.program
 
-import care.data4life.sdk.lang.D4LRuntimeException
+import care.data4life.datadonation.networking.HttpRuntimeError
+import io.ktor.http.HttpStatusCode
 
-sealed class CoreRuntimeError(
-    message: String?,
-    cause: Throwable?
-) : D4LRuntimeException(message = message, cause = cause) {
-    class InternalFailure(message: String? = null) : CoreRuntimeError(message = message ?: "Internal failure", cause = null)
-    class RequestValidationFailure(message: String) : CoreRuntimeError(message = message, cause = null)
-    class ResponseTransformFailure : CoreRuntimeError(message = "Unexpected Response", cause = null)
-    class MissingCredentials(cause: Throwable? = null) : CoreRuntimeError(cause = cause, message = null)
-    class MissingSession(cause: Throwable? = null) : CoreRuntimeError(cause = cause, message = null)
+internal object ProgramErrorMapper :
+    ProgramContract.ErrorMapper {
+    override fun mapFetchProgram(error: HttpRuntimeError): ProgramError {
+        return if (error.statusCode == HttpStatusCode.NotFound) {
+            ProgramError.NotFoundError()
+        } else {
+            ProgramError.UnexpectedError(error.statusCode.value)
+        }
+    }
 }

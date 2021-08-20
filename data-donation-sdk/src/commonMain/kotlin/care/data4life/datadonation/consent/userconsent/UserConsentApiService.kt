@@ -37,11 +37,11 @@ internal class UserConsentApiService constructor(
     override suspend fun createUserConsent(
         accessToken: String,
         consentDocumentKey: String,
-        version: String
+        consentDocumentVersion: String
     ) {
         val payload = ConsentCreationPayload(
             consentDocumentKey,
-            version,
+            consentDocumentVersion,
             clock.now().toString()
         )
 
