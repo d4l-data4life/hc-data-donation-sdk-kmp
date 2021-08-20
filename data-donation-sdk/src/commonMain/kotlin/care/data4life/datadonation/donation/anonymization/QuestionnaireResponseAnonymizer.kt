@@ -16,13 +16,16 @@
 
 package care.data4life.datadonation.donation.anonymization
 
-import care.data4life.datadonation.donation.anonymization.AnonymizationContract.Redactor.Companion.REDACTED
-import care.data4life.hl7.fhir.stu3.model.FhirResource
+import care.data4life.datadonation.donation.anonymization.model.BlurRule
+import care.data4life.datadonation.donation.program.model.BlurFunction
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponseItem
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponseItemAnswer
+import care.data4life.hl7.fhir.stu3.primitive.DateTime
 
-internal object Redactor : AnonymizationContract.Redactor {
+internal class QuestionnaireResponseAnonymizer(
+    private val dateTimeSmearer: AnonymizationContract.DateTimeSmearer
+): AnonymizationContract.QuestionnaireResponseAnonymizer {
     private fun <T> mapOrNull(
         list: List<T>?,
         action: (T) -> T
@@ -58,7 +61,7 @@ internal object Redactor : AnonymizationContract.Redactor {
         itemAnswer: QuestionnaireResponseItemAnswer
     ): QuestionnaireResponseItemAnswer {
         val item = mapOrNull(itemAnswer.item, ::mapQuestionnaireResponseItem)
-        val valueString = maskQuestionnaireResponseItemAnswerValueString(itemAnswer.valueString)
+        val valueString = itemAnswer.valueString
 
         return itemAnswer.copy(
             item = item,
@@ -66,19 +69,38 @@ internal object Redactor : AnonymizationContract.Redactor {
         )
     }
 
-    private fun maskQuestionnaireResponseItemAnswerValueString(valueString: String?): String? {
-        return if (valueString is String) {
-            REDACTED
-        } else {
-            null
-        }
+    private fun blurAutored(
+        questionnaireResponse: QuestionnaireResponse,
+        blurRule: BlurRule
+    ): QuestionnaireResponse {
+        return questionnaireResponse.copy(
+            authored = questionnaireResponse.authored!!.copy(
+                value = dateTimeSmearer.blur(
+                    questionnaireResponse.authored!!.value,
+                    blurRule.location,
+                    blurRule.authored!!
+                )
+            )
+        )
     }
 
-    override fun redact(resource: FhirResource): FhirResource {
-        return if (resource is QuestionnaireResponse) {
-            mapQuestionnaireResponse(resource)
+    private fun authoredIsBlurable(
+        questionnaireResponse: QuestionnaireResponse,
+        blurRule: BlurRule
+    ): Boolean {
+        return questionnaireResponse.authored is DateTime && blurRule.authored is BlurFunction
+    }
+
+    override fun anonymize(
+        resource: QuestionnaireResponse,
+        rule: BlurRule
+    ): QuestionnaireResponse {
+        val bluredResource = if (authoredIsBlurable(resource, rule)) {
+            blurAutored(resource, rule)
         } else {
             resource
         }
+
+        return mapQuestionnaireResponse(bluredResource)
     }
 }

@@ -24,10 +24,11 @@ import care.data4life.datadonation.donation.program.model.ProgramResource
 import care.data4life.hl7.fhir.common.datetime.XsDateTime
 import care.data4life.hl7.fhir.stu3.model.FhirQuestionnaireResponse
 import care.data4life.hl7.fhir.stu3.model.FhirResource
+import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
 
 internal interface AnonymizationContract {
     interface Redactor {
-        suspend fun redact(resource: FhirResource): FhirResource
+        fun redact(resource: FhirResource): FhirResource
 
         companion object {
             const val REDACTED = "REDACTED"
@@ -52,6 +53,13 @@ internal interface AnonymizationContract {
             location: String,
             rule: BlurFunction
         ): XsDateTime
+    }
+
+    interface QuestionnaireResponseAnonymizer {
+        fun anonymize(
+            resource: QuestionnaireResponse,
+            rule: BlurRule
+        ): QuestionnaireResponse
     }
 
     interface FhirSmearer {
