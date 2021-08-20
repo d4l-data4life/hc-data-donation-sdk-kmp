@@ -17,6 +17,7 @@
 package care.data4life.datadonation.donation.consentsignature
 
 import care.data4life.datadonation.donation.consentsignature.model.ConsentSignature
+import care.data4life.datadonation.donation.consentsignature.model.ConsentSigningRequest
 import care.data4life.datadonation.donation.consentsignature.model.SignedDeletionMessage
 import care.data4life.datadonation.networking.AccessToken
 import care.data4life.datadonation.networking.HttpRuntimeError
@@ -26,19 +27,19 @@ internal interface ConsentSignatureContract {
         suspend fun enableSigning(
             accessToken: AccessToken,
             consentDocumentKey: String,
-            message: String
+            signingRequest: ConsentSigningRequest
         ): ConsentSignature
 
         suspend fun sign(
-            accessToken: String,
+            accessToken: AccessToken,
             consentDocumentKey: String,
-            message: String
+            signingRequest: ConsentSigningRequest
         ): ConsentSignature
 
         suspend fun disableSigning(
-            accessToken: String,
+            accessToken: AccessToken,
             consentDocumentKey: String,
-            message: SignedDeletionMessage
+            deletionRequest: SignedDeletionMessage
         )
 
         interface ErrorHandler {
@@ -53,5 +54,23 @@ internal interface ConsentSignatureContract {
         }
     }
 
-    interface Repository
+    interface Repository {
+        suspend fun enableSigning(
+            accessToken: AccessToken,
+            consentDocumentKey: String,
+            message: String
+        ): ConsentSignature
+
+        suspend fun sign(
+            accessToken: AccessToken,
+            consentDocumentKey: String,
+            message: String
+        ): ConsentSignature
+
+        suspend fun disableSigning(
+            accessToken: AccessToken,
+            consentDocumentKey: String,
+            message: SignedDeletionMessage
+        )
+    }
 }

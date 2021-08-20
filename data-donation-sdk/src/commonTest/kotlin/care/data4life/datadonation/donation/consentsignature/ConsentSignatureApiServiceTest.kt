@@ -55,9 +55,14 @@ class ConsentSignatureApiServiceTest {
     fun `Given enableSigning was called with a AccessToken, a ConsentDocumentKey and a Message it delegates HttpRequestErrors to its ErrorHandler`() = runBlockingTest {
         // Given
         val requestTemplate = RequestBuilderSpy.Factory()
+
         val accessToken = "potato"
         val consentDocumentKey = "custom-consent-key"
-        val message = "23"
+        val signingRequest = ConsentSigningRequest(
+            consentDocumentKey = consentDocumentKey,
+            payload = "soup",
+            signatureType = ConsentSignatureType.CONSENT_ONCE
+        )
 
         val error = HttpRuntimeError(HttpStatusCode.TooManyRequests)
         val outgoingError = ConsentSignatureError.Forbidden()
@@ -88,7 +93,7 @@ class ConsentSignatureApiServiceTest {
             ).enableSigning(
                 accessToken = accessToken,
                 consentDocumentKey = consentDocumentKey,
-                message = message
+                signingRequest = signingRequest
             )
         }
 
@@ -109,7 +114,11 @@ class ConsentSignatureApiServiceTest {
         val requestTemplate = RequestBuilderSpy.Factory()
         val accessToken = "potato"
         val consentDocumentKey = "custom-consent-key"
-        val message = "soup"
+        val signingRequest = ConsentSigningRequest(
+            consentDocumentKey = consentDocumentKey,
+            payload = "soup",
+            signatureType = ConsentSignatureType.CONSENT_ONCE
+        )
 
         val response = ConsentSignatureFixture.sampleConsentSignature
 
@@ -138,7 +147,7 @@ class ConsentSignatureApiServiceTest {
         ).enableSigning(
             accessToken = accessToken,
             consentDocumentKey = consentDocumentKey,
-            message = message
+            signingRequest = signingRequest
         )
 
         // Then
@@ -170,11 +179,7 @@ class ConsentSignatureApiServiceTest {
         assertTrue(requestTemplate.lastInstance!!.delegatedJsonFlag)
         assertEquals(
             actual = requestTemplate.lastInstance!!.delegatedBody,
-            expected = ConsentSigningRequest(
-                consentDocumentKey,
-                message,
-                ConsentSignatureType.CONSENT_ONCE
-            )
+            expected = signingRequest
         )
     }
 
@@ -184,7 +189,11 @@ class ConsentSignatureApiServiceTest {
         val requestTemplate = RequestBuilderSpy.Factory()
         val accessToken = "potato"
         val consentDocumentKey = "custom-consent-key"
-        val message = "23"
+        val signingRequest = ConsentSigningRequest(
+            consentDocumentKey = consentDocumentKey,
+            payload = "soup",
+            signatureType = ConsentSignatureType.NORMAL_USE
+        )
 
         val error = HttpRuntimeError(HttpStatusCode.TooManyRequests)
         val outgoingError = ConsentSignatureError.Forbidden()
@@ -215,7 +224,7 @@ class ConsentSignatureApiServiceTest {
             ).sign(
                 accessToken = accessToken,
                 consentDocumentKey = consentDocumentKey,
-                message = message
+                signingRequest = signingRequest
             )
         }
 
@@ -236,7 +245,11 @@ class ConsentSignatureApiServiceTest {
         val requestTemplate = RequestBuilderSpy.Factory()
         val accessToken = "potato"
         val consentDocumentKey = "custom-consent-key"
-        val message = "soup"
+        val signingRequest = ConsentSigningRequest(
+            consentDocumentKey = consentDocumentKey,
+            payload = "soup",
+            signatureType = ConsentSignatureType.NORMAL_USE
+        )
 
         val response = ConsentSignatureFixture.sampleConsentSignature
 
@@ -265,7 +278,7 @@ class ConsentSignatureApiServiceTest {
         ).sign(
             accessToken = accessToken,
             consentDocumentKey = consentDocumentKey,
-            message = message
+            signingRequest = signingRequest
         )
 
         // Then
@@ -297,11 +310,7 @@ class ConsentSignatureApiServiceTest {
         assertTrue(requestTemplate.lastInstance!!.delegatedJsonFlag)
         assertEquals(
             actual = requestTemplate.lastInstance!!.delegatedBody,
-            expected = ConsentSigningRequest(
-                consentDocumentKey,
-                message,
-                ConsentSignatureType.NORMAL_USE
-            )
+            expected = signingRequest
         )
     }
 
@@ -311,7 +320,7 @@ class ConsentSignatureApiServiceTest {
         val requestTemplate = RequestBuilderSpy.Factory()
         val accessToken = "potato"
         val consentDocumentKey = "custom-consent-key"
-        val message = SignedDeletionMessage(
+        val signingRequest = SignedDeletionMessage(
             message = "soup",
             signature = "super-secret"
         )
@@ -345,7 +354,7 @@ class ConsentSignatureApiServiceTest {
             ).disableSigning(
                 accessToken = accessToken,
                 consentDocumentKey = consentDocumentKey,
-                message = message
+                deletionRequest = signingRequest
             )
         }
 
@@ -364,9 +373,10 @@ class ConsentSignatureApiServiceTest {
     fun `Given sign was called with a AccessTokenwith a AccessToken, a ConsentDocumentKey and a SignedDeletionMessage, it calls the API and just runs`() = runBlockingTest {
         // Given
         val requestTemplate = RequestBuilderSpy.Factory()
+
         val accessToken = "potato"
         val consentDocumentKey = "custom-consent-key"
-        val message = SignedDeletionMessage(
+        val signingRequest = SignedDeletionMessage(
             message = "soup",
             signature = "super-secret"
         )
@@ -399,7 +409,7 @@ class ConsentSignatureApiServiceTest {
         ).disableSigning(
             accessToken = accessToken,
             consentDocumentKey = consentDocumentKey,
-            message = message
+            deletionRequest = signingRequest
         )
 
         // Then
@@ -431,7 +441,7 @@ class ConsentSignatureApiServiceTest {
         assertTrue(requestTemplate.lastInstance!!.delegatedJsonFlag)
         assertEquals(
             actual = requestTemplate.lastInstance!!.delegatedBody,
-            expected = message
+            expected = signingRequest
         )
     }
 }

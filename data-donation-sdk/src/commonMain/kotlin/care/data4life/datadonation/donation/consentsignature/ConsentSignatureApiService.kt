@@ -17,7 +17,6 @@
 package care.data4life.datadonation.donation.consentsignature
 
 import care.data4life.datadonation.donation.consentsignature.model.ConsentSignature
-import care.data4life.datadonation.donation.consentsignature.model.ConsentSignatureType
 import care.data4life.datadonation.donation.consentsignature.model.ConsentSigningRequest
 import care.data4life.datadonation.donation.consentsignature.model.SignedDeletionMessage
 import care.data4life.datadonation.networking.AccessToken
@@ -54,21 +53,15 @@ internal class ConsentSignatureApiService(
     override suspend fun enableSigning(
         accessToken: AccessToken,
         consentDocumentKey: String,
-        message: String
+        signingRequest: ConsentSigningRequest
     ): ConsentSignature {
         val path = buildPath(consentDocumentKey)
-
-        val payload = ConsentSigningRequest(
-            consentDocumentKey = consentDocumentKey,
-            payload = message,
-            signatureType = ConsentSignatureType.CONSENT_ONCE
-        )
 
         val request = prepareRequest(
             accessToken,
             path,
             Networking.Method.POST,
-            payload
+            signingRequest
         )
 
         return try {
@@ -79,23 +72,17 @@ internal class ConsentSignatureApiService(
     }
 
     override suspend fun sign(
-        accessToken: String,
+        accessToken: AccessToken,
         consentDocumentKey: String,
-        message: String
+        signingRequest: ConsentSigningRequest
     ): ConsentSignature {
         val path = buildPath(consentDocumentKey)
-
-        val payload = ConsentSigningRequest(
-            consentDocumentKey = consentDocumentKey,
-            payload = message,
-            signatureType = ConsentSignatureType.NORMAL_USE
-        )
 
         val request = prepareRequest(
             accessToken,
             path,
             Networking.Method.PUT,
-            payload
+            signingRequest
         )
 
         return try {
@@ -106,9 +93,9 @@ internal class ConsentSignatureApiService(
     }
 
     override suspend fun disableSigning(
-        accessToken: String,
+        accessToken: AccessToken,
         consentDocumentKey: String,
-        message: SignedDeletionMessage
+        deletionRequest: SignedDeletionMessage
     ) {
         val path = buildPath(consentDocumentKey)
 
@@ -116,7 +103,7 @@ internal class ConsentSignatureApiService(
             .create()
             .setAccessToken(accessToken)
             .useJsonContentType()
-            .setBody(message)
+            .setBody(deletionRequest)
             .prepare(
                 Networking.Method.DELETE,
                 path
