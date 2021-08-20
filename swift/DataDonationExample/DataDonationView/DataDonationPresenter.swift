@@ -16,6 +16,7 @@
 
 import Foundation
 import Data4LifeDataDonationSDK
+import UIKit
 
 final class DataDonationPresenter {
 
@@ -37,6 +38,12 @@ extension DataDonationPresenter {
 
     func presentLoggedOut() {
         view?.configure(with: DataDonationViewModel(state: .loggedOut))
+    }
+
+    func presentError(_ error: Error) {
+        let alertController = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        view?.present(alertController, animated: true)
     }
 
     private func makeRowModel(from userConsent: UserConsent) -> UserConsentRow {
