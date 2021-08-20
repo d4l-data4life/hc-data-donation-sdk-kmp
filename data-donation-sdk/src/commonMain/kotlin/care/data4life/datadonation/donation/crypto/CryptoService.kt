@@ -19,7 +19,7 @@ package care.data4life.datadonation.donation.crypto
 internal expect class CryptoService(
     donationPublicKey: String,
     alpPublicKey: String
-): CryptoContract.Service {
+) : CryptoContract.Service {
     override fun encrypt(payload: ByteArray, keyType: CryptoContract.KeyType): ByteArray
     override fun decrypt(payload: ByteArray, keyType: CryptoContract.KeyType): ByteArray
 

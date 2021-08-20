@@ -19,7 +19,7 @@ package care.data4life.datadonation.donation.crypto
 internal actual class CryptoService actual constructor(
     donationPublicKey: String,
     alpPublicKey: String
-): CryptoContract.Service {
+) : CryptoContract.Service {
     // TODO Use objc util to map from ByteArray to NSData
     actual override fun encrypt(
         payload: ByteArray,
