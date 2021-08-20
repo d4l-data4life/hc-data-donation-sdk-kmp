@@ -95,69 +95,17 @@ class FhirSmearerTest {
     }
 
     @Test
-    fun `Given blurFhirResource is called with a QuestionaireResponse and a ProgramDonationConfiguration it reflects the QuestionaireResponse, if the resloved BlurRule has no location`() {
+    fun `Given blurFhirResource is called with a QuestionaireResponse and a ProgramDonationConfiguration it ignores the authored field, if no BlurFunction was provided for the field`() {
         // Given
         val resource = QuestionnaireResponse(
             status = QuestionnaireResponseStatus.AMENDED,
             authored = DateTime(
-                value = XsDateTime(XsDate(123))
-            )
-        )
-        val blurResolver = BlurRuleResolverStub()
-
-        val programConfig = programConfig.copy(
-            resources = listOf(ProgramResource(url = "123")),
-            anonymization = ProgramAnonymization(
-                blur = ProgramAnonymizationBlur(location = "abc")
+                value = XsDateTime(
+                    date = XsDate(2022, 1, 1)
+                )
             )
         )
 
-        val rule = BlurRule()
-
-        var capturedFhirResource: FhirResource? = null
-        var capturedProgramAnonymizationBlur: ProgramAnonymizationBlur? = null
-        var capturedProgramResources: List<ProgramResource>? = null
-
-        blurResolver.whenResolveBlurRule = { delegatedFhirResource, delegatedProgramAnonymizationBlur, delegatedProgramResources ->
-            capturedFhirResource = delegatedFhirResource
-            capturedProgramAnonymizationBlur = delegatedProgramAnonymizationBlur
-            capturedProgramResources = delegatedProgramResources
-
-            rule
-        }
-
-        // When
-        val result = FhirSmearer(
-            blurResolver,
-            DateTimeSmearerStub()
-        ).blurFhirResource(resource, programConfig)
-
-        // Then
-        assertSame(
-            actual = result,
-            expected = resource
-        )
-
-        assertSame(
-            actual = capturedFhirResource,
-            expected = resource
-        )
-        assertSame(
-            actual = capturedProgramAnonymizationBlur,
-            expected = programConfig.anonymization?.blur
-        )
-        assertSame(
-            actual = capturedProgramResources,
-            expected = programConfig.resources
-        )
-    }
-
-    @Test
-    fun `Given blurFhirResource is called with a QuestionaireResponse and a ProgramDonationConfiguration it ignores the authored field, if no BlurFunction was provided for the field`() {
-        // Given
-        val resource = QuestionnaireResponse(
-            status = QuestionnaireResponseStatus.AMENDED
-        )
         val blurResolver = BlurRuleResolverStub()
 
         val programConfig = programConfig.copy(
@@ -213,8 +161,14 @@ class FhirSmearerTest {
     fun `Given blurFhirResource is called with a QuestionaireResponse and a ProgramDonationConfiguration it ignores the authored field, if it does not exists`() {
         // Given
         val resource = QuestionnaireResponse(
-            status = QuestionnaireResponseStatus.AMENDED
+            status = QuestionnaireResponseStatus.AMENDED,
+            authored = DateTime(
+                value = XsDateTime(
+                    date = XsDate(2022, 1, 1)
+                )
+            )
         )
+
         val blurResolver = BlurRuleResolverStub()
 
         val programConfig = programConfig.copy(

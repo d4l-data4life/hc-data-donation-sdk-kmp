@@ -20,7 +20,7 @@ import care.data4life.datadonation.donation.program.model.BlurFunction
 import care.data4life.datadonation.donation.program.model.ProgramResourceBlurItem
 
 internal data class BlurRule(
-    val location: String? = null,
+    val location: String,
     val authored: BlurFunction? = null,
     val researchSubject: BlurFunction? = null,
     val resourceBlurItems: List<ProgramResourceBlurItem>? = null

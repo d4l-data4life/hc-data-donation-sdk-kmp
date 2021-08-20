@@ -35,19 +35,26 @@ internal class FhirSmearer(
             authored = questionnaireResponse.authored!!.copy(
                 value = dateTimeSmearer.blur(
                     questionnaireResponse.authored!!.value,
-                    blurRule.location!!,
+                    blurRule.location,
                     blurRule.authored!!
                 )
             )
         )
     }
 
+    private fun authoredIsBlurable(
+        questionnaireResponse: QuestionnaireResponse,
+        blurRule: BlurRule
+    ): Boolean {
+        return questionnaireResponse.authored is DateTime && blurRule.authored is BlurFunction
+    }
+
     private fun blurLocalizedQuestionnaireResponseFields(
         questionnaireResponse: QuestionnaireResponse,
         blurRule: BlurRule
     ): QuestionnaireResponse {
-        return if(questionnaireResponse.authored is DateTime && blurRule.authored is BlurFunction) {
-             blurAutored(questionnaireResponse, blurRule)
+        return if (authoredIsBlurable(questionnaireResponse, blurRule)) {
+            blurAutored(questionnaireResponse, blurRule)
         } else {
             questionnaireResponse
         }
@@ -57,22 +64,20 @@ internal class FhirSmearer(
         questionnaireResponse: QuestionnaireResponse,
         programConfiguration: ProgramDonationConfiguration
     ): QuestionnaireResponse {
-        var bluredQuestionnaireResponse = questionnaireResponse
-
         val blurRule = blurResolver.resolveBlurRule(
             fhirResource = questionnaireResponse,
             programRule = programConfiguration.anonymization?.blur,
             programResources = programConfiguration.resources
         )
 
-        if (blurRule is BlurRule && blurRule.location is String) {
-            bluredQuestionnaireResponse = blurLocalizedQuestionnaireResponseFields(
-                bluredQuestionnaireResponse,
+        return if (blurRule is BlurRule) {
+            blurLocalizedQuestionnaireResponseFields(
+                questionnaireResponse,
                 blurRule
             )
+        } else {
+            questionnaireResponse
         }
-
-        return bluredQuestionnaireResponse
     }
 
     override fun blurFhirResource(

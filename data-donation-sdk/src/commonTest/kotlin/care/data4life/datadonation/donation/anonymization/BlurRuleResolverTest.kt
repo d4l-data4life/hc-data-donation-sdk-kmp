@@ -43,7 +43,7 @@ class BlurRuleResolverTest {
     }
 
     @Test
-    fun `Given resolveBlurFunctions is called with a QuestionnaireResponse, null as ProgramAnonymizationBlur and a empty List of ProgramResource it returns null`() {
+    fun `Given resolveBlurRule is called with a QuestionnaireResponse, null as ProgramAnonymizationBlur and a empty List of ProgramResource it returns null`() {
         // Given
         val questionnaireResponse = questionnaireResponseTemplate.copy()
 
@@ -59,7 +59,7 @@ class BlurRuleResolverTest {
     }
 
     @Test
-    fun `Given resolveBlurFunctions is called with a QuestionnaireResponse, a ProgramAnonymizationBlur and a empty List of ProgramResource it returns a BlurRule provided by the ProgramAnonymization`() {
+    fun `Given resolveBlurRule is called with a QuestionnaireResponse, a ProgramAnonymizationBlur and a empty List of ProgramResource it returns a BlurRule provided by the ProgramAnonymization`() {
         // Given
         val questionnaireResponse = questionnaireResponseTemplate.copy()
         val programAnonymization = ProgramAnonymizationBlur(
@@ -94,7 +94,7 @@ class BlurRuleResolverTest {
     }
 
     @Test
-    fun `Given resolveBlurFunctions is called with a QuestionnaireResponse, null as ProgramAnonymizationBlur and a List of ProgramResource it returns null if no ProgramResource match the FHIRResource`() {
+    fun `Given resolveBlurRule is called with a QuestionnaireResponse, null as ProgramAnonymizationBlur and a List of ProgramResource it returns null if no ProgramResource match the FHIRResource`() {
         // Given
         val questionnaireResponse = questionnaireResponseTemplate.copy()
         val programResources = listOf(
@@ -126,7 +126,42 @@ class BlurRuleResolverTest {
     }
 
     @Test
-    fun `Given resolveBlurFunctions is called with a QuestionnaireResponse, null as ProgramAnonymizationBlur and a List of ProgramResource it resolves the Blur for the given FHIRResource and returns a BlurRule provided by the ProgramResource`() {
+    fun `Given resolveBlurRule is called with a QuestionnaireResponse, null as ProgramAnonymizationBlur and a List of ProgramResource it returns null if the matching ProgramResource contains no location`() {
+        // Given
+        val questionnaireResponse = questionnaireResponseTemplate.copy(
+            questionnaire = Reference(
+                reference = "this is the one|1.0.0"
+            )
+        )
+        val programResources = listOf(
+            ProgramResource(
+                url = "this is the one",
+                versions = listOf("1.0.0"),
+                blur = ProgramResourceBlur(
+                    authored = BlurFunction.START_OF_MONTH,
+                    items = listOf(
+                        ProgramResourceBlurItem(
+                            linkId = "42",
+                            function = BlurFunction.END_OF_MONTH
+                        )
+                    )
+                )
+            )
+        )
+
+        // When
+        val result = BlurRuleResolver.resolveBlurRule(
+            questionnaireResponse,
+            null,
+            programResources
+        )
+
+        // Then
+        assertNull(result)
+    }
+
+    @Test
+    fun `Given resolveBlurRule is called with a QuestionnaireResponse, null as ProgramAnonymizationBlur and a List of ProgramResource it resolves the Blur for the given FHIRResource and returns a BlurRule provided by the ProgramResource`() {
         // Given
         val questionnaireResponse = questionnaireResponseTemplate.copy(
             questionnaire = Reference(
@@ -191,7 +226,7 @@ class BlurRuleResolverTest {
     }
 
     @Test
-    fun `Given resolveBlurFunctions is called with a QuestionnaireResponse, ProgramAnonymizationBlur and a List of ProgramResource it merges both rulessets in favour of the ProgramResource`() {
+    fun `Given resolveBlurRule is called with a QuestionnaireResponse, ProgramAnonymizationBlur and a List of ProgramResource it merges both rulessets in favour of the ProgramResource`() {
         // Given
         val questionnaireResponse = questionnaireResponseTemplate.copy(
             questionnaire = Reference(

@@ -51,13 +51,19 @@ internal object BlurRuleResolver :
     private fun mergeRuleSets(
         resourceRule: ProgramResourceBlur?,
         programRule: ProgramAnonymizationBlur?
-    ): BlurRule {
-        return BlurRule(
-            location = resourceRule?.location ?: programRule?.location,
-            authored = resourceRule?.authored ?: programRule?.authored,
-            researchSubject = programRule?.researchSubject,
-            resourceBlurItems = resourceRule?.items
-        )
+    ): BlurRule? {
+        val location = resourceRule?.location ?: programRule?.location
+
+        return if (location is String) {
+            BlurRule(
+                location = location,
+                authored = resourceRule?.authored ?: programRule?.authored,
+                researchSubject = programRule?.researchSubject,
+                resourceBlurItems = resourceRule?.items
+            )
+        } else {
+            null
+        }
     }
 
     override fun resolveBlurRule(
