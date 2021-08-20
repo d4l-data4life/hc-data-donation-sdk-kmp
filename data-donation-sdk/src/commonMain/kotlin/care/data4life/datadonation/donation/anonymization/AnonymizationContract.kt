@@ -16,6 +16,13 @@
 
 package care.data4life.datadonation.donation.anonymization
 
+import care.data4life.datadonation.donation.anonymization.model.BlurRule
+import care.data4life.datadonation.donation.program.model.BlurFunction
+import care.data4life.datadonation.donation.program.model.ProgramAnonymizationBlur
+import care.data4life.datadonation.donation.program.model.ProgramDonationConfiguration
+import care.data4life.datadonation.donation.program.model.ProgramResource
+import care.data4life.hl7.fhir.common.datetime.XsDateTime
+import care.data4life.hl7.fhir.stu3.model.FhirQuestionnaireResponse
 import care.data4life.hl7.fhir.stu3.model.FhirResource
 
 internal interface AnonymizationContract {
@@ -25,5 +32,32 @@ internal interface AnonymizationContract {
         companion object {
             const val REDACTED = "REDACTED"
         }
+    }
+
+    interface BlurRuleResolver {
+        fun resolveBlurRule(
+            fhirResource: FhirQuestionnaireResponse,
+            programRule: ProgramAnonymizationBlur?,
+            programResources: List<ProgramResource>
+        ): BlurRule?
+
+        companion object {
+            const val REFERENCE_SEPARATOR = "|"
+        }
+    }
+
+    fun interface DateTimeSmearer {
+        fun blur(
+            fhirDateTime: XsDateTime,
+            location: String,
+            rule: BlurFunction
+        ): XsDateTime
+    }
+
+    interface FhirSmearer {
+        fun blurFhirResource(
+            fhirResource: FhirResource,
+            programConfiguration: ProgramDonationConfiguration
+        ): FhirResource
     }
 }
