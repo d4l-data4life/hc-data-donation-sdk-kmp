@@ -35,23 +35,38 @@ extension DataDonationInteractor {
     func viewDidLoad() {
         dataDonationSDKService.fetchUserConsents { [weak presenter] result in
             DispatchQueue.main.async {
-                let consents = (try? result.get()) ?? []
-                presenter?.presentLoggedIn(with: consents)
+                switch result {
+                case .failure(let error):
+                    presenter?.presentLoggedIn(with: [])
+                    presenter?.presentError(error)
+                case .success(let consents):
+                    presenter?.presentLoggedIn(with: consents)
+                }
             }
         }
     }
     func tappedAddButton() {
-        dataDonationSDKService.createUserConsent { result in
+        dataDonationSDKService.createUserConsent { [weak presenter, self] result in
             DispatchQueue.main.async {
-                self.viewDidLoad()
+                switch result {
+                case .failure(let error):
+                    presenter?.presentError(error)
+                case .success:
+                    self.viewDidLoad()
+                }
             }
         }
     }
 
     func tappedRevokeButton() {
-        dataDonationSDKService.revokeUserConsent { result in
+        dataDonationSDKService.revokeUserConsent { [weak presenter, self] result in
             DispatchQueue.main.async {
-                self.viewDidLoad()
+                switch result {
+                case .failure(let error):
+                    presenter?.presentError(error)
+                case .success:
+                    self.viewDidLoad()
+                }
             }
         }
     }
