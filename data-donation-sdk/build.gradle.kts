@@ -171,6 +171,7 @@ kotlin {
                 implementation(Dependency.multiplatform.dateTime)
 
                 // D4L
+                implementation(Dependency.d4l.fhir)
                 implementation(Dependency.d4l.sdkUtil)
                 implementation(Dependency.d4l.sdkFlow)
                 implementation(Dependency.d4l.sdkError)
