@@ -24,8 +24,9 @@ import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponseItemAnswer
 import care.data4life.hl7.fhir.stu3.primitive.DateTime
 
 internal class QuestionnaireResponseAnonymizer(
-    private val dateTimeSmearer: AnonymizationContract.DateTimeSmearer
-): AnonymizationContract.QuestionnaireResponseAnonymizer {
+    private val dateTimeSmearer: AnonymizationContract.DateTimeSmearer,
+    private val redactor: AnonymizationContract.Redactor
+) : AnonymizationContract.QuestionnaireResponseAnonymizer {
     private fun <T> mapOrNull(
         list: List<T>?,
         action: (T) -> T
@@ -61,7 +62,7 @@ internal class QuestionnaireResponseAnonymizer(
         itemAnswer: QuestionnaireResponseItemAnswer
     ): QuestionnaireResponseItemAnswer {
         val item = mapOrNull(itemAnswer.item, ::mapQuestionnaireResponseItem)
-        val valueString = itemAnswer.valueString
+        val valueString = redactor.redact(itemAnswer.valueString)
 
         return itemAnswer.copy(
             item = item,
@@ -69,7 +70,7 @@ internal class QuestionnaireResponseAnonymizer(
         )
     }
 
-    private fun blurAutored(
+    private fun blurAuthored(
         questionnaireResponse: QuestionnaireResponse,
         blurRule: BlurRule
     ): QuestionnaireResponse {
@@ -96,7 +97,7 @@ internal class QuestionnaireResponseAnonymizer(
         rule: BlurRule
     ): QuestionnaireResponse {
         val bluredResource = if (authoredIsBlurable(resource, rule)) {
-            blurAutored(resource, rule)
+            blurAuthored(resource, rule)
         } else {
             resource
         }

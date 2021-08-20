@@ -27,8 +27,8 @@ import care.data4life.hl7.fhir.stu3.model.FhirResource
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
 
 internal interface AnonymizationContract {
-    interface Redactor {
-        fun redact(resource: FhirResource): FhirResource
+    fun interface Redactor {
+        fun redact(valueString: String?): String?
 
         companion object {
             const val REDACTED = "REDACTED"

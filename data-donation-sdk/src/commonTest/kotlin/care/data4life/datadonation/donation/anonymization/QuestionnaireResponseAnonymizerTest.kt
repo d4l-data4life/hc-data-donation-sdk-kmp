@@ -18,21 +18,16 @@ package care.data4life.datadonation.donation.anonymization
 
 import care.data4life.datadonation.donation.anonymization.model.BlurRule
 import care.data4life.datadonation.donation.program.model.BlurFunction
-import care.data4life.datadonation.donation.program.model.ProgramAnonymization
-import care.data4life.datadonation.donation.program.model.ProgramAnonymizationBlur
 import care.data4life.datadonation.donation.program.model.ProgramDonationConfiguration
-import care.data4life.datadonation.donation.program.model.ProgramResource
-import care.data4life.datadonation.mock.stub.donation.anonymization.BlurRuleResolverStub
 import care.data4life.datadonation.mock.stub.donation.anonymization.DateTimeSmearerStub
+import care.data4life.datadonation.mock.stub.donation.anonymization.RedactorStub
 import care.data4life.hl7.fhir.common.datetime.XsDate
 import care.data4life.hl7.fhir.common.datetime.XsDateTime
 import care.data4life.hl7.fhir.stu3.codesystem.QuestionnaireResponseStatus
-import care.data4life.hl7.fhir.stu3.model.FhirResource
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponseItem
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponseItemAnswer
 import care.data4life.hl7.fhir.stu3.primitive.DateTime
-import care.data4life.sdk.util.test.coroutine.runBlockingTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -52,13 +47,14 @@ class QuestionnaireResponseAnonymizerTest {
         delay = 23.0,
         studyID = "id"
     )
-    
+
     @Test
     fun `It fulfils QuestionnaireResponseAnonymizer`() {
         val anonymizer: Any = QuestionnaireResponseAnonymizer(
-            DateTimeSmearerStub()
+            DateTimeSmearerStub(),
+            RedactorStub()
         )
-        
+
         assertTrue(anonymizer is AnonymizationContract.QuestionnaireResponseAnonymizer)
     }
 
@@ -74,54 +70,20 @@ class QuestionnaireResponseAnonymizerTest {
             )
         )
 
-        val blurResolver = BlurRuleResolverStub()
-
-        val programConfig = programConfig.copy(
-            resources = listOf(ProgramResource(url = "123")),
-            anonymization = ProgramAnonymization(
-                blur = ProgramAnonymizationBlur(location = "abc")
-            )
-        )
-
         val rule = BlurRule(
             location = "somewhere"
         )
 
-        var capturedFhirResource: FhirResource? = null
-        var capturedProgramAnonymizationBlur: ProgramAnonymizationBlur? = null
-        var capturedProgramResources: List<ProgramResource>? = null
-
-        blurResolver.whenResolveBlurRule = { delegatedFhirResource, delegatedProgramAnonymizationBlur, delegatedProgramResources ->
-            capturedFhirResource = delegatedFhirResource
-            capturedProgramAnonymizationBlur = delegatedProgramAnonymizationBlur
-            capturedProgramResources = delegatedProgramResources
-
-            rule
-        }
-
         // When
-        val result = FhirSmearer(
-            blurResolver,
-            DateTimeSmearerStub()
-        ).blurFhirResource(resource, programConfig)
+        val result = QuestionnaireResponseAnonymizer(
+            DateTimeSmearerStub(),
+            RedactorStub()
+        ).anonymize(resource, rule)
 
         // Then
-        assertSame(
+        assertEquals(
             actual = result,
             expected = resource
-        )
-
-        assertSame(
-            actual = capturedFhirResource,
-            expected = resource
-        )
-        assertSame(
-            actual = capturedProgramAnonymizationBlur,
-            expected = programConfig.anonymization?.blur
-        )
-        assertSame(
-            actual = capturedProgramResources,
-            expected = programConfig.resources
         )
     }
 
@@ -137,57 +99,20 @@ class QuestionnaireResponseAnonymizerTest {
             )
         )
 
-        val blurResolver = BlurRuleResolverStub()
-
-        val programConfig = programConfig.copy(
-            resources = listOf(ProgramResource(url = "123")),
-            anonymization = ProgramAnonymization(
-                blur = ProgramAnonymizationBlur(
-                    location = "abc",
-                    authored = BlurFunction.START_OF_WEEK
-                )
-            )
-        )
-
         val rule = BlurRule(
             location = "somewhere"
         )
 
-        var capturedFhirResource: FhirResource? = null
-        var capturedProgramAnonymizationBlur: ProgramAnonymizationBlur? = null
-        var capturedProgramResources: List<ProgramResource>? = null
-
-        blurResolver.whenResolveBlurRule = { delegatedFhirResource, delegatedProgramAnonymizationBlur, delegatedProgramResources ->
-            capturedFhirResource = delegatedFhirResource
-            capturedProgramAnonymizationBlur = delegatedProgramAnonymizationBlur
-            capturedProgramResources = delegatedProgramResources
-
-            rule
-        }
-
         // When
-        val result = FhirSmearer(
-            blurResolver,
-            DateTimeSmearerStub()
-        ).blurFhirResource(resource, programConfig)
+        val result = QuestionnaireResponseAnonymizer(
+            DateTimeSmearerStub(),
+            RedactorStub()
+        ).anonymize(resource, rule)
 
         // Then
-        assertSame(
+        assertEquals(
             actual = result,
             expected = resource
-        )
-
-        assertSame(
-            actual = capturedFhirResource,
-            expected = resource
-        )
-        assertSame(
-            actual = capturedProgramAnonymizationBlur,
-            expected = programConfig.anonymization?.blur
-        )
-        assertSame(
-            actual = capturedProgramResources,
-            expected = programConfig.resources
         )
     }
 
@@ -206,35 +131,12 @@ class QuestionnaireResponseAnonymizerTest {
             )
         )
 
-        val blurResolver = BlurRuleResolverStub()
         val dateTimeSmearer = DateTimeSmearerStub()
-
-        val programConfig = programConfig.copy(
-            resources = listOf(ProgramResource(url = "123")),
-            anonymization = ProgramAnonymization(
-                blur = ProgramAnonymizationBlur(
-                    location = "abc",
-                    authored = BlurFunction.START_OF_WEEK
-                )
-            )
-        )
 
         val rule = BlurRule(
             location = "somewhere",
             authored = BlurFunction.END_OF_DAY
         )
-
-        var capturedFhirResource: FhirResource? = null
-        var capturedProgramAnonymizationBlur: ProgramAnonymizationBlur? = null
-        var capturedProgramResources: List<ProgramResource>? = null
-
-        blurResolver.whenResolveBlurRule = { delegatedFhirResource, delegatedProgramAnonymizationBlur, delegatedProgramResources ->
-            capturedFhirResource = delegatedFhirResource
-            capturedProgramAnonymizationBlur = delegatedProgramAnonymizationBlur
-            capturedProgramResources = delegatedProgramResources
-
-            rule
-        }
 
         var capturedDateTime: XsDateTime? = null
         var capturedLocation: String? = null
@@ -249,10 +151,10 @@ class QuestionnaireResponseAnonymizerTest {
         }
 
         // When
-        val result = FhirSmearer(
-            blurResolver,
-            dateTimeSmearer
-        ).blurFhirResource(resource, programConfig)
+        val result = QuestionnaireResponseAnonymizer(
+            dateTimeSmearer,
+            RedactorStub()
+        ).anonymize(resource, rule)
 
         // Then
         assertEquals(
@@ -262,19 +164,6 @@ class QuestionnaireResponseAnonymizerTest {
                     value = bluredAuthoredDate
                 )
             )
-        )
-
-        assertSame(
-            actual = capturedFhirResource,
-            expected = resource
-        )
-        assertSame(
-            actual = capturedProgramAnonymizationBlur,
-            expected = programConfig.anonymization?.blur
-        )
-        assertSame(
-            actual = capturedProgramResources,
-            expected = programConfig.resources
         )
 
         assertSame(
@@ -292,7 +181,7 @@ class QuestionnaireResponseAnonymizerTest {
     }
 
     @Test
-    fun `Given a anonymize is called with a QuestionaireResponse and a BlurRule, it maps Items of a QuestionnaireResponses to null, if they are null`() = runBlockingTest {
+    fun `Given a anonymize is called with a QuestionaireResponse and a BlurRule, it maps Items of a QuestionnaireResponses to null, if they are null`() {
         // Given
         val resource = questionnaireResponseTemplate.copy(
             item = null
@@ -305,7 +194,8 @@ class QuestionnaireResponseAnonymizerTest {
 
         // When
         val result = QuestionnaireResponseAnonymizer(
-            DateTimeSmearerStub()
+            DateTimeSmearerStub(),
+            RedactorStub()
         ).anonymize(resource, rule)
 
         // Then
@@ -313,7 +203,7 @@ class QuestionnaireResponseAnonymizerTest {
     }
 
     @Test
-    fun `Given a anonymize is called with a QuestionaireResponse and a BlurRule, it maps Items of a QuestionnaireResponses, if they are not null or empty`() = runBlockingTest {
+    fun `Given a anonymize is called with a QuestionaireResponse and a BlurRule, it maps Items of a QuestionnaireResponses, if they are not null or empty`() {
         // Given
         val resource = questionnaireResponseTemplate.copy(
             item = listOf(questionnaireResponseItemTemplate)
@@ -326,7 +216,8 @@ class QuestionnaireResponseAnonymizerTest {
 
         // When
         val result = QuestionnaireResponseAnonymizer(
-            DateTimeSmearerStub()
+            DateTimeSmearerStub(),
+            RedactorStub()
         ).anonymize(resource, rule)
 
         // Then
@@ -334,7 +225,7 @@ class QuestionnaireResponseAnonymizerTest {
     }
 
     @Test
-    fun `Given a anonymize is called with a QuestionaireResponse and a BlurRule, it maps Items of a QuestionnaireResponseItem to null, if they are null`() = runBlockingTest {
+    fun `Given a anonymize is called with a QuestionaireResponse and a BlurRule, it maps Items of a QuestionnaireResponseItem to null, if they are null`() {
         // Given
         val resource = questionnaireResponseTemplate.copy(
             item = listOf(
@@ -351,7 +242,8 @@ class QuestionnaireResponseAnonymizerTest {
 
         // When
         val result = QuestionnaireResponseAnonymizer(
-            DateTimeSmearerStub()
+            DateTimeSmearerStub(),
+            RedactorStub()
         ).anonymize(resource, rule)
 
         // Then
@@ -359,7 +251,7 @@ class QuestionnaireResponseAnonymizerTest {
     }
 
     @Test
-    fun `Given a anonymize is called with a QuestionaireResponse and a BlurRule, it maps Items of a QuestionnaireResponseItem to null, if they are empty`() = runBlockingTest {
+    fun `Given a anonymize is called with a QuestionaireResponse and a BlurRule, it maps Items of a QuestionnaireResponseItem to null, if they are empty`() {
         // Given
         val resource = questionnaireResponseTemplate.copy(
             item = listOf(
@@ -376,7 +268,8 @@ class QuestionnaireResponseAnonymizerTest {
 
         // When
         val result = QuestionnaireResponseAnonymizer(
-            DateTimeSmearerStub()
+            DateTimeSmearerStub(),
+            RedactorStub()
         ).anonymize(resource, rule)
 
         // Then
@@ -384,7 +277,7 @@ class QuestionnaireResponseAnonymizerTest {
     }
 
     @Test
-    fun `Given a anonymize is called with a QuestionaireResponse and a BlurRule, it maps Items of a QuestionnaireResponseItem, if they are not null or empty`() = runBlockingTest {
+    fun `Given a anonymize is called with a QuestionaireResponse and a BlurRule, it maps Items of a QuestionnaireResponseItem, if they are not null or empty`() {
         // Given
         val resource = questionnaireResponseTemplate.copy(
             item = listOf(
@@ -401,7 +294,8 @@ class QuestionnaireResponseAnonymizerTest {
 
         // When
         val result = QuestionnaireResponseAnonymizer(
-            DateTimeSmearerStub()
+            DateTimeSmearerStub(),
+            RedactorStub()
         ).anonymize(resource, rule)
 
         // Then
@@ -409,7 +303,7 @@ class QuestionnaireResponseAnonymizerTest {
     }
 
     @Test
-    fun `Given a Uses had been create with and execute is called it maps Items of a QuestionnaireResponseItem recursively`() = runBlockingTest {
+    fun `Given a Uses had been create with and execute is called it maps Items of a QuestionnaireResponseItem recursively`() {
         // Given
         val innerItem = questionnaireResponseItemTemplate.copy(
             linkId = "potato",
@@ -435,7 +329,8 @@ class QuestionnaireResponseAnonymizerTest {
 
         // When
         val result = QuestionnaireResponseAnonymizer(
-            DateTimeSmearerStub()
+            DateTimeSmearerStub(),
+            RedactorStub()
         ).anonymize(resource, rule)
 
         // Then
@@ -446,7 +341,7 @@ class QuestionnaireResponseAnonymizerTest {
     }
 
     @Test
-    fun `Given a anonymize is called with a QuestionaireResponse and a BlurRule, it maps Answers of a QuestionnaireResponseItem to null, if they are null`() = runBlockingTest {
+    fun `Given a anonymize is called with a QuestionaireResponse and a BlurRule, it maps Answers of a QuestionnaireResponseItem to null, if they are null`() {
         // Given
         val resource = questionnaireResponseTemplate.copy(
             item = listOf(
@@ -463,7 +358,8 @@ class QuestionnaireResponseAnonymizerTest {
 
         // When
         val result = QuestionnaireResponseAnonymizer(
-            DateTimeSmearerStub()
+            DateTimeSmearerStub(),
+            RedactorStub()
         ).anonymize(resource, rule)
 
         // Then
@@ -471,7 +367,7 @@ class QuestionnaireResponseAnonymizerTest {
     }
 
     @Test
-    fun `Given a anonymize is called with a QuestionaireResponse and a BlurRule, it maps Answers of a QuestionnaireResponseItem to null, if they are empty`() = runBlockingTest {
+    fun `Given a anonymize is called with a QuestionaireResponse and a BlurRule, it maps Answers of a QuestionnaireResponseItem to null, if they are empty`() {
         // Given
         val resource = questionnaireResponseTemplate.copy(
             item = listOf(
@@ -488,7 +384,8 @@ class QuestionnaireResponseAnonymizerTest {
 
         // When
         val result = QuestionnaireResponseAnonymizer(
-            DateTimeSmearerStub()
+            DateTimeSmearerStub(),
+            RedactorStub()
         ).anonymize(resource, rule)
 
         // Then
@@ -496,7 +393,7 @@ class QuestionnaireResponseAnonymizerTest {
     }
 
     @Test
-    fun `Given a anonymize is called with a QuestionaireResponse and a BlurRule, it maps Answers of a QuestionnaireResponseItem, if they are not empty or null`() = runBlockingTest {
+    fun `Given a anonymize is called with a QuestionaireResponse and a BlurRule, it maps Answers of a QuestionnaireResponseItem, if they are not empty or null`() {
         // Given
         val resource = questionnaireResponseTemplate.copy(
             item = listOf(
@@ -506,6 +403,10 @@ class QuestionnaireResponseAnonymizerTest {
             )
         )
 
+        val redactor = RedactorStub()
+
+        redactor.whenRedact = { it }
+
         val rule = BlurRule(
             location = "somewhere",
             authored = BlurFunction.END_OF_DAY
@@ -513,7 +414,8 @@ class QuestionnaireResponseAnonymizerTest {
 
         // When
         val result = QuestionnaireResponseAnonymizer(
-            DateTimeSmearerStub()
+            DateTimeSmearerStub(),
+            redactor
         ).anonymize(resource, rule)
 
         // Then
@@ -521,7 +423,7 @@ class QuestionnaireResponseAnonymizerTest {
     }
 
     @Test
-    fun `Given a anonymize is called with a QuestionaireResponse and a BlurRule, it maps Item of the QuestionnaireResponseItemAnswer to null, if they are null`() = runBlockingTest {
+    fun `Given a anonymize is called with a QuestionaireResponse and a BlurRule, it maps Item of the QuestionnaireResponseItemAnswer to null, if they are null`() {
         // Given
         val resource = questionnaireResponseTemplate.copy(
             item = listOf(
@@ -531,6 +433,10 @@ class QuestionnaireResponseAnonymizerTest {
             )
         )
 
+        val redactor = RedactorStub()
+
+        redactor.whenRedact = { it }
+
         val rule = BlurRule(
             location = "somewhere",
             authored = BlurFunction.END_OF_DAY
@@ -538,7 +444,8 @@ class QuestionnaireResponseAnonymizerTest {
 
         // When
         val result = QuestionnaireResponseAnonymizer(
-            DateTimeSmearerStub()
+            DateTimeSmearerStub(),
+            redactor
         ).anonymize(resource, rule)
 
         // Then
@@ -546,7 +453,7 @@ class QuestionnaireResponseAnonymizerTest {
     }
 
     @Test
-    fun `Given a anonymize is called with a QuestionaireResponse and a BlurRule, it maps Item of the QuestionnaireResponseItemAnswer to null, if they are empty`() = runBlockingTest {
+    fun `Given a anonymize is called with a QuestionaireResponse and a BlurRule, it maps Item of the QuestionnaireResponseItemAnswer to null, if they are empty`() {
         // Given
         val resource = questionnaireResponseTemplate.copy(
             item = listOf(
@@ -560,6 +467,10 @@ class QuestionnaireResponseAnonymizerTest {
             )
         )
 
+        val redactor = RedactorStub()
+
+        redactor.whenRedact = { it }
+
         val rule = BlurRule(
             location = "somewhere",
             authored = BlurFunction.END_OF_DAY
@@ -567,7 +478,8 @@ class QuestionnaireResponseAnonymizerTest {
 
         // When
         val result = QuestionnaireResponseAnonymizer(
-            DateTimeSmearerStub()
+            DateTimeSmearerStub(),
+            redactor
         ).anonymize(resource, rule)
 
         // Then
@@ -575,7 +487,7 @@ class QuestionnaireResponseAnonymizerTest {
     }
 
     @Test
-    fun `Given a anonymize is called with a QuestionaireResponse and a BlurRule, it maps Item of the QuestionnaireResponseItemAnswer, if they are not null or empty`() = runBlockingTest {
+    fun `Given a anonymize is called with a QuestionaireResponse and a BlurRule, it maps Item of the QuestionnaireResponseItemAnswer, if they are not null or empty`() {
         // Given
         val resource = questionnaireResponseTemplate.copy(
             item = listOf(
@@ -589,6 +501,10 @@ class QuestionnaireResponseAnonymizerTest {
             )
         )
 
+        val redactor = RedactorStub()
+
+        redactor.whenRedact = { it }
+
         val rule = BlurRule(
             location = "somewhere",
             authored = BlurFunction.END_OF_DAY
@@ -596,10 +512,62 @@ class QuestionnaireResponseAnonymizerTest {
 
         // When
         val result = QuestionnaireResponseAnonymizer(
-            DateTimeSmearerStub()
+            DateTimeSmearerStub(),
+            redactor
         ).anonymize(resource, rule)
 
         // Then
         assertNotNull(result.item!!.first().answer!!.first().item)
+    }
+
+    @Test
+    fun `Given a anonymize is called with a QuestionaireResponse and a BlurRule, it delegates the valueString of a QuestionnaireResponseItemAnswer to the Redactor and uses its result`() {
+        // Given
+        val valueString = "potato"
+        val expected = "soup"
+
+        val resource = questionnaireResponseTemplate.copy(
+            item = listOf(
+                questionnaireResponseItemTemplate.copy(
+                    answer = listOf(
+                        questionnaireResponseItemAnswerTemplate.copy(
+                            item = listOf(questionnaireResponseItemTemplate),
+                            valueString = valueString
+                        )
+                    )
+                )
+            )
+        )
+
+        val redactor = RedactorStub()
+
+        var capturedValueString: String? = null
+
+        redactor.whenRedact = { delegatedValueString ->
+            capturedValueString = delegatedValueString
+
+            expected
+        }
+
+        val rule = BlurRule(
+            location = "somewhere",
+            authored = BlurFunction.END_OF_DAY
+        )
+
+        // When
+        val result = QuestionnaireResponseAnonymizer(
+            DateTimeSmearerStub(),
+            redactor
+        ).anonymize(resource, rule)
+
+        // Then
+        assertEquals(
+            actual = capturedValueString,
+            expected = valueString
+        )
+        assertEquals(
+            actual = result.item!!.first().answer!!.first().valueString,
+            expected = expected
+        )
     }
 }

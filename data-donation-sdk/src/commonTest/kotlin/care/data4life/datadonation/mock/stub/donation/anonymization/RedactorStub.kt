@@ -14,16 +14,24 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.donation.anonymization
+package care.data4life.datadonation.mock.stub.donation.anonymization
 
-import care.data4life.datadonation.donation.anonymization.AnonymizationContract.Redactor.Companion.REDACTED
+import care.data4life.datadonation.donation.anonymization.AnonymizationContract
+import care.data4life.datadonation.mock.MockContract
+import care.data4life.datadonation.mock.MockException
 
-internal object Redactor : AnonymizationContract.Redactor {
+internal class RedactorStub : AnonymizationContract.Redactor, MockContract.Stub {
+    var whenRedact: ((String?) -> String?)? = null
+
     override fun redact(valueString: String?): String? {
-        return if (valueString is String) {
-            REDACTED
+        return if (whenRedact == null) {
+            throw MockException()
         } else {
-            null
+            whenRedact!!.invoke(valueString)
         }
+    }
+
+    override fun clear() {
+        whenRedact = null
     }
 }
