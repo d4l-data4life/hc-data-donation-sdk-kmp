@@ -69,6 +69,7 @@ class Client internal constructor(
         consentDocumentKey: String,
         consentDocumentVersion: String
     ): D4LSDKFlow<UserConsent> {
+
         return wrapResult {
             userConsent.createUserConsent(
                 consentDocumentKey = consentDocumentKey,

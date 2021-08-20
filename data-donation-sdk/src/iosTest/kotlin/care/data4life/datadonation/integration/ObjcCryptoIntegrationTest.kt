@@ -13,19 +13,29 @@
  * applications and/or if you’d like to contribute to the development of the SDK, please
  * contact D4L by email to help@data4life.care.
  */
-package care.data4life.datadonation.error
 
-import care.data4life.sdk.lang.PlatformError
-import care.data4life.sdk.util.coroutine.DomainErrorMapperContract
-import care.data4life.sdk.util.objc.NSErrorFactory
+package care.data4life.datadonation.integration
 
-actual object DataDonationFlowErrorMapper : DomainErrorMapperContract {
-    actual override fun mapError(error: Throwable): PlatformError {
-        return NSErrorFactory.create(
-            code = 815,
-            domain = "care.data4life.datadonation",
-            localizedDescription = "Internal failure",
-            kotlinError = error
+import objc.datadonation.crypto.DataDonationCryptor
+import platform.Foundation.NSData
+import kotlin.test.Test
+import kotlin.test.assertEquals
+
+class ObjcCryptoIntegrationTest {
+
+    @Test
+    fun `Given plain NSData and a key, it gets encrypted using objective C lib`() {
+        // Given
+        val plainData = NSData()
+        val keyData = NSData()
+
+        // When
+        val result = DataDonationCryptor.encrypt(plainData, keyData)
+
+        // Then
+        assertEquals(
+            actual = result,
+            expected = NSData()
         )
     }
 }
