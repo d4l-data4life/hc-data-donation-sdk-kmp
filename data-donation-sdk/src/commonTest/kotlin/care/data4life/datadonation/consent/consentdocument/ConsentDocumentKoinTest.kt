@@ -16,7 +16,6 @@
 
 package care.data4life.datadonation.consent.consentdocument
 
-import care.data4life.datadonation.DataDonationSDK
 import care.data4life.datadonation.mock.stub.ClockStub
 import care.data4life.datadonation.mock.stub.consent.consentdocument.ConsentDocumentApiServiceStub
 import care.data4life.datadonation.mock.stub.consent.consentdocument.ConsentDocumentRepositoryStub
@@ -24,7 +23,6 @@ import care.data4life.datadonation.mock.stub.networking.RequestBuilderSpy
 import care.data4life.datadonation.mock.stub.session.UserSessionTokenRepositoryStub
 import care.data4life.datadonation.networking.Networking
 import care.data4life.datadonation.session.SessionTokenRepositoryContract
-import care.data4life.sdk.util.test.ktor.HttpMockClientFactory
 import kotlinx.datetime.Clock
 import org.koin.core.context.stopKoin
 import org.koin.dsl.koinApplication
@@ -80,8 +78,6 @@ class ConsentDocumentKoinTest {
                     single<Networking.RequestBuilderFactory> {
                         RequestBuilderSpy.Factory()
                     }
-                    single { HttpMockClientFactory.createHelloWorldMockClient() }
-                    single<DataDonationSDK.Environment> { DataDonationSDK.Environment.DEV }
                 }
             )
         }

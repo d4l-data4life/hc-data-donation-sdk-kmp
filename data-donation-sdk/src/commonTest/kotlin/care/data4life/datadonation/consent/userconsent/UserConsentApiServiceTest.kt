@@ -95,7 +95,7 @@ class UserConsentApiServiceTest {
             ).createUserConsent(
                 accessToken = accessToken,
                 consentDocumentKey = consentDocumentKey,
-                version = version
+                consentDocumentVersion = version
             )
         }
 
@@ -150,7 +150,7 @@ class UserConsentApiServiceTest {
         ).createUserConsent(
             accessToken = accessToken,
             consentDocumentKey = consentDocumentKey,
-            version = version
+            consentDocumentVersion = version
         )
 
         // Then
