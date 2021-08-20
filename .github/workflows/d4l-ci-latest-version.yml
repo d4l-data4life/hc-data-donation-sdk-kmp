@@ -27,8 +27,6 @@ jobs:
         run: ./gradlew clean
       - name: Version
         run: ./gradlew versionInfo
-      - name: Build ObjC Crypto library
-        run: ./gradlew buildCryptoLibraries
       - name: Build
         run: ./gradlew build
       - name: Publish Snapshot to Maven Repo
