@@ -14,9 +14,9 @@
         "package": "Data4LifeSDK",
         "repositoryURL": "https://github.com/d4l-data4life/d4l-sdk-ios.git",
         "state": {
-          "branch": "feature/update-dependencies",
-          "revision": "672a189acfc024ad5a8344a9dcf159d225eefc8d",
-          "version": null
+          "branch": null,
+          "revision": "30eb0f10ee5ae763be7aab93759ec5feef9299b8",
+          "version": "1.15.0"
         }
       },
       {
