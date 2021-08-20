@@ -78,11 +78,10 @@ class ProgramApiServiceTest {
         // Then
         val result = assertFailsWith<RuntimeException> {
             // When
-            val service = ProgramApiService(
+            ProgramApiService(
                 requestTemplate,
                 errorMapper,
-            )
-            service.fetchProgram(
+            ).fetchProgram(
                 accessToken = accessToken,
                 programName = programName,
             )
@@ -123,11 +122,10 @@ class ProgramApiServiceTest {
         // Then
         val error = assertFailsWith<CoreRuntimeError.ResponseTransformFailure> {
             // When
-            val service = ProgramApiService(
+            ProgramApiService(
                 requestTemplate,
                 ProgramErrorMapperStub(),
-            )
-            service.fetchProgram(
+            ).fetchProgram(
                 accessToken = accessToken,
                 programName = programName,
             )
@@ -165,11 +163,10 @@ class ProgramApiServiceTest {
         }
 
         // When
-        val service = ProgramApiService(
+        val result = ProgramApiService(
             requestTemplate,
             ProgramErrorMapperStub(),
-        )
-        val result = service.fetchProgram(
+        ).fetchProgram(
             accessToken = accessToken,
             programName = programName,
         )
