@@ -13,31 +13,24 @@
  * applications and/or if you’d like to contribute to the development of the SDK, please
  * contact D4L by email to help@data4life.care.
  */
-import care.data4life.sdk.datadonation.dependency.d4l
-import care.data4life.sdk.datadonation.dependency.gitHub
 
-plugins {
-    id("care.data4life.sdk.datadonation.dependency")
+package care.data4life.datadonation.donation.program
 
-    id("care.data4life.sdk.datadonation.dependency-updates")
-    id("care.data4life.sdk.datadonation.download-scripts")
-    id("care.data4life.sdk.datadonation.publishing")
-    id("care.data4life.sdk.datadonation.quality-spotless")
-    id("care.data4life.sdk.datadonation.versioning")
-}
+import org.koin.core.module.Module
+import org.koin.dsl.module
 
-allprojects {
-    repositories {
-        mavenCentral()
-        google()
+internal fun resolveProgramKoinModule(): Module {
+    return module {
+        single<ProgramContract.ErrorMapper> {
+            ProgramErrorMapper
+        }
 
-        gitHub(project)
+        single<ProgramContract.ApiService> {
+            ProgramApiService(get(), get())
+        }
 
-        d4l()
+        single<ProgramContract.Repository> {
+            ProgramRepository(get())
+        }
     }
-}
-
-tasks.named<Wrapper>("wrapper") {
-    gradleVersion = "6.9"
-    distributionType = Wrapper.DistributionType.ALL
 }

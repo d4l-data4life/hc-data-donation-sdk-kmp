@@ -14,26 +14,27 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package scripts
+package care.data4life.sdk.datadonation
 
-import LibraryConfig
 import org.gradle.api.publish.maven.MavenPublication
 
 /**
- * Usage:
+ * Install:
  *
- * Now just add id("scripts.publishing-config") to your projects build.gradle.kts plugins section
+ * Just add id("care.data4life.sdk.datadonation.publishing-config") to your project module build.gradle.kts plugins section
  *
  * plugins {
- *     id("scripts.publishing")
+ *     id("care.data4life.sdk.datadonation.publishing-config")
  * }
+ *
+ * Usage:
  *
  * To publish to to https://github.com/d4l-data4life/maven-repository/ just run:
  * - ./gradlew publishFeature
  * - ./gradlew publishSnapshot
  * - ./gradlew publishRelease
  *
- * This requires a LibraryConfig as defined here https://github.com/d4l-data4life/hc-gradle-scripts/blob/main/buildSrc/src/main/kotlin/LibraryConfig.kt
+ * This requires a care.data4life.sdk.result.care.data4life.sdk.datadonation.LibraryConfig configured
  */
 plugins {
     `maven-publish`
@@ -46,9 +47,9 @@ publishing {
             setUrl("https://maven.pkg.github.com/${LibraryConfig.githubOwner}/${LibraryConfig.githubRepository}")
             credentials {
                 username = (project.findProperty("gpr.user")
-                    ?: System.getenv("PACKAGE_REGISTRY_USERNAME")).toString()
+                    ?: System.getenv("PACKAGE_REGISTRY_UPLOAD_USERNAME")).toString()
                 password = (project.findProperty("gpr.key")
-                    ?: System.getenv("PACKAGE_REGISTRY_TOKEN")).toString()
+                    ?: System.getenv("PACKAGE_REGISTRY_UPLOAD_TOKEN")).toString()
             }
         }
 
@@ -72,34 +73,33 @@ publishing {
 
     publications {
         withType<MavenPublication> {
-            groupId = LibraryConfig.publish.groupId
+            groupId = LibraryConfig.PublishConfig.groupId
 
             pom {
-                name.set(LibraryConfig.publish.name)
-                description.set(LibraryConfig.publish.description)
-                url.set(LibraryConfig.publish.url)
-                inceptionYear.set(LibraryConfig.publish.year)
+                description.set(LibraryConfig.PublishConfig.description)
+                url.set(LibraryConfig.PublishConfig.url)
+                inceptionYear.set(LibraryConfig.PublishConfig.year)
 
                 licenses {
                     license {
-                        name.set(LibraryConfig.publish.licenseName)
-                        url.set(LibraryConfig.publish.licenseUrl)
-                        distribution.set(LibraryConfig.publish.licenseDistribution)
+                        name.set(LibraryConfig.PublishConfig.licenseName)
+                        url.set(LibraryConfig.PublishConfig.licenseUrl)
+                        distribution.set(LibraryConfig.PublishConfig.licenseDistribution)
                     }
                 }
 
                 developers {
                     developer {
-                        id.set(LibraryConfig.publish.developerId)
-                        name.set(LibraryConfig.publish.developerName)
-                        email.set(LibraryConfig.publish.developerEmail)
+                        id.set(LibraryConfig.PublishConfig.developerId)
+                        name.set(LibraryConfig.PublishConfig.developerName)
+                        email.set(LibraryConfig.PublishConfig.developerEmail)
                     }
                 }
 
                 scm {
-                    connection.set(LibraryConfig.publish.scmConnection)
-                    developerConnection.set(LibraryConfig.publish.scmDeveloperConnection)
-                    url.set(LibraryConfig.publish.scmUrl)
+                    connection.set(LibraryConfig.PublishConfig.scmConnection)
+                    developerConnection.set(LibraryConfig.PublishConfig.scmDeveloperConnection)
+                    url.set(LibraryConfig.PublishConfig.scmUrl)
                 }
             }
         }

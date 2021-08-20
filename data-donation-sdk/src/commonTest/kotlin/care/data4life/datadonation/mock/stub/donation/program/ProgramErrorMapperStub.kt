@@ -13,31 +13,18 @@
  * applications and/or if you’d like to contribute to the development of the SDK, please
  * contact D4L by email to help@data4life.care.
  */
-import care.data4life.sdk.datadonation.dependency.d4l
-import care.data4life.sdk.datadonation.dependency.gitHub
 
-plugins {
-    id("care.data4life.sdk.datadonation.dependency")
+package care.data4life.datadonation.mock.stub.donation.program
 
-    id("care.data4life.sdk.datadonation.dependency-updates")
-    id("care.data4life.sdk.datadonation.download-scripts")
-    id("care.data4life.sdk.datadonation.publishing")
-    id("care.data4life.sdk.datadonation.quality-spotless")
-    id("care.data4life.sdk.datadonation.versioning")
-}
+import care.data4life.datadonation.donation.program.ProgramContract
+import care.data4life.datadonation.donation.program.ProgramError
+import care.data4life.datadonation.mock.MockException
+import care.data4life.datadonation.networking.HttpRuntimeError
 
-allprojects {
-    repositories {
-        mavenCentral()
-        google()
+internal class ProgramErrorMapperStub : ProgramContract.ErrorMapper {
+    var whenMapFetchProgram: ((HttpRuntimeError) -> ProgramError)? = null
 
-        gitHub(project)
-
-        d4l()
+    override fun mapFetchProgram(error: HttpRuntimeError): ProgramError {
+        return whenMapFetchProgram?.invoke(error) ?: throw MockException()
     }
-}
-
-tasks.named<Wrapper>("wrapper") {
-    gradleVersion = "6.9"
-    distributionType = Wrapper.DistributionType.ALL
 }

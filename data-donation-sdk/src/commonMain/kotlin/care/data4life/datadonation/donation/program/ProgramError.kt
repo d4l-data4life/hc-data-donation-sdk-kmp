@@ -13,31 +13,14 @@
  * applications and/or if you’d like to contribute to the development of the SDK, please
  * contact D4L by email to help@data4life.care.
  */
-import care.data4life.sdk.datadonation.dependency.d4l
-import care.data4life.sdk.datadonation.dependency.gitHub
 
-plugins {
-    id("care.data4life.sdk.datadonation.dependency")
+package care.data4life.datadonation.donation.program
 
-    id("care.data4life.sdk.datadonation.dependency-updates")
-    id("care.data4life.sdk.datadonation.download-scripts")
-    id("care.data4life.sdk.datadonation.publishing")
-    id("care.data4life.sdk.datadonation.quality-spotless")
-    id("care.data4life.sdk.datadonation.versioning")
-}
+import care.data4life.sdk.lang.D4LRuntimeException
 
-allprojects {
-    repositories {
-        mavenCentral()
-        google()
-
-        gitHub(project)
-
-        d4l()
-    }
-}
-
-tasks.named<Wrapper>("wrapper") {
-    gradleVersion = "6.9"
-    distributionType = Wrapper.DistributionType.ALL
+sealed class ProgramError(
+    open val httpStatus: Int
+) : D4LRuntimeException() {
+    class UnexpectedError(override val httpStatus: Int) : ProgramError(httpStatus)
+    class NotFoundError : ProgramError(404)
 }

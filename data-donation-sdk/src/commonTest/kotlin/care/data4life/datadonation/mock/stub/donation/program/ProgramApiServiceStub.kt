@@ -14,19 +14,20 @@
  * contact D4L by email to help@data4life.care.
  */
 
-object AppConfig {
+package care.data4life.datadonation.mock.stub.donation.program
 
-    const val group = "care.data4life.datadonation"
+import care.data4life.datadonation.donation.program.ProgramContract
+import care.data4life.datadonation.donation.program.model.Program
+import care.data4life.datadonation.mock.MockException
+import care.data4life.datadonation.networking.AccessToken
 
-    val android = AndroidConfig
+internal class ProgramApiServiceStub : ProgramContract.ApiService {
+    var whenFetchProgram: ((AccessToken, String) -> Program)? = null
 
-    object AndroidConfig {
-        const val minSdkVersion = LibraryConfig.android.minSdkVersion
-        const val compileSdkVersion = LibraryConfig.android.compileSdkVersion
-        const val targetSdkVersion = LibraryConfig.android.targetSdkVersion
-
-        const val versionCode = 1
-
-        const val applicationId = group
+    override suspend fun fetchProgram(
+        accessToken: AccessToken,
+        programName: String
+    ): Program {
+        return whenFetchProgram?.invoke(accessToken, programName) ?: throw MockException()
     }
 }
