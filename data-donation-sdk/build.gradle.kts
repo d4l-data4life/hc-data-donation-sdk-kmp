@@ -13,19 +13,24 @@
  * applications and/or if you’d like to contribute to the development of the SDK, please
  * contact D4L by email to help@data4life.care.
  */
+import care.data4life.sdk.datadonation.LibraryConfig
+import care.data4life.sdk.datadonation.dependency.Dependency
+import care.data4life.sdk.datadonation.dependency.Version
 
 plugins {
-    kotlinMultiplatform()
-    kotlinSerialization()
+    id("org.jetbrains.kotlin.multiplatform")
+
+    // Serialization
+    id("org.jetbrains.kotlin.plugin.serialization")
 
     // SwiftPackage
-    swiftPackage(version = "2.0.3")
+    id("com.chromaticnoise.multiplatform-swiftpackage") version "2.0.3"
 
     // Android
-    androidLibrary()
+    id("com.android.library")
 
     // Publish
-    id("scripts.publishing-config")
+    id("care.data4life.sdk.datadonation.publishing-config")
 }
 
 group = LibraryConfig.group

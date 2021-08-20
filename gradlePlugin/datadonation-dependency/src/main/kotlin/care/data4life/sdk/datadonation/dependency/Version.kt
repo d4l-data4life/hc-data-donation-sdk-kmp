@@ -13,12 +13,15 @@
  * applications and/or if you’d like to contribute to the development of the SDK, please
  * contact D4L by email to help@data4life.care.
  */
+package care.data4life.sdk.datadonation.dependency
 
 object Version {
 
     // Gradle Plugin
     object GradlePlugin {
         const val kotlin = Version.kotlin
+
+        const val kotlinSerialization = Version.kotlinSerialization
 
         // Android
         // https://developer.android.com/studio

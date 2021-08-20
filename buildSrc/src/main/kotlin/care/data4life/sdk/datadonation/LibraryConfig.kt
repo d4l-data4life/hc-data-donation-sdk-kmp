@@ -13,20 +13,20 @@
  * applications and/or if you’d like to contribute to the development of the SDK, please
  * contact D4L by email to help@data4life.care.
  */
+package care.data4life.sdk.datadonation
 
 object LibraryConfig {
+    const val group = "care.data4life.datadonation"
+    const val name = "hc-data-donation-sdk-kmp"
 
-    const val group = "care.data4life"
-    const val name = "d4l-data-donation-sdk-kmp"
-
-    const val githubOwner = "gesundheitscloud"
-    const val githubRepository = "data-donation-sdk-native"
+    const val githubOwner = "d4l-data4life"
+    const val githubRepository = "hc-data-donation-sdk-kmp"
 
     val publish = PublishConfig
 
     object PublishConfig {
         const val name = LibraryConfig.name
-        const val groupId = "${LibraryConfig.group}.${LibraryConfig.name}"
+        const val groupId = "care.data4life.hc-data-donation-sdk-kmp"
 
         const val description = "Kotlin multi platform library implementing Data Donation on the Data4life ecosystem."
         const val year = "2021"

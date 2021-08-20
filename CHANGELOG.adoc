@@ -5,7 +5,7 @@
 :toc-title:
 :icons: font
 :imagesdir: assets/images
-:link-repository: https://github.com/gesundheitscloud/data-donation-sdk-native
+:link-repository: https://github.com/d4l-data4life/hc-data-donation-sdk-kmp
 ifdef::env-github[]
 :warning-caption: :warning:
 :caution-caption: :fire:
@@ -53,6 +53,7 @@ toc::[]
 
 * _**BREAKING**_ sdk-util 1.9.0 -> 1.10.0.
 * result-sdk 0.1.0 -> 0.1.1
+* Gradle 6.8.3 -> 6.9
 
 === Migration
 
