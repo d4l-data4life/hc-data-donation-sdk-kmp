@@ -19,8 +19,8 @@ package care.data4life.datadonation.donation.anonymization
 import care.data4life.hl7.fhir.stu3.model.FhirResource
 
 internal interface AnonymizationContract {
-    interface Redaction {
-        suspend fun redact(resources: List<FhirResource>): List<FhirResource>
+    interface Redactor {
+        suspend fun redact(resource: FhirResource): FhirResource
 
         companion object {
             const val REDACTED = "REDACTED"

@@ -16,13 +16,13 @@
 
 package care.data4life.datadonation.donation.anonymization
 
-import care.data4life.datadonation.donation.anonymization.AnonymizationContract.Redaction.Companion.REDACTED
+import care.data4life.datadonation.donation.anonymization.AnonymizationContract.Redactor.Companion.REDACTED
 import care.data4life.hl7.fhir.stu3.model.FhirResource
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponseItem
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponseItemAnswer
 
-internal object RedactSensitiveInformation : AnonymizationContract.Redaction {
+internal object Redactor : AnonymizationContract.Redactor {
     private fun <T> mapOrNull(
         list: List<T>?,
         action: (T) -> T
@@ -31,14 +31,6 @@ internal object RedactSensitiveInformation : AnonymizationContract.Redaction {
             null
         } else {
             list.map { item -> action(item) }
-        }
-    }
-
-    private fun mapFhir(resource: FhirResource): FhirResource {
-        return if (resource is QuestionnaireResponse) {
-            mapQuestionnaireResponse(resource)
-        } else {
-            resource
         }
     }
 
@@ -82,7 +74,11 @@ internal object RedactSensitiveInformation : AnonymizationContract.Redaction {
         }
     }
 
-    override suspend fun redact(resources: List<FhirResource>): List<FhirResource> {
-        return resources.map { resource -> mapFhir(resource) }
+    override suspend fun redact(resource: FhirResource): FhirResource {
+        return if (resource is QuestionnaireResponse) {
+            mapQuestionnaireResponse(resource)
+        } else {
+            resource
+        }
     }
 }
