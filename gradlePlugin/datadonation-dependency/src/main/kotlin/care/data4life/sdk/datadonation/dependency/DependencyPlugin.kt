@@ -13,31 +13,15 @@
  * applications and/or if you’d like to contribute to the development of the SDK, please
  * contact D4L by email to help@data4life.care.
  */
-import care.data4life.sdk.datadonation.dependency.d4l
-import care.data4life.sdk.datadonation.dependency.gitHub
 
-plugins {
-    id("care.data4life.sdk.datadonation.dependency")
+package care.data4life.sdk.datadonation.dependency
 
-    id("care.data4life.sdk.datadonation.dependency-updates")
-    id("care.data4life.sdk.datadonation.download-scripts")
-    id("care.data4life.sdk.datadonation.publishing")
-    id("care.data4life.sdk.datadonation.quality-spotless")
-    id("care.data4life.sdk.datadonation.versioning")
-}
+import org.gradle.api.Plugin
+import org.gradle.api.Project
 
-allprojects {
-    repositories {
-        mavenCentral()
-        google()
+class DependencyPlugin : Plugin<Project> {
 
-        gitHub(project)
-
-        d4l()
+    override fun apply(target: Project) {
+        // nothing to do
     }
-}
-
-tasks.named<Wrapper>("wrapper") {
-    gradleVersion = "6.9"
-    distributionType = Wrapper.DistributionType.ALL
 }
