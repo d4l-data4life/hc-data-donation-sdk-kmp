@@ -54,6 +54,33 @@ class QuestionnaireResponseAnonymizerTest {
     }
 
     @Test
+    fun `Given anonymize is called with a QuestionaireResponse and null as a BlurRule it ignores the authored field, if no BlurFunction was provided for the field`() {
+        // Given
+        val resource = QuestionnaireResponse(
+            status = QuestionnaireResponseStatus.AMENDED,
+            authored = DateTime(
+                value = XsDateTime(
+                    date = XsDate(2022, 1, 1)
+                )
+            )
+        )
+
+        val rule = null
+
+        // When
+        val result = QuestionnaireResponseAnonymizer(
+            DateTimeSmearerStub(),
+            RedactorStub()
+        ).anonymize(resource, rule)
+
+        // Then
+        assertEquals(
+            actual = result,
+            expected = resource
+        )
+    }
+
+    @Test
     fun `Given anonymize is called with a QuestionaireResponse and a BlurRule it ignores the authored field, if no BlurFunction was provided for the field`() {
         // Given
         val resource = QuestionnaireResponse(
@@ -601,6 +628,53 @@ class QuestionnaireResponseAnonymizerTest {
             DateTimeSmearerStub(),
             redactor
         ).anonymize(resource, rule)
+
+        // Then
+        assertFalse(wasCalled)
+        assertEquals(
+            actual = result.item!!.first().answer!!.first().valueDateTime,
+            expected = expected
+        )
+    }
+
+    @Test
+    fun `Given a anonymize is called with a QuestionaireResponse and null as a BlurRule, it ignores the valueDateTime of a QuestionnaireResponseItemAnswer if no BlurFunction could be determined`() {
+        // Given
+        val expected = DateTime(
+            value = XsDateTime(XsDate(1, 2, 3))
+        )
+
+        val resource = questionnaireResponseTemplate.copy(
+            item = listOf(
+                questionnaireResponseItemTemplate.copy(
+                    linkId = "bcc",
+                    answer = listOf(
+                        questionnaireResponseItemAnswerTemplate.copy(
+                            item = listOf(questionnaireResponseItemTemplate),
+                            valueDateTime = expected
+                        )
+                    )
+                )
+            )
+        )
+
+        val redactor = RedactorStub()
+        redactor.whenRedact = { it }
+
+        var wasCalled = false
+        val smearer = DateTimeSmearerStub()
+
+        smearer.whenBlur = { _, _, _ ->
+            wasCalled = true
+
+            expected.value
+        }
+
+        // When
+        val result = QuestionnaireResponseAnonymizer(
+            DateTimeSmearerStub(),
+            redactor
+        ).anonymize(resource, null)
 
         // Then
         assertFalse(wasCalled)

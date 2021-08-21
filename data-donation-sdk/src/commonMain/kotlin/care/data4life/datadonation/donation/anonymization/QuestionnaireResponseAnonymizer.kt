@@ -41,7 +41,7 @@ internal class QuestionnaireResponseAnonymizer(
 
     private fun mapQuestionnaireResponse(
         questionnaireResponse: QuestionnaireResponse,
-        blurRule: BlurRule
+        blurRule: BlurRule?
     ): QuestionnaireResponse {
         return questionnaireResponse.copy(
             item = mapOrNull(questionnaireResponse.item) { item ->
@@ -52,7 +52,7 @@ internal class QuestionnaireResponseAnonymizer(
 
     private fun mapQuestionnaireResponseItem(
         responseItem: QuestionnaireResponseItem,
-        blurRule: BlurRule
+        blurRule: BlurRule?
     ): QuestionnaireResponseItem {
         val item = mapOrNull(responseItem.item) { item ->
             mapQuestionnaireResponseItem(item, blurRule)
@@ -73,9 +73,9 @@ internal class QuestionnaireResponseAnonymizer(
 
     private fun determineItemBlur(
         linkId: String,
-        blurRule: BlurRule
+        blurRule: BlurRule?
     ): QuestionnaireResponseItemBlur? {
-        return blurRule.questionnaireResponseItemBlurMapping.find {
+        return blurRule?.questionnaireResponseItemBlurMapping?.find {
             it.linkId == linkId
         }
     }
@@ -83,7 +83,7 @@ internal class QuestionnaireResponseAnonymizer(
     private fun blurValueDateTime(
         dateTime: DateTime?,
         linkId: String,
-        blurRule: BlurRule,
+        blurRule: BlurRule?,
     ): DateTime? {
         val itemBlur = determineItemBlur(linkId, blurRule)
 
@@ -91,7 +91,7 @@ internal class QuestionnaireResponseAnonymizer(
             dateTime.copy(
                 value = dateTimeSmearer.blur(
                     dateTime.value,
-                    blurRule.targetTimeZone,
+                    blurRule!!.targetTimeZone,
                     itemBlur.function
                 )
             )
@@ -103,7 +103,7 @@ internal class QuestionnaireResponseAnonymizer(
     private fun mapQuestionnaireResponseItemAnswer(
         itemAnswer: QuestionnaireResponseItemAnswer,
         linkId: String,
-        blurRule: BlurRule
+        blurRule: BlurRule?
     ): QuestionnaireResponseItemAnswer {
         val item = mapOrNull(itemAnswer.item) { item ->
             mapQuestionnaireResponseItem(item, blurRule)
@@ -124,37 +124,32 @@ internal class QuestionnaireResponseAnonymizer(
 
     private fun blurAuthored(
         questionnaireResponse: QuestionnaireResponse,
-        blurRule: BlurRule
+        blurRule: BlurRule?
     ): QuestionnaireResponse {
-        return questionnaireResponse.copy(
-            authored = questionnaireResponse.authored!!.copy(
-                value = dateTimeSmearer.blur(
-                    questionnaireResponse.authored!!.value,
-                    blurRule.targetTimeZone,
-                    blurRule.questionnaireResponseAuthored!!
+        return if (questionnaireResponse.authored is DateTime &&
+            blurRule?.questionnaireResponseAuthored is BlurFunction
+        ) {
+            questionnaireResponse.copy(
+                authored = questionnaireResponse.authored!!.copy(
+                    value = dateTimeSmearer.blur(
+                        questionnaireResponse.authored!!.value,
+                        blurRule.targetTimeZone,
+                        blurRule.questionnaireResponseAuthored
+                    )
                 )
             )
-        )
-    }
-
-    private fun authoredIsBlurable(
-        questionnaireResponse: QuestionnaireResponse,
-        blurRule: BlurRule
-    ): Boolean {
-        return questionnaireResponse.authored is DateTime &&
-            blurRule.questionnaireResponseAuthored is BlurFunction
+        } else {
+            questionnaireResponse
+        }
     }
 
     override fun anonymize(
-        resource: QuestionnaireResponse,
-        rule: BlurRule
+        questionnaireResponse: QuestionnaireResponse,
+        rule: BlurRule?
     ): QuestionnaireResponse {
-        val bluredResource = if (authoredIsBlurable(resource, rule)) {
-            blurAuthored(resource, rule)
-        } else {
-            resource
-        }
-
-        return mapQuestionnaireResponse(bluredResource, rule)
+        return mapQuestionnaireResponse(
+            blurAuthored(questionnaireResponse, rule),
+            rule
+        )
     }
 }

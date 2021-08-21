@@ -18,28 +18,23 @@ package care.data4life.datadonation.mock.stub.donation.anonymization
 
 import care.data4life.datadonation.donation.anonymization.AnonymizationContract
 import care.data4life.datadonation.donation.anonymization.model.BlurRule
-import care.data4life.datadonation.donation.program.model.ProgramAnonymizationGlobalBlur
-import care.data4life.datadonation.donation.program.model.ProgramFhirResourceConfiguration
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
-import care.data4life.hl7.fhir.stu3.model.FhirQuestionnaireResponse
+import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
 
-internal class BlurRuleResolverStub : AnonymizationContract.BlurRuleResolver, MockContract.Stub {
-    var whenResolveBlurRule: ((FhirQuestionnaireResponse?, ProgramAnonymizationGlobalBlur?, List<ProgramFhirResourceConfiguration>) -> BlurRule?)? = null
+internal class QuestionnaireResponseAnonymizerStub :
+    AnonymizationContract.QuestionnaireResponseAnonymizer,
+    MockContract.Stub {
+    var whenAnonymize: ((questionnaireResponse: QuestionnaireResponse, rule: BlurRule?) -> QuestionnaireResponse)? = null
 
-    override fun resolveBlurRule(
-        fhirResource: FhirQuestionnaireResponse?,
-        programRuleGlobal: ProgramAnonymizationGlobalBlur?,
-        programFhirResourceConfigurations: List<ProgramFhirResourceConfiguration>
-    ): BlurRule? {
-        return if (whenResolveBlurRule == null) {
-            throw MockException()
-        } else {
-            whenResolveBlurRule?.invoke(fhirResource, programRuleGlobal, programFhirResourceConfigurations)
-        }
+    override fun anonymize(
+        questionnaireResponse: QuestionnaireResponse,
+        rule: BlurRule?
+    ): QuestionnaireResponse {
+        return whenAnonymize?.invoke(questionnaireResponse, rule) ?: throw MockException()
     }
 
     override fun clear() {
-        whenResolveBlurRule = null
+        whenAnonymize = null
     }
 }

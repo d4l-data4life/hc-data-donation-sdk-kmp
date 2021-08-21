@@ -97,6 +97,39 @@ class BlurRuleResolverTest {
     }
 
     @Test
+    fun `Given resolveBlurRule is called with a null QuestionnaireResponse, null as ProgramAnonymizationBlur and a List of ProgramResource it returns null`() {
+        // Given
+        val questionnaireResponse = null
+        val programAnonymization = null
+        val programResources = listOf(
+            ProgramFhirResourceConfiguration(
+                url = "this is the one",
+                versions = listOf("1.0.0"),
+                fhirBlur = ProgramFhirResourceBlur(
+                    targetTimeZone = "here",
+                    questionnaireResponseAuthored = BlurFunction.START_OF_MONTH,
+                    itemBlurs = listOf(
+                        QuestionnaireResponseItemBlur(
+                            linkId = "42",
+                            function = BlurFunction.END_OF_MONTH
+                        )
+                    )
+                )
+            )
+        )
+
+        // When
+        val result = BlurRuleResolver.resolveBlurRule(
+            questionnaireResponse,
+            programAnonymization,
+            programResources
+        )
+
+        // Then
+        assertNull(result)
+    }
+
+    @Test
     fun `Given resolveBlurRule is called with a QuestionnaireResponse, null as ProgramAnonymizationBlur and a List of ProgramResource it returns null if no ProgramResource match the FHIRResource`() {
         // Given
         val questionnaireResponse = questionnaireResponseTemplate.copy()

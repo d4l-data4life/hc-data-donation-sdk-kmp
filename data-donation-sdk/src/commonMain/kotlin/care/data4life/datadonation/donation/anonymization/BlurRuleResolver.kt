@@ -67,12 +67,12 @@ internal object BlurRuleResolver :
     }
 
     override fun resolveBlurRule(
-        fhirResource: FhirQuestionnaireResponse,
+        fhirResource: FhirQuestionnaireResponse?,
         programRuleGlobal: ProgramAnonymizationGlobalBlur?,
         programFhirResourceConfigurations: List<ProgramFhirResourceConfiguration>
     ): BlurRule? {
         val resourceRule = findByFhirReference(
-            fhirResource.questionnaire?.reference,
+            fhirResource?.questionnaire?.reference,
             programFhirResourceConfigurations
         )
 

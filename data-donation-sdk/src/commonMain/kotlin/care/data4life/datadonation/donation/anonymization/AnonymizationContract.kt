@@ -39,7 +39,7 @@ internal interface AnonymizationContract {
 
     interface BlurRuleResolver {
         fun resolveBlurRule(
-            fhirResource: FhirQuestionnaireResponse,
+            fhirResource: FhirQuestionnaireResponse?,
             programRuleGlobal: ProgramAnonymizationGlobalBlur?,
             programFhirResourceConfigurations: List<ProgramFhirResourceConfiguration>
         ): BlurRule?
@@ -59,13 +59,13 @@ internal interface AnonymizationContract {
 
     interface QuestionnaireResponseAnonymizer {
         fun anonymize(
-            resource: QuestionnaireResponse,
-            rule: BlurRule
+            questionnaireResponse: QuestionnaireResponse,
+            rule: BlurRule?
         ): QuestionnaireResponse
     }
 
-    interface FhirSmearer {
-        fun blurFhirResource(
+    interface FhirAnonymizer {
+        fun anonymize(
             fhirResource: FhirResource,
             programConfiguration: ProgramDonationConfiguration
         ): FhirResource
