@@ -29,5 +29,6 @@ object ConsentDocumentFixture {
         recipient = "sombody",
         language = "zxx-Hant-CN-x-private1-private2",
         text = "ExampleText",
+        title = "A title"
     )
 }
