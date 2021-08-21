@@ -687,7 +687,7 @@ class QuestionnaireResponseAnonymizerTest {
     @Test
     fun `Given a anonymize is called with a QuestionaireResponse and a BlurRule, it blurs the valueDateTime of a QuestionnaireResponseItemAnswer with the first matching ResourceItem`() {
         // Given
-        val toBeBlured = XsDateTime(XsDate(42, 12, 1))
+        val valueDateTimeValue = XsDateTime(XsDate(42, 12, 1))
         val expected = XsDateTime(XsDate(1, 2, 3))
 
         val resource = questionnaireResponseTemplate.copy(
@@ -698,7 +698,7 @@ class QuestionnaireResponseAnonymizerTest {
                         questionnaireResponseItemAnswerTemplate.copy(
                             item = listOf(questionnaireResponseItemTemplate),
                             valueDateTime = DateTime(
-                                value = toBeBlured
+                                value = valueDateTimeValue
                             )
                         )
                     )
@@ -753,7 +753,7 @@ class QuestionnaireResponseAnonymizerTest {
 
         assertSame(
             actual = capturedXsDateTime,
-            expected = toBeBlured
+            expected = valueDateTimeValue
         )
         assertSame(
             actual = capturedTargetZone,

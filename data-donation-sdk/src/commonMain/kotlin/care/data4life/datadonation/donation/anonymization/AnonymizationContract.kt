@@ -25,6 +25,7 @@ import care.data4life.hl7.fhir.common.datetime.XsDateTime
 import care.data4life.hl7.fhir.stu3.model.FhirQuestionnaireResponse
 import care.data4life.hl7.fhir.stu3.model.FhirResource
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
+import care.data4life.hl7.fhir.stu3.model.ResearchSubject
 
 internal typealias TargetTimeZone = String
 
@@ -62,6 +63,13 @@ internal interface AnonymizationContract {
             questionnaireResponse: QuestionnaireResponse,
             rule: BlurRule?
         ): QuestionnaireResponse
+    }
+
+    interface ResearchSubjectAnonymizer {
+        fun anonymize(
+            researchSubject: ResearchSubject,
+            rule: BlurRule?
+        ): ResearchSubject
     }
 
     interface FhirAnonymizer {
