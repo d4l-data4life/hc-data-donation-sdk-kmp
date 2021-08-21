@@ -35,8 +35,8 @@ internal class FhirSmearer(
             authored = questionnaireResponse.authored!!.copy(
                 value = dateTimeSmearer.blur(
                     questionnaireResponse.authored!!.value,
-                    blurRule.location,
-                    blurRule.authored!!
+                    blurRule.targetTimeZone,
+                    blurRule.questionnaireResponseAuthored!!
                 )
             )
         )
@@ -46,7 +46,7 @@ internal class FhirSmearer(
         questionnaireResponse: QuestionnaireResponse,
         blurRule: BlurRule
     ): Boolean {
-        return questionnaireResponse.authored is DateTime && blurRule.authored is BlurFunction
+        return questionnaireResponse.authored is DateTime && blurRule.questionnaireResponseAuthored is BlurFunction
     }
 
     private fun blurLocalizedQuestionnaireResponseFields(
@@ -66,8 +66,8 @@ internal class FhirSmearer(
     ): QuestionnaireResponse {
         val blurRule = blurResolver.resolveBlurRule(
             fhirResource = questionnaireResponse,
-            programRule = programConfiguration.anonymization?.blur,
-            programResources = programConfiguration.resources
+            programRuleGlobal = programConfiguration.anonymization?.globalBlur,
+            programFhirResourceConfigurations = programConfiguration.fhirResourceConfigurations
         )
 
         return if (blurRule is BlurRule) {

@@ -34,14 +34,14 @@ class DateTimeSmearerTest {
     }
 
     @Test
-    fun `Given blur is called with a XsDateTime, Location and BlurFunction, it returns null if the given Location was not valid`() {
+    fun `Given blur is called with a XsDateTime, TargetTimeZone and BlurFunction, it reflects the given XsDateTime if the given TargetTimeZone was not valid`() {
         // Given
         val fhirDateTime = XsDateTimeParser.parse("2021-05-10T11:13:56.382Z")
-        val location = "somewhere"
+        val targetTimeZone = "somewhere"
         val rule = BlurFunction.END_OF_MONTH
 
         // When
-        val result = DateTimeSmearer.blur(fhirDateTime, location, rule)
+        val result = DateTimeSmearer.blur(fhirDateTime, targetTimeZone, rule)
 
         // Then
         assertEquals(
@@ -51,16 +51,16 @@ class DateTimeSmearerTest {
     }
 
     @Test
-    fun `Given blur is called with a XsDateTime, which only contains a XsDate, a Location and START_OF_DAY, it returns only the Start of the day`() {
+    fun `Given blur is called with a XsDateTime, which only contains a XsDate, a TargetTimeZone and START_OF_DAY, it returns only the Start of the day`() {
         // Given
         val fhirDateTime = XsDateTime(
             date = XsDate(2021, 5, 10)
         )
-        val location = "Europe/Berlin"
+        val targetTimeZone = "Europe/Berlin"
         val rule = BlurFunction.START_OF_DAY
 
         // When
-        val result = DateTimeSmearer.blur(fhirDateTime, location, rule)
+        val result = DateTimeSmearer.blur(fhirDateTime, targetTimeZone, rule)
 
         // Then
         assertEquals(
@@ -70,16 +70,16 @@ class DateTimeSmearerTest {
     }
 
     @Test
-    fun `Given blur is called with a XsDateTime, Location and START_OF_DAY, it returns only the Start of the day`() {
+    fun `Given blur is called with a XsDateTime, TargetTimeZone and START_OF_DAY, it returns only the Start of the day`() {
         // Given
         val fhirDateTime = XsDateTimeParser.parse("2021-05-10T01:13:56.382Z").copy(
             timeZone = XsTimeZone(3)
         )
-        val location = "Europe/Berlin"
+        val targetTimeZone = "Europe/Berlin"
         val rule = BlurFunction.START_OF_DAY
 
         // When
-        val result = DateTimeSmearer.blur(fhirDateTime, location, rule)
+        val result = DateTimeSmearer.blur(fhirDateTime, targetTimeZone, rule)
 
         // Then
         assertEquals(
@@ -93,16 +93,16 @@ class DateTimeSmearerTest {
     }
 
     @Test
-    fun `Given blur is called with a XsDateTime, Location and START_OF_WEEK, it returns only the Start of the day`() {
+    fun `Given blur is called with a XsDateTime, TargetTimeZone and START_OF_WEEK, it returns only the Start of the day`() {
         // Given
         val fhirDateTime = XsDateTimeParser.parse("2021-05-10T01:13:56.382Z").copy(
             timeZone = XsTimeZone(3)
         )
-        val location = "Europe/Berlin"
+        val targetTimeZone = "Europe/Berlin"
         val rule = BlurFunction.START_OF_WEEK
 
         // When
-        val result = DateTimeSmearer.blur(fhirDateTime, location, rule)
+        val result = DateTimeSmearer.blur(fhirDateTime, targetTimeZone, rule)
 
         // Then
         assertEquals(
@@ -116,16 +116,16 @@ class DateTimeSmearerTest {
     }
 
     @Test
-    fun `Given blur is called with a XsDateTime, which only contains a XsDate, a Location and START_OF_WEEK, it returns only the Start of the day`() {
+    fun `Given blur is called with a XsDateTime, which only contains a XsDate, a TargetTimeZone and START_OF_WEEK, it returns only the Start of the day`() {
         // Given
         val fhirDateTime = XsDateTime(
             date = XsDate(2021, 5, 10)
         )
-        val location = "Europe/Berlin"
+        val targetTimeZone = "Europe/Berlin"
         val rule = BlurFunction.START_OF_WEEK
 
         // When
-        val result = DateTimeSmearer.blur(fhirDateTime, location, rule)
+        val result = DateTimeSmearer.blur(fhirDateTime, targetTimeZone, rule)
 
         // Then
         assertEquals(
@@ -135,16 +135,16 @@ class DateTimeSmearerTest {
     }
 
     @Test
-    fun `Given blur is called with a XsDateTime, Location and START_OF_MONTH, it returns only the Start of the day`() {
+    fun `Given blur is called with a XsDateTime, TargetTimeZone and START_OF_MONTH, it returns only the Start of the day`() {
         // Given
         val fhirDateTime = XsDateTimeParser.parse("2021-05-01T01:13:56.382Z").copy(
             timeZone = XsTimeZone(3)
         )
-        val location = "Europe/Berlin"
+        val targetTimeZone = "Europe/Berlin"
         val rule = BlurFunction.START_OF_MONTH
 
         // When
-        val result = DateTimeSmearer.blur(fhirDateTime, location, rule)
+        val result = DateTimeSmearer.blur(fhirDateTime, targetTimeZone, rule)
 
         // Then
         assertEquals(
@@ -159,16 +159,16 @@ class DateTimeSmearerTest {
     }
 
     @Test
-    fun `Given blur is called with a XsDateTime, which only contains a XsDate, a Location and START_OF_MONTH, it returns only the Start of the day`() {
+    fun `Given blur is called with a XsDateTime, which only contains a XsDate, a TargetTimeZone and START_OF_MONTH, it returns only the Start of the day`() {
         // Given
         val fhirDateTime = XsDateTime(
             date = XsDate(2021, 5, 10)
         )
-        val location = "Europe/Berlin"
+        val targetTimeZone = "Europe/Berlin"
         val rule = BlurFunction.START_OF_MONTH
 
         // When
-        val result = DateTimeSmearer.blur(fhirDateTime, location, rule)
+        val result = DateTimeSmearer.blur(fhirDateTime, targetTimeZone, rule)
 
         // Then
         assertEquals(
@@ -182,16 +182,16 @@ class DateTimeSmearerTest {
     }
 
     @Test
-    fun `Given blur is called with a XsDateTime, Location and END_OF_DAY, it returns only the Start of the day`() {
+    fun `Given blur is called with a XsDateTime, TargetTimeZone and END_OF_DAY, it returns only the Start of the day`() {
         // Given
         val fhirDateTime = XsDateTimeParser.parse("2021-05-10T01:13:56.382Z").copy(
             timeZone = XsTimeZone(3)
         )
-        val location = "Europe/Berlin"
+        val targetTimeZone = "Europe/Berlin"
         val rule = BlurFunction.END_OF_DAY
 
         // When
-        val result = DateTimeSmearer.blur(fhirDateTime, location, rule)
+        val result = DateTimeSmearer.blur(fhirDateTime, targetTimeZone, rule)
 
         // Then
         assertEquals(
@@ -205,16 +205,16 @@ class DateTimeSmearerTest {
     }
 
     @Test
-    fun `Given blur is called with a XsDateTime, which only contains a XsDate, a Location and END_OF_DAY, it returns only the Start of the day`() {
+    fun `Given blur is called with a XsDateTime, which only contains a XsDate, a TargetTimeZone and END_OF_DAY, it returns only the Start of the day`() {
         // Given
         val fhirDateTime = XsDateTime(
             date = XsDate(2021, 5, 10)
         )
-        val location = "Europe/Berlin"
+        val targetTimeZone = "Europe/Berlin"
         val rule = BlurFunction.END_OF_DAY
 
         // When
-        val result = DateTimeSmearer.blur(fhirDateTime, location, rule)
+        val result = DateTimeSmearer.blur(fhirDateTime, targetTimeZone, rule)
 
         // Then
         assertEquals(
@@ -224,16 +224,16 @@ class DateTimeSmearerTest {
     }
 
     @Test
-    fun `Given blur is called with a XsDateTime, Location and END_OF_WEEK, it returns only the Start of the day`() {
+    fun `Given blur is called with a XsDateTime, TargetTimeZone and END_OF_WEEK, it returns only the Start of the day`() {
         // Given
         val fhirDateTime = XsDateTimeParser.parse("2021-05-10T01:13:56.382Z").copy(
             timeZone = XsTimeZone(3)
         )
-        val location = "Europe/Berlin"
+        val targetTimeZone = "Europe/Berlin"
         val rule = BlurFunction.END_OF_WEEK
 
         // When
-        val result = DateTimeSmearer.blur(fhirDateTime, location, rule)
+        val result = DateTimeSmearer.blur(fhirDateTime, targetTimeZone, rule)
 
         // Then
         assertEquals(
@@ -247,16 +247,16 @@ class DateTimeSmearerTest {
     }
 
     @Test
-    fun `Given blur is called with a XsDateTime, which only contains a XsDate, a Location and END_OF_WEEK, it returns only the Start of the day`() {
+    fun `Given blur is called with a XsDateTime, which only contains a XsDate, a TargetTimeZone and END_OF_WEEK, it returns only the Start of the day`() {
         // Given
         val fhirDateTime = XsDateTime(
             date = XsDate(2021, 5, 10)
         )
-        val location = "Europe/Berlin"
+        val targetTimeZone = "Europe/Berlin"
         val rule = BlurFunction.END_OF_WEEK
 
         // When
-        val result = DateTimeSmearer.blur(fhirDateTime, location, rule)
+        val result = DateTimeSmearer.blur(fhirDateTime, targetTimeZone, rule)
 
         // Then
         assertEquals(
@@ -270,16 +270,16 @@ class DateTimeSmearerTest {
     }
 
     @Test
-    fun `Given blur is called with a XsDateTime, Location and END_OF_MONTH, it returns only the Start of the day`() {
+    fun `Given blur is called with a XsDateTime, TargetTimeZone and END_OF_MONTH, it returns only the Start of the day`() {
         // Given
         val fhirDateTime = XsDateTimeParser.parse("2021-05-01T01:13:56.382Z").copy(
             timeZone = XsTimeZone(3)
         )
-        val location = "Europe/Berlin"
+        val targetTimeZone = "Europe/Berlin"
         val rule = BlurFunction.END_OF_MONTH
 
         // When
-        val result = DateTimeSmearer.blur(fhirDateTime, location, rule)
+        val result = DateTimeSmearer.blur(fhirDateTime, targetTimeZone, rule)
 
         // Then
         assertEquals(
@@ -294,16 +294,16 @@ class DateTimeSmearerTest {
     }
 
     @Test
-    fun `Given blur is called with a XsDateTime, which only contains a XsDate, a Location and END_OF_MONTH, it returns only the Start of the day`() {
+    fun `Given blur is called with a XsDateTime, which only contains a XsDate, a TargetTimeZone and END_OF_MONTH, it returns only the Start of the day`() {
         // Given
         val fhirDateTime = XsDateTime(
             date = XsDate(2021, 5, 10)
         )
-        val location = "Europe/Berlin"
+        val targetTimeZone = "Europe/Berlin"
         val rule = BlurFunction.END_OF_MONTH
 
         // When
-        val result = DateTimeSmearer.blur(fhirDateTime, location, rule)
+        val result = DateTimeSmearer.blur(fhirDateTime, targetTimeZone, rule)
 
         // Then
         assertEquals(

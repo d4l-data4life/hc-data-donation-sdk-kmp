@@ -19,9 +19,9 @@ package care.data4life.datadonation.donation.anonymization
 import care.data4life.datadonation.donation.anonymization.model.BlurRule
 import care.data4life.datadonation.donation.program.model.BlurFunction
 import care.data4life.datadonation.donation.program.model.ProgramAnonymization
-import care.data4life.datadonation.donation.program.model.ProgramAnonymizationBlur
+import care.data4life.datadonation.donation.program.model.ProgramAnonymizationGlobalBlur
 import care.data4life.datadonation.donation.program.model.ProgramDonationConfiguration
-import care.data4life.datadonation.donation.program.model.ProgramResource
+import care.data4life.datadonation.donation.program.model.ProgramFhirResourceConfiguration
 import care.data4life.datadonation.mock.stub.donation.anonymization.BlurRuleResolverStub
 import care.data4life.datadonation.mock.stub.donation.anonymization.DateTimeSmearerStub
 import care.data4life.hl7.fhir.common.datetime.XsDate
@@ -39,7 +39,7 @@ import kotlin.test.assertTrue
 class FhirSmearerTest {
     private val programConfig = ProgramDonationConfiguration(
         consentKey = "xxx",
-        resources = listOf(),
+        fhirResourceConfigurations = listOf(),
         delay = 23.0,
         studyID = "id"
     )
@@ -109,24 +109,24 @@ class FhirSmearerTest {
         val blurResolver = BlurRuleResolverStub()
 
         val programConfig = programConfig.copy(
-            resources = listOf(ProgramResource(url = "123")),
+            fhirResourceConfigurations = listOf(ProgramFhirResourceConfiguration(url = "123")),
             anonymization = ProgramAnonymization(
-                blur = ProgramAnonymizationBlur(location = "abc")
+                globalBlur = ProgramAnonymizationGlobalBlur(targetTimeZone = "abc")
             )
         )
 
         val rule = BlurRule(
-            location = "somewhere"
+            targetTimeZone = "somewhere"
         )
 
         var capturedFhirResource: FhirResource? = null
-        var capturedProgramAnonymizationBlur: ProgramAnonymizationBlur? = null
-        var capturedProgramResources: List<ProgramResource>? = null
+        var capturedProgramAnonymizationGlobalBlur: ProgramAnonymizationGlobalBlur? = null
+        var capturedProgramFhirResourceConfigurations: List<ProgramFhirResourceConfiguration>? = null
 
         blurResolver.whenResolveBlurRule = { delegatedFhirResource, delegatedProgramAnonymizationBlur, delegatedProgramResources ->
             capturedFhirResource = delegatedFhirResource
-            capturedProgramAnonymizationBlur = delegatedProgramAnonymizationBlur
-            capturedProgramResources = delegatedProgramResources
+            capturedProgramAnonymizationGlobalBlur = delegatedProgramAnonymizationBlur
+            capturedProgramFhirResourceConfigurations = delegatedProgramResources
 
             rule
         }
@@ -148,12 +148,12 @@ class FhirSmearerTest {
             expected = resource
         )
         assertSame(
-            actual = capturedProgramAnonymizationBlur,
-            expected = programConfig.anonymization?.blur
+            actual = capturedProgramAnonymizationGlobalBlur,
+            expected = programConfig.anonymization?.globalBlur
         )
         assertSame(
-            actual = capturedProgramResources,
-            expected = programConfig.resources
+            actual = capturedProgramFhirResourceConfigurations,
+            expected = programConfig.fhirResourceConfigurations
         )
     }
 
@@ -172,27 +172,27 @@ class FhirSmearerTest {
         val blurResolver = BlurRuleResolverStub()
 
         val programConfig = programConfig.copy(
-            resources = listOf(ProgramResource(url = "123")),
+            fhirResourceConfigurations = listOf(ProgramFhirResourceConfiguration(url = "123")),
             anonymization = ProgramAnonymization(
-                blur = ProgramAnonymizationBlur(
-                    location = "abc",
-                    authored = BlurFunction.START_OF_WEEK
+                globalBlur = ProgramAnonymizationGlobalBlur(
+                    targetTimeZone = "abc",
+                    questionnaireResponseAuthored = BlurFunction.START_OF_WEEK
                 )
             )
         )
 
         val rule = BlurRule(
-            location = "somewhere"
+            targetTimeZone = "somewhere"
         )
 
         var capturedFhirResource: FhirResource? = null
-        var capturedProgramAnonymizationBlur: ProgramAnonymizationBlur? = null
-        var capturedProgramResources: List<ProgramResource>? = null
+        var capturedProgramAnonymizationGlobalBlur: ProgramAnonymizationGlobalBlur? = null
+        var capturedProgramFhirResourceConfigurations: List<ProgramFhirResourceConfiguration>? = null
 
         blurResolver.whenResolveBlurRule = { delegatedFhirResource, delegatedProgramAnonymizationBlur, delegatedProgramResources ->
             capturedFhirResource = delegatedFhirResource
-            capturedProgramAnonymizationBlur = delegatedProgramAnonymizationBlur
-            capturedProgramResources = delegatedProgramResources
+            capturedProgramAnonymizationGlobalBlur = delegatedProgramAnonymizationBlur
+            capturedProgramFhirResourceConfigurations = delegatedProgramResources
 
             rule
         }
@@ -214,12 +214,12 @@ class FhirSmearerTest {
             expected = resource
         )
         assertSame(
-            actual = capturedProgramAnonymizationBlur,
-            expected = programConfig.anonymization?.blur
+            actual = capturedProgramAnonymizationGlobalBlur,
+            expected = programConfig.anonymization?.globalBlur
         )
         assertSame(
-            actual = capturedProgramResources,
-            expected = programConfig.resources
+            actual = capturedProgramFhirResourceConfigurations,
+            expected = programConfig.fhirResourceConfigurations
         )
     }
 
@@ -242,28 +242,28 @@ class FhirSmearerTest {
         val dateTimeSmearer = DateTimeSmearerStub()
 
         val programConfig = programConfig.copy(
-            resources = listOf(ProgramResource(url = "123")),
+            fhirResourceConfigurations = listOf(ProgramFhirResourceConfiguration(url = "123")),
             anonymization = ProgramAnonymization(
-                blur = ProgramAnonymizationBlur(
-                    location = "abc",
-                    authored = BlurFunction.START_OF_WEEK
+                globalBlur = ProgramAnonymizationGlobalBlur(
+                    targetTimeZone = "abc",
+                    questionnaireResponseAuthored = BlurFunction.START_OF_WEEK
                 )
             )
         )
 
         val rule = BlurRule(
-            location = "somewhere",
-            authored = BlurFunction.END_OF_DAY
+            targetTimeZone = "somewhere",
+            questionnaireResponseAuthored = BlurFunction.END_OF_DAY
         )
 
         var capturedFhirResource: FhirResource? = null
-        var capturedProgramAnonymizationBlur: ProgramAnonymizationBlur? = null
-        var capturedProgramResources: List<ProgramResource>? = null
+        var capturedProgramAnonymizationGlobalBlur: ProgramAnonymizationGlobalBlur? = null
+        var capturedProgramFhirResourceConfigurations: List<ProgramFhirResourceConfiguration>? = null
 
         blurResolver.whenResolveBlurRule = { delegatedFhirResource, delegatedProgramAnonymizationBlur, delegatedProgramResources ->
             capturedFhirResource = delegatedFhirResource
-            capturedProgramAnonymizationBlur = delegatedProgramAnonymizationBlur
-            capturedProgramResources = delegatedProgramResources
+            capturedProgramAnonymizationGlobalBlur = delegatedProgramAnonymizationBlur
+            capturedProgramFhirResourceConfigurations = delegatedProgramResources
 
             rule
         }
@@ -301,12 +301,12 @@ class FhirSmearerTest {
             expected = resource
         )
         assertSame(
-            actual = capturedProgramAnonymizationBlur,
-            expected = programConfig.anonymization?.blur
+            actual = capturedProgramAnonymizationGlobalBlur,
+            expected = programConfig.anonymization?.globalBlur
         )
         assertSame(
-            actual = capturedProgramResources,
-            expected = programConfig.resources
+            actual = capturedProgramFhirResourceConfigurations,
+            expected = programConfig.fhirResourceConfigurations
         )
 
         assertSame(
@@ -315,11 +315,11 @@ class FhirSmearerTest {
         )
         assertEquals(
             actual = capturedLocation,
-            expected = rule.location
+            expected = rule.targetTimeZone
         )
         assertSame(
             actual = capturedBlurFunction,
-            expected = rule.authored
+            expected = rule.questionnaireResponseAuthored
         )
     }
 }

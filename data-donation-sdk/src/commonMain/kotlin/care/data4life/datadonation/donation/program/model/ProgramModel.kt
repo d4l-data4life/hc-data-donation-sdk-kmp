@@ -37,7 +37,7 @@ enum class RevocationMode(val value: String) {
 }
 
 @Serializable
-internal data class ProgramResourceBlurItem(
+internal data class QuestionnaireResponseItemBlur(
     val linkId: String,
     @SerialName("fn")
     @Contextual
@@ -45,38 +45,46 @@ internal data class ProgramResourceBlurItem(
 )
 
 @Serializable
-internal data class ProgramResourceBlur(
-    val location: String? = null,
+internal data class ProgramFhirResourceBlur(
+    @SerialName("location")
+    val targetTimeZone: String? = null,
     @Contextual
-    val authored: BlurFunction? = null,
-    val items: List<ProgramResourceBlurItem>
+    @SerialName("authored")
+    val questionnaireResponseAuthored: BlurFunction? = null,
+    @SerialName("items")
+    val itemBlurs: List<QuestionnaireResponseItemBlur>
 )
 
 @Serializable
-internal data class ProgramResource(
+internal data class ProgramFhirResourceConfiguration(
     val url: String,
     val versions: List<String>? = null,
-    val blur: ProgramResourceBlur? = null
+    @SerialName("blur")
+    val fhirBlur: ProgramFhirResourceBlur? = null
 )
 
 @Serializable
-internal data class ProgramAnonymizationBlur(
-    val location: String,
+internal data class ProgramAnonymizationGlobalBlur(
+    @SerialName("location")
+    val targetTimeZone: String,
     @Contextual
-    val authored: BlurFunction? = null,
+    @SerialName("authored")
+    val questionnaireResponseAuthored: BlurFunction? = null,
     @Contextual
     val researchSubject: BlurFunction? = null
 )
 
 @Serializable
 internal data class ProgramAnonymization(
-    val blur: ProgramAnonymizationBlur? = null
+    @SerialName("blur")
+    val globalBlur: ProgramAnonymizationGlobalBlur? = null
 )
 
 @Serializable
 internal data class ProgramDonationConfiguration(
     val consentKey: String,
-    val resources: List<ProgramResource>,
+    @SerialName("resources")
+    val fhirResourceConfigurations: List<ProgramFhirResourceConfiguration>,
     val anonymization: ProgramAnonymization? = null,
     val triggerList: List<String>? = null,
     val delay: Double,

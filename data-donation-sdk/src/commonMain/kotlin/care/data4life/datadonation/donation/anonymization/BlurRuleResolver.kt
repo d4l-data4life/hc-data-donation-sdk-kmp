@@ -18,9 +18,9 @@ package care.data4life.datadonation.donation.anonymization
 
 import care.data4life.datadonation.donation.anonymization.AnonymizationContract.BlurRuleResolver.Companion.REFERENCE_SEPARATOR
 import care.data4life.datadonation.donation.anonymization.model.BlurRule
-import care.data4life.datadonation.donation.program.model.ProgramAnonymizationBlur
-import care.data4life.datadonation.donation.program.model.ProgramResource
-import care.data4life.datadonation.donation.program.model.ProgramResourceBlur
+import care.data4life.datadonation.donation.program.model.ProgramAnonymizationGlobalBlur
+import care.data4life.datadonation.donation.program.model.ProgramFhirResourceBlur
+import care.data4life.datadonation.donation.program.model.ProgramFhirResourceConfiguration
 import care.data4life.hl7.fhir.stu3.model.FhirQuestionnaireResponse
 
 internal object BlurRuleResolver :
@@ -38,28 +38,28 @@ internal object BlurRuleResolver :
 
     private fun findByFhirReference(
         reference: String?,
-        programResources: List<ProgramResource>
-    ): ProgramResourceBlur? {
-        return programResources.find { resource ->
+        programFhirResourceConfigurations: List<ProgramFhirResourceConfiguration>
+    ): ProgramFhirResourceBlur? {
+        return programFhirResourceConfigurations.find { resource ->
             assembleReferences(
                 resource.url,
                 resource.versions
             ).contains(reference)
-        }?.blur
+        }?.fhirBlur
     }
 
     private fun mergeRuleSets(
-        resourceRule: ProgramResourceBlur?,
-        programRule: ProgramAnonymizationBlur?
+        fhirResourceRule: ProgramFhirResourceBlur?,
+        programRuleGlobal: ProgramAnonymizationGlobalBlur?
     ): BlurRule? {
-        val location = resourceRule?.location ?: programRule?.location
+        val location = fhirResourceRule?.targetTimeZone ?: programRuleGlobal?.targetTimeZone
 
         return if (location is String) {
             BlurRule(
-                location = location,
-                authored = resourceRule?.authored ?: programRule?.authored,
-                researchSubject = programRule?.researchSubject,
-                resourceBlurItems = resourceRule?.items
+                targetTimeZone = location,
+                questionnaireResponseAuthored = fhirResourceRule?.questionnaireResponseAuthored ?: programRuleGlobal?.questionnaireResponseAuthored,
+                researchSubject = programRuleGlobal?.researchSubject,
+                questionnaireResponseItemBlurMapping = fhirResourceRule?.itemBlurs ?: emptyList()
             )
         } else {
             null
@@ -68,18 +68,18 @@ internal object BlurRuleResolver :
 
     override fun resolveBlurRule(
         fhirResource: FhirQuestionnaireResponse,
-        programRule: ProgramAnonymizationBlur?,
-        programResources: List<ProgramResource>
+        programRuleGlobal: ProgramAnonymizationGlobalBlur?,
+        programFhirResourceConfigurations: List<ProgramFhirResourceConfiguration>
     ): BlurRule? {
         val resourceRule = findByFhirReference(
             fhirResource.questionnaire?.reference,
-            programResources
+            programFhirResourceConfigurations
         )
 
-        return if (resourceRule == null && programRule == null) {
+        return if (resourceRule == null && programRuleGlobal == null) {
             null
         } else {
-            mergeRuleSets(resourceRule, programRule)
+            mergeRuleSets(resourceRule, programRuleGlobal)
         }
     }
 }

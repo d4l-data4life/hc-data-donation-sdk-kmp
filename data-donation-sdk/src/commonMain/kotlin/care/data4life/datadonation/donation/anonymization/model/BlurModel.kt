@@ -16,12 +16,13 @@
 
 package care.data4life.datadonation.donation.anonymization.model
 
+import care.data4life.datadonation.donation.anonymization.TargetTimeZone
 import care.data4life.datadonation.donation.program.model.BlurFunction
-import care.data4life.datadonation.donation.program.model.ProgramResourceBlurItem
+import care.data4life.datadonation.donation.program.model.QuestionnaireResponseItemBlur
 
 internal data class BlurRule(
-    val location: String,
-    val authored: BlurFunction? = null,
+    val targetTimeZone: TargetTimeZone,
+    val questionnaireResponseAuthored: BlurFunction? = null,
     val researchSubject: BlurFunction? = null,
-    val resourceBlurItems: List<ProgramResourceBlurItem>? = null
+    val questionnaireResponseItemBlurMapping: List<QuestionnaireResponseItemBlur> = emptyList()
 )
