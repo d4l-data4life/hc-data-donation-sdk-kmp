@@ -35,6 +35,7 @@ interface ConsentDataContract {
         val description: String?
         val recipient: String
         val language: String
+        val title: String?
         val text: String
         val allowsAdminConsent: Boolean
         val isIrrevocable: Boolean

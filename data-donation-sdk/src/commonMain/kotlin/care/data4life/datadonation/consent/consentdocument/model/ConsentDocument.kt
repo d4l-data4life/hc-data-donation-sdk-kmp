@@ -28,6 +28,7 @@ data class ConsentDocument(
     override val description: String? = null,
     override val recipient: String,
     override val language: String,
+    override val title: String? = null,
     override val text: String,
     @SerialName("allowAdminConsent")
     override val allowsAdminConsent: Boolean = false,
