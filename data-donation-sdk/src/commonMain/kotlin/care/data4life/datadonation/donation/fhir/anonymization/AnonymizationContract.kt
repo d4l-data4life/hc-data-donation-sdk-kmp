@@ -16,11 +16,11 @@
 
 package care.data4life.datadonation.donation.fhir.anonymization
 
+import care.data4life.datadonation.donation.fhir.AllowedReference
 import care.data4life.datadonation.donation.fhir.anonymization.model.BlurRule
 import care.data4life.datadonation.donation.program.model.BlurFunction
 import care.data4life.datadonation.donation.program.model.ProgramAnonymizationGlobalBlur
-import care.data4life.datadonation.donation.program.model.ProgramDonationConfiguration
-import care.data4life.datadonation.donation.program.model.ProgramFhirResourceConfiguration
+import care.data4life.datadonation.donation.program.model.ProgramFhirResourceBlur
 import care.data4life.datadonation.donation.program.model.ProgramType
 import care.data4life.hl7.fhir.common.datetime.XsDateTime
 import care.data4life.hl7.fhir.stu3.model.FhirQuestionnaireResponse
@@ -42,13 +42,9 @@ internal interface AnonymizationContract {
     interface BlurRuleResolver {
         fun resolveBlurRule(
             fhirResource: FhirQuestionnaireResponse?,
-            programRuleGlobal: ProgramAnonymizationGlobalBlur?,
-            programFhirResourceConfigurations: List<ProgramFhirResourceConfiguration>
+            globalProgramRule: ProgramAnonymizationGlobalBlur?,
+            localResourceRule: Map<AllowedReference, ProgramFhirResourceBlur?>
         ): BlurRule?
-
-        companion object {
-            const val REFERENCE_SEPARATOR = "|"
-        }
     }
 
     fun interface DateTimeSmearer {
@@ -78,7 +74,8 @@ internal interface AnonymizationContract {
         fun anonymize(
             fhirResource: FhirResource,
             programType: ProgramType,
-            programConfiguration: ProgramDonationConfiguration
+            globalProgramRule: ProgramAnonymizationGlobalBlur?,
+            localResourceRule: Map<AllowedReference, ProgramFhirResourceBlur?>
         ): FhirResource
     }
 }

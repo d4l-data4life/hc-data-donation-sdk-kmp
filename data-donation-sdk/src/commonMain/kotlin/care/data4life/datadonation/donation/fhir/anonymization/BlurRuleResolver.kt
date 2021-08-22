@@ -16,36 +16,22 @@
 
 package care.data4life.datadonation.donation.fhir.anonymization
 
-import care.data4life.datadonation.donation.fhir.anonymization.AnonymizationContract.BlurRuleResolver.Companion.REFERENCE_SEPARATOR
+import care.data4life.datadonation.donation.fhir.AllowedReference
 import care.data4life.datadonation.donation.fhir.anonymization.model.BlurRule
 import care.data4life.datadonation.donation.program.model.ProgramAnonymizationGlobalBlur
 import care.data4life.datadonation.donation.program.model.ProgramFhirResourceBlur
-import care.data4life.datadonation.donation.program.model.ProgramFhirResourceConfiguration
 import care.data4life.hl7.fhir.stu3.model.FhirQuestionnaireResponse
 
-internal object BlurRuleResolver :
-    AnonymizationContract.BlurRuleResolver {
-    private fun assembleReferences(
-        baseUrl: String,
-        versions: List<String>?
-    ): List<String> {
-        return if (versions is List<*>) {
-            versions.map { version -> "$baseUrl$REFERENCE_SEPARATOR$version" }
-        } else {
-            listOf(baseUrl)
-        }
-    }
-
-    private fun findByFhirReference(
+internal object BlurRuleResolver : AnonymizationContract.BlurRuleResolver {
+    private fun findLocalBlurByFhirReference(
         reference: String?,
-        programFhirResourceConfigurations: List<ProgramFhirResourceConfiguration>
+        localResourceRule: Map<AllowedReference, ProgramFhirResourceBlur?>
     ): ProgramFhirResourceBlur? {
-        return programFhirResourceConfigurations.find { resource ->
-            assembleReferences(
-                resource.url,
-                resource.versions
-            ).contains(reference)
-        }?.fhirBlur
+        return if (reference is String) {
+            localResourceRule[reference]
+        } else {
+            null
+        }
     }
 
     private fun mergeRuleSets(
@@ -68,18 +54,18 @@ internal object BlurRuleResolver :
 
     override fun resolveBlurRule(
         fhirResource: FhirQuestionnaireResponse?,
-        programRuleGlobal: ProgramAnonymizationGlobalBlur?,
-        programFhirResourceConfigurations: List<ProgramFhirResourceConfiguration>
+        globalProgramRule: ProgramAnonymizationGlobalBlur?,
+        localResourceRule: Map<AllowedReference, ProgramFhirResourceBlur?>
     ): BlurRule? {
-        val resourceRule = findByFhirReference(
+        val resourceRule = findLocalBlurByFhirReference(
             fhirResource?.questionnaire?.reference,
-            programFhirResourceConfigurations
+            localResourceRule
         )
 
-        return if (resourceRule == null && programRuleGlobal == null) {
+        return if (resourceRule == null && globalProgramRule == null) {
             null
         } else {
-            mergeRuleSets(resourceRule, programRuleGlobal)
+            mergeRuleSets(resourceRule, globalProgramRule)
         }
     }
 }

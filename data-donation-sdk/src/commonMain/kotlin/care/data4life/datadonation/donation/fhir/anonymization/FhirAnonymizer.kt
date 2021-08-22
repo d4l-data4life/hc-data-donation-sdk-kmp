@@ -16,7 +16,9 @@
 
 package care.data4life.datadonation.donation.fhir.anonymization
 
-import care.data4life.datadonation.donation.program.model.ProgramDonationConfiguration
+import care.data4life.datadonation.donation.fhir.AllowedReference
+import care.data4life.datadonation.donation.program.model.ProgramAnonymizationGlobalBlur
+import care.data4life.datadonation.donation.program.model.ProgramFhirResourceBlur
 import care.data4life.datadonation.donation.program.model.ProgramType
 import care.data4life.hl7.fhir.stu3.model.FhirResource
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
@@ -30,12 +32,13 @@ internal class FhirAnonymizer(
     private fun anonymizeQuestionaireResponse(
         questionnaireResponse: QuestionnaireResponse,
         programType: ProgramType,
-        programConfiguration: ProgramDonationConfiguration
+        globalProgramRule: ProgramAnonymizationGlobalBlur?,
+        localResourceRule: Map<AllowedReference, ProgramFhirResourceBlur?>
     ): QuestionnaireResponse {
         val rule = blurResolver.resolveBlurRule(
             fhirResource = questionnaireResponse,
-            programRuleGlobal = programConfiguration.anonymization?.globalBlur,
-            programFhirResourceConfigurations = programConfiguration.fhirResourceConfigurations
+            globalProgramRule = globalProgramRule,
+            localResourceRule = localResourceRule
         )
 
         return questionnaireResponseAnonymizer.anonymize(
@@ -47,12 +50,12 @@ internal class FhirAnonymizer(
 
     private fun anonymizeResearchSubject(
         researchSubject: ResearchSubject,
-        programConfiguration: ProgramDonationConfiguration
+        globalProgramRule: ProgramAnonymizationGlobalBlur?
     ): ResearchSubject {
         val rule = blurResolver.resolveBlurRule(
             fhirResource = null,
-            programRuleGlobal = programConfiguration.anonymization?.globalBlur,
-            programFhirResourceConfigurations = emptyList()
+            globalProgramRule = globalProgramRule,
+            localResourceRule = emptyMap()
         )
 
         return researchSubjectAnonymizer.anonymize(
@@ -64,17 +67,19 @@ internal class FhirAnonymizer(
     override fun anonymize(
         fhirResource: FhirResource,
         programType: ProgramType,
-        programConfiguration: ProgramDonationConfiguration
+        globalProgramRule: ProgramAnonymizationGlobalBlur?,
+        localResourceRule: Map<AllowedReference, ProgramFhirResourceBlur?>
     ): FhirResource {
         return when (fhirResource) {
             is QuestionnaireResponse -> anonymizeQuestionaireResponse(
                 fhirResource,
                 programType,
-                programConfiguration
+                globalProgramRule,
+                localResourceRule
             )
             is ResearchSubject -> anonymizeResearchSubject(
                 fhirResource,
-                programConfiguration
+                globalProgramRule
             )
             else -> fhirResource
         }
