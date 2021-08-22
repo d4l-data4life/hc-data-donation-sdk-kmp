@@ -186,9 +186,10 @@ class BlurRuleResolverTest {
     @Test
     fun `Given resolveBlurRule is called with a QuestionnaireResponse, null as ProgramAnonymizationBlur and a List of ProgramResource it resolves the Blur for the given FHIRResource and returns a BlurRule provided by the ProgramResource`() {
         // Given
+        val reference = "this is the one|1.0.0"
         val questionnaireResponse = questionnaireResponseTemplate.copy(
             questionnaire = Reference(
-                reference = "this is the one|1.0.0"
+                reference = reference
             )
         )
         val localBlur = mapOf(
@@ -202,7 +203,7 @@ class BlurRuleResolverTest {
                     )
                 )
             ),
-            "this is the one|1.0.0" to ProgramFhirResourceBlur(
+            reference to ProgramFhirResourceBlur(
                 targetTimeZone = "here",
                 questionnaireResponseAuthored = BlurFunction.START_OF_MONTH,
                 itemBlurs = listOf(
@@ -224,17 +225,17 @@ class BlurRuleResolverTest {
         // Then
         assertEquals(
             actual = result!!.targetTimeZone,
-            expected = localBlur["this is the one|1.0.0"]!!.targetTimeZone
+            expected = localBlur[reference]!!.targetTimeZone
         )
 
         assertEquals(
             actual = result.questionnaireResponseAuthored,
-            expected = localBlur["this is the one|1.0.0"]!!.questionnaireResponseAuthored
+            expected = localBlur[reference]!!.questionnaireResponseAuthored
         )
 
         assertSame(
             actual = result.questionnaireResponseItemBlurMapping,
-            expected = localBlur["this is the one|1.0.0"]!!.itemBlurs
+            expected = localBlur[reference]!!.itemBlurs
         )
 
         assertNull(result.researchSubject)
@@ -243,9 +244,10 @@ class BlurRuleResolverTest {
     @Test
     fun `Given resolveBlurRule is called with a QuestionnaireResponse, ProgramAnonymizationBlur and a List of ProgramResource it merges both rulessets in favour of the ProgramResource`() {
         // Given
+        val reference = "this is the one|1.0.0"
         val questionnaireResponse = questionnaireResponseTemplate.copy(
             questionnaire = Reference(
-                reference = "this is the one|1.0.0"
+                reference = reference
             )
         )
         val globalBlur = ProgramAnonymizationGlobalBlur(
@@ -264,7 +266,7 @@ class BlurRuleResolverTest {
                     )
                 )
             ),
-            "this is the one|1.0.0" to ProgramFhirResourceBlur(
+            reference to ProgramFhirResourceBlur(
                 targetTimeZone = "here",
                 questionnaireResponseAuthored = BlurFunction.START_OF_MONTH,
                 itemBlurs = listOf(
@@ -286,17 +288,17 @@ class BlurRuleResolverTest {
         // Then
         assertEquals(
             actual = result!!.targetTimeZone,
-            expected = localBlur["this is the one|1.0.0"]!!.targetTimeZone
+            expected = localBlur[reference]!!.targetTimeZone
         )
 
         assertEquals(
             actual = result.questionnaireResponseAuthored,
-            expected = localBlur["this is the one|1.0.0"]!!.questionnaireResponseAuthored
+            expected = localBlur[reference]!!.questionnaireResponseAuthored
         )
 
         assertSame(
             actual = result.questionnaireResponseItemBlurMapping,
-            expected = localBlur["this is the one|1.0.0"]!!.itemBlurs
+            expected = localBlur[reference]!!.itemBlurs
         )
 
         assertEquals(
