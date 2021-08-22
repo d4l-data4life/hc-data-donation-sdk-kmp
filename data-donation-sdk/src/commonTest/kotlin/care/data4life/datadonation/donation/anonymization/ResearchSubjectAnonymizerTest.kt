@@ -19,7 +19,6 @@ package care.data4life.datadonation.donation.anonymization
 import care.data4life.datadonation.donation.anonymization.model.BlurRule
 import care.data4life.datadonation.donation.program.model.BlurFunction
 import care.data4life.datadonation.mock.stub.donation.anonymization.DateTimeSmearerStub
-import care.data4life.datadonation.mock.stub.donation.anonymization.ResearchSubjectAnonymizer
 import care.data4life.hl7.fhir.common.datetime.XsDate
 import care.data4life.hl7.fhir.common.datetime.XsDateTime
 import care.data4life.hl7.fhir.stu3.codesystem.ResearchSubjectStatus

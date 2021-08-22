@@ -16,7 +16,6 @@
 
 package care.data4life.datadonation.donation.anonymization
 
-import care.data4life.datadonation.mock.stub.donation.anonymization.ResearchSubjectAnonymizer
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
