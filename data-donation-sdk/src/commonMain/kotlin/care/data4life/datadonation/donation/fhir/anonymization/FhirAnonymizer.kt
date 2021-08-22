@@ -14,7 +14,7 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.donation.anonymization
+package care.data4life.datadonation.donation.fhir.anonymization
 
 import care.data4life.datadonation.donation.program.model.ProgramDonationConfiguration
 import care.data4life.datadonation.donation.program.model.ProgramType

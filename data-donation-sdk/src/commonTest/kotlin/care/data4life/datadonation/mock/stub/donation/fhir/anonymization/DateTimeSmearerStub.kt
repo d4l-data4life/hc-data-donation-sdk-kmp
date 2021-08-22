@@ -14,10 +14,10 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.mock.stub.donation.anonymization
+package care.data4life.datadonation.mock.stub.donation.fhir.anonymization
 
-import care.data4life.datadonation.donation.anonymization.AnonymizationContract
-import care.data4life.datadonation.donation.anonymization.TargetTimeZone
+import care.data4life.datadonation.donation.fhir.anonymization.AnonymizationContract
+import care.data4life.datadonation.donation.fhir.anonymization.TargetTimeZone
 import care.data4life.datadonation.donation.program.model.BlurFunction
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException

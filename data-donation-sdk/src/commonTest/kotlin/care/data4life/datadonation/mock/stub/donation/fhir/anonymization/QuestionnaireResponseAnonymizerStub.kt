@@ -14,22 +14,26 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.mock.stub.donation.anonymization
+package care.data4life.datadonation.mock.stub.donation.fhir.anonymization
 
-import care.data4life.datadonation.donation.anonymization.AnonymizationContract
-import care.data4life.datadonation.donation.anonymization.model.BlurRule
+import care.data4life.datadonation.donation.fhir.anonymization.AnonymizationContract
+import care.data4life.datadonation.donation.fhir.anonymization.model.BlurRule
+import care.data4life.datadonation.donation.program.model.ProgramType
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
-import care.data4life.hl7.fhir.stu3.model.ResearchSubject
+import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
 
-internal class ResearchSubjectAnonymizerStub : AnonymizationContract.ResearchSubjectAnonymizer, MockContract.Stub {
-    var whenAnonymize: ((ResearchSubject, BlurRule?) -> ResearchSubject)? = null
+internal class QuestionnaireResponseAnonymizerStub :
+    AnonymizationContract.QuestionnaireResponseAnonymizer,
+    MockContract.Stub {
+    var whenAnonymize: ((questionnaireResponse: QuestionnaireResponse, ProgramType, rule: BlurRule?) -> QuestionnaireResponse)? = null
 
     override fun anonymize(
-        researchSubject: ResearchSubject,
+        questionnaireResponse: QuestionnaireResponse,
+        programType: ProgramType,
         rule: BlurRule?
-    ): ResearchSubject {
-        return whenAnonymize?.invoke(researchSubject, rule) ?: throw MockException()
+    ): QuestionnaireResponse {
+        return whenAnonymize?.invoke(questionnaireResponse, programType, rule) ?: throw MockException()
     }
 
     override fun clear() {

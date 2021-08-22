@@ -14,17 +14,17 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.donation.anonymization
+package care.data4life.datadonation.donation.fhir.anonymization
 
-import care.data4life.datadonation.donation.anonymization.model.BlurRule
+import care.data4life.datadonation.donation.fhir.anonymization.model.BlurRule
 import care.data4life.datadonation.donation.program.model.ProgramAnonymization
 import care.data4life.datadonation.donation.program.model.ProgramAnonymizationGlobalBlur
 import care.data4life.datadonation.donation.program.model.ProgramDonationConfiguration
 import care.data4life.datadonation.donation.program.model.ProgramFhirResourceConfiguration
 import care.data4life.datadonation.donation.program.model.ProgramType
-import care.data4life.datadonation.mock.stub.donation.anonymization.BlurRuleResolverStub
-import care.data4life.datadonation.mock.stub.donation.anonymization.QuestionnaireResponseAnonymizerStub
-import care.data4life.datadonation.mock.stub.donation.anonymization.ResearchSubjectAnonymizerStub
+import care.data4life.datadonation.mock.stub.donation.fhir.anonymization.BlurRuleResolverStub
+import care.data4life.datadonation.mock.stub.donation.fhir.anonymization.QuestionnaireResponseAnonymizerStub
+import care.data4life.datadonation.mock.stub.donation.fhir.anonymization.ResearchSubjectAnonymizerStub
 import care.data4life.hl7.fhir.stu3.codesystem.QuestionnaireResponseStatus
 import care.data4life.hl7.fhir.stu3.codesystem.ResearchSubjectStatus
 import care.data4life.hl7.fhir.stu3.model.DomainResource
