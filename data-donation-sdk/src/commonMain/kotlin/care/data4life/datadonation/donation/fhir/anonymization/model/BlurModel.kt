@@ -14,24 +14,15 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.mock.stub.donation.anonymization
+package care.data4life.datadonation.donation.fhir.anonymization.model
 
-import care.data4life.datadonation.donation.anonymization.AnonymizationContract
-import care.data4life.datadonation.mock.MockContract
-import care.data4life.datadonation.mock.MockException
+import care.data4life.datadonation.donation.fhir.anonymization.TargetTimeZone
+import care.data4life.datadonation.donation.program.model.BlurFunction
+import care.data4life.datadonation.donation.program.model.QuestionnaireResponseItemBlur
 
-internal class RedactorStub : AnonymizationContract.Redactor, MockContract.Stub {
-    var whenRedact: ((String?) -> String?)? = null
-
-    override fun redact(valueString: String?): String? {
-        return if (whenRedact == null) {
-            throw MockException()
-        } else {
-            whenRedact!!.invoke(valueString)
-        }
-    }
-
-    override fun clear() {
-        whenRedact = null
-    }
-}
+internal data class BlurRule(
+    val targetTimeZone: TargetTimeZone,
+    val questionnaireResponseAuthored: BlurFunction? = null,
+    val researchSubject: BlurFunction? = null,
+    val questionnaireResponseItemBlurMapping: List<QuestionnaireResponseItemBlur> = emptyList()
+)

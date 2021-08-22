@@ -14,13 +14,13 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.donation.anonymization
+package care.data4life.datadonation.donation.fhir.anonymization
 
-import care.data4life.datadonation.donation.anonymization.model.BlurRule
+import care.data4life.datadonation.donation.fhir.anonymization.model.BlurRule
 import care.data4life.datadonation.donation.program.model.BlurFunction
 import care.data4life.datadonation.donation.program.model.QuestionnaireResponseItemBlur
-import care.data4life.datadonation.mock.stub.donation.anonymization.DateTimeSmearerStub
-import care.data4life.datadonation.mock.stub.donation.anonymization.RedactorStub
+import care.data4life.datadonation.mock.stub.donation.fhir.anonymization.DateTimeSmearerStub
+import care.data4life.datadonation.mock.stub.donation.fhir.anonymization.RedactorStub
 import care.data4life.hl7.fhir.common.datetime.XsDate
 import care.data4life.hl7.fhir.common.datetime.XsDateTime
 import care.data4life.hl7.fhir.stu3.codesystem.QuestionnaireResponseStatus

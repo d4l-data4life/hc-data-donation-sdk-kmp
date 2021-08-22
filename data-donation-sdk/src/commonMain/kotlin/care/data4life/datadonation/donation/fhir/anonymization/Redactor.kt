@@ -14,15 +14,16 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.donation.anonymization.model
+package care.data4life.datadonation.donation.fhir.anonymization
 
-import care.data4life.datadonation.donation.anonymization.TargetTimeZone
-import care.data4life.datadonation.donation.program.model.BlurFunction
-import care.data4life.datadonation.donation.program.model.QuestionnaireResponseItemBlur
+import care.data4life.datadonation.donation.fhir.anonymization.AnonymizationContract.Redactor.Companion.REDACTED
 
-internal data class BlurRule(
-    val targetTimeZone: TargetTimeZone,
-    val questionnaireResponseAuthored: BlurFunction? = null,
-    val researchSubject: BlurFunction? = null,
-    val questionnaireResponseItemBlurMapping: List<QuestionnaireResponseItemBlur> = emptyList()
-)
+internal object Redactor : AnonymizationContract.Redactor {
+    override fun redact(valueString: String?): String? {
+        return if (valueString is String) {
+            REDACTED
+        } else {
+            null
+        }
+    }
+}
