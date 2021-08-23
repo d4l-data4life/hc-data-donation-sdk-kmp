@@ -119,9 +119,6 @@ kotlin {
     sourceSets {
         all {
             languageSettings.apply {
-                useExperimentalAnnotation("kotlinx.coroutines.ExperimentalCoroutinesApi")
-                useExperimentalAnnotation("kotlinx.serialization.InternalSerializationApi")
-                useExperimentalAnnotation("kotlinx.serialization.ExperimentalSerializationApi")
                 useExperimentalAnnotation("kotlin.ExperimentalStdlibApi")
                 useExperimentalAnnotation("kotlin.ExperimentalUnsignedTypes")
             }
@@ -132,11 +129,8 @@ kotlin {
 
                 implementation(Dependency.multiplatform.koin.commonCore)
 
-                implementation(Dependency.multiplatform.coroutines.common)
-
                 implementation(Dependency.multiplatform.stately.freeze)
                 implementation(Dependency.multiplatform.stately.isolate)
-                implementation(Dependency.multiplatform.stately.concurrency)
 
                 // D4L
                 implementation(Dependency.d4l.sdkUtil)
@@ -176,12 +170,6 @@ kotlin {
 
         val iosMain by getting {
             dependencies {
-                implementation(Dependency.multiplatform.coroutines.common) {
-                    version {
-                        strictly(Version.kotlinCoroutines)
-                    }
-                }
-
                 // D4L
                 implementation(Dependency.d4l.sdkObjcUtil)
             }
