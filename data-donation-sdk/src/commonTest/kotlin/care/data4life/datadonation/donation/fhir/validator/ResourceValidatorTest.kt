@@ -41,7 +41,7 @@ import kotlin.test.assertTrue
 
 class ResourceValidatorTest {
     @Test
-    fun `It fulfils ResourceFilter`() {
+    fun `It fulfils ResourceValidator`() {
         val filter: Any = ResourceValidator(
             QuestionnaireResponseValidatorStub(),
             ObservationValidatorStub(),
