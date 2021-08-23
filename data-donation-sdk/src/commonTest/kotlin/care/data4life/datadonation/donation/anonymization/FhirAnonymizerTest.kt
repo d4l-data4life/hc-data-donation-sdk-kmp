@@ -21,6 +21,7 @@ import care.data4life.datadonation.donation.program.model.ProgramAnonymization
 import care.data4life.datadonation.donation.program.model.ProgramAnonymizationGlobalBlur
 import care.data4life.datadonation.donation.program.model.ProgramDonationConfiguration
 import care.data4life.datadonation.donation.program.model.ProgramFhirResourceConfiguration
+import care.data4life.datadonation.donation.program.model.ProgramType
 import care.data4life.datadonation.mock.stub.donation.anonymization.BlurRuleResolverStub
 import care.data4life.datadonation.mock.stub.donation.anonymization.QuestionnaireResponseAnonymizerStub
 import care.data4life.datadonation.mock.stub.donation.anonymization.ResearchSubjectAnonymizerStub
@@ -66,7 +67,7 @@ class FhirAnonymizerTest {
             BlurRuleResolverStub(),
             QuestionnaireResponseAnonymizerStub(),
             ResearchSubjectAnonymizerStub()
-        ).anonymize(resource, programConfig)
+        ).anonymize(resource, ProgramType.STUDY, programConfig)
 
         // Then
         assertSame(
@@ -78,6 +79,7 @@ class FhirAnonymizerTest {
     @Test
     fun `Given anonymize is called with a QuestionaireResponse and a ProgramDonationConfiguration it resolves the BlurRule and delegates the call to QuestionaireResponseAnonymizer`() {
         // Given
+        val programType = ProgramType.DIARY
         val resource = QuestionnaireResponse(
             status = QuestionnaireResponseStatus.AMENDED,
         )
@@ -112,10 +114,12 @@ class FhirAnonymizerTest {
         val questionnaireResponseAnonymizer = QuestionnaireResponseAnonymizerStub()
 
         var capturedQuestionnaireResponse: QuestionnaireResponse? = null
+        var capturedProgramType: ProgramType? = null
         var capturedBlurRule: BlurRule? = null
 
-        questionnaireResponseAnonymizer.whenAnonymize = { delegatedQuestionnaireResponse, _, delegatedRule ->
+        questionnaireResponseAnonymizer.whenAnonymize = { delegatedQuestionnaireResponse, delegatedProgramType, delegatedRule ->
             capturedQuestionnaireResponse = delegatedQuestionnaireResponse
+            capturedProgramType = delegatedProgramType
             capturedBlurRule = delegatedRule
 
             expected
@@ -126,7 +130,7 @@ class FhirAnonymizerTest {
             blurResolver,
             questionnaireResponseAnonymizer,
             ResearchSubjectAnonymizerStub()
-        ).anonymize(resource, programConfig)
+        ).anonymize(resource, programType, programConfig)
 
         // Then
         assertSame(
@@ -150,6 +154,10 @@ class FhirAnonymizerTest {
         assertSame(
             actual = capturedQuestionnaireResponse,
             expected = resource
+        )
+        assertSame(
+            actual = capturedProgramType,
+            expected = programType
         )
         assertSame(
             actual = capturedBlurRule,
@@ -210,7 +218,7 @@ class FhirAnonymizerTest {
             blurResolver,
             QuestionnaireResponseAnonymizerStub(),
             researchSubjectAnonymizer
-        ).anonymize(resource, programConfig)
+        ).anonymize(resource, ProgramType.STUDY, programConfig)
 
         // Then
         assertSame(

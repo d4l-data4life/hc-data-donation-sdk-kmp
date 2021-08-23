@@ -105,7 +105,7 @@ internal class QuestionnaireResponseAnonymizer(
     }
 
     private fun redact(valueString: String?, programType: ProgramType): String? {
-        return if(programType == ProgramType.DIARY) {
+        return if (programType == ProgramType.DIARY) {
             redactor.redact(valueString)
         } else {
             valueString

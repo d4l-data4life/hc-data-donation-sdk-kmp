@@ -29,6 +29,7 @@ internal class FhirAnonymizer(
 ) : AnonymizationContract.FhirAnonymizer {
     private fun anonymizeQuestionaireResponse(
         questionnaireResponse: QuestionnaireResponse,
+        programType: ProgramType,
         programConfiguration: ProgramDonationConfiguration
     ): QuestionnaireResponse {
         val rule = blurResolver.resolveBlurRule(
@@ -39,7 +40,7 @@ internal class FhirAnonymizer(
 
         return questionnaireResponseAnonymizer.anonymize(
             questionnaireResponse,
-            ProgramType.STUDY,
+            programType,
             rule
         )
     }
@@ -62,11 +63,13 @@ internal class FhirAnonymizer(
 
     override fun anonymize(
         fhirResource: FhirResource,
+        programType: ProgramType,
         programConfiguration: ProgramDonationConfiguration
     ): FhirResource {
         return when (fhirResource) {
             is QuestionnaireResponse -> anonymizeQuestionaireResponse(
                 fhirResource,
+                programType,
                 programConfiguration
             )
             is ResearchSubject -> anonymizeResearchSubject(

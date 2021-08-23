@@ -798,7 +798,7 @@ class QuestionnaireResponseAnonymizerTest {
         val result = QuestionnaireResponseAnonymizer(
             DateTimeSmearerStub(),
             redactor
-        ).anonymize(resource, ProgramType.STUDY,null)
+        ).anonymize(resource, ProgramType.STUDY, null)
 
         // Then
         assertFalse(wasCalled)

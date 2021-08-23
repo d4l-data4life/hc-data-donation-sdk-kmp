@@ -77,6 +77,7 @@ internal interface AnonymizationContract {
     interface FhirAnonymizer {
         fun anonymize(
             fhirResource: FhirResource,
+            programType: ProgramType,
             programConfiguration: ProgramDonationConfiguration
         ): FhirResource
     }
