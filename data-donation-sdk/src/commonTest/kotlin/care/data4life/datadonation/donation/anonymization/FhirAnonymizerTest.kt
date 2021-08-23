@@ -114,7 +114,7 @@ class FhirAnonymizerTest {
         var capturedQuestionnaireResponse: QuestionnaireResponse? = null
         var capturedBlurRule: BlurRule? = null
 
-        questionnaireResponseAnonymizer.whenAnonymize = { delegatedQuestionnaireResponse, delegatedRule ->
+        questionnaireResponseAnonymizer.whenAnonymize = { delegatedQuestionnaireResponse, _, delegatedRule ->
             capturedQuestionnaireResponse = delegatedQuestionnaireResponse
             capturedBlurRule = delegatedRule
 

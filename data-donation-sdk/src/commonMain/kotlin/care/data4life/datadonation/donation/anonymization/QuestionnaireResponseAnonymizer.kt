@@ -18,6 +18,7 @@ package care.data4life.datadonation.donation.anonymization
 
 import care.data4life.datadonation.donation.anonymization.model.BlurRule
 import care.data4life.datadonation.donation.program.model.BlurFunction
+import care.data4life.datadonation.donation.program.model.ProgramType
 import care.data4life.datadonation.donation.program.model.QuestionnaireResponseItemBlur
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponseItem
@@ -41,25 +42,28 @@ internal class QuestionnaireResponseAnonymizer(
 
     private fun mapQuestionnaireResponse(
         questionnaireResponse: QuestionnaireResponse,
+        programType: ProgramType,
         blurRule: BlurRule?
     ): QuestionnaireResponse {
         return questionnaireResponse.copy(
             item = mapOrNull(questionnaireResponse.item) { item ->
-                mapQuestionnaireResponseItem(item, blurRule)
+                mapQuestionnaireResponseItem(item, programType, blurRule)
             }
         )
     }
 
     private fun mapQuestionnaireResponseItem(
         responseItem: QuestionnaireResponseItem,
+        programType: ProgramType,
         blurRule: BlurRule?
     ): QuestionnaireResponseItem {
         val item = mapOrNull(responseItem.item) { item ->
-            mapQuestionnaireResponseItem(item, blurRule)
+            mapQuestionnaireResponseItem(item, programType, blurRule)
         }
         val answer = mapOrNull(responseItem.answer) { answer ->
             mapQuestionnaireResponseItemAnswer(
                 answer,
+                programType,
                 responseItem.linkId,
                 blurRule
             )
@@ -100,15 +104,24 @@ internal class QuestionnaireResponseAnonymizer(
         }
     }
 
+    private fun redact(valueString: String?, programType: ProgramType): String? {
+        return if(programType == ProgramType.DIARY) {
+            redactor.redact(valueString)
+        } else {
+            valueString
+        }
+    }
+
     private fun mapQuestionnaireResponseItemAnswer(
         itemAnswer: QuestionnaireResponseItemAnswer,
+        programType: ProgramType,
         linkId: String,
         blurRule: BlurRule?
     ): QuestionnaireResponseItemAnswer {
         val item = mapOrNull(itemAnswer.item) { item ->
-            mapQuestionnaireResponseItem(item, blurRule)
+            mapQuestionnaireResponseItem(item, programType, blurRule)
         }
-        val valueString = redactor.redact(itemAnswer.valueString)
+        val valueString = redact(itemAnswer.valueString, programType)
         val valueDateTime = blurValueDateTime(
             itemAnswer.valueDateTime,
             linkId,
@@ -145,10 +158,12 @@ internal class QuestionnaireResponseAnonymizer(
 
     override fun anonymize(
         questionnaireResponse: QuestionnaireResponse,
+        programType: ProgramType,
         rule: BlurRule?
     ): QuestionnaireResponse {
         return mapQuestionnaireResponse(
             blurAuthored(questionnaireResponse, rule),
+            programType,
             rule
         )
     }

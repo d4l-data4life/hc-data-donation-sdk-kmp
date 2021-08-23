@@ -18,6 +18,7 @@ package care.data4life.datadonation.mock.stub.donation.anonymization
 
 import care.data4life.datadonation.donation.anonymization.AnonymizationContract
 import care.data4life.datadonation.donation.anonymization.model.BlurRule
+import care.data4life.datadonation.donation.program.model.ProgramType
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
@@ -25,13 +26,14 @@ import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
 internal class QuestionnaireResponseAnonymizerStub :
     AnonymizationContract.QuestionnaireResponseAnonymizer,
     MockContract.Stub {
-    var whenAnonymize: ((questionnaireResponse: QuestionnaireResponse, rule: BlurRule?) -> QuestionnaireResponse)? = null
+    var whenAnonymize: ((questionnaireResponse: QuestionnaireResponse, ProgramType, rule: BlurRule?) -> QuestionnaireResponse)? = null
 
     override fun anonymize(
         questionnaireResponse: QuestionnaireResponse,
+        programType: ProgramType,
         rule: BlurRule?
     ): QuestionnaireResponse {
-        return whenAnonymize?.invoke(questionnaireResponse, rule) ?: throw MockException()
+        return whenAnonymize?.invoke(questionnaireResponse, programType, rule) ?: throw MockException()
     }
 
     override fun clear() {
