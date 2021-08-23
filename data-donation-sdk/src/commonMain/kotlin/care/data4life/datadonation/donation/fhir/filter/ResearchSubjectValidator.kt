@@ -16,15 +16,20 @@
 
 package care.data4life.datadonation.donation.fhir.filter
 
-import care.data4life.datadonation.donation.fhir.AllowedReference
-import care.data4life.datadonation.donation.program.model.ProgramFhirResourceBlur
-import care.data4life.hl7.fhir.stu3.model.FhirQuestionnaireResponse
+import care.data4life.datadonation.donation.fhir.filter.FhirResourceFilterContract.ResearchSubjectValidator.Companion.INDIVIDUAL_IDENTIFIER_SYSTEM
+import care.data4life.datadonation.donation.fhir.filter.FhirResourceFilterContract.ResearchSubjectValidator.Companion.STUDY_IDENTIFIER_SYSTEM
+import care.data4life.hl7.fhir.stu3.model.FhirResearchSubject
 
-internal object QuestionnaireResponseValidator : FhirResourceFilterContract.QuestionnaireResponseValidator {
+internal object ResearchSubjectValidator : FhirResourceFilterContract.ResearchSubjectValidator {
     override fun isAllowed(
-        resource: FhirQuestionnaireResponse,
-        blurMapping: Map<AllowedReference, ProgramFhirResourceBlur?>
+        resource: FhirResearchSubject,
+        studyId: String
     ): Boolean {
-        return blurMapping.containsKey(resource.questionnaire?.reference)
+        return when {
+            resource.study.identifier?.system != STUDY_IDENTIFIER_SYSTEM -> false
+            resource.study.identifier?.value != studyId -> false
+            resource.individual.identifier?.system != INDIVIDUAL_IDENTIFIER_SYSTEM -> false
+            else -> true
+        }
     }
 }

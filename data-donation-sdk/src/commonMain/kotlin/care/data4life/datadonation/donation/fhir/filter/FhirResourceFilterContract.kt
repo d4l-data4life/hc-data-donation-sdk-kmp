@@ -18,22 +18,35 @@ package care.data4life.datadonation.donation.fhir.filter
 
 import care.data4life.datadonation.donation.fhir.AllowedReference
 import care.data4life.datadonation.donation.program.model.ProgramFhirResourceBlur
-import care.data4life.hl7.fhir.stu3.model.Observation
-import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
+import care.data4life.hl7.fhir.stu3.model.FhirObservation
+import care.data4life.hl7.fhir.stu3.model.FhirQuestionnaireResponse
+import care.data4life.hl7.fhir.stu3.model.FhirResearchSubject
 
 internal interface FhirResourceFilterContract {
     fun interface QuestionnaireResponseValidator {
         fun isAllowed(
-            resource: QuestionnaireResponse,
+            resource: FhirQuestionnaireResponse,
             blurMapping: Map<AllowedReference, ProgramFhirResourceBlur?>
         ): Boolean
     }
 
     fun interface ObservationValidator {
         fun isAllowed(
-            resource: Observation,
+            resource: FhirObservation,
             blurMapping: Map<AllowedReference, ProgramFhirResourceBlur?>
         ): Boolean
+    }
+
+    fun interface ResearchSubjectValidator {
+        fun isAllowed(
+            resource: FhirResearchSubject,
+            studyId: String
+        ): Boolean
+
+        companion object {
+            const val STUDY_IDENTIFIER_SYSTEM = "http://fhir.data4life.care/stu3/CodeSystem/research-study-id"
+            const val INDIVIDUAL_IDENTIFIER_SYSTEM = "http://fhir.data4life.care/stu3/CodeSystem/alp-encrypted-external-id"
+        }
     }
 
     interface ResourceFilter
