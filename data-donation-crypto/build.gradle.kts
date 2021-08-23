@@ -20,17 +20,8 @@ import care.data4life.sdk.datadonation.dependency.Version
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
 
-    // Serialization
-    id("org.jetbrains.kotlin.plugin.serialization")
-
-    // SwiftPackage
-    id("com.chromaticnoise.multiplatform-swiftpackage") version "2.0.3"
-
     // Android
     id("com.android.library")
-
-    // Publish
-    id("care.data4life.sdk.datadonation.publishing-config")
 }
 
 group = LibraryConfig.group
@@ -48,16 +39,80 @@ kotlin {
         }
     }
 
-    multiplatformSwiftPackage {
-        swiftToolsVersion(LibraryConfig.iOS.toolVersion)
-        packageName(LibraryConfig.iOS.packageName)
-        zipFileName(LibraryConfig.iOS.packageName)
-        outputDirectory(
-            File(rootDir, "${File.separator}swift${File.separator}${LibraryConfig.iOS.packageName}")
-        )
-        distributionMode { local() }
-        targetPlatforms {
-            iOS { v(LibraryConfig.iOS.targetVersion) }
+    iosArm64 {
+        val platform = "iphoneos"
+        val libraryName = "DataDonationCryptoObjC"
+        val libraryPath = "$rootDir/$libraryName/build/Build/Products/Release-$platform"
+
+        compilations.getByName("main") {
+            cinterops.create("DataDonationCryptoObjC") {
+                val interopTask = tasks[interopProcessingTaskName]
+                interopTask.dependsOn(":DataDonationCryptoObjC:build${platform.capitalize()}")
+
+                includeDirs.headerFilterOnly(libraryPath)
+
+                // Path to .def file
+                defFile("$projectDir/src/nativeInterop/cinterop/DataDonationCryptoObjC.def")
+                includeDirs(libraryPath)
+            }
+        }
+
+        compilations.getByName("test") {
+            cinterops.create("DataDonationCryptoObjC") {
+                val interopTask = tasks[interopProcessingTaskName]
+                interopTask.dependsOn(":DataDonationCryptoObjC:build${platform.capitalize()}")
+
+                includeDirs.headerFilterOnly(libraryPath)
+
+                // Path to .def file
+                defFile("$projectDir/src/nativeInterop/cinterop/DataDonationCryptoObjC.def")
+                includeDirs(libraryPath)
+            }
+        }
+
+        binaries.all {
+            linkerOpts(
+                "-rpath", "/urs/lib/swift",
+                "-L$libraryPath", "-l$libraryName"
+            )
+        }
+    }
+
+    iosX64 {
+        val platform = "iphonesimulator"
+        val libraryName = "DataDonationCryptoObjC"
+        val libraryPath = "$rootDir/$libraryName/build/Build/Products/Release-$platform"
+
+        compilations.getByName("main") {
+            cinterops.create("DataDonationCryptoObjC") {
+                val interopTask = tasks[interopProcessingTaskName]
+                interopTask.dependsOn(":DataDonationCryptoObjC:build${platform.capitalize()}")
+
+                includeDirs.headerFilterOnly(libraryPath)
+
+                // Path to .def file
+                defFile("$projectDir/src/nativeInterop/cinterop/DataDonationCryptoObjC.def")
+                includeDirs(libraryPath)
+            }
+        }
+
+        compilations.getByName("test") {
+            cinterops.create("DataDonationCryptoObjC") {
+                val interopTask = tasks[interopProcessingTaskName]
+                interopTask.dependsOn(":DataDonationCryptoObjC:build${platform.capitalize()}")
+                includeDirs.headerFilterOnly(libraryPath)
+
+                // Path to .def file
+                defFile("$projectDir/src/nativeInterop/cinterop/DataDonationCryptoObjC.def")
+                includeDirs(libraryPath)
+            }
+        }
+
+        binaries.all {
+            linkerOpts(
+                "-rpath", "/urs/lib/swift",
+                "-L$libraryPath", "-l$libraryName"
+            )
         }
     }
 
@@ -69,7 +124,6 @@ kotlin {
                 useExperimentalAnnotation("kotlinx.serialization.ExperimentalSerializationApi")
                 useExperimentalAnnotation("kotlin.ExperimentalStdlibApi")
                 useExperimentalAnnotation("kotlin.ExperimentalUnsignedTypes")
-                useExperimentalAnnotation("kotlin.time.ExperimentalTime")
             }
         }
         commonMain {
@@ -84,24 +138,9 @@ kotlin {
                 implementation(Dependency.multiplatform.stately.isolate)
                 implementation(Dependency.multiplatform.stately.concurrency)
 
-                implementation(Dependency.multiplatform.ktor.commonCore)
-                implementation(Dependency.multiplatform.ktor.logger)
-                implementation(Dependency.multiplatform.ktor.commonJson)
-                implementation(Dependency.multiplatform.ktor.commonSerialization)
-
-                implementation(Dependency.multiplatform.serialization.common)
-
-                implementation(Dependency.multiplatform.dateTime)
-
                 // D4L
                 implementation(Dependency.d4l.sdkUtil)
-                implementation(Dependency.d4l.sdkFlow)
                 implementation(Dependency.d4l.sdkError)
-                implementation(Dependency.d4l.sdkUtilCoroutine) {
-                    exclude(
-                        group = "co.touchlab:stately-concurrency"
-                    )
-                }
             }
         }
         commonTest {
@@ -111,12 +150,10 @@ kotlin {
                 implementation(Dependency.multiplatform.kotlin.testCommon)
                 implementation(Dependency.multiplatform.kotlin.testCommonAnnotations)
                 implementation(Dependency.multiplatform.koin.test)
-                implementation(Dependency.multiplatform.ktor.mock)
 
                 // D4L
                 implementation(Dependency.d4l.sdkTestUtil)
                 implementation(Dependency.d4l.sdkTestCoroutineUtil)
-                implementation(Dependency.d4l.sdkTestKtorUtil)
             }
         }
 
@@ -125,9 +162,6 @@ kotlin {
                 //DI
                 implementation(Dependency.jvm.slf4jNop)
                 implementation(Dependency.jvm.slf4jApi)
-
-                //Ktor
-                implementation(Dependency.multiplatform.ktor.androidCore)
             }
         }
         val androidTest by getting {
@@ -147,9 +181,6 @@ kotlin {
                         strictly(Version.kotlinCoroutines)
                     }
                 }
-                implementation(Dependency.multiplatform.serialization.common)
-                implementation(Dependency.multiplatform.ktor.iosCore)
-                implementation(Dependency.multiplatform.ktor.ios)
 
                 // D4L
                 implementation(Dependency.d4l.sdkObjcUtil)
@@ -181,7 +212,9 @@ android {
         )
     }
 
-    resourcePrefix(LibraryConfig.android.resourcePrefix)
+    resourcePrefix(
+        "${LibraryConfig.android.resourcePrefix}_crypto_"
+    )
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -226,65 +259,5 @@ val provideTestConfig: Task by tasks.creating {
 tasks.withType(org.jetbrains.kotlin.gradle.dsl.KotlinCompile::class.java) {
     if (this.name.contains("Test")) {
         this.dependsOn(provideTestConfig)
-    }
-}
-
-val uselessSwiftProtocols = listOf(
-    "ConsentDataContract",
-    "DataDonationSDK"
-)
-val referencePrefix = "DLDDSDK"
-
-val swiftNameReplacements = mapOf<String,String>(
-    "Kotlinx_coroutines_coreCancellationException" to "KotlinCancellationError",
-    "Kotlinx_coroutines_coreJob" to "KotlinJob"
-)
-
-project.afterEvaluate {
-    val swiftTargetDirectory = File(rootDir, "${File.separator}swift${File.separator}${LibraryConfig.iOS.packageName}")
-
-    val swiftPackageCleaner by tasks.register("cleanXCFramework") {
-        group = "Multiplatform-swift-package"
-        description = "Custom cleaner tasks to avoid empty protocols and to provide better names for Swift"
-
-        dependsOn(tasks.getByName("createXCFramework"))
-        doFirst {
-            project.fileTree(swiftTargetDirectory).forEach { file ->
-                if (file.absolutePath.endsWith(".h")) {
-                    var source = file.readText(Charsets.UTF_8)
-                    uselessSwiftProtocols.forEach { protocolName ->
-                        var replacementBarrier = source.contains("__attribute__((swift_name(\"$protocolName\")))")
-                        source = source.replace(
-                            "__attribute__((swift_name(\"$protocolName\")))\n" +
-                                "@protocol $referencePrefix$protocolName\n" +
-                                "@required\n" +
-                                "@end;",
-                            "// removed $protocolName"
-                        )
-                        replacementBarrier = replacementBarrier && !source.contains("__attribute__((swift_name(\"$protocolName\")))")
-
-                        if(replacementBarrier) {
-                            source = source.replace(
-                                Regex("__attribute__\\(\\(swift_name\\(\"$protocolName([A-Z][a-zA-Z]+)\"\\)\\)\\)"),
-                                "__attribute__((swift_name(\"$1Protocol\"))) // $protocolName$1 -> $1Protocol"
-                            )
-                        }
-                    }
-
-                    swiftNameReplacements.forEach { (originalName, newName) ->
-                        source = source.replace(
-                            "__attribute__((swift_name(\"$originalName\")))",
-                            "__attribute__((swift_name(\"$newName\"))) // $originalName -> $newName"
-                        )
-                    }
-
-                    file.writeText(source, Charsets.UTF_8)
-                }
-            }
-        }
-    }
-
-    tasks.getByName("createSwiftPackage") {
-        dependsOn(swiftPackageCleaner)
     }
 }

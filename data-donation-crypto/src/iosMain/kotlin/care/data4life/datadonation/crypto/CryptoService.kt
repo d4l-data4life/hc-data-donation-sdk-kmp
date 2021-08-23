@@ -14,20 +14,23 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.donation.crypto
+package care.data4life.datadonation.crypto
 
 internal actual class CryptoService actual constructor(
     donationPublicKey: String,
     alpPublicKey: String
 ) : CryptoContract.Service {
+    // TODO Use objc util to map from ByteArray to NSData
     actual override fun encrypt(
         payload: ByteArray,
+        saltLength: Int,
         keyType: CryptoContract.KeyType
     ): ByteArray {
         TODO()
     }
     actual override fun decrypt(
         payload: ByteArray,
+        saltLength: Int,
         keyType: CryptoContract.KeyType
     ): ByteArray {
         TODO()
@@ -35,6 +38,7 @@ internal actual class CryptoService actual constructor(
 
     actual override fun sign(
         payload: ByteArray,
+        saltLength: Int,
         keyType: CryptoContract.KeyType
     ): ByteArray {
         TODO()
@@ -42,6 +46,7 @@ internal actual class CryptoService actual constructor(
 
     actual override fun verify(
         payload: ByteArray,
+        saltLength: Int,
         keyType: CryptoContract.KeyType
     ): ByteArray {
         TODO()

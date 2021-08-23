@@ -14,7 +14,7 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.donation.crypto
+package care.data4life.datadonation.crypto
 
 internal interface CryptoContract {
     enum class KeyType {
@@ -25,10 +25,26 @@ internal interface CryptoContract {
 
     // TODO Split them in 2 services?
     interface Service {
-        fun encrypt(payload: ByteArray, keyType: KeyType): ByteArray
-        fun decrypt(payload: ByteArray, keyType: KeyType): ByteArray
+        fun encrypt(
+            payload: ByteArray,
+            saltLength: Int,
+            keyType: KeyType
+        ): ByteArray
+        fun decrypt(
+            payload: ByteArray,
+            saltLength: Int,
+            keyType: KeyType
+        ): ByteArray
 
-        fun sign(payload: ByteArray, keyType: KeyType): ByteArray
-        fun verify(payload: ByteArray, keyType: KeyType): ByteArray
+        fun sign(
+            payload: ByteArray,
+            saltLength: Int,
+            keyType: KeyType
+        ): ByteArray
+        fun verify(
+            payload: ByteArray,
+            saltLength: Int,
+            keyType: KeyType
+        ): ByteArray
     }
 }

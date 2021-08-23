@@ -14,16 +14,31 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.donation.crypto
+package care.data4life.datadonation.crypto
 
-import kotlin.test.Test
-import kotlin.test.assertTrue
+internal expect class CryptoService(
+    donationPublicKey: String,
+    alpPublicKey: String
+) : CryptoContract.Service {
+    override fun encrypt(
+        payload: ByteArray,
+        saltLength: Int,
+        keyType: CryptoContract.KeyType
+    ): ByteArray
+    override fun decrypt(
+        payload: ByteArray,
+        saltLength: Int,
+        keyType: CryptoContract.KeyType
+    ): ByteArray
 
-class CryptoServiceTest {
-    @Test
-    fun `It fulfils the Crypto Service`() {
-        val service: Any = CryptoService("any", "any")
-
-        assertTrue(service is CryptoContract.Service)
-    }
+    override fun sign(
+        payload: ByteArray,
+        saltLength: Int,
+        keyType: CryptoContract.KeyType
+    ): ByteArray
+    override fun verify(
+        payload: ByteArray,
+        saltLength: Int,
+        keyType: CryptoContract.KeyType
+    ): ByteArray
 }
