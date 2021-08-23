@@ -18,12 +18,20 @@ package care.data4life.datadonation.donation.fhir.filter
 
 import care.data4life.datadonation.donation.fhir.AllowedReference
 import care.data4life.datadonation.donation.program.model.ProgramFhirResourceBlur
+import care.data4life.hl7.fhir.stu3.model.Observation
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
 
 internal interface FhirResourceFilterContract {
     fun interface QuestionnaireResponseValidator {
-        fun isAllow(
+        fun isAllowed(
             resource: QuestionnaireResponse,
+            blurMapping: Map<AllowedReference, ProgramFhirResourceBlur?>
+        ): Boolean
+    }
+
+    fun interface ObservationValidator {
+        fun isAllowed(
+            resource: Observation,
             blurMapping: Map<AllowedReference, ProgramFhirResourceBlur?>
         ): Boolean
     }

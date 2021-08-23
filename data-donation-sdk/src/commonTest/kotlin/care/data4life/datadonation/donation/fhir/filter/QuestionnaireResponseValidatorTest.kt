@@ -45,7 +45,7 @@ class QuestionnaireResponseValidatorTest {
         )
 
         // When
-        val result = QuestionnaireResponseValidator.isAllow(
+        val result = QuestionnaireResponseValidator.isAllowed(
             questionnaireResponse,
             blurMapping
         )
@@ -72,7 +72,7 @@ class QuestionnaireResponseValidatorTest {
         )
 
         // When
-        val result = QuestionnaireResponseValidator.isAllow(
+        val result = QuestionnaireResponseValidator.isAllowed(
             questionnaireResponse,
             blurMapping
         )

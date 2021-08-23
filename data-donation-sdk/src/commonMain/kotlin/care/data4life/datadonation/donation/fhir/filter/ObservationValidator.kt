@@ -17,14 +17,35 @@
 package care.data4life.datadonation.donation.fhir.filter
 
 import care.data4life.datadonation.donation.fhir.AllowedReference
+import care.data4life.datadonation.donation.fhir.FhirContract.FhirResourceBlurMapper.Companion.REFERENCE_SEPARATOR
 import care.data4life.datadonation.donation.program.model.ProgramFhirResourceBlur
-import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
+import care.data4life.hl7.fhir.stu3.model.Coding
+import care.data4life.hl7.fhir.stu3.model.Observation
 
-internal object QuestionnaireResponseValidator : FhirResourceFilterContract.QuestionnaireResponseValidator {
-    override fun isAllowed(
-        resource: QuestionnaireResponse,
+internal object ObservationValidator : FhirResourceFilterContract.ObservationValidator {
+    private fun matchesReference(
+        resource: Observation,
         blurMapping: Map<AllowedReference, ProgramFhirResourceBlur?>
     ): Boolean {
-        return blurMapping.containsKey(resource.questionnaire?.reference)
+        val code = resource.code.coding?.first()
+
+        return if (code is Coding) {
+            blurMapping.containsKey(
+                "Observation${REFERENCE_SEPARATOR}${code.system}${REFERENCE_SEPARATOR}${code.code}"
+            )
+        } else {
+            false
+        }
+    }
+
+    override fun isAllowed(
+        resource: Observation,
+        blurMapping: Map<AllowedReference, ProgramFhirResourceBlur?>
+    ): Boolean {
+        return when {
+            resource.valueQuantity == null -> false
+            resource.code.coding.isNullOrEmpty() -> false
+            else -> matchesReference(resource, blurMapping)
+        }
     }
 }
