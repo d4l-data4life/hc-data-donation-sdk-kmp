@@ -2,7 +2,7 @@
   "name": "sample",
   "slug": "sample",
   "tenantID": "d4l",
-  "type": "study",
+  "type": "diary",
   "donation": {
     "consentKey": "d4l.sample",
     "anonymization": {

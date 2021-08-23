@@ -23,6 +23,7 @@ import care.data4life.datadonation.donation.program.model.ProgramAnonymizationGl
 import care.data4life.datadonation.donation.program.model.ProgramDonationConfiguration
 import care.data4life.datadonation.donation.program.model.ProgramFhirResourceBlur
 import care.data4life.datadonation.donation.program.model.ProgramFhirResourceConfiguration
+import care.data4life.datadonation.donation.program.model.ProgramType
 import care.data4life.datadonation.donation.program.model.QuestionnaireResponseItemBlur
 import kotlin.native.concurrent.ThreadLocal
 
@@ -32,6 +33,7 @@ internal object ProgramFixture {
         name = "sample",
         slug = "sample",
         tenantID = "d4l",
+        type = ProgramType.DIARY,
         configuration = ProgramDonationConfiguration(
             consentKey = "d4l.sample",
             anonymization = ProgramAnonymization(
