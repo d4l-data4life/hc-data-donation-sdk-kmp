@@ -14,9 +14,10 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.donation.consentsignature.model
+package care.data4life.datadonation.donation.donationservice.model
 
-import care.data4life.datadonation.error.CoreRuntimeError
+import care.data4life.datadonation.donation.donationserivce.DonationServiceContract
+import care.data4life.datadonation.donation.donationserivce.model.RevocationTypeSerializer
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.descriptors.PrimitiveKind
@@ -30,10 +31,10 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
-internal class ConsentSignatureTypeSerializerTest {
+internal class RevocationTypeSerializerTest {
     @Test
     fun `It fulfils KSerializer`() {
-        val serializer: Any = ConsentSignatureTypeSerializer
+        val serializer: Any = RevocationTypeSerializer
 
         assertTrue(serializer is KSerializer<*>)
     }
@@ -41,26 +42,26 @@ internal class ConsentSignatureTypeSerializerTest {
     @Test
     fun `It has a proper descriptor`() {
         assertEquals(
-            actual = ConsentSignatureTypeSerializer.descriptor.kind,
+            actual = RevocationTypeSerializer.descriptor.kind,
             expected = PrimitiveKind.STRING
         )
 
         assertEquals(
-            actual = ConsentSignatureTypeSerializer.descriptor.serialName,
-            expected = "ConsentSignatureType"
+            actual = RevocationTypeSerializer.descriptor.serialName,
+            expected = "RevocationType"
         )
     }
 
     @Test
-    fun `Given a Serializer is called with a ConsentSignatureType, it encodes it`() {
+    fun `Given a Serializer is called with a RevocationType, it encodes it`() {
         // Given
         val serializer = Json {
             serializersModule = SerializersModule {
-                contextual(ConsentSignatureTypeSerializer)
+                contextual(RevocationTypeSerializer)
             }
         }
 
-        for (field in ConsentSignatureType.values()) {
+        for (field in DonationServiceContract.RevocationType.values()) {
             // When
             val result = serializer.encodeToString(field)
 
@@ -73,38 +74,33 @@ internal class ConsentSignatureTypeSerializerTest {
     }
 
     @Test
-    fun `Given a Serializer is called with a serialized ConsentSignatureType, it fails with a Internal Failure if the blur function is unknown`() {
+    fun `Given a Serializer is called with a serialized RevocationType, it fails with a Internal Failure if the blur function is unknown`() {
         // Given
         val serializer = Json {
             serializersModule = SerializersModule {
-                contextual(ConsentSignatureTypeSerializer)
+                contextual(RevocationTypeSerializer)
             }
         }
 
         // Then
-        val error = assertFailsWith<CoreRuntimeError.InternalFailure> {
+        assertFailsWith<Throwable> {
             // When
-            serializer.decodeFromString<ConsentSignatureType>("\"notJS\"")
+            serializer.decodeFromString<DonationServiceContract.RevocationType>("\"notJS\"")
         }
-
-        assertEquals(
-            actual = error.message,
-            expected = "Unknown ConsentSignatureType notJS."
-        )
     }
 
     @Test
-    fun `Given a Serializer is called with a serialized ConsentSignatureType, it decodes it`() {
+    fun `Given a Serializer is called with a serialized RevocationType, it decodes it`() {
         // Given
         val serializer = Json {
             serializersModule = SerializersModule {
-                contextual(ConsentSignatureTypeSerializer)
+                contextual(RevocationTypeSerializer)
             }
         }
 
-        for (field in ConsentSignatureType.values()) {
+        for (field in DonationServiceContract.RevocationType.values()) {
             // When
-            val result = serializer.decodeFromString<ConsentSignatureType>("\"${field.value}\"")
+            val result = serializer.decodeFromString<DonationServiceContract.RevocationType>("\"${field.value}\"")
 
             // Then
             assertSame(
