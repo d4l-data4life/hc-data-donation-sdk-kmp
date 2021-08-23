@@ -14,7 +14,7 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.donation.fhir.filter
+package care.data4life.datadonation.donation.fhir.validator
 
 import care.data4life.datadonation.donation.program.model.ProgramFhirResourceBlur
 import care.data4life.hl7.fhir.stu3.codesystem.QuestionnaireResponseStatus
@@ -29,7 +29,7 @@ class QuestionnaireResponseValidatorTest {
     fun `It fulfils QuestionnaireResponseValidator`() {
         val filter: Any = QuestionnaireResponseValidator
 
-        assertTrue(filter is FhirResourceFilterContract.QuestionnaireResponseValidator)
+        assertTrue(filter is FhirResourceValidatorContract.QuestionnaireResponseValidator)
     }
 
     @Test

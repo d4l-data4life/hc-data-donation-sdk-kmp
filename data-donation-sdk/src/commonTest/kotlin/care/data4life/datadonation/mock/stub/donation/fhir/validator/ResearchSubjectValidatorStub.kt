@@ -14,22 +14,26 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.donation.fhir.filter
+package care.data4life.datadonation.mock.stub.donation.fhir.validator
 
-import care.data4life.datadonation.donation.fhir.filter.FhirResourceFilterContract.ResearchSubjectValidator.Companion.INDIVIDUAL_IDENTIFIER_SYSTEM
-import care.data4life.datadonation.donation.fhir.filter.FhirResourceFilterContract.ResearchSubjectValidator.Companion.STUDY_IDENTIFIER_SYSTEM
+import care.data4life.datadonation.donation.fhir.validator.FhirResourceValidatorContract
+import care.data4life.datadonation.mock.MockContract
+import care.data4life.datadonation.mock.MockException
 import care.data4life.hl7.fhir.stu3.model.FhirResearchSubject
 
-internal object ResearchSubjectValidator : FhirResourceFilterContract.ResearchSubjectValidator {
+internal class ResearchSubjectValidatorStub :
+    FhirResourceValidatorContract.ResearchSubjectValidator,
+    MockContract.Stub {
+    var whenIsAllowed: ((FhirResearchSubject, String) -> Boolean)? = null
+
     override fun isAllowed(
         resource: FhirResearchSubject,
         studyId: String
     ): Boolean {
-        return when {
-            resource.study.identifier?.system != STUDY_IDENTIFIER_SYSTEM -> false
-            resource.study.identifier?.value != studyId -> false
-            resource.individual.identifier?.system != INDIVIDUAL_IDENTIFIER_SYSTEM -> false
-            else -> true
-        }
+        return whenIsAllowed?.invoke(resource, studyId) ?: throw MockException()
+    }
+
+    override fun clear() {
+        whenIsAllowed = null
     }
 }

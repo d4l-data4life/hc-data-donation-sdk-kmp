@@ -14,15 +14,16 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.donation.fhir.filter
+package care.data4life.datadonation.donation.fhir.validator
 
 import care.data4life.datadonation.donation.fhir.AllowedReference
 import care.data4life.datadonation.donation.program.model.ProgramFhirResourceBlur
 import care.data4life.hl7.fhir.stu3.model.FhirObservation
 import care.data4life.hl7.fhir.stu3.model.FhirQuestionnaireResponse
 import care.data4life.hl7.fhir.stu3.model.FhirResearchSubject
+import care.data4life.hl7.fhir.stu3.model.FhirResource
 
-internal interface FhirResourceFilterContract {
+internal interface FhirResourceValidatorContract {
     fun interface QuestionnaireResponseValidator {
         fun isAllowed(
             resource: FhirQuestionnaireResponse,
@@ -49,5 +50,11 @@ internal interface FhirResourceFilterContract {
         }
     }
 
-    interface ResourceFilter
+    interface ResourceValidator {
+        fun isAllowed(
+            resource: FhirResource,
+            studyId: String,
+            blurMapping: Map<AllowedReference, ProgramFhirResourceBlur?>
+        ): Boolean
+    }
 }

@@ -14,38 +14,30 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.donation.fhir.filter
+package care.data4life.datadonation.donation.fhir.validator
 
 import care.data4life.datadonation.donation.fhir.AllowedReference
-import care.data4life.datadonation.donation.fhir.FhirContract.FhirResourceBlurMapper.Companion.REFERENCE_SEPARATOR
 import care.data4life.datadonation.donation.program.model.ProgramFhirResourceBlur
-import care.data4life.hl7.fhir.stu3.model.Coding
 import care.data4life.hl7.fhir.stu3.model.FhirObservation
+import care.data4life.hl7.fhir.stu3.model.FhirQuestionnaireResponse
+import care.data4life.hl7.fhir.stu3.model.FhirResearchSubject
+import care.data4life.hl7.fhir.stu3.model.FhirResource
 
-internal object ObservationValidator : FhirResourceFilterContract.ObservationValidator {
-    private fun matchesReference(
-        resource: FhirObservation,
-        blurMapping: Map<AllowedReference, ProgramFhirResourceBlur?>
-    ): Boolean {
-        val code = resource.code.coding?.first()
-
-        return if (code is Coding) {
-            blurMapping.containsKey(
-                "Observation${REFERENCE_SEPARATOR}${code.system}${REFERENCE_SEPARATOR}${code.code}"
-            )
-        } else {
-            false
-        }
-    }
-
+internal class ResourceValidator(
+    private val questionnaireResponseValidator: FhirResourceValidatorContract.QuestionnaireResponseValidator,
+    private val observationValidator: FhirResourceValidatorContract.ObservationValidator,
+    private val researchSubjectValidator: FhirResourceValidatorContract.ResearchSubjectValidator
+) : FhirResourceValidatorContract.ResourceValidator {
     override fun isAllowed(
-        resource: FhirObservation,
+        resource: FhirResource,
+        studyId: String,
         blurMapping: Map<AllowedReference, ProgramFhirResourceBlur?>
     ): Boolean {
-        return when {
-            resource.valueQuantity == null -> false
-            resource.code.coding.isNullOrEmpty() -> false
-            else -> matchesReference(resource, blurMapping)
+        return when (resource) {
+            is FhirQuestionnaireResponse -> questionnaireResponseValidator.isAllowed(resource, blurMapping)
+            is FhirObservation -> observationValidator.isAllowed(resource, blurMapping)
+            is FhirResearchSubject -> researchSubjectValidator.isAllowed(resource, studyId)
+            else -> false
         }
     }
 }
