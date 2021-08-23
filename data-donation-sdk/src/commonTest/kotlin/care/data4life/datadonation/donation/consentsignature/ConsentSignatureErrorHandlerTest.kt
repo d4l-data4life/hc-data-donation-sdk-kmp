@@ -55,7 +55,7 @@ class ConsentSignatureErrorHandlerTest {
         val result = ConsentSignatureErrorHandler.handleEnableSigning(error)
 
         // Then
-        assertTrue(result is ConsentSignatureError.Unauthorized)
+        assertTrue(result is ConsentSignatureError.ConsentIsNotAuthenticated)
     }
 
     @Test
@@ -67,7 +67,7 @@ class ConsentSignatureErrorHandlerTest {
         val result = ConsentSignatureErrorHandler.handleEnableSigning(error)
 
         // Then
-        assertTrue(result is ConsentSignatureError.Forbidden)
+        assertTrue(result is ConsentSignatureError.SigningIsAlreadyDisabled)
     }
 
     @Test
@@ -79,7 +79,7 @@ class ConsentSignatureErrorHandlerTest {
         val result = ConsentSignatureErrorHandler.handleEnableSigning(error)
 
         // Then
-        assertTrue(result is ConsentSignatureError.NotFound)
+        assertTrue(result is ConsentSignatureError.SigningIsNotEnabled)
     }
 
     @Test
@@ -91,7 +91,7 @@ class ConsentSignatureErrorHandlerTest {
         val result = ConsentSignatureErrorHandler.handleEnableSigning(error)
 
         // Then
-        assertTrue(result is ConsentSignatureError.DocumentConflict)
+        assertTrue(result is ConsentSignatureError.ConsentWasNotRevoked)
     }
 
     @Test
@@ -103,7 +103,7 @@ class ConsentSignatureErrorHandlerTest {
         val result = ConsentSignatureErrorHandler.handleEnableSigning(error)
 
         // Then
-        assertTrue(result is ConsentSignatureError.UnprocessableEntity)
+        assertTrue(result is ConsentSignatureError.MalformedRequest)
     }
 
     @Test
@@ -115,7 +115,7 @@ class ConsentSignatureErrorHandlerTest {
         val result = ConsentSignatureErrorHandler.handleEnableSigning(error)
 
         // Then
-        assertTrue(result is ConsentSignatureError.TooManyRequests)
+        assertTrue(result is ConsentSignatureError.RevocationWasNotTooLongAgo)
     }
 
     @Test
@@ -155,7 +155,7 @@ class ConsentSignatureErrorHandlerTest {
         val result = ConsentSignatureErrorHandler.handleSigning(error)
 
         // Then
-        assertTrue(result is ConsentSignatureError.Unauthorized)
+        assertTrue(result is ConsentSignatureError.ConsentIsNotAuthenticated)
     }
 
     @Test
@@ -167,7 +167,7 @@ class ConsentSignatureErrorHandlerTest {
         val result = ConsentSignatureErrorHandler.handleEnableSigning(error)
 
         // Then
-        assertTrue(result is ConsentSignatureError.NotFound)
+        assertTrue(result is ConsentSignatureError.SigningIsNotEnabled)
     }
 
     @Test
@@ -179,7 +179,7 @@ class ConsentSignatureErrorHandlerTest {
         val result = ConsentSignatureErrorHandler.handleSigning(error)
 
         // Then
-        assertTrue(result is ConsentSignatureError.DocumentConflict)
+        assertTrue(result is ConsentSignatureError.ConsentWasNotRevoked)
     }
 
     @Test
@@ -191,7 +191,7 @@ class ConsentSignatureErrorHandlerTest {
         val result = ConsentSignatureErrorHandler.handleSigning(error)
 
         // Then
-        assertTrue(result is ConsentSignatureError.UnprocessableEntity)
+        assertTrue(result is ConsentSignatureError.MalformedRequest)
     }
 
     @Test
@@ -231,7 +231,7 @@ class ConsentSignatureErrorHandlerTest {
         val result = ConsentSignatureErrorHandler.handleDisableSigning(error)
 
         // Then
-        assertTrue(result is ConsentSignatureError.Unauthorized)
+        assertTrue(result is ConsentSignatureError.ConsentIsNotAuthenticated)
     }
 
     @Test
@@ -243,7 +243,7 @@ class ConsentSignatureErrorHandlerTest {
         val result = ConsentSignatureErrorHandler.handleDisableSigning(error)
 
         // Then
-        assertTrue(result is ConsentSignatureError.Forbidden)
+        assertTrue(result is ConsentSignatureError.SigningIsAlreadyDisabled)
     }
 
     @Test
@@ -255,7 +255,7 @@ class ConsentSignatureErrorHandlerTest {
         val result = ConsentSignatureErrorHandler.handleDisableSigning(error)
 
         // Then
-        assertTrue(result is ConsentSignatureError.NotFound)
+        assertTrue(result is ConsentSignatureError.SigningIsNotEnabled)
     }
 
     @Test
@@ -267,7 +267,7 @@ class ConsentSignatureErrorHandlerTest {
         val result = ConsentSignatureErrorHandler.handleDisableSigning(error)
 
         // Then
-        assertTrue(result is ConsentSignatureError.DocumentConflict)
+        assertTrue(result is ConsentSignatureError.ConsentWasNotRevoked)
     }
 
     @Test
@@ -279,7 +279,7 @@ class ConsentSignatureErrorHandlerTest {
         val result = ConsentSignatureErrorHandler.handleDisableSigning(error)
 
         // Then
-        assertTrue(result is ConsentSignatureError.UnprocessableEntity)
+        assertTrue(result is ConsentSignatureError.MalformedRequest)
     }
 
     @Test

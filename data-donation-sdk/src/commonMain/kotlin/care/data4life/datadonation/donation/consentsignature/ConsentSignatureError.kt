@@ -22,11 +22,11 @@ sealed class ConsentSignatureError(
     open val httpStatus: Int
 ) : D4LRuntimeException() {
     class UnexpectedFailure(override val httpStatus: Int) : ConsentSignatureError(httpStatus)
-    class Unauthorized : ConsentSignatureError(401)
-    class Forbidden : ConsentSignatureError(403)
-    class NotFound : ConsentSignatureError(404)
-    class DocumentConflict : ConsentSignatureError(409)
-    class UnprocessableEntity : ConsentSignatureError(422)
-    class TooManyRequests : ConsentSignatureError(429)
+    class ConsentIsNotAuthenticated : ConsentSignatureError(401)
+    class SigningIsAlreadyDisabled : ConsentSignatureError(403)
+    class SigningIsNotEnabled : ConsentSignatureError(404)
+    class ConsentWasNotRevoked : ConsentSignatureError(409)
+    class MalformedRequest : ConsentSignatureError(422)
+    class RevocationWasNotTooLongAgo : ConsentSignatureError(429)
     class InternalServer : ConsentSignatureError(500)
 }

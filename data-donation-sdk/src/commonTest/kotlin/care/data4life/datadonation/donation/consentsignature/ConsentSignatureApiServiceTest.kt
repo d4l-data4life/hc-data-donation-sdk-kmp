@@ -65,7 +65,7 @@ class ConsentSignatureApiServiceTest {
         )
 
         val error = HttpRuntimeError(HttpStatusCode.TooManyRequests)
-        val outgoingError = ConsentSignatureError.Forbidden()
+        val outgoingError = ConsentSignatureError.SigningIsAlreadyDisabled()
         var capturedError: HttpRuntimeError? = null
 
         val client = HttpMockClientFactory.createErrorMockClient(error)
@@ -85,7 +85,7 @@ class ConsentSignatureApiServiceTest {
         }
 
         // Then
-        val result = assertFailsWith<ConsentSignatureError.Forbidden> {
+        val result = assertFailsWith<ConsentSignatureError.SigningIsAlreadyDisabled> {
             // When
             ConsentSignatureApiService(
                 requestTemplate,
@@ -196,7 +196,7 @@ class ConsentSignatureApiServiceTest {
         )
 
         val error = HttpRuntimeError(HttpStatusCode.TooManyRequests)
-        val outgoingError = ConsentSignatureError.Forbidden()
+        val outgoingError = ConsentSignatureError.SigningIsAlreadyDisabled()
         var capturedError: HttpRuntimeError? = null
 
         val client = HttpMockClientFactory.createErrorMockClient(error)
@@ -216,7 +216,7 @@ class ConsentSignatureApiServiceTest {
         }
 
         // Then
-        val result = assertFailsWith<ConsentSignatureError.Forbidden> {
+        val result = assertFailsWith<ConsentSignatureError.SigningIsAlreadyDisabled> {
             // When
             ConsentSignatureApiService(
                 requestTemplate,
@@ -326,7 +326,7 @@ class ConsentSignatureApiServiceTest {
         )
 
         val error = HttpRuntimeError(HttpStatusCode.TooManyRequests)
-        val outgoingError = ConsentSignatureError.Forbidden()
+        val outgoingError = ConsentSignatureError.SigningIsAlreadyDisabled()
         var capturedError: HttpRuntimeError? = null
 
         val client = HttpMockClientFactory.createErrorMockClient(error)
@@ -346,7 +346,7 @@ class ConsentSignatureApiServiceTest {
         }
 
         // Then
-        val result = assertFailsWith<ConsentSignatureError.Forbidden> {
+        val result = assertFailsWith<ConsentSignatureError.SigningIsAlreadyDisabled> {
             // When
             ConsentSignatureApiService(
                 requestTemplate,

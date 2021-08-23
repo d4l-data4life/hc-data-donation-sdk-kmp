@@ -33,12 +33,12 @@ internal object ConsentSignatureErrorHandler : ConsentSignatureContract.ApiServi
         return mapError(
             error,
             mapOf(
-                HttpStatusCode.Unauthorized to ConsentSignatureError.Unauthorized(),
-                HttpStatusCode.Forbidden to ConsentSignatureError.Forbidden(),
-                HttpStatusCode.NotFound to ConsentSignatureError.NotFound(),
-                HttpStatusCode.Conflict to ConsentSignatureError.DocumentConflict(),
-                HttpStatusCode.UnprocessableEntity to ConsentSignatureError.UnprocessableEntity(),
-                HttpStatusCode.TooManyRequests to ConsentSignatureError.TooManyRequests(),
+                HttpStatusCode.Unauthorized to ConsentSignatureError.ConsentIsNotAuthenticated(),
+                HttpStatusCode.Forbidden to ConsentSignatureError.SigningIsAlreadyDisabled(),
+                HttpStatusCode.NotFound to ConsentSignatureError.SigningIsNotEnabled(),
+                HttpStatusCode.Conflict to ConsentSignatureError.ConsentWasNotRevoked(),
+                HttpStatusCode.UnprocessableEntity to ConsentSignatureError.MalformedRequest(),
+                HttpStatusCode.TooManyRequests to ConsentSignatureError.RevocationWasNotTooLongAgo(),
                 HttpStatusCode.InternalServerError to ConsentSignatureError.InternalServer()
             )
         )
@@ -48,10 +48,10 @@ internal object ConsentSignatureErrorHandler : ConsentSignatureContract.ApiServi
         return mapError(
             error,
             mapOf(
-                HttpStatusCode.Unauthorized to ConsentSignatureError.Unauthorized(),
-                HttpStatusCode.NotFound to ConsentSignatureError.NotFound(),
-                HttpStatusCode.Conflict to ConsentSignatureError.DocumentConflict(),
-                HttpStatusCode.UnprocessableEntity to ConsentSignatureError.UnprocessableEntity(),
+                HttpStatusCode.Unauthorized to ConsentSignatureError.ConsentIsNotAuthenticated(),
+                HttpStatusCode.NotFound to ConsentSignatureError.SigningIsNotEnabled(),
+                HttpStatusCode.Conflict to ConsentSignatureError.ConsentWasNotRevoked(),
+                HttpStatusCode.UnprocessableEntity to ConsentSignatureError.MalformedRequest(),
                 HttpStatusCode.InternalServerError to ConsentSignatureError.InternalServer()
             )
         )
@@ -61,11 +61,11 @@ internal object ConsentSignatureErrorHandler : ConsentSignatureContract.ApiServi
         return mapError(
             error,
             mapOf(
-                HttpStatusCode.Unauthorized to ConsentSignatureError.Unauthorized(),
-                HttpStatusCode.Forbidden to ConsentSignatureError.Forbidden(),
-                HttpStatusCode.NotFound to ConsentSignatureError.NotFound(),
-                HttpStatusCode.Conflict to ConsentSignatureError.DocumentConflict(),
-                HttpStatusCode.UnprocessableEntity to ConsentSignatureError.UnprocessableEntity(),
+                HttpStatusCode.Unauthorized to ConsentSignatureError.ConsentIsNotAuthenticated(),
+                HttpStatusCode.Forbidden to ConsentSignatureError.SigningIsAlreadyDisabled(),
+                HttpStatusCode.NotFound to ConsentSignatureError.SigningIsNotEnabled(),
+                HttpStatusCode.Conflict to ConsentSignatureError.ConsentWasNotRevoked(),
+                HttpStatusCode.UnprocessableEntity to ConsentSignatureError.MalformedRequest(),
                 HttpStatusCode.InternalServerError to ConsentSignatureError.InternalServer()
             )
         )
