@@ -18,12 +18,11 @@ package care.data4life.datadonation.integration
 
 import kotlinx.cinterop.*
 import objc.datadonation.crypto.KeychainKeyProvider
-import platform.Foundation.CPointer
 import platform.Foundation.NSError
-import platform.Foundation.ObjCObjectVar
 import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 
 class ObjcCryptoIntegrationTest {
 
@@ -32,7 +31,7 @@ class ObjcCryptoIntegrationTest {
 
     @AfterTest
     fun tearDown() {
-        var error: CPointer<ObjCObjectVar<NSError?>>? = nil
+        var error: CPointer<ObjCObjectVar<NSError?>>? = null
         keychainKeyProvider.removeDonorKeyPairFor(programName, error)
     }
 
@@ -41,12 +40,15 @@ class ObjcCryptoIntegrationTest {
         // Given
 
         // When
-        var error: CPointer<ObjCObjectVar<NSError?>>? = nil
+        var error: CPointer<ObjCObjectVar<NSError?>>? = null
         val result = keychainKeyProvider.getDonorPrivateKeyFor(programName, error)
 
         // Then
         assertNotNull(
             result
+        )
+        assertNull(
+            error
         )
     }
 }
