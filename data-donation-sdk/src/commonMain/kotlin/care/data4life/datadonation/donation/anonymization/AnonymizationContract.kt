@@ -14,21 +14,16 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.mock.fixture
+package care.data4life.datadonation.donation.anonymization
 
-import care.data4life.datadonation.consent.consentdocument.model.ConsentDocument
-import kotlin.native.concurrent.ThreadLocal
+import care.data4life.hl7.fhir.stu3.model.FhirResource
 
-@ThreadLocal
-object ConsentDocumentFixture {
-    val sampleConsentDocument = ConsentDocument(
-        key = "exampleKey",
-        version = "42",
-        processor = "anyProcessor",
-        description = "this is an example document",
-        recipient = "sombody",
-        language = "zxx-Hant-CN-x-private1-private2",
-        text = "ExampleText",
-        title = "A title"
-    )
+internal interface AnonymizationContract {
+    interface Redactor {
+        suspend fun redact(resource: FhirResource): FhirResource
+
+        companion object {
+            const val REDACTED = "REDACTED"
+        }
+    }
 }
