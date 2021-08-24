@@ -16,20 +16,37 @@
 
 package care.data4life.datadonation.integration
 
-import objc.datadonation.crypto.DataDonationCryptor
+import kotlinx.cinterop.*
+import objc.datadonation.crypto.KeychainKeyProvider
+import platform.Foundation.CPointer
+import platform.Foundation.NSError
+import platform.Foundation.ObjCObjectVar
+import kotlin.test.AfterTest
 import kotlin.test.Test
+import kotlin.test.assertNotNull
 
 class ObjcCryptoIntegrationTest {
 
-    private val cryptor = DataDonationCryptor()
+    private val keychainKeyProvider = KeychainKeyProvider()
+    private val programName = "program-test"
+
+    @AfterTest
+    fun tearDown() {
+        var error: CPointer<ObjCObjectVar<NSError?>>? = nil
+        keychainKeyProvider.removeDonorKeyPairFor(programName, error)
+    }
 
     @Test
     fun `Given plain NSData and a key, it gets encrypted using objective C lib`() {
         // Given
 
         // When
-        val result = cryptor.createAsymmetricKeyPair()
-        println(result)
+        var error: CPointer<ObjCObjectVar<NSError?>>? = nil
+        val result = keychainKeyProvider.getDonorPrivateKeyFor(programName, error)
+
         // Then
+        assertNotNull(
+            result
+        )
     }
 }
