@@ -17,25 +17,19 @@
 package care.data4life.datadonation.integration
 
 import objc.datadonation.crypto.DataDonationCryptor
-import platform.Foundation.NSData
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class ObjcCryptoIntegrationTest {
+
+    private val cryptor = DataDonationCryptor()
 
     @Test
     fun `Given plain NSData and a key, it gets encrypted using objective C lib`() {
         // Given
-        val plainData = NSData()
-        val keyData = NSData()
 
         // When
-        val result = DataDonationCryptor.encrypt(plainData, keyData)
-
+        val result = cryptor.createAsymmetricKeyPair()
+        println(result)
         // Then
-        assertEquals(
-            actual = result,
-            expected = NSData()
-        )
     }
 }

@@ -15,15 +15,10 @@
 //
 
 import Foundation
-@_implementationOnly import Data4LifeCrypto
 
-@objc public final class DataDonationCryptor: NSObject {
-
-    @objc public static func encrypt(_ data: Data, using key: Data) -> Data {
-        return data
-    }
-
-    @objc public static func decrypt(_ data: Data, using key: Data) -> Data {
-        return data
-    }
+@objc public protocol KeychainKeyProviderProtocol {
+    @objc func getDonorPrivateKey(for programName: String) throws -> String
+    @objc func getDonorPublicKey(for programName: String) throws -> String
+    @objc func removeDonorKeyPair(for programName: String) throws
+    @objc func storeDonorKeyPairData(_ data: Data, for programName: String) throws
 }
