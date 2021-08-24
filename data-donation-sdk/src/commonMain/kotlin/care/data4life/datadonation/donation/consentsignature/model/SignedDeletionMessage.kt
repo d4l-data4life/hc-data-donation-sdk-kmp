@@ -31,7 +31,7 @@ internal data class DeletionMessage(
 
 @Serializable
 internal data class SignedDeletionMessage(
-    @SerialName("signedMsg")
-    val message: String,
+    @SerialName("deletionMessage")
+    val message: DeletionMessage,
     val signature: String
 )
