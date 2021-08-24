@@ -22,6 +22,7 @@ import care.data4life.hl7.fhir.stu3.model.CodeableConcept
 import care.data4life.hl7.fhir.stu3.model.Coding
 import care.data4life.hl7.fhir.stu3.model.Observation
 import care.data4life.hl7.fhir.stu3.model.Quantity
+import care.data4life.hl7.fhir.stu3.primitive.Decimal
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -116,7 +117,7 @@ class ObservationValidatorTest {
     }
 
     @Test
-    fun `Given isAllowed with a Observation and BlurMapping, it returns true if the BlurMapping contains a the first Coding`() {
+    fun `Given isAllowed with a Observation and BlurMapping, it returns false if the Quantity fulfils not the minimum requirements`() {
         // Given
         val code = "abc"
         val system = "dfg"
@@ -134,6 +135,158 @@ class ObservationValidatorTest {
                 )
             ),
             valueQuantity = Quantity()
+        )
+        val blurMapping = mapOf(
+            reference to ProgramFhirResourceBlur(
+                itemBlurs = emptyList()
+            )
+        )
+
+        // When
+        val result = ObservationValidator.isAllowed(
+            observation,
+            blurMapping
+        )
+
+        // Then
+        assertFalse(result)
+    }
+
+    @Test
+    fun `Given isAllowed with a Observation and BlurMapping, it returns true if the BlurMapping contains a the first Coding and Quantity fulfils has a value`() {
+        // Given
+        val code = "abc"
+        val system = "dfg"
+
+        val reference = "Observation|$system|$code"
+
+        val observation = Observation(
+            status = ObservationStatus.AMENDED,
+            code = CodeableConcept(
+                coding = listOf(
+                    Coding(
+                        system = system,
+                        code = code
+                    )
+                )
+            ),
+            valueQuantity = Quantity(
+                value = Decimal(0.1)
+            )
+        )
+        val blurMapping = mapOf(
+            reference to ProgramFhirResourceBlur(
+                itemBlurs = emptyList()
+            )
+        )
+
+        // When
+        val result = ObservationValidator.isAllowed(
+            observation,
+            blurMapping
+        )
+
+        // Then
+        assertTrue(result)
+    }
+
+    @Test
+    fun `Given isAllowed with a Observation and BlurMapping, it returns true if the BlurMapping contains a the first Coding and Quantity fulfils has a unit`() {
+        // Given
+        val code = "abc"
+        val system = "dfg"
+
+        val reference = "Observation|$system|$code"
+
+        val observation = Observation(
+            status = ObservationStatus.AMENDED,
+            code = CodeableConcept(
+                coding = listOf(
+                    Coding(
+                        system = system,
+                        code = code
+                    )
+                )
+            ),
+            valueQuantity = Quantity(
+                unit = "something"
+            )
+        )
+        val blurMapping = mapOf(
+            reference to ProgramFhirResourceBlur(
+                itemBlurs = emptyList()
+            )
+        )
+
+        // When
+        val result = ObservationValidator.isAllowed(
+            observation,
+            blurMapping
+        )
+
+        // Then
+        assertTrue(result)
+    }
+
+    @Test
+    fun `Given isAllowed with a Observation and BlurMapping, it returns true if the BlurMapping contains a the first Coding and Quantity fulfils has a code`() {
+        // Given
+        val code = "abc"
+        val system = "dfg"
+
+        val reference = "Observation|$system|$code"
+
+        val observation = Observation(
+            status = ObservationStatus.AMENDED,
+            code = CodeableConcept(
+                coding = listOf(
+                    Coding(
+                        system = system,
+                        code = code
+                    )
+                )
+            ),
+            valueQuantity = Quantity(
+                code = "something"
+            )
+        )
+        val blurMapping = mapOf(
+            reference to ProgramFhirResourceBlur(
+                itemBlurs = emptyList()
+            )
+        )
+
+        // When
+        val result = ObservationValidator.isAllowed(
+            observation,
+            blurMapping
+        )
+
+        // Then
+        assertTrue(result)
+    }
+
+    @Test
+    fun `Given isAllowed with a Observation and BlurMapping, it returns true if the BlurMapping contains a the first Coding and Quantity fulfils has a system`() {
+        // Given
+        val code = "abc"
+        val system = "dfg"
+
+        val reference = "Observation|$system|$code"
+
+        val observation = Observation(
+            status = ObservationStatus.AMENDED,
+            code = CodeableConcept(
+                coding = listOf(
+                    Coding(
+                        system = system,
+                        code = code
+                    )
+                )
+            ),
+            valueQuantity = Quantity(
+                system = "something"
+            )
         )
         val blurMapping = mapOf(
             reference to ProgramFhirResourceBlur(

@@ -21,8 +21,19 @@ import care.data4life.datadonation.donation.fhir.FhirContract.FhirResourceBlurMa
 import care.data4life.datadonation.donation.program.model.ProgramFhirResourceBlur
 import care.data4life.hl7.fhir.stu3.model.Coding
 import care.data4life.hl7.fhir.stu3.model.FhirObservation
+import care.data4life.hl7.fhir.stu3.model.FhirQuantity
+import care.data4life.hl7.fhir.stu3.primitive.Decimal
 
 internal object ObservationValidator : FhirResourceValidatorContract.ObservationValidator {
+    private fun hasQuantityValue(
+        quantity: FhirQuantity
+    ): Boolean {
+        return quantity.value is Decimal ||
+            quantity.code is String ||
+            quantity.system is String ||
+            quantity.unit is String
+    }
+
     private fun matchesReference(
         resource: FhirObservation,
         blurMapping: Map<AllowedReference, ProgramFhirResourceBlur?>
@@ -45,7 +56,8 @@ internal object ObservationValidator : FhirResourceValidatorContract.Observation
         return when {
             resource.valueQuantity == null -> false
             resource.code.coding.isNullOrEmpty() -> false
-            else -> matchesReference(resource, blurMapping)
+            else -> matchesReference(resource, blurMapping) &&
+                hasQuantityValue(resource.valueQuantity!!)
         }
     }
 }
