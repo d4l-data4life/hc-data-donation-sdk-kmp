@@ -18,6 +18,7 @@ package care.data4life.datadonation.donation.consentsignature
 
 import care.data4life.datadonation.donation.consentsignature.model.ConsentSignatureType
 import care.data4life.datadonation.donation.consentsignature.model.ConsentSigningRequest
+import care.data4life.datadonation.donation.consentsignature.model.DeletionMessage
 import care.data4life.datadonation.donation.consentsignature.model.SignedDeletionMessage
 import care.data4life.datadonation.mock.fixture.ConsentSignatureFixture
 import care.data4life.datadonation.mock.stub.donation.consentsignature.ConsentSignatureErrorHandlerStub
@@ -321,7 +322,12 @@ class ConsentSignatureApiServiceTest {
         val accessToken = "potato"
         val consentDocumentKey = "custom-consent-key"
         val signingRequest = SignedDeletionMessage(
-            message = "soup",
+            message = DeletionMessage(
+                "soup",
+                ConsentSignatureType.REVOKE_ONCE,
+                "1981",
+                "abc"
+            ),
             signature = "super-secret"
         )
 
@@ -377,7 +383,12 @@ class ConsentSignatureApiServiceTest {
         val accessToken = "potato"
         val consentDocumentKey = "custom-consent-key"
         val signingRequest = SignedDeletionMessage(
-            message = "soup",
+            message = DeletionMessage(
+                "soup",
+                ConsentSignatureType.REVOKE_ONCE,
+                "1981",
+                "abc"
+            ),
             signature = "super-secret"
         )
 
