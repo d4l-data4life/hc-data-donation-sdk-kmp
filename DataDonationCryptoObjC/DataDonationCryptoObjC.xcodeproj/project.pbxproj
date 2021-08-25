@@ -25,6 +25,8 @@
 		36FA37C826D5459500DDCC35 /* DonorKeyHolderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FA37C726D5459500DDCC35 /* DonorKeyHolderTests.swift */; };
 		36FA37CB26D54A1800DDCC35 /* DataDonationCryptoObjC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FA37CA26D54A1800DDCC35 /* DataDonationCryptoObjC.swift */; };
 		36FA37CE26D54AC200DDCC35 /* DataDonationCryptoObjCError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FA37CD26D54AC200DDCC35 /* DataDonationCryptoObjCError.swift */; };
+		36FA37E626D67FF600DDCC35 /* Data4LifeCrypto in Frameworks */ = {isa = PBXBuildFile; productRef = 36FA37E526D67FF600DDCC35 /* Data4LifeCrypto */; };
+		36FA37E726D67FF600DDCC35 /* libDataDonationCryptoObjC.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3670E95D26CD1E4A00FD5B79 /* libDataDonationCryptoObjC.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -41,6 +43,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 36B32E9026D4E56200D16306;
 			remoteInfo = DataDonationCryptoHostApp;
+		};
+		36FA37E826D67FF600DDCC35 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3670E93126CBF02700FD5B79 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3670E95C26CD1E4A00FD5B79;
+			remoteInfo = DataDonationCryptoObjC;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -104,6 +113,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				36FA37E726D67FF600DDCC35 /* libDataDonationCryptoObjC.a in Frameworks */,
+				36FA37E626D67FF600DDCC35 /* Data4LifeCrypto in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -300,8 +311,12 @@
 			buildRules = (
 			);
 			dependencies = (
+				36FA37E926D67FF600DDCC35 /* PBXTargetDependency */,
 			);
 			name = DataDonationCryptoHostApp;
+			packageProductDependencies = (
+				36FA37E526D67FF600DDCC35 /* Data4LifeCrypto */,
+			);
 			productName = DataDonationCryptoHostApp;
 			productReference = 36B32E9126D4E56200D16306 /* DataDonationCryptoHostApp.app */;
 			productType = "com.apple.product-type.application";
@@ -438,6 +453,11 @@
 			target = 36B32E9026D4E56200D16306 /* DataDonationCryptoHostApp */;
 			targetProxy = 36B32EA026D4E5A200D16306 /* PBXContainerItemProxy */;
 		};
+		36FA37E926D67FF600DDCC35 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3670E95C26CD1E4A00FD5B79 /* DataDonationCryptoObjC */;
+			targetProxy = 36FA37E826D67FF600DDCC35 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
@@ -569,6 +589,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = D2QJWMP9SU;
 				INSTALL_PATH = /Library;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				OTHER_LDFLAGS = "-ObjC";
 				PRIVATE_HEADERS_FOLDER_PATH = /Headers;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -577,6 +598,7 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "DataDonationCryptoObjC/DataDonationCryptoObjC-BridgingHeader.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				TVOS_DEPLOYMENT_TARGET = 13.0;
 			};
 			name = Debug;
 		};
@@ -586,6 +608,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = D2QJWMP9SU;
 				INSTALL_PATH = /Library;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				OTHER_LDFLAGS = "-ObjC";
 				PRIVATE_HEADERS_FOLDER_PATH = /Headers;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -594,6 +617,7 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "DataDonationCryptoObjC/DataDonationCryptoObjC-BridgingHeader.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				TVOS_DEPLOYMENT_TARGET = 13.0;
 			};
 			name = Release;
 		};
@@ -604,6 +628,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = D2QJWMP9SU;
 				INFOPLIST_FILE = DataDonationCryptoObjCTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -614,6 +639,7 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DataDonationCryptoHostApp.app/DataDonationCryptoHostApp";
+				TVOS_DEPLOYMENT_TARGET = 13.0;
 			};
 			name = Debug;
 		};
@@ -624,6 +650,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = D2QJWMP9SU;
 				INFOPLIST_FILE = DataDonationCryptoObjCTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -634,6 +661,7 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DataDonationCryptoHostApp.app/DataDonationCryptoHostApp";
+				TVOS_DEPLOYMENT_TARGET = 13.0;
 			};
 			name = Release;
 		};
@@ -656,6 +684,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				TVOS_DEPLOYMENT_TARGET = 13.0;
 			};
 			name = Debug;
 		};
@@ -678,6 +707,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				TVOS_DEPLOYMENT_TARGET = 13.0;
 			};
 			name = Release;
 		};
@@ -740,6 +770,11 @@
 			productName = Data4LifeCrypto;
 		};
 		36B32E8826D3EF1500D16306 /* Data4LifeCrypto */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3670E95426CBF0F900FD5B79 /* XCRemoteSwiftPackageReference "d4l-sdk-ios" */;
+			productName = Data4LifeCrypto;
+		};
+		36FA37E526D67FF600DDCC35 /* Data4LifeCrypto */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 3670E95426CBF0F900FD5B79 /* XCRemoteSwiftPackageReference "d4l-sdk-ios" */;
 			productName = Data4LifeCrypto;
