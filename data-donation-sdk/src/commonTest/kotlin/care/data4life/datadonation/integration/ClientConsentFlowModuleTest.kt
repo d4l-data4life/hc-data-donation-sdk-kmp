@@ -107,7 +107,7 @@ class ClientConsentFlowModuleTest {
         val koin = koinApplication {
             modules(
                 resolveRootModule(
-                    DataDonationSDK.Environment.DEV,
+                    DataDonationSDK.Environment.DEVELOPMENT,
                     UserSessionTokenProvider
                 ),
                 resolveNetworking(),
@@ -172,7 +172,7 @@ class ClientConsentFlowModuleTest {
         val koin = koinApplication {
             modules(
                 resolveRootModule(
-                    DataDonationSDK.Environment.DEV,
+                    DataDonationSDK.Environment.DEVELOPMENT,
                     UserSessionTokenProvider
                 ),
                 resolveNetworking(),
@@ -264,7 +264,7 @@ class ClientConsentFlowModuleTest {
         val koin = koinApplication {
             modules(
                 resolveRootModule(
-                    DataDonationSDK.Environment.DEV,
+                    DataDonationSDK.Environment.DEVELOPMENT,
                     UserSessionTokenProvider
                 ),
                 resolveNetworking(),
@@ -364,7 +364,7 @@ class ClientConsentFlowModuleTest {
         val koin = koinApplication {
             modules(
                 resolveRootModule(
-                    DataDonationSDK.Environment.DEV,
+                    DataDonationSDK.Environment.DEVELOPMENT,
                     UserSessionTokenProvider
                 ),
                 resolveNetworking(),

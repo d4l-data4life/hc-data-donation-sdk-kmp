@@ -35,7 +35,7 @@ class KoinTest {
     fun `Given initKoin is called with its appropriate parameter, the resulting KoinApplication contains a ConsentInteractor`() {
         // When
         val app = initKoin(
-            Environment.DEV,
+            Environment.DEVELOPMENT,
             UserSessionTokenProviderStub()
         )
         // Then
@@ -47,7 +47,7 @@ class KoinTest {
     fun `Given initKoin is called with its appropriate parameter, the resulting KoinApplication contains a ConsentDocumentsInteractor`() {
         // When
         val app = initKoin(
-            Environment.DEV,
+            Environment.DEVELOPMENT,
             UserSessionTokenProviderStub()
         )
         // Then
