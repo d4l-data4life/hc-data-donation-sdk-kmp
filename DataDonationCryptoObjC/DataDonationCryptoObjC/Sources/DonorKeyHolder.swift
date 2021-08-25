@@ -42,10 +42,10 @@ final class DonorKeyHolder: DonorKeyHolderProtocol {
 
     // Security iOS frameworks stores automatically when generating keys
     func generateKeyPair(for programName: String) throws -> KeyPair {
-        let tag = tag(for: programName)
+        let programTag = tag(for: programName)
         let algorithm = DonorKeyHolder.donorKeyOptions.algorithm
         let keySize = DonorKeyHolder.donorKeyOptions.size
-        let options = KeyOptions(size: keySize, tag: tag)
+        let options = KeyOptions(size: keySize, tag: programTag)
         do {
             return try Data4LifeCryptor.generateAsymKeyPair(algorithm: algorithm, options: options)
         } catch {
@@ -56,27 +56,27 @@ final class DonorKeyHolder: DonorKeyHolderProtocol {
     func createKeyPair(from data: Data, for programName: String) throws {
         do {
             let keyPair = try JSONDecoder().decode(KeyPair.self, from: data)
-            let tag = tag(for: programName)
-            try add(keyPair: keyPair, with: tag)
+            let programTag = tag(for: programName)
+            try add(keyPair: keyPair, with: programTag)
         } catch {
             throw DataDonationCryptoObjCError.couldNotCreateKeyPairFromData(programName: programName)
         }
     }
 
     func fetchKeyPair(for programName: String) throws -> KeyPair {
-        let tag = tag(for: programName)
+        let programTag = tag(for: programName)
         let algorithm = DonorKeyHolder.donorKeyOptions.algorithm
         do {
-            return try KeyPair.load(tag: tag, algorithm: algorithm)
+            return try KeyPair.load(tag: programTag, algorithm: algorithm)
         } catch {
             throw DataDonationCryptoObjCError.couldNotFetchKeyPair(programName: programName)
         }
     }
 
     func deleteKeyPair(for programName: String) throws {
-        let tag = tag(for: programName)
+        let programTag = tag(for: programName)
         do {
-        try KeyPair.destroy(tag: tag)
+        try KeyPair.destroy(tag: programTag)
         } catch {
             throw DataDonationCryptoObjCError.couldNotDeleteKeyPair(programName: programName)
         }
