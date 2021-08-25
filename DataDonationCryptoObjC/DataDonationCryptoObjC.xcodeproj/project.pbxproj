@@ -136,8 +136,8 @@
 			children = (
 				36FA37CC26D54A9900DDCC35 /* Sources */,
 				3670E93D26CBF02700FD5B79 /* DataDonationCryptoObjC.h */,
-				3670E93E26CBF02700FD5B79 /* Info.plist */,
 				3670E96826CD286D00FD5B79 /* DataDonationCryptoObjC-BridgingHeader.h */,
+				3670E93E26CBF02700FD5B79 /* Info.plist */,
 			);
 			path = DataDonationCryptoObjC;
 			sourceTree = "<group>";

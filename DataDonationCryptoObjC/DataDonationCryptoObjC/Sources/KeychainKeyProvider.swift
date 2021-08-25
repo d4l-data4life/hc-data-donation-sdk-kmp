@@ -15,7 +15,7 @@
 //
 
 import Foundation
-@_implementationOnly import Data4LifeCrypto
+import Data4LifeCrypto
 
 @objc public final class KeychainKeyProvider: NSObject, KeychainKeyProviderProtocol {
 

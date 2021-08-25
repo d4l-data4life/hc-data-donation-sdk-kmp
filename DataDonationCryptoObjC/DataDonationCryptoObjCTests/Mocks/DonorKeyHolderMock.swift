@@ -16,7 +16,7 @@
 
 import Foundation
 @testable import DataDonationCryptoObjC
-@_implementationOnly import Data4LifeCrypto
+import Data4LifeCrypto
 
 enum MockDefaultError: Error {
     case resultNotDefined

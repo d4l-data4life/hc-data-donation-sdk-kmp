@@ -16,7 +16,7 @@
 
 import XCTest
 import DataDonationCryptoObjC
-@_implementationOnly import Data4LifeCrypto
+import Data4LifeCrypto
 
 class KeychainKeyProviderModuleTests: XCTestCase {
 
