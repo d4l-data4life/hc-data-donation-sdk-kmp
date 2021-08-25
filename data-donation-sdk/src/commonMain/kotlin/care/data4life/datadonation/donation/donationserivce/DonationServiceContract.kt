@@ -16,10 +16,14 @@
 
 package care.data4life.datadonation.donation.donationserivce
 
+import care.data4life.datadonation.donation.donationserivce.model.DeletionProof
 import care.data4life.datadonation.donation.donationserivce.model.RevocationTypeSerializer
+import care.data4life.datadonation.donation.donationserivce.model.SignedConsentMessage
+import io.ktor.client.request.forms.MultiPartFormDataContent
 import kotlinx.serialization.Serializable
 
 internal typealias SerializedJson = String
+internal typealias EncryptedJSON = ByteArray
 internal typealias Signature = String
 internal typealias DonorId = String
 internal typealias UUID = String
@@ -33,9 +37,15 @@ internal interface DonationServiceContract {
     }
 
     interface ApiService {
+        fun fetchToken(): Token
+        fun register(signedConsentMessage: ByteArray): Unit
+        fun donate(donation: MultiPartFormDataContent): Unit
+        fun revoke(donation: MultiPartFormDataContent): DeletionProof
 
         companion object {
-            val ROUTE = listOf<String>()
+            val ROUTE = listOf(
+                "donation", "api", "v1"
+            )
         }
 
         interface ErrorHandler
