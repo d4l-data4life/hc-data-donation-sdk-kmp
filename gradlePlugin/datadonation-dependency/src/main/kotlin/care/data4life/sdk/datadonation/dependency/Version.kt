@@ -101,7 +101,7 @@ object Version {
     const val sdkCoroutineUtil = "0.1.0"
 
     // https://github.com/d4l-data4life/hc-result-sdk-kmp
-    const val sdkResult = "0.1.1"
+    const val sdkResult = "0.2.0"
 
     // https://github.com/d4l-data4life/hc-test-util-sdk-kmp
     const val sdkTestUtil = "0.1.0"
