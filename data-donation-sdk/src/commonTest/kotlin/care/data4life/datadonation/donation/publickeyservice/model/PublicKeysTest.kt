@@ -14,7 +14,7 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.donation.servicecredentials.model
+package care.data4life.datadonation.donation.publickeyservice.model
 
 import kotlin.test.Test
 import kotlin.test.assertEquals

@@ -13,25 +13,24 @@
  * applications and/or if you’d like to contribute to the development of the SDK, please
  * contact D4L by email to help@data4life.care.
  */
+package care.data4life.datadonation.donation.publickeyservice.model
 
-package care.data4life.datadonation.donation.servicecredentials.model
+internal data class PublicKeys(
+    val dataDonationService: ByteArray,
+    val alp: ByteArray
+) {
+    override fun equals(other: Any?): Boolean {
+        return when {
+            other !is PublicKeys -> false
+            !dataDonationService.contentEquals(other.dataDonationService) -> false
+            !alp.contentEquals(other.alp) -> false
+            else -> true
+        }
+    }
 
-import care.data4life.datadonation.DataDonationSDK
-import care.data4life.datadonation.donation.servicecredentials.PublicKeyServiceContract
-import kotlinx.serialization.Contextual
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
-
-@Serializable
-internal data class RawKey(
-    @SerialName("name")
-    val domain: PublicKeyServiceContract.KeyDomain,
-    @Contextual
-    val environment: DataDonationSDK.Environment,
-    val key: String
-)
-
-@Serializable
-internal data class RawKeys(
-    val credentials: List<RawKey>
-)
+    override fun hashCode(): Int {
+        var result = dataDonationService.contentHashCode()
+        result = 31 * result + alp.contentHashCode()
+        return result
+    }
+}

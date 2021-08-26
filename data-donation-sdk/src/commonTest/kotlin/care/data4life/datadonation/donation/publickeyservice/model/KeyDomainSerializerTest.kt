@@ -14,9 +14,10 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.donation.servicecredentials.model
+package care.data4life.datadonation.donation.publickeyservice.model
 
-import care.data4life.datadonation.DataDonationSDK
+import care.data4life.datadonation.donation.publickeyservice.PublicKeyServiceContract
+import care.data4life.datadonation.error.CoreRuntimeError
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.descriptors.PrimitiveKind
@@ -26,13 +27,14 @@ import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.contextual
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
-internal class EnvironmentSerializerTest {
+internal class KeyDomainSerializerTest {
     @Test
     fun `It fulfils KSerializer`() {
-        val serializer: Any = EnvironmentSerializer
+        val serializer: Any = KeyDomainSerializer
 
         assertTrue(serializer is KSerializer<*>)
     }
@@ -40,49 +42,72 @@ internal class EnvironmentSerializerTest {
     @Test
     fun `It has a proper descriptor`() {
         assertEquals(
-            actual = EnvironmentSerializer.descriptor.kind,
+            actual = KeyDomainSerializer.descriptor.kind,
             expected = PrimitiveKind.STRING
         )
 
         assertEquals(
-            actual = EnvironmentSerializer.descriptor.serialName,
-            expected = "Environment"
+            actual = KeyDomainSerializer.descriptor.serialName,
+            expected = "KeyDomain"
         )
     }
 
     @Test
-    fun `Given a Serializer is called with a Environment, it encodes it`() {
+    fun `Given a Serializer is called with a KeyDomain, it encodes it`() {
         // Given
         val serializer = Json {
             serializersModule = SerializersModule {
-                contextual(EnvironmentSerializer)
+                contextual(KeyDomainSerializer)
             }
         }
 
-        for (field in DataDonationSDK.Environment.values()) {
+        for (field in PublicKeyServiceContract.KeyDomain.values()) {
             // When
             val result = serializer.encodeToString(field)
-            println(result)
+
             // Then
             assertEquals(
                 actual = result,
-                expected = "\"${field.name.toLowerCase()}\""
+                expected = "\"${field.domain}\""
             )
         }
     }
 
     @Test
-    fun `Given a Serializer is called with a serialized Environment, it decodes it`() {
+    fun `Given a Serializer is called with a serialized KeyDomain, it fails with a Internal Failure if the blur function is unknown`() {
         // Given
         val serializer = Json {
             serializersModule = SerializersModule {
-                contextual(EnvironmentSerializer)
+                contextual(KeyDomainSerializer)
             }
         }
 
-        for (field in DataDonationSDK.Environment.values()) {
+        // Then
+        val error = assertFailsWith<CoreRuntimeError.InternalFailure> {
             // When
-            val result = serializer.decodeFromString<DataDonationSDK.Environment>("\"${field.name.toLowerCase()}\"")
+            serializer.decodeFromString<PublicKeyServiceContract.KeyDomain>("\"notJS\"")
+        }
+
+        assertEquals(
+            actual = error.message,
+            expected = "Unknown KeyDomain notJS."
+        )
+    }
+
+    @Test
+    fun `Given a Serializer is called with a serialized KeyDomain, it decodes it`() {
+        // Given
+        val serializer = Json {
+            serializersModule = SerializersModule {
+                contextual(KeyDomainSerializer)
+            }
+        }
+
+        for (field in PublicKeyServiceContract.KeyDomain.values()) {
+            // When
+            val result = serializer.decodeFromString<PublicKeyServiceContract.KeyDomain>(
+                "\"${field.domain}\""
+            )
 
             // Then
             assertSame(

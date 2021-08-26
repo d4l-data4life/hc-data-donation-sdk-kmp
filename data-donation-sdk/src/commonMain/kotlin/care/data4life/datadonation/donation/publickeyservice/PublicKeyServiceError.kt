@@ -14,29 +14,12 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.networking
+package care.data4life.datadonation.donation.publickeyservice
 
-import care.data4life.datadonation.error.CoreRuntimeError
-import io.ktor.client.call.NoTransformationFoundException
-import io.ktor.client.statement.HttpStatement
-import io.ktor.http.Headers
+import care.data4life.sdk.lang.D4LRuntimeException
 
-internal suspend inline fun <reified T> receive(
-    request: HttpStatement,
-): T {
-    return try {
-        request.receive()
-    } catch (exception: NoTransformationFoundException) {
-        throw CoreRuntimeError.ResponseTransformFailure()
-    }
-}
-
-internal suspend inline fun head(
-    request: HttpStatement
-): Headers {
-    return try {
-        request.execute().headers
-    } catch (exception: NoTransformationFoundException) {
-        throw CoreRuntimeError.ResponseTransformFailure()
-    }
+sealed class PublicKeyServiceError(
+    open val httpStatus: Int
+) : D4LRuntimeException() {
+    class UnexpectedFailure(override val httpStatus: Int) : PublicKeyServiceError(httpStatus)
 }

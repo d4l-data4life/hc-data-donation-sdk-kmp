@@ -34,7 +34,7 @@ package care.data4life.datadonation
 
 import care.data4life.datadonation.ConsentDataContract.ConsentDocument
 import care.data4life.datadonation.ConsentDataContract.UserConsent
-import care.data4life.datadonation.donation.servicecredentials.model.EnvironmentSerializer
+import care.data4life.datadonation.donation.publickeyservice.model.EnvironmentSerializer
 import care.data4life.sdk.flow.D4LSDKFlow
 import kotlinx.serialization.Serializable
 

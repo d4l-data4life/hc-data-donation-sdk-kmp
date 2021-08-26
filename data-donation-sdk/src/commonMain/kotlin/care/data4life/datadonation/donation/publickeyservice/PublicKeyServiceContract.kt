@@ -14,28 +14,33 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.donation.servicecredentials
+package care.data4life.datadonation.donation.publickeyservice
 
-import care.data4life.datadonation.donation.servicecredentials.model.PublicKeys
-import care.data4life.datadonation.donation.servicecredentials.model.RawKeys
+import care.data4life.datadonation.donation.publickeyservice.model.KeyDomainSerializer
+import care.data4life.datadonation.donation.publickeyservice.model.PublicKeys
+import care.data4life.datadonation.donation.publickeyservice.model.RawKeys
 import care.data4life.datadonation.networking.HttpRuntimeError
+import io.ktor.http.Headers
+import kotlinx.serialization.Serializable
 
 internal interface PublicKeyServiceContract {
+    @Serializable(with = KeyDomainSerializer::class)
     enum class KeyDomain(val domain: String) {
         DonationService("donation_public_key"),
         ALP("alp_public_key")
     }
 
     interface ApiService {
-        fun latestUpdate(): String
-        fun fetchPublicKeys(): RawKeys
+        suspend fun fetchLatestUpdate(): Headers
+        suspend fun fetchPublicKeys(): RawKeys
 
         companion object {
             val ROUTE = listOf("mobile", "credentials.json")
         }
 
         interface ErrorHandler {
-            fun handlePublicKeys(error: HttpRuntimeError): ServiceCredentialsError
+            fun handleFetchPublicKeys(error: HttpRuntimeError): PublicKeyServiceError
+            fun handleFetchLatestUpdate(error: HttpRuntimeError): PublicKeyServiceError
         }
     }
 

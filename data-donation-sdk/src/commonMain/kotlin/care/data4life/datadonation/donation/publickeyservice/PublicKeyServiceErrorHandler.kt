@@ -14,12 +14,16 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.donation.servicecredentials
+package care.data4life.datadonation.donation.publickeyservice
 
-import care.data4life.sdk.lang.D4LRuntimeException
+import care.data4life.datadonation.networking.HttpRuntimeError
 
-sealed class ServiceCredentialsError(
-    open val httpStatus: Int
-) : D4LRuntimeException() {
-    class UnexpectedFailure(override val httpStatus: Int) : ServiceCredentialsError(httpStatus)
+internal object PublicKeyServiceErrorHandler : PublicKeyServiceContract.ApiService.ErrorHandler {
+    override fun handleFetchPublicKeys(error: HttpRuntimeError): PublicKeyServiceError {
+        return PublicKeyServiceError.UnexpectedFailure(error.statusCode.value)
+    }
+
+    override fun handleFetchLatestUpdate(error: HttpRuntimeError): PublicKeyServiceError {
+        return PublicKeyServiceError.UnexpectedFailure(error.statusCode.value)
+    }
 }

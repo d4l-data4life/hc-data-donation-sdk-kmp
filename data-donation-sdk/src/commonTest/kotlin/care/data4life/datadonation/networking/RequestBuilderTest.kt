@@ -68,6 +68,19 @@ class RequestBuilderTest {
     }
 
     @Test
+    fun `Given withHost is called with Host it returns a RequestBuilderFactory`() {
+        // Given
+        val env = Environment.DEVELOPMENT
+        val client = createHelloWorldMockClient()
+
+        // When
+        val builder: Any = RequestBuilder.Factory(env, client).withHost("somewhere")
+
+        // Then
+        assertTrue(builder is Networking.RequestBuilderFactory)
+    }
+
+    @Test
     fun `Given create is called with a Environment and a HttpClient it returns a RequestBuilder`() {
         // Given
         val env = Environment.DEVELOPMENT
@@ -94,7 +107,7 @@ class RequestBuilderTest {
 
         // When
         val builder = RequestBuilder.Factory(env, client).create()
-        builder.prepare().receive()
+        builder.prepare().execute()
     }
 
     @Test
@@ -111,7 +124,27 @@ class RequestBuilderTest {
 
         // When
         val builder = RequestBuilder.Factory(env, client).create()
-        builder.prepare().receive()
+        builder.prepare().execute()
+    }
+
+    @Test
+    fun `Given a instance was create with a overruled Host and it was prepared and executed it calls the overruled Host`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+        // Given
+        val host = "somewhere"
+        val client = createMockClientWithAssertion { request ->
+            // Then
+            assertEquals(
+                actual = request.url.host,
+                expected = host
+            )
+        }
+
+        // When
+        val builder = RequestBuilder.Factory(Environment.DEVELOPMENT, client)
+            .withHost(host)
+            .create()
+
+        builder.prepare().execute()
     }
 
     @Test
@@ -128,7 +161,7 @@ class RequestBuilderTest {
 
         // When
         val builder = RequestBuilder.Factory(env, client).create()
-        builder.prepare().receive()
+        builder.prepare().execute()
     }
 
     @Test
@@ -164,7 +197,7 @@ class RequestBuilderTest {
 
         // When
         val builder = RequestBuilder.Factory(env, client).create()
-        builder.prepare().receive()
+        builder.prepare().execute()
     }
 
     @Test
@@ -181,7 +214,7 @@ class RequestBuilderTest {
 
         // When
         val builder = RequestBuilder.Factory(env, client).create()
-        builder.prepare().receive()
+        builder.prepare().execute()
     }
 
     @Test
@@ -200,7 +233,7 @@ class RequestBuilderTest {
 
         // When
         val builder = RequestBuilder.Factory(env, client, port).create()
-        builder.prepare().receive()
+        builder.prepare().execute()
     }
 
     @Test
@@ -220,7 +253,7 @@ class RequestBuilderTest {
 
         // When
         val builder = RequestBuilder.Factory(env, client).create()
-        builder.prepare().receive()
+        builder.prepare().execute()
     }
 
     @Test
@@ -247,7 +280,7 @@ class RequestBuilderTest {
 
         // When
         val builder = RequestBuilder.Factory(env, client).create()
-        builder.setHeaders(headers).prepare().receive()
+        builder.setHeaders(headers).prepare().execute()
     }
 
     @Test
@@ -264,7 +297,7 @@ class RequestBuilderTest {
 
         // When
         val builder = RequestBuilder.Factory(env, client).create()
-        builder.prepare().receive()
+        builder.prepare().execute()
     }
 
     @Test
@@ -289,7 +322,7 @@ class RequestBuilderTest {
 
         // When
         val builder = RequestBuilder.Factory(env, client).create()
-        builder.setParameter(parameter).prepare().receive()
+        builder.setParameter(parameter).prepare().execute()
     }
 
     @Test
@@ -303,7 +336,7 @@ class RequestBuilderTest {
 
         // When
         val builder = RequestBuilder.Factory(env, client).create()
-        builder.prepare().receive()
+        builder.prepare().execute()
     }
 
     @Test
@@ -327,7 +360,7 @@ class RequestBuilderTest {
 
         // When
         val builder = RequestBuilder.Factory(env, client).create()
-        builder.setAccessToken(token).prepare().receive()
+        builder.setAccessToken(token).prepare().execute()
     }
 
     @Test
@@ -347,7 +380,7 @@ class RequestBuilderTest {
 
         // When
         val builder = RequestBuilder.Factory(env, client).create()
-        builder.prepare().receive()
+        builder.prepare().execute()
     }
 
     @Test
@@ -384,7 +417,7 @@ class RequestBuilderTest {
 
         // When
         val builder = RequestBuilder.Factory(env, client).create()
-        builder.useJsonContentType().prepare().receive()
+        builder.useJsonContentType().prepare().execute()
     }
 
     @Test
@@ -402,7 +435,7 @@ class RequestBuilderTest {
 
         // When
         val builder = RequestBuilder.Factory(env, client).create()
-        builder.prepare().receive()
+        builder.prepare().execute()
     }
 
     @Test
@@ -421,6 +454,25 @@ class RequestBuilderTest {
         assertEquals(
             actual = error.message,
             expected = "GET cannot be combined with a RequestBody."
+        )
+    }
+
+    @Test
+    fun `Given a instance was create with a Environment, setBody is called with a Payload and it was prepared and executed with HEAD, it fails`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+        // Given
+        val env = Environment.DEVELOPMENT
+        val client = createHelloWorldMockClient()
+
+        val error = assertFailsWith<CoreRuntimeError.RequestValidationFailure> {
+            // When
+            val builder = RequestBuilder.Factory(env, client).create()
+            builder.setBody("Wups").prepare(Networking.Method.HEAD)
+        }
+
+        // Then
+        assertEquals(
+            actual = error.message,
+            expected = "HEAD cannot be combined with a RequestBody."
         )
     }
 
@@ -483,6 +535,23 @@ class RequestBuilderTest {
     }
 
     @Test
+    fun `Given a instance was create with a Environment and it was prepared and executed with HEAD it uses head`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+        // Given
+        val env = Environment.DEVELOPMENT
+        val client = createMockClientWithAssertion { request ->
+            // Then
+            assertEquals(
+                actual = request.method,
+                expected = HttpMethod.Head
+            )
+        }
+
+        // When
+        val builder = RequestBuilder.Factory(env, client).create()
+        builder.prepare(Networking.Method.HEAD).execute()
+    }
+
+    @Test
     fun `Given a instance was create with a Environment, setBody was called with a Payload and it was prepared and executed with POST it uses post`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val payload = "蕃茄湯"
@@ -498,7 +567,7 @@ class RequestBuilderTest {
 
         // When
         val builder = RequestBuilder.Factory(env, client).create()
-        builder.setBody(payload).prepare(Networking.Method.POST)
+        builder.setBody(payload).prepare(Networking.Method.POST).execute()
     }
 
     @KtorExperimentalAPI
@@ -523,7 +592,7 @@ class RequestBuilderTest {
 
         // When
         val builder = RequestBuilder.Factory(env, client).create()
-        builder.setBody(payload).prepare(Networking.Method.POST)
+        builder.setBody(payload).prepare(Networking.Method.POST).execute()
     }
 
     @Test
@@ -542,7 +611,7 @@ class RequestBuilderTest {
 
         // When
         val builder = RequestBuilder.Factory(env, client).create()
-        builder.setBody(payload).prepare(Networking.Method.PUT)
+        builder.setBody(payload).prepare(Networking.Method.PUT).execute()
     }
 
     @KtorExperimentalAPI
@@ -568,7 +637,7 @@ class RequestBuilderTest {
 
         // When
         val builder = RequestBuilder.Factory(env, client).create()
-        builder.setBody(payload).prepare(Networking.Method.PUT)
+        builder.setBody(payload).prepare(Networking.Method.PUT).execute()
     }
 
     @Test
@@ -587,7 +656,7 @@ class RequestBuilderTest {
 
         // When
         val builder = RequestBuilder.Factory(env, client).create()
-        builder.setBody(payload).prepare(Networking.Method.DELETE)
+        builder.setBody(payload).prepare(Networking.Method.DELETE).execute()
     }
 
     @KtorExperimentalAPI
@@ -613,6 +682,6 @@ class RequestBuilderTest {
 
         // When
         val builder = RequestBuilder.Factory(env, client).create()
-        builder.setBody(payload).prepare(Networking.Method.DELETE)
+        builder.setBody(payload).prepare(Networking.Method.DELETE).execute()
     }
 }
