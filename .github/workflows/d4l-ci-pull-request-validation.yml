@@ -48,6 +48,8 @@ jobs:
       cancel-in-progress: true
     
     steps:
+      - name: Get current directory
+        run: pwd
       - name: Reset iOS Simulators
         run: xcrun simctl erase all
       - name: Run Swift tests
