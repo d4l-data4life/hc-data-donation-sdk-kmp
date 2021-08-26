@@ -35,12 +35,12 @@ jobs:
         run: ./gradlew clean
       - name: Version
         run: ./gradlew versionInfo
+      - name: Build
+        run: ./gradlew build
       - name: Reset iOS Simulators
         run: xcrun simctl erase all
       - name: Run Swift tests
         run: xcodebuild -project DataDonationCryptoObjC/DataDonationCryptoObjC.xcodeproj -scheme DataDonationCryptoHostApp -sdk iphonesimulator -destination "name=iPhone 12" -derivedDataPath build/DataDonationCryptoObjC test
-      - name: Build
-        run: ./gradlew build
       - name: Publish Feature to Maven Repo
         run: ./gradlew publishFeature
 
