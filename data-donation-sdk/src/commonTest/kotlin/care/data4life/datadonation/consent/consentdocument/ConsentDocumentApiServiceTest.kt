@@ -16,7 +16,6 @@
 
 package care.data4life.datadonation.consent.consentdocument
 
-import care.data4life.datadonation.consent.consentdocument.ConsentDocumentContract.ApiService.Companion.ROUTE
 import care.data4life.datadonation.error.CoreRuntimeError
 import care.data4life.datadonation.mock.fixture.ConsentDocumentFixture.sampleConsentDocument
 import care.data4life.datadonation.mock.stub.consent.consentdocument.ConsentDocumentErrorHandlerStub
@@ -81,11 +80,10 @@ class ConsentDocumentApiServiceTest {
 
         // Then
         val result = assertFailsWith<ConsentDocumentError.UnexpectedFailure> {
-            val service = ConsentDocumentApiService(
+            ConsentDocumentApiService(
                 requestTemplate,
                 errorHandler
-            )
-            service.fetchConsentDocuments(
+            ).fetchConsentDocuments(
                 accessToken = accessToken,
                 version = version,
                 language = language,
@@ -176,11 +174,10 @@ class ConsentDocumentApiServiceTest {
         }
 
         // When
-        val service = ConsentDocumentApiService(
+        val result = ConsentDocumentApiService(
             requestTemplate,
             ConsentDocumentErrorHandlerStub()
-        )
-        val result = service.fetchConsentDocuments(
+        ).fetchConsentDocuments(
             accessToken = accessToken,
             version = version,
             language = language,
@@ -198,7 +195,7 @@ class ConsentDocumentApiServiceTest {
         )
         assertEquals(
             actual = capturedPath,
-            expected = ROUTE
+            expected = listOf("consent", "api", "v1", "consentDocuments")
         )
 
         assertEquals(
