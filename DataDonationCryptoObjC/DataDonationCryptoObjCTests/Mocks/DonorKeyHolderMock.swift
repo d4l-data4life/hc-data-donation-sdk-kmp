@@ -25,22 +25,22 @@ enum MockDefaultError: Error {
 final class DonorKeyHolderMock: DonorKeyHolderProtocol {
 
     var isDeleteCalled = false
-    var deleteArgument: String?
+    var capturedDeleteParameter: String?
     var deleteError: Error?
     func deleteKeyPair(for programName: String) throws {
         isDeleteCalled = true
-        deleteArgument = programName
+        capturedDeleteParameter = programName
         if let error = deleteError {
             throw error
         }
     }
 
     var isCreateCalled = false
-    var createArguments: (Data, String)?
+    var capturedCreateParameters: (Data, String)?
     var createError: Error?
     func createKeyPair(from data: Data, for programName: String) throws {
         isCreateCalled = true
-        createArguments = (data, programName)
+        capturedCreateParameters = (data, programName)
         if let error = createError {
             throw error
         }
@@ -48,12 +48,12 @@ final class DonorKeyHolderMock: DonorKeyHolderProtocol {
 
 
     var isPrivateCalled = false
-    var privateArgument: String?
+    var capturedPrivateParameter: String?
     var privateResult: AsymmetricKey?
     var privateError: Error?
     func privateKey(for programName: String) throws -> AsymmetricKey {
         isPrivateCalled = true
-        privateArgument = programName
+        capturedPrivateParameter = programName
         if let error = privateError {
             throw error
         } else if let result = privateResult {
@@ -64,12 +64,12 @@ final class DonorKeyHolderMock: DonorKeyHolderProtocol {
     }
 
     var isPublicCalled = false
-    var publicArgument: String?
+    var capturedPublicParameter: String?
     var publicResult: AsymmetricKey?
     var publicError: Error?
     func publicKey(for programName: String) throws -> AsymmetricKey {
         isPublicCalled = true
-        publicArgument = programName
+        capturedPublicParameter = programName
         if let error = publicError {
             throw error
         } else if let result = publicResult {

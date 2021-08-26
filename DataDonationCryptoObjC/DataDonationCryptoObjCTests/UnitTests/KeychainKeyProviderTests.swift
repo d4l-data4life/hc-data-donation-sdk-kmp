@@ -37,25 +37,25 @@ class KeychainKeyProviderTests: XCTestCase {
     func testGetPrivateKeyFlow() throws {
         let _ = try keychainKeyProvider.getDonorPrivateKey(for: testProgramName)
         XCTAssertEqual(keyHolderMock.isPrivateCalled, true)
-        XCTAssertEqual(keyHolderMock.privateArgument, testProgramName)
+        XCTAssertEqual(keyHolderMock.capturedPrivateParameter, testProgramName)
     }
 
     func testGetPublicKeyFlow() throws {
         let _ = try keychainKeyProvider.getDonorPublicKey(for: testProgramName)
         XCTAssertEqual(keyHolderMock.isPublicCalled, true)
-        XCTAssertEqual(keyHolderMock.publicArgument, testProgramName)
+        XCTAssertEqual(keyHolderMock.capturedPublicParameter, testProgramName)
     }
 
     func testStoreFlow() throws {
         try keychainKeyProvider.storeDonorKeyPairData(Data(), for: testProgramName)
         XCTAssertEqual(keyHolderMock.isCreateCalled, true)
-        XCTAssertEqual(keyHolderMock.createArguments?.0, Data())
-        XCTAssertEqual(keyHolderMock.createArguments?.1, testProgramName)
+        XCTAssertEqual(keyHolderMock.capturedCreateParameters?.0, Data())
+        XCTAssertEqual(keyHolderMock.capturedCreateParameters?.1, testProgramName)
     }
 
     func testDeleteFlow() throws {
         try keychainKeyProvider.removeDonorKeyPair(for: testProgramName)
         XCTAssertEqual(keyHolderMock.isDeleteCalled, true)
-        XCTAssertEqual(keyHolderMock.deleteArgument, testProgramName)
+        XCTAssertEqual(keyHolderMock.capturedDeleteParameter, testProgramName)
     }
 }
