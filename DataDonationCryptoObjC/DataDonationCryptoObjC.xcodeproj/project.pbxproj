@@ -8,8 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		3670E96426CD1E5D00FD5B79 /* DataDonationCryptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3670E95726CBF11200FD5B79 /* DataDonationCryptor.swift */; };
-		3670E96726CD1E6E00FD5B79 /* Data4LifeCrypto in Frameworks */ = {isa = PBXBuildFile; productRef = 3670E96626CD1E6E00FD5B79 /* Data4LifeCrypto */; };
 		3670E97326CD5FC100FD5B79 /* libDataDonationCryptoObjC.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3670E95D26CD1E4A00FD5B79 /* libDataDonationCryptoObjC.a */; };
+		36FA37EC26D7CA6A00DDCC35 /* Data4LifeCrypto in Frameworks */ = {isa = PBXBuildFile; productRef = 36FA37EB26D7CA6A00DDCC35 /* Data4LifeCrypto */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,7 +50,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3670E96726CD1E6E00FD5B79 /* Data4LifeCrypto in Frameworks */,
+				36FA37EC26D7CA6A00DDCC35 /* Data4LifeCrypto in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -129,7 +129,7 @@
 			);
 			name = DataDonationCryptoObjC;
 			packageProductDependencies = (
-				3670E96626CD1E6E00FD5B79 /* Data4LifeCrypto */,
+				36FA37EB26D7CA6A00DDCC35 /* Data4LifeCrypto */,
 			);
 			productName = DataDonationCryptoObjC;
 			productReference = 3670E95D26CD1E4A00FD5B79 /* libDataDonationCryptoObjC.a */;
@@ -180,7 +180,7 @@
 			);
 			mainGroup = 3670E93026CBF02700FD5B79;
 			packageReferences = (
-				3670E95426CBF0F900FD5B79 /* XCRemoteSwiftPackageReference "d4l-sdk-ios" */,
+				36FA37EA26D7CA6A00DDCC35 /* XCRemoteSwiftPackageReference "d4l-crypto-ios" */,
 			);
 			productRefGroup = 3670E93B26CBF02700FD5B79 /* Products */;
 			projectDirPath = "";
@@ -475,20 +475,20 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		3670E95426CBF0F900FD5B79 /* XCRemoteSwiftPackageReference "d4l-sdk-ios" */ = {
+		36FA37EA26D7CA6A00DDCC35 /* XCRemoteSwiftPackageReference "d4l-crypto-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/d4l-data4life/d4l-sdk-ios.git";
+			repositoryURL = "https://github.com/d4l-data4life/d4l-crypto-ios.git";
 			requirement = {
 				kind = upToNextMinorVersion;
-				minimumVersion = 1.15.0;
+				minimumVersion = 1.6.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		3670E96626CD1E6E00FD5B79 /* Data4LifeCrypto */ = {
+		36FA37EB26D7CA6A00DDCC35 /* Data4LifeCrypto */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 3670E95426CBF0F900FD5B79 /* XCRemoteSwiftPackageReference "d4l-sdk-ios" */;
+			package = 36FA37EA26D7CA6A00DDCC35 /* XCRemoteSwiftPackageReference "d4l-crypto-ios" */;
 			productName = Data4LifeCrypto;
 		};
 /* End XCSwiftPackageProductDependency section */
