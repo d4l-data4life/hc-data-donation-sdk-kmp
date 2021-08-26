@@ -14,15 +14,22 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.testUtil
+package care.data4life.datadonation.donation.donationservice
 
-import kotlin.reflect.KClass
+import care.data4life.datadonation.donation.donationserivce.DonationServiceApiService
+import care.data4life.datadonation.donation.donationserivce.DonationServiceContract
+import care.data4life.datadonation.mock.stub.networking.RequestBuilderSpy
+import kotlin.test.Test
+import kotlin.test.assertTrue
 
-expect abstract class AbstractRunner
-expect abstract class ParentRunner<T> : AbstractRunner
-expect class FrameworkMethod
-expect open class BlockClassRunner : ParentRunner<FrameworkMethod>
-expect open class SandboxTestRunner : BlockClassRunner
-expect class Runner : SandboxTestRunner
-expect annotation class RunWith(val value: KClass<out AbstractRunner>)
+class DonationServiceApiServiceTest {
+    // @Test
+    /*fun `It fulfils DonationServiceApiService`() {
+        val apiService: Any = DonationServiceApiService(
+            RequestBuilderSpy(),
 
+        )
+
+        assertTrue(apiService is DonationServiceContract.ApiService)
+    }*/
+}

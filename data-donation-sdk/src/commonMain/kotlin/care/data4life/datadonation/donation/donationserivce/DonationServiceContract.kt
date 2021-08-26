@@ -19,6 +19,7 @@ package care.data4life.datadonation.donation.donationserivce
 import care.data4life.datadonation.donation.donationserivce.model.DeletionProof
 import care.data4life.datadonation.donation.donationserivce.model.RevocationTypeSerializer
 import care.data4life.datadonation.donation.donationserivce.model.SignedConsentMessage
+import care.data4life.datadonation.networking.HttpRuntimeError
 import io.ktor.client.request.forms.MultiPartFormDataContent
 import kotlinx.serialization.Serializable
 
@@ -48,7 +49,12 @@ internal interface DonationServiceContract {
             )
         }
 
-        interface ErrorHandler
+        interface ErrorHandler {
+            fun handleFetchToken(error: HttpRuntimeError): Token
+            fun handleRegister(error: HttpRuntimeError): Unit
+            fun handleDonate(error: HttpRuntimeError): Unit
+            fun handleRevoke(error: HttpRuntimeError): DeletionProof
+        }
     }
 
     interface Repository

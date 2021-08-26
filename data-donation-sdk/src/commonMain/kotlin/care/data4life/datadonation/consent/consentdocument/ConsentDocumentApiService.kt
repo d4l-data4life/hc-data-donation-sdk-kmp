@@ -21,18 +21,18 @@ import care.data4life.datadonation.consent.consentdocument.model.ConsentDocument
 import care.data4life.datadonation.networking.HttpRuntimeError
 import care.data4life.datadonation.networking.Networking
 import care.data4life.datadonation.networking.receive
-import care.data4life.datadonation.ConsentDataContract.ConsentDocument as ConsentDocumentContract
+import care.data4life.datadonation.ConsentDataContract
 
 internal class ConsentDocumentApiService constructor(
     private val requestBuilderFactory: Networking.RequestBuilderFactory,
-    private val errorHandler: care.data4life.datadonation.consent.consentdocument.ConsentDocumentContract.ApiService.ErrorHandler,
-) : care.data4life.datadonation.consent.consentdocument.ConsentDocumentContract.ApiService {
+    private val errorHandler: ConsentDocumentContract.ApiService.ErrorHandler
+) : ConsentDocumentContract.ApiService {
     override suspend fun fetchConsentDocuments(
         accessToken: String,
         consentDocumentKey: String,
         version: String?,
         language: String?,
-    ): List<ConsentDocumentContract> {
+    ): List<ConsentDataContract.ConsentDocument> {
         val parameter = mapOf(
             "key" to consentDocumentKey,
             "version" to version,

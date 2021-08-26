@@ -14,15 +14,15 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.testUtil
+package care.data4life.datadonation.donation.donationserivce
 
-import kotlin.reflect.KClass
+import care.data4life.sdk.lang.D4LRuntimeException
 
-expect abstract class AbstractRunner
-expect abstract class ParentRunner<T> : AbstractRunner
-expect class FrameworkMethod
-expect open class BlockClassRunner : ParentRunner<FrameworkMethod>
-expect open class SandboxTestRunner : BlockClassRunner
-expect class Runner : SandboxTestRunner
-expect annotation class RunWith(val value: KClass<out AbstractRunner>)
-
+sealed class DonationServiceError(
+    open val httpStatus: Int
+) : D4LRuntimeException() {
+    class UnexpectedFailure(override val httpStatus: Int) : DonationServiceError(httpStatus)
+    class BadRequest : DonationServiceError(400)
+    class Unauthorized : DonationServiceError(401)
+    class InternalServer : DonationServiceError(500)
+}
