@@ -31,7 +31,7 @@ internal interface PublicKeyServiceContract {
     }
 
     interface ApiService {
-        suspend fun fetchLatestUpdate(): Headers
+        suspend fun fetchPublicKeyHeaders(): Headers
         suspend fun fetchPublicKeys(): RawKeys
 
         companion object {
@@ -45,7 +45,7 @@ internal interface PublicKeyServiceContract {
     }
 
     interface Repository {
-        fun fetchPublicKeys(): PublicKeys
+        suspend fun fetchPublicKeys(): PublicKeys
 
         fun interface KeyMapper {
             fun mapKeys(rawKeys: RawKeys): PublicKeys

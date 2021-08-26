@@ -28,7 +28,7 @@ internal class PublicKeyServiceApiService(
     private val requestBuilderFactory: Networking.RequestBuilderFactory,
     private val errorHandler: PublicKeyServiceContract.ApiService.ErrorHandler
 ) : PublicKeyServiceContract.ApiService {
-    override suspend fun fetchLatestUpdate(): Headers {
+    override suspend fun fetchPublicKeyHeaders(): Headers {
         val request = requestBuilderFactory
             .create()
             .prepare(

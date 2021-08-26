@@ -177,7 +177,7 @@ class PublicKeyServiceApiServiceTest {
             PublicKeyServiceApiService(
                 requestTemplate,
                 errorHandler,
-            ).fetchLatestUpdate()
+            ).fetchPublicKeyHeaders()
         }
 
         // Then
@@ -222,7 +222,7 @@ class PublicKeyServiceApiServiceTest {
         val result = PublicKeyServiceApiService(
             requestTemplate,
             PublicKeyServiceErrorHandlerStub(),
-        ).fetchLatestUpdate()
+        ).fetchPublicKeyHeaders()
 
         // Then
         assertSame(
