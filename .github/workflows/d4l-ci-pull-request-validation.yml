@@ -35,35 +35,14 @@ jobs:
         run: ./gradlew clean
       - name: Version
         run: ./gradlew versionInfo
+      - name: Reset iOS Simulators
+        run: xcrun simctl erase all
+      - name: Run Swift tests
+        run: xcodebuild -project DataDonationCryptoObjC/DataDonationCryptoObjC.xcodeproj -scheme DataDonationCryptoHostApp -sdk iphonesimulator -destination "name=iPhone 12" -derivedDataPath build/DataDonationCryptoObjC test
       - name: Build
         run: ./gradlew build
       - name: Publish Feature to Maven Repo
         run: ./gradlew publishFeature
 
-  pull-request-validation-objc:
-    runs-on: macos-latest
-
-    concurrency:
-      group: validation-objc-${{ github.head_ref }}
-      cancel-in-progress: true
-    
-    steps:
-      - name: Display runner context
-        run: hostname -s
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-          ref: ${{ github.head_ref }}
-      - name: Cache Swift packages
-        uses: actions/cache@v2
-        with:
-          path: .build
-          key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
-          restore-keys: ${{ runner.os }}-spm-
-      - name: Reset iOS Simulators
-        run: xcrun simctl erase all
-      - name: Run Swift tests
-        run: xcodebuild -project DataDonationCryptoObjC/DataDonationCryptoObjC.xcodeproj -scheme DataDonationCryptoHostApp -sdk iphonesimulator -destination "name=iPhone 12" test
-        
+      
 
