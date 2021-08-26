@@ -52,7 +52,7 @@ kotlin {
         val platform = "iphoneos"
         val libraryName = "DataDonationCryptoObjC"
         val libraryPath = "$rootDir/$libraryName/build/Build/Products/Release-$platform"
-        val frameworksPath = "$libraryPath/Frameworks"
+        val frameworksPath = "$libraryPath"
 
         compilations.getByName("main") {
             cinterops.create("DataDonationCryptoObjC") {
@@ -90,7 +90,7 @@ kotlin {
         val platform = "iphonesimulator"
         val libraryName = "DataDonationCryptoObjC"
         val libraryPath = "$rootDir/$libraryName/build/Build/Products/Release-$platform"
-        val frameworksPath = "$libraryPath/Frameworks"
+        val frameworksPath = "$libraryPath"
 
         compilations.getByName("main") {
             cinterops.create("DataDonationCryptoObjC") {
