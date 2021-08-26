@@ -22,7 +22,7 @@ import care.data4life.datadonation.donation.publickeyservice.model.RawKey
 import care.data4life.datadonation.donation.publickeyservice.model.RawKeys
 import care.data4life.datadonation.error.CoreRuntimeError
 
-internal class KeyMapper(
+internal class PublicKeyServiceKeyMapper(
     private val environment: DataDonationSDK.Environment
 ) : PublicKeyServiceContract.Repository.KeyMapper {
     private fun filterRawKeys(rawKeys: RawKeys): Pair<RawKey, RawKey> {

@@ -27,13 +27,13 @@ internal interface ProgramContract {
             programName: String
         ): Program
 
+        interface ErrorHandler {
+            fun mapFetchProgram(error: HttpRuntimeError): ProgramError
+        }
+
         companion object {
             val ROUTE = listOf("program", "api", "v1", "programs")
         }
-    }
-
-    interface ErrorMapper {
-        fun mapFetchProgram(error: HttpRuntimeError): ProgramError
     }
 
     interface Repository {

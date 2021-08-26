@@ -24,10 +24,10 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
-class KeyMapperTest {
+class PublicKeyServiceKeyMapperTest {
     @Test
     fun `It fulfils KeyMapper`() {
-        val mapper: Any = KeyMapper(DataDonationSDK.Environment.DEVELOPMENT)
+        val mapper: Any = PublicKeyServiceKeyMapper(DataDonationSDK.Environment.DEVELOPMENT)
 
         assertTrue(mapper is PublicKeyServiceContract.Repository.KeyMapper)
     }
@@ -43,7 +43,7 @@ class KeyMapperTest {
 
         val error = assertFailsWith<CoreRuntimeError.MissingCredentials> {
             // When
-            KeyMapper(DataDonationSDK.Environment.DEVELOPMENT).mapKeys(
+            PublicKeyServiceKeyMapper(DataDonationSDK.Environment.DEVELOPMENT).mapKeys(
                 rawKeys
             )
         }
@@ -66,7 +66,7 @@ class KeyMapperTest {
 
         val error = assertFailsWith<CoreRuntimeError.MissingCredentials> {
             // When
-            KeyMapper(DataDonationSDK.Environment.DEVELOPMENT).mapKeys(
+            PublicKeyServiceKeyMapper(DataDonationSDK.Environment.DEVELOPMENT).mapKeys(
                 rawKeys
             )
         }
@@ -89,7 +89,7 @@ class KeyMapperTest {
 
         val error = assertFailsWith<CoreRuntimeError.MissingCredentials> {
             // When
-            KeyMapper(DataDonationSDK.Environment.DEVELOPMENT).mapKeys(
+            PublicKeyServiceKeyMapper(DataDonationSDK.Environment.DEVELOPMENT).mapKeys(
                 rawKeys
             )
         }
@@ -115,7 +115,7 @@ class KeyMapperTest {
         )
 
         // When
-        val result = KeyMapper(DataDonationSDK.Environment.DEVELOPMENT).mapKeys(
+        val result = PublicKeyServiceKeyMapper(DataDonationSDK.Environment.DEVELOPMENT).mapKeys(
             rawKeys
         )
 
@@ -144,7 +144,7 @@ class KeyMapperTest {
         )
 
         // When
-        val result = KeyMapper(DataDonationSDK.Environment.SANDBOX).mapKeys(
+        val result = PublicKeyServiceKeyMapper(DataDonationSDK.Environment.SANDBOX).mapKeys(
             rawKeys
         )
 
@@ -173,7 +173,7 @@ class KeyMapperTest {
         )
 
         // When
-        val result = KeyMapper(DataDonationSDK.Environment.STAGING).mapKeys(
+        val result = PublicKeyServiceKeyMapper(DataDonationSDK.Environment.STAGING).mapKeys(
             rawKeys
         )
 
@@ -202,7 +202,7 @@ class KeyMapperTest {
         )
 
         // When
-        val result = KeyMapper(DataDonationSDK.Environment.PRODUCTION).mapKeys(
+        val result = PublicKeyServiceKeyMapper(DataDonationSDK.Environment.PRODUCTION).mapKeys(
             rawKeys
         )
 

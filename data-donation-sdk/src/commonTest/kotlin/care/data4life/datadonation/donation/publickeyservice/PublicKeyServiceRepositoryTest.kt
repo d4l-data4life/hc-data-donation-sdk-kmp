@@ -18,8 +18,8 @@ package care.data4life.datadonation.donation.publickeyservice
 
 import care.data4life.datadonation.donation.publickeyservice.model.PublicKeys
 import care.data4life.datadonation.donation.publickeyservice.model.RawKeys
-import care.data4life.datadonation.mock.stub.donation.publickeyservice.KeyMapperStub
 import care.data4life.datadonation.mock.stub.donation.publickeyservice.PublicKeyServiceApiServiceStub
+import care.data4life.datadonation.mock.stub.donation.publickeyservice.PublicKeyServiceKeyMapperStub
 import care.data4life.sdk.util.test.coroutine.runBlockingTest
 import kotlin.test.Test
 import kotlin.test.assertSame
@@ -30,7 +30,7 @@ class PublicKeyServiceRepositoryTest {
     fun `It fulfils PublicKeyServiceRepository`() {
         val repo: Any = PublicKeyServiceRepository(
             PublicKeyServiceApiServiceStub(),
-            KeyMapperStub()
+            PublicKeyServiceKeyMapperStub()
         )
 
         assertTrue(repo is PublicKeyServiceContract.Repository)
@@ -43,7 +43,7 @@ class PublicKeyServiceRepositoryTest {
         val publicKeys = PublicKeys("donation", "alp")
 
         val apiService = PublicKeyServiceApiServiceStub()
-        val keyMapper = KeyMapperStub()
+        val keyMapper = PublicKeyServiceKeyMapperStub()
 
         apiService.whenFetchPublicKeys = { rawKeys }
 

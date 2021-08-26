@@ -22,12 +22,12 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class ProgramErrorMapperTest {
+class ProgramErrorHandlerTest {
     @Test
     fun `It fulfils ProgramErrorMapper`() {
-        val handler: Any = ProgramErrorMapper
+        val handler: Any = ProgramErrorHandler
 
-        assertTrue(handler is ProgramContract.ErrorMapper)
+        assertTrue(handler is ProgramContract.ApiService.ErrorHandler)
     }
 
     @Test
@@ -36,7 +36,7 @@ class ProgramErrorMapperTest {
         val error = HttpRuntimeError(HttpStatusCode.ServiceUnavailable)
 
         // When
-        val result = ProgramErrorMapper.mapFetchProgram(error)
+        val result = ProgramErrorHandler.mapFetchProgram(error)
 
         // Then
         assertTrue(result is ProgramError.UnexpectedError)
@@ -52,7 +52,7 @@ class ProgramErrorMapperTest {
         val error = HttpRuntimeError(HttpStatusCode.NotFound)
 
         // When
-        val result = ProgramErrorMapper.mapFetchProgram(error)
+        val result = ProgramErrorHandler.mapFetchProgram(error)
 
         // Then
         assertTrue(result is ProgramError.NotFoundError)

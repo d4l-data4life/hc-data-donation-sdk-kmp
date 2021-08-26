@@ -42,7 +42,7 @@ class ProgramKoinTest {
         }
 
         // Then
-        val repo: ProgramContract.ErrorMapper = koin.koin.get()
+        val repo: ProgramContract.ApiService.ErrorHandler = koin.koin.get()
         assertNotNull(repo)
     }
 

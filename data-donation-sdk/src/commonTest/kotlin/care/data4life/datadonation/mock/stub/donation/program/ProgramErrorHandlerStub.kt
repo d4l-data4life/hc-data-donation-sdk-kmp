@@ -14,22 +14,17 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.mock.stub.donation.publickeyservice
+package care.data4life.datadonation.mock.stub.donation.program
 
-import care.data4life.datadonation.donation.publickeyservice.PublicKeyServiceContract
-import care.data4life.datadonation.donation.publickeyservice.model.PublicKeys
-import care.data4life.datadonation.donation.publickeyservice.model.RawKeys
-import care.data4life.datadonation.mock.MockContract
+import care.data4life.datadonation.donation.program.ProgramContract
+import care.data4life.datadonation.donation.program.ProgramError
 import care.data4life.datadonation.mock.MockException
+import care.data4life.datadonation.networking.HttpRuntimeError
 
-internal class KeyMapperStub : PublicKeyServiceContract.Repository.KeyMapper, MockContract.Stub {
-    var whenMapKeys: ((rawKeys: RawKeys) -> PublicKeys)? = null
+internal class ProgramErrorHandlerStub : ProgramContract.ApiService.ErrorHandler {
+    var whenMapFetchProgram: ((HttpRuntimeError) -> ProgramError)? = null
 
-    override fun mapKeys(rawKeys: RawKeys): PublicKeys {
-        return whenMapKeys?.invoke(rawKeys) ?: throw MockException()
-    }
-
-    override fun clear() {
-        whenMapKeys = null
+    override fun mapFetchProgram(error: HttpRuntimeError): ProgramError {
+        return whenMapFetchProgram?.invoke(error) ?: throw MockException()
     }
 }
