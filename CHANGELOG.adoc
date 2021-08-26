@@ -40,6 +40,7 @@ toc::[]
 === Changed
 
 * _**BREAKING**_ DataDonationSDKPublicApi -> DataDonationSDK.
+* _**BREAKING**_ Environment#DEV -> Environment#DEVELOPMENT
 
 === Deprecated
 
