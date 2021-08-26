@@ -17,35 +17,35 @@
 package care.data4life.datadonation.donation.donationservice
 
 import care.data4life.datadonation.donation.donationservice.model.DeletionProof
-import care.data4life.datadonation.donation.donationservice.model.RevocationTypeSerializer
 import care.data4life.datadonation.networking.HttpRuntimeError
 import io.ktor.client.request.forms.MultiPartFormDataContent
-import kotlinx.serialization.Serializable
 
 internal typealias SerializedJson = String
 internal typealias EncryptedJSON = ByteArray
+internal typealias EncryptedSignedMessage = ByteArray
+internal typealias EncryptedDocument = ByteArray
 internal typealias Signature = String
 internal typealias DonorId = String
 internal typealias UUID = String
 internal typealias Token = String
 
 internal interface DonationServiceContract {
-    @Serializable(with = RevocationTypeSerializer::class)
-    enum class RevocationType(val value: String) {
-        DELETE("delete"),
-        UNMAP("unmap")
-    }
 
     interface ApiService {
-        fun fetchToken(): Token
-        fun register(signedConsentMessage: ByteArray): Unit
-        fun donate(donation: MultiPartFormDataContent): Unit
-        fun revoke(donation: MultiPartFormDataContent): DeletionProof
+        suspend fun fetchToken(): Token
+        suspend fun register(encryptedJSON: EncryptedJSON)
+        suspend fun donate(donations: MultiPartFormDataContent)
+        suspend fun revoke(donation: MultiPartFormDataContent): DeletionProof
 
         companion object {
             val ROUTE = listOf(
                 "donation", "api", "v1"
             )
+
+            const val TOKEN = "token"
+            const val REGISTER = "register"
+            const val DONATE = "donate"
+            const val REVOKE = "revoke"
         }
 
         interface ErrorHandler {
@@ -56,5 +56,10 @@ internal interface DonationServiceContract {
         }
     }
 
-    interface Repository
+    interface Repository {
+        suspend fun fetchToken(): Token
+        suspend fun register(encryptedJSON: EncryptedJSON)
+        suspend fun donate(donations: MultiPartFormDataContent)
+        suspend fun revoke(donation: MultiPartFormDataContent): DeletionProof
+    }
 }

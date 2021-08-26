@@ -16,27 +16,98 @@
 
 package care.data4life.datadonation.donation.donationservice
 
+import care.data4life.datadonation.donation.donationservice.DonationServiceContract.ApiService.Companion.DONATE
+import care.data4life.datadonation.donation.donationservice.DonationServiceContract.ApiService.Companion.REGISTER
+import care.data4life.datadonation.donation.donationservice.DonationServiceContract.ApiService.Companion.REVOKE
+import care.data4life.datadonation.donation.donationservice.DonationServiceContract.ApiService.Companion.ROUTE
+import care.data4life.datadonation.donation.donationservice.DonationServiceContract.ApiService.Companion.TOKEN
 import care.data4life.datadonation.donation.donationservice.model.DeletionProof
+import care.data4life.datadonation.networking.HttpRuntimeError
 import care.data4life.datadonation.networking.Networking
+import care.data4life.datadonation.networking.receive
+import care.data4life.datadonation.networking.runForNoContent
 import io.ktor.client.request.forms.MultiPartFormDataContent
 
 internal class DonationServiceApiService(
     private val requestBuilderFactory: Networking.RequestBuilderFactory,
     private val errorHandler: DonationServiceContract.ApiService.ErrorHandler
 ) : DonationServiceContract.ApiService {
-    override fun fetchToken(): Token {
-        TODO("Not yet implemented")
+    override suspend fun fetchToken(): Token {
+        val path = ROUTE.toMutableList().also {
+            it.add(TOKEN)
+        }
+
+        val request = requestBuilderFactory
+            .create()
+            .prepare(
+                Networking.Method.GET,
+                path
+            )
+
+        return try {
+            receive(request)
+        } catch (error: HttpRuntimeError) {
+            throw errorHandler.handleFetchToken(error)
+        }
     }
 
-    override fun register(signedConsentMessage: ByteArray) {
-        TODO("Not yet implemented")
+    override suspend fun register(encryptedJSON: EncryptedJSON) {
+        val path = ROUTE.toMutableList().also {
+            it.add(REGISTER)
+        }
+
+        val request = requestBuilderFactory
+            .create()
+            .setBody(encryptedJSON)
+            .prepare(
+                Networking.Method.PUT,
+                path
+            )
+
+        return try {
+            receive(request)
+        } catch (error: HttpRuntimeError) {
+            throw errorHandler.handleFetchToken(error)
+        }
     }
 
-    override fun donate(donation: MultiPartFormDataContent) {
-        TODO("Not yet implemented")
+    override suspend fun donate(donations: MultiPartFormDataContent) {
+        val path = ROUTE.toMutableList().also {
+            it.add(DONATE)
+        }
+
+        val request = requestBuilderFactory
+            .create()
+            .setBody(donations)
+            .prepare(
+                Networking.Method.POST,
+                path
+            )
+
+        try {
+            runForNoContent(request)
+        } catch (error: HttpRuntimeError) {
+            throw errorHandler.handleFetchToken(error)
+        }
     }
 
-    override fun revoke(donation: MultiPartFormDataContent): DeletionProof {
-        TODO("Not yet implemented")
+    override suspend fun revoke(donation: MultiPartFormDataContent): DeletionProof {
+        val path = ROUTE.toMutableList().also {
+            it.add(REVOKE)
+        }
+
+        val request = requestBuilderFactory
+            .create()
+            .setBody(donation)
+            .prepare(
+                Networking.Method.POST,
+                path
+            )
+
+        return try {
+            receive(request)
+        } catch (error: HttpRuntimeError) {
+            throw errorHandler.handleFetchToken(error)
+        }
     }
 }

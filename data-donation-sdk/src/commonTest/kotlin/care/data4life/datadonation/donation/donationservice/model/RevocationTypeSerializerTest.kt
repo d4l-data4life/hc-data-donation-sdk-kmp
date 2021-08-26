@@ -16,7 +16,8 @@
 
 package care.data4life.datadonation.donation.donationservice.model
 
-import care.data4life.datadonation.donation.donationservice.DonationServiceContract
+import care.data4life.datadonation.donation.DonationContract
+import care.data4life.datadonation.donation.model.RevocationTypeSerializer
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.descriptors.PrimitiveKind
@@ -60,7 +61,7 @@ internal class RevocationTypeSerializerTest {
             }
         }
 
-        for (field in DonationServiceContract.RevocationType.values()) {
+        for (field in DonationContract.RevocationType.values()) {
             // When
             val result = serializer.encodeToString(field)
 
@@ -84,7 +85,7 @@ internal class RevocationTypeSerializerTest {
         // Then
         assertFailsWith<Throwable> {
             // When
-            serializer.decodeFromString<DonationServiceContract.RevocationType>("\"notJS\"")
+            serializer.decodeFromString<DonationContract.RevocationType>("\"notJS\"")
         }
     }
 
@@ -97,9 +98,9 @@ internal class RevocationTypeSerializerTest {
             }
         }
 
-        for (field in DonationServiceContract.RevocationType.values()) {
+        for (field in DonationContract.RevocationType.values()) {
             // When
-            val result = serializer.decodeFromString<DonationServiceContract.RevocationType>("\"${field.value}\"")
+            val result = serializer.decodeFromString<DonationContract.RevocationType>("\"${field.value}\"")
 
             // Then
             assertSame(

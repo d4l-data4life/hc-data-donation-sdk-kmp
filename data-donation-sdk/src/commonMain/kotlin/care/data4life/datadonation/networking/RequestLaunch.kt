@@ -34,13 +34,9 @@ internal suspend inline fun <reified T> receive(
 internal suspend inline fun runForNoContent(
     request: HttpStatement,
 ) {
-    return try {
-        request.execute().let { response ->
-            if (response.status != HttpStatusCode.NoContent) {
-                throw HttpRuntimeError(response.status)
-            }
+    return request.execute().let { response ->
+        if (response.status != HttpStatusCode.NoContent) {
+            throw HttpRuntimeError(response.status)
         }
-    } catch (exception: NoTransformationFoundException) {
-        throw CoreRuntimeError.ResponseTransformFailure()
     }
 }

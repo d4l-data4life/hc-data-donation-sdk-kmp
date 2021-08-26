@@ -14,9 +14,9 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.donation.donationservice.model
+package care.data4life.datadonation.donation.model
 
-import care.data4life.datadonation.donation.donationservice.DonationServiceContract
+import care.data4life.datadonation.donation.DonationContract
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
@@ -24,18 +24,18 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
-internal object RevocationTypeSerializer : KSerializer<DonationServiceContract.RevocationType> {
+internal object RevocationTypeSerializer : KSerializer<DonationContract.RevocationType> {
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor(
         "RevocationType",
         PrimitiveKind.STRING
     )
 
-    override fun serialize(encoder: Encoder, value: DonationServiceContract.RevocationType) {
+    override fun serialize(encoder: Encoder, value: DonationContract.RevocationType) {
         encoder.encodeString(value.value)
     }
 
-    override fun deserialize(decoder: Decoder): DonationServiceContract.RevocationType {
+    override fun deserialize(decoder: Decoder): DonationContract.RevocationType {
         val key = decoder.decodeString()
-        return DonationServiceContract.RevocationType.valueOf(key.toUpperCase())
+        return DonationContract.RevocationType.valueOf(key.toUpperCase())
     }
 }

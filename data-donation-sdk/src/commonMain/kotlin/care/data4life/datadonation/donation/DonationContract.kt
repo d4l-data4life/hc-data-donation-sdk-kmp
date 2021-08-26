@@ -16,6 +16,7 @@
 
 package care.data4life.datadonation.donation
 
+import care.data4life.datadonation.donation.model.RevocationTypeSerializer
 import kotlinx.serialization.Serializable
 
 internal interface DonationContract {
@@ -24,5 +25,11 @@ internal interface DonationContract {
         CONSENT_ONCE("consentOnce"),
         NORMAL_USE("normalUse"),
         REVOKE_ONCE("revokeOnce")
+    }
+
+    @Serializable(with = RevocationTypeSerializer::class)
+    enum class RevocationType(val value: String) {
+        DELETE("delete"),
+        UNMAP("unmap")
     }
 }
