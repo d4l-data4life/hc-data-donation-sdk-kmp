@@ -48,10 +48,20 @@ jobs:
       cancel-in-progress: true
     
     steps:
-      - name: Get current directory
-        run: pwd
-      - name: Get current list
-        run: ls -altr
+      - name: Display runner context
+        run: hostname -s
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Cache Swift packages
+        uses: actions/cache@v2
+        with:
+          path: .build
+          key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
+          restore-keys: ${{ runner.os }}-spm-
       - name: Reset iOS Simulators
         run: xcrun simctl erase all
       - name: Run Swift tests
