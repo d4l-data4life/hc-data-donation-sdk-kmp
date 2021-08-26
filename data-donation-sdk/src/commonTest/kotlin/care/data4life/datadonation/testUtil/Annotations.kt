@@ -25,4 +25,3 @@ expect open class BlockClassRunner : ParentRunner<FrameworkMethod>
 expect open class SandboxTestRunner : BlockClassRunner
 expect class Runner : SandboxTestRunner
 expect annotation class RunWith(val value: KClass<out AbstractRunner>)
-

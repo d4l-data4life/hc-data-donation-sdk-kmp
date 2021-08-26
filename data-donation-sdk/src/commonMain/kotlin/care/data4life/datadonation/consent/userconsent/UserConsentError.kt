@@ -24,5 +24,9 @@ sealed class UserConsentError(
     class UnexpectedFailure(override val httpStatus: Int) : UserConsentError(httpStatus)
     class BadRequest : UserConsentError(400)
     class Unauthorized : UserConsentError(401)
+    class Forbidden : UserConsentError(403)
+    class NotFound : UserConsentError(404)
+    class DocumentConflict : UserConsentError(409)
+    class UnprocessableEntity : UserConsentError(422)
     class InternalServer : UserConsentError(500)
 }

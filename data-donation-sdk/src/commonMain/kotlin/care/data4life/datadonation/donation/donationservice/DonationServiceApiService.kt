@@ -14,18 +14,16 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.donation.donationserivce
+package care.data4life.datadonation.donation.donationservice
 
-import care.data4life.datadonation.donation.donationserivce.DonationServiceContract
-import care.data4life.datadonation.donation.donationserivce.Token
-import care.data4life.datadonation.donation.donationserivce.model.DeletionProof
+import care.data4life.datadonation.donation.donationservice.model.DeletionProof
 import care.data4life.datadonation.networking.Networking
 import io.ktor.client.request.forms.MultiPartFormDataContent
 
 internal class DonationServiceApiService(
     private val requestBuilderFactory: Networking.RequestBuilderFactory,
-    private val errorHandler: DonationServiceContract.ApiService
-): DonationServiceContract.ApiService {
+    private val errorHandler: DonationServiceContract.ApiService.ErrorHandler
+) : DonationServiceContract.ApiService {
     override fun fetchToken(): Token {
         TODO("Not yet implemented")
     }

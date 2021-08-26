@@ -14,11 +14,10 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.donation.donationserivce
+package care.data4life.datadonation.donation.donationservice
 
-import care.data4life.datadonation.donation.donationserivce.model.DeletionProof
-import care.data4life.datadonation.donation.donationserivce.model.RevocationTypeSerializer
-import care.data4life.datadonation.donation.donationserivce.model.SignedConsentMessage
+import care.data4life.datadonation.donation.donationservice.model.DeletionProof
+import care.data4life.datadonation.donation.donationservice.model.RevocationTypeSerializer
 import care.data4life.datadonation.networking.HttpRuntimeError
 import io.ktor.client.request.forms.MultiPartFormDataContent
 import kotlinx.serialization.Serializable
@@ -50,10 +49,10 @@ internal interface DonationServiceContract {
         }
 
         interface ErrorHandler {
-            fun handleFetchToken(error: HttpRuntimeError): Token
-            fun handleRegister(error: HttpRuntimeError): Unit
-            fun handleDonate(error: HttpRuntimeError): Unit
-            fun handleRevoke(error: HttpRuntimeError): DeletionProof
+            fun handleFetchToken(error: HttpRuntimeError): DonationServiceError
+            fun handleRegister(error: HttpRuntimeError): DonationServiceError
+            fun handleDonate(error: HttpRuntimeError): DonationServiceError
+            fun handleRevoke(error: HttpRuntimeError): DonationServiceError
         }
     }
 

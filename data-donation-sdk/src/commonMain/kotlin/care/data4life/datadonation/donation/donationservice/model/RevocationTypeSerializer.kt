@@ -14,9 +14,9 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.donation.donationserivce.model
+package care.data4life.datadonation.donation.donationservice.model
 
-import care.data4life.datadonation.donation.donationserivce.DonationServiceContract
+import care.data4life.datadonation.donation.donationservice.DonationServiceContract
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor

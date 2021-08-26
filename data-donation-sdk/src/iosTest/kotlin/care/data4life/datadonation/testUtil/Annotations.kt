@@ -19,11 +19,11 @@ package care.data4life.datadonation.testUtil
 import kotlin.reflect.KClass
 
 abstract class AbstractNoop
-abstract class NoopParent<T>: AbstractNoop()
+abstract class NoopParent<T> : AbstractNoop()
 class NoopFramework
 open class NoopBlock : NoopParent<NoopFramework>()
 open class NoopSandBox : NoopBlock()
-class NoopRunner: NoopSandBox()
+class NoopRunner : NoopSandBox()
 annotation class NoopRunWith(val value: KClass<out AbstractRunner>)
 
 actual typealias AbstractRunner = AbstractNoop

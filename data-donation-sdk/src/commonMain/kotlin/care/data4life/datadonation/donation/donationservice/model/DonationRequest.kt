@@ -14,10 +14,10 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.donation.donationserivce.model
+package care.data4life.datadonation.donation.donationservice.model
 
-import care.data4life.datadonation.donation.donationserivce.DonorId
-import care.data4life.datadonation.donation.donationserivce.Token
+import care.data4life.datadonation.donation.donationservice.DonorId
+import care.data4life.datadonation.donation.donationservice.Token
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

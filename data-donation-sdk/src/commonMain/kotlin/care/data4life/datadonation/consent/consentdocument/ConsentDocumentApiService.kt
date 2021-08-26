@@ -16,12 +16,12 @@
 
 package care.data4life.datadonation.consent.consentdocument
 
+import care.data4life.datadonation.ConsentDataContract
 import care.data4life.datadonation.consent.consentdocument.ConsentDocumentContract.ApiService.Companion.ROUTE
 import care.data4life.datadonation.consent.consentdocument.model.ConsentDocument
 import care.data4life.datadonation.networking.HttpRuntimeError
 import care.data4life.datadonation.networking.Networking
 import care.data4life.datadonation.networking.receive
-import care.data4life.datadonation.ConsentDataContract
 
 internal class ConsentDocumentApiService constructor(
     private val requestBuilderFactory: Networking.RequestBuilderFactory,

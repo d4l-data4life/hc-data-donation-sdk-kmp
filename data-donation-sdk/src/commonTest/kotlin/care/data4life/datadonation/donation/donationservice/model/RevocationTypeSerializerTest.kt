@@ -16,8 +16,7 @@
 
 package care.data4life.datadonation.donation.donationservice.model
 
-import care.data4life.datadonation.donation.donationserivce.DonationServiceContract
-import care.data4life.datadonation.donation.donationserivce.model.RevocationTypeSerializer
+import care.data4life.datadonation.donation.donationservice.DonationServiceContract
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.descriptors.PrimitiveKind
