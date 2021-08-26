@@ -39,3 +39,18 @@ jobs:
         run: ./gradlew build
       - name: Publish Feature to Maven Repo
         run: ./gradlew publishFeature
+
+  pull-request-validation-objc:
+    runs-on: macos-latest
+
+    concurrency:
+      group: validation-objc-${{ github.head_ref }}
+      cancel-in-progress: true
+    
+    steps:
+      - name: Reset iOS Simulators
+        run: xcrun simctl erase all
+      - name: Run Swift tests
+        run: xcodebuild -project DataDonationCryptoObjC.xcodeproj -scheme DataDonationCryptoObjC -sdk iphonesimulator -destination "name=iPhone 12" test
+        working-directory: DataDonationCryptoObjC
+
