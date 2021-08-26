@@ -16,6 +16,7 @@
 
 package care.data4life.datadonation.donation.publickeyservice
 
+import care.data4life.datadonation.error.CoreRuntimeError
 import care.data4life.datadonation.mock.fixture.PublicKeyServiceFixture
 import care.data4life.datadonation.mock.stub.donation.publickeyservice.PublicKeyServiceErrorHandlerStub
 import care.data4life.datadonation.mock.stub.networking.RequestBuilderSpy
@@ -24,6 +25,7 @@ import care.data4life.datadonation.networking.Networking
 import care.data4life.datadonation.networking.Path
 import care.data4life.sdk.util.test.coroutine.runBlockingTest
 import care.data4life.sdk.util.test.ktor.HttpMockClientFactory
+import care.data4life.sdk.util.test.ktor.HttpMockClientFactory.createMockClientWithResponse
 import io.ktor.client.engine.mock.respond
 import io.ktor.client.engine.mock.respondOk
 import io.ktor.client.request.HttpRequestBuilder
@@ -91,6 +93,38 @@ class PublicKeyServiceApiServiceTest {
         assertSame<Any>(
             actual = result,
             expected = outgoingError
+        )
+    }
+
+    @Test
+    fun `Given fetchPublicKeys was called it fails due to unexpected response`() = runBlockingTest {
+        // Given
+        val requestTemplate = RequestBuilderSpy.Factory()
+        val client = createMockClientWithResponse { scope, _ ->
+            return@createMockClientWithResponse scope.respond(
+                content = "something"
+            )
+        }
+
+        requestTemplate.onPrepare = { _, _ ->
+            HttpStatement(
+                dummyKtor,
+                client
+            )
+        }
+
+        // Then
+        val error = assertFailsWith<CoreRuntimeError.ResponseTransformFailure> {
+            // When
+            PublicKeyServiceApiService(
+                requestTemplate,
+                PublicKeyServiceErrorHandlerStub(),
+            ).fetchPublicKeys()
+        }
+
+        assertEquals(
+            actual = error.message,
+            expected = "Unexpected Response"
         )
     }
 
