@@ -24,6 +24,7 @@ import care.data4life.sdk.util.test.coroutine.runBlockingTest
 import care.data4life.sdk.util.test.coroutine.runWithContextBlockingTest
 import co.touchlab.stately.isolate.IsolateState
 import kotlinx.coroutines.GlobalScope
+import kotlinx.datetime.Instant
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -59,7 +60,7 @@ class CachedUserSessionTokenRepositoryTest {
         }
 
         time.whenNow = {
-            kotlinx.datetime.Instant.fromEpochMilliseconds(1.minutes.toLongMilliseconds())
+            Instant.fromEpochMilliseconds(1.minutes.toLongMilliseconds())
         }
 
         val repo = CachedUserSessionTokenRepository(provider, time, testScope)
@@ -90,7 +91,7 @@ class CachedUserSessionTokenRepositoryTest {
         }
 
         time.whenNow = {
-            kotlinx.datetime.Instant.fromEpochMilliseconds(1.minutes.toLongMilliseconds())
+            Instant.fromEpochMilliseconds(1.minutes.toLongMilliseconds())
         }
 
         val repo = CachedUserSessionTokenRepository(provider, time, testScope)
@@ -108,27 +109,6 @@ class CachedUserSessionTokenRepositoryTest {
     }
 
     @Test
-    fun `Given getUserSessionToken is called, it fails, if an internal error happens`() = runBlockingTest {
-        // Given
-        val provider = UserSessionTokenProviderStub()
-        val time = ClockStub()
-
-        time.whenNow = {
-            kotlinx.datetime.Instant.fromEpochMilliseconds(0)
-        }
-
-        val repo = CachedUserSessionTokenRepository(provider, time, testScope)
-
-        // Then
-        val result = assertFailsWith<CoreRuntimeError.MissingSession> {
-            // When
-            repo.getUserSessionToken()
-        }
-
-        assertNull(result.cause)
-    }
-
-    @Test
     fun `Given getUserSessionToken is called, it returns a cached token, if a token had been previously stored and it used in its 1 minute lifetime`() = runBlockingTest {
         // Given
         val expectedToken = "potato"
@@ -142,9 +122,9 @@ class CachedUserSessionTokenRepositoryTest {
         val time = ClockStub()
         val lifeTime = IsolateState {
             mutableListOf(
-                kotlinx.datetime.Instant.fromEpochMilliseconds(1.minutes.toLongMilliseconds()),
-                kotlinx.datetime.Instant.fromEpochMilliseconds(1.minutes.plus(30.seconds).toLongMilliseconds()),
-                kotlinx.datetime.Instant.fromEpochMilliseconds(1.minutes.plus(45.seconds).toLongMilliseconds())
+                Instant.fromEpochSeconds(60),
+                Instant.fromEpochSeconds(90),
+                Instant.fromEpochSeconds(105)
             )
         }
 
@@ -182,10 +162,10 @@ class CachedUserSessionTokenRepositoryTest {
         val time = ClockStub()
         val lifeTime = IsolateState {
             mutableListOf(
-                kotlinx.datetime.Instant.fromEpochMilliseconds(2.minutes.toLongMilliseconds()),
-                kotlinx.datetime.Instant.fromEpochMilliseconds(2.minutes.plus(1.seconds).toLongMilliseconds()),
-                kotlinx.datetime.Instant.fromEpochMilliseconds(2.minutes.plus(2.minutes).toLongMilliseconds()),
-                kotlinx.datetime.Instant.fromEpochMilliseconds(2.minutes.plus(2.minutes).toLongMilliseconds())
+                Instant.fromEpochMilliseconds(2.minutes.toLongMilliseconds()),
+                Instant.fromEpochMilliseconds(2.minutes.plus(1.seconds).toLongMilliseconds()),
+                Instant.fromEpochMilliseconds(2.minutes.plus(2.minutes).toLongMilliseconds()),
+                Instant.fromEpochMilliseconds(2.minutes.plus(2.minutes).toLongMilliseconds())
             )
         }
 
