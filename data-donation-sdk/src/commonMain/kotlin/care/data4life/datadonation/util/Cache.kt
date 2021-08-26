@@ -27,7 +27,7 @@ internal class Cache(
     private var cachedAt = 0L
 
     override fun fetch(): String {
-        return if(isNotExpired()) {
+        return if (isNotExpired()) {
             cachedValue
         } else {
             throw CoreRuntimeError.InternalFailure("Cache expired")

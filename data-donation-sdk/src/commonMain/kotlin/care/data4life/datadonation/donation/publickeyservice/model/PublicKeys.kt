@@ -16,21 +16,6 @@
 package care.data4life.datadonation.donation.publickeyservice.model
 
 internal data class PublicKeys(
-    val dataDonationService: ByteArray,
-    val alp: ByteArray
-) {
-    override fun equals(other: Any?): Boolean {
-        return when {
-            other !is PublicKeys -> false
-            !dataDonationService.contentEquals(other.dataDonationService) -> false
-            !alp.contentEquals(other.alp) -> false
-            else -> true
-        }
-    }
-
-    override fun hashCode(): Int {
-        var result = dataDonationService.contentHashCode()
-        result = 31 * result + alp.contentHashCode()
-        return result
-    }
-}
+    val donationService: String,
+    val alp: String
+)

@@ -25,9 +25,11 @@ import kotlinx.serialization.Serializable
 @Serializable
 internal data class RawKey(
     @SerialName("name")
+    @Contextual
     val domain: PublicKeyServiceContract.KeyDomain,
     @Contextual
     val environment: DataDonationSDK.Environment,
+    @SerialName("value")
     val key: String
 )
 

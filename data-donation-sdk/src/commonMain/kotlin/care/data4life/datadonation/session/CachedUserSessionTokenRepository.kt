@@ -20,7 +20,6 @@ import care.data4life.datadonation.DataDonationSDK
 import care.data4life.datadonation.error.CoreRuntimeError
 import care.data4life.datadonation.session.SessionTokenRepositoryContract.Companion.CACHE_LIFETIME_IN_SECONDS
 import care.data4life.datadonation.util.Cache
-import care.data4life.sdk.lang.D4LException
 import care.data4life.sdk.lang.D4LRuntimeException
 import co.touchlab.stately.concurrency.AtomicReference
 import co.touchlab.stately.freeze

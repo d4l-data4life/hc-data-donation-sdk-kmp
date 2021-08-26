@@ -48,7 +48,7 @@ internal interface PublicKeyServiceContract {
         fun fetchPublicKeys(): PublicKeys
 
         fun interface KeyMapper {
-            fun mapKeys()
+            fun mapKeys(rawKeys: RawKeys): PublicKeys
         }
     }
 }
