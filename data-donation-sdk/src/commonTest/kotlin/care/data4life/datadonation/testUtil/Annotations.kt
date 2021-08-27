@@ -23,5 +23,5 @@ expect abstract class ParentRunner<T> : AbstractRunner
 expect class FrameworkMethod
 expect open class BlockClassRunner : ParentRunner<FrameworkMethod>
 expect open class SandboxTestRunner : BlockClassRunner
-expect class Runner : SandboxTestRunner
+expect class RobolectricTestRunner : SandboxTestRunner
 expect annotation class RunWith(val value: KClass<out AbstractRunner>)

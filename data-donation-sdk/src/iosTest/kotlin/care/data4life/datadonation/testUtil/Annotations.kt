@@ -31,5 +31,5 @@ actual typealias FrameworkMethod = NoopFramework
 actual typealias ParentRunner<T> = NoopParent<T>
 actual typealias BlockClassRunner = NoopBlock
 actual typealias SandboxTestRunner = NoopSandBox
-actual typealias Runner = NoopRunner
+actual typealias RobolectricTestRunner = NoopRunner
 actual typealias RunWith = NoopRunWith

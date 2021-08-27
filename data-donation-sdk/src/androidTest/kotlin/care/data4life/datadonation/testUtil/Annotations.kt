@@ -24,5 +24,5 @@ actual typealias ParentRunner<T> = org.junit.runners.ParentRunner<T>
 actual typealias FrameworkMethod = org.junit.runners.model.FrameworkMethod
 actual typealias BlockClassRunner = BlockJUnit4ClassRunner
 actual typealias SandboxTestRunner = org.robolectric.internal.SandboxTestRunner
-actual typealias Runner = RobolectricTestRunner
+actual typealias RobolectricTestRunner = RobolectricTestRunner
 actual typealias RunWith = org.junit.runner.RunWith

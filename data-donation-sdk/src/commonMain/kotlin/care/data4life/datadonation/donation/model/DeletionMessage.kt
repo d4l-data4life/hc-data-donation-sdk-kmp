@@ -18,7 +18,6 @@ package care.data4life.datadonation.donation.model
 
 import care.data4life.datadonation.donation.DonationContract
 import care.data4life.datadonation.donation.donationservice.UUID
-import care.data4life.datadonation.donation.model.ConsentSignatureTypeFullSerializer
 import kotlinx.serialization.Serializable
 
 @Serializable

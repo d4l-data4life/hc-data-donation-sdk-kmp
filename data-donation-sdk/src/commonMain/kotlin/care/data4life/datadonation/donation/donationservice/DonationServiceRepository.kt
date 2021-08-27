@@ -21,7 +21,7 @@ import io.ktor.client.request.forms.MultiPartFormDataContent
 
 internal class DonationServiceRepository(
     private val apiService: DonationServiceContract.ApiService
-): DonationServiceContract.Repository {
+) : DonationServiceContract.Repository {
     override suspend fun fetchToken(): Token {
         return apiService.fetchToken()
     }

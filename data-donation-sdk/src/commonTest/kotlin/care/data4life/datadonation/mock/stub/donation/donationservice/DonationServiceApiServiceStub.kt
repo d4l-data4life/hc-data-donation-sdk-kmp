@@ -24,7 +24,7 @@ import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 import io.ktor.client.request.forms.MultiPartFormDataContent
 
-internal class DonationServiceApiServiceStub: DonationServiceContract.ApiService, MockContract.Stub {
+internal class DonationServiceApiServiceStub : DonationServiceContract.ApiService, MockContract.Stub {
     var whenFetchToken: (() -> Token)? = null
     var whenRegister: ((EncryptedJSON) -> Unit)? = null
     var whenDonate: ((MultiPartFormDataContent) -> Unit)? = null
