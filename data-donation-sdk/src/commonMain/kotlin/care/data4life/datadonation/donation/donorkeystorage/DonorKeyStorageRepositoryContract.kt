@@ -14,16 +14,18 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.consent.userconsent.model
+package care.data4life.datadonation.donation.donorkeystorage
 
-import care.data4life.datadonation.ConsentDataContract
-import kotlinx.serialization.Serializable
+import care.data4life.datadonation.donation.donorkeystorage.model.Donor
+import care.data4life.datadonation.donation.donorkeystorage.model.NewDonor
 
-@Serializable
-internal data class UserConsent(
-    override val consentDocumentKey: String,
-    override val consentDocumentVersion: String,
-    override val accountId: String, // UUID
-    override val event: ConsentDataContract.ConsentEvent,
-    override val createdAt: String = "" /* Timestamp */
-) : ConsentDataContract.UserConsent
+internal interface DonorKeyStorageRepositoryContract {
+    suspend fun load(programName: String): Donor
+    suspend fun save(newDonor: NewDonor)
+    suspend fun delete(donor: Donor)
+
+    companion object {
+        const val DATA_DONATION_ANNOTATION = "d4l-donation-key"
+        const val PROGRAM_ANNOTATION_PREFIX = "program:"
+    }
+}

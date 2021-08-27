@@ -20,7 +20,7 @@ import care.data4life.datadonation.consent.consentdocument.model.ConsentDocument
 import kotlin.native.concurrent.ThreadLocal
 
 @ThreadLocal
-object ConsentDocumentFixture {
+internal object ConsentDocumentFixture {
     val sampleConsentDocument = ConsentDocument(
         key = "exampleKey",
         version = "42",

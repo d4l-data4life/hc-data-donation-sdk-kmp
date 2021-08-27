@@ -17,7 +17,6 @@
 package care.data4life.datadonation.session
 
 import care.data4life.datadonation.DataDonationSDK
-import care.data4life.datadonation.error.CoreRuntimeError
 import care.data4life.datadonation.session.SessionTokenRepositoryContract.Companion.CACHE_LIFETIME_IN_SECONDS
 import co.touchlab.stately.concurrency.AtomicReference
 import co.touchlab.stately.freeze
@@ -46,24 +45,24 @@ internal class CachedUserSessionTokenRepository(
     * by the coroutine of the Callbacks or Swift.
     */
     private suspend fun fetchTokenFromApi(): Any {
-        val channel = Channel<Any>()
+        val incoming = Channel<Any>()
 
         provider.getUserSessionToken(
-            { sessionToken: SessionToken ->
+            onSuccess = { sessionToken: SessionToken ->
                 scope.get().launch {
-                    channel.send(sessionToken)
+                    incoming.send(sessionToken)
                 }.start()
                 Unit
             }.freeze(),
-            { error: Exception ->
+            onError = { error: Exception ->
                 scope.get().launch {
-                    channel.send(error)
+                    incoming.send(error)
                 }.start()
                 Unit
             }.freeze()
         )
 
-        return channel.receive()
+        return incoming.receive()
     }
 
     private fun fetchCachedTokenIfNotExpired(): SessionToken? {
@@ -77,8 +76,8 @@ internal class CachedUserSessionTokenRepository(
     private fun resolveSessionToken(result: Any): SessionToken {
         return when (result) {
             is SessionToken -> result.also { cache.access { it.update(result) } }
-            is Exception -> throw CoreRuntimeError.MissingSession(result)
-            else -> throw CoreRuntimeError.MissingSession()
+            is Exception -> throw UserSessionError.MissingSession(result)
+            else -> throw UserSessionError.MissingSession()
         }
     }
 
@@ -98,7 +97,7 @@ internal class CachedUserSessionTokenRepository(
 
         fun fetch(): String {
             return if (cachedValue.isEmpty()) {
-                throw CoreRuntimeError.MissingSession()
+                throw UserSessionError.MissingSession()
             } else {
                 cachedValue
             }

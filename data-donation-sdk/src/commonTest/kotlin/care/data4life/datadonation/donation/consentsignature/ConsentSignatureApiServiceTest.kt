@@ -392,8 +392,6 @@ class ConsentSignatureApiServiceTest {
             signature = "super-secret"
         )
 
-        val response = ConsentSignatureFixture.sampleConsentSignature
-
         var capturedMethod: Networking.Method? = null
         var capturedPath: Path? = null
 

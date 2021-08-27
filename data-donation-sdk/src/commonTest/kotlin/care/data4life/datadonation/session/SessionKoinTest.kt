@@ -18,7 +18,7 @@ package care.data4life.datadonation.session
 
 import care.data4life.datadonation.DataDonationSDK
 import care.data4life.datadonation.mock.stub.ClockStub
-import care.data4life.datadonation.mock.stub.UserSessionTokenProviderStub
+import care.data4life.datadonation.mock.stub.session.UserSessionTokenProviderStub
 import care.data4life.sdk.util.coroutine.CoroutineScopeFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.datetime.Clock

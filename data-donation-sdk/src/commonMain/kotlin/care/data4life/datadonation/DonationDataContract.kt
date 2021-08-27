@@ -14,16 +14,16 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.consent.userconsent.model
+package care.data4life.datadonation
 
-import care.data4life.datadonation.ConsentDataContract
-import kotlinx.serialization.Serializable
+internal typealias RecordId = String
+internal typealias Annotations = Set<String>
+internal typealias EncodedDonorIdentity = String
 
-@Serializable
-internal data class UserConsent(
-    override val consentDocumentKey: String,
-    override val consentDocumentVersion: String,
-    override val accountId: String, // UUID
-    override val event: ConsentDataContract.ConsentEvent,
-    override val createdAt: String = "" /* Timestamp */
-) : ConsentDataContract.UserConsent
+interface DonationDataContract {
+    interface DonorKey {
+        val recordId: RecordId?
+        val data: EncodedDonorIdentity
+        val annotations: Annotations
+    }
+}

@@ -14,23 +14,15 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.mock.stub
+package care.data4life.datadonation.donation.donorkeystorage.model
 
-import care.data4life.datadonation.DataDonationSDK
-import care.data4life.datadonation.mock.MockContract
-import care.data4life.datadonation.mock.MockException
+import care.data4life.datadonation.Annotations
+import care.data4life.datadonation.DonationDataContract
+import care.data4life.datadonation.EncodedDonorIdentity
+import care.data4life.datadonation.RecordId
 
-internal class UserSessionTokenProviderStub : DataDonationSDK.UserSessionTokenProvider, MockContract.Stub {
-    var whenGetUserSessionToken: ((((sessionToken: String) -> Unit), ((error: Exception) -> Unit)) -> Unit)? = null
-
-    override fun getUserSessionToken(
-        onSuccess: (sessionToken: String) -> Unit,
-        onError: (error: Exception) -> Unit
-    ) {
-        whenGetUserSessionToken?.invoke(onSuccess, onError) ?: throw MockException()
-    }
-
-    override fun clear() {
-        whenGetUserSessionToken = null
-    }
-}
+internal data class DonorKey(
+    override val recordId: RecordId?,
+    override val data: EncodedDonorIdentity,
+    override val annotations: Annotations
+) : DonationDataContract.DonorKey

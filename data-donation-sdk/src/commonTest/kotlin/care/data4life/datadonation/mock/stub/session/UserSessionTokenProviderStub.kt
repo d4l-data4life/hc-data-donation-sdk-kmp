@@ -14,16 +14,23 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.consent.userconsent.model
+package care.data4life.datadonation.mock.stub.session
 
-import care.data4life.datadonation.ConsentDataContract
-import kotlinx.serialization.Serializable
+import care.data4life.datadonation.DataDonationSDK
+import care.data4life.datadonation.mock.MockContract
+import care.data4life.datadonation.mock.MockException
 
-@Serializable
-internal data class UserConsent(
-    override val consentDocumentKey: String,
-    override val consentDocumentVersion: String,
-    override val accountId: String, // UUID
-    override val event: ConsentDataContract.ConsentEvent,
-    override val createdAt: String = "" /* Timestamp */
-) : ConsentDataContract.UserConsent
+internal class UserSessionTokenProviderStub : DataDonationSDK.UserSessionTokenProvider, MockContract.Stub {
+    var whenGetUserSessionToken: ((((sessionToken: String) -> Unit), ((error: Exception) -> Unit)) -> Unit)? = null
+
+    override fun getUserSessionToken(
+        onSuccess: (sessionToken: String) -> Unit,
+        onError: (error: Exception) -> Unit
+    ) {
+        whenGetUserSessionToken?.invoke(onSuccess, onError) ?: throw MockException()
+    }
+
+    override fun clear() {
+        whenGetUserSessionToken = null
+    }
+}

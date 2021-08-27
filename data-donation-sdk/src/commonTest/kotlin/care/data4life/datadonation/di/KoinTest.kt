@@ -19,7 +19,7 @@ package care.data4life.datadonation.di
 import care.data4life.datadonation.DataDonationSDK.Environment
 import care.data4life.datadonation.consent.consentdocument.ConsentDocumentContract
 import care.data4life.datadonation.consent.userconsent.UserConsentContract
-import care.data4life.datadonation.mock.stub.UserSessionTokenProviderStub
+import care.data4life.datadonation.mock.stub.session.UserSessionTokenProviderStub
 import org.koin.core.context.stopKoin
 import kotlin.test.BeforeTest
 import kotlin.test.Test
