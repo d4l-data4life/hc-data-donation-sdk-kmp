@@ -14,17 +14,17 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.crypto
+package care.data4life.datadonation.crypto.util
 
-internal actual class CryptoService actual constructor() : CryptoServiceContract {
-    actual override fun encrypt(
+actual class CryptoVerification actual constructor() {
+    actual fun decrypt(
         payload: ByteArray,
         key: String
     ): ByteArray {
         TODO()
     }
 
-    actual override fun sign(
+    actual fun verify(
         payload: ByteArray,
         key: String,
         saltLength: Int,

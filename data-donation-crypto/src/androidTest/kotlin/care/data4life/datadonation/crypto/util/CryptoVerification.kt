@@ -14,37 +14,21 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.crypto
+package care.data4life.datadonation.crypto.util
 
-internal interface CryptoContract {
-    enum class KeyType {
-        DONATION,
-        ALP,
-        USER
+actual class CryptoVerification actual constructor() {
+    actual fun decrypt(
+        payload: ByteArray,
+        key: String
+    ): ByteArray {
+        TODO()
     }
 
-    // TODO Split them in 2 services?
-    interface Service {
-        fun encrypt(
-            payload: ByteArray,
-            saltLength: Int,
-            keyType: KeyType
-        ): ByteArray
-        fun decrypt(
-            payload: ByteArray,
-            saltLength: Int,
-            keyType: KeyType
-        ): ByteArray
-
-        fun sign(
-            payload: ByteArray,
-            saltLength: Int,
-            keyType: KeyType
-        ): ByteArray
-        fun verify(
-            payload: ByteArray,
-            saltLength: Int,
-            keyType: KeyType
-        ): ByteArray
+    actual fun verify(
+        payload: ByteArray,
+        key: String,
+        saltLength: Int,
+    ): ByteArray {
+        TODO()
     }
 }

@@ -22,8 +22,8 @@ import kotlin.test.assertTrue
 class CryptoServiceTest {
     @Test
     fun `It fulfils the Crypto Service`() {
-        val service: Any = CryptoService("any", "any")
+        val service: Any = CryptoService()
 
-        assertTrue(service is CryptoContract.Service)
+        assertTrue(service is CryptoServiceContract)
     }
 }
