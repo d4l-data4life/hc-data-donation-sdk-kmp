@@ -15,7 +15,6 @@
  */
 import care.data4life.sdk.datadonation.LibraryConfig
 import care.data4life.sdk.datadonation.dependency.Dependency
-import care.data4life.sdk.datadonation.dependency.Version
 
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
@@ -153,6 +152,9 @@ kotlin {
                 //DI
                 implementation(Dependency.jvm.slf4jNop)
                 implementation(Dependency.jvm.slf4jApi)
+
+                // D4L
+                implementation(Dependency.d4l.cryptoAndroid)
             }
         }
         val androidTest by getting {
@@ -201,6 +203,12 @@ android {
     resourcePrefix(
         "${LibraryConfig.android.resourcePrefix}_crypto_"
     )
+
+    buildTypes {
+        getByName("debug") {
+            setMatchingFallbacks("debug", "release")
+        }
+    }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8

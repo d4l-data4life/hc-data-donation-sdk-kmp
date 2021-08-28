@@ -44,6 +44,7 @@ object Dependency {
         const val sdkTestCoroutineUtil = "care.data4life.hc-test-util-sdk-kmp:test-util-coroutine:${Version.sdkTestUtil}"
         const val sdkTestKtorUtil = "care.data4life.hc-test-util-sdk-kmp:test-util-ktor:${Version.sdkTestUtil}"
         const val fhir = "care.data4life.hc-fhir-sdk-kmp:fhir:${Version.fhir}"
+        const val cryptoAndroid = "care.data4life.hc-crypto-sdk-kmp:crypto-android:${Version.crypto}"
     }
 
     val multiplatform = Multiplatform

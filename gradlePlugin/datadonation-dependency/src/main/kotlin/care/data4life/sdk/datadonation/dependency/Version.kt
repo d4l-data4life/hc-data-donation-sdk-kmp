@@ -45,10 +45,10 @@ object Version {
     const val dateTime = "0.1.1"
 
     // https://developer.android.com/studio/write/java8-support
-    const val androidDesugar = "1.0.4"
+    const val androidDesugar = "1.0.5"
 
     // https://github.com/JakeWharton/ThreeTenABP/
-    const val threeTenABP = "1.1.1"
+    const val threeTenABP = "1.3.1"
 
     // AndroidX
     const val androidX = "1.1.0"
@@ -88,23 +88,40 @@ object Version {
     // Encryption
     const val bouncyCastle = "1.64"
 
-    // https://github.com/d4l-data4life/hc-fhir-sdk-kmp
+    /**
+     * https://github.com/d4l-data4life/hc-fhir-sdk-kmp
+     */
     const val fhir = "0.2.0"
 
-    // https://github.com/d4l-data4life/hc-util-sdk-kmp
+    /**
+     * https://github.com/d4l-data4life/hc-util-sdk-kmp
+     */
     const val sdkUtil = "1.10.0"
 
-    // https://github.com/d4l-data4life/hc-objc-util-sdk-kmp
+    /**
+     * https://github.com/d4l-data4life/hc-objc-util-sdk-kmp
+     */
     const val sdkObjcUtil = "0.1.0"
 
-    // https://github.com/d4l-data4life/hc-util-coroutine-sdk-kmp
+    /**
+     * https://github.com/d4l-data4life/hc-util-coroutine-sdk-kmp
+     */
     const val sdkCoroutineUtil = "0.1.0"
 
-    // https://github.com/d4l-data4life/hc-result-sdk-kmp
+    /**
+     * https://github.com/d4l-data4life/hc-result-sdk-kmp
+     */
     const val sdkResult = "0.2.0"
 
-    // https://github.com/d4l-data4life/hc-test-util-sdk-kmp
+    /**
+     * https://github.com/d4l-data4life/hc-test-util-sdk-kmp
+     */
     const val sdkTestUtil = "0.1.0"
+
+    /**
+     * [hc-crypto-sdk-kmp](https://github.com/d4l-data4life/hc-crypto-sdk-kmp)
+     */
+    const val crypto = "1.13.2"
 
     // Junit Test
     const val testJUnit = "4.13.2"

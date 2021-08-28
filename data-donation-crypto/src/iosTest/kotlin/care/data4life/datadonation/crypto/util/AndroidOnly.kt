@@ -14,20 +14,8 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.crypto
+package care.data4life.datadonation.crypto.util
 
-import care.data4life.datadonation.crypto.util.AndroidOnly
 import kotlin.test.Ignore
-import kotlin.test.Test
-import kotlin.test.assertTrue
 
-@AndroidOnly
-class CryptoServiceTest {
-
-    @Test
-    fun `It fulfils the Crypto Service`() {
-        val service: Any = CryptoService()
-
-        assertTrue(service is CryptoServiceContract)
-    }
-}
+actual typealias AndroidOnly = Ignore
