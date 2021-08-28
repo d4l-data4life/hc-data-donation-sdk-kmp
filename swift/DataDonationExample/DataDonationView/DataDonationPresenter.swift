@@ -31,7 +31,7 @@ final class DataDonationPresenter {
 
 extension DataDonationPresenter {
 
-    func presentLoggedIn(with userConsents: [UserConsent]) {
+    func presentLoggedIn(with userConsents: [UserConsentProtocol]) {
         let viewModel = DataDonationViewModel(state: .loggedIn(userConsents.map { makeRowModel(from: $0)}))
         view?.configure(with: viewModel)
     }
@@ -46,7 +46,7 @@ extension DataDonationPresenter {
         view?.present(alertController, animated: true)
     }
 
-    private func makeRowModel(from userConsent: UserConsent) -> UserConsentRow {
+    private func makeRowModel(from userConsent: UserConsentProtocol) -> UserConsentRow {
 
         let createdAtDate = formatterService.date(from: userConsent.createdAt, type: .isoDate)
         let createdAtDescription = formatterService.string(from: createdAtDate, type: .readableDate)

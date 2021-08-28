@@ -40,7 +40,8 @@ toc::[]
 === Changed
 
 * _**BREAKING**_ DataDonationSDKPublicApi -> DataDonationSDK.
-* _**BREAKING**_ MissingSession is now a serSessionError
+* _**BREAKING**_ MissingSession is now a UserSessionError.
+* All DataClasses are internal now.
 
 === Deprecated
 
