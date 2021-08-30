@@ -13,31 +13,22 @@
  * applications and/or if you’d like to contribute to the development of the SDK, please
  * contact D4L by email to help@data4life.care.
  */
-import care.data4life.sdk.datadonation.dependency.d4l
-import care.data4life.sdk.datadonation.dependency.gitHub
 
-plugins {
-    id("care.data4life.sdk.datadonation.dependency")
+package care.data4life.datadonation.crypto.util
 
-    id("care.data4life.sdk.datadonation.dependency-updates")
-    id("care.data4life.sdk.datadonation.download-scripts")
-    id("care.data4life.sdk.datadonation.publishing")
-    id("care.data4life.sdk.datadonation.quality-spotless")
-    id("care.data4life.sdk.datadonation.versioning")
-}
-
-allprojects {
-    repositories {
-        mavenCentral()
-        google()
-
-        gitHub(project)
-
-        d4l()
+actual class CryptoVerification actual constructor() {
+    actual fun decrypt(
+        payload: ByteArray,
+        key: String
+    ): ByteArray {
+        TODO()
     }
-}
 
-tasks.named<Wrapper>("wrapper") {
-    gradleVersion = "6.9.1"
-    distributionType = Wrapper.DistributionType.ALL
+    actual fun verify(
+        payload: ByteArray,
+        key: String,
+        saltLength: Int,
+    ): ByteArray {
+        TODO()
+    }
 }

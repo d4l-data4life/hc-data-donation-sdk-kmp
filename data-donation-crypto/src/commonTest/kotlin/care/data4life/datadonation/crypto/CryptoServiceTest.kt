@@ -13,31 +13,17 @@
  * applications and/or if you’d like to contribute to the development of the SDK, please
  * contact D4L by email to help@data4life.care.
  */
-import care.data4life.sdk.datadonation.dependency.d4l
-import care.data4life.sdk.datadonation.dependency.gitHub
 
-plugins {
-    id("care.data4life.sdk.datadonation.dependency")
+package care.data4life.datadonation.crypto
 
-    id("care.data4life.sdk.datadonation.dependency-updates")
-    id("care.data4life.sdk.datadonation.download-scripts")
-    id("care.data4life.sdk.datadonation.publishing")
-    id("care.data4life.sdk.datadonation.quality-spotless")
-    id("care.data4life.sdk.datadonation.versioning")
-}
+import kotlin.test.Test
+import kotlin.test.assertTrue
 
-allprojects {
-    repositories {
-        mavenCentral()
-        google()
+class CryptoServiceTest {
+    @Test
+    fun `It fulfils the Crypto Service`() {
+        val service: Any = CryptoService()
 
-        gitHub(project)
-
-        d4l()
+        assertTrue(service is CryptoServiceContract)
     }
-}
-
-tasks.named<Wrapper>("wrapper") {
-    gradleVersion = "6.9.1"
-    distributionType = Wrapper.DistributionType.ALL
 }

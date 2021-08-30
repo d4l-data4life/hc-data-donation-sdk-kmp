@@ -30,6 +30,7 @@ rootProject.name = "hc-data-donation-sdk-kmp"
 
 include(
     ":data-donation-sdk",
+    ":data-donation-crypto",
     ":docs",
     ":DataDonationCryptoObjC"
 )
