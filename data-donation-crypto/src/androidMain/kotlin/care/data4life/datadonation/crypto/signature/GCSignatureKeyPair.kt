@@ -34,40 +34,40 @@ internal class GCSignatureKeyPair constructor(
 
     @Transient
     var privateKey: GCAsymmetricKey? = null
-    get() {
-        if (field == null) {
-            try {
-                val keyFactory = KeyFactory.getInstance(algorithm.cipher)
-                val encodedKeySpec = PKCS8EncodedKeySpec(Base64.decode(privateKeyBase64!!))
-                val privKey = keyFactory.generatePrivate(encodedKeySpec)
-                this.privateKey = GCAsymmetricKey(privKey, GCAsymmetricKey.Type.Private)
-            } catch (e: Exception) {
-                e.printStackTrace()
+        get() {
+            if (field == null) {
+                try {
+                    val keyFactory = KeyFactory.getInstance(algorithm.cipher)
+                    val encodedKeySpec = PKCS8EncodedKeySpec(Base64.decode(privateKeyBase64!!))
+                    val privKey = keyFactory.generatePrivate(encodedKeySpec)
+                    this.privateKey = GCAsymmetricKey(privKey, GCAsymmetricKey.Type.Private)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
+            return field
         }
-        return field
-    }
     private var publicKeyBase64: String? = null
 
     // TODO move to test
     @Transient
     var publicKey: GCAsymmetricKey? = null
-    get() {
-        if (field == null) {
-            try {
-                val keyFactory = KeyFactory.getInstance(algorithm.cipher)
-                val pkcs1PublicKey = RSAPublicKey.getInstance(Base64.decode(publicKeyBase64!!))
-                val modulus = pkcs1PublicKey.modulus
-                val publicExponent = pkcs1PublicKey.publicExponent
-                val pubKeySpec = RSAPublicKeySpec(modulus, publicExponent)
-                val pubKey = keyFactory.generatePublic(pubKeySpec)
-                this.publicKey = GCAsymmetricKey(pubKey, GCAsymmetricKey.Type.Public)
-            } catch (e: Exception) {
-                e.printStackTrace()
+        get() {
+            if (field == null) {
+                try {
+                    val keyFactory = KeyFactory.getInstance(algorithm.cipher)
+                    val pkcs1PublicKey = RSAPublicKey.getInstance(Base64.decode(publicKeyBase64!!))
+                    val modulus = pkcs1PublicKey.modulus
+                    val publicExponent = pkcs1PublicKey.publicExponent
+                    val pubKeySpec = RSAPublicKeySpec(modulus, publicExponent)
+                    val pubKey = keyFactory.generatePublic(pubKeySpec)
+                    this.publicKey = GCAsymmetricKey(pubKey, GCAsymmetricKey.Type.Public)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
+            return field
         }
-        return field
-    }
 
     init {
         this.privateKey = privateKey

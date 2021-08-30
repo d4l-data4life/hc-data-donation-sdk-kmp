@@ -44,7 +44,7 @@ actual object CryptoVerification {
         }
     }
 
-    private fun resolveCrypotMaterial(payload: ByteArray): CryptoMaterial {
+    private fun resolveCryptoMaterial(payload: ByteArray): CryptoMaterial {
         val buffer = ByteBuffer.wrap(payload)
 
         validateVersion(buffer.get().toInt())
@@ -58,6 +58,7 @@ actual object CryptoVerification {
         buffer.order(ByteOrder.LITTLE_ENDIAN).get(iv)
 
         val cipherTextLength = buffer.order(ByteOrder.LITTLE_ENDIAN).long.toInt()
+
         val cipherText = ByteArray(cipherTextLength)
         buffer.order(ByteOrder.LITTLE_ENDIAN).get(cipherText)
 
@@ -100,7 +101,7 @@ actual object CryptoVerification {
         key: String
     ): ByteArray {
 
-        val (encryptedSymKey, iv, encryptedText) = resolveCrypotMaterial(payload)
+        val (encryptedSymKey, iv, encryptedText) = resolveCryptoMaterial(payload)
         val symmetricKey = resolveSymmetricKey(
             encryptedSymKey,
             resolveAsymmetricKey(key)

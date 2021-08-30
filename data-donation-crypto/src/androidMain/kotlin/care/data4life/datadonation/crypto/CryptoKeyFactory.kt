@@ -17,6 +17,7 @@
 package care.data4life.datadonation.crypto
 
 import care.data4life.sdk.crypto.ExchangeKey
+import care.data4life.sdk.crypto.GCAESKeyAlgorithm
 import care.data4life.sdk.crypto.GCAsymmetricKey
 import care.data4life.sdk.crypto.GCKey
 import care.data4life.sdk.crypto.GCKeyPair
@@ -37,7 +38,12 @@ internal object CryptoKeyFactory : CryptoKeyFactoryContract {
     )
 
     override fun generateSymmetricKey(): GCKey {
-        TODO("Not yet implemented")
+        return D4LCryptoProtocol.generateSymKey(
+            GCAESKeyAlgorithm.createDataAlgorithm(),
+            KeyOptions(
+                keySize = KeyVersion.VERSION_1.symmetricKeySize
+            )
+        )
     }
 
     override fun generateAsymmetricKeyPair(): GCKeyPair {

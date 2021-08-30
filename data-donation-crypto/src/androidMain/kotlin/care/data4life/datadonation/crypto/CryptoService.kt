@@ -16,12 +16,72 @@
 
 package care.data4life.datadonation.crypto
 
+import care.data4life.datadonation.crypto.CryptoServiceContract.Companion.IV_SIZE
+import care.data4life.datadonation.crypto.CryptoServiceContract.Companion.PROTOCOL_VERSION
+import care.data4life.sdk.crypto.ExchangeKeyFactory
+import care.data4life.sdk.crypto.KeyType
+import care.data4life.sdk.crypto.KeyVersion
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
+import java.security.SecureRandom
+
 internal actual class CryptoService actual constructor() : CryptoServiceContract {
+    private val secureRandom = SecureRandom()
+
+    private fun concatenateCryptoMaterial(
+        encryptedKey: ByteArray,
+        iv: ByteArray,
+        ciphertext: ByteArray
+    ): ByteArray {
+        val hybridLength = 1 + 2 + encryptedKey.size + IV_SIZE + 8 + ciphertext.size
+        val buffer = ByteBuffer.wrap(ByteArray(hybridLength))
+
+        buffer.put(PROTOCOL_VERSION.toByte())
+
+        buffer.order(ByteOrder.LITTLE_ENDIAN).putShort(encryptedKey.size.toShort())
+
+        buffer.order(ByteOrder.LITTLE_ENDIAN).put(encryptedKey)
+
+        buffer.order(ByteOrder.LITTLE_ENDIAN).put(iv)
+
+        buffer.order(ByteOrder.LITTLE_ENDIAN).putLong(ciphertext.size.toLong())
+        buffer.order(ByteOrder.LITTLE_ENDIAN).put(ciphertext)
+
+        return buffer.array()
+    }
+
     actual override fun encrypt(
         payload: ByteArray,
         key: String
     ): ByteArray {
-        TODO()
+        val symmetricKey = CryptoKeyFactory.generateSymmetricKey()
+        val iv = ByteArray(IV_SIZE)
+        secureRandom.nextBytes(iv)
+
+        val cipherText = D4LCryptoProtocol.symEncrypt(
+            symmetricKey,
+            payload,
+            iv
+        )
+
+        val exchangeKey = ExchangeKeyFactory.createKey(
+            KeyVersion.VERSION_1,
+            KeyType.APP_PUBLIC_KEY,
+            key
+        )
+
+        val asymKey = CryptoKeyFactory.createPublicKey(exchangeKey)
+
+        val encryptedKey = D4LCryptoProtocol.asymEncrypt(
+            asymKey,
+            symmetricKey.getSymmetricKey().value.encoded
+        )
+
+        return concatenateCryptoMaterial(
+            encryptedKey,
+            iv,
+            cipherText
+        )
     }
 
     actual override fun sign(

@@ -30,5 +30,6 @@ interface CryptoServiceContract {
 
     companion object {
         const val PROTOCOL_VERSION = 2
+        const val IV_SIZE = 16
     }
 }

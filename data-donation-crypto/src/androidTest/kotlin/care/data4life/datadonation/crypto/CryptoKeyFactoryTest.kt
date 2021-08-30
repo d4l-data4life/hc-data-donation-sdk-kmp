@@ -66,4 +66,20 @@ class CryptoKeyFactoryTest {
             )
         )
     }
+
+    @Test
+    fun `Given generateSymmetricKey is called, it creates a GCKey`() {
+        // When
+        val key = CryptoKeyFactory.generateSymmetricKey()
+
+        // Then
+        assertEquals(
+            actual = key.algorithm.transformation,
+            expected = "AES/GCM/NoPadding"
+        )
+        assertEquals(
+            actual = key.keyVersion,
+            expected = KeyVersion.VERSION_1.symmetricKeySize
+        )
+    }
 }

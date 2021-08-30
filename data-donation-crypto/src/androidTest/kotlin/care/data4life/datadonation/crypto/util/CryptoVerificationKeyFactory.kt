@@ -77,7 +77,7 @@ internal object CryptoVerificationKeyFactory {
         exchangeKey: ExchangeKey,
         salt: Int
     ): GCSignatureKeyPair {
-        val algorithm = if(salt == 0) {
+        val algorithm = if (salt == 0) {
             GCSignatureAlgorithm.createUnsaltedKey()
         } else {
             GCSignatureAlgorithm.createSaltedKey()
@@ -86,7 +86,7 @@ internal object CryptoVerificationKeyFactory {
         val keyFactory = KeyFactory.getInstance(algorithm.cipher)
         val x509EncodedKeySpec = X509EncodedKeySpec(Base64.decode(exchangeKey.publicKey!!))
         val publicKey = keyFactory.generatePublic(x509EncodedKeySpec)
-        val gcPublicKey =  GCAsymmetricKey(publicKey, GCAsymmetricKey.Type.Public)
+        val gcPublicKey = GCAsymmetricKey(publicKey, GCAsymmetricKey.Type.Public)
 
         return GCSignatureKeyPair(
             algorithm,

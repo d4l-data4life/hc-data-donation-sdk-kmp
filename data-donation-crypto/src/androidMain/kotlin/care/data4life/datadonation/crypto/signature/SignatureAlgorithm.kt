@@ -25,7 +25,7 @@ internal open class SignatureAlgorithm : Algorithm() {
     }
 
     enum class BlockMode {
-       PSS
+        PSS
     }
 
     companion object {
