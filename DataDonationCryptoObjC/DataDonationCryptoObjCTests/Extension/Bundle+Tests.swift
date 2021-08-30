@@ -1,4 +1,4 @@
-//  Copyright (c) 2020 D4L data4life gGmbH
+//  Copyright (c) 2021 D4L data4life gGmbH
 //  All rights reserved.
 //
 //  D4L owns all legal rights, title and interest in and to the Software Development Kit ("SDK"),
