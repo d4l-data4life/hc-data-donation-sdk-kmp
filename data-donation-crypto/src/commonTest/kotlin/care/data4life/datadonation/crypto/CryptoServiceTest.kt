@@ -13,32 +13,17 @@
  * applications and/or if you’d like to contribute to the development of the SDK, please
  * contact D4L by email to help@data4life.care.
  */
-pluginManagement {
-    repositories {
-        gradlePluginPortal()
-        google()
-    }
 
-    includeBuild("gradlePlugin/datadonation-dependency")
-}
+package care.data4life.datadonation.crypto
 
-plugins {
-    id("com.gradle.enterprise") version("3.4.1")
-}
+import kotlin.test.Test
+import kotlin.test.assertTrue
 
-rootProject.name = "hc-data-donation-sdk-kmp"
+class CryptoServiceTest {
+    @Test
+    fun `It fulfils the Crypto Service`() {
+        val service: Any = CryptoService()
 
-include(
-    ":data-donation-sdk",
-    ":data-donation-crypto",
-    ":docs",
-    ":DataDonationCryptoObjC"
-)
-
-buildCache {
-    local {
-        isEnabled = true
-        directory = File(rootDir, "build-cache")
-        removeUnusedEntriesAfterDays = 30
+        assertTrue(service is CryptoServiceContract)
     }
 }

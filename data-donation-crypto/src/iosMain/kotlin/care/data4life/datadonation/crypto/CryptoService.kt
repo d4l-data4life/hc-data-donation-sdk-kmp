@@ -13,32 +13,22 @@
  * applications and/or if you’d like to contribute to the development of the SDK, please
  * contact D4L by email to help@data4life.care.
  */
-pluginManagement {
-    repositories {
-        gradlePluginPortal()
-        google()
+
+package care.data4life.datadonation.crypto
+
+internal actual class CryptoService actual constructor() : CryptoServiceContract {
+    actual override fun encrypt(
+        payload: ByteArray,
+        key: String
+    ): ByteArray {
+        TODO()
     }
 
-    includeBuild("gradlePlugin/datadonation-dependency")
-}
-
-plugins {
-    id("com.gradle.enterprise") version("3.4.1")
-}
-
-rootProject.name = "hc-data-donation-sdk-kmp"
-
-include(
-    ":data-donation-sdk",
-    ":data-donation-crypto",
-    ":docs",
-    ":DataDonationCryptoObjC"
-)
-
-buildCache {
-    local {
-        isEnabled = true
-        directory = File(rootDir, "build-cache")
-        removeUnusedEntriesAfterDays = 30
+    actual override fun sign(
+        payload: ByteArray,
+        key: String,
+        saltLength: Int,
+    ): ByteArray {
+        TODO()
     }
 }
