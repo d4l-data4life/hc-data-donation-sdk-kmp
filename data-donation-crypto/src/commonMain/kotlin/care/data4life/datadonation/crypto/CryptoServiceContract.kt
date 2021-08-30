@@ -27,4 +27,8 @@ interface CryptoServiceContract {
         key: String,
         saltLength: Int,
     ): ByteArray
+
+    companion object {
+        const val PROTOCOL_VERSION = 2
+    }
 }

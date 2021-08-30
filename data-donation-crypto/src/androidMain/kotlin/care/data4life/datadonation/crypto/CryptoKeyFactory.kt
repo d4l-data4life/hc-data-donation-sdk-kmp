@@ -50,7 +50,7 @@ internal object CryptoKeyFactory : CryptoKeyFactoryContract {
         val keyFactory = KeyFactory.getInstance(algorithm.cipher)
         val x509EncodedKeySpec = X509EncodedKeySpec(Base64.decode(exchangeKey.publicKey!!))
         val publicKey = keyFactory.generatePublic(x509EncodedKeySpec)
-        val gcPublicKey =  GCAsymmetricKey(publicKey, GCAsymmetricKey.Type.Public)
+        val gcPublicKey = GCAsymmetricKey(publicKey, GCAsymmetricKey.Type.Public)
 
         return GCKeyPair(
             algorithm,

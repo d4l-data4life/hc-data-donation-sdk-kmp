@@ -17,7 +17,6 @@
 package care.data4life.datadonation.crypto
 
 import care.data4life.datadonation.crypto.util.AndroidOnly
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertTrue
 

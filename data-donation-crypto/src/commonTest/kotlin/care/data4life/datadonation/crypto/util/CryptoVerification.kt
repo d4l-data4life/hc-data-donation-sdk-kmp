@@ -16,7 +16,7 @@
 
 package care.data4life.datadonation.crypto.util
 
-expect class CryptoVerification() {
+expect object CryptoVerification {
     fun decrypt(
         payload: ByteArray,
         key: String

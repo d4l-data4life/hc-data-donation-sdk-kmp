@@ -16,7 +16,7 @@
 
 package care.data4life.datadonation.crypto.util
 
-actual class CryptoVerification actual constructor() {
+actual object CryptoVerification {
     actual fun decrypt(
         payload: ByteArray,
         key: String
