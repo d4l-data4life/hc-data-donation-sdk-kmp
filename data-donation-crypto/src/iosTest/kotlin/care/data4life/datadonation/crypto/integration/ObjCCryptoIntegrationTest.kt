@@ -16,15 +16,14 @@
 
 package care.data4life.datadonation.crypto.integration
 
+import care.data4life.sdk.util.objc.NSErrorFactory
 import interop.*
 import kotlinx.cinterop.*
+import objc.datadonation.crypto.*
 import platform.Foundation.NSError
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
-import care.data4life.sdk.util.objc.NSErrorFactory
-
-import objc.datadonation.crypto.*
 
 class ObjCCryptoIntegrationTest {
 
@@ -56,7 +55,7 @@ class ObjCCryptoIntegrationTest {
 
             val error = errorRef.value
             val expectedError = NSErrorFactory.create(
-                code = 1 // DataDonationCryptoObjCError.couldNotGenerateKeyPair,
+                code = 1, // DataDonationCryptoObjCError.couldNotGenerateKeyPair
                 domain = DataDonationCryptoObjCErrorDomain,
                 localizedDescription = "non-important",
                 kotlinError = Throwable("non-important")
