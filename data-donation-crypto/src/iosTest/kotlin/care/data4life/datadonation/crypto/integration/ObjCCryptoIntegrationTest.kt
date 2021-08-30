@@ -16,23 +16,61 @@
 
 package care.data4life.datadonation.crypto.integration
 
+import interop.*
 import kotlinx.cinterop.*
-import objc.datadonation.crypto.KeychainKeyProvider
 import platform.Foundation.NSError
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
+import care.data4life.sdk.util.objc.NSErrorFactory
+
+import objc.datadonation.crypto.*
 
 class ObjCCryptoIntegrationTest {
 
     private val keychainKeyProvider = KeychainKeyProvider()
-    private val programName = "program-test"
+    private val programName = "kmp.test.program.name"
 
     @Test
     fun `It imports and runs the library without linking problems`() {
+
+        val keyProvider: KeychainKeyProvider = KeychainKeyProvider()
+        assertNotNull(keyProvider)
+
+        memScoped {
+            val errorRef = alloc<ObjCObjectVar<NSError?>>()
+            keyProvider.getDonorPublicKeyFor(programName, errorRef.ptr)
+            val error = errorRef.value
+            assertNotNull(error)
+        }
+    }
+
+    @Test
+    fun `It gets an error when generating a key due to missing host app`() {
+
         val keyProvider: KeychainKeyProvider = KeychainKeyProvider()
 
-        var error: CPointer<ObjCObjectVar<NSError?>>? = null
-        val key: String? = keyProvider.getDonorPublicKeyFor("test.program.name", error)
-        assertNotNull(keyProvider)
+        memScoped {
+            val errorRef = alloc<ObjCObjectVar<NSError?>>()
+            keyProvider.getDonorPublicKeyFor(programName, errorRef.ptr)
+
+            val error = errorRef.value
+            val expectedError = NSErrorFactory.create(
+                code = 1 // DataDonationCryptoObjCError.couldNotGenerateKeyPair,
+                domain = DataDonationCryptoObjCErrorDomain,
+                localizedDescription = "non-important",
+                kotlinError = Throwable("non-important")
+            )
+
+            assertEquals(
+                error!!.code,
+                expectedError.code
+            )
+
+            assertEquals(
+                error.domain,
+                expectedError.domain
+            )
+        }
     }
 }

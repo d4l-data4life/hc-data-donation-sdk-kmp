@@ -16,9 +16,9 @@
 
 import Foundation
 
-enum DataDonationCryptoObjCError: Error, Equatable {
-    case couldNotCreateKeyPairFromData(programName: String)
-    case couldNotGenerateKeyPair(programName: String)
-    case couldNotFetchKeyPair(programName: String)
-    case couldNotDeleteKeyPair(programName: String)
+@objc public enum DataDonationCryptoObjCError: Int, Error, Equatable {
+    case couldNotCreateKeyPairFromData
+    case couldNotGenerateKeyPair
+    case couldNotFetchKeyPair
+    case couldNotDeleteKeyPair
 }

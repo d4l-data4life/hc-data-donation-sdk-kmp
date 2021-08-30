@@ -49,7 +49,7 @@ final class DonorKeyHolder: DonorKeyHolderProtocol {
         do {
             return try Data4LifeCryptor.generateAsymKeyPair(algorithm: algorithm, options: options)
         } catch {
-            throw DataDonationCryptoObjCError.couldNotGenerateKeyPair(programName: programName)
+            throw DataDonationCryptoObjCError.couldNotGenerateKeyPair
         }
     }
 
@@ -59,7 +59,7 @@ final class DonorKeyHolder: DonorKeyHolderProtocol {
             let programTag = tag(for: programName)
             try add(keyPair: keyPair, with: programTag)
         } catch {
-            throw DataDonationCryptoObjCError.couldNotCreateKeyPairFromData(programName: programName)
+            throw DataDonationCryptoObjCError.couldNotCreateKeyPairFromData
         }
     }
 
@@ -69,7 +69,7 @@ final class DonorKeyHolder: DonorKeyHolderProtocol {
         do {
             return try KeyPair.load(tag: programTag, algorithm: algorithm)
         } catch {
-            throw DataDonationCryptoObjCError.couldNotFetchKeyPair(programName: programName)
+            throw DataDonationCryptoObjCError.couldNotFetchKeyPair
         }
     }
 
@@ -78,7 +78,7 @@ final class DonorKeyHolder: DonorKeyHolderProtocol {
         do {
         try KeyPair.destroy(tag: programTag)
         } catch {
-            throw DataDonationCryptoObjCError.couldNotDeleteKeyPair(programName: programName)
+            throw DataDonationCryptoObjCError.couldNotDeleteKeyPair
         }
     }
 }

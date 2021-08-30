@@ -80,7 +80,7 @@ class DonorKeyHolderTests: XCTestCase {
     func testFetchKeyWhenKeyIsNotGeneratedShouldThrowError() throws {
         XCTAssertThrowsError(try donorKeyHolder.fetchKeyPair(for: testProgramName),
                              "should throw the right error", { error in
-                                XCTAssertEqual(error as! DataDonationCryptoObjCError, DataDonationCryptoObjCError.couldNotFetchKeyPair(programName: testProgramName))
+                                XCTAssertEqual(error as! DataDonationCryptoObjCError, DataDonationCryptoObjCError.couldNotFetchKeyPair)
                              })
     }
 
@@ -88,21 +88,21 @@ class DonorKeyHolderTests: XCTestCase {
         _ = try donorKeyHolder.generateKeyPair(for: testProgramName)
         XCTAssertThrowsError(try donorKeyHolder.fetchKeyPair(for: "non-existing"),
                              "should throw the right error", { error in
-                                XCTAssertEqual(error as! DataDonationCryptoObjCError, DataDonationCryptoObjCError.couldNotFetchKeyPair(programName: "non-existing"))
+                                XCTAssertEqual(error as! DataDonationCryptoObjCError, DataDonationCryptoObjCError.couldNotFetchKeyPair)
                              })
     }
 
     func testDeleteNonExistingKeyShouldThrowError() throws {
         XCTAssertThrowsError(try donorKeyHolder.deleteKeyPair(for: "non-existing"),
                              "should throw the right error", { error in
-                                XCTAssertEqual(error as! DataDonationCryptoObjCError, DataDonationCryptoObjCError.couldNotDeleteKeyPair(programName: "non-existing"))
+                                XCTAssertEqual(error as! DataDonationCryptoObjCError, DataDonationCryptoObjCError.couldNotDeleteKeyPair)
                              })
     }
 
     func testCreateKeyFromBadDataShouldThrowError() throws {
         XCTAssertThrowsError(try donorKeyHolder.createKeyPair(from: Data(), for: testProgramName),
                              "should throw the right error", { error in
-                                XCTAssertEqual(error as! DataDonationCryptoObjCError, DataDonationCryptoObjCError.couldNotCreateKeyPairFromData(programName: testProgramName))
+                                XCTAssertEqual(error as! DataDonationCryptoObjCError, DataDonationCryptoObjCError.couldNotCreateKeyPairFromData)
                              })
     }
 
@@ -111,7 +111,7 @@ class DonorKeyHolderTests: XCTestCase {
         try donorKeyHolder.createKeyPair(from: encodedKeyPairData, for: testProgramName)
         XCTAssertThrowsError(try donorKeyHolder.createKeyPair(from: encodedKeyPairData, for: testProgramName),
                              "should throw the right error", { error in
-                                XCTAssertEqual(error as! DataDonationCryptoObjCError, DataDonationCryptoObjCError.couldNotCreateKeyPairFromData(programName: testProgramName))
+                                XCTAssertEqual(error as! DataDonationCryptoObjCError, DataDonationCryptoObjCError.couldNotCreateKeyPairFromData)
                              })
     }
 }
