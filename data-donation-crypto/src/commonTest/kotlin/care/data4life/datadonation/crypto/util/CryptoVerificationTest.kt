@@ -23,6 +23,8 @@ import care.data4life.sdk.util.test.annotation.RunWithRobolectricTestRunner
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 @AndroidOnly // TODO: REMOVE!!! As soon as iOS is done with it's crypto
 @RunWithRobolectricTestRunner(RobolectricTestRunner::class)
@@ -67,5 +69,42 @@ class CryptoVerificationTest {
             actual = actual.decodeToString(),
             expected = expected
         )
+    }
+
+    @Test
+    fun `Given verify is called it, returns false if signature does not match`() {
+        // Given
+        val signature = ResourceLoader.loader.load("/fixture/crypto/ExampleInvalidSignature.txt")
+        val key = ResourceLoader.loader.load("/fixture/crypto/DonationServicePublicKey.txt")
+
+        // When
+        val result = CryptoVerification.verify(
+            "Hello World".encodeToByteArray(),
+            Base64.decode(signature),
+            key,
+            32
+        )
+
+        // Then
+        assertFalse(result)
+    }
+
+    @Test
+    fun `Given verify is called with a message, signature, key and 0 as Salt, returns true if signature matches `() {
+        // Given
+        val signature = ResourceLoader.loader.load("/fixture/crypto/ExampleSignature0.txt")
+        val key = ResourceLoader.loader.load("/fixture/crypto/DonationServicePublicKey.txt")
+        val message = "Hello World!".encodeToByteArray()
+
+        // When
+        val result = CryptoVerification.verify(
+            message,
+            Base64.decode(signature),
+            key,
+            0
+        )
+
+        // Then
+        assertTrue(result)
     }
 }

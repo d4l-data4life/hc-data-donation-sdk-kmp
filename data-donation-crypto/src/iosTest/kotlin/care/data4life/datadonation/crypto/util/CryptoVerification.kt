@@ -26,9 +26,10 @@ actual object CryptoVerification {
 
     actual fun verify(
         payload: ByteArray,
+        signature: ByteArray,
         key: String,
         saltLength: Int,
-    ): ByteArray {
+    ): Boolean {
         TODO()
     }
 }

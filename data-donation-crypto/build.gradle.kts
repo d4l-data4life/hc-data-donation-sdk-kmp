@@ -152,6 +152,8 @@ kotlin {
                 implementation(Dependency.jvm.slf4jNop)
                 implementation(Dependency.jvm.slf4jApi)
 
+                implementation(Dependency.android.bouncyCastle)
+
                 // D4L
                 implementation(Dependency.d4l.cryptoAndroid)
             }

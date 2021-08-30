@@ -14,18 +14,28 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.crypto.util
+package care.data4life.datadonation.crypto.signature
 
-expect object CryptoVerification {
-    fun decrypt(
-        payload: ByteArray,
-        key: String
-    ): ByteArray
+import care.data4life.sdk.crypto.Algorithm
+import care.data4life.sdk.crypto.GCRSAKeyAlgorithm
 
-    fun verify(
-        payload: ByteArray,
-        signature: ByteArray,
-        key: String,
-        saltLength: Int,
-    ): Boolean
+internal class GCSignatureAlgorithm private constructor(
+    val salt: Salt
+) : SignatureAlgorithm() {
+    val hash: String
+
+    enum class Hash {
+        SHA256
+    }
+
+    init {
+        cipher = Algorithm.Cipher.RSA.name
+        blockMode = SignatureAlgorithm.BlockMode.PSS.name
+        this.hash = GCRSAKeyAlgorithm.Hash.SHA256.name
+    }
+
+    companion object {
+        fun createUnsaltedKey() = GCSignatureAlgorithm(Salt.SALT_0)
+        fun createSaltedKey() = GCSignatureAlgorithm(Salt.SALT_32)
+    }
 }

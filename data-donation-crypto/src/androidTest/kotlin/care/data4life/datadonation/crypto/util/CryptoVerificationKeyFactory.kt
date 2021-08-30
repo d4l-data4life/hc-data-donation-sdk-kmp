@@ -17,6 +17,8 @@
 package care.data4life.datadonation.crypto.util
 
 import care.data4life.datadonation.crypto.D4LCryptoProtocol
+import care.data4life.datadonation.crypto.signature.GCSignatureAlgorithm
+import care.data4life.datadonation.crypto.signature.GCSignatureKeyPair
 import care.data4life.sdk.crypto.ExchangeKey
 import care.data4life.sdk.crypto.GCAESKeyAlgorithm
 import care.data4life.sdk.crypto.GCAsymmetricKey
@@ -29,10 +31,11 @@ import care.data4life.sdk.crypto.KeyVersion
 import care.data4life.sdk.util.Base64
 import java.security.KeyFactory
 import java.security.spec.PKCS8EncodedKeySpec
+import java.security.spec.X509EncodedKeySpec
 import javax.crypto.spec.SecretKeySpec
 
 // TODO Merge with CORE and move into the Crypto SDK
-object CryptoVerificationKeyFactory {
+internal object CryptoVerificationKeyFactory {
     private val templateGCKey = D4LCryptoProtocol.generateAsymKeyPair(
         algorithm = GCRSAKeyAlgorithm(),
         options = KeyOptions(
@@ -66,6 +69,29 @@ object CryptoVerificationKeyFactory {
             algorithm,
             gcPrivate,
             templateGCKey.publicKey!!,
+            exchangeKey.getVersion().value
+        )
+    }
+
+    fun createPublicSignatureKey(
+        exchangeKey: ExchangeKey,
+        salt: Int
+    ): GCSignatureKeyPair {
+        val algorithm = if(salt == 0) {
+            GCSignatureAlgorithm.createUnsaltedKey()
+        } else {
+            GCSignatureAlgorithm.createSaltedKey()
+        }
+
+        val keyFactory = KeyFactory.getInstance(algorithm.cipher)
+        val x509EncodedKeySpec = X509EncodedKeySpec(Base64.decode(exchangeKey.publicKey!!))
+        val publicKey = keyFactory.generatePublic(x509EncodedKeySpec)
+        val gcPublicKey =  GCAsymmetricKey(publicKey, GCAsymmetricKey.Type.Public)
+
+        return GCSignatureKeyPair(
+            algorithm,
+            templateGCKey.privateKey!!,
+            gcPublicKey,
             exchangeKey.getVersion().value
         )
     }

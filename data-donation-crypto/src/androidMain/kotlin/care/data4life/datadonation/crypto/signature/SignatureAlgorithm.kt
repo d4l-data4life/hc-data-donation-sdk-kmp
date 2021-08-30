@@ -14,18 +14,21 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.crypto.util
+package care.data4life.datadonation.crypto.signature
 
-expect object CryptoVerification {
-    fun decrypt(
-        payload: ByteArray,
-        key: String
-    ): ByteArray
+import care.data4life.sdk.crypto.Algorithm
 
-    fun verify(
-        payload: ByteArray,
-        signature: ByteArray,
-        key: String,
-        saltLength: Int,
-    ): Boolean
+internal open class SignatureAlgorithm : Algorithm() {
+    enum class Salt(length: Int) {
+        SALT_0(0),
+        SALT_32(32)
+    }
+
+    enum class BlockMode {
+       PSS
+    }
+
+    companion object {
+        const val PSS = "PSS"
+    }
 }
