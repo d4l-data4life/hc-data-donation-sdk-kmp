@@ -143,7 +143,6 @@ kotlin {
 
                 // D4L
                 implementation(Dependency.d4l.sdkTestUtil)
-                implementation(Dependency.d4l.sdkTestCoroutineUtil)
             }
         }
 

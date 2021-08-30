@@ -116,7 +116,7 @@ object Version {
     /**
      * https://github.com/d4l-data4life/hc-test-util-sdk-kmp
      */
-    const val sdkTestUtil = "0.1.0"
+    const val sdkTestUtil = "0.1.0-SNAPSHOT"
 
     /**
      * [hc-crypto-sdk-kmp](https://github.com/d4l-data4life/hc-crypto-sdk-kmp)
