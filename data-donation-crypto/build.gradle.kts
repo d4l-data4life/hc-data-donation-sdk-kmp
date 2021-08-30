@@ -52,7 +52,6 @@ kotlin {
 
                 // Path to .def file
                 defFile("$projectDir/src/nativeInterop/cinterop/DataDonationCryptoObjC.def")
-                includeDirs.headerFilterOnly(libraryPath)
                 includeDirs(libraryPath)
             }
         }
@@ -88,8 +87,6 @@ kotlin {
                 val interopTask = tasks[interopProcessingTaskName]
                 interopTask.dependsOn(":DataDonationCryptoObjC:build${platform.capitalize()}")
 
-                includeDirs.headerFilterOnly(libraryPath)
-
                 // Path to .def file
                 defFile("$projectDir/src/nativeInterop/cinterop/DataDonationCryptoObjC.def")
                 includeDirs(libraryPath)
@@ -100,7 +97,6 @@ kotlin {
             cinterops.create("DataDonationCryptoObjC") {
                 val interopTask = tasks[interopProcessingTaskName]
                 interopTask.dependsOn(":DataDonationCryptoObjC:build${platform.capitalize()}")
-                includeDirs.headerFilterOnly(libraryPath)
 
                 // Path to .def file
                 defFile("$projectDir/src/nativeInterop/cinterop/DataDonationCryptoObjC.def")
