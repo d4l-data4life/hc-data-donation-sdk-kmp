@@ -16,18 +16,23 @@
 
 package care.data4life.datadonation.crypto.integration
 
+import kotlinx.cinterop.*
 import objc.datadonation.crypto.KeychainKeyProvider
 import platform.Foundation.NSError
-import kotlin.cinterop.*
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 
 class ObjCCryptoIntegrationTest {
+
+    private val keychainKeyProvider = KeychainKeyProvider()
+    private val programName = "program-test"
+
     @Test
     fun `It imports and runs the library without linking problems`() {
-        val keyProvider: Any = KeychainKeyProvider()
-        var error: CPointer<ObjCVar<NSError>>? = CPointer()
-        val key: String = keyProvider.getDonorPublicKeyFor("test.program.name", error)
+        val keyProvider: KeychainKeyProvider = KeychainKeyProvider()
+
+        var error: CPointer<ObjCObjectVar<NSError?>>? = null
+        val key: String? = keyProvider.getDonorPublicKeyFor("test.program.name", error)
         assertNotNull(keyProvider)
     }
 }
