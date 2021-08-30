@@ -14,14 +14,17 @@
 //  contact D4L by email to help@data4life.care.
 //
 
-#import <Foundation/Foundation.h>
+import SwiftUI
 
-//! Project version number for DataDonationCrypto_ObjC.
-FOUNDATION_EXPORT double DataDonationCrypto_ObjCVersionNumber;
+struct ContentView: View {
+    var body: some View {
+        Text("Hello, world!")
+            .padding()
+    }
+}
 
-//! Project version string for DataDonationCrypto_ObjC.
-FOUNDATION_EXPORT const unsigned char DataDonationCrypto_ObjCVersionString[];
-
-// In this header, you should import all the public headers of your framework using statements like #import <DataDonationCrypto_ObjC/PublicHeader.h>
-
-
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
+    }
+}

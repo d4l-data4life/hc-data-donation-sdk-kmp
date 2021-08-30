@@ -1,4 +1,4 @@
-//  Copyright (c) 2020 D4L data4life gGmbH
+//  Copyright (c) 2021 D4L data4life gGmbH
 //  All rights reserved.
 //
 //  D4L owns all legal rights, title and interest in and to the Software Development Kit ("SDK"),
@@ -15,15 +15,29 @@
 //
 
 import Foundation
-@_implementationOnly import Data4LifeCrypto
+import Data4LifeCrypto
 
-@objc public final class DataDonationCryptor: NSObject {
+final class KeyFactory {
 
-    @objc public static func encrypt(_ data: Data, using key: Data) -> Data {
-        return data
+    private let bundle: Foundation.Bundle
+
+    init(bundle: Foundation.Bundle = Bundle.current) {
+        self.bundle = bundle
     }
 
-    @objc public static func decrypt(_ data: Data, using key: Data) -> Data {
-        return data
+    lazy var keyPairData: Data = {
+        try! bundle.data(fromJSON: "donor-identity")
+    }()
+
+    lazy var keyPair: KeyPair = {
+        try! bundle.decodable(fromJSON: "donor-identity")
+    }()
+
+    var privateKey: AsymmetricKey {
+        keyPair.privateKey
+    }
+
+    var publicKey: AsymmetricKey {
+        keyPair.publicKey
     }
 }

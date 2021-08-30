@@ -43,13 +43,12 @@ kotlin {
         val platform = "iphoneos"
         val libraryName = "DataDonationCryptoObjC"
         val libraryPath = "$rootDir/$libraryName/build/Build/Products/Release-$platform"
+        val frameworksPath = "$libraryPath"
 
         compilations.getByName("main") {
             cinterops.create("DataDonationCryptoObjC") {
                 val interopTask = tasks[interopProcessingTaskName]
                 interopTask.dependsOn(":DataDonationCryptoObjC:build${platform.capitalize()}")
-
-                includeDirs.headerFilterOnly(libraryPath)
 
                 // Path to .def file
                 defFile("$projectDir/src/nativeInterop/cinterop/DataDonationCryptoObjC.def")
@@ -62,18 +61,17 @@ kotlin {
                 val interopTask = tasks[interopProcessingTaskName]
                 interopTask.dependsOn(":DataDonationCryptoObjC:build${platform.capitalize()}")
 
-                includeDirs.headerFilterOnly(libraryPath)
-
                 // Path to .def file
                 defFile("$projectDir/src/nativeInterop/cinterop/DataDonationCryptoObjC.def")
-                includeDirs(libraryPath)
+                includeDirs.headerFilterOnly(libraryPath)
             }
         }
 
         binaries.all {
             linkerOpts(
-                "-rpath", "/urs/lib/swift",
-                "-L$libraryPath", "-l$libraryName"
+                "-rpath", "$frameworksPath",
+                "-L$libraryPath", "-l$libraryName",
+                "-F$frameworksPath", "-framework", "Data4LifeCrypto"
             )
         }
     }
@@ -82,13 +80,12 @@ kotlin {
         val platform = "iphonesimulator"
         val libraryName = "DataDonationCryptoObjC"
         val libraryPath = "$rootDir/$libraryName/build/Build/Products/Release-$platform"
+        val frameworksPath = "$libraryPath"
 
         compilations.getByName("main") {
             cinterops.create("DataDonationCryptoObjC") {
                 val interopTask = tasks[interopProcessingTaskName]
                 interopTask.dependsOn(":DataDonationCryptoObjC:build${platform.capitalize()}")
-
-                includeDirs.headerFilterOnly(libraryPath)
 
                 // Path to .def file
                 defFile("$projectDir/src/nativeInterop/cinterop/DataDonationCryptoObjC.def")
@@ -100,7 +97,6 @@ kotlin {
             cinterops.create("DataDonationCryptoObjC") {
                 val interopTask = tasks[interopProcessingTaskName]
                 interopTask.dependsOn(":DataDonationCryptoObjC:build${platform.capitalize()}")
-                includeDirs.headerFilterOnly(libraryPath)
 
                 // Path to .def file
                 defFile("$projectDir/src/nativeInterop/cinterop/DataDonationCryptoObjC.def")
@@ -110,8 +106,9 @@ kotlin {
 
         binaries.all {
             linkerOpts(
-                "-rpath", "/urs/lib/swift",
-                "-L$libraryPath", "-l$libraryName"
+                "-rpath", "$frameworksPath",
+                "-L$libraryPath", "-l$libraryName",
+                "-F$frameworksPath", "-framework", "Data4LifeCrypto"
             )
         }
     }
@@ -177,6 +174,7 @@ kotlin {
         val iosTest by getting {
             dependencies {
                 dependsOn(commonTest.get())
+                implementation(Dependency.d4l.sdkObjcUtil)
             }
         }
     }

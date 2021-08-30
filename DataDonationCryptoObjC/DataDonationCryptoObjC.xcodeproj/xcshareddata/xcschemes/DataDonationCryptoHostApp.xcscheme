@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "3670E95C26CD1E4A00FD5B79"
-               BuildableName = "libDataDonationCryptoObjC.a"
-               BlueprintName = "DataDonationCryptoObjC"
+               BlueprintIdentifier = "36B32E9026D4E56200D16306"
+               BuildableName = "DataDonationCryptoHostApp.app"
+               BlueprintName = "DataDonationCryptoHostApp"
                ReferencedContainer = "container:DataDonationCryptoObjC.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -50,6 +50,16 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "36B32E9026D4E56200D16306"
+            BuildableName = "DataDonationCryptoHostApp.app"
+            BlueprintName = "DataDonationCryptoHostApp"
+            ReferencedContainer = "container:DataDonationCryptoObjC.xcodeproj">
+         </BuildableReference>
+      </BuildableProductRunnable>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -57,15 +67,16 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <MacroExpansion>
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "3670E95C26CD1E4A00FD5B79"
-            BuildableName = "libDataDonationCryptoObjC.a"
-            BlueprintName = "DataDonationCryptoObjC"
+            BlueprintIdentifier = "36B32E9026D4E56200D16306"
+            BuildableName = "DataDonationCryptoHostApp.app"
+            BlueprintName = "DataDonationCryptoHostApp"
             ReferencedContainer = "container:DataDonationCryptoObjC.xcodeproj">
          </BuildableReference>
-      </MacroExpansion>
+      </BuildableProductRunnable>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

@@ -14,14 +14,13 @@
 //  contact D4L by email to help@data4life.care.
 //
 
-#import <Foundation/Foundation.h>
+import SwiftUI
 
-//! Project version number for DataDonationCrypto_ObjC.
-FOUNDATION_EXPORT double DataDonationCrypto_ObjCVersionNumber;
-
-//! Project version string for DataDonationCrypto_ObjC.
-FOUNDATION_EXPORT const unsigned char DataDonationCrypto_ObjCVersionString[];
-
-// In this header, you should import all the public headers of your framework using statements like #import <DataDonationCrypto_ObjC/PublicHeader.h>
-
-
+@main
+struct DataDonationCryptoHostAppApp: App {
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+        }
+    }
+}
