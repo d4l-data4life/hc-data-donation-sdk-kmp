@@ -84,8 +84,7 @@ internal class BlurFunctionSerializerTest {
         // Then
         val error = assertFailsWith<CoreRuntimeError.InternalFailure> {
             // When
-            val result =
-                serializer.decodeFromString<BlurFunction>("\"notJS\"")
+            serializer.decodeFromString<BlurFunction>("\"notJS\"")
         }
 
         assertEquals(

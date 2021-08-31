@@ -33,10 +33,10 @@ extension DataDonationSDKService {
 
     private static var testKey = "d4l.ecov"
 
-    func fetchUserConsents(_ completion: @escaping (Result<[UserConsent], Error>) -> Void) {
+    func fetchUserConsents(_ completion: @escaping (Result<[UserConsentProtocol], Error>) -> Void) {
         let flow = client.fetchAllUserConsents()
         currentJob = flow.subscribe { consents in
-            let consents = consents.array(of: UserConsent.self)
+            let consents = consents.array(of: UserConsentProtocol.self)
             completion(.success(consents))
         } onError: { error in
             completion(.failure(error))

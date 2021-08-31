@@ -23,9 +23,9 @@ import care.data4life.datadonation.error.DataDonationFlowErrorMapper
 import care.data4life.datadonation.mock.fixture.ConsentDocumentFixture.sampleConsentDocument
 import care.data4life.datadonation.mock.fixture.UserConsentFixture.sampleUserConsent
 import care.data4life.datadonation.mock.spy.D4LFlowFactorySpy
-import care.data4life.datadonation.mock.stub.UserSessionTokenProviderStub
 import care.data4life.datadonation.mock.stub.consent.consentdocument.ConsentDocumentControllerStub
 import care.data4life.datadonation.mock.stub.consent.userconsent.UserConsentControllerStub
+import care.data4life.datadonation.mock.stub.session.UserSessionTokenProviderStub
 import care.data4life.sdk.flow.D4LSDKFlowFactoryContract
 import care.data4life.sdk.util.coroutine.DomainErrorMapperContract
 import care.data4life.sdk.util.test.coroutine.runWithContextBlockingTest

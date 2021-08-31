@@ -16,9 +16,8 @@
 
 package care.data4life.datadonation.session
 
-import care.data4life.datadonation.error.CoreRuntimeError
 import care.data4life.datadonation.mock.stub.ClockStub
-import care.data4life.datadonation.mock.stub.UserSessionTokenProviderStub
+import care.data4life.datadonation.mock.stub.session.UserSessionTokenProviderStub
 import care.data4life.sdk.util.coroutine.CoroutineScopeFactory
 import care.data4life.sdk.util.test.coroutine.runBlockingTest
 import care.data4life.sdk.util.test.coroutine.runWithContextBlockingTest
@@ -34,7 +33,7 @@ import kotlin.time.minutes
 import kotlin.time.seconds
 
 class CachedUserSessionTokenRepositoryTest {
-    private val testScope = CoroutineScopeFactory.createScope("test2Scope")
+    private val testScope = CoroutineScopeFactory.createScope("testSessionScope")
 
     @Test
     fun `It fulfils UserSessionTokenRepository`() {
@@ -66,7 +65,7 @@ class CachedUserSessionTokenRepositoryTest {
 
         runBlockingTest {
             // Then
-            val result = assertFailsWith<CoreRuntimeError.MissingSession> {
+            val result = assertFailsWith<UserSessionError.MissingSession> {
                 // When
                 repo.getUserSessionToken()
             }

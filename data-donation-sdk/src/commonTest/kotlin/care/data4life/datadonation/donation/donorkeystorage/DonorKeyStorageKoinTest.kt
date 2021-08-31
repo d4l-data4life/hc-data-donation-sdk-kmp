@@ -14,14 +14,12 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.session
+package care.data4life.datadonation.donation.donorkeystorage
 
 import care.data4life.datadonation.DataDonationSDK
-import care.data4life.datadonation.mock.stub.ClockStub
-import care.data4life.datadonation.mock.stub.session.UserSessionTokenProviderStub
+import care.data4life.datadonation.mock.stub.donation.donorkeystorage.DonorKeyStorageProviderStub
 import care.data4life.sdk.util.coroutine.CoroutineScopeFactory
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.datetime.Clock
 import org.koin.core.context.stopKoin
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
@@ -29,7 +27,7 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 
-class SessionKoinTest {
+class DonorKeyStorageKoinTest {
     private val testScope = CoroutineScopeFactory.createScope("test2Scope")
 
     @BeforeTest
@@ -38,22 +36,21 @@ class SessionKoinTest {
     }
 
     @Test
-    fun `Given resolveSessionKoinModule is called it creates a Module, which contains a UserSessionTokenRepository`() {
+    fun `Given resolveDonorKeyStorageKoinModule is called it creates a Module, which contains a DonorKeyStorageRepository`() {
         // When
         val koin = koinApplication {
             modules(
-                resolveSessionKoinModule(),
+                resolveDonorKeyStorageKoinModule(),
                 module {
-                    single<Clock> { ClockStub() }
-                    single<DataDonationSDK.UserSessionTokenProvider> {
-                        UserSessionTokenProviderStub()
+                    single<DataDonationSDK.DonorKeyStorageProvider> {
+                        DonorKeyStorageProviderStub()
                     }
                     single<CoroutineScope> { testScope }
                 }
             )
         }
         // Then
-        val builder: SessionTokenRepositoryContract = koin.koin.get()
+        val builder: DonorKeyStorageRepositoryContract = koin.koin.get()
         assertNotNull(builder)
     }
 }

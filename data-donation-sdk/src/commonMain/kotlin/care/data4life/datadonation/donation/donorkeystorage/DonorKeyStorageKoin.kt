@@ -14,16 +14,15 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.consent.userconsent.model
+package care.data4life.datadonation.donation.donorkeystorage
 
-import care.data4life.datadonation.ConsentDataContract
-import kotlinx.serialization.Serializable
+import org.koin.core.module.Module
+import org.koin.dsl.module
 
-@Serializable
-internal data class UserConsent(
-    override val consentDocumentKey: String,
-    override val consentDocumentVersion: String,
-    override val accountId: String, // UUID
-    override val event: ConsentDataContract.ConsentEvent,
-    override val createdAt: String = "" /* Timestamp */
-) : ConsentDataContract.UserConsent
+internal fun resolveDonorKeyStorageKoinModule(): Module {
+    return module {
+        single<DonorKeyStorageRepositoryContract> {
+            DonorKeyStorageRepository(get(), get())
+        }
+    }
+}

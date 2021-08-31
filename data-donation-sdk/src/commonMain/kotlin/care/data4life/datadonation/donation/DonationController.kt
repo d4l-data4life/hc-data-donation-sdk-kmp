@@ -16,9 +16,7 @@
 
 package care.data4life.datadonation.donation
 
-internal class DonationController(
-
-): DonationContract.Controller {
+internal class DonationController() : DonationContract.Controller {
     override suspend fun register(programName: String) {
         TODO("Not yet implemented")
     }

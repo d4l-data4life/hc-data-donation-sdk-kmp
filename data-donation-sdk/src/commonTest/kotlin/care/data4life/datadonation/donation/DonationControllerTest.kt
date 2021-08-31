@@ -26,6 +26,4 @@ class DonationControllerTest {
 
         assertTrue(controller is DonationContract.Controller)
     }
-
-
 }

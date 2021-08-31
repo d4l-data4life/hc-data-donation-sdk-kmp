@@ -22,7 +22,7 @@ import care.data4life.datadonation.donation.model.SignedConsentMessage
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 
-internal class ConsentSignatureControllerStub: ConsentSignatureContract.Controller, MockContract.Stub {
+internal class ConsentSignatureControllerStub : ConsentSignatureContract.Controller, MockContract.Stub {
     var whenEnableSigning: ((Token, String, String, String) -> SignedConsentMessage)? = null
 
     override suspend fun enableSigning(

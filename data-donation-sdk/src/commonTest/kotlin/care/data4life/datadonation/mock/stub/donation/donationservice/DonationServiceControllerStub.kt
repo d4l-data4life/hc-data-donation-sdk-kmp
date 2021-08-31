@@ -22,7 +22,7 @@ import care.data4life.datadonation.donation.model.SignedConsentMessage
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 
-internal class DonationServiceControllerStub: DonationServiceContract.Controller, MockContract.Stub{
+internal class DonationServiceControllerStub : DonationServiceContract.Controller, MockContract.Stub {
     var whenFetchToken: (() -> Token)? = null
     var whenRegister: ((SignedConsentMessage, String) -> Unit)? = null
 

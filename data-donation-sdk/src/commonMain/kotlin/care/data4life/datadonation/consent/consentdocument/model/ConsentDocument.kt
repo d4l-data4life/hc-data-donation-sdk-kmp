@@ -21,7 +21,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ConsentDocument(
+internal data class ConsentDocument(
     override val key: String,
     override val version: String,
     override val processor: String,

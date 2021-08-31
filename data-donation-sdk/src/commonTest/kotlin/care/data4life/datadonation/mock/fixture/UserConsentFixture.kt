@@ -21,7 +21,7 @@ import care.data4life.datadonation.consent.userconsent.model.UserConsent
 import kotlin.native.concurrent.ThreadLocal
 
 @ThreadLocal
-object UserConsentFixture {
+internal object UserConsentFixture {
     val sampleUserConsent = UserConsent(
         consentDocumentKey = "soup",
         consentDocumentVersion = "23",

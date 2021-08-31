@@ -35,6 +35,7 @@ package care.data4life.datadonation
 import care.data4life.datadonation.ConsentDataContract.ConsentDocument
 import care.data4life.datadonation.ConsentDataContract.UserConsent
 import care.data4life.datadonation.donation.publickeyservice.model.EnvironmentSerializer
+import care.data4life.datadonation.session.SessionToken
 import care.data4life.sdk.flow.D4LSDKFlow
 import kotlinx.serialization.Serializable
 
@@ -49,7 +50,27 @@ interface DataDonationSDK {
 
     fun interface UserSessionTokenProvider {
         fun getUserSessionToken(
-            onSuccess: (sessionToken: String) -> Unit,
+            onSuccess: (sessionToken: SessionToken) -> Unit,
+            onError: (error: Exception) -> Unit
+        )
+    }
+
+    interface DonorKeyStorageProvider {
+        fun load(
+            annotations: Annotations,
+            onSuccess: (recordId: RecordId, data: EncodedDonorIdentity) -> Unit,
+            onError: (error: Exception) -> Unit
+        )
+
+        fun save(
+            donorKey: DonationDataContract.DonorKey,
+            onSuccess: () -> Unit,
+            onError: (error: Exception) -> Unit
+        )
+
+        fun delete(
+            recordId: RecordId,
+            onSuccess: () -> Unit,
             onError: (error: Exception) -> Unit
         )
     }
