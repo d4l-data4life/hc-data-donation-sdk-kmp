@@ -17,18 +17,34 @@
 package care.data4life.datadonation.crypto.signature
 
 import care.data4life.sdk.crypto.Algorithm
+import java.security.spec.AlgorithmParameterSpec
+import java.security.spec.MGF1ParameterSpec
 
-internal open class SignatureAlgorithm : Algorithm() {
-    enum class Salt(length: Int) {
+internal open class SignatureAlgorithm(
+    val schema: Schema,
+    val hash: Hash,
+    val mask: Mask,
+    val generator: GeneratorFunction
+) : Algorithm() {
+
+    enum class Salt(val length: Int) {
         SALT_0(0),
         SALT_32(32)
     }
 
-    enum class BlockMode {
-        PSS
+    enum class Hash(val value: String) {
+        SHA256("SHA-256")
     }
 
-    companion object {
-        const val PSS = "PSS"
+    enum class Mask(val value: String) {
+        MGF1("MGF1")
+    }
+
+    enum class GeneratorFunction(val spec: AlgorithmParameterSpec) {
+        SHA256_MGF1(MGF1ParameterSpec.SHA256)
+    }
+
+    enum class Schema(name: String) {
+        PSS("PSS")
     }
 }

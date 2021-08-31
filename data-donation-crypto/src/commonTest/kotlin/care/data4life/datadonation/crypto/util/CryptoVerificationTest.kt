@@ -90,7 +90,7 @@ class CryptoVerificationTest {
     }
 
     @Test
-    fun `Given verify is called with a message, signature, key and 0 as Salt, returns true if signature matches `() {
+    fun `Given verify is called with a message, signature, key and 0 as Salt, returns true if signature matches`() {
         // Given
         val signature = ResourceLoader.loader.load("/fixture/crypto/ExampleSignature0.txt")
         val key = ResourceLoader.loader.load("/fixture/crypto/DonationServicePublicKey.txt")
@@ -102,6 +102,25 @@ class CryptoVerificationTest {
             Base64.decode(signature),
             key,
             0
+        )
+
+        // Then
+        assertTrue(result)
+    }
+
+    @Test
+    fun `Given verify is called with a message, signature, key and 32 as Salt, returns true if signature matches`() {
+        // Given
+        val signature = ResourceLoader.loader.load("/fixture/crypto/ExampleSignature32.txt")
+        val key = ResourceLoader.loader.load("/fixture/crypto/DonationServicePublicKey.txt")
+        val message = "Hello World!".encodeToByteArray()
+
+        // When
+        val result = CryptoVerification.verify(
+            message,
+            Base64.decode(signature),
+            key,
+            32
         )
 
         // Then

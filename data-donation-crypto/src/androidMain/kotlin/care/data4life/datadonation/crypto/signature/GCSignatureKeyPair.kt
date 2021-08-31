@@ -17,60 +17,53 @@
 package care.data4life.datadonation.crypto.signature
 
 import care.data4life.sdk.crypto.GCAsymmetricKey
-import care.data4life.sdk.util.Base64
-import org.bouncycastle.asn1.pkcs.RSAPublicKey
-import java.security.KeyFactory
-import java.security.spec.PKCS8EncodedKeySpec
-import java.security.spec.RSAPublicKeySpec
+import care.data4life.sdk.crypto.GCKeyPair
+import care.data4life.sdk.crypto.GCRSAKeyAlgorithm
+import java.security.PublicKey
+import java.security.Signature
 
 internal class GCSignatureKeyPair constructor(
     val algorithm: GCSignatureAlgorithm,
-    privateKey: GCAsymmetricKey,
-    publicKey: GCAsymmetricKey,
+    val privateKey: GCAsymmetricKey,
+    val publicKey: GCAsymmetricKey,
     val keyVersion: Int
 ) {
+    fun toGCKeyPair(algorithm: GCRSAKeyAlgorithm): GCKeyPair {
+        return GCKeyPair(
+            algorithm,
+            privateKey,
+            publicKey,
+            keyVersion
+        )
+    }
 
-    private var privateKeyBase64: String? = null
-
-    @Transient
-    var privateKey: GCAsymmetricKey? = null
-        get() {
-            if (field == null) {
-                try {
-                    val keyFactory = KeyFactory.getInstance(algorithm.cipher)
-                    val encodedKeySpec = PKCS8EncodedKeySpec(Base64.decode(privateKeyBase64!!))
-                    val privKey = keyFactory.generatePrivate(encodedKeySpec)
-                    this.privateKey = GCAsymmetricKey(privKey, GCAsymmetricKey.Type.Private)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-            return field
+    private fun prepareSignature(): Signature {
+        return Signature.getInstance(algorithm.transformation).also {
+            it.setParameter(algorithm.spec)
         }
-    private var publicKeyBase64: String? = null
+    }
 
-    // TODO move to test
-    @Transient
-    var publicKey: GCAsymmetricKey? = null
-        get() {
-            if (field == null) {
-                try {
-                    val keyFactory = KeyFactory.getInstance(algorithm.cipher)
-                    val pkcs1PublicKey = RSAPublicKey.getInstance(Base64.decode(publicKeyBase64!!))
-                    val modulus = pkcs1PublicKey.modulus
-                    val publicExponent = pkcs1PublicKey.publicExponent
-                    val pubKeySpec = RSAPublicKeySpec(modulus, publicExponent)
-                    val pubKey = keyFactory.generatePublic(pubKeySpec)
-                    this.publicKey = GCAsymmetricKey(pubKey, GCAsymmetricKey.Type.Public)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-            return field
+    fun toSigningSignature(): Signature {
+        TODO()
+    }
+
+    fun toVerificationSignature(): Signature {
+        return prepareSignature().also {
+            it.initVerify(publicKey.value as PublicKey)
         }
+    }
 
-    init {
-        this.privateKey = privateKey
-        this.publicKey = publicKey
+    companion object {
+        fun fromGCKeyPair(
+            keyPair: GCKeyPair,
+            algorithm: GCSignatureAlgorithm
+        ): GCSignatureKeyPair {
+            return GCSignatureKeyPair(
+                algorithm = algorithm,
+                privateKey = keyPair.privateKey!!,
+                publicKey = keyPair.publicKey!!,
+                keyVersion = keyPair.keyVersion
+            )
+        }
     }
 }

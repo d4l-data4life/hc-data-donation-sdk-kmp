@@ -17,25 +17,47 @@
 package care.data4life.datadonation.crypto.signature
 
 import care.data4life.sdk.crypto.Algorithm
-import care.data4life.sdk.crypto.GCRSAKeyAlgorithm
+import java.security.spec.AlgorithmParameterSpec
+import java.security.spec.PSSParameterSpec
 
 internal class GCSignatureAlgorithm private constructor(
-    val salt: Salt
-) : SignatureAlgorithm() {
-    val hash: String
-
-    enum class Hash {
-        SHA256
-    }
-
+    schema: Schema = Schema.PSS,
+    hash: Hash = Hash.SHA256,
+    mask: Mask = Mask.MGF1,
+    generatorFunction: GeneratorFunction = GeneratorFunction.SHA256_MGF1,
+    val salt: Salt,
+) : SignatureAlgorithm(
+    schema,
+    hash,
+    mask,
+    generatorFunction
+) {
     init {
         cipher = Algorithm.Cipher.RSA.name
-        blockMode = SignatureAlgorithm.BlockMode.PSS.name
-        this.hash = GCRSAKeyAlgorithm.Hash.SHA256.name
     }
 
+    val spec: AlgorithmParameterSpec
+        get() {
+            return PSSParameterSpec(
+                this.hash.value,
+                this.mask.name,
+                this.generator.spec,
+                this.salt.length,
+                1
+            )
+        }
+
+    override val transformation: String
+        get() {
+            return if (hash == Hash.SHA256) {
+                "SHA256with$cipher/${schema.name}"
+            } else {
+                "" // Not possible
+            }
+        }
+
     companion object {
-        fun createUnsaltedKey() = GCSignatureAlgorithm(Salt.SALT_0)
-        fun createSaltedKey() = GCSignatureAlgorithm(Salt.SALT_32)
+        fun createUnsaltedKey() = GCSignatureAlgorithm(salt = Salt.SALT_0)
+        fun createSaltedKey() = GCSignatureAlgorithm(salt = Salt.SALT_32)
     }
 }

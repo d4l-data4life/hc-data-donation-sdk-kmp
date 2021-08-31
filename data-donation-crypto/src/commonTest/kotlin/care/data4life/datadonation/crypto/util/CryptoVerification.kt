@@ -19,13 +19,13 @@ package care.data4life.datadonation.crypto.util
 expect object CryptoVerification {
     fun decrypt(
         payload: ByteArray,
-        key: String
+        privateKey: String
     ): ByteArray
 
     fun verify(
         payload: ByteArray,
         signature: ByteArray,
-        key: String,
+        publicKey: String,
         saltLength: Int,
     ): Boolean
 }

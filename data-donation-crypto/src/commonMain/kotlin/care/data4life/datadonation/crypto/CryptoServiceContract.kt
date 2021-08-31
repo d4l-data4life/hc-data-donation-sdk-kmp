@@ -19,12 +19,12 @@ package care.data4life.datadonation.crypto
 interface CryptoServiceContract {
     fun encrypt(
         payload: ByteArray,
-        key: String
+        publicKey: String
     ): ByteArray
 
     fun sign(
         payload: ByteArray,
-        key: String,
+        privateKey: String,
         saltLength: Int,
     ): ByteArray
 

@@ -19,7 +19,7 @@ package care.data4life.datadonation.crypto.util
 actual object CryptoVerification {
     actual fun decrypt(
         payload: ByteArray,
-        key: String
+        privateKey: String
     ): ByteArray {
         TODO()
     }
@@ -27,7 +27,7 @@ actual object CryptoVerification {
     actual fun verify(
         payload: ByteArray,
         signature: ByteArray,
-        key: String,
+        publicKey: String,
         saltLength: Int,
     ): Boolean {
         TODO()

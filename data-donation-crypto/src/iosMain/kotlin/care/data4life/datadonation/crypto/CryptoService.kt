@@ -19,14 +19,14 @@ package care.data4life.datadonation.crypto
 internal actual class CryptoService actual constructor() : CryptoServiceContract {
     actual override fun encrypt(
         payload: ByteArray,
-        key: String
+        publicKey: String
     ): ByteArray {
         TODO()
     }
 
     actual override fun sign(
         payload: ByteArray,
-        key: String,
+        privateKey: String,
         saltLength: Int,
     ): ByteArray {
         TODO()

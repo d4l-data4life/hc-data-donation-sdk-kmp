@@ -36,7 +36,7 @@ import javax.crypto.spec.SecretKeySpec
 
 // TODO Merge with CORE and move into the Crypto SDK
 internal object CryptoVerificationKeyFactory {
-    private val templateGCKey = D4LCryptoProtocol.generateAsymKeyPair(
+    private val templateGCKeyPair = D4LCryptoProtocol.generateAsymKeyPair(
         algorithm = GCRSAKeyAlgorithm(),
         options = KeyOptions(
             keySize = KeyVersion.VERSION_1.asymmetricKeySize
@@ -68,7 +68,7 @@ internal object CryptoVerificationKeyFactory {
         return GCKeyPair(
             algorithm,
             gcPrivate,
-            templateGCKey.publicKey!!,
+            templateGCKeyPair.publicKey!!,
             exchangeKey.getVersion().value
         )
     }
@@ -90,7 +90,7 @@ internal object CryptoVerificationKeyFactory {
 
         return GCSignatureKeyPair(
             algorithm,
-            templateGCKey.privateKey!!,
+            templateGCKeyPair.privateKey!!,
             gcPublicKey,
             exchangeKey.getVersion().value
         )

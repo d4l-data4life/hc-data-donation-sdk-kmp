@@ -52,7 +52,7 @@ internal actual class CryptoService actual constructor() : CryptoServiceContract
 
     actual override fun encrypt(
         payload: ByteArray,
-        key: String
+        publicKey: String
     ): ByteArray {
         val symmetricKey = CryptoKeyFactory.generateSymmetricKey()
         val iv = ByteArray(IV_SIZE)
@@ -67,7 +67,7 @@ internal actual class CryptoService actual constructor() : CryptoServiceContract
         val exchangeKey = ExchangeKeyFactory.createKey(
             KeyVersion.VERSION_1,
             KeyType.APP_PUBLIC_KEY,
-            key
+            publicKey
         )
 
         val asymKey = CryptoKeyFactory.createPublicKey(exchangeKey)
@@ -86,7 +86,7 @@ internal actual class CryptoService actual constructor() : CryptoServiceContract
 
     actual override fun sign(
         payload: ByteArray,
-        key: String,
+        privateKey: String,
         saltLength: Int,
     ): ByteArray {
         TODO()

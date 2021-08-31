@@ -16,8 +16,10 @@
 
 package care.data4life.datadonation.crypto.util
 
+import care.data4life.datadonation.crypto.CryptoKeyFactory
 import care.data4life.datadonation.crypto.CryptoServiceContract.Companion.PROTOCOL_VERSION
 import care.data4life.datadonation.crypto.D4LCryptoProtocol
+import care.data4life.datadonation.crypto.signature.GCSignatureAlgorithm
 import care.data4life.datadonation.crypto.signature.GCSignatureKeyPair
 import care.data4life.sdk.crypto.ExchangeKey
 import care.data4life.sdk.crypto.GCKey
@@ -26,10 +28,6 @@ import care.data4life.sdk.crypto.KeyType
 import care.data4life.sdk.crypto.KeyVersion
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
-import java.security.PublicKey
-import java.security.Signature
-import java.security.spec.MGF1ParameterSpec
-import java.security.spec.PSSParameterSpec
 
 private data class CryptoMaterial(
     val encryptedSymmetricKey: ByteArray,
@@ -98,13 +96,13 @@ actual object CryptoVerification {
 
     actual fun decrypt(
         payload: ByteArray,
-        key: String
+        privateKey: String
     ): ByteArray {
 
         val (encryptedSymKey, iv, encryptedText) = resolveCryptoMaterial(payload)
         val symmetricKey = resolveSymmetricKey(
             encryptedSymKey,
-            resolveAsymmetricKey(key)
+            resolveAsymmetricKey(privateKey)
         )
 
         return D4LCryptoProtocol.symDecrypt(
@@ -114,7 +112,7 @@ actual object CryptoVerification {
         )
     }
 
-    private fun resolvePublicKey(key: String): GCSignatureKeyPair {
+    private fun resolvePublicKey(key: String): GCKeyPair {
         val asymExchangeKey = ExchangeKey(
             type = KeyType.APP_PUBLIC_KEY,
             privateKey = null,
@@ -123,30 +121,28 @@ actual object CryptoVerification {
             version = KeyVersion.VERSION_1
         )
 
-        return CryptoVerificationKeyFactory.createPublicSignatureKey(
-            asymExchangeKey,
-            32
-        )
+        return CryptoKeyFactory.createPublicKey(asymExchangeKey)
+    }
+
+    private fun resolveSignatureAlgorithm(saltLength: Int): GCSignatureAlgorithm {
+        return if (saltLength == 0) {
+            GCSignatureAlgorithm.createUnsaltedKey()
+        } else {
+            GCSignatureAlgorithm.createSaltedKey()
+        }
     }
 
     actual fun verify(
         payload: ByteArray,
         signature: ByteArray,
-        key: String,
+        publicKey: String,
         saltLength: Int,
     ): Boolean {
-        val asymKeyPair = resolvePublicKey(key)
-        val signer = Signature.getInstance("SHA256withRSA/PSS")
-        signer.setParameter(
-            PSSParameterSpec(
-                "SHA-256",
-                "MGF1",
-                MGF1ParameterSpec.SHA256,
-                0,
-                1
-            )
-        )
-        signer.initVerify(asymKeyPair.publicKey!!.value as PublicKey)
+        val signer = GCSignatureKeyPair.fromGCKeyPair(
+            algorithm = resolveSignatureAlgorithm(saltLength),
+            keyPair = resolvePublicKey(publicKey)
+        ).toVerificationSignature()
+
         signer.update(payload)
         return signer.verify(signature)
     }
