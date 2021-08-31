@@ -14,26 +14,23 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.donation.consentsignature.model
+package care.data4life.datadonation.donation.model
 
+import care.data4life.datadonation.donation.DonationContract
 import care.data4life.datadonation.error.CoreRuntimeError
 import kotlinx.serialization.KSerializer
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.descriptors.PrimitiveKind
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.modules.SerializersModule
-import kotlinx.serialization.modules.contextual
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
-internal class ConsentSignatureTypeSerializerTest {
+internal class ConsentSignatureTypeFullSerializerTest {
     @Test
     fun `It fulfils KSerializer`() {
-        val serializer: Any = ConsentSignatureTypeSerializer
+        val serializer: Any = ConsentSignatureTypeFullSerializer
 
         assertTrue(serializer is KSerializer<*>)
     }
@@ -41,12 +38,12 @@ internal class ConsentSignatureTypeSerializerTest {
     @Test
     fun `It has a proper descriptor`() {
         assertEquals(
-            actual = ConsentSignatureTypeSerializer.descriptor.kind,
+            actual = ConsentSignatureTypeFullSerializer.descriptor.kind,
             expected = PrimitiveKind.STRING
         )
 
         assertEquals(
-            actual = ConsentSignatureTypeSerializer.descriptor.serialName,
+            actual = ConsentSignatureTypeFullSerializer.descriptor.serialName,
             expected = "ConsentSignatureType"
         )
     }
@@ -54,15 +51,14 @@ internal class ConsentSignatureTypeSerializerTest {
     @Test
     fun `Given a Serializer is called with a ConsentSignatureType, it encodes it`() {
         // Given
-        val serializer = Json {
-            serializersModule = SerializersModule {
-                contextual(ConsentSignatureTypeSerializer)
-            }
-        }
+        val serializer = Json
 
-        for (field in ConsentSignatureType.values()) {
+        for (field in DonationContract.ConsentSignatureType.values()) {
             // When
-            val result = serializer.encodeToString(field)
+            val result = serializer.encodeToString(
+                ConsentSignatureTypeFullSerializer,
+                field
+            )
 
             // Then
             assertEquals(
@@ -75,16 +71,15 @@ internal class ConsentSignatureTypeSerializerTest {
     @Test
     fun `Given a Serializer is called with a serialized ConsentSignatureType, it fails with a Internal Failure if the blur function is unknown`() {
         // Given
-        val serializer = Json {
-            serializersModule = SerializersModule {
-                contextual(ConsentSignatureTypeSerializer)
-            }
-        }
+        val serializer = Json
 
         // Then
         val error = assertFailsWith<CoreRuntimeError.InternalFailure> {
             // When
-            serializer.decodeFromString<ConsentSignatureType>("\"notJS\"")
+            serializer.decodeFromString(
+                ConsentSignatureTypeFullSerializer,
+                "\"notJS\""
+            )
         }
 
         assertEquals(
@@ -96,15 +91,14 @@ internal class ConsentSignatureTypeSerializerTest {
     @Test
     fun `Given a Serializer is called with a serialized ConsentSignatureType, it decodes it`() {
         // Given
-        val serializer = Json {
-            serializersModule = SerializersModule {
-                contextual(ConsentSignatureTypeSerializer)
-            }
-        }
+        val serializer = Json
 
-        for (field in ConsentSignatureType.values()) {
+        for (field in DonationContract.ConsentSignatureType.values()) {
             // When
-            val result = serializer.decodeFromString<ConsentSignatureType>("\"${field.value}\"")
+            val result = serializer.decodeFromString(
+                ConsentSignatureTypeFullSerializer,
+                "\"${field.value}\""
+            )
 
             // Then
             assertSame(

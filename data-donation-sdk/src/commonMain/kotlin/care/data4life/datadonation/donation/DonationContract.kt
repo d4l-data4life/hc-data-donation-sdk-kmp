@@ -14,25 +14,22 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.donation.consentsignature.model
+package care.data4life.datadonation.donation
 
-import care.data4life.datadonation.donation.DonationContract
-import care.data4life.datadonation.donation.model.ConsentSignatureTypeFullSerializer
-import kotlinx.serialization.SerialName
+import care.data4life.datadonation.donation.model.RevocationTypeSerializer
 import kotlinx.serialization.Serializable
 
-@Serializable
-internal data class DeletionMessage(
-    val consentDocumentKey: String,
-    @Serializable(with = ConsentSignatureTypeFullSerializer::class)
-    val signatureType: DonationContract.ConsentSignatureType,
-    val date: String,
-    val uuid: String
-)
+internal interface DonationContract {
+    @Serializable
+    enum class ConsentSignatureType(val value: String) {
+        CONSENT_ONCE("consentOnce"),
+        NORMAL_USE("normalUse"),
+        REVOKE_ONCE("revokeOnce")
+    }
 
-@Serializable
-internal data class SignedDeletionMessage(
-    @SerialName("deletionMessage")
-    val message: DeletionMessage,
-    val signature: String
-)
+    @Serializable(with = RevocationTypeSerializer::class)
+    enum class RevocationType(val value: String) {
+        DELETE("delete"),
+        UNMAP("unmap")
+    }
+}

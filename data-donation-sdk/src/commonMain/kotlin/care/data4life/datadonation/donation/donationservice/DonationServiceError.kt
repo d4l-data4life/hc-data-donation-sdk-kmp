@@ -14,25 +14,15 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.donation.consentsignature.model
+package care.data4life.datadonation.donation.donationservice
 
-import care.data4life.datadonation.donation.DonationContract
-import care.data4life.datadonation.donation.model.ConsentSignatureTypeFullSerializer
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import care.data4life.sdk.lang.D4LRuntimeException
 
-@Serializable
-internal data class DeletionMessage(
-    val consentDocumentKey: String,
-    @Serializable(with = ConsentSignatureTypeFullSerializer::class)
-    val signatureType: DonationContract.ConsentSignatureType,
-    val date: String,
-    val uuid: String
-)
-
-@Serializable
-internal data class SignedDeletionMessage(
-    @SerialName("deletionMessage")
-    val message: DeletionMessage,
-    val signature: String
-)
+sealed class DonationServiceError(
+    open val httpStatus: Int
+) : D4LRuntimeException() {
+    class UnexpectedFailure(override val httpStatus: Int) : DonationServiceError(httpStatus)
+    class BadRequest : DonationServiceError(400)
+    class Unauthorized : DonationServiceError(401)
+    class InternalServer : DonationServiceError(500)
+}

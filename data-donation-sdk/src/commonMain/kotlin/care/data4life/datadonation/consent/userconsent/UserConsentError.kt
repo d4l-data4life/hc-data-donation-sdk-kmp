@@ -28,6 +28,5 @@ sealed class UserConsentError(
     class NotFound : UserConsentError(404)
     class DocumentConflict : UserConsentError(409)
     class UnprocessableEntity : UserConsentError(422)
-    class TooManyRequests : UserConsentError(429)
     class InternalServer : UserConsentError(500)
 }

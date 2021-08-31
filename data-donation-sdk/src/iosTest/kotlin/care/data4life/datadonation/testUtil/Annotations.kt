@@ -14,25 +14,22 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.donation.consentsignature.model
+package care.data4life.datadonation.testUtil
 
-import care.data4life.datadonation.donation.DonationContract
-import care.data4life.datadonation.donation.model.ConsentSignatureTypeFullSerializer
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import kotlin.reflect.KClass
 
-@Serializable
-internal data class DeletionMessage(
-    val consentDocumentKey: String,
-    @Serializable(with = ConsentSignatureTypeFullSerializer::class)
-    val signatureType: DonationContract.ConsentSignatureType,
-    val date: String,
-    val uuid: String
-)
+abstract class AbstractNoop
+abstract class NoopParent<T> : AbstractNoop()
+class NoopFramework
+open class NoopBlock : NoopParent<NoopFramework>()
+open class NoopSandBox : NoopBlock()
+class NoopRunner : NoopSandBox()
+annotation class NoopRunWith(val value: KClass<out AbstractRunner>)
 
-@Serializable
-internal data class SignedDeletionMessage(
-    @SerialName("deletionMessage")
-    val message: DeletionMessage,
-    val signature: String
-)
+actual typealias AbstractRunner = AbstractNoop
+actual typealias FrameworkMethod = NoopFramework
+actual typealias ParentRunner<T> = NoopParent<T>
+actual typealias BlockClassRunner = NoopBlock
+actual typealias SandboxTestRunner = NoopSandBox
+actual typealias RobolectricTestRunner = NoopRunner
+actual typealias RunWith = NoopRunWith

@@ -14,25 +14,15 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.donation.consentsignature.model
+package care.data4life.datadonation.testUtil
 
-import care.data4life.datadonation.donation.DonationContract
-import care.data4life.datadonation.donation.model.ConsentSignatureTypeFullSerializer
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import org.junit.runners.BlockJUnit4ClassRunner
+import org.robolectric.RobolectricTestRunner
 
-@Serializable
-internal data class DeletionMessage(
-    val consentDocumentKey: String,
-    @Serializable(with = ConsentSignatureTypeFullSerializer::class)
-    val signatureType: DonationContract.ConsentSignatureType,
-    val date: String,
-    val uuid: String
-)
-
-@Serializable
-internal data class SignedDeletionMessage(
-    @SerialName("deletionMessage")
-    val message: DeletionMessage,
-    val signature: String
-)
+actual typealias AbstractRunner = org.junit.runner.Runner
+actual typealias ParentRunner<T> = org.junit.runners.ParentRunner<T>
+actual typealias FrameworkMethod = org.junit.runners.model.FrameworkMethod
+actual typealias BlockClassRunner = BlockJUnit4ClassRunner
+actual typealias SandboxTestRunner = org.robolectric.internal.SandboxTestRunner
+actual typealias RobolectricTestRunner = RobolectricTestRunner
+actual typealias RunWith = org.junit.runner.RunWith

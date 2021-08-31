@@ -16,7 +16,7 @@
 
 package care.data4life.datadonation.donation.consentsignature
 
-import care.data4life.datadonation.donation.consentsignature.model.ConsentSignatureType
+import care.data4life.datadonation.donation.DonationContract
 import care.data4life.datadonation.donation.consentsignature.model.ConsentSigningRequest
 import care.data4life.datadonation.donation.consentsignature.model.DeletionMessage
 import care.data4life.datadonation.donation.consentsignature.model.SignedDeletionMessage
@@ -65,7 +65,7 @@ class ConsentSignatureApiServiceTest {
         val signingRequest = ConsentSigningRequest(
             consentDocumentKey = consentDocumentKey,
             payload = "soup",
-            signatureType = ConsentSignatureType.CONSENT_ONCE
+            signatureType = DonationContract.ConsentSignatureType.CONSENT_ONCE
         )
 
         val error = HttpRuntimeError(HttpStatusCode.TooManyRequests)
@@ -171,7 +171,7 @@ class ConsentSignatureApiServiceTest {
         val signingRequest = ConsentSigningRequest(
             consentDocumentKey = consentDocumentKey,
             payload = "soup",
-            signatureType = ConsentSignatureType.CONSENT_ONCE
+            signatureType = DonationContract.ConsentSignatureType.CONSENT_ONCE
         )
 
         val response = ConsentSignatureFixture.sampleConsentSignature
@@ -246,7 +246,7 @@ class ConsentSignatureApiServiceTest {
         val signingRequest = ConsentSigningRequest(
             consentDocumentKey = consentDocumentKey,
             payload = "soup",
-            signatureType = ConsentSignatureType.NORMAL_USE
+            signatureType = DonationContract.ConsentSignatureType.NORMAL_USE
         )
 
         val error = HttpRuntimeError(HttpStatusCode.TooManyRequests)
@@ -352,7 +352,7 @@ class ConsentSignatureApiServiceTest {
         val signingRequest = ConsentSigningRequest(
             consentDocumentKey = consentDocumentKey,
             payload = "soup",
-            signatureType = ConsentSignatureType.NORMAL_USE
+            signatureType = DonationContract.ConsentSignatureType.NORMAL_USE
         )
 
         val response = ConsentSignatureFixture.sampleConsentSignature
@@ -427,7 +427,7 @@ class ConsentSignatureApiServiceTest {
         val signingRequest = SignedDeletionMessage(
             message = DeletionMessage(
                 "soup",
-                ConsentSignatureType.REVOKE_ONCE,
+                DonationContract.ConsentSignatureType.REVOKE_ONCE,
                 "1981",
                 "abc"
             ),
@@ -488,7 +488,7 @@ class ConsentSignatureApiServiceTest {
         val signingRequest = SignedDeletionMessage(
             message = DeletionMessage(
                 "soup",
-                ConsentSignatureType.REVOKE_ONCE,
+                DonationContract.ConsentSignatureType.REVOKE_ONCE,
                 "1981",
                 "abc"
             ),
