@@ -23,7 +23,7 @@ import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
-class CryptoServiceTestAndroid {
+class KeyFactoryTestAndroid {
     @Test
     fun `Given createKeyPair is called, it propagates Errors as CryptoErrors`() {
         // Given
@@ -37,7 +37,7 @@ class CryptoServiceTestAndroid {
         // Then
         val error = assertFailsWith<CryptoError.MalFormedKeyGeneration> {
             // When
-            CryptoService().createKeyPair()
+            KeyFactory.createKeyPair()
         }
 
         assertEquals(

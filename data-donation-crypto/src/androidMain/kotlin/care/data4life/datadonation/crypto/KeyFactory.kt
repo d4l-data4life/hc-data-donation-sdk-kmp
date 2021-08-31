@@ -18,22 +18,17 @@ package care.data4life.datadonation.crypto
 
 import care.data4life.datadonation.crypto.model.KeyPair
 
-interface CryptoServiceContract {
-    fun createKeyPair(): KeyPair
+actual object KeyFactory : CryptoContract.KeyFactory {
+    actual override fun createKeyPair(): KeyPair {
+        val keyPair = try {
+            CryptoKeyFactory.generateAsymmetricKeyPair()
+        } catch (_: Throwable) {
+            throw CryptoError.MalFormedKeyGeneration()
+        }
 
-    fun encrypt(
-        payload: ByteArray,
-        publicKey: String
-    ): ByteArray
-
-    fun sign(
-        payload: ByteArray,
-        privateKey: String,
-        saltLength: Int,
-    ): ByteArray
-
-    companion object {
-        const val PROTOCOL_VERSION = 2
-        const val IV_SIZE = 16
+        return KeyPair(
+            publicKey = keyPair.publicKey!!.value.encoded,
+            privateKey = keyPair.privateKey!!.value.encoded
+        )
     }
 }

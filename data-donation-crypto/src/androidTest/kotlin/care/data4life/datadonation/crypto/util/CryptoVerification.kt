@@ -16,9 +16,9 @@
 
 package care.data4life.datadonation.crypto.util
 
+import care.data4life.datadonation.crypto.CryptoContract.Companion.PROTOCOL_VERSION
 import care.data4life.datadonation.crypto.CryptoError
 import care.data4life.datadonation.crypto.CryptoKeyFactory
-import care.data4life.datadonation.crypto.CryptoServiceContract.Companion.PROTOCOL_VERSION
 import care.data4life.datadonation.crypto.D4LCryptoProtocol
 import care.data4life.datadonation.crypto.signature.GCSignatureAlgorithm
 import care.data4life.datadonation.crypto.signature.GCSignatureKeyPair

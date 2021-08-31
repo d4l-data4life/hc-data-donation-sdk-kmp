@@ -16,9 +16,8 @@
 
 package care.data4life.datadonation.crypto
 
-import care.data4life.datadonation.crypto.CryptoServiceContract.Companion.IV_SIZE
-import care.data4life.datadonation.crypto.CryptoServiceContract.Companion.PROTOCOL_VERSION
-import care.data4life.datadonation.crypto.model.KeyPair
+import care.data4life.datadonation.crypto.CryptoContract.Companion.IV_SIZE
+import care.data4life.datadonation.crypto.CryptoContract.Companion.PROTOCOL_VERSION
 import care.data4life.datadonation.crypto.signature.GCSignatureAlgorithm
 import care.data4life.datadonation.crypto.signature.GCSignatureKeyPair
 import care.data4life.datadonation.crypto.signature.SignatureAlgorithm
@@ -31,21 +30,8 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.security.SecureRandom
 
-actual class CryptoService actual constructor() : CryptoServiceContract {
+actual class CryptoService actual constructor() : CryptoContract.Service {
     private val secureRandom = SecureRandom()
-
-    actual override fun createKeyPair(): KeyPair {
-        val keyPair = try {
-            CryptoKeyFactory.generateAsymmetricKeyPair()
-        } catch (_: Throwable) {
-            throw CryptoError.MalFormedKeyGeneration()
-        }
-
-        return KeyPair(
-            publicKey = keyPair.publicKey!!.value.encoded,
-            privateKey = keyPair.privateKey!!.value.encoded
-        )
-    }
 
     private fun concatenateCryptoMaterial(
         encryptedKey: ByteArray,

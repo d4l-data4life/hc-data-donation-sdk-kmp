@@ -27,24 +27,14 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-@AndroidOnly
+@AndroidOnly // TODO: Remove once iOS s ready
 @RunWithRobolectricTestRunner(RobolectricTestRunner::class)
 class CryptoServiceTest {
     @Test
     fun `It fulfils the Crypto Service`() {
         val service: Any = CryptoService()
 
-        assertTrue(service is CryptoServiceContract)
-    }
-
-    @Test
-    fun `Given createKeyPair is called, it generates a KeyPair`() {
-        // When
-        val pair = CryptoService().createKeyPair()
-
-        // Then
-        assertTrue(CryptoVerification.isPublicKey(pair.publicKey))
-        assertTrue(CryptoVerification.isPrivateKey(pair.privateKey))
+        assertTrue(service is CryptoContract.Service)
     }
 
     @Test
