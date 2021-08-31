@@ -16,9 +16,9 @@
 
 package care.data4life.datadonation.donation.consentsignature
 
+import care.data4life.datadonation.donation.consentsignature.model.SignedDeletionMessage
 import care.data4life.datadonation.donation.model.ConsentSignature
 import care.data4life.datadonation.donation.model.ConsentSigningRequest
-import care.data4life.datadonation.donation.consentsignature.model.SignedDeletionMessage
 import care.data4life.datadonation.networking.AccessToken
 import care.data4life.datadonation.networking.HttpRuntimeError
 import care.data4life.datadonation.networking.Networking
@@ -53,16 +53,19 @@ internal class ConsentSignatureApiService(
     override suspend fun enableSigning(
         accessToken: AccessToken,
         consentDocumentKey: String,
-        signingRequest: ConsentSigningRequest
+        signingRequest: SignatureRequest
     ): ConsentSignature {
         val path = buildPath(consentDocumentKey)
 
-        val request = prepareRequest(
-            accessToken,
-            path,
-            Networking.Method.POST,
-            signingRequest
-        )
+        val request = requestBuilderFactory
+            .create()
+            .setAccessToken(accessToken)
+            .useJsonContentType()
+            .setBody(signingRequest)
+            .prepare(
+                Networking.Method.POST,
+                path
+            )
 
         return try {
             receive(request)

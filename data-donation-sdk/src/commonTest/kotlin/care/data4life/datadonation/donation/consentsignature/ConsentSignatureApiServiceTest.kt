@@ -17,9 +17,9 @@
 package care.data4life.datadonation.donation.consentsignature
 
 import care.data4life.datadonation.donation.DonationContract
-import care.data4life.datadonation.donation.consentsignature.model.ConsentSigningRequest
 import care.data4life.datadonation.donation.consentsignature.model.DeletionMessage
 import care.data4life.datadonation.donation.consentsignature.model.SignedDeletionMessage
+import care.data4life.datadonation.donation.model.ConsentSigningRequest
 import care.data4life.datadonation.error.CoreRuntimeError
 import care.data4life.datadonation.mock.fixture.ConsentSignatureFixture
 import care.data4life.datadonation.mock.stub.ClockStub
@@ -62,11 +62,7 @@ class ConsentSignatureApiServiceTest {
 
         val accessToken = "potato"
         val consentDocumentKey = "custom-consent-key"
-        val signingRequest = ConsentSigningRequest(
-            consentDocumentKey = consentDocumentKey,
-            payload = "soup",
-            signatureType = DonationContract.ConsentSignatureType.CONSENT_ONCE
-        )
+        val signingRequest = "soup"
 
         val error = HttpRuntimeError(HttpStatusCode.TooManyRequests)
         val outgoingError = ConsentSignatureError.SigningIsAlreadyDisabled()
@@ -126,11 +122,7 @@ class ConsentSignatureApiServiceTest {
 
         val accessToken = "potato"
         val consentDocumentKey = "custom-consent-key"
-        val signingRequest = ConsentSigningRequest(
-            consentDocumentKey = consentDocumentKey,
-            payload = "soup",
-            signatureType = ConsentSignatureType.CONSENT_ONCE
-        )
+        val signingRequest = "soup"
 
         val expectedTime = Instant.DISTANT_PAST
 
@@ -168,11 +160,7 @@ class ConsentSignatureApiServiceTest {
         val requestTemplate = RequestBuilderSpy.Factory()
         val accessToken = "potato"
         val consentDocumentKey = "custom-consent-key"
-        val signingRequest = ConsentSigningRequest(
-            consentDocumentKey = consentDocumentKey,
-            payload = "soup",
-            signatureType = DonationContract.ConsentSignatureType.CONSENT_ONCE
-        )
+        val signingRequest = "soup"
 
         val response = ConsentSignatureFixture.sampleConsentSignature
 
@@ -310,7 +298,7 @@ class ConsentSignatureApiServiceTest {
         val signingRequest = ConsentSigningRequest(
             consentDocumentKey = consentDocumentKey,
             payload = "soup",
-            signatureType = ConsentSignatureType.NORMAL_USE
+            signatureType = DonationContract.ConsentSignatureType.NORMAL_USE
         )
 
         val expectedTime = Instant.DISTANT_PAST

@@ -17,12 +17,18 @@
 package care.data4life.datadonation.donation.consentsignature
 
 import care.data4life.datadonation.crypto.CryptoContract
+import care.data4life.datadonation.donation.DonationContract
 import care.data4life.datadonation.donation.donationservice.Token
+import care.data4life.datadonation.donation.model.ConsentRequestMessage
+import care.data4life.datadonation.donation.model.ConsentSigningRequest
 import care.data4life.datadonation.donation.model.SignedConsentMessage
+import care.data4life.datadonation.session.SessionTokenRepositoryContract
+import care.data4life.sdk.util.Base64
 import kotlinx.serialization.json.Json
 
 internal class ConsentSignatureController(
     private val repository: ConsentSignatureContract.Repository,
+    private val userSessionTokenRepository: SessionTokenRepositoryContract,
     private val cryptor: CryptoContract.Service,
     private val serializer: Json
 ) : ConsentSignatureContract.Controller {
@@ -32,6 +38,43 @@ internal class ConsentSignatureController(
         donorPublicKey: String,
         donationServicePublicKey: String
     ): SignedConsentMessage {
-        TODO("Not yet implemented")
+        val accessToken = userSessionTokenRepository.getUserSessionToken()
+
+        val message = ConsentRequestMessage(
+            token = token,
+            donorId = donorPublicKey
+        )
+
+        val encryptedSerializedMessage = serializer.encodeToString(
+            ConsentRequestMessage.serializer(),
+            message
+        ).let { serializedMessage ->
+            cryptor.encrypt(
+                serializedMessage.encodeToByteArray(),
+                donationServicePublicKey
+            )
+        }
+
+        val request = ConsentSigningRequest(
+            consentDocumentKey = consentDocumentKey,
+            payload = Base64.encodeToString(encryptedSerializedMessage),
+            signatureType = DonationContract.ConsentSignatureType.CONSENT_ONCE
+        ).let { plainRequest ->
+            serializer.encodeToString(
+                ConsentSigningRequest.serializer(),
+                plainRequest
+            )
+        }
+
+        val signature = repository.enableSigning(
+            accessToken = accessToken,
+            consentDocumentKey = consentDocumentKey,
+            request = request
+        )
+
+        return SignedConsentMessage(
+            consentMessageJSON = request,
+            signature = signature
+        )
     }
 }

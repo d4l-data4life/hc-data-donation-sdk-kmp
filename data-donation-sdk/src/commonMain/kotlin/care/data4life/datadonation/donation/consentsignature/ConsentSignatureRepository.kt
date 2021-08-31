@@ -17,9 +17,8 @@
 package care.data4life.datadonation.donation.consentsignature
 
 import care.data4life.datadonation.donation.DonationContract
-import care.data4life.datadonation.donation.model.ConsentSignature
-import care.data4life.datadonation.donation.model.ConsentSigningRequest
 import care.data4life.datadonation.donation.consentsignature.model.SignedDeletionMessage
+import care.data4life.datadonation.donation.model.ConsentSigningRequest
 import care.data4life.datadonation.networking.AccessToken
 
 internal class ConsentSignatureRepository(
@@ -28,18 +27,12 @@ internal class ConsentSignatureRepository(
     override suspend fun enableSigning(
         accessToken: AccessToken,
         consentDocumentKey: String,
-        message: SignatureMessage
+        request: SignatureRequest
     ): Signature {
-        val signingRequest = ConsentSigningRequest(
-            consentDocumentKey = consentDocumentKey,
-            payload = message,
-            signatureType = DonationContract.ConsentSignatureType.CONSENT_ONCE
-        )
-
         return apiService.enableSigning(
             accessToken,
             consentDocumentKey,
-            signingRequest
+            request
         ).signature
     }
 
@@ -54,7 +47,7 @@ internal class ConsentSignatureRepository(
             signatureType = DonationContract.ConsentSignatureType.NORMAL_USE
         )
 
-        return apiService.enableSigning(
+        return apiService.sign(
             accessToken,
             consentDocumentKey,
             signingRequest

@@ -20,7 +20,6 @@ import care.data4life.datadonation.donation.model.SignedConsentMessage
 import care.data4life.datadonation.mock.stub.crypto.CryptoServiceStub
 import care.data4life.datadonation.mock.stub.donation.donationservice.DonationServiceRepositoryStub
 import care.data4life.sdk.util.test.coroutine.runBlockingTest
-import io.ktor.utils.io.core.toByteArray
 import kotlinx.serialization.json.Json
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -92,7 +91,6 @@ class DonationControllerTest {
 
             encryptedPayload.encodeToByteArray()
         }
-
 
         // When
         val result = DonationServiceController(

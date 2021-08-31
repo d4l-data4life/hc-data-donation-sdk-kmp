@@ -17,9 +17,9 @@
 package care.data4life.datadonation.donation.consentsignature
 
 import care.data4life.datadonation.donation.DonationContract
-import care.data4life.datadonation.donation.consentsignature.model.ConsentSigningRequest
 import care.data4life.datadonation.donation.consentsignature.model.DeletionMessage
 import care.data4life.datadonation.donation.consentsignature.model.SignedDeletionMessage
+import care.data4life.datadonation.donation.model.ConsentSigningRequest
 import care.data4life.datadonation.mock.fixture.ConsentSignatureFixture
 import care.data4life.datadonation.mock.stub.donation.consentsignature.ConsentSignatureApiServiceStub
 import care.data4life.datadonation.networking.AccessToken
@@ -52,7 +52,7 @@ class ConsentSignatureRepositoryTest {
 
         var capturedAccessToken: AccessToken? = null
         var capturedDocumentKey: String? = null
-        var capturedRequest: ConsentSigningRequest? = null
+        var capturedRequest: SignatureRequest? = null
 
         apiService.whenEnableSigning = { delegatedAccessToken, delegatedDocumentKey, delegatedSigningRequest ->
             capturedAccessToken = delegatedAccessToken
@@ -72,7 +72,7 @@ class ConsentSignatureRepositoryTest {
         // Then
         assertSame(
             actual = result,
-            expected = responds
+            expected = responds.signature
         )
 
         assertEquals(
@@ -85,11 +85,7 @@ class ConsentSignatureRepositoryTest {
         )
         assertEquals(
             actual = capturedRequest,
-            expected = ConsentSigningRequest(
-                consentDocumentKey = consentDocumentKey,
-                payload = message,
-                signatureType = DonationContract.ConsentSignatureType.CONSENT_ONCE
-            )
+            expected = message
         )
     }
 
@@ -126,7 +122,7 @@ class ConsentSignatureRepositoryTest {
         // Then
         assertSame(
             actual = result,
-            expected = responds
+            expected = responds.signature
         )
 
         assertEquals(

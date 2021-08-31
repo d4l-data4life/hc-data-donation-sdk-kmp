@@ -14,22 +14,16 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.testUtil
+package care.data4life.datadonation.donation.model
 
-import kotlin.reflect.KClass
+import care.data4life.datadonation.donation.donationservice.DonorId
+import care.data4life.datadonation.donation.donationservice.Token
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-abstract class AbstractNoop
-abstract class NoopParent<T> : AbstractNoop()
-class NoopFramework
-open class NoopBlock : NoopParent<NoopFramework>()
-open class NoopSandBox : NoopBlock()
-class NoopRunner : NoopSandBox()
-annotation class NoopRunWith(val value: KClass<out AbstractRunner>)
-
-actual typealias AbstractRunner = AbstractNoop
-actual typealias FrameworkMethod = NoopFramework
-actual typealias ParentRunner<T> = NoopParent<T>
-actual typealias BlockClassRunner = NoopBlock
-actual typealias SandboxTestRunner = NoopSandBox
-actual typealias RobolectricTestRunner = NoopRunner
-actual typealias RunWith = NoopRunWith
+@Serializable
+internal data class ConsentRequestMessage(
+    val token: Token,
+    @SerialName("donorID")
+    val donorId: DonorId
+)

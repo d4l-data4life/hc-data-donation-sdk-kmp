@@ -16,23 +16,23 @@
 
 package care.data4life.datadonation.donation.consentsignature
 
-import care.data4life.datadonation.donation.model.ConsentSignature
-import care.data4life.datadonation.donation.model.ConsentSigningRequest
 import care.data4life.datadonation.donation.consentsignature.model.SignedDeletionMessage
 import care.data4life.datadonation.donation.donationservice.Token
+import care.data4life.datadonation.donation.model.ConsentSignature
+import care.data4life.datadonation.donation.model.ConsentSigningRequest
 import care.data4life.datadonation.donation.model.SignedConsentMessage
 import care.data4life.datadonation.networking.AccessToken
 import care.data4life.datadonation.networking.HttpRuntimeError
 
 internal typealias Signature = String
-internal typealias SignatureMessage = String
+internal typealias SignatureRequest = String
 
 internal interface ConsentSignatureContract {
     interface ApiService {
         suspend fun enableSigning(
             accessToken: AccessToken,
             consentDocumentKey: String,
-            signingRequest: ConsentSigningRequest
+            signingRequest: SignatureRequest
         ): ConsentSignature
 
         suspend fun sign(
@@ -63,7 +63,7 @@ internal interface ConsentSignatureContract {
         suspend fun enableSigning(
             accessToken: AccessToken,
             consentDocumentKey: String,
-            message: SignatureMessage
+            request: SignatureRequest
         ): Signature
 
         suspend fun sign(
