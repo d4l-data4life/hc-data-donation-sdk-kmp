@@ -48,7 +48,12 @@ internal object CryptoKeyFactory : CryptoKeyFactoryContract {
     }
 
     override fun generateAsymmetricKeyPair(): GCKeyPair {
-        TODO("Not yet implemented")
+        return D4LCryptoProtocol.generateAsymKeyPair(
+            GCRSAKeyAlgorithm(),
+            KeyOptions(
+                keySize = KeyVersion.VERSION_1.asymmetricKeySize
+            )
+        )
     }
 
     override fun createPublicKey(exchangeKey: ExchangeKey): GCKeyPair {

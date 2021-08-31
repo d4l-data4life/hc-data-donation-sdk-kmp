@@ -116,7 +116,7 @@ object Version {
     /**
      * https://github.com/d4l-data4life/hc-test-util-sdk-kmp
      */
-    const val sdkTestUtil = "0.1.0-SNAPSHOT"
+    const val sdkTestUtil = "0.2.0"
 
     /**
      * [hc-crypto-sdk-kmp](https://github.com/d4l-data4life/hc-crypto-sdk-kmp)
@@ -125,4 +125,9 @@ object Version {
 
     // Junit Test
     const val testJUnit = "4.13.2"
+
+    /**
+     * [mockk](http://mockk.io)
+     */
+    const val testMockk = "1.12.0"
 }

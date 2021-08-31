@@ -18,6 +18,7 @@ package care.data4life.datadonation.crypto
 
 import care.data4life.datadonation.crypto.CryptoServiceContract.Companion.IV_SIZE
 import care.data4life.datadonation.crypto.CryptoServiceContract.Companion.PROTOCOL_VERSION
+import care.data4life.datadonation.crypto.model.KeyPair
 import care.data4life.datadonation.crypto.signature.GCSignatureAlgorithm
 import care.data4life.datadonation.crypto.signature.GCSignatureKeyPair
 import care.data4life.datadonation.crypto.signature.SignatureAlgorithm
@@ -32,6 +33,19 @@ import java.security.SecureRandom
 
 internal actual class CryptoService actual constructor() : CryptoServiceContract {
     private val secureRandom = SecureRandom()
+
+    actual override fun createKeyPair(): KeyPair {
+        val keyPair = try {
+            CryptoKeyFactory.generateAsymmetricKeyPair()
+        } catch (_: Throwable) {
+            throw CryptoError.MalFormedKeyGeneration()
+        }
+
+        return KeyPair(
+            publicKey = keyPair.publicKey!!.value.encoded,
+            privateKey = keyPair.privateKey!!.value.encoded
+        )
+    }
 
     private fun concatenateCryptoMaterial(
         encryptedKey: ByteArray,
@@ -55,7 +69,7 @@ internal actual class CryptoService actual constructor() : CryptoServiceContract
         return buffer.array()
     }
 
-    actual override fun encrypt(
+    private fun encryptInternal(
         payload: ByteArray,
         publicKey: String
     ): ByteArray {
@@ -89,6 +103,17 @@ internal actual class CryptoService actual constructor() : CryptoServiceContract
         )
     }
 
+    actual override fun encrypt(
+        payload: ByteArray,
+        publicKey: String
+    ): ByteArray {
+        return try {
+            encryptInternal(payload, publicKey)
+        } catch (_: Throwable) {
+            throw CryptoError.IllEncryption()
+        }
+    }
+
     private fun resolveSignatureAlgorithm(saltLength: Int): GCSignatureAlgorithm {
         return when (saltLength) {
             SignatureAlgorithm.Salt.SALT_0.length -> GCSignatureAlgorithm.createUnsaltedKey()
@@ -109,7 +134,7 @@ internal actual class CryptoService actual constructor() : CryptoServiceContract
         return CryptoKeyFactory.createPrivateKey(asymExchangeKey)
     }
 
-    actual override fun sign(
+    private fun signInternal(
         payload: ByteArray,
         privateKey: String,
         saltLength: Int,
@@ -121,5 +146,17 @@ internal actual class CryptoService actual constructor() : CryptoServiceContract
 
         signer.update(payload)
         return signer.sign()
+    }
+
+    actual override fun sign(
+        payload: ByteArray,
+        privateKey: String,
+        saltLength: Int,
+    ): ByteArray {
+        return try {
+            signInternal(payload, privateKey, saltLength)
+        } catch (_: Throwable) {
+            throw CryptoError.IllSigning()
+        }
     }
 }

@@ -31,6 +31,62 @@ import kotlin.test.assertTrue
 @RunWithRobolectricTestRunner(RobolectricTestRunner::class)
 class CryptoVerificationTest {
     @Test
+    fun `Given isPublicKey is called with no PublicKey it returns false`() {
+        // Given
+        val key = ResourceLoader.loader.load("/fixture/crypto/DonationServicePrivateKey.txt")
+
+        // When
+        val result = CryptoVerification.isPublicKey(
+            Base64.decode(key)
+        )
+
+        // Then
+        assertFalse(result)
+    }
+
+    @Test
+    fun `Given isPublicKey is called with PublicKey it returns true`() {
+        // Given
+        val key = ResourceLoader.loader.load("/fixture/crypto/DonationServicePublicKey.txt")
+
+        // When
+        val result = CryptoVerification.isPublicKey(
+            Base64.decode(key)
+        )
+
+        // Then
+        assertTrue(result)
+    }
+
+    @Test
+    fun `Given isPrivateKey is called with no PrivateKey it returns false`() {
+        // Given
+        val key = ResourceLoader.loader.load("/fixture/crypto/DonationServicePublicKey.txt")
+
+        // When
+        val result = CryptoVerification.isPrivateKey(
+            Base64.decode(key)
+        )
+
+        // Then
+        assertFalse(result)
+    }
+
+    @Test
+    fun `Given isPrivateKey is called with PrivateKey it returns true`() {
+        // Given
+        val key = ResourceLoader.loader.load("/fixture/crypto/DonationServicePrivateKey.txt")
+
+        // When
+        val result = CryptoVerification.isPrivateKey(
+            Base64.decode(key)
+        )
+
+        // Then
+        assertTrue(result)
+    }
+
+    @Test
     fun `Given decode was called with a Thing and a PrivateKey, it fails if the Thing has the wrong version`() {
         // Given
         val thing = ResourceLoader.loader.load("/fixture/crypto/ExampleHybridEncryptedMessageV1.txt")

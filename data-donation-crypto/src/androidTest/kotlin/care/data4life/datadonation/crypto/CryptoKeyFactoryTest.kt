@@ -37,6 +37,22 @@ class CryptoKeyFactoryTest {
     }
 
     @Test
+    fun `Given generateAsymmetricKeyPair is called it generates a GCKeyPair`() {
+        // When
+        val pair = CryptoKeyFactory.generateAsymmetricKeyPair()
+
+        // Then
+        assertEquals(
+            actual = pair.algorithm.transformation,
+            expected = "RSA/ECB/OAEPWithSHA-256AndMGF1Padding"
+        )
+        assertEquals(
+            actual = pair.keyVersion,
+            expected = KeyVersion.VERSION_1.asymmetricKeySize
+        )
+    }
+
+    @Test
     fun `Given createPublicKey is called with a ExchangeKey, it creates a Asymmetric KeyPair, which contains the given PublicKey`() {
         // Given
         val key = ResourceLoader.loader.load("/fixture/crypto/DonationServicePublicKey.txt")

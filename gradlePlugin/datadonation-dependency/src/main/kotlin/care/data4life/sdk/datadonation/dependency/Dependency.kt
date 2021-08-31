@@ -142,6 +142,11 @@ object Dependency {
 
     object Test {
         const val junit = "junit:junit:${Version.testJUnit}"
+
+        val mockk = Mockk
+        object Mockk {
+            const val junit = "io.mockk:mockk:${Version.testMockk}"
+        }
     }
 
     val android = Android

@@ -16,7 +16,13 @@
 
 package care.data4life.datadonation.crypto
 
+import care.data4life.datadonation.crypto.model.KeyPair
+
 internal actual class CryptoService actual constructor() : CryptoServiceContract {
+    actual override fun createKeyPair(): KeyPair {
+        TODO()
+    }
+
     actual override fun encrypt(
         payload: ByteArray,
         publicKey: String

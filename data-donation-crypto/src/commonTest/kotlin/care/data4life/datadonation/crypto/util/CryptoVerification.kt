@@ -17,6 +17,9 @@
 package care.data4life.datadonation.crypto.util
 
 expect object CryptoVerification {
+    fun isPublicKey(key: ByteArray): Boolean
+    fun isPrivateKey(key: ByteArray): Boolean
+
     fun decrypt(
         payload: ByteArray,
         privateKey: String

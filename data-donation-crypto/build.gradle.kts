@@ -165,6 +165,7 @@ kotlin {
                 implementation(Dependency.multiplatform.kotlin.testJvm)
                 implementation(Dependency.multiplatform.kotlin.testJvmJunit)
                 implementation(Dependency.androidTest.robolectric)
+                implementation(Dependency.test.mockk.junit)
             }
         }
 
@@ -180,6 +181,10 @@ kotlin {
                 implementation(Dependency.d4l.sdkObjcUtil)
             }
         }
+    }
+
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+        kotlinOptions.jvmTarget = "1.8"
     }
 }
 

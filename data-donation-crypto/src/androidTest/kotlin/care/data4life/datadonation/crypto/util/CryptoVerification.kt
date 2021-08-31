@@ -28,6 +28,8 @@ import care.data4life.sdk.crypto.GCKey
 import care.data4life.sdk.crypto.GCKeyPair
 import care.data4life.sdk.crypto.KeyType
 import care.data4life.sdk.crypto.KeyVersion
+import care.data4life.sdk.util.Base64
+import java.lang.Exception
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
@@ -38,6 +40,24 @@ private data class CryptoMaterial(
 )
 
 actual object CryptoVerification {
+    actual fun isPublicKey(key: ByteArray): Boolean {
+        return try {
+            resolvePublicKey(Base64.encodeToString(key))
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    actual fun isPrivateKey(key: ByteArray): Boolean {
+        return try {
+            resolvePrivateKey(Base64.encodeToString(key))
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
+
     private fun validateVersion(version: Int) {
         if (version != PROTOCOL_VERSION) {
             throw RuntimeException("Unsupported Protocol Version $version.")
@@ -69,7 +89,7 @@ actual object CryptoVerification {
         )
     }
 
-    private fun resolveAsymmetricKey(key: String): GCKeyPair {
+    private fun resolvePrivateKey(key: String): GCKeyPair {
         return CryptoKeyFactory.createPrivateKey(
             ExchangeKey(
                 type = KeyType.APP_PRIVATE_KEY,
@@ -104,7 +124,7 @@ actual object CryptoVerification {
         val (encryptedSymKey, iv, encryptedText) = resolveCryptoMaterial(payload)
         val symmetricKey = resolveSymmetricKey(
             encryptedSymKey,
-            resolveAsymmetricKey(privateKey)
+            resolvePrivateKey(privateKey)
         )
 
         return D4LCryptoProtocol.symDecrypt(

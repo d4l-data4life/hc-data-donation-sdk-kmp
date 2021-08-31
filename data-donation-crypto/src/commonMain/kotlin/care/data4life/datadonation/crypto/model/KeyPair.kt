@@ -14,21 +14,24 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.crypto
+package care.data4life.datadonation.crypto.model
 
-import care.data4life.datadonation.crypto.model.KeyPair
+data class KeyPair(
+    val publicKey: ByteArray,
+    val privateKey: ByteArray
+) {
+    override fun equals(other: Any?): Boolean {
+        return when {
+            other !is KeyPair -> false
+            !other.publicKey.contentEquals(this.publicKey) -> false
+            !other.privateKey.contentEquals(this.privateKey) -> false
+            else -> true
+        }
+    }
 
-internal expect class CryptoService() : CryptoServiceContract {
-    actual override fun createKeyPair(): KeyPair
-
-    override fun encrypt(
-        payload: ByteArray,
-        publicKey: String
-    ): ByteArray
-
-    override fun sign(
-        payload: ByteArray,
-        privateKey: String,
-        saltLength: Int
-    ): ByteArray
+    override fun hashCode(): Int {
+        var result = publicKey.contentHashCode()
+        result = 31 * result + privateKey.contentHashCode()
+        return result
+    }
 }

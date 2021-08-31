@@ -30,12 +30,35 @@ import kotlin.test.assertTrue
 @AndroidOnly
 @RunWithRobolectricTestRunner(RobolectricTestRunner::class)
 class CryptoServiceTest {
-
     @Test
     fun `It fulfils the Crypto Service`() {
         val service: Any = CryptoService()
 
         assertTrue(service is CryptoServiceContract)
+    }
+
+    @Test
+    fun `Given createKeyPair is called, it generates a KeyPair`() {
+        // When
+        val pair = CryptoService().createKeyPair()
+
+        // Then
+        assertTrue(CryptoVerification.isPublicKey(pair.publicKey))
+        assertTrue(CryptoVerification.isPrivateKey(pair.privateKey))
+    }
+
+    @Test
+    fun `Given encrypt is called, it propagates Errors as CryptoErrors`() {
+        // Then
+        val error = assertFailsWith<CryptoError.IllEncryption> {
+            // When
+            CryptoService().encrypt(ByteArray(0), "ABC")
+        }
+
+        assertEquals(
+            actual = error.message,
+            expected = "Failed to encrypt data."
+        )
     }
 
     @Test
@@ -65,24 +88,16 @@ class CryptoServiceTest {
     }
 
     @Test
-    fun `Given sign is called with a Payload, a PrivateKey and arbitrary Salt, it fails`() {
-        // Given
-        val data = "{\"a\":\"Hello World!\"}".encodeToByteArray()
-        val publicKey = ResourceLoader.loader.load("/fixture/crypto/DonationServicePublicKey.txt")
-        val privateKey = ResourceLoader.loader.load("/fixture/crypto/DonationServicePrivateKey.txt")
-
+    fun `Given sign is called, it propagates Errors as CryptoErrors`() {
         // Then
-        val error = assertFailsWith<CryptoError.UnknownSalt> {
-            CryptoService().sign(
-                data,
-                privateKey,
-                23
-            )
+        val error = assertFailsWith<CryptoError.IllSigning> {
+            // When
+            CryptoService().sign(ByteArray(0), "ABC", 21)
         }
 
         assertEquals(
             actual = error.message,
-            expected = "Unknown salt length 23."
+            expected = "Failed to sign data."
         )
     }
 

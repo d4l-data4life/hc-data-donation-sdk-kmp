@@ -17,6 +17,14 @@
 package care.data4life.datadonation.crypto.util
 
 actual object CryptoVerification {
+    actual fun isPublicKey(key: ByteArray): Boolean {
+        TODO()
+    }
+
+    actual fun isPrivateKey(key: ByteArray): Boolean {
+        TODO()
+    }
+
     actual fun decrypt(
         payload: ByteArray,
         privateKey: String
