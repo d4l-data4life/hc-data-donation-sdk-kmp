@@ -14,26 +14,24 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.donation
+package care.data4life.datadonation.donation.consentsignature
 
-import care.data4life.datadonation.donation.model.RevocationTypeSerializer
-import kotlinx.serialization.Serializable
+import care.data4life.datadonation.crypto.CryptoContract
+import care.data4life.datadonation.donation.donationservice.Token
+import care.data4life.datadonation.donation.model.SignedConsentMessage
+import kotlinx.serialization.json.Json
 
-internal interface DonationContract {
-    @Serializable
-    enum class ConsentSignatureType(val value: String) {
-        CONSENT_ONCE("consentOnce"),
-        NORMAL_USE("normalUse"),
-        REVOKE_ONCE("revokeOnce")
-    }
-
-    @Serializable(with = RevocationTypeSerializer::class)
-    enum class RevocationType(val value: String) {
-        DELETE("delete"),
-        UNMAP("unmap")
-    }
-
-    interface Controller {
-        suspend fun register(programName: String)
+internal class ConsentSignatureController(
+    private val repository: ConsentSignatureContract.Repository,
+    private val cryptor: CryptoContract.Service,
+    private val serializer: Json
+) : ConsentSignatureContract.Controller {
+    override suspend fun enableSigning(
+        token: Token,
+        consentDocumentKey: String,
+        donorPublicKey: String,
+        donationServicePublicKey: String
+    ): SignedConsentMessage {
+        TODO("Not yet implemented")
     }
 }

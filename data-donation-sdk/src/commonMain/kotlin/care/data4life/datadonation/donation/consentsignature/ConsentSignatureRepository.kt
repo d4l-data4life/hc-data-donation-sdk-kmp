@@ -17,8 +17,8 @@
 package care.data4life.datadonation.donation.consentsignature
 
 import care.data4life.datadonation.donation.DonationContract
-import care.data4life.datadonation.donation.consentsignature.model.ConsentSignature
-import care.data4life.datadonation.donation.consentsignature.model.ConsentSigningRequest
+import care.data4life.datadonation.donation.model.ConsentSignature
+import care.data4life.datadonation.donation.model.ConsentSigningRequest
 import care.data4life.datadonation.donation.consentsignature.model.SignedDeletionMessage
 import care.data4life.datadonation.networking.AccessToken
 
@@ -28,29 +28,37 @@ internal class ConsentSignatureRepository(
     override suspend fun enableSigning(
         accessToken: AccessToken,
         consentDocumentKey: String,
-        message: String
-    ): ConsentSignature {
+        message: SignatureMessage
+    ): Signature {
         val signingRequest = ConsentSigningRequest(
             consentDocumentKey = consentDocumentKey,
             payload = message,
             signatureType = DonationContract.ConsentSignatureType.CONSENT_ONCE
         )
 
-        return apiService.enableSigning(accessToken, consentDocumentKey, signingRequest)
+        return apiService.enableSigning(
+            accessToken,
+            consentDocumentKey,
+            signingRequest
+        ).signature
     }
 
     override suspend fun sign(
         accessToken: AccessToken,
         consentDocumentKey: String,
         message: String
-    ): ConsentSignature {
+    ): Signature {
         val signingRequest = ConsentSigningRequest(
             consentDocumentKey = consentDocumentKey,
             payload = message,
             signatureType = DonationContract.ConsentSignatureType.NORMAL_USE
         )
 
-        return apiService.sign(accessToken, consentDocumentKey, signingRequest)
+        return apiService.enableSigning(
+            accessToken,
+            consentDocumentKey,
+            signingRequest
+        ).signature
     }
 
     override suspend fun disableSigning(

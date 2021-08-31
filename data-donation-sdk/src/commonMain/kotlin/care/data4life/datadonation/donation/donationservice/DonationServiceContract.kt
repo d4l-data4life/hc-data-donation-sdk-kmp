@@ -17,6 +17,7 @@
 package care.data4life.datadonation.donation.donationservice
 
 import care.data4life.datadonation.donation.donationservice.model.DeletionProof
+import care.data4life.datadonation.donation.model.SignedConsentMessage
 import care.data4life.datadonation.networking.HttpRuntimeError
 import io.ktor.client.request.forms.MultiPartFormDataContent
 
@@ -61,5 +62,14 @@ internal interface DonationServiceContract {
         suspend fun register(encryptedJSON: EncryptedJSON)
         suspend fun donate(donations: MultiPartFormDataContent)
         suspend fun revoke(donation: MultiPartFormDataContent): DeletionProof
+    }
+
+    interface Controller {
+        suspend fun fetchToken(): Token
+
+        suspend fun register(
+            signedConsent: SignedConsentMessage,
+            donationServicePublicKey: String
+        )
     }
 }

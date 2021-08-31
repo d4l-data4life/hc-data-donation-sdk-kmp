@@ -178,7 +178,6 @@ kotlin {
         val iosTest by getting {
             dependencies {
                 dependsOn(commonTest.get())
-                implementation(Dependency.d4l.sdkObjcUtil)
             }
         }
     }

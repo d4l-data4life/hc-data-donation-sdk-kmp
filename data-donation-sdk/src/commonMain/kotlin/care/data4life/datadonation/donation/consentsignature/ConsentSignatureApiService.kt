@@ -16,8 +16,8 @@
 
 package care.data4life.datadonation.donation.consentsignature
 
-import care.data4life.datadonation.donation.consentsignature.model.ConsentSignature
-import care.data4life.datadonation.donation.consentsignature.model.ConsentSigningRequest
+import care.data4life.datadonation.donation.model.ConsentSignature
+import care.data4life.datadonation.donation.model.ConsentSigningRequest
 import care.data4life.datadonation.donation.consentsignature.model.SignedDeletionMessage
 import care.data4life.datadonation.networking.AccessToken
 import care.data4life.datadonation.networking.HttpRuntimeError
