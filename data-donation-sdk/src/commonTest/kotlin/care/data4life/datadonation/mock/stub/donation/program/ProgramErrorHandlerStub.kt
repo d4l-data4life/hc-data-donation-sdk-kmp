@@ -14,23 +14,17 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.donation.program
+package care.data4life.datadonation.mock.stub.donation.program
 
-import org.koin.core.module.Module
-import org.koin.dsl.module
+import care.data4life.datadonation.donation.program.ProgramContract
+import care.data4life.datadonation.donation.program.ProgramError
+import care.data4life.datadonation.mock.MockException
+import care.data4life.datadonation.networking.HttpRuntimeError
 
-internal fun resolveProgramKoinModule(): Module {
-    return module {
-        single<ProgramContract.ApiService.ErrorHandler> {
-            ProgramErrorHandler
-        }
+internal class ProgramErrorHandlerStub : ProgramContract.ApiService.ErrorHandler {
+    var whenMapFetchProgram: ((HttpRuntimeError) -> ProgramError)? = null
 
-        single<ProgramContract.ApiService> {
-            ProgramApiService(get(), get())
-        }
-
-        single<ProgramContract.Repository> {
-            ProgramRepository(get())
-        }
+    override fun mapFetchProgram(error: HttpRuntimeError): ProgramError {
+        return whenMapFetchProgram?.invoke(error) ?: throw MockException()
     }
 }

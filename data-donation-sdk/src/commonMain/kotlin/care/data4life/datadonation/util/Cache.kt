@@ -14,23 +14,34 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.donation.program
+package care.data4life.datadonation.util
 
-import org.koin.core.module.Module
-import org.koin.dsl.module
+import care.data4life.datadonation.error.CoreRuntimeError
+import kotlinx.datetime.Clock
 
-internal fun resolveProgramKoinModule(): Module {
-    return module {
-        single<ProgramContract.ApiService.ErrorHandler> {
-            ProgramErrorHandler
-        }
+internal class Cache(
+    private val clock: Clock,
+    private val lifetimeInSeconds: Int
+) : CacheContract {
+    private var cachedValue = ""
+    private var cachedAt = 0L
 
-        single<ProgramContract.ApiService> {
-            ProgramApiService(get(), get())
-        }
-
-        single<ProgramContract.Repository> {
-            ProgramRepository(get())
+    override fun fetch(): String {
+        return if (isNotExpired()) {
+            cachedValue
+        } else {
+            throw CoreRuntimeError.InternalFailure("Cache expired")
         }
     }
+
+    override fun update(value: String) {
+        cachedValue = value
+        cachedAt = clock.now().epochSeconds
+    }
+
+    override fun isNotExpired(): Boolean {
+        return cachedAt > nowMinusLifeTime()
+    }
+
+    private fun nowMinusLifeTime() = clock.now().epochSeconds - lifetimeInSeconds
 }

@@ -14,17 +14,12 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.error
+package care.data4life.datadonation.donation.publickeyservice
 
 import care.data4life.sdk.lang.D4LRuntimeException
 
-sealed class CoreRuntimeError(
-    message: String?,
-    cause: Throwable?
-) : D4LRuntimeException(message = message, cause = cause) {
-    class InternalFailure(message: String? = null) : CoreRuntimeError(message = message ?: "Internal failure", cause = null)
-    class RequestValidationFailure(message: String) : CoreRuntimeError(message = message, cause = null)
-    class ResponseTransformFailure : CoreRuntimeError(message = "Unexpected Response", cause = null)
-    class MissingCredentials(message: String? = null, cause: Throwable? = null) : CoreRuntimeError(cause = cause, message = message)
-    class MissingSession(cause: Throwable? = null) : CoreRuntimeError(cause = cause, message = null)
+sealed class PublicKeyServiceError(
+    open val httpStatus: Int
+) : D4LRuntimeException() {
+    class UnexpectedFailure(override val httpStatus: Int) : PublicKeyServiceError(httpStatus)
 }

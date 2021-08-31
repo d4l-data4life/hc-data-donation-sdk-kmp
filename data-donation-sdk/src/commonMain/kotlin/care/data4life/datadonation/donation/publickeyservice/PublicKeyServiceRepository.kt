@@ -14,18 +14,17 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.donation.program
+package care.data4life.datadonation.donation.publickeyservice
 
-import care.data4life.datadonation.networking.HttpRuntimeError
-import io.ktor.http.HttpStatusCode
+import care.data4life.datadonation.donation.publickeyservice.model.PublicKeys
 
-internal object ProgramErrorMapper :
-    ProgramContract.ErrorMapper {
-    override fun mapFetchProgram(error: HttpRuntimeError): ProgramError {
-        return if (error.statusCode == HttpStatusCode.NotFound) {
-            ProgramError.NotFoundError()
-        } else {
-            ProgramError.UnexpectedError(error.statusCode.value)
-        }
+internal class PublicKeyServiceRepository(
+    private val apiService: PublicKeyServiceContract.ApiService,
+    private val keyMapper: PublicKeyServiceContract.Repository.KeyMapper
+) : PublicKeyServiceContract.Repository {
+    override suspend fun fetchPublicKeys(): PublicKeys {
+        return keyMapper.mapKeys(
+            apiService.fetchPublicKeys()
+        )
     }
 }

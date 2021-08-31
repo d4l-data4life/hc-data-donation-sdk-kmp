@@ -19,6 +19,8 @@ package care.data4life.datadonation.session
 import care.data4life.datadonation.DataDonationSDK
 import care.data4life.datadonation.error.CoreRuntimeError
 import care.data4life.datadonation.session.SessionTokenRepositoryContract.Companion.CACHE_LIFETIME_IN_SECONDS
+import care.data4life.datadonation.util.Cache
+import care.data4life.sdk.lang.D4LRuntimeException
 import co.touchlab.stately.concurrency.AtomicReference
 import co.touchlab.stately.freeze
 import co.touchlab.stately.isolate.IsolateState
@@ -32,7 +34,10 @@ internal class CachedUserSessionTokenRepository(
     clock: Clock,
     scope: CoroutineScope
 ) : SessionTokenRepositoryContract {
-    private val cache = IsolateState { Cache(clock) }
+    /*
+     * Please note: A propagation via Koin leads at the moment to freezing issue, therefore we must keep it in the class
+     */
+    private val cache = IsolateState { Cache(clock, CACHE_LIFETIME_IN_SECONDS) }
     private val scope = AtomicReference(scope)
 
     /*
@@ -67,9 +72,9 @@ internal class CachedUserSessionTokenRepository(
     }
 
     private fun fetchCachedTokenIfNotExpired(): SessionToken? {
-        return if (cache.access { it.isNotExpired() }) {
+        return try {
             cache.access { it.fetch() }
-        } else {
+        } catch (e: D4LRuntimeException) {
             null
         }
     }
@@ -90,29 +95,5 @@ internal class CachedUserSessionTokenRepository(
         } else {
             return resolveSessionToken(fetchTokenFromApi())
         }
-    }
-
-    private class Cache(private val clock: Clock) {
-        private var cachedValue: SessionToken = ""
-        private var cachedAt = 0L
-
-        fun fetch(): String {
-            return if (cachedValue.isEmpty()) {
-                throw CoreRuntimeError.MissingSession()
-            } else {
-                cachedValue
-            }
-        }
-
-        fun update(sessionToken: SessionToken) {
-            cachedValue = sessionToken
-            cachedAt = clock.now().epochSeconds
-        }
-
-        fun isNotExpired(): Boolean {
-            return cachedAt > nowMinusLifeTime()
-        }
-
-        private fun nowMinusLifeTime() = clock.now().epochSeconds - CACHE_LIFETIME_IN_SECONDS
     }
 }

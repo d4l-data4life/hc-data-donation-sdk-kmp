@@ -13,24 +13,9 @@
  * applications and/or if you’d like to contribute to the development of the SDK, please
  * contact D4L by email to help@data4life.care.
  */
+package care.data4life.datadonation.donation.publickeyservice.model
 
-package care.data4life.datadonation.donation.program
-
-import org.koin.core.module.Module
-import org.koin.dsl.module
-
-internal fun resolveProgramKoinModule(): Module {
-    return module {
-        single<ProgramContract.ApiService.ErrorHandler> {
-            ProgramErrorHandler
-        }
-
-        single<ProgramContract.ApiService> {
-            ProgramApiService(get(), get())
-        }
-
-        single<ProgramContract.Repository> {
-            ProgramRepository(get())
-        }
-    }
-}
+internal data class PublicKeys(
+    val donationService: String,
+    val alp: String
+)

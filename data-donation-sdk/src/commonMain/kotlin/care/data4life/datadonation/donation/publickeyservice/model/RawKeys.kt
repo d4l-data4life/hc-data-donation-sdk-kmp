@@ -14,17 +14,26 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.mock.stub.donation.program
+package care.data4life.datadonation.donation.publickeyservice.model
 
-import care.data4life.datadonation.donation.program.ProgramContract
-import care.data4life.datadonation.donation.program.ProgramError
-import care.data4life.datadonation.mock.MockException
-import care.data4life.datadonation.networking.HttpRuntimeError
+import care.data4life.datadonation.DataDonationSDK
+import care.data4life.datadonation.donation.publickeyservice.PublicKeyServiceContract
+import kotlinx.serialization.Contextual
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-internal class ProgramErrorMapperStub : ProgramContract.ErrorMapper {
-    var whenMapFetchProgram: ((HttpRuntimeError) -> ProgramError)? = null
+@Serializable
+internal data class RawKey(
+    @SerialName("name")
+    @Contextual
+    val domain: PublicKeyServiceContract.KeyDomain,
+    @Contextual
+    val environment: DataDonationSDK.Environment,
+    @SerialName("value")
+    val key: String
+)
 
-    override fun mapFetchProgram(error: HttpRuntimeError): ProgramError {
-        return whenMapFetchProgram?.invoke(error) ?: throw MockException()
-    }
-}
+@Serializable
+internal data class RawKeys(
+    val credentials: List<RawKey>
+)

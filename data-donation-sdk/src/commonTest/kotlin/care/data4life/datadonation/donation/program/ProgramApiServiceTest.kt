@@ -18,7 +18,7 @@ package care.data4life.datadonation.donation.program
 
 import care.data4life.datadonation.error.CoreRuntimeError
 import care.data4life.datadonation.mock.fixture.ProgramFixture
-import care.data4life.datadonation.mock.stub.donation.program.ProgramErrorMapperStub
+import care.data4life.datadonation.mock.stub.donation.program.ProgramErrorHandlerStub
 import care.data4life.datadonation.mock.stub.networking.RequestBuilderSpy
 import care.data4life.datadonation.networking.HttpRuntimeError
 import care.data4life.datadonation.networking.Networking
@@ -42,7 +42,7 @@ class ProgramApiServiceTest {
     fun `It fulfils ProgramService`() {
         val service: Any = ProgramApiService(
             RequestBuilderSpy.Factory(),
-            ProgramErrorMapperStub(),
+            ProgramErrorHandlerStub(),
         )
 
         assertTrue(service is ProgramContract.ApiService)
@@ -61,7 +61,7 @@ class ProgramApiServiceTest {
         var capturedError: HttpRuntimeError? = null
 
         val client = HttpMockClientFactory.createErrorMockClient(error)
-        val errorMapper = ProgramErrorMapperStub()
+        val errorMapper = ProgramErrorHandlerStub()
 
         errorMapper.whenMapFetchProgram = { delegatedError ->
             capturedError = delegatedError
@@ -124,7 +124,7 @@ class ProgramApiServiceTest {
             // When
             ProgramApiService(
                 requestTemplate,
-                ProgramErrorMapperStub(),
+                ProgramErrorHandlerStub(),
             ).fetchProgram(
                 accessToken = accessToken,
                 programName = programName,
@@ -165,7 +165,7 @@ class ProgramApiServiceTest {
         // When
         val result = ProgramApiService(
             requestTemplate,
-            ProgramErrorMapperStub(),
+            ProgramErrorHandlerStub(),
         ).fetchProgram(
             accessToken = accessToken,
             programName = programName,
