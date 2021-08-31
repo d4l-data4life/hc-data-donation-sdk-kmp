@@ -31,7 +31,7 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.security.SecureRandom
 
-internal actual class CryptoService actual constructor() : CryptoServiceContract {
+actual class CryptoService actual constructor() : CryptoServiceContract {
     private val secureRandom = SecureRandom()
 
     actual override fun createKeyPair(): KeyPair {

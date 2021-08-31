@@ -18,7 +18,7 @@ package care.data4life.datadonation.crypto
 
 import care.data4life.datadonation.crypto.model.KeyPair
 
-internal expect class CryptoService() : CryptoServiceContract {
+expect class CryptoService() : CryptoServiceContract {
     actual override fun createKeyPair(): KeyPair
 
     override fun encrypt(

@@ -42,7 +42,7 @@ kotlin {
         val platform = "iphoneos"
         val libraryName = "DataDonationCryptoObjC"
         val libraryPath = "$rootDir/$libraryName/build/Build/Products/Release-$platform"
-        val frameworksPath = "$libraryPath"
+        val frameworksPath = libraryPath
 
         compilations.getByName("main") {
             cinterops.create("DataDonationCryptoObjC") {
@@ -68,7 +68,7 @@ kotlin {
 
         binaries.all {
             linkerOpts(
-                "-rpath", "$frameworksPath",
+                "-rpath", frameworksPath,
                 "-L$libraryPath", "-l$libraryName",
                 "-F$frameworksPath", "-framework", "Data4LifeCrypto"
             )
@@ -79,7 +79,7 @@ kotlin {
         val platform = "iphonesimulator"
         val libraryName = "DataDonationCryptoObjC"
         val libraryPath = "$rootDir/$libraryName/build/Build/Products/Release-$platform"
-        val frameworksPath = "$libraryPath"
+        val frameworksPath = libraryPath
 
         compilations.getByName("main") {
             cinterops.create("DataDonationCryptoObjC") {
@@ -105,7 +105,7 @@ kotlin {
 
         binaries.all {
             linkerOpts(
-                "-rpath", "$frameworksPath",
+                "-rpath", frameworksPath,
                 "-L$libraryPath", "-l$libraryName",
                 "-F$frameworksPath", "-framework", "Data4LifeCrypto"
             )
