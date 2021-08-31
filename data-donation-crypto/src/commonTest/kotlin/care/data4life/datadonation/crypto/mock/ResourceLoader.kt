@@ -14,21 +14,13 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.crypto
+package care.data4life.datadonation.crypto.mock
 
-actual class CryptoService actual constructor() : CryptoContract.Service {
-    actual override fun encrypt(
-        payload: ByteArray,
-        publicKey: String
-    ): ByteArray {
-        TODO()
-    }
+import care.data4life.datadonation.test.config.TestConfig
+import care.data4life.sdk.util.test.CommonResourceLoader
+import kotlin.native.concurrent.ThreadLocal
 
-    actual override fun sign(
-        payload: ByteArray,
-        privateKey: String,
-        saltLength: Int,
-    ): ByteArray {
-        TODO()
-    }
+@ThreadLocal
+object ResourceLoader {
+    val loader = CommonResourceLoader(TestConfig.projectDir)
 }

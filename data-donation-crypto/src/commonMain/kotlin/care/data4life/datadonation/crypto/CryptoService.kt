@@ -16,15 +16,15 @@
 
 package care.data4life.datadonation.crypto
 
-internal expect class CryptoService() : CryptoServiceContract {
+expect class CryptoService() : CryptoContract.Service {
     override fun encrypt(
         payload: ByteArray,
-        key: String
+        publicKey: String
     ): ByteArray
 
     override fun sign(
         payload: ByteArray,
-        key: String,
+        privateKey: String,
         saltLength: Int
     ): ByteArray
 }

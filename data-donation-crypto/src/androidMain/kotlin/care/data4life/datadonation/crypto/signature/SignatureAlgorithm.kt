@@ -14,21 +14,37 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.crypto
+package care.data4life.datadonation.crypto.signature
 
-actual class CryptoService actual constructor() : CryptoContract.Service {
-    actual override fun encrypt(
-        payload: ByteArray,
-        publicKey: String
-    ): ByteArray {
-        TODO()
+import care.data4life.sdk.crypto.Algorithm
+import java.security.spec.AlgorithmParameterSpec
+import java.security.spec.MGF1ParameterSpec
+
+internal open class SignatureAlgorithm(
+    val schema: Schema,
+    val hash: Hash,
+    val mask: Mask,
+    val generator: GeneratorFunction
+) : Algorithm() {
+
+    enum class Salt(val length: Int) {
+        SALT_0(0),
+        SALT_32(32)
     }
 
-    actual override fun sign(
-        payload: ByteArray,
-        privateKey: String,
-        saltLength: Int,
-    ): ByteArray {
-        TODO()
+    enum class Hash(val value: String) {
+        SHA256("SHA-256")
+    }
+
+    enum class Mask(val value: String) {
+        MGF1("MGF1")
+    }
+
+    enum class GeneratorFunction(val spec: AlgorithmParameterSpec) {
+        SHA256_MGF1(MGF1ParameterSpec.SHA256)
+    }
+
+    enum class Schema(name: String) {
+        PSS("PSS")
     }
 }

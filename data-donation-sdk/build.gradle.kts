@@ -93,6 +93,8 @@ kotlin {
 
                 implementation(Dependency.multiplatform.dateTime)
 
+                implementation(project(":data-donation-crypto"))
+
                 // D4L
                 implementation(Dependency.d4l.fhir)
                 implementation(Dependency.d4l.sdkUtil)
@@ -180,6 +182,12 @@ android {
                 "clearPackageData" to "true"
             )
         )
+    }
+
+    buildTypes {
+        getByName("debug") {
+            setMatchingFallbacks("debug", "release")
+        }
     }
 
     resourcePrefix(LibraryConfig.android.resourcePrefix)

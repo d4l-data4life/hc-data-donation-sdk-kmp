@@ -15,7 +15,6 @@
  */
 import care.data4life.sdk.datadonation.LibraryConfig
 import care.data4life.sdk.datadonation.dependency.Dependency
-import care.data4life.sdk.datadonation.dependency.Version
 
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
@@ -43,7 +42,7 @@ kotlin {
         val platform = "iphoneos"
         val libraryName = "DataDonationCryptoObjC"
         val libraryPath = "$rootDir/$libraryName/build/Build/Products/Release-$platform"
-        val frameworksPath = "$libraryPath"
+        val frameworksPath = libraryPath
 
         compilations.getByName("main") {
             cinterops.create("DataDonationCryptoObjC") {
@@ -69,7 +68,7 @@ kotlin {
 
         binaries.all {
             linkerOpts(
-                "-rpath", "$frameworksPath",
+                "-rpath", frameworksPath,
                 "-L$libraryPath", "-l$libraryName",
                 "-F$frameworksPath", "-framework", "Data4LifeCrypto"
             )
@@ -80,7 +79,7 @@ kotlin {
         val platform = "iphonesimulator"
         val libraryName = "DataDonationCryptoObjC"
         val libraryPath = "$rootDir/$libraryName/build/Build/Products/Release-$platform"
-        val frameworksPath = "$libraryPath"
+        val frameworksPath = libraryPath
 
         compilations.getByName("main") {
             cinterops.create("DataDonationCryptoObjC") {
@@ -106,7 +105,7 @@ kotlin {
 
         binaries.all {
             linkerOpts(
-                "-rpath", "$frameworksPath",
+                "-rpath", frameworksPath,
                 "-L$libraryPath", "-l$libraryName",
                 "-F$frameworksPath", "-framework", "Data4LifeCrypto"
             )
@@ -144,7 +143,6 @@ kotlin {
 
                 // D4L
                 implementation(Dependency.d4l.sdkTestUtil)
-                implementation(Dependency.d4l.sdkTestCoroutineUtil)
             }
         }
 
@@ -153,6 +151,11 @@ kotlin {
                 //DI
                 implementation(Dependency.jvm.slf4jNop)
                 implementation(Dependency.jvm.slf4jApi)
+
+                implementation(Dependency.android.bouncyCastle)
+
+                // D4L
+                implementation(Dependency.d4l.cryptoAndroid)
             }
         }
         val androidTest by getting {
@@ -162,6 +165,7 @@ kotlin {
                 implementation(Dependency.multiplatform.kotlin.testJvm)
                 implementation(Dependency.multiplatform.kotlin.testJvmJunit)
                 implementation(Dependency.androidTest.robolectric)
+                implementation(Dependency.test.mockk.junit)
             }
         }
 
@@ -177,6 +181,10 @@ kotlin {
                 implementation(Dependency.d4l.sdkObjcUtil)
             }
         }
+    }
+
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+        kotlinOptions.jvmTarget = "1.8"
     }
 }
 
@@ -201,6 +209,12 @@ android {
     resourcePrefix(
         "${LibraryConfig.android.resourcePrefix}_crypto_"
     )
+
+    buildTypes {
+        getByName("debug") {
+            setMatchingFallbacks("debug", "release")
+        }
+    }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8

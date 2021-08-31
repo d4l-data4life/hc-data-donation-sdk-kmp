@@ -14,21 +14,8 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.crypto
+package care.data4life.datadonation.crypto.util
 
-actual class CryptoService actual constructor() : CryptoContract.Service {
-    actual override fun encrypt(
-        payload: ByteArray,
-        publicKey: String
-    ): ByteArray {
-        TODO()
-    }
+import kotlin.test.Ignore
 
-    actual override fun sign(
-        payload: ByteArray,
-        privateKey: String,
-        saltLength: Int,
-    ): ByteArray {
-        TODO()
-    }
-}
+actual typealias AndroidOnly = Ignore

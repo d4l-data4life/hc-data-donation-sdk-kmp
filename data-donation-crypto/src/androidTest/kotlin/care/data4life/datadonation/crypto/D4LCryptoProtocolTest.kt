@@ -16,19 +16,15 @@
 
 package care.data4life.datadonation.crypto
 
-actual class CryptoService actual constructor() : CryptoContract.Service {
-    actual override fun encrypt(
-        payload: ByteArray,
-        publicKey: String
-    ): ByteArray {
-        TODO()
-    }
+import care.data4life.sdk.crypto.CryptoProtocol
+import org.junit.Test
+import kotlin.test.assertTrue
 
-    actual override fun sign(
-        payload: ByteArray,
-        privateKey: String,
-        saltLength: Int,
-    ): ByteArray {
-        TODO()
+class D4LCryptoProtocolTest {
+    @Test
+    fun `It fulfils the CryptoProtocol`() {
+        val cryptor: Any = D4LCryptoProtocol
+
+        assertTrue(cryptor is CryptoProtocol)
     }
 }

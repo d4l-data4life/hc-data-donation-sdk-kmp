@@ -16,19 +16,14 @@
 
 package care.data4life.datadonation.crypto
 
-actual class CryptoService actual constructor() : CryptoContract.Service {
-    actual override fun encrypt(
-        payload: ByteArray,
-        publicKey: String
-    ): ByteArray {
-        TODO()
-    }
+import care.data4life.sdk.lang.D4LRuntimeException
 
-    actual override fun sign(
-        payload: ByteArray,
-        privateKey: String,
-        saltLength: Int,
-    ): ByteArray {
-        TODO()
-    }
+sealed class CryptoError(
+    message: String? = null,
+    cause: Throwable? = null
+) : D4LRuntimeException(message, cause) {
+    class UnknownSalt(length: Int) : CryptoError("Unknown salt length $length.")
+    class MalFormedKeyGeneration : CryptoError("Invalid KeyGeneration Configuration.")
+    class IllEncryption : CryptoError("Failed to encrypt data.")
+    class IllSigning : CryptoError("Failed to sign data.")
 }

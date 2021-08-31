@@ -16,19 +16,14 @@
 
 package care.data4life.datadonation.crypto
 
-actual class CryptoService actual constructor() : CryptoContract.Service {
-    actual override fun encrypt(
-        payload: ByteArray,
-        publicKey: String
-    ): ByteArray {
-        TODO()
-    }
+import care.data4life.sdk.crypto.ExchangeKey
+import care.data4life.sdk.crypto.GCKey
+import care.data4life.sdk.crypto.GCKeyPair
 
-    actual override fun sign(
-        payload: ByteArray,
-        privateKey: String,
-        saltLength: Int,
-    ): ByteArray {
-        TODO()
-    }
+interface CryptoKeyFactoryContract {
+    fun generateSymmetricKey(): GCKey
+    fun generateAsymmetricKeyPair(): GCKeyPair
+
+    fun createPublicKey(exchangeKey: ExchangeKey): GCKeyPair
+    fun createPrivateKey(exchangeKey: ExchangeKey): GCKeyPair
 }

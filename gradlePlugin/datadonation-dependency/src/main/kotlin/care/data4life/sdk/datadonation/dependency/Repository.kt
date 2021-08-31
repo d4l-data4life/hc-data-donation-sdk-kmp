@@ -29,6 +29,7 @@ object Repository {
         listOf(gitHubOrgD4l, "hc-result-sdk-kmp", "care.data4life.hc-result-sdk-kmp"),
         listOf(gitHubOrgD4l, "hc-objc-util-sdk-kmp", "care.data4life.hc-objc-util-sdk-kmp"),
         listOf(gitHubOrgD4l, "hc-test-util-sdk-kmp", "care.data4life.hc-test-util-sdk-kmp"),
+        listOf(gitHubOrgD4l, "hc-crypto-sdk-kmp", "care.data4life.hc-crypto-sdk-kmp"),
         listOf(gitHubOrgD4l, "hc-fhir-sdk-kmp", "care.data4life.hc-fhir-sdk-kmp")
     )
 
@@ -39,6 +40,7 @@ object Repository {
         "care.data4life.hc-result-sdk-kmp",
         "care.data4life.hc-objc-util-sdk-kmp",
         "care.data4life.hc-test-util-sdk-kmp",
+        "care.data4life.hc-crypto-sdk-kmp",
         "care.data4life.hc-fhir-sdk-kmp"
     )
 }

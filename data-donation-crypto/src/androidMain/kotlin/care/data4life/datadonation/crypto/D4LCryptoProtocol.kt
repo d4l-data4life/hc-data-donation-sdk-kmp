@@ -16,19 +16,6 @@
 
 package care.data4life.datadonation.crypto
 
-actual class CryptoService actual constructor() : CryptoContract.Service {
-    actual override fun encrypt(
-        payload: ByteArray,
-        publicKey: String
-    ): ByteArray {
-        TODO()
-    }
+import care.data4life.sdk.crypto.CryptoProtocol
 
-    actual override fun sign(
-        payload: ByteArray,
-        privateKey: String,
-        saltLength: Int,
-    ): ByteArray {
-        TODO()
-    }
-}
+internal object D4LCryptoProtocol : CryptoProtocol()

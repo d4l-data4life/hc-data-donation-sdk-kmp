@@ -16,14 +16,126 @@
 
 package care.data4life.datadonation.crypto
 
+import care.data4life.datadonation.crypto.mock.ResourceLoader
+import care.data4life.datadonation.crypto.util.AndroidOnly
+import care.data4life.datadonation.crypto.util.CryptoVerification
+import care.data4life.sdk.util.test.annotation.RobolectricTestRunner
+import care.data4life.sdk.util.test.annotation.RunWithRobolectricTestRunner
 import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
+@AndroidOnly // TODO: Remove once iOS s ready
+@RunWithRobolectricTestRunner(RobolectricTestRunner::class)
 class CryptoServiceTest {
     @Test
     fun `It fulfils the Crypto Service`() {
         val service: Any = CryptoService()
 
-        assertTrue(service is CryptoServiceContract)
+        assertTrue(service is CryptoContract.Service)
+    }
+
+    @Test
+    fun `Given encrypt is called, it propagates Errors as CryptoErrors`() {
+        // Then
+        val error = assertFailsWith<CryptoError.IllEncryption> {
+            // When
+            CryptoService().encrypt(ByteArray(0), "ABC")
+        }
+
+        assertEquals(
+            actual = error.message,
+            expected = "Failed to encrypt data."
+        )
+    }
+
+    @Test
+    fun `Given encrypt is called with a Payload and a PublicKey it encrypts the given Data`() {
+        // Given
+        val expected = "{\"a\":\"Hello World!\"}".encodeToByteArray()
+        val publicKey = ResourceLoader.loader.load("/fixture/crypto/DonationServicePublicKey.txt")
+        val privateKey = ResourceLoader.loader.load("/fixture/crypto/DonationServicePrivateKey.txt")
+
+        // When
+        val encrypted = CryptoService().encrypt(
+            expected,
+            publicKey
+        )
+        val decrypted = CryptoVerification.decrypt(
+            encrypted,
+            privateKey
+        )
+
+        // Then
+        assertFalse(
+            encrypted.contentEquals(expected)
+        )
+        assertTrue(
+            decrypted.contentEquals(expected)
+        )
+    }
+
+    @Test
+    fun `Given sign is called, it propagates Errors as CryptoErrors`() {
+        // Then
+        val error = assertFailsWith<CryptoError.IllSigning> {
+            // When
+            CryptoService().sign(ByteArray(0), "ABC", 21)
+        }
+
+        assertEquals(
+            actual = error.message,
+            expected = "Failed to sign data."
+        )
+    }
+
+    @Test
+    fun `Given sign is called with a Payload, a PrivateKey and 0 as Salt, it signs the given Data`() {
+        // Given
+        val data = "{\"a\":\"Hello World!\"}".encodeToByteArray()
+        val publicKey = ResourceLoader.loader.load("/fixture/crypto/DonationServicePublicKey.txt")
+        val privateKey = ResourceLoader.loader.load("/fixture/crypto/DonationServicePrivateKey.txt")
+
+        // When
+        val signature = CryptoService().sign(
+            data,
+            privateKey,
+            0
+        )
+        val isValid = CryptoVerification.verify(
+            data,
+            signature,
+            publicKey,
+            0
+        )
+
+        // Then
+        assertTrue(isValid)
+    }
+
+    @Test
+    fun `Given sign is called with a Payload, a PrivateKey and 32 as Salt, it signs the given Data`() {
+        // Given
+        val data = "{\"a\":\"Hello World!\"}".encodeToByteArray()
+        val publicKey = ResourceLoader.loader.load("/fixture/crypto/DonationServicePublicKey.txt")
+        val privateKey = ResourceLoader.loader.load("/fixture/crypto/DonationServicePrivateKey.txt")
+
+        // When
+        val signature = CryptoService().sign(
+            data,
+            privateKey,
+            32
+        )
+        val isValid = CryptoVerification.verify(
+            data,
+            signature,
+            publicKey,
+            32
+        )
+
+        // Then
+        assertTrue(isValid)
     }
 }

@@ -14,17 +14,6 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.crypto
+package care.data4life.datadonation.crypto.util
 
-interface CryptoServiceContract {
-    fun encrypt(
-        payload: ByteArray,
-        key: String
-    ): ByteArray
-
-    fun sign(
-        payload: ByteArray,
-        key: String,
-        saltLength: Int,
-    ): ByteArray
-}
+expect annotation class AndroidOnly()
