@@ -18,7 +18,12 @@ package care.data4life.datadonation.crypto
 
 import care.data4life.datadonation.crypto.CryptoServiceContract.Companion.IV_SIZE
 import care.data4life.datadonation.crypto.CryptoServiceContract.Companion.PROTOCOL_VERSION
+import care.data4life.datadonation.crypto.signature.GCSignatureAlgorithm
+import care.data4life.datadonation.crypto.signature.GCSignatureKeyPair
+import care.data4life.datadonation.crypto.signature.SignatureAlgorithm
+import care.data4life.sdk.crypto.ExchangeKey
 import care.data4life.sdk.crypto.ExchangeKeyFactory
+import care.data4life.sdk.crypto.GCKeyPair
 import care.data4life.sdk.crypto.KeyType
 import care.data4life.sdk.crypto.KeyVersion
 import java.nio.ByteBuffer
@@ -84,11 +89,37 @@ internal actual class CryptoService actual constructor() : CryptoServiceContract
         )
     }
 
+    private fun resolveSignatureAlgorithm(saltLength: Int): GCSignatureAlgorithm {
+        return when (saltLength) {
+            SignatureAlgorithm.Salt.SALT_0.length -> GCSignatureAlgorithm.createUnsaltedKey()
+            SignatureAlgorithm.Salt.SALT_32.length -> GCSignatureAlgorithm.createSaltedKey()
+            else -> throw CryptoError.UnknownSalt(saltLength)
+        }
+    }
+
+    private fun resolvePublicKey(key: String): GCKeyPair {
+        val asymExchangeKey = ExchangeKey(
+            type = KeyType.APP_PRIVATE_KEY,
+            privateKey = key,
+            publicKey = null,
+            symmetricKey = null,
+            version = KeyVersion.VERSION_1
+        )
+
+        return CryptoKeyFactory.createPrivateKey(asymExchangeKey)
+    }
+
     actual override fun sign(
         payload: ByteArray,
         privateKey: String,
         saltLength: Int,
     ): ByteArray {
-        TODO()
+        val signer = GCSignatureKeyPair.fromGCKeyPair(
+            algorithm = resolveSignatureAlgorithm(saltLength),
+            keyPair = resolvePublicKey(privateKey)
+        ).toSigningSignature()
+
+        signer.update(payload)
+        return signer.sign()
     }
 }

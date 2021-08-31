@@ -16,11 +16,13 @@
 
 package care.data4life.datadonation.crypto.util
 
+import care.data4life.datadonation.crypto.CryptoError
 import care.data4life.datadonation.crypto.CryptoKeyFactory
 import care.data4life.datadonation.crypto.CryptoServiceContract.Companion.PROTOCOL_VERSION
 import care.data4life.datadonation.crypto.D4LCryptoProtocol
 import care.data4life.datadonation.crypto.signature.GCSignatureAlgorithm
 import care.data4life.datadonation.crypto.signature.GCSignatureKeyPair
+import care.data4life.datadonation.crypto.signature.SignatureAlgorithm
 import care.data4life.sdk.crypto.ExchangeKey
 import care.data4life.sdk.crypto.GCKey
 import care.data4life.sdk.crypto.GCKeyPair
@@ -68,7 +70,7 @@ actual object CryptoVerification {
     }
 
     private fun resolveAsymmetricKey(key: String): GCKeyPair {
-        return CryptoVerificationKeyFactory.createPrivateKey(
+        return CryptoKeyFactory.createPrivateKey(
             ExchangeKey(
                 type = KeyType.APP_PRIVATE_KEY,
                 privateKey = key,
@@ -125,10 +127,10 @@ actual object CryptoVerification {
     }
 
     private fun resolveSignatureAlgorithm(saltLength: Int): GCSignatureAlgorithm {
-        return if (saltLength == 0) {
-            GCSignatureAlgorithm.createUnsaltedKey()
-        } else {
-            GCSignatureAlgorithm.createSaltedKey()
+        return when (saltLength) {
+            SignatureAlgorithm.Salt.SALT_0.length -> GCSignatureAlgorithm.createUnsaltedKey()
+            SignatureAlgorithm.Salt.SALT_32.length -> GCSignatureAlgorithm.createSaltedKey()
+            else -> throw CryptoError.UnknownSalt(saltLength)
         }
     }
 

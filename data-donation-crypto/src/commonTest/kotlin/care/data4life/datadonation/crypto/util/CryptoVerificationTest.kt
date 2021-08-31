@@ -16,6 +16,7 @@
 
 package care.data4life.datadonation.crypto.util
 
+import care.data4life.datadonation.crypto.CryptoError
 import care.data4life.datadonation.crypto.mock.ResourceLoader
 import care.data4life.sdk.util.Base64
 import care.data4life.sdk.util.test.annotation.RobolectricTestRunner
@@ -30,7 +31,7 @@ import kotlin.test.assertTrue
 @RunWithRobolectricTestRunner(RobolectricTestRunner::class)
 class CryptoVerificationTest {
     @Test
-    fun `Given decode was called with a Thing and a Key, it fails if the Thing has the wrong version`() {
+    fun `Given decode was called with a Thing and a PrivateKey, it fails if the Thing has the wrong version`() {
         // Given
         val thing = ResourceLoader.loader.load("/fixture/crypto/ExampleHybridEncryptedMessageV1.txt")
         val key = ResourceLoader.loader.load("/fixture/crypto/DonationServicePrivateKey.txt")
@@ -51,7 +52,7 @@ class CryptoVerificationTest {
     }
 
     @Test
-    fun `Given decode was called with a Thing and a Key, decrypts a given hybrid encrypted Thing`() {
+    fun `Given decode was called with a Thing and a PrivateKey, decrypts a given hybrid encrypted Thing`() {
         // Given
         val thing = ResourceLoader.loader.load("/fixture/crypto/ExampleHybridEncryptedMessageV2.txt")
         val expected = "{\"a\":\"Hello World!\"}"
@@ -72,7 +73,30 @@ class CryptoVerificationTest {
     }
 
     @Test
-    fun `Given verify is called it, returns false if signature does not match`() {
+    fun `Given verify is called with a Payload, a PrivateKey and arbitrary Salt, it fails`() {
+        // Given
+        val data = "{\"a\":\"Hello World!\"}".encodeToByteArray()
+        val signature = ResourceLoader.loader.load("/fixture/crypto/ExampleInvalidSignature.txt")
+        val key = ResourceLoader.loader.load("/fixture/crypto/DonationServicePrivateKey.txt")
+
+        // Then
+        val error = assertFailsWith<CryptoError.UnknownSalt> {
+            CryptoVerification.verify(
+                data,
+                Base64.decode(signature),
+                key,
+                23
+            )
+        }
+
+        assertEquals(
+            actual = error.message,
+            expected = "Unknown salt length 23."
+        )
+    }
+
+    @Test
+    fun `Given verify is called with a Message, Signature, PublicKey and 0 as Salt, it returns false if Signature does not match`() {
         // Given
         val signature = ResourceLoader.loader.load("/fixture/crypto/ExampleInvalidSignature.txt")
         val key = ResourceLoader.loader.load("/fixture/crypto/DonationServicePublicKey.txt")
@@ -90,7 +114,7 @@ class CryptoVerificationTest {
     }
 
     @Test
-    fun `Given verify is called with a message, signature, key and 0 as Salt, returns true if signature matches`() {
+    fun `Given verify is called with a Message, Signature, PublicKey and 0 as Salt, it returns true if signature matches`() {
         // Given
         val signature = ResourceLoader.loader.load("/fixture/crypto/ExampleSignature0.txt")
         val key = ResourceLoader.loader.load("/fixture/crypto/DonationServicePublicKey.txt")

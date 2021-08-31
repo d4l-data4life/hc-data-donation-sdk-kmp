@@ -68,6 +68,37 @@ class CryptoKeyFactoryTest {
     }
 
     @Test
+    fun `Given createPrivateKey is called with a ExchangeKey, it creates a Asymmetric KeyPair, which contains the given PublicKey`() {
+        // Given
+        val key = ResourceLoader.loader.load("/fixture/crypto/DonationServicePrivateKey.txt")
+        val exchangeKey = ExchangeKey(
+            type = KeyType.APP_PRIVATE_KEY,
+            privateKey = key,
+            publicKey = null,
+            symmetricKey = null,
+            version = KeyVersion.VERSION_1
+        )
+
+        // When
+        val keyPair = CryptoKeyFactory.createPrivateKey(exchangeKey)
+
+        // Then
+        assertEquals(
+            actual = keyPair.algorithm.transformation,
+            expected = "RSA/ECB/OAEPWithSHA-256AndMGF1Padding"
+        )
+        assertEquals(
+            actual = keyPair.keyVersion,
+            expected = KeyVersion.VERSION_1.value
+        )
+        assertTrue(
+            keyPair.privateKey!!.value.encoded.contentEquals(
+                Base64.decode(key)
+            )
+        )
+    }
+
+    @Test
     fun `Given generateSymmetricKey is called, it creates a GCKey`() {
         // When
         val key = CryptoKeyFactory.generateSymmetricKey()

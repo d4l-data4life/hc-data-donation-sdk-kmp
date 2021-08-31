@@ -19,7 +19,9 @@ package care.data4life.datadonation.crypto.signature
 import care.data4life.sdk.crypto.GCAsymmetricKey
 import care.data4life.sdk.crypto.GCKeyPair
 import care.data4life.sdk.crypto.GCRSAKeyAlgorithm
+import java.security.PrivateKey
 import java.security.PublicKey
+import java.security.SecureRandom
 import java.security.Signature
 
 internal class GCSignatureKeyPair constructor(
@@ -28,6 +30,8 @@ internal class GCSignatureKeyPair constructor(
     val publicKey: GCAsymmetricKey,
     val keyVersion: Int
 ) {
+    private val random = SecureRandom()
+
     fun toGCKeyPair(algorithm: GCRSAKeyAlgorithm): GCKeyPair {
         return GCKeyPair(
             algorithm,
@@ -44,7 +48,12 @@ internal class GCSignatureKeyPair constructor(
     }
 
     fun toSigningSignature(): Signature {
-        TODO()
+        return prepareSignature().also {
+            it.initSign(
+                privateKey.value as PrivateKey,
+                random
+            )
+        }
     }
 
     fun toVerificationSignature(): Signature {

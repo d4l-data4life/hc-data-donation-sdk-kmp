@@ -92,6 +92,23 @@ class GCSignatureKeyPairTest {
     }
 
     @Test
+    fun `Given toSigningSignature is called it creates Signature for signing`() {
+        // When
+        val algo = GCSignatureAlgorithm.createSaltedKey()
+        val signer: Any = GCSignatureKeyPair.fromGCKeyPair(
+            keyPair = gcKeyPair,
+            algorithm = algo
+        ).toSigningSignature()
+
+        // Then
+        assertTrue(signer is Signature)
+        assertEquals(
+            actual = algo.transformation,
+            expected = signer.algorithm
+        )
+    }
+
+    @Test
     fun `Given toVerificationSignature is called it creates Signature for verification`() {
         // When
         val algo = GCSignatureAlgorithm.createSaltedKey()

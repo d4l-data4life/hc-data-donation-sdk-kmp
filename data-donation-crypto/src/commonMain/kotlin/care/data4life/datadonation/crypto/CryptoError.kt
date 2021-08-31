@@ -14,12 +14,13 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.crypto.mock
+package care.data4life.datadonation.crypto
 
-interface MockContract {
-    interface Stub {
-        fun clear()
-    }
+import care.data4life.sdk.lang.D4LRuntimeException
 
-    interface Spy : Stub
+sealed class CryptoError(
+    message: String? = null,
+    cause: Throwable? = null
+) : D4LRuntimeException(message, cause) {
+    class UnknownSalt(length: Int) : CryptoError("Unknown salt length $length.")
 }

@@ -26,11 +26,12 @@ import care.data4life.sdk.crypto.KeyOptions
 import care.data4life.sdk.crypto.KeyVersion
 import care.data4life.sdk.util.Base64
 import java.security.KeyFactory
+import java.security.spec.PKCS8EncodedKeySpec
 import java.security.spec.X509EncodedKeySpec
 
 // TODO Merge with CORE and move into the Crypto SDK
 internal object CryptoKeyFactory : CryptoKeyFactoryContract {
-    private val templateGCKey = D4LCryptoProtocol.generateAsymKeyPair(
+    private val templateGCKeyPair = D4LCryptoProtocol.generateAsymKeyPair(
         algorithm = GCRSAKeyAlgorithm(),
         options = KeyOptions(
             keySize = KeyVersion.VERSION_1.asymmetricKeySize
@@ -60,8 +61,25 @@ internal object CryptoKeyFactory : CryptoKeyFactoryContract {
 
         return GCKeyPair(
             algorithm,
-            templateGCKey.privateKey!!,
+            templateGCKeyPair.privateKey!!,
             gcPublicKey,
+            exchangeKey.getVersion().value
+        )
+    }
+
+    override fun createPrivateKey(exchangeKey: ExchangeKey): GCKeyPair {
+        val algorithm = GCRSAKeyAlgorithm()
+
+        val keyFactory = KeyFactory.getInstance(algorithm.cipher)
+        val pkcs8EncodedKeySpec = PKCS8EncodedKeySpec(Base64.decode(exchangeKey.privateKey!!))
+        val privateKey = keyFactory.generatePrivate(pkcs8EncodedKeySpec)
+
+        val gcPrivate = GCAsymmetricKey(privateKey, GCAsymmetricKey.Type.Private)
+
+        return GCKeyPair(
+            algorithm,
+            gcPrivate,
+            templateGCKeyPair.publicKey!!,
             exchangeKey.getVersion().value
         )
     }

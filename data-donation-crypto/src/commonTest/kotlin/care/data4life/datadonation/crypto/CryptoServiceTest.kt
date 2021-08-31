@@ -22,6 +22,8 @@ import care.data4life.datadonation.crypto.util.CryptoVerification
 import care.data4life.sdk.util.test.annotation.RobolectricTestRunner
 import care.data4life.sdk.util.test.annotation.RunWithRobolectricTestRunner
 import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
@@ -37,7 +39,7 @@ class CryptoServiceTest {
     }
 
     @Test
-    fun `Given encrypt is called with a Payload and a Key it encrypts the given Data`() {
+    fun `Given encrypt is called with a Payload and a PublicKey it encrypts the given Data`() {
         // Given
         val expected = "{\"a\":\"Hello World!\"}".encodeToByteArray()
         val publicKey = ResourceLoader.loader.load("/fixture/crypto/DonationServicePublicKey.txt")
@@ -60,5 +62,75 @@ class CryptoServiceTest {
         assertTrue(
             decrypted.contentEquals(expected)
         )
+    }
+
+    @Test
+    fun `Given sign is called with a Payload, a PrivateKey and arbitrary Salt, it fails`() {
+        // Given
+        val data = "{\"a\":\"Hello World!\"}".encodeToByteArray()
+        val publicKey = ResourceLoader.loader.load("/fixture/crypto/DonationServicePublicKey.txt")
+        val privateKey = ResourceLoader.loader.load("/fixture/crypto/DonationServicePrivateKey.txt")
+
+        // Then
+        val error = assertFailsWith<CryptoError.UnknownSalt> {
+            CryptoService().sign(
+                data,
+                privateKey,
+                23
+            )
+        }
+
+        assertEquals(
+            actual = error.message,
+            expected = "Unknown salt length 23."
+        )
+    }
+
+    @Test
+    fun `Given sign is called with a Payload, a PrivateKey and 0 as Salt, it signs the given Data`() {
+        // Given
+        val data = "{\"a\":\"Hello World!\"}".encodeToByteArray()
+        val publicKey = ResourceLoader.loader.load("/fixture/crypto/DonationServicePublicKey.txt")
+        val privateKey = ResourceLoader.loader.load("/fixture/crypto/DonationServicePrivateKey.txt")
+
+        // When
+        val signature = CryptoService().sign(
+            data,
+            privateKey,
+            0
+        )
+        val isValid = CryptoVerification.verify(
+            data,
+            signature,
+            publicKey,
+            0
+        )
+
+        // Then
+        assertTrue(isValid)
+    }
+
+    @Test
+    fun `Given sign is called with a Payload, a PrivateKey and 32 as Salt, it signs the given Data`() {
+        // Given
+        val data = "{\"a\":\"Hello World!\"}".encodeToByteArray()
+        val publicKey = ResourceLoader.loader.load("/fixture/crypto/DonationServicePublicKey.txt")
+        val privateKey = ResourceLoader.loader.load("/fixture/crypto/DonationServicePrivateKey.txt")
+
+        // When
+        val signature = CryptoService().sign(
+            data,
+            privateKey,
+            32
+        )
+        val isValid = CryptoVerification.verify(
+            data,
+            signature,
+            publicKey,
+            32
+        )
+
+        // Then
+        assertTrue(isValid)
     }
 }

@@ -25,4 +25,5 @@ interface CryptoKeyFactoryContract {
     fun generateAsymmetricKeyPair(): GCKeyPair
 
     fun createPublicKey(exchangeKey: ExchangeKey): GCKeyPair
+    fun createPrivateKey(exchangeKey: ExchangeKey): GCKeyPair
 }

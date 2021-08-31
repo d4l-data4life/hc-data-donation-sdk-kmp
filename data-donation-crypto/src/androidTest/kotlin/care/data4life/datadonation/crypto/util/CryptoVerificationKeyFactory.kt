@@ -16,33 +16,15 @@
 
 package care.data4life.datadonation.crypto.util
 
-import care.data4life.datadonation.crypto.D4LCryptoProtocol
-import care.data4life.datadonation.crypto.signature.GCSignatureAlgorithm
-import care.data4life.datadonation.crypto.signature.GCSignatureKeyPair
-import care.data4life.sdk.crypto.ExchangeKey
 import care.data4life.sdk.crypto.GCAESKeyAlgorithm
-import care.data4life.sdk.crypto.GCAsymmetricKey
 import care.data4life.sdk.crypto.GCKey
-import care.data4life.sdk.crypto.GCKeyPair
-import care.data4life.sdk.crypto.GCRSAKeyAlgorithm
 import care.data4life.sdk.crypto.GCSymmetricKey
-import care.data4life.sdk.crypto.KeyOptions
 import care.data4life.sdk.crypto.KeyVersion
-import care.data4life.sdk.util.Base64
-import java.security.KeyFactory
-import java.security.spec.PKCS8EncodedKeySpec
-import java.security.spec.X509EncodedKeySpec
 import javax.crypto.spec.SecretKeySpec
 
 // TODO Merge with CORE and move into the Crypto SDK
 internal object CryptoVerificationKeyFactory {
-    private val templateGCKeyPair = D4LCryptoProtocol.generateAsymKeyPair(
-        algorithm = GCRSAKeyAlgorithm(),
-        options = KeyOptions(
-            keySize = KeyVersion.VERSION_1.asymmetricKeySize
-        )
-    )
-
+    // see: https://github.com/d4l-data4life/hc-sdk-kmp/blob/c03e078247312eb0319658f4399e2e39de6882fd/sdk-core/src/main/java/care/data4life/sdk/crypto/KeyFactory.kt#L28
     fun createGCKey(key: ByteArray, version: KeyVersion): GCKey {
         val algorithm = GCAESKeyAlgorithm.createDataAlgorithm()
 
@@ -54,45 +36,5 @@ internal object CryptoVerificationKeyFactory {
         )
 
         return GCKey(algorithm, symmetricKey, version.symmetricKeySize)
-    }
-
-    fun createPrivateKey(exchangeKey: ExchangeKey): GCKeyPair {
-        val algorithm = GCRSAKeyAlgorithm()
-
-        val keyFactory = KeyFactory.getInstance(algorithm.cipher)
-        val pkcs8EncodedKeySpec = PKCS8EncodedKeySpec(Base64.decode(exchangeKey.privateKey!!))
-        val privateKey = keyFactory.generatePrivate(pkcs8EncodedKeySpec)
-
-        val gcPrivate = GCAsymmetricKey(privateKey, GCAsymmetricKey.Type.Private)
-
-        return GCKeyPair(
-            algorithm,
-            gcPrivate,
-            templateGCKeyPair.publicKey!!,
-            exchangeKey.getVersion().value
-        )
-    }
-
-    fun createPublicSignatureKey(
-        exchangeKey: ExchangeKey,
-        salt: Int
-    ): GCSignatureKeyPair {
-        val algorithm = if (salt == 0) {
-            GCSignatureAlgorithm.createUnsaltedKey()
-        } else {
-            GCSignatureAlgorithm.createSaltedKey()
-        }
-
-        val keyFactory = KeyFactory.getInstance(algorithm.cipher)
-        val x509EncodedKeySpec = X509EncodedKeySpec(Base64.decode(exchangeKey.publicKey!!))
-        val publicKey = keyFactory.generatePublic(x509EncodedKeySpec)
-        val gcPublicKey = GCAsymmetricKey(publicKey, GCAsymmetricKey.Type.Public)
-
-        return GCSignatureKeyPair(
-            algorithm,
-            templateGCKeyPair.privateKey!!,
-            gcPublicKey,
-            exchangeKey.getVersion().value
-        )
     }
 }
