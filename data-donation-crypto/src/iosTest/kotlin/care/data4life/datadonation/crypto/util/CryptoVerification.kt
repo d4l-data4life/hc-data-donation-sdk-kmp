@@ -14,13 +14,21 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.consent.userconsent.model
+package care.data4life.datadonation.crypto.util
 
-import kotlinx.serialization.Serializable
+actual class CryptoVerification actual constructor() {
+    actual fun decrypt(
+        payload: ByteArray,
+        key: String
+    ): ByteArray {
+        TODO()
+    }
 
-@Serializable
-internal data class ConsentMessage(
-    val consentDocumentKey: String,
-    val signatureType: String,
-    val payload: String
-)
+    actual fun verify(
+        payload: ByteArray,
+        key: String,
+        saltLength: Int,
+    ): ByteArray {
+        TODO()
+    }
+}

@@ -27,19 +27,7 @@ toc::[]
 
 === Added
 
-* FHIR Library (STU3 & R4).
-* Client#revokeUserConsent returns the latest UserConsent.
-* Example iOS app.
-* Swift package.
-* touchlab's stately-common (1.1.6) (Dependency).
-* touchlab's stately-concurrency (1.1.6) (Dependency).
-* Coroutine-Util (see: https://github.com/d4l-data4life/hc-coroutine-util-sdk-kmp) (Dependency).
-* Result-SDK (see: https://github.com/d4l-data4life/hc-result-sdk-kmp) (Dependency).
-* ObjC-SDK (see: https://github.com/d4l-data4life/hc-objc-util-sdk-kmp) (Dependency).
-
 === Changed
-
-* _**BREAKING**_ DataDonationSDKPublicApi -> DataDonationSDK.
 
 === Deprecated
 
@@ -51,11 +39,33 @@ toc::[]
 
 === Bumped
 
-* _**BREAKING**_ sdk-util 1.9.0 -> 1.10.0.
-* result-sdk 0.1.0 -> 0.1.1
-* Gradle 6.8.3 -> 6.9
-
 === Migration
+
+
+== link:{link-repository}/releases/tag/v0.2.0[0.2.0]
+
+See link:{link-repository}/compare/v0.2.0...v0.2.0[0.2.0]
+
+=== Added
+
+* Client#revokeUserConsent returns the latest UserConsent.
+* Example iOS app.
+* Swift package.
+* touchlab's stately-common (1.1.6) (Dependency).
+* touchlab's stately-concurrency (1.1.6) (Dependency).
+* link:https://github.com/d4l-data4life/hc-coroutine-util-sdk-kmp[Data4Life Coroutine Util] (Dependency).
+* link:https://github.com/d4l-data4life/hc-result-sdk-kmp[Data4Life Result] (Dependency).
+* link:https://github.com/d4l-data4life/hc-objc-util-sdk-kmp[Data4Life iOS Util] (Dependency).
+* link:https://github.com/d4l-data4life/hc-fhir-sdk-kmp[Data4Life FHIR KMP] (Dependency).
+
+=== Changed
+
+* _**BREAKING**_ DataDonationSDKPublicApi -> DataDonationSDK.
+
+=== Bumped
+
+* _**BREAKING**_ sdk-util 1.9.0 -> 1.10.0.
+* Gradle 6.8.3 -> 6.9.1
 
 == link:{link-repository}/releases/tag/v0.1.3[0.1.3]
 

@@ -16,9 +16,6 @@
 
 package care.data4life.datadonation.consent.userconsent
 
-import care.data4life.datadonation.consent.userconsent.UserConsentContract.ApiService.Companion.PARAMETER.LATEST_CONSENT
-import care.data4life.datadonation.consent.userconsent.UserConsentContract.ApiService.Companion.PARAMETER.USER_CONSENT_KEY
-import care.data4life.datadonation.consent.userconsent.UserConsentContract.ApiService.Companion.ROUTE
 import care.data4life.datadonation.consent.userconsent.model.ConsentCreationPayload
 import care.data4life.datadonation.consent.userconsent.model.ConsentRevocationPayload
 import care.data4life.datadonation.error.CoreRuntimeError
@@ -91,12 +88,11 @@ class UserConsentApiServiceTest {
         // Then
         val result = assertFailsWith<UserConsentError.Forbidden> {
             // When
-            val service = UserConsentApiService(
+            UserConsentApiService(
                 requestTemplate,
                 errorHandler,
                 clock
-            )
-            service.createUserConsent(
+            ).createUserConsent(
                 accessToken = accessToken,
                 consentDocumentKey = consentDocumentKey,
                 consentDocumentVersion = version
@@ -147,12 +143,11 @@ class UserConsentApiServiceTest {
         }
 
         // When
-        val service = UserConsentApiService(
+        val result = UserConsentApiService(
             requestTemplate,
             UserConsentErrorHandlerStub(),
             clock
-        )
-        val result = service.createUserConsent(
+        ).createUserConsent(
             accessToken = accessToken,
             consentDocumentKey = consentDocumentKey,
             consentDocumentVersion = version
@@ -163,10 +158,6 @@ class UserConsentApiServiceTest {
             actual = result,
             expected = Unit
         )
-        assertEquals(
-            actual = result,
-            expected = Unit
-        )
 
         assertEquals(
             actual = capturedMethod,
@@ -174,7 +165,7 @@ class UserConsentApiServiceTest {
         )
         assertEquals(
             actual = capturedPath,
-            expected = ROUTE
+            expected = listOf("consent", "api", "v1", "userConsents")
         )
 
         assertEquals(
@@ -226,12 +217,11 @@ class UserConsentApiServiceTest {
         // Then
         val result = assertFailsWith<UserConsentError.Forbidden> {
             // When
-            val service = UserConsentApiService(
+            UserConsentApiService(
                 requestTemplate,
                 errorHandler,
                 ClockStub()
-            )
-            service.fetchUserConsents(
+            ).fetchUserConsents(
                 accessToken = accessToken,
                 latestConsent = false,
                 consentDocumentKey = consentDocumentKey
@@ -320,12 +310,11 @@ class UserConsentApiServiceTest {
         }
 
         // When
-        val service = UserConsentApiService(
+        val result = UserConsentApiService(
             requestTemplate,
             UserConsentErrorHandlerStub(),
             ClockStub()
-        )
-        val result = service.fetchUserConsents(
+        ).fetchUserConsents(
             accessToken = accessToken,
             latestConsent = lastedConsent,
             consentDocumentKey = consentDocumentKey
@@ -342,7 +331,7 @@ class UserConsentApiServiceTest {
         )
         assertEquals(
             actual = capturedPath,
-            expected = ROUTE
+            expected = listOf("consent", "api", "v1", "userConsents")
         )
 
         assertEquals(
@@ -356,8 +345,8 @@ class UserConsentApiServiceTest {
         assertEquals(
             actual = requestTemplate.lastInstance!!.delegatedParameter,
             expected = mapOf(
-                LATEST_CONSENT to lastedConsent,
-                USER_CONSENT_KEY to consentDocumentKey
+                "latest" to lastedConsent,
+                "consentDocumentKey" to consentDocumentKey
             )
         )
     }
@@ -392,12 +381,11 @@ class UserConsentApiServiceTest {
         // Then
         val result = assertFailsWith<UserConsentError.Forbidden> {
             // When
-            val service = UserConsentApiService(
+            UserConsentApiService(
                 requestTemplate,
                 errorHandler,
                 ClockStub()
-            )
-            service.revokeUserConsent(
+            ).revokeUserConsent(
                 accessToken = accessToken,
                 consentDocumentKey = consentDocumentKey
             )
@@ -441,19 +429,18 @@ class UserConsentApiServiceTest {
         }
 
         // When
-        val service = UserConsentApiService(
+        val result = UserConsentApiService(
             requestTemplate,
             UserConsentErrorHandlerStub(),
             ClockStub()
+        ).revokeUserConsent(
+            accessToken = accessToken,
+            consentDocumentKey =
+            consentDocumentKey
         )
-        val result = service.revokeUserConsent(accessToken = accessToken, consentDocumentKey = consentDocumentKey)
 
         // Then
         assertSame(
-            actual = result,
-            expected = Unit
-        )
-        assertEquals(
             actual = result,
             expected = Unit
         )
@@ -464,7 +451,7 @@ class UserConsentApiServiceTest {
         )
         assertEquals(
             actual = capturedPath,
-            expected = ROUTE
+            expected = listOf("consent", "api", "v1", "userConsents")
         )
 
         assertEquals(

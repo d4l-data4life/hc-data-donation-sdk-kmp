@@ -32,7 +32,7 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "3670E94226CBF02700FD5B79"
+               BlueprintIdentifier = "3670E96D26CD5FC100FD5B79"
                BuildableName = "DataDonationCryptoObjCTests.xctest"
                BlueprintName = "DataDonationCryptoObjCTests"
                ReferencedContainer = "container:DataDonationCryptoObjC.xcodeproj">
