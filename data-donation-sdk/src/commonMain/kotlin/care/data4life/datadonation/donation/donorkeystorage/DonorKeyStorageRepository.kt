@@ -47,15 +47,16 @@ internal class DonorKeyStorageRepository(
 ) : DonorKeyStorageRepositoryContract {
     private val scope = AtomicReference(scope)
 
-    private fun mapLoadResult(result: Any): Donor {
+    private fun mapLoadResult(result: Any): Donor? {
         return when (result) {
+            Unit -> null
             is Donor -> result
             is Exception -> throw DonorKeyStorageError.KeyLoadingError(result)
             else -> throw DonorKeyStorageError.KeyLoadingError()
         }
     }
 
-    override suspend fun load(programName: String): Donor {
+    override suspend fun load(programName: String): Donor? {
         val incoming = Channel<Any>()
         val annotations = setOf(
             "${PROGRAM_ANNOTATION_PREFIX}$programName",
@@ -76,11 +77,18 @@ internal class DonorKeyStorageRepository(
                 }
                 Unit
             }.freeze(),
-            onError = { error ->
+            onNotFound = {
+                scope.get().launch {
+                    incoming.send(Unit)
+                }
+                Unit
+            }.freeze(),
+            onError = { error: Exception ->
                 scope.get().launch {
                     incoming.send(error)
                 }
-            }
+                Unit
+            }.freeze()
         )
 
         return mapLoadResult(incoming.receive())
@@ -118,11 +126,13 @@ internal class DonorKeyStorageRepository(
                 }
                 Unit
             }.freeze(),
-            onError = { error ->
+            onError = { error: Exception ->
                 scope.get().launch {
                     incoming.send(error)
                 }
-            }
+
+                Unit
+            }.freeze()
         )
 
         return mapSaveResult(incoming.receive())
@@ -147,11 +157,12 @@ internal class DonorKeyStorageRepository(
                 }
                 Unit
             }.freeze(),
-            onError = { error ->
+            onError = { error: Exception ->
                 scope.get().launch {
                     incoming.send(error)
                 }
-            }
+                Unit
+            }.freeze()
         )
 
         return mapDeleteResult(incoming.receive())
