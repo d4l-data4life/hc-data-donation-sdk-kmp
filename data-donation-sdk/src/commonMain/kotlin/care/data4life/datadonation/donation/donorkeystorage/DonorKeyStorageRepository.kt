@@ -23,13 +23,15 @@ import care.data4life.datadonation.RecordId
 import care.data4life.datadonation.donation.donorkeystorage.DonorKeyStorageRepositoryContract.Companion.DATA_DONATION_ANNOTATION
 import care.data4life.datadonation.donation.donorkeystorage.DonorKeyStorageRepositoryContract.Companion.PROGRAM_ANNOTATION_PREFIX
 import care.data4life.datadonation.donation.donorkeystorage.model.Donor
-import care.data4life.datadonation.donation.donorkeystorage.model.DonorKey
+import care.data4life.datadonation.donation.donorkeystorage.model.DonorRecord
 import care.data4life.datadonation.donation.donorkeystorage.model.NewDonor
+import care.data4life.datadonation.donation.model.DonorIdentity
 import co.touchlab.stately.concurrency.AtomicReference
 import co.touchlab.stately.freeze
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
 
 /*
 * Please note the provider does not share the same Context/Scope/Thread as the SDK.
@@ -43,6 +45,7 @@ import kotlinx.coroutines.launch
 */
 internal class DonorKeyStorageRepository(
     private val provider: DataDonationSDK.DonorKeyStorageProvider,
+    private val serializer: Json,
     scope: CoroutineScope
 ) : DonorKeyStorageRepositoryContract {
     private val scope = AtomicReference(scope)
@@ -70,7 +73,10 @@ internal class DonorKeyStorageRepository(
                     incoming.send(
                         Donor(
                             recordId = recordId,
-                            donorIdentity = encodedDonorIdentity,
+                            donorIdentity = serializer.decodeFromString(
+                                DonorIdentity.serializer(),
+                                encodedDonorIdentity
+                            ),
                             programName = programName
                         )
                     )
@@ -95,9 +101,12 @@ internal class DonorKeyStorageRepository(
     }
 
     private fun mapDonorToDonorKey(newDonor: NewDonor): DonationDataContract.DonorKey {
-        return DonorKey(
+        return DonorRecord(
             recordId = newDonor.recordId,
-            data = newDonor.donorIdentity,
+            data = serializer.encodeToString(
+                DonorIdentity.serializer(),
+                newDonor.donorIdentity
+            ),
             annotations = setOf(
                 "${PROGRAM_ANNOTATION_PREFIX}${newDonor.programName}",
                 DATA_DONATION_ANNOTATION

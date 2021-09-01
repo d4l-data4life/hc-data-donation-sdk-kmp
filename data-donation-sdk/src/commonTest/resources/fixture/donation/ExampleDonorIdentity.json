@@ -3,5 +3,5 @@
   "pub": "PublicKey",
   "v": 1,
   "t": "dataDonationKey",
-  "scope": "exampleKey"
+  "scope": "d4l.sample"
 }

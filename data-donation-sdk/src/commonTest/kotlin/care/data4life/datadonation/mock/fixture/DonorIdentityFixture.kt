@@ -14,15 +14,16 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.donation.donorkeystorage.model
+package care.data4life.datadonation.mock.fixture
 
-import care.data4life.datadonation.Annotations
-import care.data4life.datadonation.DonationDataContract
-import care.data4life.datadonation.EncodedDonorIdentity
-import care.data4life.datadonation.RecordId
+import care.data4life.datadonation.donation.model.DonorIdentity
 
-internal data class DonorKey(
-    override val recordId: RecordId?,
-    override val data: EncodedDonorIdentity,
-    override val annotations: Annotations
-) : DonationDataContract.DonorKey
+internal object DonorIdentityFixture {
+    val sampleIdentity = DonorIdentity(
+        keyType = "dataDonationKey",
+        privateKey = "PrivateKey",
+        publicKey = "PublicKey",
+        version = 1,
+        scope = "d4l.sample"
+    )
+}

@@ -22,6 +22,8 @@ import care.data4life.datadonation.RecordId
 import care.data4life.datadonation.donation.donorkeystorage.DonorKeyStorageRepositoryContract.Companion.DATA_DONATION_ANNOTATION
 import care.data4life.datadonation.donation.donorkeystorage.model.Donor
 import care.data4life.datadonation.donation.donorkeystorage.model.NewDonor
+import care.data4life.datadonation.mock.ResourceLoader
+import care.data4life.datadonation.mock.fixture.DonorIdentityFixture
 import care.data4life.datadonation.mock.stub.donation.donorkeystorage.DonorKeyStorageProviderStub
 import care.data4life.sdk.util.coroutine.CoroutineScopeFactory
 import care.data4life.sdk.util.test.coroutine.runBlockingTest
@@ -29,6 +31,7 @@ import care.data4life.sdk.util.test.coroutine.runWithContextBlockingTest
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -43,6 +46,7 @@ class DonorKeyStorageRepositoryTest {
     fun `It fulfils DonorKeyStorageRepository`() {
         val repo: Any = DonorKeyStorageRepository(
             DonorKeyStorageProviderStub(),
+            Json,
             testScope
         )
 
@@ -69,6 +73,7 @@ class DonorKeyStorageRepositoryTest {
             val failure = assertFailsWith<DonorKeyStorageError.KeyLoadingError> {
                 DonorKeyStorageRepository(
                     provider,
+                    Json,
                     testScope
                 ).load(programName)
             }
@@ -93,9 +98,6 @@ class DonorKeyStorageRepositoryTest {
         // Given
         val programName = "potato"
 
-        val recordId = "ABC"
-        val data = "secret"
-
         val provider = DonorKeyStorageProviderStub()
 
         val capturedAnnotations = Channel<Annotations>()
@@ -110,6 +112,7 @@ class DonorKeyStorageRepositoryTest {
         runBlockingTest {
             val result = DonorKeyStorageRepository(
                 provider,
+                Json,
                 testScope
             ).load(programName)
 
@@ -131,7 +134,7 @@ class DonorKeyStorageRepositoryTest {
         val programName = "potato"
 
         val recordId = "ABC"
-        val data = "secret"
+        val data = ResourceLoader.loader.load("/fixture/donation/ExampleDonorIdentity.json")
 
         val provider = DonorKeyStorageProviderStub()
 
@@ -147,6 +150,7 @@ class DonorKeyStorageRepositoryTest {
         runBlockingTest {
             val result = DonorKeyStorageRepository(
                 provider,
+                Json,
                 testScope
             ).load(programName)
 
@@ -155,7 +159,7 @@ class DonorKeyStorageRepositoryTest {
                 actual = result,
                 expected = Donor(
                     recordId = recordId,
-                    donorIdentity = data,
+                    donorIdentity = DonorIdentityFixture.sampleIdentity,
                     programName = programName
                 )
             )
@@ -174,7 +178,7 @@ class DonorKeyStorageRepositoryTest {
         // Given
         val programName = "potato"
         val recordId = "ABC"
-        val data = "secret"
+        val data = DonorIdentityFixture.sampleIdentity
         val donor = NewDonor(
             recordId = recordId,
             donorIdentity = data,
@@ -184,10 +188,10 @@ class DonorKeyStorageRepositoryTest {
         val error = RuntimeException()
         val provider = DonorKeyStorageProviderStub()
 
-        val capturedDonorKey = Channel<DonationDataContract.DonorKey>()
-        provider.whenSave = { delegatedDonorKey, _, onError ->
+        val capturedDonorRecord = Channel<DonationDataContract.DonorKey>()
+        provider.whenSave = { delegatedDonorRecord, _, onError ->
             launch {
-                capturedDonorKey.send(delegatedDonorKey)
+                capturedDonorRecord.send(delegatedDonorRecord)
             }
             onError(error)
         }
@@ -197,6 +201,7 @@ class DonorKeyStorageRepositoryTest {
             val failure = assertFailsWith<DonorKeyStorageError.KeySavingError> {
                 DonorKeyStorageRepository(
                     provider,
+                    Json,
                     testScope
                 ).save(donor)
             }
@@ -206,17 +211,17 @@ class DonorKeyStorageRepositoryTest {
                 expected = error
             )
 
-            val donorKey = capturedDonorKey.receive()
+            val donorRecord = capturedDonorRecord.receive()
             assertEquals(
-                actual = donorKey.recordId,
+                actual = donorRecord.recordId,
                 expected = donor.recordId
             )
             assertEquals(
-                actual = donorKey.data,
-                expected = data
+                actual = donorRecord.data,
+                expected = "{\"t\":\"${data.keyType}\",\"priv\":\"${data.privateKey}\",\"pub\":\"${data.publicKey}\",\"v\":${data.version},\"scope\":\"${data.scope}\"}"
             )
             assertEquals(
-                actual = donorKey.annotations,
+                actual = donorRecord.annotations,
                 expected = setOf(
                     "program:$programName",
                     DATA_DONATION_ANNOTATION
@@ -230,7 +235,7 @@ class DonorKeyStorageRepositoryTest {
         // Given
         val programName = "potato"
         val recordId = "ABC"
-        val data = "secret"
+        val data = DonorIdentityFixture.sampleIdentity
         val donor = NewDonor(
             recordId = recordId,
             donorIdentity = data,
@@ -239,10 +244,10 @@ class DonorKeyStorageRepositoryTest {
 
         val provider = DonorKeyStorageProviderStub()
 
-        val capturedDonorKey = Channel<DonationDataContract.DonorKey>()
-        provider.whenSave = { delegatedDonorKey, onSuccess, _ ->
+        val capturedDonorRecord = Channel<DonationDataContract.DonorKey>()
+        provider.whenSave = { delegatedDonorRecord, onSuccess, _ ->
             launch {
-                capturedDonorKey.send(delegatedDonorKey)
+                capturedDonorRecord.send(delegatedDonorRecord)
             }
             onSuccess()
         }
@@ -251,6 +256,7 @@ class DonorKeyStorageRepositoryTest {
         runBlockingTest {
             val result = DonorKeyStorageRepository(
                 provider,
+                Json,
                 testScope
             ).save(donor)
 
@@ -260,17 +266,17 @@ class DonorKeyStorageRepositoryTest {
                 expected = Unit
             )
 
-            val donorKey = capturedDonorKey.receive()
+            val donorRecord = capturedDonorRecord.receive()
             assertEquals(
-                actual = donorKey.recordId,
+                actual = donorRecord.recordId,
                 expected = donor.recordId
             )
             assertEquals(
-                actual = donorKey.data,
-                expected = data
+                actual = donorRecord.data,
+                expected = "{\"t\":\"${data.keyType}\",\"priv\":\"${data.privateKey}\",\"pub\":\"${data.publicKey}\",\"v\":${data.version},\"scope\":\"${data.scope}\"}"
             )
             assertEquals(
-                actual = donorKey.annotations,
+                actual = donorRecord.annotations,
                 expected = setOf(
                     "program:$programName",
                     DATA_DONATION_ANNOTATION
@@ -284,10 +290,9 @@ class DonorKeyStorageRepositoryTest {
         // Given
         val programName = "potato"
         val recordId = "ABC"
-        val data = "secret"
         val donor = Donor(
             recordId = recordId,
-            donorIdentity = data,
+            donorIdentity = DonorIdentityFixture.sampleIdentity,
             programName = programName
         )
 
@@ -307,6 +312,7 @@ class DonorKeyStorageRepositoryTest {
             val failure = assertFailsWith<DonorKeyStorageError.KeyDeletionError> {
                 DonorKeyStorageRepository(
                     provider,
+                    Json,
                     testScope
                 ).delete(donor)
             }
@@ -328,10 +334,9 @@ class DonorKeyStorageRepositoryTest {
         // Given
         val programName = "potato"
         val recordId = "ABC"
-        val data = "secret"
         val donor = Donor(
             recordId = recordId,
-            donorIdentity = data,
+            donorIdentity = DonorIdentityFixture.sampleIdentity,
             programName = programName
         )
 
@@ -349,6 +354,7 @@ class DonorKeyStorageRepositoryTest {
         runBlockingTest {
             val result = DonorKeyStorageRepository(
                 provider,
+                Json,
                 testScope
             ).delete(donor)
 

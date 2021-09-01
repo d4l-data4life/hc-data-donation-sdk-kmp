@@ -22,7 +22,7 @@ import care.data4life.datadonation.donation.donorkeystorage.model.Donor
 import care.data4life.datadonation.donation.donorkeystorage.model.NewDonor
 import care.data4life.datadonation.donation.model.SignedConsentMessage
 import care.data4life.datadonation.donation.publickeyservice.model.PublicKeys
-import care.data4life.datadonation.mock.ResourceLoader
+import care.data4life.datadonation.mock.fixture.DonorIdentityFixture
 import care.data4life.datadonation.mock.fixture.ProgramFixture
 import care.data4life.datadonation.mock.stub.crypto.KeyFactoryStub
 import care.data4life.datadonation.mock.stub.donation.consentsignature.ConsentSignatureControllerStub
@@ -31,7 +31,6 @@ import care.data4life.datadonation.mock.stub.donation.donorkeystorage.DonorKeySt
 import care.data4life.datadonation.mock.stub.donation.program.ProgramControllerStub
 import care.data4life.datadonation.mock.stub.donation.publickeyservice.PublicKeyServiceRepositoryStub
 import care.data4life.sdk.util.test.coroutine.runBlockingTest
-import kotlinx.serialization.json.Json
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertSame
@@ -46,7 +45,6 @@ class DonationControllerTest {
             DonorKeyStorageRepositoryStub(),
             ConsentSignatureControllerStub(),
             DonationServiceControllerStub(),
-            Json,
             KeyFactoryStub()
         )
 
@@ -58,10 +56,9 @@ class DonationControllerTest {
         // Given
         val programName = "Potato"
         val program = ProgramFixture.sampleProgram
-        val serializedDonorIdentity = ResourceLoader.loader.load("/fixture/donation/ExampleDonorIdentity.json")
         val donor = Donor(
             recordId = "23",
-            donorIdentity = serializedDonorIdentity,
+            donorIdentity = DonorIdentityFixture.sampleIdentity,
             programName = programName
         )
         val token = "Tomato"
@@ -127,7 +124,6 @@ class DonationControllerTest {
             donorKeyStorageRepository,
             signatureService,
             donationService,
-            Json,
             KeyFactoryStub()
         ).register(programName)
 
@@ -157,7 +153,7 @@ class DonationControllerTest {
         )
         assertEquals(
             actual = capturedDonorPublicKey,
-            expected = "PublicKey" // see: Fixture
+            expected = DonorIdentityFixture.sampleIdentity.publicKey
         )
         assertEquals(
             actual = capturedDonationServicePublicKeyEnableSigning,
@@ -180,8 +176,8 @@ class DonationControllerTest {
         val programName = "Potato"
         val program = ProgramFixture.sampleProgram
         val keyPair = KeyPair(
-            publicKey = "PublicKey",
-            privateKey = "PrivateKey"
+            publicKey = "PublicKey123",
+            privateKey = "PrivateKey123"
         )
         val token = "Tomato"
         val publicKeys = PublicKeys(
@@ -254,7 +250,6 @@ class DonationControllerTest {
             donorKeyStorageRepository,
             signatureService,
             donationService,
-            Json,
             keyGenerator
         ).register(programName)
 
@@ -277,7 +272,10 @@ class DonationControllerTest {
         assertEquals(
             actual = capturedNewDonor,
             expected = NewDonor(
-                donorIdentity = "{\"t\":\"dataDonationKey\",\"priv\":\"PrivateKey\",\"pub\":\"PublicKey\",\"v\":1,\"scope\":\"d4l.sample\"}",
+                donorIdentity = DonorIdentityFixture.sampleIdentity.copy(
+                    publicKey = keyPair.publicKey,
+                    privateKey = keyPair.privateKey
+                ),
                 programName = programName
             )
         )
@@ -292,7 +290,7 @@ class DonationControllerTest {
         )
         assertEquals(
             actual = capturedDonorPublicKey,
-            expected = "PublicKey" // see: Fixture
+            expected = keyPair.publicKey
         )
         assertEquals(
             actual = capturedDonationServicePublicKeyEnableSigning,

@@ -20,7 +20,9 @@ import care.data4life.datadonation.DataDonationSDK
 import care.data4life.datadonation.mock.stub.donation.donorkeystorage.DonorKeyStorageProviderStub
 import care.data4life.sdk.util.coroutine.CoroutineScopeFactory
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.serialization.json.Json
 import org.koin.core.context.stopKoin
+import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import kotlin.test.BeforeTest
@@ -46,6 +48,7 @@ class DonorKeyStorageKoinTest {
                         DonorKeyStorageProviderStub()
                     }
                     single<CoroutineScope> { testScope }
+                    single<Json>(named("DataDonationSerializer")) { Json }
                 }
             )
         }

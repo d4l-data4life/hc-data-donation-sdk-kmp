@@ -27,7 +27,6 @@ import care.data4life.datadonation.donation.donorkeystorage.model.NewDonor
 import care.data4life.datadonation.donation.model.DonorIdentity
 import care.data4life.datadonation.donation.program.ProgramContract
 import care.data4life.datadonation.donation.publickeyservice.PublicKeyServiceContract
-import kotlinx.serialization.json.Json
 
 internal class DonationController(
     private val programService: ProgramContract.Controller,
@@ -35,7 +34,6 @@ internal class DonationController(
     private val keyStorage: DonorKeyStorageRepositoryContract,
     private val consentSignatureService: ConsentSignatureContract.Controller,
     private val donationService: DonationServiceContract.Controller,
-    private val serializer: Json,
     private val keyGenerator: CryptoContract.KeyFactory
 ) : DonationContract.Controller {
     private suspend fun createAndStoreNewDonorIdentity(
@@ -54,10 +52,7 @@ internal class DonationController(
 
         keyStorage.save(
             NewDonor(
-                donorIdentity = serializer.encodeToString(
-                    DonorIdentity.serializer(),
-                    donorIdentity
-                ),
+                donorIdentity = donorIdentity,
                 programName = programName
             )
         )
@@ -71,10 +66,7 @@ internal class DonationController(
     ): DonorIdentity {
         val donor = keyStorage.load(programName)
         return if (donor is Donor) {
-            serializer.decodeFromString(
-                DonorIdentity.serializer(),
-                donor.donorIdentity
-            )
+            donor.donorIdentity
         } else {
             createAndStoreNewDonorIdentity(
                 documentConsentKey,

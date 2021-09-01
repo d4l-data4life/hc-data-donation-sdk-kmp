@@ -17,12 +17,17 @@
 package care.data4life.datadonation.donation.donorkeystorage
 
 import org.koin.core.module.Module
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 internal fun resolveDonorKeyStorageKoinModule(): Module {
     return module {
         single<DonorKeyStorageRepositoryContract> {
-            DonorKeyStorageRepository(get(), get())
+            DonorKeyStorageRepository(
+                get(),
+                get(named("DataDonationSerializer")),
+                get(),
+            )
         }
     }
 }

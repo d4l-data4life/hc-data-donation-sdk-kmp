@@ -16,17 +16,13 @@
 
 package care.data4life.datadonation.donation.donorkeystorage.model
 
+import care.data4life.datadonation.Annotations
+import care.data4life.datadonation.DonationDataContract
+import care.data4life.datadonation.EncodedDonorIdentity
 import care.data4life.datadonation.RecordId
-import care.data4life.datadonation.donation.model.DonorIdentity
 
-internal data class NewDonor(
-    val recordId: RecordId? = null,
-    val donorIdentity: DonorIdentity,
-    val programName: String
-)
-
-internal data class Donor(
-    val recordId: RecordId,
-    val donorIdentity: DonorIdentity,
-    val programName: String
-)
+internal data class DonorRecord(
+    override val recordId: RecordId?,
+    override val data: EncodedDonorIdentity,
+    override val annotations: Annotations
+) : DonationDataContract.DonorKey
