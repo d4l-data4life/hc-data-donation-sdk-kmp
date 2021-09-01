@@ -26,7 +26,7 @@ import care.data4life.datadonation.mock.MockException
 
 class DonorKeyStorageProviderStub : DataDonationSDK.DonorKeyStorageProvider, MockContract.Stub {
     var whenLoad: ((Annotations, (RecordId, EncodedDonorIdentity) -> Unit, () -> Unit, (Exception) -> Unit) -> Unit)? = null
-    var whenSave: ((DonationDataContract.DonorKey, () -> Unit, (Exception) -> Unit) -> Unit)? = null
+    var whenSave: ((DonationDataContract.DonorRecord, () -> Unit, (Exception) -> Unit) -> Unit)? = null
     var whenDelete: ((RecordId, () -> Unit, (Exception) -> Unit) -> Unit)? = null
 
     override fun load(
@@ -44,11 +44,11 @@ class DonorKeyStorageProviderStub : DataDonationSDK.DonorKeyStorageProvider, Moc
     }
 
     override fun save(
-        donorKey: DonationDataContract.DonorKey,
+        donorRecord: DonationDataContract.DonorRecord,
         onSuccess: () -> Unit,
         onError: (error: Exception) -> Unit
     ) {
-        return whenSave?.invoke(donorKey, onSuccess, onError) ?: throw MockException()
+        return whenSave?.invoke(donorRecord, onSuccess, onError) ?: throw MockException()
     }
 
     override fun delete(recordId: RecordId, onSuccess: () -> Unit, onError: (error: Exception) -> Unit) {

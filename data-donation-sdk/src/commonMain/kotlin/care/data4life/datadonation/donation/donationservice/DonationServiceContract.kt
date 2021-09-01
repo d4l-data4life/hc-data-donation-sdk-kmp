@@ -23,8 +23,6 @@ import io.ktor.client.request.forms.MultiPartFormDataContent
 
 internal typealias SerializedJson = String
 internal typealias EncryptedJSON = ByteArray
-internal typealias EncryptedSignedMessage = ByteArray
-internal typealias EncryptedDocument = ByteArray
 internal typealias Signature = String
 internal typealias DonorId = String
 internal typealias UUID = String

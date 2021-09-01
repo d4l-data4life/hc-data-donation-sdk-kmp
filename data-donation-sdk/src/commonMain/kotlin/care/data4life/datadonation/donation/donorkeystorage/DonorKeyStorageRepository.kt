@@ -61,7 +61,7 @@ internal class DonorKeyStorageRepository(
 
     override suspend fun load(programName: String): Donor? {
         val incoming = Channel<Any>()
-        val annotations = setOf(
+        val annotations = listOf(
             "${PROGRAM_ANNOTATION_PREFIX}$programName",
             DATA_DONATION_ANNOTATION
         )
@@ -100,14 +100,14 @@ internal class DonorKeyStorageRepository(
         return mapLoadResult(incoming.receive())
     }
 
-    private fun mapDonorToDonorKey(newDonor: NewDonor): DonationDataContract.DonorKey {
+    private fun mapDonorToDonorKey(newDonor: NewDonor): DonationDataContract.DonorRecord {
         return DonorRecord(
             recordId = newDonor.recordId,
             data = serializer.encodeToString(
                 DonorIdentity.serializer(),
                 newDonor.donorIdentity
             ),
-            annotations = setOf(
+            annotations = listOf(
                 "${PROGRAM_ANNOTATION_PREFIX}${newDonor.programName}",
                 DATA_DONATION_ANNOTATION
             )
@@ -128,7 +128,7 @@ internal class DonorKeyStorageRepository(
         val donorKey = mapDonorToDonorKey(newDonor)
 
         provider.save(
-            donorKey = donorKey.freeze(),
+            donorRecord = donorKey.freeze(),
             onSuccess = {
                 scope.get().launch {
                     incoming.send(Unit)

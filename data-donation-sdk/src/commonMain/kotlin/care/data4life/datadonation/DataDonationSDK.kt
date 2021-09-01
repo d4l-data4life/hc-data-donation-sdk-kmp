@@ -64,7 +64,7 @@ interface DataDonationSDK {
         )
 
         fun save(
-            donorKey: DonationDataContract.DonorKey,
+            donorRecord: DonationDataContract.DonorRecord,
             onSuccess: () -> Unit,
             onError: (error: Exception) -> Unit
         )

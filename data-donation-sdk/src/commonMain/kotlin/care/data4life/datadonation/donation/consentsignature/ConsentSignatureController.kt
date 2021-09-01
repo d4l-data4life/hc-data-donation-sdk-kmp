@@ -40,6 +40,10 @@ internal class ConsentSignatureController(
     ): SignedConsentMessage {
         val accessToken = userSessionTokenRepository.getUserSessionToken()
 
+        /*
+         * TODO: Rethink once every Case is present how to structure it properly since this
+         * technically the mapping to the DataTransferObject belongs in the repository.
+         */
         val message = ConsentRequestMessage(
             token = token,
             donorId = donorPublicKey

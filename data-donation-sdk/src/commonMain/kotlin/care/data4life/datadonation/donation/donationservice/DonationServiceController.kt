@@ -33,6 +33,10 @@ internal class DonationServiceController(
         signedConsent: SignedConsentMessage,
         donationServicePublicKey: String
     ) {
+        /*
+         * TODO: Rethink once every Case is present how to structure it properly since this
+         * technically the mapping to the DataTransferObject belongs in the repository.
+         */
         val serializedEncryptedConsent = serializer.encodeToString(
             SignedConsentMessage.serializer(),
             signedConsent

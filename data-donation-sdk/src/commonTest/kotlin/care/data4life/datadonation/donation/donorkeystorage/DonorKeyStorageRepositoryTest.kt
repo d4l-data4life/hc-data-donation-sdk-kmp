@@ -85,7 +85,7 @@ class DonorKeyStorageRepositoryTest {
             )
             assertEquals(
                 actual = capturedAnnotations.receive(),
-                expected = setOf(
+                expected = listOf(
                     "program:$programName",
                     DATA_DONATION_ANNOTATION
                 )
@@ -120,7 +120,7 @@ class DonorKeyStorageRepositoryTest {
             assertNull(result)
             assertEquals(
                 actual = capturedAnnotations.receive(),
-                expected = setOf(
+                expected = listOf(
                     "program:$programName",
                     DATA_DONATION_ANNOTATION
                 )
@@ -165,7 +165,7 @@ class DonorKeyStorageRepositoryTest {
             )
             assertEquals(
                 actual = capturedAnnotations.receive(),
-                expected = setOf(
+                expected = listOf(
                     "program:$programName",
                     DATA_DONATION_ANNOTATION
                 )
@@ -188,7 +188,7 @@ class DonorKeyStorageRepositoryTest {
         val error = RuntimeException()
         val provider = DonorKeyStorageProviderStub()
 
-        val capturedDonorRecord = Channel<DonationDataContract.DonorKey>()
+        val capturedDonorRecord = Channel<DonationDataContract.DonorRecord>()
         provider.whenSave = { delegatedDonorRecord, _, onError ->
             launch {
                 capturedDonorRecord.send(delegatedDonorRecord)
@@ -222,7 +222,7 @@ class DonorKeyStorageRepositoryTest {
             )
             assertEquals(
                 actual = donorRecord.annotations,
-                expected = setOf(
+                expected = listOf(
                     "program:$programName",
                     DATA_DONATION_ANNOTATION
                 )
@@ -244,7 +244,7 @@ class DonorKeyStorageRepositoryTest {
 
         val provider = DonorKeyStorageProviderStub()
 
-        val capturedDonorRecord = Channel<DonationDataContract.DonorKey>()
+        val capturedDonorRecord = Channel<DonationDataContract.DonorRecord>()
         provider.whenSave = { delegatedDonorRecord, onSuccess, _ ->
             launch {
                 capturedDonorRecord.send(delegatedDonorRecord)
@@ -277,7 +277,7 @@ class DonorKeyStorageRepositoryTest {
             )
             assertEquals(
                 actual = donorRecord.annotations,
-                expected = setOf(
+                expected = listOf(
                     "program:$programName",
                     DATA_DONATION_ANNOTATION
                 )

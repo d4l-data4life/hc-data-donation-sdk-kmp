@@ -25,4 +25,4 @@ internal data class DonorRecord(
     override val recordId: RecordId?,
     override val data: EncodedDonorIdentity,
     override val annotations: Annotations
-) : DonationDataContract.DonorKey
+) : DonationDataContract.DonorRecord

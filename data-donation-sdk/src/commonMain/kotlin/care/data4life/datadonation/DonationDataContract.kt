@@ -17,11 +17,11 @@
 package care.data4life.datadonation
 
 internal typealias RecordId = String
-internal typealias Annotations = Set<String>
+internal typealias Annotations = List<String>
 internal typealias EncodedDonorIdentity = String
 
 interface DonationDataContract {
-    interface DonorKey {
+    interface DonorRecord {
         val recordId: RecordId?
         val data: EncodedDonorIdentity
         val annotations: Annotations
