@@ -14,14 +14,22 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.session
+package care.data4life.datadonation.mock.stub.donation.program
 
+import care.data4life.datadonation.donation.program.ProgramContract
+import care.data4life.datadonation.donation.program.model.Program
+import care.data4life.datadonation.mock.MockContract
+import care.data4life.datadonation.mock.MockException
 import care.data4life.datadonation.networking.AccessToken
 
-internal interface SessionTokenRepositoryContract {
-    suspend fun getUserSessionToken(): AccessToken
+internal class ProgramRepositoryStub: ProgramContract.Repository, MockContract.Stub {
+    var whenFetchProgram: ((AccessToken, String) -> Program)? = null
 
-    companion object {
-        const val CACHE_LIFETIME_IN_SECONDS = 60
+    override suspend fun fetchProgram(accessToken: AccessToken, programName: String): Program {
+        return whenFetchProgram?.invoke(accessToken, programName) ?: throw MockException()
+    }
+
+    override fun clear() {
+        whenFetchProgram = null
     }
 }

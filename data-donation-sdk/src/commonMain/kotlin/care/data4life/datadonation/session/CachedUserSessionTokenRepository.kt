@@ -17,6 +17,7 @@
 package care.data4life.datadonation.session
 
 import care.data4life.datadonation.DataDonationSDK
+import care.data4life.datadonation.networking.AccessToken
 import care.data4life.datadonation.session.SessionTokenRepositoryContract.Companion.CACHE_LIFETIME_IN_SECONDS
 import care.data4life.datadonation.util.Cache
 import care.data4life.sdk.lang.D4LRuntimeException
@@ -53,7 +54,7 @@ internal class CachedUserSessionTokenRepository(
         val incoming = Channel<Any>()
 
         provider.getUserSessionToken(
-            onSuccess = { sessionToken: SessionToken ->
+            onSuccess = { sessionToken: AccessToken ->
                 scope.get().launch {
                     incoming.send(sessionToken)
                 }.start()
@@ -70,7 +71,7 @@ internal class CachedUserSessionTokenRepository(
         return incoming.receive()
     }
 
-    private fun fetchCachedTokenIfNotExpired(): SessionToken? {
+    private fun fetchCachedTokenIfNotExpired(): AccessToken? {
         return try {
             cache.access { it.fetch() }
         } catch (e: D4LRuntimeException) {
@@ -78,18 +79,18 @@ internal class CachedUserSessionTokenRepository(
         }
     }
 
-    private fun resolveSessionToken(result: Any): SessionToken {
+    private fun resolveSessionToken(result: Any): AccessToken {
         return when (result) {
-            is SessionToken -> result.also { cache.access { it.update(result) } }
+            is AccessToken -> result.also { cache.access { it.update(result) } }
             is Exception -> throw UserSessionError.MissingSession(result)
             else -> throw UserSessionError.MissingSession()
         }
     }
 
-    override suspend fun getUserSessionToken(): SessionToken {
+    override suspend fun getUserSessionToken(): AccessToken {
         val cachedToken = fetchCachedTokenIfNotExpired()
 
-        return if (cachedToken is SessionToken) {
+        return if (cachedToken is AccessToken) {
             cachedToken
         } else {
             return resolveSessionToken(fetchTokenFromApi())

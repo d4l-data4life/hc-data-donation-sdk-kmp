@@ -14,14 +14,19 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.session
+package care.data4life.datadonation.donation.program
 
-import care.data4life.datadonation.networking.AccessToken
+import care.data4life.datadonation.donation.program.model.Program
+import care.data4life.datadonation.session.SessionTokenRepositoryContract
 
-internal interface SessionTokenRepositoryContract {
-    suspend fun getUserSessionToken(): AccessToken
-
-    companion object {
-        const val CACHE_LIFETIME_IN_SECONDS = 60
+internal class ProgramController(
+    private val repository: ProgramContract.Repository,
+    private val session: SessionTokenRepositoryContract
+): ProgramContract.Controller {
+    override suspend fun fetchProgram(programName: String): Program {
+        return repository.fetchProgram(
+            accessToken = session.getUserSessionToken(),
+            programName = programName
+        )
     }
 }
