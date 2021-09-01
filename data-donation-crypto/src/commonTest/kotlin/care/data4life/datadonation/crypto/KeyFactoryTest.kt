@@ -18,6 +18,7 @@ package care.data4life.datadonation.crypto
 
 import care.data4life.datadonation.crypto.util.AndroidOnly
 import care.data4life.datadonation.crypto.util.CryptoVerification
+import care.data4life.sdk.util.Base64
 import care.data4life.sdk.util.test.annotation.RobolectricTestRunner
 import care.data4life.sdk.util.test.annotation.RunWithRobolectricTestRunner
 import kotlin.test.Test
@@ -39,7 +40,7 @@ class KeyFactoryTest {
         val pair = KeyFactory.createKeyPair()
 
         // Then
-        assertTrue(CryptoVerification.isPublicKey(pair.publicKey))
-        assertTrue(CryptoVerification.isPrivateKey(pair.privateKey))
+        assertTrue(CryptoVerification.isPublicKey(Base64.decode(pair.publicKey)))
+        assertTrue(CryptoVerification.isPrivateKey(Base64.decode(pair.privateKey)))
     }
 }

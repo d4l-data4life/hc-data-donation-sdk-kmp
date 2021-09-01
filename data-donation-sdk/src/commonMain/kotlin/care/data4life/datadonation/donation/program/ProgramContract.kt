@@ -42,4 +42,8 @@ internal interface ProgramContract {
             programName: String
         ): Program
     }
+
+    interface Controller {
+        suspend fun fetchProgram(programName: String): Program
+    }
 }

@@ -14,21 +14,21 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.crypto
+package care.data4life.datadonation.mock.stub.donation.program
 
-import care.data4life.datadonation.crypto.model.KeyPair
+import care.data4life.datadonation.donation.program.ProgramContract
+import care.data4life.datadonation.donation.program.model.Program
+import care.data4life.datadonation.mock.MockContract
+import care.data4life.datadonation.mock.MockException
 
-actual object KeyFactory : CryptoContract.KeyFactory {
-    actual override fun createKeyPair(): KeyPair {
-        val keyPair = try {
-            CryptoKeyFactory.generateAsymmetricKeyPair()
-        } catch (_: Throwable) {
-            throw CryptoError.MalFormedKeyGeneration()
-        }
+internal class ProgramControllerStub : ProgramContract.Controller, MockContract.Stub {
+    var whenFetchProgram: ((String) -> Program)? = null
 
-        return KeyPair(
-            publicKey = keyPair.getPublicKeyBase64(),
-            privateKey = keyPair.getPrivateKeyBase64()
-        )
+    override suspend fun fetchProgram(programName: String): Program {
+        return whenFetchProgram?.invoke(programName) ?: throw MockException()
+    }
+
+    override fun clear() {
+        whenFetchProgram = null
     }
 }

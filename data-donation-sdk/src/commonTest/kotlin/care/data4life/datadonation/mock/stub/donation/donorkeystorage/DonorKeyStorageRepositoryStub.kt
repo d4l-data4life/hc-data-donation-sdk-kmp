@@ -25,12 +25,16 @@ import care.data4life.datadonation.mock.MockException
 internal class DonorKeyStorageRepositoryStub :
     DonorKeyStorageRepositoryContract,
     MockContract.Stub {
-    var whenLoad: ((String) -> Donor)? = null
+    var whenLoad: ((String) -> Donor?)? = null
     var whenSave: ((NewDonor) -> Unit)? = null
     var whenDelete: ((Donor) -> Unit)? = null
 
-    override suspend fun load(programName: String): Donor {
-        return whenLoad?.invoke(programName) ?: throw MockException()
+    override suspend fun load(programName: String): Donor? {
+        return if (whenLoad == null) {
+            throw MockException()
+        } else {
+            whenLoad!!.invoke(programName)
+        }
     }
 
     override suspend fun save(newDonor: NewDonor) {

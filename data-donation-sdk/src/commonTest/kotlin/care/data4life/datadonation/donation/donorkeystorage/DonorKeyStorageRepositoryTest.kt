@@ -32,6 +32,7 @@ import kotlinx.coroutines.launch
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertNull
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
@@ -56,7 +57,7 @@ class DonorKeyStorageRepositoryTest {
         val provider = DonorKeyStorageProviderStub()
 
         val capturedAnnotations = Channel<Annotations>()
-        provider.whenLoad = { delegatedAnnotations, _, onError ->
+        provider.whenLoad = { delegatedAnnotations, _, _, onError ->
             launch {
                 capturedAnnotations.send(delegatedAnnotations)
             }
@@ -88,6 +89,43 @@ class DonorKeyStorageRepositoryTest {
     }
 
     @Test
+    fun `Given load is called with a ProgramName, it delegates the call to its Provider and propagtes its Result, if nothing was found`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+        // Given
+        val programName = "potato"
+
+        val recordId = "ABC"
+        val data = "secret"
+
+        val provider = DonorKeyStorageProviderStub()
+
+        val capturedAnnotations = Channel<Annotations>()
+        provider.whenLoad = { delegatedAnnotations, _, onNotFound, _ ->
+            launch {
+                capturedAnnotations.send(delegatedAnnotations)
+            }
+            onNotFound()
+        }
+
+        // When
+        runBlockingTest {
+            val result = DonorKeyStorageRepository(
+                provider,
+                testScope
+            ).load(programName)
+
+            // Then
+            assertNull(result)
+            assertEquals(
+                actual = capturedAnnotations.receive(),
+                expected = setOf(
+                    "program:$programName",
+                    DATA_DONATION_ANNOTATION
+                )
+            )
+        }
+    }
+
+    @Test
     fun `Given load is called with a ProgramName, it delegates the call to its Provider and propagtes its Result`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val programName = "potato"
@@ -98,7 +136,7 @@ class DonorKeyStorageRepositoryTest {
         val provider = DonorKeyStorageProviderStub()
 
         val capturedAnnotations = Channel<Annotations>()
-        provider.whenLoad = { delegatedAnnotations, onSuccess, _ ->
+        provider.whenLoad = { delegatedAnnotations, onSuccess, _, _ ->
             launch {
                 capturedAnnotations.send(delegatedAnnotations)
             }

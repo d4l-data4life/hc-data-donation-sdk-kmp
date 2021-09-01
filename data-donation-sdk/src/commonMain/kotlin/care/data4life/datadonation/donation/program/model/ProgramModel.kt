@@ -75,7 +75,8 @@ internal data class ProgramAnonymization(
 
 @Serializable
 internal data class ProgramDonationConfiguration(
-    val consentKey: String,
+    @SerialName("consentKey")
+    val consentDocumentKey: String,
     val resources: List<ProgramResource>,
     val anonymization: ProgramAnonymization? = null,
     val triggerList: List<String>? = null,

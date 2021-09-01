@@ -20,7 +20,7 @@ import care.data4life.datadonation.EncodedDonorIdentity
 import care.data4life.datadonation.RecordId
 
 internal data class NewDonor(
-    val recordId: RecordId?,
+    val recordId: RecordId? = null,
     val donorIdentity: EncodedDonorIdentity,
     val programName: String
 )

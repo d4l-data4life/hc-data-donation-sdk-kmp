@@ -17,21 +17,6 @@
 package care.data4life.datadonation.crypto.model
 
 data class KeyPair(
-    val publicKey: ByteArray,
-    val privateKey: ByteArray
-) {
-    override fun equals(other: Any?): Boolean {
-        return when {
-            other !is KeyPair -> false
-            !other.publicKey.contentEquals(this.publicKey) -> false
-            !other.privateKey.contentEquals(this.privateKey) -> false
-            else -> true
-        }
-    }
-
-    override fun hashCode(): Int {
-        var result = publicKey.contentHashCode()
-        result = 31 * result + privateKey.contentHashCode()
-        return result
-    }
-}
+    val publicKey: String,
+    val privateKey: String
+)

@@ -14,21 +14,20 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.crypto
+package care.data4life.datadonation.donation.model
 
-import care.data4life.datadonation.crypto.model.KeyPair
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-actual object KeyFactory : CryptoContract.KeyFactory {
-    actual override fun createKeyPair(): KeyPair {
-        val keyPair = try {
-            CryptoKeyFactory.generateAsymmetricKeyPair()
-        } catch (_: Throwable) {
-            throw CryptoError.MalFormedKeyGeneration()
-        }
-
-        return KeyPair(
-            publicKey = keyPair.getPublicKeyBase64(),
-            privateKey = keyPair.getPrivateKeyBase64()
-        )
-    }
-}
+@Serializable
+internal data class DonorIdentity(
+    @SerialName("t")
+    val keyType: String,
+    @SerialName("priv")
+    val privateKey: String,
+    @SerialName("pub")
+    val publicKey: String,
+    @SerialName("v")
+    val version: Int,
+    val scope: String
+)

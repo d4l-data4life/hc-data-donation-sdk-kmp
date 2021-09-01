@@ -33,7 +33,7 @@ internal object ProgramFixture {
         slug = "sample",
         tenantID = "d4l",
         configuration = ProgramDonationConfiguration(
-            consentKey = "d4l.sample",
+            consentDocumentKey = "d4l.sample",
             anonymization = ProgramAnonymization(
                 blur = ProgramAnonymizationBlur(
                     location = "Europe/Berlin",

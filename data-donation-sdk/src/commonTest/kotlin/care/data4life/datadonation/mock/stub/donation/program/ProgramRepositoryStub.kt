@@ -22,7 +22,7 @@ import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 import care.data4life.datadonation.networking.AccessToken
 
-internal class ProgramRepositoryStub: ProgramContract.Repository, MockContract.Stub {
+internal class ProgramRepositoryStub : ProgramContract.Repository, MockContract.Stub {
     var whenFetchProgram: ((AccessToken, String) -> Program)? = null
 
     override suspend fun fetchProgram(accessToken: AccessToken, programName: String): Program {

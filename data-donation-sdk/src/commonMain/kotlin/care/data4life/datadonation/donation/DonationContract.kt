@@ -36,4 +36,9 @@ internal interface DonationContract {
     interface Controller {
         suspend fun register(programName: String)
     }
+
+    companion object {
+        const val DONOR_IDENTITY_KEY_VERSION = 1
+        const val DONOR_IDENTITY_KEY_TYPE = "dataDonationKey"
+    }
 }

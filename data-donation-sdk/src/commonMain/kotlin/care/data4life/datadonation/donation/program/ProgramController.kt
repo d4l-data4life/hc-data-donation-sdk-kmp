@@ -22,7 +22,7 @@ import care.data4life.datadonation.session.SessionTokenRepositoryContract
 internal class ProgramController(
     private val repository: ProgramContract.Repository,
     private val session: SessionTokenRepositoryContract
-): ProgramContract.Controller {
+) : ProgramContract.Controller {
     override suspend fun fetchProgram(programName: String): Program {
         return repository.fetchProgram(
             accessToken = session.getUserSessionToken(),

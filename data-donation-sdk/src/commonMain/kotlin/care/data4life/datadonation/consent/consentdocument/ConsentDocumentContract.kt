@@ -17,13 +17,13 @@
 package care.data4life.datadonation.consent.consentdocument
 
 import care.data4life.datadonation.ConsentDataContract
+import care.data4life.datadonation.networking.AccessToken
 import care.data4life.datadonation.networking.HttpRuntimeError
-import care.data4life.datadonation.session.SessionToken
 
 internal interface ConsentDocumentContract {
     interface ApiService {
         suspend fun fetchConsentDocuments(
-            accessToken: SessionToken,
+            accessToken: AccessToken,
             consentDocumentKey: String,
             version: String?,
             language: String?,
@@ -40,7 +40,7 @@ internal interface ConsentDocumentContract {
 
     interface Repository {
         suspend fun fetchConsentDocuments(
-            accessToken: SessionToken,
+            accessToken: AccessToken,
             consentDocumentKey: String,
             consentDocumentVersion: String?,
             language: String?,
