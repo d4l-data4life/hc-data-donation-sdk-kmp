@@ -17,6 +17,7 @@
 package care.data4life.datadonation.networking.plugin
 
 import care.data4life.datadonation.networking.Networking
+import care.data4life.datadonation.util.JsonConfigurator
 import care.data4life.sdk.log.Log
 import io.ktor.client.features.HttpCallValidator
 import io.ktor.client.features.json.JsonFeature
@@ -27,7 +28,7 @@ import kotlin.test.assertEquals
 
 class PluginKoinTest {
     @Test
-    fun `Given resolveServiceModule is called it creates a Module, which contains a List of HttpFeatureInstaller`() {
+    fun `Given resolveKtorPlugins is called it creates a Module, which contains a List of HttpFeatureInstaller`() {
         // When
         val koin = koinApplication {
             modules(

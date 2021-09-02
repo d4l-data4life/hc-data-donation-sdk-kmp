@@ -20,63 +20,74 @@ import care.data4life.datadonation.DataDonationSDK
 import care.data4life.datadonation.DataDonationSDK.Environment
 import care.data4life.datadonation.consent.consentdocument.resolveConsentDocumentKoinModule
 import care.data4life.datadonation.consent.userconsent.resolveConsentKoinModule
-import care.data4life.datadonation.error.DataDonationFlowErrorMapper
+import care.data4life.datadonation.donation.consentsignature.resolveConsentSignatureKoinModule
+import care.data4life.datadonation.donation.donationservice.resolveDonationServiceKoinModule
+import care.data4life.datadonation.donation.donorkeystorage.resolveDonorKeyStorageKoinModule
+import care.data4life.datadonation.donation.program.resolveProgramKoinModule
+import care.data4life.datadonation.donation.publickeyservice.resolvePublicKeyServiceKoinModule
+import care.data4life.datadonation.donation.resolveDonationKoinModule
 import care.data4life.datadonation.networking.plugin.resolveKtorPlugins
 import care.data4life.datadonation.networking.resolveNetworking
 import care.data4life.datadonation.session.resolveSessionKoinModule
-import care.data4life.sdk.flow.D4LSDKFlow
-import care.data4life.sdk.flow.D4LSDKFlowFactoryContract
-import care.data4life.sdk.util.coroutine.CoroutineScopeFactory
-import care.data4life.sdk.util.coroutine.DomainErrorMapperContract
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.datetime.Clock
 import org.koin.core.KoinApplication
 import org.koin.core.module.Module
 import org.koin.dsl.koinApplication
-import org.koin.dsl.module
 
 internal fun initKoin(
     environment: Environment,
-    userSession: DataDonationSDK.UserSessionTokenProvider
+    userSession: DataDonationSDK.UserSessionTokenProvider,
+    keyStorage: DataDonationSDK.DonorKeyStorageProvider
 ): KoinApplication {
+    val dependencies = mutableListOf<Module>()
+
+    dependencies.addAll(
+        sharedDependencies(environment, userSession, keyStorage)
+    )
+
+    dependencies.addAll(
+        consentFlowDependencies()
+    )
+
+    dependencies.addAll(
+        donationFlowDependencies()
+    )
+
     return koinApplication {
-        modules(
-            resolveRootModule(
-                environment,
-                userSession
-            ),
-            resolveNetworking(),
-            resolveKtorPlugins(),
-            resolveConsentKoinModule(),
-            resolveConsentDocumentKoinModule(),
-            resolveSessionKoinModule()
-        )
+        modules(dependencies)
     }
 }
 
-internal fun resolveRootModule(
+internal fun sharedDependencies(
     environment: Environment,
-    userSessionTokenProvider: DataDonationSDK.UserSessionTokenProvider
-): Module {
-    return module {
-        single<Environment> { environment }
+    userSession: DataDonationSDK.UserSessionTokenProvider,
+    keyStorage: DataDonationSDK.DonorKeyStorageProvider
+): List<Module> {
+    return listOf(
+        resolveRootModule(
+            environment,
+            userSession,
+            keyStorage
+        ),
+        resolveNetworking(),
+        resolveKtorPlugins(),
+        resolveSessionKoinModule()
+    )
+}
 
-        single<Clock> { Clock.System }
+internal fun consentFlowDependencies(): List<Module> {
+    return listOf(
+        resolveConsentKoinModule(),
+        resolveConsentDocumentKoinModule(),
+    )
+}
 
-        single<DataDonationSDK.UserSessionTokenProvider> {
-            userSessionTokenProvider
-        }
-
-        single<CoroutineScope> {
-            CoroutineScopeFactory.createScope("DataDonationBackgroundThreadScope")
-        }
-
-        single<DomainErrorMapperContract> {
-            DataDonationFlowErrorMapper
-        }
-
-        single<D4LSDKFlowFactoryContract> {
-            D4LSDKFlow
-        }
-    }
+internal fun donationFlowDependencies(): List<Module> {
+    return listOf(
+        resolveDonationKoinModule(),
+        resolveProgramKoinModule(),
+        resolvePublicKeyServiceKoinModule(),
+        resolveDonorKeyStorageKoinModule(),
+        resolveConsentSignatureKoinModule(),
+        resolveDonationServiceKoinModule()
+    )
 }

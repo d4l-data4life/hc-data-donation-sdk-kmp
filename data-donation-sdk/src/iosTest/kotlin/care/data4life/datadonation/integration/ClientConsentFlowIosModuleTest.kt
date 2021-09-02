@@ -32,23 +32,27 @@
 
 package care.data4life.datadonation.integration
 
+import care.data4life.datadonation.Annotations
 import care.data4life.datadonation.Client
 import care.data4life.datadonation.DataDonationSDK
+import care.data4life.datadonation.DonationDataContract
+import care.data4life.datadonation.EncodedDonorIdentity
+import care.data4life.datadonation.RecordId
 import care.data4life.datadonation.consent.consentdocument.ConsentDocumentError
-import care.data4life.datadonation.consent.consentdocument.resolveConsentDocumentKoinModule
-import care.data4life.datadonation.consent.userconsent.resolveConsentKoinModule
-import care.data4life.datadonation.di.resolveRootModule
-import care.data4life.datadonation.networking.plugin.resolveKtorPlugins
-import care.data4life.datadonation.networking.resolveNetworking
-import care.data4life.datadonation.session.resolveSessionKoinModule
+import care.data4life.datadonation.di.consentFlowDependencies
+import care.data4life.datadonation.di.donationFlowDependencies
+import care.data4life.datadonation.di.sharedDependencies
 import care.data4life.sdk.util.test.coroutine.runBlockingTest
 import care.data4life.sdk.util.test.ktor.HttpMockClientFactory.createMockClientWithResponse
+import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.respond
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
+import org.koin.core.KoinApplication
 import org.koin.core.context.stopKoin
+import org.koin.core.module.Module
 import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
@@ -60,6 +64,39 @@ class ClientConsentFlowIosModuleTest {
     @BeforeTest
     fun setUp() {
         stopKoin()
+    }
+
+    private fun initKoin(httpClient: HttpClient): KoinApplication {
+        val dependencies = mutableListOf<Module>()
+
+        dependencies.addAll(
+            sharedDependencies(
+                DataDonationSDK.Environment.DEVELOPMENT,
+                UserSessionTokenProvider,
+                DonorKeyStorageProvider
+            )
+        )
+
+        dependencies.addAll(
+            consentFlowDependencies()
+        )
+
+        dependencies.addAll(
+            donationFlowDependencies()
+        )
+
+        dependencies.add(
+            module {
+                factory(
+                    override = true,
+                    qualifier = named("blankHttpClient")
+                ) { httpClient }
+            }
+        )
+
+        return koinApplication {
+            modules(dependencies)
+        }
     }
 
     @Test
@@ -78,28 +115,8 @@ class ClientConsentFlowIosModuleTest {
             )
         }
 
-        val koin = koinApplication {
-            modules(
-                resolveRootModule(
-                    DataDonationSDK.Environment.DEVELOPMENT,
-                    UserSessionTokenProvider
-                ),
-                resolveNetworking(),
-                resolveKtorPlugins(),
-                resolveConsentKoinModule(),
-                resolveConsentDocumentKoinModule(),
-                resolveSessionKoinModule(),
-                module {
-                    factory(
-                        override = true,
-                        qualifier = named("blankHttpClient")
-                    ) { httpClient }
-                }
-            )
-        }
-
         // When
-        val job = Client(koin).fetchConsentDocuments(
+        val job = Client(initKoin(httpClient)).fetchConsentDocuments(
             consentDocumentKey,
             version,
             language,
@@ -128,5 +145,32 @@ class ClientConsentFlowIosModuleTest {
             onSuccess: (sessionToken: String) -> Unit,
             onError: (error: Exception) -> Unit
         ) { onSuccess(sessionToken) }
+    }
+
+    private object DonorKeyStorageProvider : DataDonationSDK.DonorKeyStorageProvider {
+        override fun load(
+            annotations: Annotations,
+            onSuccess: (recordId: RecordId, data: EncodedDonorIdentity) -> Unit,
+            onNotFound: () -> Unit,
+            onError: (error: Exception) -> Unit
+        ) {
+            TODO("Not yet implemented")
+        }
+
+        override fun save(
+            donorRecord: DonationDataContract.DonorRecord,
+            onSuccess: () -> Unit,
+            onError: (error: Exception) -> Unit
+        ) {
+            TODO("Not yet implemented")
+        }
+
+        override fun delete(
+            recordId: RecordId,
+            onSuccess: () -> Unit,
+            onError: (error: Exception) -> Unit
+        ) {
+            TODO("Not yet implemented")
+        }
     }
 }

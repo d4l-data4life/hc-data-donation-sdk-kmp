@@ -17,8 +17,11 @@
 package care.data4life.datadonation.donation.program
 
 import care.data4life.datadonation.mock.stub.donation.program.ProgramApiServiceStub
+import care.data4life.datadonation.mock.stub.donation.program.ProgramRepositoryStub
 import care.data4life.datadonation.mock.stub.networking.RequestBuilderSpy
+import care.data4life.datadonation.mock.stub.session.UserSessionTokenRepositoryStub
 import care.data4life.datadonation.networking.Networking
+import care.data4life.datadonation.session.SessionTokenRepositoryContract
 import org.koin.core.context.stopKoin
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
@@ -81,6 +84,28 @@ class ProgramKoinTest {
 
         // Then
         val repo: ProgramContract.Repository = koin.koin.get()
+        assertNotNull(repo)
+    }
+
+    @Test
+    fun `Given resolveProgramKoinModule is called it creates a Module, which contains a ProgramController`() {
+        // When
+        val koin = koinApplication {
+            modules(
+                resolveProgramKoinModule(),
+                module {
+                    single<ProgramContract.Repository>(override = true) {
+                        ProgramRepositoryStub()
+                    }
+                    single<SessionTokenRepositoryContract> {
+                        UserSessionTokenRepositoryStub()
+                    }
+                }
+            )
+        }
+
+        // Then
+        val repo: ProgramContract.Controller = koin.koin.get()
         assertNotNull(repo)
     }
 }

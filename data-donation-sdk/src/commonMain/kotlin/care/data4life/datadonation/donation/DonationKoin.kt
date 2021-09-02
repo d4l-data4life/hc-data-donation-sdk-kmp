@@ -14,27 +14,22 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.donation.program
+package care.data4life.datadonation.donation
 
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
-internal fun resolveProgramKoinModule(): Module {
+internal fun resolveDonationKoinModule(): Module {
     return module {
-        single<ProgramContract.ApiService.ErrorHandler> {
-            ProgramErrorHandler
-        }
-
-        single<ProgramContract.ApiService> {
-            ProgramApiService(get(), get())
-        }
-
-        single<ProgramContract.Repository> {
-            ProgramRepository(get())
-        }
-
-        single<ProgramContract.Controller> {
-            ProgramController(get(), get())
+        single<DonationContract.Controller> {
+            DonationController(
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+                get()
+            )
         }
     }
 }

@@ -14,7 +14,7 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.networking.plugin
+package care.data4life.datadonation.util
 
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonBuilder
@@ -27,7 +27,7 @@ class JsonConfiguratorTest {
     fun `It fulfils JsonConfigurator`() {
         val configurator: Any = JsonConfigurator
 
-        assertTrue(configurator is KtorPluginsContract.JsonConfigurator)
+        assertTrue(configurator is JsonConfiguratorContract)
     }
 
     @Test

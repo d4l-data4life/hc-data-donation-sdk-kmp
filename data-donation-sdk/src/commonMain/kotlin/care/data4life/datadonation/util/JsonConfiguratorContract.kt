@@ -14,27 +14,10 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.donation.program
+package care.data4life.datadonation.util
 
-import org.koin.core.module.Module
-import org.koin.dsl.module
+import kotlinx.serialization.json.JsonBuilder
 
-internal fun resolveProgramKoinModule(): Module {
-    return module {
-        single<ProgramContract.ApiService.ErrorHandler> {
-            ProgramErrorHandler
-        }
-
-        single<ProgramContract.ApiService> {
-            ProgramApiService(get(), get())
-        }
-
-        single<ProgramContract.Repository> {
-            ProgramRepository(get())
-        }
-
-        single<ProgramContract.Controller> {
-            ProgramController(get(), get())
-        }
-    }
+fun interface JsonConfiguratorContract {
+    fun configure(jsonBuilder: JsonBuilder): JsonBuilder
 }

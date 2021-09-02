@@ -17,33 +17,11 @@
 package care.data4life.datadonation
 
 import care.data4life.datadonation.DataDonationSDK.Environment
-import care.data4life.datadonation.consent.consentdocument.ConsentDocumentContract
-import care.data4life.datadonation.consent.userconsent.UserConsentContract
-import care.data4life.datadonation.error.DataDonationFlowErrorMapper
-import care.data4life.datadonation.mock.fixture.ConsentDocumentFixture.sampleConsentDocument
-import care.data4life.datadonation.mock.fixture.UserConsentFixture.sampleUserConsent
-import care.data4life.datadonation.mock.spy.D4LFlowFactorySpy
-import care.data4life.datadonation.mock.stub.consent.consentdocument.ConsentDocumentControllerStub
-import care.data4life.datadonation.mock.stub.consent.userconsent.UserConsentControllerStub
 import care.data4life.datadonation.mock.stub.donation.donorkeystorage.DonorKeyStorageProviderStub
 import care.data4life.datadonation.mock.stub.session.UserSessionTokenProviderStub
-import care.data4life.sdk.flow.D4LSDKFlowFactoryContract
-import care.data4life.sdk.util.coroutine.DomainErrorMapperContract
-import care.data4life.sdk.util.test.coroutine.runWithContextBlockingTest
-import care.data4life.sdk.util.test.coroutine.testCoroutineContext
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 import org.koin.core.context.stopKoin
-import org.koin.dsl.koinApplication
-import org.koin.dsl.module
 import kotlin.test.BeforeTest
 import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertNull
-import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 class ClientTest {

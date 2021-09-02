@@ -14,11 +14,11 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.networking.plugin
+package care.data4life.datadonation.util
 
 import kotlinx.serialization.json.JsonBuilder
 
-internal object JsonConfigurator : KtorPluginsContract.JsonConfigurator {
+internal object JsonConfigurator : JsonConfiguratorContract {
     override fun configure(jsonBuilder: JsonBuilder): JsonBuilder {
         jsonBuilder.isLenient = true
         jsonBuilder.ignoreUnknownKeys = true

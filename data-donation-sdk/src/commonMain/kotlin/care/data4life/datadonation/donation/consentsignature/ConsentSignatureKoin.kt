@@ -17,6 +17,7 @@
 package care.data4life.datadonation.donation.consentsignature
 
 import org.koin.core.module.Module
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 internal fun resolveConsentSignatureKoinModule(): Module {
@@ -31,6 +32,15 @@ internal fun resolveConsentSignatureKoinModule(): Module {
 
         single<ConsentSignatureContract.Repository> {
             ConsentSignatureRepository(get())
+        }
+
+        single<ConsentSignatureContract.Controller> {
+            ConsentSignatureController(
+                get(),
+                get(),
+                get(),
+                get(named("DataDonationSerializer"))
+            )
         }
     }
 }

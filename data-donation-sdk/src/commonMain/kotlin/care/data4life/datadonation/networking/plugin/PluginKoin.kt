@@ -17,6 +17,7 @@
 package care.data4life.datadonation.networking.plugin
 
 import care.data4life.datadonation.networking.Networking
+import care.data4life.datadonation.util.JsonConfigurator
 import care.data4life.sdk.log.Log
 import io.ktor.client.features.HttpCallValidator
 import io.ktor.client.features.json.JsonFeature

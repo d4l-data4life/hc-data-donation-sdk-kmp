@@ -18,10 +18,10 @@ package care.data4life.datadonation.mock.stub.networking.plugin
 
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
-import care.data4life.datadonation.networking.plugin.KtorPluginsContract
+import care.data4life.datadonation.util.JsonConfiguratorContract
 import kotlinx.serialization.json.JsonBuilder
 
-class JsonConfiguratorStub : KtorPluginsContract.JsonConfigurator, MockContract.Stub {
+class JsonConfiguratorStub : JsonConfiguratorContract, MockContract.Stub {
     var whenConfigure: ((JsonBuilder) -> JsonBuilder)? = null
 
     override fun configure(jsonBuilder: JsonBuilder): JsonBuilder {

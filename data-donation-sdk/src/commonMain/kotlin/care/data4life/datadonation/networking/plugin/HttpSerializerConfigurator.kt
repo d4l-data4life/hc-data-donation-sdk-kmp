@@ -16,12 +16,13 @@
 
 package care.data4life.datadonation.networking.plugin
 
+import care.data4life.datadonation.util.JsonConfiguratorContract
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.json.serializer.KotlinxSerializer
 import kotlinx.serialization.json.Json
 
 internal object HttpSerializerConfigurator : KtorPluginsContract.HttpSerializerConfigurator {
-    override fun configure(pluginConfiguration: JsonFeature.Config, subConfiguration: KtorPluginsContract.JsonConfigurator) {
+    override fun configure(pluginConfiguration: JsonFeature.Config, subConfiguration: JsonConfiguratorContract) {
         pluginConfiguration.serializer = KotlinxSerializer(
             Json { subConfiguration.configure(this) }
         )

@@ -16,11 +16,18 @@
 
 package care.data4life.datadonation.donation.consentsignature
 
+import care.data4life.datadonation.crypto.CryptoContract
+import care.data4life.datadonation.mock.stub.crypto.CryptoServiceStub
 import care.data4life.datadonation.mock.stub.donation.consentsignature.ConsentSignatureApiServiceStub
 import care.data4life.datadonation.mock.stub.donation.consentsignature.ConsentSignatureErrorHandlerStub
+import care.data4life.datadonation.mock.stub.donation.consentsignature.ConsentSignatureRepositoryStub
 import care.data4life.datadonation.mock.stub.networking.RequestBuilderSpy
+import care.data4life.datadonation.mock.stub.session.UserSessionTokenRepositoryStub
 import care.data4life.datadonation.networking.Networking
+import care.data4life.datadonation.session.SessionTokenRepositoryContract
+import kotlinx.serialization.json.Json
 import org.koin.core.context.stopKoin
+import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import kotlin.test.BeforeTest
@@ -86,5 +93,31 @@ class ConsentSignatureKoinTest {
         // Then
         val repo: ConsentSignatureContract.Repository = koin.koin.get()
         assertNotNull(repo)
+    }
+
+    @Test
+    fun `Given resolveConsentSignatureKoinModule is called it creates a Module, which contains a ConsentSignature Controller`() {
+        // When
+        val koin = koinApplication {
+            modules(
+                resolveConsentSignatureKoinModule(),
+                module {
+                    single<ConsentSignatureContract.Repository>(override = true) {
+                        ConsentSignatureRepositoryStub()
+                    }
+                    single<SessionTokenRepositoryContract> {
+                        UserSessionTokenRepositoryStub()
+                    }
+                    single<CryptoContract.Service> {
+                        CryptoServiceStub()
+                    }
+                    single<Json>(named("DataDonationSerializer")) { Json }
+                }
+            )
+        }
+
+        // Then
+        val controller: ConsentSignatureContract.Controller = koin.koin.get()
+        assertNotNull(controller)
     }
 }

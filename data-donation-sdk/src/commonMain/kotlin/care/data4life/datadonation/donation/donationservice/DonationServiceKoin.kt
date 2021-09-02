@@ -14,27 +14,32 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.donation.program
+package care.data4life.datadonation.donation.donationservice
 
 import org.koin.core.module.Module
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
-internal fun resolveProgramKoinModule(): Module {
+internal fun resolveDonationServiceKoinModule(): Module {
     return module {
-        single<ProgramContract.ApiService.ErrorHandler> {
-            ProgramErrorHandler
+        single<DonationServiceContract.ApiService.ErrorHandler> {
+            DonationServiceErrorHandler
         }
 
-        single<ProgramContract.ApiService> {
-            ProgramApiService(get(), get())
+        single<DonationServiceContract.ApiService> {
+            DonationServiceApiService(get(), get())
         }
 
-        single<ProgramContract.Repository> {
-            ProgramRepository(get())
+        single<DonationServiceContract.Repository> {
+            DonationServiceRepository(get())
         }
 
-        single<ProgramContract.Controller> {
-            ProgramController(get(), get())
+        single<DonationServiceContract.Controller> {
+            DonationServiceController(
+                get(),
+                get(),
+                get(named("DataDonationSerializer"))
+            )
         }
     }
 }

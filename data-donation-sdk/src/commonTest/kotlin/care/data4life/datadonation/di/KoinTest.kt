@@ -19,6 +19,8 @@ package care.data4life.datadonation.di
 import care.data4life.datadonation.DataDonationSDK.Environment
 import care.data4life.datadonation.consent.consentdocument.ConsentDocumentContract
 import care.data4life.datadonation.consent.userconsent.UserConsentContract
+import care.data4life.datadonation.donation.DonationContract
+import care.data4life.datadonation.mock.stub.donation.donorkeystorage.DonorKeyStorageProviderStub
 import care.data4life.datadonation.mock.stub.session.UserSessionTokenProviderStub
 import org.koin.core.context.stopKoin
 import kotlin.test.BeforeTest
@@ -36,7 +38,8 @@ class KoinTest {
         // When
         val app = initKoin(
             Environment.DEVELOPMENT,
-            UserSessionTokenProviderStub()
+            UserSessionTokenProviderStub(),
+            DonorKeyStorageProviderStub()
         )
         // Then
         val controller: UserConsentContract.Controller = app.koin.get()
@@ -44,14 +47,28 @@ class KoinTest {
     }
 
     @Test
-    fun `Given initKoin is called with its appropriate parameter, the resulting KoinApplication contains a ConsentDocumentsInteractor`() {
+    fun `Given initKoin is called with its appropriate parameter, the resulting KoinApplication contains a ConsentDocumentsController`() {
         // When
         val app = initKoin(
             Environment.DEVELOPMENT,
-            UserSessionTokenProviderStub()
+            UserSessionTokenProviderStub(),
+            DonorKeyStorageProviderStub()
         )
         // Then
         val controller: ConsentDocumentContract.Controller = app.koin.get()
+        assertNotNull(controller)
+    }
+
+    @Test
+    fun `Given initKoin is called with its appropriate parameter, the resulting KoinApplication contains a DonationController`() {
+        // When
+        val app = initKoin(
+            Environment.DEVELOPMENT,
+            UserSessionTokenProviderStub(),
+            DonorKeyStorageProviderStub()
+        )
+        // Then
+        val controller: DonationContract.Controller = app.koin.get()
         assertNotNull(controller)
     }
 }
