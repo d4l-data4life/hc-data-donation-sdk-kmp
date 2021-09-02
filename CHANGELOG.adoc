@@ -41,6 +41,9 @@ toc::[]
 
 === Bumped
 
+* Desugar 1.0.4 -> 1.0.5
+* threeTenABP 1.1.1 -> 1.3.1
+
 === Migration
 
 
@@ -68,8 +71,6 @@ See link:{link-repository}/compare/v0.2.0...v0.2.0[0.2.0]
 
 * _**BREAKING**_ sdk-util 1.9.0 -> 1.10.0.
 * Gradle 6.8.3 -> 6.9.1
-* Desugar 1.0.4 -> 1.0.5
-* threeTenABP 1.1.1 -> 1.3.1
 
 == link:{link-repository}/releases/tag/v0.1.3[0.1.3]
 
