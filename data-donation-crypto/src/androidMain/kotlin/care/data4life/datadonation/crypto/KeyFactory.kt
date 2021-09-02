@@ -23,7 +23,7 @@ actual object KeyFactory : CryptoContract.KeyFactory {
         val keyPair = try {
             CryptoKeyFactory.generateAsymmetricKeyPair()
         } catch (_: Throwable) {
-            throw CryptoError.MalFormedKeyGeneration()
+            throw CryptoError.MalformedKeyGeneration()
         }
 
         return KeyPair(

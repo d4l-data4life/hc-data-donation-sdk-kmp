@@ -29,7 +29,7 @@ import java.security.KeyFactory
 import java.security.spec.PKCS8EncodedKeySpec
 import java.security.spec.X509EncodedKeySpec
 
-// TODO Merge with CORE and move into the Crypto SDK
+// TODO Merge with Core and move into the Crypto SDK
 internal object CryptoKeyFactory : CryptoKeyFactoryContract {
     private val templateGCKeyPair = D4LCryptoProtocol.generateAsymKeyPair(
         algorithm = GCRSAKeyAlgorithm(),

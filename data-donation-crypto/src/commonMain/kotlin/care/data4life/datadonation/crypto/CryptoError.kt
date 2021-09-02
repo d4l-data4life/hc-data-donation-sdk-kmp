@@ -23,7 +23,7 @@ sealed class CryptoError(
     cause: Throwable? = null
 ) : D4LRuntimeException(message, cause) {
     class UnknownSalt(length: Int) : CryptoError("Unknown salt length $length.")
-    class MalFormedKeyGeneration : CryptoError("Invalid KeyGeneration Configuration.")
+    class MalformedKeyGeneration : CryptoError("Invalid KeyGeneration Configuration.")
     class IllEncryption : CryptoError("Failed to encrypt data.")
     class IllSigning : CryptoError("Failed to sign data.")
 }
