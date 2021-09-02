@@ -79,6 +79,7 @@ class ClientConsentFlowModuleTest {
 
     private fun initKoin(
         httpClient: HttpClient,
+        userSessionTokenProvider: DataDonationSDK.UserSessionTokenProvider,
         clock: Clock? = null
     ): KoinApplication {
         val dependencies = mutableListOf<Module>()
@@ -86,7 +87,7 @@ class ClientConsentFlowModuleTest {
         dependencies.addAll(
             sharedDependencies(
                 DataDonationSDK.Environment.DEVELOPMENT,
-                UserSessionTokenProvider,
+                userSessionTokenProvider,
                 DonorKeyStorageProvider
             )
         )
@@ -130,6 +131,8 @@ class ClientConsentFlowModuleTest {
         val language = "en"
         val version = "42"
 
+        val sessionToken = "something"
+
         val httpClient = createMockClientWithResponse { scope, request ->
             // Then
             assertEquals(
@@ -139,7 +142,7 @@ class ClientConsentFlowModuleTest {
             assertEquals(
                 actual = request.headers,
                 expected = headersOf(
-                    "Authorization" to listOf("Bearer ${UserSessionTokenProvider.sessionToken}"),
+                    "Authorization" to listOf("Bearer $sessionToken"),
                     "Accept" to listOf("application/json"),
                     "Accept-Charset" to listOf("UTF-8")
                 )
@@ -155,7 +158,10 @@ class ClientConsentFlowModuleTest {
         }
 
         val client = Client(
-            initKoin(httpClient)
+            initKoin(
+                httpClient,
+                UserSessionTokenProvider(sessionToken)
+            )
         )
 
         // When
@@ -176,6 +182,7 @@ class ClientConsentFlowModuleTest {
     fun `Given fetchUserConsents is called with a consentDocumentKey it returns a List of UserConsent`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val consentDocumentKey = "salt"
+        val sessionToken = "tamarind"
 
         val httpClient = createMockClientWithResponse { scope, request ->
             // Then
@@ -186,7 +193,7 @@ class ClientConsentFlowModuleTest {
             assertEquals(
                 actual = request.headers,
                 expected = headersOf(
-                    "Authorization" to listOf("Bearer ${UserSessionTokenProvider.sessionToken}"),
+                    "Authorization" to listOf("Bearer $sessionToken"),
                     "Accept" to listOf("application/json"),
                     "Accept-Charset" to listOf("UTF-8")
                 )
@@ -202,7 +209,10 @@ class ClientConsentFlowModuleTest {
         }
 
         val client = Client(
-            initKoin(httpClient)
+            initKoin(
+                httpClient,
+                UserSessionTokenProvider(sessionToken)
+            )
         )
 
         // When
@@ -221,6 +231,7 @@ class ClientConsentFlowModuleTest {
         // Given
         val consentDocumentKey = "pepper"
         val version = "23"
+        val sessionToken = "onion"
 
         val httpClient = createMockClientWithResponse { scope, request ->
             // Then
@@ -232,7 +243,7 @@ class ClientConsentFlowModuleTest {
                 assertEquals(
                     actual = request.headers,
                     expected = headersOf(
-                        "Authorization" to listOf("Bearer ${UserSessionTokenProvider.sessionToken}"),
+                        "Authorization" to listOf("Bearer $sessionToken"),
                         "Accept" to listOf("application/json"),
                         "Accept-Charset" to listOf("UTF-8")
                     )
@@ -259,7 +270,7 @@ class ClientConsentFlowModuleTest {
                 assertEquals(
                     actual = request.headers,
                     expected = headersOf(
-                        "Authorization" to listOf("Bearer ${UserSessionTokenProvider.sessionToken}"),
+                        "Authorization" to listOf("Bearer $sessionToken"),
                         "Accept" to listOf("application/json"),
                         "Accept-Charset" to listOf("UTF-8")
                     )
@@ -282,6 +293,7 @@ class ClientConsentFlowModuleTest {
         val client = Client(
             initKoin(
                 httpClient,
+                UserSessionTokenProvider(sessionToken),
                 clock
             )
         )
@@ -304,6 +316,7 @@ class ClientConsentFlowModuleTest {
     fun `Given revokeUserConsents is called with consentDocumentKey it just runs`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val consentDocumentKey = "water"
+        val sessionToken = "garlic"
 
         val httpClient = createMockClientWithResponse { scope, request ->
             if (request.method == HttpMethod.Delete) {
@@ -325,7 +338,7 @@ class ClientConsentFlowModuleTest {
                 assertEquals(
                     actual = request.headers,
                     expected = headersOf(
-                        "Authorization" to listOf("Bearer ${UserSessionTokenProvider.sessionToken}"),
+                        "Authorization" to listOf("Bearer $sessionToken"),
                         "Accept" to listOf("application/json"),
                         "Accept-Charset" to listOf("UTF-8")
                     )
@@ -343,7 +356,7 @@ class ClientConsentFlowModuleTest {
                 assertEquals(
                     actual = request.headers,
                     expected = headersOf(
-                        "Authorization" to listOf("Bearer ${UserSessionTokenProvider.sessionToken}"),
+                        "Authorization" to listOf("Bearer $sessionToken"),
                         "Accept" to listOf("application/json"),
                         "Accept-Charset" to listOf("UTF-8")
                     )
@@ -360,7 +373,10 @@ class ClientConsentFlowModuleTest {
         }
 
         val client = Client(
-            initKoin(httpClient)
+            initKoin(
+                httpClient,
+                UserSessionTokenProvider(sessionToken)
+            )
         )
 
         // When
@@ -373,9 +389,9 @@ class ClientConsentFlowModuleTest {
         }
     }
 
-    private object UserSessionTokenProvider : DataDonationSDK.UserSessionTokenProvider {
-        const val sessionToken = "sessionToken"
-
+    private class UserSessionTokenProvider(
+        private val sessionToken: String
+    ) : DataDonationSDK.UserSessionTokenProvider {
         override fun getUserSessionToken(
             onSuccess: (sessionToken: String) -> Unit,
             onError: (error: Exception) -> Unit

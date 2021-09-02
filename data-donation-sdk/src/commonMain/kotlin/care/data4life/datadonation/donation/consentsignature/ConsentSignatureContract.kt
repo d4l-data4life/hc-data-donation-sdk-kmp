@@ -16,9 +16,9 @@
 
 package care.data4life.datadonation.donation.consentsignature
 
+import care.data4life.datadonation.donation.consentsignature.model.ConsentSignature
 import care.data4life.datadonation.donation.consentsignature.model.SignedDeletionMessage
 import care.data4life.datadonation.donation.donationservice.Token
-import care.data4life.datadonation.donation.model.ConsentSignature
 import care.data4life.datadonation.donation.model.ConsentSigningRequest
 import care.data4life.datadonation.donation.model.SignedConsentMessage
 import care.data4life.datadonation.networking.AccessToken

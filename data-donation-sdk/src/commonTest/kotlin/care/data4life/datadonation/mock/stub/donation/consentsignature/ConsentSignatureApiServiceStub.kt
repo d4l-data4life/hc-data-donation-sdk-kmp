@@ -18,8 +18,8 @@ package care.data4life.datadonation.mock.stub.donation.consentsignature
 
 import care.data4life.datadonation.donation.consentsignature.ConsentSignatureContract
 import care.data4life.datadonation.donation.consentsignature.SignatureRequest
+import care.data4life.datadonation.donation.consentsignature.model.ConsentSignature
 import care.data4life.datadonation.donation.consentsignature.model.SignedDeletionMessage
-import care.data4life.datadonation.donation.model.ConsentSignature
 import care.data4life.datadonation.donation.model.ConsentSigningRequest
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException

@@ -14,7 +14,7 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.donation.model
+package care.data4life.datadonation.donation.consentsignature.model
 
 import kotlinx.serialization.Serializable
 
