@@ -21,4 +21,7 @@ import Foundation
     case couldNotGenerateKeyPair
     case couldNotFetchKeyPair
     case couldNotDeleteKeyPair
+    case couldNotStoreKeyPair
+    
+    case couldNotEncryptData
 }

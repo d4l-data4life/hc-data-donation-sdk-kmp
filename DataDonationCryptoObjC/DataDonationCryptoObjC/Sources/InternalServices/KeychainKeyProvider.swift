@@ -17,11 +17,11 @@
 import Foundation
 import Data4LifeCrypto
 
-@objc public final class KeychainKeyProvider: NSObject, KeychainKeyProviderProtocol {
+final class KeychainKeyProvider: NSObject {
 
     private let keyHolder: DonorKeyHolderProtocol
 
-    @objc public override init() {
+    override init() {
         self.keyHolder = DonorKeyHolder()
         super.init()
     }
@@ -30,20 +30,27 @@ import Data4LifeCrypto
         self.keyHolder = keyHolder
         super.init()
     }
-    
-    @objc public func getDonorPrivateKey(for programName: String) throws -> String {
+}
+
+extension KeychainKeyProvider: KeychainKeyProviderProtocol {
+
+    static func make() -> KeychainKeyProviderProtocol {
+        return KeychainKeyProvider()
+    }
+
+    func getDonorPrivateKey(for programName: String) throws -> String {
         return try keyHolder.privateKey(for: programName).asBase64EncodedString()
     }
 
-    @objc public func getDonorPublicKey(for programName: String) throws -> String {
+    func getDonorPublicKey(for programName: String) throws -> String {
         return try keyHolder.publicKey(for: programName).asBase64EncodedString()
     }
 
-    @objc public func removeDonorKeyPair(for programName: String) throws {
+    func removeDonorKeyPair(for programName: String) throws {
         try keyHolder.deleteKeyPair(for: programName)
     }
 
-    @objc public func storeDonorKeyPairData(_ data: Data, for programName: String) throws {
+    func storeDonorKeyPairData(_ data: Data, for programName: String) throws {
         try keyHolder.createKeyPair(from: data, for: programName)
     }
 }

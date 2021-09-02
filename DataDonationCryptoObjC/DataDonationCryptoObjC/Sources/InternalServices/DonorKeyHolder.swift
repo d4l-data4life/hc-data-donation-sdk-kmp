@@ -17,14 +17,28 @@
 import Data4LifeCrypto
 
 protocol DonorKeyHolderProtocol {
-    func privateKey(for programName: String) throws -> AsymmetricKey
-    func publicKey(for programName: String) throws -> AsymmetricKey
+    func generateKeyPair(for programName: String) throws -> KeyPair
+    func createKeyPair(from data: Data, for programName: String) throws -> KeyPair
+    func fetchKeyPair(for programName: String) throws -> KeyPair
     func deleteKeyPair(for programName: String) throws
-    func createKeyPair(from data: Data, for programName: String) throws
 }
 
-enum DonorKeyHolderError: Error {
-    case couldNotStoreKeyPair(reason: String)
+extension DonorKeyHolderProtocol {
+    func privateKey(for programName: String) throws -> AsymmetricKey {
+        do {
+            return try fetchKeyPair(for: programName).privateKey
+        } catch {
+            return try generateKeyPair(for: programName).privateKey
+        }
+    }
+
+    func publicKey(for programName: String) throws -> AsymmetricKey {
+        do {
+            return try fetchKeyPair(for: programName).publicKey
+        } catch {
+            return try generateKeyPair(for: programName).publicKey
+        }
+    }
 }
 
 final class DonorKeyHolder: DonorKeyHolderProtocol {
@@ -35,29 +49,37 @@ final class DonorKeyHolder: DonorKeyHolderProtocol {
 
     static private(set) var prefixTag = Tag.keyPair
     static private var donorKeyOptions: KeyExchangeFormat = {
-        let type: KeyType = .appPrivate
-        let keyExchangeFormat = try! KeyExhangeFactory.create(type: type)
+        let type: KeyType = .dataDonation
+        let keyExchangeFormat = try! KeyExchangeFactory.create(type: type)
         return keyExchangeFormat
     }()
 
-    // Security iOS frameworks stores automatically when generating keys
+    private let coreCryptoService: CoreCryptoServiceProtocol
+
+    init(coreCryptoService: CoreCryptoServiceProtocol = CoreCryptoService()) {
+        self.coreCryptoService = coreCryptoService
+    }
+}
+
+extension DonorKeyHolder {
+
+    @discardableResult
     func generateKeyPair(for programName: String) throws -> KeyPair {
         let programTag = tag(for: programName)
-        let algorithm = DonorKeyHolder.donorKeyOptions.algorithm
-        let keySize = DonorKeyHolder.donorKeyOptions.size
-        let options = KeyOptions(size: keySize, tag: programTag)
         do {
-            return try Data4LifeCryptor.generateAsymKeyPair(algorithm: algorithm, options: options)
+            return try coreCryptoService.generateAsymmetricKeyPair(tag: programTag)
         } catch {
             throw DataDonationCryptoObjCError.couldNotGenerateKeyPair
         }
     }
 
-    func createKeyPair(from data: Data, for programName: String) throws {
+    @discardableResult
+    func createKeyPair(from data: Data, for programName: String) throws -> KeyPair {
         do {
             let keyPair = try JSONDecoder().decode(KeyPair.self, from: data)
             let programTag = tag(for: programName)
-            try add(keyPair: keyPair, with: programTag)
+            try store(keyPair: keyPair, with: programTag)
+            return keyPair
         } catch {
             throw DataDonationCryptoObjCError.couldNotCreateKeyPairFromData
         }
@@ -91,15 +113,15 @@ extension DonorKeyHolder {
     func publicKey(for programName: String) throws -> AsymmetricKey {
         return try fetchOrGenerateKeyPair(for: programName).publicKey
     }
+
+    func tag(for programName: String) -> String {
+        return "\(Tag.keyPair).\(programName)"
+    }
 }
 
 private extension DonorKeyHolder {
 
-    private func tag(for programName: String) -> String {
-        return "\(Tag.keyPair).\(programName)"
-    }
-
-    private func fetchOrGenerateKeyPair(for programName: String) throws -> KeyPair {
+    func fetchOrGenerateKeyPair(for programName: String) throws -> KeyPair {
         guard let keyPair = try? fetchKeyPair(for: programName) else {
             return try generateKeyPair(for: programName)
         }
@@ -107,33 +129,11 @@ private extension DonorKeyHolder {
         return keyPair
     }
 
-    private func add(keyPair: KeyPair, with tag: String) throws {
-
-        let privateSecKeyData = try keyPair.privateKey.asData()
-        let publicSecKeyData = try keyPair.publicKey.asData()
-
-        let addPrivateKeyQuery = [kSecClass as String: kSecClassKey,
-                                  kSecAttrKeyType as String: kSecAttrKeyTypeRSA,
-                                  kSecAttrKeyClass as String: kSecAttrKeyClassPrivate,
-                                  kSecValueData as String: privateSecKeyData,
-                                  kSecAttrApplicationTag as String: tag] as [String: Any]
-        let addPublicKeyQuery = [kSecClass as String: kSecClassKey,
-                                 kSecAttrKeyType as String: kSecAttrKeyTypeRSA,
-                                 kSecAttrKeyClass as String: kSecAttrKeyClassPublic,
-                                 kSecValueData as String: publicSecKeyData,
-                                 kSecAttrApplicationTag as String: tag] as [String: Any]
-
-        var status = SecItemAdd(addPrivateKeyQuery as CFDictionary, nil)
-
-        guard status == errSecSuccess else {
-            let errorMessage = String(SecCopyErrorMessageString(status, nil)!)
-            throw DonorKeyHolderError.couldNotStoreKeyPair(reason: errorMessage)
-        }
-
-        status = SecItemAdd(addPublicKeyQuery as CFDictionary, nil)
-        guard status == errSecSuccess else {
-            let errorMessage = String(SecCopyErrorMessageString(status, nil)!)
-            throw DonorKeyHolderError.couldNotStoreKeyPair(reason: errorMessage)
+    func store(keyPair: KeyPair, with tag: String) throws {
+        do {
+            try keyPair.store(tag: tag)
+        } catch {
+            throw DataDonationCryptoObjCError.couldNotStoreKeyPair
         }
     }
 }

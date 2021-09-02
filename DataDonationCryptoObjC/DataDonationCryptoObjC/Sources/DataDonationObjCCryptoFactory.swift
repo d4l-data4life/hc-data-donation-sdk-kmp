@@ -15,29 +15,13 @@
 //
 
 import Foundation
-import Data4LifeCrypto
 
-final class KeyFactory {
+@objc public final class DataDonationCryptoObjCFactory: NSObject {
 
-    private let bundle: Foundation.Bundle
-
-    init(bundle: Foundation.Bundle = Bundle.current) {
-        self.bundle = bundle
+    @objc static public var keychainKeyProvider: KeychainKeyProviderProtocol {
+        KeychainKeyProvider()
     }
-
-    lazy var keyPairData: Data = {
-        try! bundle.data(fromJSON: "donor-identity")
-    }()
-
-    lazy var keyPair: KeyPair = {
-        try! bundle.decodable(fromJSON: "donor-identity")
-    }()
-
-    var privateKey: AsymmetricKey {
-        keyPair.privateKey
-    }
-
-    var publicKey: AsymmetricKey {
-        keyPair.publicKey
+    @objc static public func dataDonationCryptor(programName: String) -> DataDonationCryptorProtocol {
+        DataDonationCryptor(programName: programName)
     }
 }

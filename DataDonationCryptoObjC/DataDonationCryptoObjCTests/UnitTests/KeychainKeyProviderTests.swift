@@ -20,30 +20,34 @@ import Data4LifeCrypto
 
 class KeychainKeyProviderTests: XCTestCase {
 
-    private var keychainKeyProvider: KeychainKeyProvider!
-    private var keyHolderMock: DonorKeyHolderMock!
-
-    private let keyFactory = KeyFactory()
+    private lazy var keychainKeyProvider = KeychainKeyProvider(keyHolder: keyHolderMock)
+    private lazy var keyHolderMock = DonorKeyHolderMock()
+    private let keyFactory = KeyFixtureFactory()
+    
     private let testProgramName = "data-donation-crypto-objc-test"
 
     override func setUpWithError() throws {
-        keyHolderMock = DonorKeyHolderMock()
-        keyHolderMock.privateResult = keyFactory.privateKey
-        keyHolderMock.publicResult = keyFactory.publicKey
-
-        keychainKeyProvider = KeychainKeyProvider(keyHolder: keyHolderMock)
+        keyHolderMock.whenFetch = { [unowned self] _ in
+            .success(self.keyFactory.keyPair)
+        }
+        keyHolderMock.whenCreate = { [unowned self] _,_ in
+            .success(self.keyFactory.keyPair)
+        }
+        keyHolderMock.whenDelete = { _ in
+            .success(())
+        }
     }
 
     func testGetPrivateKeyFlow() throws {
         let _ = try keychainKeyProvider.getDonorPrivateKey(for: testProgramName)
-        XCTAssertEqual(keyHolderMock.isPrivateCalled, true)
-        XCTAssertEqual(keyHolderMock.capturedPrivateParameter, testProgramName)
+        XCTAssertEqual(keyHolderMock.isFetchCalled, true)
+        XCTAssertEqual(keyHolderMock.capturedFetchParameter, testProgramName)
     }
 
     func testGetPublicKeyFlow() throws {
         let _ = try keychainKeyProvider.getDonorPublicKey(for: testProgramName)
-        XCTAssertEqual(keyHolderMock.isPublicCalled, true)
-        XCTAssertEqual(keyHolderMock.capturedPublicParameter, testProgramName)
+        XCTAssertEqual(keyHolderMock.isFetchCalled, true)
+        XCTAssertEqual(keyHolderMock.capturedFetchParameter, testProgramName)
     }
 
     func testStoreFlow() throws {

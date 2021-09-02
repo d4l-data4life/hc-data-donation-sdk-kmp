@@ -15,15 +15,25 @@
 //
 
 import Foundation
+@testable import DataDonationCryptoObjC
+import Data4LifeCrypto
 
-@objc public protocol KeychainKeyProviderProtocol {
-    @objc func getDonorPrivateKey(for programName: String) throws -> String
-    @objc func getDonorPublicKey(for programName: String) throws -> String
-    @objc func removeDonorKeyPair(for programName: String) throws
-    @objc func storeDonorKeyPairData(_ data: Data, for programName: String) throws
-}
+final class IVGeneratorMock: InitializationVectorGeneratorProtocol {
 
-@objc public protocol DataDonationCryptorProtocol {
-    @objc func encrypt(_ plainBody: Data) throws -> Data
-    @objc func decrypt(_ encryptedData: Data) throws -> Data
+    var isRandomIVCalled = false
+    var capturedRandomParameter: Int?
+    var whenRandom: ((Int) -> Result<Data, Error>)?
+    func randomIVData(of size: Int) -> Data {
+        isRandomIVCalled = true
+        capturedRandomParameter = size
+        if let result = whenRandom?(size), let iv = try? result.get() {
+            return iv
+        } else {
+            return defaultResult(of: size)
+        }
+    }
+
+    private func defaultResult(of size: Int) -> Data {
+        InitializationVectorGenerator().randomIVData(of: size)
+    }
 }
