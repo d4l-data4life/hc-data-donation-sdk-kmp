@@ -14,28 +14,21 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.integration
+package care.data4life.datadonation.crypto.util
 
-import objc.datadonation.crypto.DataDonationCryptor
-import platform.Foundation.NSData
-import kotlin.test.Test
-import kotlin.test.assertEquals
+actual class CryptoVerification actual constructor() {
+    actual fun decrypt(
+        payload: ByteArray,
+        key: String
+    ): ByteArray {
+        TODO()
+    }
 
-class ObjcCryptoIntegrationTest {
-
-    @Test
-    fun `Given plain NSData and a key, it gets encrypted using objective C lib`() {
-        // Given
-        val plainData = NSData()
-        val keyData = NSData()
-
-        // When
-        val result = DataDonationCryptor.encrypt(plainData, keyData)
-
-        // Then
-        assertEquals(
-            actual = result,
-            expected = NSData()
-        )
+    actual fun verify(
+        payload: ByteArray,
+        key: String,
+        saltLength: Int,
+    ): ByteArray {
+        TODO()
     }
 }
