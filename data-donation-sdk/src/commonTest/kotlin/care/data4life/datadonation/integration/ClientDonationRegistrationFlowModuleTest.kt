@@ -23,9 +23,11 @@ import care.data4life.datadonation.DonationDataContract
 import care.data4life.datadonation.EncodedDonorIdentity
 import care.data4life.datadonation.RecordId
 import care.data4life.datadonation.crypto.CryptoContract
+import care.data4life.datadonation.crypto.model.KeyPair
 import care.data4life.datadonation.di.consentFlowDependencies
 import care.data4life.datadonation.di.donationFlowDependencies
 import care.data4life.datadonation.di.sharedDependencies
+import care.data4life.datadonation.donation.donorkeystorage.model.DonorRecord
 import care.data4life.datadonation.mock.ResourceLoader
 import care.data4life.datadonation.mock.stub.ClockStub
 import care.data4life.datadonation.session.SessionTokenRepositoryContract
@@ -63,6 +65,7 @@ class ClientDonationRegistrationFlowModuleTest {
         sessionTokenProvider: DataDonationSDK.UserSessionTokenProvider,
         keyStorageProvider: DataDonationSDK.DonorKeyStorageProvider,
         cryptoService: CryptoContract.Service,
+        keyFactory: CryptoContract.KeyFactory? = null,
         clock: Clock? = null
     ): KoinApplication {
         val dependencies = mutableListOf<Module>()
@@ -103,6 +106,16 @@ class ClientDonationRegistrationFlowModuleTest {
             )
         }
 
+        if (keyFactory is CryptoContract.KeyFactory) {
+            dependencies.add(
+                module {
+                    single<CryptoContract.KeyFactory>(override = true) {
+                        keyFactory
+                    }
+                }
+            )
+        }
+
         return koinApplication {
             modules(dependencies)
         }
@@ -119,7 +132,6 @@ class ClientDonationRegistrationFlowModuleTest {
         val encryptedJSON = "geheim"
 
         val httpClient = HttpMockClientFactory.createMockClientWithResponse { scope, request ->
-            println(request.url.fullPath)
             when (request.url.fullPath) {
                 "/program/api/v1/programs/$programName" -> {
                     assertEquals(
@@ -237,7 +249,7 @@ class ClientDonationRegistrationFlowModuleTest {
             encryptedPayload.access { it.removeAt(0) }
         }
 
-        val keyStorage = DonorKeyStorageWithKeyProvider { annotations ->
+        val keyStorage = DonorKeyStorageProviderWithKey { annotations ->
             assertEquals(
                 actual = annotations,
                 expected = listOf(
@@ -253,6 +265,186 @@ class ClientDonationRegistrationFlowModuleTest {
                 UserSessionTokenProvider(sessionToken),
                 keyStorage,
                 cryptor,
+                clock = clock
+            )
+        )
+
+        // When
+        client.registerDonor(programName).ktFlow.collect { result ->
+            assertEquals(
+                actual = result,
+                expected = Unit
+            )
+        }
+    }
+
+    @KtorExperimentalAPI
+    @Test
+    fun `Given registerDonor is called with a ProgramName and a DonorKey needs to be created it just runs`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+        // Given
+        val programName = "Tomato"
+        val token = "Tofu"
+        val sessionToken = "vinegar"
+
+        val donorPublicKey = "PublicKey"
+        val donorPrivateKey = "PrivateKey"
+        val encryptedJSON = "geheim"
+
+        val httpClient = HttpMockClientFactory.createMockClientWithResponse { scope, request ->
+            when (request.url.fullPath) {
+                "/program/api/v1/programs/$programName" -> {
+                    assertEquals(
+                        actual = request.method,
+                        expected = HttpMethod.Get
+                    )
+
+                    scope.respond(
+                        content = ResourceLoader.loader.load("/fixture/program/SampleProgram.json"),
+                        status = HttpStatusCode.OK,
+                        headers = headersOf(
+                            "Content-Type" to listOf("application/json")
+                        )
+                    )
+                }
+                "/mobile/credentials.json" -> {
+                    assertEquals(
+                        actual = request.method,
+                        expected = HttpMethod.Get
+                    )
+
+                    scope.respond(
+                        content = ResourceLoader.loader.load("/fixture/publicKeyService/SamplePublicKeys.json"),
+                        status = HttpStatusCode.OK,
+                        headers = headersOf(
+                            "Content-Type" to listOf("application/json")
+                        )
+                    )
+                }
+                "/donation/api/v1/token" -> {
+                    assertEquals(
+                        actual = request.method,
+                        expected = HttpMethod.Get
+                    )
+
+                    scope.respond(
+                        content = token,
+                        status = HttpStatusCode.OK,
+                    )
+                }
+                "/consent/api/v1/userConsents/d4l.sample/signatures" -> {
+                    assertEquals(
+                        actual = request.method,
+                        expected = HttpMethod.Post
+                    )
+                    assertEquals(
+                        actual = request.headers,
+                        expected = headersOf(
+                            "Authorization" to listOf("Bearer $sessionToken"),
+                            "Accept" to listOf("application/json"),
+                            "Accept-Charset" to listOf("UTF-8")
+                        )
+                    )
+
+                    scope.respond(
+                        content = ResourceLoader.loader.load("/fixture/consentSignature/ExampleConsentSignature.json"),
+                        status = HttpStatusCode.OK,
+                        headers = headersOf(
+                            "Content-Type" to listOf("application/json")
+                        )
+                    )
+                }
+                "/donation/api/v1/register" -> {
+                    assertEquals(
+                        actual = request.headers,
+                        expected = headersOf(
+                            "Accept" to listOf("application/json"), // TODO: This needs to be application/octet-stream, however Ktor does not provide a working setter for ContentType during Runtime, we need to build a custom Plugin for that
+                            "Accept-Charset" to listOf("UTF-8")
+                        )
+                    )
+
+                    launch {
+                        assertEquals(
+                            actual = request.body.toByteReadPacket().readText(),
+                            expected = encryptedJSON
+                        )
+                    }
+
+                    scope.respond(
+                        content = "",
+                        status = HttpStatusCode.OK
+                    )
+                }
+                else -> throw RuntimeException("Unknown path ${request.url.fullPath}")
+            }
+        }
+
+        val clock = ClockStub().also {
+            it.whenNow = { Instant.fromEpochSeconds(SessionTokenRepositoryContract.CACHE_LIFETIME_IN_SECONDS.toLong() + 30) }
+        }
+
+        val encryptedPayload = IsolateState {
+            mutableListOf(
+                "1".encodeToByteArray(),
+                encryptedJSON.encodeToByteArray()
+            )
+        }
+        val plainPayload = IsolateState {
+            mutableListOf(
+                "{\"token\":\"$token\",\"donorID\":\"$donorPublicKey\"}",
+                "{\"consentMessageJSON\":\"{\\\"consentDocumentKey\\\":\\\"d4l.sample\\\",\\\"payload\\\":\\\"${Base64.encodeToString(encryptedPayload.access { it[0] })}\\\",\\\"signatureType\\\":\\\"consentOnce\\\"}\",\"signature\":\"NmjTvCdZmqgLJ95DZaLkOtN0IaBqPGVH4BUmRVf68lvMG3GmXzSpKFGCWGmMNSv4PNJDHZq/wewDPOQ54LHMQLYcBm7HMn2kyi8ImaWshizCyrHobe4euLj0NhgyguIpMCxa7gcSuZtUgDPh4Sk9s7yJjVz6tZRpSzOJkyPWGWIbIt0wBHOPNOJ3oUiPcQkXCNnyc5h/OdUnMTHyNBHNfiG/z6YIom15Wu0lAaFmd+YIDdgJgbkvXGMWtVB71N5JH9m3BTCRgaacao7th/Vk2PvW2LMqwMdBQy4XM6xXxKaTms4c7ehuJUpBqMkUp+RBuubcGISWI9BbSZxUhrIUSA==\"}"
+            )
+        }
+        val cryptor = CryptoService { payload, publicKey ->
+            assertEquals(
+                actual = publicKey,
+                expected = ResourceLoader.loader.load("/fixture/donation/DonationServicePublicKey.txt").trim()
+            )
+
+            assertEquals(
+                actual = payload.decodeToString(),
+                expected = plainPayload.access { it.removeAt(0) }
+            )
+
+            encryptedPayload.access { it.removeAt(0) }
+        }
+
+        val keyStorage = DonorKeyStorageProviderWithoutKey(
+            { annotations ->
+                assertEquals(
+                    actual = annotations,
+                    expected = listOf(
+                        "program:Tomato",
+                        "d4l-donation-key"
+                    )
+                )
+            },
+            { record ->
+                assertEquals(
+                    actual = record,
+                    expected = DonorRecord(
+                        recordId = null,
+                        data = "{\"t\":\"dataDonationKey\",\"priv\":\"PrivateKey\",\"pub\":\"PublicKey\",\"v\":1,\"scope\":\"d4l.sample\"}",
+                        annotations = listOf(
+                            "program:Tomato",
+                            "d4l-donation-key"
+                        )
+                    )
+                )
+            }
+        )
+
+        val keyFactory = KeyFactory(
+            donorPublicKey,
+            donorPrivateKey
+        )
+
+        val client = Client(
+            initKoin(
+                httpClient,
+                UserSessionTokenProvider(sessionToken),
+                keyStorage,
+                cryptor,
+                keyFactory,
                 clock
             )
         )
@@ -275,7 +467,7 @@ class ClientDonationRegistrationFlowModuleTest {
         ) { onSuccess(sessionToken) }
     }
 
-    private class DonorKeyStorageWithKeyProvider(
+    private class DonorKeyStorageProviderWithKey(
         private val annotationAssertion: (annotations: Annotations) -> Unit
     ) : DataDonationSDK.DonorKeyStorageProvider {
         override fun load(
@@ -309,6 +501,39 @@ class ClientDonationRegistrationFlowModuleTest {
         }
     }
 
+    private class DonorKeyStorageProviderWithoutKey(
+        private val annotationAssertion: (annotations: Annotations) -> Unit,
+        private val recordAssertion: (DonationDataContract.DonorRecord) -> Unit,
+    ) : DataDonationSDK.DonorKeyStorageProvider {
+        override fun load(
+            annotations: Annotations,
+            onSuccess: (recordId: RecordId, data: EncodedDonorIdentity) -> Unit,
+            onNotFound: () -> Unit,
+            onError: (error: Exception) -> Unit
+        ) {
+            annotationAssertion(annotations)
+            onNotFound()
+        }
+
+        override fun save(
+            donorRecord: DonationDataContract.DonorRecord,
+            onSuccess: () -> Unit,
+            onError: (error: Exception) -> Unit
+        ) {
+            recordAssertion(donorRecord)
+
+            onSuccess()
+        }
+
+        override fun delete(
+            recordId: RecordId,
+            onSuccess: () -> Unit,
+            onError: (error: Exception) -> Unit
+        ) {
+            TODO("Not yet implemented")
+        }
+    }
+
     private class CryptoService(
         private val valueAssertion: (ByteArray, String) -> ByteArray
 
@@ -319,6 +544,15 @@ class ClientDonationRegistrationFlowModuleTest {
 
         override fun sign(payload: ByteArray, privateKey: String, saltLength: Int): ByteArray {
             TODO("Not yet implemented")
+        }
+    }
+
+    private class KeyFactory(
+        private val publicKey: String,
+        private val privateKey: String
+    ) : CryptoContract.KeyFactory {
+        override fun createKeyPair(): KeyPair {
+            return KeyPair(publicKey, privateKey)
         }
     }
 }
