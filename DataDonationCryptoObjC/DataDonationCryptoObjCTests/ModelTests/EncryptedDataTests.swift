@@ -40,7 +40,7 @@ class EncryptedDataTests: XCTestCase {
     }
 }
 
-extension EncryptedData {
+private extension EncryptedData {
     var expectedCombinedLength: Int {
         let encryptionVersionByteCount = MemoryLayout<UInt8>.size
         let encryptedKeyLengthByteCount = MemoryLayout<UInt16>.size

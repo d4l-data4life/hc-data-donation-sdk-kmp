@@ -17,11 +17,20 @@
 import Data4LifeCrypto
 
 protocol DonorKeyHolderProtocol {
+
+    @discardableResult
     func generateKeyPair(for programName: String) throws -> KeyPair
+
+    @discardableResult
     func createKeyPair(from data: Data, for programName: String) throws -> KeyPair
+
     func fetchKeyPair(for programName: String) throws -> KeyPair
     func deleteKeyPair(for programName: String) throws
+
+    func privateKey(for programName: String) throws -> AsymmetricKey
+    func publicKey(for programName: String) throws -> AsymmetricKey
 }
+
 
 extension DonorKeyHolderProtocol {
     func privateKey(for programName: String) throws -> AsymmetricKey {

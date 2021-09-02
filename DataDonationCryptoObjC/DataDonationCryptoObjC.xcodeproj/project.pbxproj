@@ -13,7 +13,7 @@
 		3661D4C426DE6D3A00BC51F3 /* DataDonationCryptorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3661D4C326DE6D3A00BC51F3 /* DataDonationCryptorTests.swift */; };
 		3661D4C626DE6F3700BC51F3 /* IVGeneratorMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3661D4C526DE6F3700BC51F3 /* IVGeneratorMock.swift */; };
 		3661D4CB26DFB9E900BC51F3 /* EncryptedData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3661D4CA26DFB9E900BC51F3 /* EncryptedData.swift */; };
-		3661D4CD26DFBDDC00BC51F3 /* DataDonationObjCCryptoFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3661D4CC26DFBDDC00BC51F3 /* DataDonationObjCCryptoFactory.swift */; };
+		3661D4CD26DFBDDC00BC51F3 /* DataDonationCryptoObjCFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3661D4CC26DFBDDC00BC51F3 /* DataDonationCryptoObjCFactory.swift */; };
 		3661D4CF26DFBE6900BC51F3 /* CoreCryptoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3661D4CE26DFBE6900BC51F3 /* CoreCryptoService.swift */; };
 		3661D4D126DFC2A400BC51F3 /* CoreCryptoServiceMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3661D4D026DFC2A400BC51F3 /* CoreCryptoServiceMock.swift */; };
 		3661D4D326DFC2F700BC51F3 /* MockError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3661D4D226DFC2F700BC51F3 /* MockError.swift */; };
@@ -86,7 +86,7 @@
 		3661D4C326DE6D3A00BC51F3 /* DataDonationCryptorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDonationCryptorTests.swift; sourceTree = "<group>"; };
 		3661D4C526DE6F3700BC51F3 /* IVGeneratorMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IVGeneratorMock.swift; sourceTree = "<group>"; };
 		3661D4CA26DFB9E900BC51F3 /* EncryptedData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncryptedData.swift; sourceTree = "<group>"; };
-		3661D4CC26DFBDDC00BC51F3 /* DataDonationObjCCryptoFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDonationObjCCryptoFactory.swift; sourceTree = "<group>"; };
+		3661D4CC26DFBDDC00BC51F3 /* DataDonationCryptoObjCFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDonationCryptoObjCFactory.swift; sourceTree = "<group>"; };
 		3661D4CE26DFBE6900BC51F3 /* CoreCryptoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreCryptoService.swift; sourceTree = "<group>"; };
 		3661D4D026DFC2A400BC51F3 /* CoreCryptoServiceMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreCryptoServiceMock.swift; sourceTree = "<group>"; };
 		3661D4D226DFC2F700BC51F3 /* MockError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockError.swift; sourceTree = "<group>"; };
@@ -326,7 +326,7 @@
 				3661D4BD26DE451600BC51F3 /* InternalServices */,
 				36FA37CA26D54A1800DDCC35 /* DataDonationCryptoObjC.swift */,
 				36FA37CD26D54AC200DDCC35 /* DataDonationCryptoObjCError.swift */,
-				3661D4CC26DFBDDC00BC51F3 /* DataDonationObjCCryptoFactory.swift */,
+				3661D4CC26DFBDDC00BC51F3 /* DataDonationCryptoObjCFactory.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -498,7 +498,7 @@
 				3661D4BF26DE45FF00BC51F3 /* DataDonationCryptor.swift in Sources */,
 				36FA37CE26D54AC200DDCC35 /* DataDonationCryptoObjCError.swift in Sources */,
 				3661D4CF26DFBE6900BC51F3 /* CoreCryptoService.swift in Sources */,
-				3661D4CD26DFBDDC00BC51F3 /* DataDonationObjCCryptoFactory.swift in Sources */,
+				3661D4CD26DFBDDC00BC51F3 /* DataDonationCryptoObjCFactory.swift in Sources */,
 				36FA37CB26D54A1800DDCC35 /* DataDonationCryptoObjC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

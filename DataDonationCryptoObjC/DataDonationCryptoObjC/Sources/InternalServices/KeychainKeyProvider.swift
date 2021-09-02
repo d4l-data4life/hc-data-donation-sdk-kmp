@@ -17,18 +17,12 @@
 import Foundation
 import Data4LifeCrypto
 
-final class KeychainKeyProvider: NSObject {
+final class KeychainKeyProvider {
 
     private let keyHolder: DonorKeyHolderProtocol
 
-    override init() {
-        self.keyHolder = DonorKeyHolder()
-        super.init()
-    }
-
     init(keyHolder: DonorKeyHolderProtocol = DonorKeyHolder()) {
         self.keyHolder = keyHolder
-        super.init()
     }
 }
 

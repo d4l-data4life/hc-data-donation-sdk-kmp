@@ -16,6 +16,11 @@
 
 import Foundation
 
+@objc public protocol DataDonationCryptorProtocol {
+    @objc func encrypt(_ plainBody: Data) throws -> Data
+    @objc func decrypt(_ encryptedData: Data) throws -> Data
+}
+
 @objc public protocol KeychainKeyProviderProtocol {
     @objc func getDonorPrivateKey(for programName: String) throws -> String
     @objc func getDonorPublicKey(for programName: String) throws -> String
@@ -23,7 +28,4 @@ import Foundation
     @objc func storeDonorKeyPairData(_ data: Data, for programName: String) throws
 }
 
-@objc public protocol DataDonationCryptorProtocol {
-    @objc func encrypt(_ plainBody: Data) throws -> Data
-    @objc func decrypt(_ encryptedData: Data) throws -> Data
-}
+
