@@ -18,6 +18,6 @@ package care.data4life.datadonation.util
 
 import kotlinx.serialization.json.JsonBuilder
 
-fun interface JsonConfiguratorContract {
+internal fun interface JsonConfiguratorContract {
     fun configure(jsonBuilder: JsonBuilder): JsonBuilder
 }
