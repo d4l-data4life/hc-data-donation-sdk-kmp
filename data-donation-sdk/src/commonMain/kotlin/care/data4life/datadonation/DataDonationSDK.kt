@@ -93,12 +93,15 @@ interface DataDonationSDK {
         fun fetchAllUserConsents(): D4LSDKFlow<List<UserConsent>>
 
         fun revokeUserConsent(consentDocumentKey: String): D4LSDKFlow<UserConsent>
+
+        fun registerDonor(programName: String): D4LSDKFlow<Unit>
     }
 
     interface DataDonationClientFactory {
         fun getInstance(
             environment: Environment,
-            userSession: UserSessionTokenProvider
+            userSession: UserSessionTokenProvider,
+            keyStorage: DonorKeyStorageProvider
         ): DataDonationClient
     }
 }

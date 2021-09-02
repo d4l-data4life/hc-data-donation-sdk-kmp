@@ -37,6 +37,7 @@ import care.data4life.datadonation.ConsentDataContract.UserConsent
 import care.data4life.datadonation.consent.consentdocument.ConsentDocumentContract
 import care.data4life.datadonation.consent.userconsent.UserConsentContract
 import care.data4life.datadonation.di.initKoin
+import care.data4life.datadonation.donation.DonationContract
 import care.data4life.sdk.flow.D4LSDKFlow
 import care.data4life.sdk.flow.D4LSDKFlowFactoryContract
 import care.data4life.sdk.util.coroutine.DomainErrorMapperContract
@@ -49,6 +50,7 @@ class Client internal constructor(
 ) : DataDonationSDK.DataDonationClient {
     private val userConsent: UserConsentContract.Controller = koinApplication.koin.get()
     private val consentDocuments: ConsentDocumentContract.Controller = koinApplication.koin.get()
+    private val donation: DonationContract.Controller = koinApplication.koin.get()
     private val backgroundThread: CoroutineScope = koinApplication.koin.get()
     private val errorMapper: DomainErrorMapperContract = koinApplication.koin.get()
     private val flowFactory: D4LSDKFlowFactoryContract = koinApplication.koin.get()
@@ -69,7 +71,6 @@ class Client internal constructor(
         consentDocumentKey: String,
         consentDocumentVersion: String
     ): D4LSDKFlow<UserConsent> {
-
         return wrapResult {
             userConsent.createUserConsent(
                 consentDocumentKey = consentDocumentKey,
@@ -112,15 +113,25 @@ class Client internal constructor(
         }
     }
 
+    override fun registerDonor(programName: String): D4LSDKFlow<Unit> {
+        return wrapResult {
+            donation.register(
+                programName = programName
+            )
+        }
+    }
+
     companion object Factory : DataDonationSDK.DataDonationClientFactory {
         override fun getInstance(
             environment: DataDonationSDK.Environment,
-            userSession: DataDonationSDK.UserSessionTokenProvider
+            userSession: DataDonationSDK.UserSessionTokenProvider,
+            keyStorage: DataDonationSDK.DonorKeyStorageProvider
         ): DataDonationSDK.DataDonationClient {
             return Client(
                 initKoin(
                     environment,
-                    userSession
+                    userSession,
+                    keyStorage
                 )
             )
         }
