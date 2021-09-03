@@ -25,6 +25,7 @@
 		3661D4E026E0D0C800BC51F3 /* DataDonationCryptorModuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3661D4DF26E0D0C800BC51F3 /* DataDonationCryptorModuleTests.swift */; };
 		3670E96426CD1E5D00FD5B79 /* KeychainKeyProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3670E95726CBF11200FD5B79 /* KeychainKeyProvider.swift */; };
 		3670E97326CD5FC100FD5B79 /* libDataDonationCryptoObjC.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3670E95D26CD1E4A00FD5B79 /* libDataDonationCryptoObjC.a */; };
+		367B639726E264D00020C4B5 /* DataDonationSigner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367B639626E264D00020C4B5 /* DataDonationSigner.swift */; };
 		36B32E8326CFF10F00D16306 /* DonorKeyHolder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36B32E8226CFF10F00D16306 /* DonorKeyHolder.swift */; };
 		36B32E8426CFF3AF00D16306 /* KeychainKeyProviderModuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3670E94826CBF02700FD5B79 /* KeychainKeyProviderModuleTests.swift */; };
 		36B32E8626D3DCB600D16306 /* DonorKeyHolderMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36B32E8526D3DCB600D16306 /* DonorKeyHolderMock.swift */; };
@@ -104,6 +105,7 @@
 		3670E95D26CD1E4A00FD5B79 /* libDataDonationCryptoObjC.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libDataDonationCryptoObjC.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		3670E96826CD286D00FD5B79 /* DataDonationCryptoObjC-BridgingHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "DataDonationCryptoObjC-BridgingHeader.h"; sourceTree = "<group>"; };
 		3670E96E26CD5FC100FD5B79 /* DataDonationCryptoObjCTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DataDonationCryptoObjCTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		367B639626E264D00020C4B5 /* DataDonationSigner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDonationSigner.swift; sourceTree = "<group>"; };
 		36B32E8226CFF10F00D16306 /* DonorKeyHolder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DonorKeyHolder.swift; sourceTree = "<group>"; };
 		36B32E8526D3DCB600D16306 /* DonorKeyHolderMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DonorKeyHolderMock.swift; sourceTree = "<group>"; };
 		36B32E8B26D3EF8A00D16306 /* KeyFixtureFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyFixtureFactory.swift; sourceTree = "<group>"; };
@@ -154,10 +156,8 @@
 		3661D4BD26DE451600BC51F3 /* InternalServices */ = {
 			isa = PBXGroup;
 			children = (
-				3670E95726CBF11200FD5B79 /* KeychainKeyProvider.swift */,
-				3661D4BE26DE45FF00BC51F3 /* DataDonationCryptor.swift */,
-				36B32E8226CFF10F00D16306 /* DonorKeyHolder.swift */,
 				3661D4CE26DFBE6900BC51F3 /* CoreCryptoService.swift */,
+				36B32E8226CFF10F00D16306 /* DonorKeyHolder.swift */,
 			);
 			path = InternalServices;
 			sourceTree = "<group>";
@@ -244,6 +244,16 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		367B639826E268270020C4B5 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				3670E95726CBF11200FD5B79 /* KeychainKeyProvider.swift */,
+				3661D4BE26DE45FF00BC51F3 /* DataDonationCryptor.swift */,
+				367B639626E264D00020C4B5 /* DataDonationSigner.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
 		36B32E8726D3DCBA00D16306 /* Mocks */ = {
 			isa = PBXGroup;
 			children = (
@@ -322,6 +332,7 @@
 		36FA37CC26D54A9900DDCC35 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				367B639826E268270020C4B5 /* Services */,
 				3661D4C926DFB9DA00BC51F3 /* Model */,
 				3661D4BD26DE451600BC51F3 /* InternalServices */,
 				36FA37CA26D54A1800DDCC35 /* DataDonationCryptoObjC.swift */,
@@ -492,6 +503,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				367B639726E264D00020C4B5 /* DataDonationSigner.swift in Sources */,
 				3661D4CB26DFB9E900BC51F3 /* EncryptedData.swift in Sources */,
 				3670E96426CD1E5D00FD5B79 /* KeychainKeyProvider.swift in Sources */,
 				36B32E8326CFF10F00D16306 /* DonorKeyHolder.swift in Sources */,

@@ -18,10 +18,13 @@ import Foundation
 
 @objc public final class DataDonationCryptoObjCFactory: NSObject {
 
-    @objc static public var keychainKeyProvider: KeychainKeyProviderProtocol {
+    @objc static public var keychainKeyProvider: KeychainKeyProviderObjCProtocol {
         KeychainKeyProvider()
     }
-    @objc static public func dataDonationCryptor(programName: String) -> DataDonationCryptorProtocol {
+    @objc static public func dataDonationCryptor(programName: String) -> DataDonationCryptorObjCProtocol {
         DataDonationCryptor(programName: programName)
+    }
+    @objc static public func dataDonationSigner(programName: String) -> DataDonationSignerObjCProtocol {
+        DataDonationSigner(programName: programName)
     }
 }

@@ -42,11 +42,7 @@ final class DataDonationCryptor {
     }
 }
 
-extension DataDonationCryptor: DataDonationCryptorProtocol {
-
-    static func make(programName: String) -> DataDonationCryptorProtocol {
-        return DataDonationCryptor(programName: programName)
-    }
+extension DataDonationCryptor: DataDonationCryptorObjCProtocol {
 
     func encrypt(_ plainBody: Data) throws -> Data {
         let symmetricKey = try coreCryptoService.generateSymmetricKey()

@@ -18,8 +18,13 @@ import Foundation
 import Data4LifeCrypto
 
 protocol CoreCryptoServiceProtocol {
+
     func generateSymmetricKey() throws -> Key
     func generateAsymmetricKeyPair(tag: String) throws -> KeyPair
+
+    func sign(data: Data, with keyPair: KeyPair, isSalted: Bool) throws -> Data
+    func verify(data: Data, signature: Data, with keyPair: KeyPair, isSalted: Bool) throws -> Bool
+    
     func asymmetricEncrypt(data: Data, with keyPair: KeyPair) throws -> Data
     func asymmetricDecrypt(data: Data, with keyPair: KeyPair) throws -> Data
     func symmetricDecrypt(data: Data, with key: Key, using iv: Data) throws -> Data
@@ -30,21 +35,26 @@ final class CoreCryptoService {
     init() {}
 }
 
+// MARK: - KeyGenerator
 extension CoreCryptoService: CoreCryptoServiceProtocol {
 
     func generateSymmetricKey() throws -> Key {
         let keyExchangeConfiguration = try KeyExchangeFactory.create(type: .common)
-        return try Data4LifeCryptor.generateSymKey(algorithm: keyExchangeConfiguration.algorithm,
+        return try Data4LifeKeyGenerator.generateSymKey(algorithm: keyExchangeConfiguration.algorithm,
                                                    options: KeyOptions(size: keyExchangeConfiguration.size),
                                                    type: .common)
     }
 
     func generateAsymmetricKeyPair(tag: String) throws -> KeyPair {
         let keyExchangeConfiguration = try KeyExchangeFactory.create(type: .dataDonation)
-        return try Data4LifeCryptor.generateAsymKeyPair(algorithm: keyExchangeConfiguration.algorithm,
+        return try Data4LifeKeyGenerator.generateAsymKeyPair(algorithm: keyExchangeConfiguration.algorithm,
                                                         options: KeyOptions(size: keyExchangeConfiguration.size,
                                                                             tag: tag))
     }
+}
+
+// MARK: - Cryptor
+extension CoreCryptoService {
 
     func asymmetricEncrypt(data: Data, with keyPair: KeyPair) throws -> Data {
         return try Data4LifeCryptor.asymEncrypt(key: keyPair, data: data)
@@ -68,3 +78,14 @@ extension CoreCryptoService: CoreCryptoServiceProtocol {
     }
 }
 
+// MARK: - Signer
+extension CoreCryptoService {
+
+    func sign(data: Data, with keyPair: KeyPair, isSalted: Bool) throws -> Data {
+        return try Data4LifeSigner.sign(data: data, privateKey: keyPair.privateKey, isSalted: isSalted)
+    }
+
+    func verify(data: Data, signature: Data, with keyPair: KeyPair, isSalted: Bool) throws -> Bool {
+        return try Data4LifeSigner.verify(data: data, against: signature, publicKey: keyPair.publicKey, isSalted: isSalted)
+    }
+}

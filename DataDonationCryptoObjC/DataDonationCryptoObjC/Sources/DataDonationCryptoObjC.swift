@@ -16,12 +16,17 @@
 
 import Foundation
 
-@objc public protocol DataDonationCryptorProtocol {
+@objc public protocol DataDonationCryptorObjCProtocol {
     @objc func encrypt(_ plainBody: Data) throws -> Data
     @objc func decrypt(_ encryptedData: Data) throws -> Data
 }
 
-@objc public protocol KeychainKeyProviderProtocol {
+@objc public protocol DataDonationSignerObjCProtocol {
+    @objc func sign(data: Data, isSalted: Bool) throws -> Data 
+    @objc func verify(data: Data, signature: Data, isSalted: Bool) throws
+}
+
+@objc public protocol KeychainKeyProviderObjCProtocol {
     @objc func getDonorPrivateKey(for programName: String) throws -> String
     @objc func getDonorPublicKey(for programName: String) throws -> String
     @objc func removeDonorKeyPair(for programName: String) throws

@@ -106,4 +106,32 @@ final class CoreCryptoServiceMock: CoreCryptoServiceProtocol {
             throw MockError.resultNotDefined
         }
     }
+
+    var isSignCalled = false
+    var capturedSignParameters: (Data, KeyPair, Bool)?
+    var whenSign: ((Data, KeyPair, Bool) -> Result<Data, Error>)?
+
+    func sign(data: Data, with keyPair: KeyPair, isSalted: Bool) throws -> Data {
+        isSignCalled = true
+        capturedSignParameters = (data, keyPair, isSalted)
+        if let result = whenSign?(data, keyPair, isSalted) {
+            return try result.get()
+        } else {
+            throw MockError.resultNotDefined
+        }
+    }
+
+    var isVerifyCalled = false
+    var capturedVerifyParameters: (Data, Data, KeyPair, Bool)?
+    var whenVerify: ((Data, Data, KeyPair, Bool) -> Result<Bool, Error>)?
+
+    func verify(data: Data, signature: Data, with keyPair: KeyPair, isSalted: Bool) throws -> Bool {
+        isVerifyCalled = true
+        capturedVerifyParameters = (data, signature, keyPair, isSalted)
+        if let result = whenVerify?(data, signature, keyPair, isSalted) {
+            return try result.get()
+        } else {
+            throw MockError.resultNotDefined
+        }
+    }
 }

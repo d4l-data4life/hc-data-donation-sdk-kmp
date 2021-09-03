@@ -26,11 +26,7 @@ final class KeychainKeyProvider {
     }
 }
 
-extension KeychainKeyProvider: KeychainKeyProviderProtocol {
-
-    static func make() -> KeychainKeyProviderProtocol {
-        return KeychainKeyProvider()
-    }
+extension KeychainKeyProvider: KeychainKeyProviderObjCProtocol {
 
     func getDonorPrivateKey(for programName: String) throws -> String {
         return try keyHolder.privateKey(for: programName).asBase64EncodedString()
