@@ -34,15 +34,15 @@ extension CoreCryptoService: CoreCryptoServiceProtocol {
 
     func generateSymmetricKey() throws -> Key {
         let keyExchangeConfiguration = try KeyExchangeFactory.create(type: .common)
-        return try Data4LifeCryptor.generateSymKey(algorithm: keyExchangeConfiguration.algorithm,
+        return try Data4LifeKeyGenerator.generateSymKey(algorithm: keyExchangeConfiguration.algorithm,
                                                    options: KeyOptions(size: keyExchangeConfiguration.size),
                                                    type: .common)
     }
 
     func generateAsymmetricKeyPair(tag: String) throws -> KeyPair {
         let keyExchangeConfiguration = try KeyExchangeFactory.create(type: .dataDonation)
-        return try Data4LifeCryptor.generateAsymKeyPair(algorithm: keyExchangeConfiguration.algorithm,
-                                                        options: KeyOptions(size: keyExchangeConfiguration.size,
+        return try Data4LifeKeyGenerator.generateAsymKeyPair(algorithm: keyExchangeConfiguration.algorithm,
+                                                             options: KeyOptions(size: keyExchangeConfiguration.size,
                                                                             tag: tag))
     }
 
