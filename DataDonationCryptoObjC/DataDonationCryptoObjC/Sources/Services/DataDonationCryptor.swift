@@ -20,50 +20,52 @@ import CryptoKit
 
 final class DataDonationCryptor {
 
-    private let donorKeyHolder: DonorKeyHolderProtocol
     private let ivGenerator: InitializationVectorGeneratorProtocol
     private let coreCryptoService: CoreCryptoServiceProtocol
-
-    private let programName: String
     private let encryptionVersion: UInt8
 
-    init(programName: String,
-         encryptionVersion: UInt8 = 2,
-         donorKeyHolder: DonorKeyHolderProtocol = DonorKeyHolder(),
+    init(encryptionVersion: UInt8 = 2,
          ivGenerator: InitializationVectorGeneratorProtocol = InitializationVectorGenerator(),
          coreCryptoService: CoreCryptoServiceProtocol = CoreCryptoService()) {
-        
-        self.donorKeyHolder = donorKeyHolder
+
         self.ivGenerator = ivGenerator
         self.coreCryptoService = coreCryptoService
-
-        self.programName = programName
         self.encryptionVersion = encryptionVersion
     }
 }
 
 extension DataDonationCryptor: DataDonationCryptorObjCProtocol {
 
-    func encrypt(_ plainBody: Data) throws -> Data {
+    func encrypt(_ plainBody: Data, base64EncodedPublicKey: String) throws -> Data {
+
+        guard let publicKeyData = Data(base64Encoded: base64EncodedPublicKey) else {
+            throw DataDonationCryptoObjCError.couldNotEncryptData
+        }
+
         let symmetricKey = try coreCryptoService.generateSymmetricKey()
-        let donorKeyPair = try donorKeyHolder.fetchKeyPair(for: programName)
+        let asymmetricPublicKey = try coreCryptoService.createAsymmetricKey(from: publicKeyData, type: .public)
         let encryptedSymmetricKey = try coreCryptoService.asymmetricEncrypt(data: symmetricKey.value,
-                                                                            with: donorKeyPair)
-        let iv = ivGenerator.randomIVData(of: EncryptedData.ivSize)
+                                                                            with: asymmetricPublicKey)
+        let iv = ivGenerator.randomIVData(of: HybridEncryptedData.ivSize)
         let encryptedBody = try coreCryptoService.symmetricEncrypt(data: plainBody,
                                                                    with: symmetricKey,
                                                                    using: iv)
-        return EncryptedData(encryptionVersion: encryptionVersion,
+        return HybridEncryptedData(encryptionVersion: encryptionVersion,
                              iv: iv,
                              encryptedKey: encryptedSymmetricKey,
                              encryptedBody: encryptedBody).combined
     }
 
-    func decrypt(_ encryptedData: Data) throws -> Data {
-        let donorKeyPair = try donorKeyHolder.fetchKeyPair(for: programName)
-        let encryptedData = EncryptedData(combined: encryptedData)
+    func decrypt(_ encryptedData: Data, base64EncodedPrivateKey: String) throws -> Data {
+
+        guard let privateKeyData = Data(base64Encoded: base64EncodedPrivateKey) else {
+            throw DataDonationCryptoObjCError.couldNotEncryptData
+        }
+
+        let encryptedData = HybridEncryptedData(combined: encryptedData)
+        let asymmetricPrivateKey = try coreCryptoService.createAsymmetricKey(from: privateKeyData, type: .private)
         let symmetricKeyData = try coreCryptoService.asymmetricDecrypt(data: encryptedData.encryptedKey,
-                                                                       with: donorKeyPair)
+                                                                       with: asymmetricPrivateKey)
         let symmetricKey = try Key(data: symmetricKeyData,
                                    type: .common)
         return try coreCryptoService.symmetricDecrypt(data: encryptedData.encryptedBody,

@@ -24,10 +24,10 @@ final class DonorKeyHolderMock: DonorKeyHolderProtocol {
     var capturedGenerateParameter: String?
     var whenGenerate: ((String) -> Result<KeyPair,Error>)?
     
-    func generateKeyPair(for programName: String) throws -> KeyPair {
+    func generateKeyPair(with keyIdentifier: String) throws -> KeyPair {
         isGenerateCalled = true
-        capturedGenerateParameter = programName
-        if let result = whenGenerate?(programName) {
+        capturedGenerateParameter = keyIdentifier
+        if let result = whenGenerate?(keyIdentifier) {
             return try result.get()
         } else {
             throw MockError.resultNotDefined
@@ -38,10 +38,10 @@ final class DonorKeyHolderMock: DonorKeyHolderProtocol {
     var capturedCreateParameters: (Data, String)?
     var whenCreate: ((Data, String) -> Result<KeyPair,Error>)?
 
-    func createKeyPair(from data: Data, for programName: String) throws -> KeyPair {
+    func createKeyPair(from data: Data, with keyIdentifier: String) throws -> KeyPair {
         isCreateCalled = true
-        capturedCreateParameters = (data, programName)
-        if let result = whenCreate?(data, programName) {
+        capturedCreateParameters = (data, keyIdentifier)
+        if let result = whenCreate?(data, keyIdentifier) {
             return try result.get()
         } else {
             throw MockError.resultNotDefined
@@ -52,10 +52,10 @@ final class DonorKeyHolderMock: DonorKeyHolderProtocol {
     var capturedFetchParameter: String?
     var whenFetch: ((String) -> Result<KeyPair,Error>)?
 
-    func fetchKeyPair(for programName: String) throws -> KeyPair {
+    func fetchKeyPair(with keyIdentifier: String) throws -> KeyPair {
         isFetchCalled = true
-        capturedFetchParameter = programName
-        if let result = whenFetch?(programName) {
+        capturedFetchParameter = keyIdentifier
+        if let result = whenFetch?(keyIdentifier) {
             return try result.get()
         } else {
             throw MockError.resultNotDefined
@@ -66,10 +66,10 @@ final class DonorKeyHolderMock: DonorKeyHolderProtocol {
     var capturedDeleteParameter: String?
     var whenDelete: ((String) -> Result<Void,Error>)?
 
-    func deleteKeyPair(for programName: String) throws {
+    func deleteKeyPair(with keyIdentifier: String) throws {
         isDeleteCalled = true
-        capturedDeleteParameter = programName
-        if let result = whenDelete?(programName) {
+        capturedDeleteParameter = keyIdentifier
+        if let result = whenDelete?(keyIdentifier) {
             try result.get()
         } else {
             throw MockError.resultNotDefined

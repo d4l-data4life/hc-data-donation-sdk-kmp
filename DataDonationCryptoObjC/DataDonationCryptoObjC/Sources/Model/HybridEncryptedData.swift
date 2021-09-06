@@ -16,7 +16,7 @@
 
 import Foundation
 
-struct EncryptedData: Equatable {
+struct HybridEncryptedData: Equatable {
 
     static let ivSize: Int = 16
 
@@ -26,7 +26,7 @@ struct EncryptedData: Equatable {
     let encryptedBody: Data
 }
 
-extension EncryptedData {
+extension HybridEncryptedData {
     init(combined: Data) {
 
         let bytes = combined.asBytes
@@ -40,7 +40,7 @@ extension EncryptedData {
         let encryptedKey = Data(bytes[encryptedKeyRange])
 
         let ivOffset = encryptedKeyRange.upperBound
-        let ivRange = ivOffset..<(ivOffset + EncryptedData.ivSize)
+        let ivRange = ivOffset..<(ivOffset + HybridEncryptedData.ivSize)
         let iv = Data(bytes[ivRange])
 
         let encryptedBodyOffset = ivRange.upperBound

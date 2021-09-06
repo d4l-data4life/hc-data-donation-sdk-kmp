@@ -23,22 +23,18 @@ final class DataDonationSigner {
     private let donorKeyHolder: DonorKeyHolderProtocol
     private let coreCryptoService: CoreCryptoServiceProtocol
 
-    private let programName: String
-
-    init(programName: String,
-         donorKeyHolder: DonorKeyHolderProtocol = DonorKeyHolder(),
+    init(donorKeyHolder: DonorKeyHolderProtocol = DonorKeyHolder(),
          coreCryptoService: CoreCryptoServiceProtocol = CoreCryptoService()) {
 
         self.donorKeyHolder = donorKeyHolder
         self.coreCryptoService = coreCryptoService
-        self.programName = programName
     }
 }
 
 extension DataDonationSigner: DataDonationSignerObjCProtocol {
 
-    func sign(data: Data, isSalted: Bool) throws -> Data {
-        let donorKeyPair = try donorKeyHolder.fetchKeyPair(for: programName)
+    func sign(data: Data, isSalted: Bool, donorKeyIdentifier: String) throws -> Data {
+        let donorKeyPair = try donorKeyHolder.fetchKeyPair(with: donorKeyIdentifier)
         do {
             return try coreCryptoService.sign(data: data,
                                               with: donorKeyPair,
@@ -48,8 +44,8 @@ extension DataDonationSigner: DataDonationSignerObjCProtocol {
         }
     }
 
-    func verify(data: Data, signature: Data, isSalted: Bool) throws {
-        let donorKeyPair = try donorKeyHolder.fetchKeyPair(for: programName)
+    func verify(data: Data, signature: Data, isSalted: Bool, donorKeyIdentifier: String) throws {
+        let donorKeyPair = try donorKeyHolder.fetchKeyPair(with: donorKeyIdentifier)
         do {
             _ = try coreCryptoService.verify(data: data,
                                              signature: signature,

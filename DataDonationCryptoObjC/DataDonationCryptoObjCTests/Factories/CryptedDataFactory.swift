@@ -25,8 +25,11 @@ final class CryptedDataFactory {
     init(bundle: Foundation.Bundle = Bundle.current) {
         self.bundle = bundle
     }
+}
 
-    var plainInputData: Data {
+// MARK: - Cryptor Tests
+extension CryptedDataFactory {
+    var cryptorInputData: Data {
         let encodedData = bundle.data(forResource: "plainDataInput", withExtension: "txt")!
         let encodedDataString = String(data: encodedData, encoding: .utf8)?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
         return encodedDataString!.data(using: .utf8)!
@@ -39,6 +42,25 @@ final class CryptedDataFactory {
     }
 
     var encryptedSymmetricKey: Data {
-        EncryptedData(combined: encryptedOutputData).encryptedKey
+        HybridEncryptedData(combined: encryptedOutputData).encryptedKey
+    }
+}
+
+// MARK: - Signer tests
+extension CryptedDataFactory {
+    var signerInputData: Data {
+        let inputData = bundle.data(forResource: "signerDataInput", withExtension: "txt")!
+        let encodedDataString = String(data: inputData, encoding: .utf8)?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+        return encodedDataString!.data(using: .utf8)!
+    }
+
+    var signatureSaltLength32: Data {
+        let signatureString = String(data: bundle.data(forResource: "ExampleSignature32", withExtension: "txt")!, encoding: .utf8)!.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+        return Data(base64Encoded: signatureString)!
+    }
+
+    var signatureSaltLength0: Data {
+        let signatureString = String(data: bundle.data(forResource: "ExampleSignature0", withExtension: "txt")!, encoding: .utf8)!.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+        return Data(base64Encoded: signatureString)!
     }
 }

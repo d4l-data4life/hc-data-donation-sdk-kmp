@@ -20,16 +20,10 @@ import Data4LifeCrypto
 
 class DataDonationCryptorModuleTests: XCTestCase {
 
-    private static let testProgramName = "data-donation-crypto-objc-test"
+    private static let testKeyIdentifier = "data-donation-crypto-objc-test"
 
-    private let donorKeyHolder = DonorKeyHolder()
-    private lazy var dataDonationCryptor = DataDonationCryptor(programName: DataDonationCryptorModuleTests.testProgramName,
-                                                               donorKeyHolder: donorKeyHolder)
-
-    override func setUpWithError() throws {
-        try? donorKeyHolder.deleteKeyPair(for: DataDonationCryptorModuleTests.testProgramName)
-        try donorKeyHolder.generateKeyPair(for: DataDonationCryptorModuleTests.testProgramName)
-    }
+    private let dataDonationCryptor = DataDonationCryptor()
+    private let keyFactory = KeyFixtureFactory()
 }
 
 extension DataDonationCryptorModuleTests {
@@ -38,10 +32,12 @@ extension DataDonationCryptorModuleTests {
 
         // Given
         let plainBody = "Hello23';z/.1@@@üû".data(using: .utf8)!
+        let base64EncodedPublicKey = try! keyFactory.publicKey.asBase64EncodedString()
+        let base64EncodedPrivateKey = try! keyFactory.privateKey.asBase64EncodedString()
 
         // When
-        let encryptedData = try dataDonationCryptor.encrypt(plainBody)
-        let decryptedBody = try dataDonationCryptor.decrypt(encryptedData)
+        let encryptedData = try dataDonationCryptor.encrypt(plainBody, base64EncodedPublicKey: base64EncodedPublicKey)
+        let decryptedBody = try dataDonationCryptor.decrypt(encryptedData, base64EncodedPrivateKey: base64EncodedPrivateKey)
 
         // Then
         XCTAssertEqual(plainBody, decryptedBody)

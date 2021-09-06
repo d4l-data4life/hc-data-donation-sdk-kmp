@@ -17,7 +17,7 @@
 import Foundation
 import Data4LifeCrypto
 
-final class KeychainKeyProvider {
+final class DataDonationKeychainStore {
 
     private let keyHolder: DonorKeyHolderProtocol
 
@@ -26,21 +26,24 @@ final class KeychainKeyProvider {
     }
 }
 
-extension KeychainKeyProvider: KeychainKeyProviderObjCProtocol {
-
-    func getDonorPrivateKey(for programName: String) throws -> String {
-        return try keyHolder.privateKey(for: programName).asBase64EncodedString()
+extension DataDonationKeychainStore: DataDonationKeychainStoreObjCProtocol {
+    func generateDonorKeyPair(with keyIdentifier: String) throws {
+        try keyHolder.generateKeyPair(with: keyIdentifier)
     }
 
-    func getDonorPublicKey(for programName: String) throws -> String {
-        return try keyHolder.publicKey(for: programName).asBase64EncodedString()
+    func storeDonorKeyPairData(_ data: Data, with keyIdentifier: String) throws {
+        try keyHolder.createKeyPair(from: data, with: keyIdentifier)
     }
 
-    func removeDonorKeyPair(for programName: String) throws {
-        try keyHolder.deleteKeyPair(for: programName)
+    func fetchDonorPrivateKeyAsBase64(with keyIdentifier: String) throws -> String {
+        try keyHolder.fetchKeyPair(with: keyIdentifier).privateKey.asBase64EncodedString()
     }
 
-    func storeDonorKeyPairData(_ data: Data, for programName: String) throws {
-        try keyHolder.createKeyPair(from: data, for: programName)
+    func fetchDonorPublicKeyAsBase64(with keyIdentifier: String) throws -> String {
+        try keyHolder.fetchKeyPair(with: keyIdentifier).publicKey.asBase64EncodedString()
+    }
+
+    func deleteDonorKeyPair(with keyIdentifier: String) throws {
+        try keyHolder.deleteKeyPair(with: keyIdentifier)
     }
 }

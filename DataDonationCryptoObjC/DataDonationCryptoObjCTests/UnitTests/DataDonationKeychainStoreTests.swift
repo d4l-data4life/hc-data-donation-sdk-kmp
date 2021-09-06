@@ -18,13 +18,13 @@ import XCTest
 @testable import DataDonationCryptoObjC
 import Data4LifeCrypto
 
-class KeychainKeyProviderTests: XCTestCase {
+class DataDonationKeychainStoreTests: XCTestCase {
 
-    private lazy var keychainKeyProvider = KeychainKeyProvider(keyHolder: keyHolderMock)
+    private lazy var keychainStore = DataDonationKeychainStore(keyHolder: keyHolderMock)
     private lazy var keyHolderMock = DonorKeyHolderMock()
     private let keyFactory = KeyFixtureFactory()
     
-    private let testProgramName = "data-donation-crypto-objc-test"
+    private let testKeyIdentifier = "data-donation-crypto-objc-test"
 
     override func setUpWithError() throws {
         keyHolderMock.whenFetch = { [unowned self] _ in
@@ -39,27 +39,27 @@ class KeychainKeyProviderTests: XCTestCase {
     }
 
     func testGetPrivateKeyFlow() throws {
-        let _ = try keychainKeyProvider.getDonorPrivateKey(for: testProgramName)
+        let _ = try keychainStore.fetchDonorPrivateKeyAsBase64(with: testKeyIdentifier)
         XCTAssertEqual(keyHolderMock.isFetchCalled, true)
-        XCTAssertEqual(keyHolderMock.capturedFetchParameter, testProgramName)
+        XCTAssertEqual(keyHolderMock.capturedFetchParameter, testKeyIdentifier)
     }
 
     func testGetPublicKeyFlow() throws {
-        let _ = try keychainKeyProvider.getDonorPublicKey(for: testProgramName)
+        let _ = try keychainStore.fetchDonorPublicKeyAsBase64(with: testKeyIdentifier)
         XCTAssertEqual(keyHolderMock.isFetchCalled, true)
-        XCTAssertEqual(keyHolderMock.capturedFetchParameter, testProgramName)
+        XCTAssertEqual(keyHolderMock.capturedFetchParameter, testKeyIdentifier)
     }
 
     func testStoreFlow() throws {
-        try keychainKeyProvider.storeDonorKeyPairData(Data(), for: testProgramName)
+        try keychainStore.storeDonorKeyPairData(Data(), with: testKeyIdentifier)
         XCTAssertEqual(keyHolderMock.isCreateCalled, true)
         XCTAssertEqual(keyHolderMock.capturedCreateParameters?.0, Data())
-        XCTAssertEqual(keyHolderMock.capturedCreateParameters?.1, testProgramName)
+        XCTAssertEqual(keyHolderMock.capturedCreateParameters?.1, testKeyIdentifier)
     }
 
     func testDeleteFlow() throws {
-        try keychainKeyProvider.removeDonorKeyPair(for: testProgramName)
+        try keychainStore.deleteDonorKeyPair(with: testKeyIdentifier)
         XCTAssertEqual(keyHolderMock.isDeleteCalled, true)
-        XCTAssertEqual(keyHolderMock.capturedDeleteParameter, testProgramName)
+        XCTAssertEqual(keyHolderMock.capturedDeleteParameter, testKeyIdentifier)
     }
 }

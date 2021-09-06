@@ -20,7 +20,7 @@ import Data4LifeCrypto
 
 class KeychainKeyProviderModuleTests: XCTestCase {
 
-    private let keychainKeyProvider = DataDonationCryptoObjCFactory.keychainKeyProvider
+    private let keychainKeyProvider = DataDonationCryptoObjCFactory.dataDonationKeychainStore
     private let keyFactory = KeyFixtureFactory()
     private let testProgramName = "data-donation-crypto-objc-test"
 

@@ -46,15 +46,29 @@ final class CoreCryptoServiceMock: CoreCryptoServiceProtocol {
         }
     }
 
+    var isCreateAsymmetricCalled = false
+    var capturedCreateAsymmetricParameters: (Data, AsymmetricKeyType)?
+    var whenCreateAsymmetric: ((Data, AsymmetricKeyType) -> Result<AsymmetricKey, Error>)?
+
+    func createAsymmetricKey(from data: Data, type: AsymmetricKeyType) throws -> AsymmetricKey {
+        isCreateAsymmetricCalled = true
+        capturedCreateAsymmetricParameters = (data, type)
+        if let result = whenCreateAsymmetric?(data, type) {
+            return try result.get()
+        } else {
+            throw MockError.resultNotDefined
+        }
+    }
+
     var isAsymmetricEncryptCalled = false
-    var capturedAsymmetricEncryptParameters: (Data, KeyPair)?
-    var whenAsymmetricEncrypt: ((Data, KeyPair) -> Result<Data, Error>)?
+    var capturedAsymmetricEncryptParameters: (Data, AsymmetricKey)?
+    var whenAsymmetricEncrypt: ((Data, AsymmetricKey) -> Result<Data, Error>)?
 
-    func asymmetricEncrypt(data: Data, with keyPair: KeyPair) throws -> Data {
+    func asymmetricEncrypt(data: Data, with publicKey: AsymmetricKey) throws -> Data {
         isAsymmetricEncryptCalled = true
-        capturedAsymmetricEncryptParameters = (data, keyPair)
+        capturedAsymmetricEncryptParameters = (data, publicKey)
 
-        if let result = whenAsymmetricEncrypt?(data, keyPair) {
+        if let result = whenAsymmetricEncrypt?(data, publicKey) {
             return try result.get()
         } else {
             throw MockError.resultNotDefined
@@ -62,14 +76,14 @@ final class CoreCryptoServiceMock: CoreCryptoServiceProtocol {
     }
 
     var isAsymmetricDecryptCalled = false
-    var capturedAsymmetricDecryptParameters: (Data, KeyPair)?
-    var whenAsymmetricDecrypt: ((Data, KeyPair) -> Result<Data, Error>)?
+    var capturedAsymmetricDecryptParameters: (Data, AsymmetricKey)?
+    var whenAsymmetricDecrypt: ((Data, AsymmetricKey) -> Result<Data, Error>)?
 
-    func asymmetricDecrypt(data: Data, with keyPair: KeyPair) throws -> Data {
+    func asymmetricDecrypt(data: Data, with publicKey: AsymmetricKey) throws -> Data {
         isAsymmetricDecryptCalled = true
-        capturedAsymmetricDecryptParameters = (data, keyPair)
+        capturedAsymmetricDecryptParameters = (data, publicKey)
 
-        if let result = whenAsymmetricDecrypt?(data, keyPair) {
+        if let result = whenAsymmetricDecrypt?(data, publicKey) {
             return try result.get()
         } else {
             throw MockError.resultNotDefined

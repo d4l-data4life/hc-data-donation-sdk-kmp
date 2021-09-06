@@ -27,18 +27,17 @@ import kotlin.test.assertNotNull
 
 class ObjCCryptoIntegrationTest {
 
-    private val keychainKeyProvider = KeychainKeyProvider()
+    private val keychainKeyProvider = DataDonationCryptoObjCFactory.keychainKeyProvider()
     private val programName = "kmp.test.program.name"
 
     @Test
     fun `It imports and runs the library without linking problems`() {
 
-        val keyProvider: KeychainKeyProvider = KeychainKeyProvider()
-        assertNotNull(keyProvider)
+        assertNotNull(keychainKeyProvider)
 
         memScoped {
             val errorRef = alloc<ObjCObjectVar<NSError?>>()
-            keyProvider.getDonorPublicKeyFor(programName, errorRef.ptr)
+            keychainKeyProvider.getDonorPublicKeyFor(programName, errorRef.ptr)
             val error = errorRef.value
             assertNotNull(error)
         }
@@ -47,11 +46,9 @@ class ObjCCryptoIntegrationTest {
     @Test
     fun `It gets an error when generating a key due to missing host app`() {
 
-        val keyProvider: KeychainKeyProvider = KeychainKeyProvider()
-
         memScoped {
             val errorRef = alloc<ObjCObjectVar<NSError?>>()
-            keyProvider.getDonorPublicKeyFor(programName, errorRef.ptr)
+            keychainKeyProvider.getDonorPublicKeyFor(programName, errorRef.ptr)
 
             val error = errorRef.value
             val expectedError = NSErrorFactory.create(

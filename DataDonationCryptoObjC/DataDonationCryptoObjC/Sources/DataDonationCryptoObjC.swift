@@ -17,20 +17,21 @@
 import Foundation
 
 @objc public protocol DataDonationCryptorObjCProtocol {
-    @objc func encrypt(_ plainBody: Data) throws -> Data
-    @objc func decrypt(_ encryptedData: Data) throws -> Data
+    @objc func encrypt(_ plainBody: Data, base64EncodedPublicKey: String) throws -> Data 
+    @objc func decrypt(_ encryptedData: Data, base64EncodedPrivateKey: String) throws -> Data
 }
 
 @objc public protocol DataDonationSignerObjCProtocol {
-    @objc func sign(data: Data, isSalted: Bool) throws -> Data 
-    @objc func verify(data: Data, signature: Data, isSalted: Bool) throws
+    @objc func sign(data: Data, isSalted: Bool, donorKeyIdentifier: String) throws -> Data
+    @objc func verify(data: Data, signature: Data, isSalted: Bool, donorKeyIdentifier: String) throws
 }
 
-@objc public protocol KeychainKeyProviderObjCProtocol {
-    @objc func getDonorPrivateKey(for programName: String) throws -> String
-    @objc func getDonorPublicKey(for programName: String) throws -> String
-    @objc func removeDonorKeyPair(for programName: String) throws
-    @objc func storeDonorKeyPairData(_ data: Data, for programName: String) throws
+@objc public protocol DataDonationKeychainStoreObjCProtocol {
+    @objc func generateDonorKeyPair(with keyIdentifier: String) throws
+    @objc func storeDonorKeyPairData(_ data: Data, with keyIdentifier: String) throws
+    @objc func fetchDonorPrivateKeyAsBase64(with keyIdentifier: String) throws -> String
+    @objc func fetchDonorPublicKeyAsBase64(with keyIdentifier: String) throws -> String
+    @objc func deleteDonorKeyPair(with keyIdentifier: String) throws
 }
 
 

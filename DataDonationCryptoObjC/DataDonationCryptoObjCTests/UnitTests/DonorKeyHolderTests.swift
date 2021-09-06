@@ -24,7 +24,7 @@ class DonorKeyHolderTests: XCTestCase {
     private lazy var donorKeyHolder = DonorKeyHolder(coreCryptoService: coreCryptoMock)
 
     private let keyFactory = KeyFixtureFactory()
-    private let testProgramName = "data-donation-crypto-objc-test"
+    private let testKeyIdentifier = "data-donation-crypto-objc-test"
 
     override func setUpWithError() throws {
         coreCryptoMock = CoreCryptoServiceMock()
@@ -36,24 +36,24 @@ class DonorKeyHolderTests: XCTestCase {
     }
     
     override func tearDownWithError() throws {
-        try? donorKeyHolder.deleteKeyPair(for: testProgramName)
+        try? donorKeyHolder.deleteKeyPair(with: testKeyIdentifier)
     }
 }
 
 extension DonorKeyHolderTests {
 
     func testGetPrivateKeyDoesNotThrowErrors() throws {
-        XCTAssertNoThrow(try donorKeyHolder.privateKey(for: testProgramName), "Private key creation should not create errors")
+        XCTAssertNoThrow(try donorKeyHolder.privateKey(with: testKeyIdentifier), "Private key creation should not create errors")
     }
 
     func testGetPrivateKeyFlow() throws {
 
         // When
-        _ = try donorKeyHolder.privateKey(for: testProgramName)
+        _ = try donorKeyHolder.privateKey(with: testKeyIdentifier)
 
         // Then
         XCTAssertEqual(coreCryptoMock.isGenerateAsymmetricCalled, true)
-        XCTAssertEqual(coreCryptoMock.capturedGenerateAsymmetricParameters, (donorKeyHolder.tag(for:testProgramName)))
+        XCTAssertEqual(coreCryptoMock.capturedGenerateAsymmetricParameters, ("care.data4life.datadonation.donor.keypair.\(testKeyIdentifier)"))
     }
 
     func testGetPrivateKeyErrorIsMapped() throws {
@@ -64,24 +64,24 @@ extension DonorKeyHolderTests {
         }
 
         // Then
-        XCTAssertThrowsError(try donorKeyHolder.privateKey(for: testProgramName),
+        XCTAssertThrowsError(try donorKeyHolder.privateKey(with: testKeyIdentifier),
                              "should propagate error") { error in
             XCTAssertEqual(error as? DataDonationCryptoObjCError, DataDonationCryptoObjCError.couldNotGenerateKeyPair)
         }
     }
 
     func testGetPublicKeyDoesNotThrowErrors() throws {
-        XCTAssertNoThrow(try donorKeyHolder.publicKey(for: testProgramName), "Private key creation should not create errors")
+        XCTAssertNoThrow(try donorKeyHolder.publicKey(with: testKeyIdentifier), "Private key creation should not create errors")
     }
 
     func testGetPublicKeyFlow() throws {
 
         // When
-        _ = try donorKeyHolder.publicKey(for: testProgramName)
+        _ = try donorKeyHolder.publicKey(with: testKeyIdentifier)
 
         // Then
         XCTAssertEqual(coreCryptoMock.isGenerateAsymmetricCalled, true)
-        XCTAssertEqual(coreCryptoMock.capturedGenerateAsymmetricParameters, (donorKeyHolder.tag(for:testProgramName)))
+        XCTAssertEqual(coreCryptoMock.capturedGenerateAsymmetricParameters, ("care.data4life.datadonation.donor.keypair.\(testKeyIdentifier)"))
     }
 
     func testGetPublicKeyErrorIsMapped() throws {
@@ -92,7 +92,7 @@ extension DonorKeyHolderTests {
         }
 
         // Then
-        XCTAssertThrowsError(try donorKeyHolder.publicKey(for: testProgramName),
+        XCTAssertThrowsError(try donorKeyHolder.publicKey(with: testKeyIdentifier),
                              "should propagate error") { error in
             XCTAssertEqual(error as? DataDonationCryptoObjCError, DataDonationCryptoObjCError.couldNotGenerateKeyPair)
         }
@@ -101,8 +101,8 @@ extension DonorKeyHolderTests {
     func testGetPublicKeyReturnsAlwaysTheCreatedOne() throws {
 
         // Given
-        let createdKey = try donorKeyHolder.publicKey(for: testProgramName)
-        let fetchedKey = try donorKeyHolder.publicKey(for: testProgramName)
+        let createdKey = try donorKeyHolder.publicKey(with: testKeyIdentifier)
+        let fetchedKey = try donorKeyHolder.publicKey(with: testKeyIdentifier)
 
         // Then
         XCTAssertEqual(try createdKey.asBase64EncodedString(), try fetchedKey.asBase64EncodedString())
@@ -111,8 +111,8 @@ extension DonorKeyHolderTests {
     func testGetPrivateKeyReturnsAlwaysTheCreatedOne() throws {
 
         // Given
-        let createdKey = try donorKeyHolder.privateKey(for: testProgramName)
-        let fetchedKey = try donorKeyHolder.privateKey(for: testProgramName)
+        let createdKey = try donorKeyHolder.privateKey(with: testKeyIdentifier)
+        let fetchedKey = try donorKeyHolder.privateKey(with: testKeyIdentifier)
 
         // Then
         XCTAssertEqual(try createdKey.asBase64EncodedString(), try fetchedKey.asBase64EncodedString())
@@ -124,7 +124,7 @@ extension DonorKeyHolderTests {
         let keyPairData = keyFactory.keyPairData
 
         // Then
-        XCTAssertNoThrow(try donorKeyHolder.createKeyPair(from: keyPairData, for: testProgramName))
+        XCTAssertNoThrow(try donorKeyHolder.createKeyPair(from: keyPairData, with: testKeyIdentifier))
     }
 
     func testStoredKeyPairFromDataIsTheSameFetched() throws {
@@ -134,8 +134,8 @@ extension DonorKeyHolderTests {
         let decodedKeyPair = keyFactory.keyPair
 
         // When
-        try donorKeyHolder.createKeyPair(from: encodedKeyPairData, for: testProgramName)
-        let storedKeyPair = try donorKeyHolder.fetchKeyPair(for: testProgramName)
+        try donorKeyHolder.createKeyPair(from: encodedKeyPairData, with: testKeyIdentifier)
+        let storedKeyPair = try donorKeyHolder.fetchKeyPair(with: testKeyIdentifier)
 
         // Then
         XCTAssertEqual(decodedKeyPair.algorithm.blockMode, storedKeyPair.algorithm.blockMode)
@@ -150,29 +150,29 @@ extension DonorKeyHolderTests {
     }
 
     func testFetchKeyWhenKeyIsNotGeneratedShouldThrowError() throws {
-        XCTAssertThrowsError(try donorKeyHolder.fetchKeyPair(for: testProgramName),
+        XCTAssertThrowsError(try donorKeyHolder.fetchKeyPair(with: testKeyIdentifier),
                              "should throw the right error", { error in
                                 XCTAssertEqual(error as! DataDonationCryptoObjCError, DataDonationCryptoObjCError.couldNotFetchKeyPair)
                              })
     }
 
     func testFetchKeyWithDifferentTagShouldThrowError() throws {
-        _ = try donorKeyHolder.generateKeyPair(for: testProgramName)
-        XCTAssertThrowsError(try donorKeyHolder.fetchKeyPair(for: "non-existing"),
+        _ = try donorKeyHolder.generateKeyPair(with: testKeyIdentifier)
+        XCTAssertThrowsError(try donorKeyHolder.fetchKeyPair(with: "non-existing"),
                              "should throw the right error", { error in
                                 XCTAssertEqual(error as! DataDonationCryptoObjCError, DataDonationCryptoObjCError.couldNotFetchKeyPair)
                              })
     }
 
     func testDeleteNonExistingKeyShouldThrowError() throws {
-        XCTAssertThrowsError(try donorKeyHolder.deleteKeyPair(for: "non-existing"),
+        XCTAssertThrowsError(try donorKeyHolder.deleteKeyPair(with: "non-existing"),
                              "should throw the right error", { error in
                                 XCTAssertEqual(error as! DataDonationCryptoObjCError, DataDonationCryptoObjCError.couldNotDeleteKeyPair)
                              })
     }
 
     func testCreateKeyFromBadDataShouldThrowError() throws {
-        XCTAssertThrowsError(try donorKeyHolder.createKeyPair(from: Data(), for: testProgramName),
+        XCTAssertThrowsError(try donorKeyHolder.createKeyPair(from: Data(), with: testKeyIdentifier),
                              "should throw the right error", { error in
                                 XCTAssertEqual(error as! DataDonationCryptoObjCError, DataDonationCryptoObjCError.couldNotCreateKeyPairFromData)
                              })
@@ -180,8 +180,8 @@ extension DonorKeyHolderTests {
 
     func testCreateKeysWithSameDataShouldThrowError() throws {
         let encodedKeyPairData = keyFactory.keyPairData
-        try donorKeyHolder.createKeyPair(from: encodedKeyPairData, for: testProgramName)
-        XCTAssertThrowsError(try donorKeyHolder.createKeyPair(from: encodedKeyPairData, for: testProgramName),
+        try donorKeyHolder.createKeyPair(from: encodedKeyPairData, with: testKeyIdentifier)
+        XCTAssertThrowsError(try donorKeyHolder.createKeyPair(from: encodedKeyPairData, with: testKeyIdentifier),
                              "should throw the right error", { error in
                                 XCTAssertEqual(error as! DataDonationCryptoObjCError, DataDonationCryptoObjCError.couldNotCreateKeyPairFromData)
                              })

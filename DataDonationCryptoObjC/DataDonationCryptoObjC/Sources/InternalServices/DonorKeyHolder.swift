@@ -19,33 +19,33 @@ import Data4LifeCrypto
 protocol DonorKeyHolderProtocol {
 
     @discardableResult
-    func generateKeyPair(for programName: String) throws -> KeyPair
+    func generateKeyPair(with keyIdentifier: String) throws -> KeyPair
 
     @discardableResult
-    func createKeyPair(from data: Data, for programName: String) throws -> KeyPair
+    func createKeyPair(from data: Data, with keyIdentifier: String) throws -> KeyPair
 
-    func fetchKeyPair(for programName: String) throws -> KeyPair
-    func deleteKeyPair(for programName: String) throws
+    func fetchKeyPair(with keyIdentifier: String) throws -> KeyPair
+    func deleteKeyPair(with keyIdentifier: String) throws
 
-    func privateKey(for programName: String) throws -> AsymmetricKey
-    func publicKey(for programName: String) throws -> AsymmetricKey
+    func privateKey(with keyIdentifier: String) throws -> AsymmetricKey
+    func publicKey(with keyIdentifier: String) throws -> AsymmetricKey
 }
 
 
 extension DonorKeyHolderProtocol {
-    func privateKey(for programName: String) throws -> AsymmetricKey {
+    func privateKey(with keyIdentifier: String) throws -> AsymmetricKey {
         do {
-            return try fetchKeyPair(for: programName).privateKey
+            return try fetchKeyPair(with: keyIdentifier).privateKey
         } catch {
-            return try generateKeyPair(for: programName).privateKey
+            return try generateKeyPair(with: keyIdentifier).privateKey
         }
     }
 
-    func publicKey(for programName: String) throws -> AsymmetricKey {
+    func publicKey(with keyIdentifier: String) throws -> AsymmetricKey {
         do {
-            return try fetchKeyPair(for: programName).publicKey
+            return try fetchKeyPair(with: keyIdentifier).publicKey
         } catch {
-            return try generateKeyPair(for: programName).publicKey
+            return try generateKeyPair(with: keyIdentifier).publicKey
         }
     }
 }
@@ -53,10 +53,9 @@ extension DonorKeyHolderProtocol {
 final class DonorKeyHolder: DonorKeyHolderProtocol {
 
     private struct Tag {
-        static let keyPair = "care.data4life.datadonation.keypair"
+        static let keyPairPrefix = "care.data4life.datadonation.donor.keypair"
     }
 
-    static private(set) var prefixTag = Tag.keyPair
     static private var donorKeyOptions: KeyExchangeFormat = {
         let type: KeyType = .dataDonation
         let keyExchangeFormat = try! KeyExchangeFactory.create(type: type)
@@ -73,8 +72,8 @@ final class DonorKeyHolder: DonorKeyHolderProtocol {
 extension DonorKeyHolder {
 
     @discardableResult
-    func generateKeyPair(for programName: String) throws -> KeyPair {
-        let programTag = tag(for: programName)
+    func generateKeyPair(with keyIdentifier: String) throws -> KeyPair {
+        let programTag = tag(for: keyIdentifier)
         do {
             return try coreCryptoService.generateAsymmetricKeyPair(tag: programTag)
         } catch {
@@ -83,10 +82,10 @@ extension DonorKeyHolder {
     }
 
     @discardableResult
-    func createKeyPair(from data: Data, for programName: String) throws -> KeyPair {
+    func createKeyPair(from data: Data, with keyIdentifier: String) throws -> KeyPair {
         do {
             let keyPair = try JSONDecoder().decode(KeyPair.self, from: data)
-            let programTag = tag(for: programName)
+            let programTag = tag(for: keyIdentifier)
             try store(keyPair: keyPair, with: programTag)
             return keyPair
         } catch {
@@ -94,8 +93,8 @@ extension DonorKeyHolder {
         }
     }
 
-    func fetchKeyPair(for programName: String) throws -> KeyPair {
-        let programTag = tag(for: programName)
+    func fetchKeyPair(with keyIdentifier: String) throws -> KeyPair {
+        let programTag = tag(for: keyIdentifier)
         let algorithm = DonorKeyHolder.donorKeyOptions.algorithm
         do {
             return try KeyPair.load(tag: programTag, algorithm: algorithm)
@@ -104,8 +103,8 @@ extension DonorKeyHolder {
         }
     }
 
-    func deleteKeyPair(for programName: String) throws {
-        let programTag = tag(for: programName)
+    func deleteKeyPair(with keyIdentifier: String) throws {
+        let programTag = tag(for: keyIdentifier)
         do {
         try KeyPair.destroy(tag: programTag)
         } catch {
@@ -114,7 +113,7 @@ extension DonorKeyHolder {
     }
 }
 
-extension DonorKeyHolder {
+private extension DonorKeyHolder {
     func privateKey(for programName: String) throws -> AsymmetricKey {
         return try fetchOrGenerateKeyPair(for: programName).privateKey
     }
@@ -124,15 +123,15 @@ extension DonorKeyHolder {
     }
 
     func tag(for programName: String) -> String {
-        return "\(Tag.keyPair).\(programName)"
+        return "\(Tag.keyPairPrefix).\(programName)"
     }
 }
 
 private extension DonorKeyHolder {
 
-    func fetchOrGenerateKeyPair(for programName: String) throws -> KeyPair {
-        guard let keyPair = try? fetchKeyPair(for: programName) else {
-            return try generateKeyPair(for: programName)
+    func fetchOrGenerateKeyPair(for keyIdentifier: String) throws -> KeyPair {
+        guard let keyPair = try? fetchKeyPair(with: keyIdentifier) else {
+            return try generateKeyPair(with: keyIdentifier)
         }
 
         return keyPair

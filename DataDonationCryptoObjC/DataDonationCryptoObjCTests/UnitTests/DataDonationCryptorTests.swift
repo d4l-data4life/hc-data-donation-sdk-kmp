@@ -29,9 +29,7 @@ final class DataDonationCryptorTests: XCTestCase {
     private var coreCryptoServiceMock = CoreCryptoServiceMock()
     
     private lazy var cryptor: DataDonationCryptor = {
-        DataDonationCryptor(programName: testProgramName,
-                            donorKeyHolder: donorKeyHolderMock,
-                            ivGenerator: ivGeneratorMock,
+        DataDonationCryptor(ivGenerator: ivGeneratorMock,
                             coreCryptoService: coreCryptoServiceMock)
     }()
 }
@@ -40,6 +38,16 @@ extension DataDonationCryptorTests {
 
     override func setUp() {
         coreCryptoServiceMock = CoreCryptoServiceMock()
+        coreCryptoServiceMock.whenCreateAsymmetric = { [unowned self] _, type in
+            switch type {
+            case .private:
+                return .success(self.keyFactory.privateKey)
+            case .public:
+                return .success(self.keyFactory.publicKey)
+            @unknown default:
+                fatalError("unknown rsa key type detected")
+            }
+        }
         coreCryptoServiceMock.whenGenerateSymmetric = { [unowned self] in
             .success(self.keyFactory.symmetricKey)
         }
@@ -49,11 +57,11 @@ extension DataDonationCryptorTests {
         coreCryptoServiceMock.whenSymmetricDecrypt = { data, key, iv in
             .success(try! Data4LifeCryptor.symDecrypt(key: key, data: data, iv: iv))
         }
-        coreCryptoServiceMock.whenAsymmetricEncrypt = { data, keyPair in
-            .success(try! Data4LifeCryptor.asymEncrypt(key: keyPair, data: data))
+        coreCryptoServiceMock.whenAsymmetricEncrypt = { data, publicKey in
+            .success(try! Data4LifeCryptor.asymEncrypt(publicKey: publicKey, data: data))
         }
-        coreCryptoServiceMock.whenAsymmetricDecrypt = { data, keyPair in
-            .success(try! Data4LifeCryptor.asymDecrypt(key: keyPair, data: data))
+        coreCryptoServiceMock.whenAsymmetricDecrypt = { data, privateKey in
+            .success(try! Data4LifeCryptor.asymDecrypt(privateKey: privateKey, data: data))
         }
 
         ivGeneratorMock = IVGeneratorMock()
@@ -76,14 +84,15 @@ extension DataDonationCryptorTests {
             .success(self.dataFactory.encryptedSymmetricKey)
         }
 
-        let plainBody = dataFactory.plainInputData
+        let plainBody = dataFactory.cryptorInputData
+        let base64EncodedPublicKey = try! keyFactory.publicKey.asBase64EncodedString()
 
         // When
-        let encryptedData = try cryptor.encrypt(plainBody)
+        let encryptedData = try cryptor.encrypt(plainBody, base64EncodedPublicKey: base64EncodedPublicKey)
 
         // Then
-        let combinedOne = EncryptedData(combined: encryptedData)
-        let combinedTwo = EncryptedData(combined: dataFactory.encryptedOutputData)
+        let combinedOne = HybridEncryptedData(combined: encryptedData)
+        let combinedTwo = HybridEncryptedData(combined: dataFactory.encryptedOutputData)
         XCTAssertEqual(combinedOne.combined.byteCount, combinedTwo.combined.byteCount)
         XCTAssertEqual(combinedOne.encryptionVersion, combinedTwo.encryptionVersion)
         XCTAssertEqual(combinedOne.encryptedBody, combinedTwo.encryptedBody)
@@ -95,12 +104,13 @@ extension DataDonationCryptorTests {
 
         // Given
         let encryptedData = dataFactory.encryptedOutputData
+        let base64EncodedPrivateKey = try! keyFactory.privateKey.asBase64EncodedString()
 
         // When
-        let decryptedBody = try cryptor.decrypt(encryptedData)
+        let decryptedBody = try cryptor.decrypt(encryptedData, base64EncodedPrivateKey: base64EncodedPrivateKey)
 
         // Then
-        XCTAssertEqual(dataFactory.plainInputData,
+        XCTAssertEqual(dataFactory.cryptorInputData,
                        decryptedBody)
     }
 
@@ -108,10 +118,12 @@ extension DataDonationCryptorTests {
 
         // Given
         let body = "any kind of weird message with ü".data(using: .utf8)!
+        let base64EncodedPublicKey = try! keyFactory.publicKey.asBase64EncodedString()
+        let base64EncodedPrivateKey = try! keyFactory.privateKey.asBase64EncodedString()
 
         // When
-        let encryptedData = try cryptor.encrypt(body)
-        let decryptedBody = try cryptor.decrypt(encryptedData)
+        let encryptedData = try cryptor.encrypt(body, base64EncodedPublicKey: base64EncodedPublicKey)
+        let decryptedBody = try cryptor.decrypt(encryptedData, base64EncodedPrivateKey: base64EncodedPrivateKey)
 
         // Then 
         XCTAssertEqual(body, decryptedBody)

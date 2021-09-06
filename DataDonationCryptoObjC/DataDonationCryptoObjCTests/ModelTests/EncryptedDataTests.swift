@@ -26,7 +26,7 @@ class EncryptedDataTests: XCTestCase {
         let encryptedKey = "whatever-encrypted-key".data(using: .utf8)
         let encryptionVersion: UInt8 = 2
 
-        let encryptedData = EncryptedData(encryptionVersion: encryptionVersion,
+        let encryptedData = HybridEncryptedData(encryptionVersion: encryptionVersion,
                                           iv: iv,
                                           encryptedKey: encryptedKey!,
                                           encryptedBody: encryptedBody!)
@@ -35,12 +35,12 @@ class EncryptedDataTests: XCTestCase {
         XCTAssertEqual(encryptedData.expectedCombinedLength,
                        combinedData.byteCount)
         
-        let decombinedData = EncryptedData(combined: combinedData)
+        let decombinedData = HybridEncryptedData(combined: combinedData)
         XCTAssertEqual(encryptedData, decombinedData)
     }
 }
 
-private extension EncryptedData {
+private extension HybridEncryptedData {
     var expectedCombinedLength: Int {
         let encryptionVersionByteCount = MemoryLayout<UInt8>.size
         let encryptedKeyLengthByteCount = MemoryLayout<UInt16>.size
