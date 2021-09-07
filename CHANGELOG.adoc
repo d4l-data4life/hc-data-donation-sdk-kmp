@@ -27,8 +27,6 @@ toc::[]
 
 === Added
 
-* coroutineScope as parameter to the ClientFactory.
-
 === Changed
 
 === Deprecated
@@ -44,9 +42,18 @@ toc::[]
 === Migration
 
 
+== link:{link-repository}/releases/tag/v0.2.1[0.2.1]
+
+See link:{link-repository}/compare/v0.2.0...v0.2.1[0.2.1]
+
+=== Added
+
+* `coroutineScope` as parameter to the ClientFactory.
+
+
 == link:{link-repository}/releases/tag/v0.2.0[0.2.0]
 
-See link:{link-repository}/compare/v0.2.0...v0.2.0[0.2.0]
+See link:{link-repository}/compare/v0.1.3...v0.2.0[0.2.0]
 
 === Added
 
@@ -69,6 +76,7 @@ See link:{link-repository}/compare/v0.2.0...v0.2.0[0.2.0]
 * _**BREAKING**_ sdk-util 1.9.0 -> 1.10.0.
 * Gradle 6.8.3 -> 6.9.1
 
+
 == link:{link-repository}/releases/tag/v0.1.3[0.1.3]
 
 See link:{link-repository}/compare/v0.1.2...v0.1.3[0.1.3]
@@ -78,6 +86,7 @@ See link:{link-repository}/compare/v0.1.2...v0.1.3[0.1.3]
 * Kotlin-date Duration usages caused App crashes.
 * ErrorMapping for revoke consent did not accepted 200 as valid response.
 
+
 == link:{link-repository}/releases/tag/v0.1.2[0.1.2]
 
 See link:{link-repository}/compare/v0.1.1...v0.1.2[0.1.2]
@@ -85,6 +94,7 @@ See link:{link-repository}/compare/v0.1.1...v0.1.2[0.1.2]
 === Fixed
 
 * versions are now covered as Strings to reflect semantic versioning of the Backend.
+
 
 == link:{link-repository}/releases/tag/v0.1.1[0.1.1]
 
@@ -98,6 +108,7 @@ See link:{link-repository}/compare/v0.1.0...v0.1.1[0.1.1]
 
 * `fetchUserDocuments` used wrong url parameter.
 * `version` at ConsentDocument.
+
 
 == link:{link-repository}/releases/tag/v0.1.0[0.1.0]
 
@@ -143,6 +154,7 @@ See link:{link-repository}/compare/v0.0.1...v0.1.0[0.1.0]
 * JUnit 4.13 -> 4.13.2
 * _**BREAKING**_ sdk-util 1.7.0 -> 1.9.0
 * _**BREAKING**_ fhir-sdk-kmp 0.1.0 -> 0.2.0
+
 
 == link:{link-repository}/releases/tag/v0.0.1[0.0.1]
 
