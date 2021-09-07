@@ -20,6 +20,8 @@ import care.data4life.datadonation.DataDonationSDK.Environment
 import care.data4life.datadonation.consent.consentdocument.ConsentDocumentContract
 import care.data4life.datadonation.consent.userconsent.UserConsentContract
 import care.data4life.datadonation.mock.stub.UserSessionTokenProviderStub
+import care.data4life.sdk.util.test.coroutine.testCoroutineContext
+import kotlinx.coroutines.CoroutineScope
 import org.koin.core.context.stopKoin
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -36,7 +38,8 @@ class KoinTest {
         // When
         val app = initKoin(
             Environment.DEV,
-            UserSessionTokenProviderStub()
+            UserSessionTokenProviderStub(),
+            CoroutineScope(testCoroutineContext)
         )
         // Then
         val controller: UserConsentContract.Controller = app.koin.get()
@@ -48,7 +51,8 @@ class KoinTest {
         // When
         val app = initKoin(
             Environment.DEV,
-            UserSessionTokenProviderStub()
+            UserSessionTokenProviderStub(),
+            CoroutineScope(testCoroutineContext)
         )
         // Then
         val controller: ConsentDocumentContract.Controller = app.koin.get()

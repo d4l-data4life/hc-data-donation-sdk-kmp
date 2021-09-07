@@ -20,6 +20,7 @@ import care.data4life.datadonation.DataDonationSDK
 import care.data4life.datadonation.mock.stub.UserSessionTokenProviderStub
 import care.data4life.sdk.flow.D4LSDKFlowFactoryContract
 import care.data4life.sdk.util.coroutine.DomainErrorMapperContract
+import care.data4life.sdk.util.test.coroutine.testCoroutineContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.datetime.Clock
 import org.koin.core.context.stopKoin
@@ -27,6 +28,7 @@ import org.koin.dsl.koinApplication
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertNotNull
+import kotlin.test.assertSame
 
 class RootKoinTest {
     @BeforeTest
@@ -39,19 +41,24 @@ class RootKoinTest {
         // Given
         val env = DataDonationSDK.Environment.DEV
         val provider = UserSessionTokenProviderStub()
+        val scope = CoroutineScope(testCoroutineContext)
 
         // When
         val koin = koinApplication {
             modules(
                 resolveRootModule(
                     env,
-                    provider
+                    provider,
+                    scope
                 )
             )
         }
+
         // Then
-        val builder: DataDonationSDK.Environment = koin.koin.get()
-        assertNotNull(builder)
+        assertSame(
+            actual = koin.koin.get(),
+            expected = env
+        )
     }
 
     @Test
@@ -59,16 +66,19 @@ class RootKoinTest {
         // Given
         val env = DataDonationSDK.Environment.DEV
         val provider = UserSessionTokenProviderStub()
+        val scope = CoroutineScope(testCoroutineContext)
 
         // When
         val koin = koinApplication {
             modules(
                 resolveRootModule(
                     env,
-                    provider
+                    provider,
+                    scope
                 )
             )
         }
+
         // Then
         val clock: Clock = koin.koin.get()
         assertNotNull(clock)
@@ -78,20 +88,25 @@ class RootKoinTest {
     fun `Given resolveRootModule is called with its appropriate parameter it creates a Module, which contains a UserSessionTokenProvider`() {
         // Given
         val env = DataDonationSDK.Environment.DEV
-        val provider = UserSessionTokenProviderStub()
+        val provider: DataDonationSDK.UserSessionTokenProvider = UserSessionTokenProviderStub()
+        val scope = CoroutineScope(testCoroutineContext)
 
         // When
         val koin = koinApplication {
             modules(
                 resolveRootModule(
                     env,
-                    provider
+                    provider,
+                    scope
                 )
             )
         }
+
         // Then
-        val item: DataDonationSDK.UserSessionTokenProvider = koin.koin.get()
-        assertNotNull(item)
+        assertSame(
+            actual = koin.koin.get(),
+            expected = provider
+        )
     }
 
     @Test
@@ -99,19 +114,25 @@ class RootKoinTest {
         // Given
         val env = DataDonationSDK.Environment.DEV
         val provider = UserSessionTokenProviderStub()
+        val scope = CoroutineScope(testCoroutineContext)
 
         // When
         val koin = koinApplication {
             modules(
                 resolveRootModule(
                     env,
-                    provider
+                    provider,
+                    scope
                 )
             )
         }
         // Then
-        val scope: CoroutineScope = koin.koin.get()
-        assertNotNull(scope)
+
+        // Then
+        assertSame(
+            actual = koin.koin.get(),
+            expected = scope
+        )
     }
 
     @Test
@@ -119,13 +140,15 @@ class RootKoinTest {
         // Given
         val env = DataDonationSDK.Environment.DEV
         val provider = UserSessionTokenProviderStub()
+        val scope = CoroutineScope(testCoroutineContext)
 
         // When
         val koin = koinApplication {
             modules(
                 resolveRootModule(
                     env,
-                    provider
+                    provider,
+                    scope
                 )
             )
         }
@@ -139,13 +162,15 @@ class RootKoinTest {
         // Given
         val env = DataDonationSDK.Environment.DEV
         val provider = UserSessionTokenProviderStub()
+        val scope = CoroutineScope(testCoroutineContext)
 
         // When
         val koin = koinApplication {
             modules(
                 resolveRootModule(
                     env,
-                    provider
+                    provider,
+                    scope
                 )
             )
         }

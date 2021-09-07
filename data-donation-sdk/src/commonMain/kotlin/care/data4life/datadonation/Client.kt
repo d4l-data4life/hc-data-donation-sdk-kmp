@@ -39,6 +39,7 @@ import care.data4life.datadonation.consent.userconsent.UserConsentContract
 import care.data4life.datadonation.di.initKoin
 import care.data4life.sdk.flow.D4LSDKFlow
 import care.data4life.sdk.flow.D4LSDKFlowFactoryContract
+import care.data4life.sdk.util.coroutine.CoroutineScopeFactory
 import care.data4life.sdk.util.coroutine.DomainErrorMapperContract
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.flow
@@ -115,12 +116,16 @@ class Client internal constructor(
     companion object Factory : DataDonationSDK.DataDonationClientFactory {
         override fun getInstance(
             environment: DataDonationSDK.Environment,
-            userSession: DataDonationSDK.UserSessionTokenProvider
+            userSession: DataDonationSDK.UserSessionTokenProvider,
+            coroutineScope: CoroutineScope?
         ): DataDonationSDK.DataDonationClient {
             return Client(
                 initKoin(
                     environment,
-                    userSession
+                    userSession,
+                    coroutineScope ?: CoroutineScopeFactory.createScope(
+                        "DataDonationBackgroundThreadScope"
+                    )
                 )
             )
         }

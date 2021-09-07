@@ -35,6 +35,7 @@ package care.data4life.datadonation
 import care.data4life.datadonation.ConsentDataContract.ConsentDocument
 import care.data4life.datadonation.ConsentDataContract.UserConsent
 import care.data4life.sdk.flow.D4LSDKFlow
+import kotlinx.coroutines.CoroutineScope
 
 interface DataDonationSDK {
     enum class Environment(val url: String) {
@@ -73,7 +74,8 @@ interface DataDonationSDK {
     interface DataDonationClientFactory {
         fun getInstance(
             environment: Environment,
-            userSession: UserSessionTokenProvider
+            userSession: UserSessionTokenProvider,
+            coroutineScope: CoroutineScope? = null
         ): DataDonationClient
     }
 }
