@@ -26,6 +26,7 @@ import org.koin.core.context.stopKoin
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertNotNull
+import kotlin.test.assertSame
 
 class KoinTest {
     @BeforeTest
@@ -57,5 +58,38 @@ class KoinTest {
         // Then
         val controller: ConsentDocumentContract.Controller = app.koin.get()
         assertNotNull(controller)
+    }
+
+    @Test
+    fun `Given initKoin is called with its appropriate parameter, which contain null, the resulting KoinApplication contains the given CoroutineScope`() {
+        // Given
+        val scope = CoroutineScope(testCoroutineContext)
+
+        // When
+        val app = initKoin(
+            Environment.DEV,
+            UserSessionTokenProviderStub(),
+            scope
+        )
+
+        // Then
+        assertSame(
+            actual = app.koin.get(),
+            expected = scope
+        )
+    }
+
+    @Test
+    fun `Given initKoin is called with its appropriate parameter, which contain null, the resulting KoinApplication contains a CoroutineScope`() {
+        // When
+        val app = initKoin(
+            Environment.DEV,
+            UserSessionTokenProviderStub(),
+            null
+        )
+
+        // Then
+        val scope: CoroutineScope = app.koin.get()
+        assertNotNull(scope)
     }
 }

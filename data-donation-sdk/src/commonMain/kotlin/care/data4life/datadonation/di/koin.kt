@@ -26,6 +26,7 @@ import care.data4life.datadonation.networking.resolveNetworking
 import care.data4life.datadonation.session.resolveSessionKoinModule
 import care.data4life.sdk.flow.D4LSDKFlow
 import care.data4life.sdk.flow.D4LSDKFlowFactoryContract
+import care.data4life.sdk.util.coroutine.CoroutineScopeFactory
 import care.data4life.sdk.util.coroutine.DomainErrorMapperContract
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.datetime.Clock
@@ -37,14 +38,18 @@ import org.koin.dsl.module
 internal fun initKoin(
     environment: Environment,
     userSession: DataDonationSDK.UserSessionTokenProvider,
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope?
 ): KoinApplication {
+    val scope = coroutineScope ?: CoroutineScopeFactory.createScope(
+        "DataDonationBackgroundThreadScope"
+    )
+
     return koinApplication {
         modules(
             resolveRootModule(
                 environment,
                 userSession,
-                coroutineScope
+                scope
             ),
             resolveNetworking(),
             resolveKtorPlugins(),
