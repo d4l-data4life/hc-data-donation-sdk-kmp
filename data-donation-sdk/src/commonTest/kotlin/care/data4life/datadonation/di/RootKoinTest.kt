@@ -126,7 +126,6 @@ class RootKoinTest {
                 )
             )
         }
-        // Then
 
         // Then
         assertSame(
@@ -152,6 +151,7 @@ class RootKoinTest {
                 )
             )
         }
+
         // Then
         val mapper: DomainErrorMapperContract = koin.koin.get()
         assertNotNull(mapper)
@@ -174,6 +174,7 @@ class RootKoinTest {
                 )
             )
         }
+
         // Then
         val factory: D4LSDKFlowFactoryContract = koin.koin.get()
         assertNotNull(factory)
