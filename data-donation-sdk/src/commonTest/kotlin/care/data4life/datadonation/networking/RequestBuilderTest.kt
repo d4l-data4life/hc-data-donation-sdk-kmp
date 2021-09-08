@@ -29,6 +29,8 @@ import io.ktor.client.engine.mock.toByteReadPacket
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.json.serializer.KotlinxSerializer
 import io.ktor.client.request.HttpRequestData
+import io.ktor.client.request.headers
+import io.ktor.client.request.request
 import io.ktor.http.HttpMethod
 import io.ktor.http.URLProtocol
 import io.ktor.http.fullPath
