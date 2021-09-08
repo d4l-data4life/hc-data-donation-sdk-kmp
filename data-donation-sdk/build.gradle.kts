@@ -13,9 +13,10 @@
  * applications and/or if you’d like to contribute to the development of the SDK, please
  * contact D4L by email to help@data4life.care.
  */
-import care.data4life.sdk.datadonation.LibraryConfig
-import care.data4life.sdk.datadonation.dependency.Dependency
-import care.data4life.sdk.datadonation.dependency.Version
+
+import care.data4life.gradle.datadonation.LibraryConfig
+import care.data4life.gradle.datadonation.dependency.Dependency
+import care.data4life.gradle.datadonation.dependency.Version
 
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
