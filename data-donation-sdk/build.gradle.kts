@@ -14,7 +14,7 @@
  * contact D4L by email to help@data4life.care.
  */
 
-import care.data4life.gradle.datadonation.LibraryConfig
+import care.data4life.gradle.datadonation.config.LibraryConfig
 import care.data4life.gradle.datadonation.dependency.Dependency
 import care.data4life.gradle.datadonation.dependency.Version
 
@@ -31,7 +31,7 @@ plugins {
     id("com.android.library")
 
     // Publish
-    id("care.data4life.sdk.datadonation.publishing-config")
+    id("care.data4life.gradle.datadonation.script.publishing-config")
 }
 
 group = LibraryConfig.group
