@@ -34,7 +34,9 @@ package care.data4life.datadonation
 
 import care.data4life.datadonation.ConsentDataContract.ConsentDocument
 import care.data4life.datadonation.ConsentDataContract.UserConsent
+import care.data4life.datadonation.session.SessionToken
 import care.data4life.sdk.flow.D4LSDKFlow
+import co.touchlab.stately.freeze
 import kotlinx.coroutines.CoroutineScope
 
 interface DataDonationSDK {
@@ -46,10 +48,7 @@ interface DataDonationSDK {
     }
 
     fun interface UserSessionTokenProvider {
-        fun getUserSessionToken(
-            onSuccess: (sessionToken: String) -> Unit,
-            onError: (error: Exception) -> Unit
-        )
+        fun getUserSessionToken(): Result<SessionToken, Throwable>
     }
 
     interface DataDonationClient {
@@ -77,5 +76,23 @@ interface DataDonationSDK {
             userSession: UserSessionTokenProvider,
             coroutineScope: CoroutineScope? = null
         ): DataDonationClient
+    }
+
+    sealed class Result<Success, Error>(
+        val value: Success?,
+        val error: Error?
+    ) {
+        init {
+            this.freeze()
+        }
+
+        class Error<Succ : Any?, Err : Throwable>(value: Err) : Result<Succ, Err>(
+            value = null,
+            error = value
+        )
+        class Success<Succ, Err : Throwable?>(value: Succ) : Result<Succ, Err>(
+            value = value,
+            error = null
+        )
     }
 }

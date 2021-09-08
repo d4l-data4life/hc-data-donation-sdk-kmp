@@ -43,6 +43,7 @@ import care.data4life.datadonation.mock.fixture.UserConsentFixture
 import care.data4life.datadonation.mock.stub.ClockStub
 import care.data4life.datadonation.networking.plugin.resolveKtorPlugins
 import care.data4life.datadonation.networking.resolveNetworking
+import care.data4life.datadonation.session.SessionToken
 import care.data4life.datadonation.session.SessionTokenRepositoryContract.Companion.CACHE_LIFETIME_IN_SECONDS
 import care.data4life.datadonation.session.resolveSessionKoinModule
 import care.data4life.sdk.util.test.coroutine.runWithContextBlockingTest
@@ -402,9 +403,8 @@ class ClientConsentFlowModuleTest {
     private object UserSessionTokenProvider : DataDonationSDK.UserSessionTokenProvider {
         const val sessionToken = "sessionToken"
 
-        override fun getUserSessionToken(
-            onSuccess: (sessionToken: String) -> Unit,
-            onError: (error: Exception) -> Unit
-        ) { onSuccess(sessionToken) }
+        override fun getUserSessionToken() = DataDonationSDK.Result.Success<SessionToken, Throwable>(
+            sessionToken
+        )
     }
 }

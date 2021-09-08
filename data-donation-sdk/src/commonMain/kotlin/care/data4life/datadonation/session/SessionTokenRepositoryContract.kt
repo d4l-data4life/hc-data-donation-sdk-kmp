@@ -19,7 +19,7 @@ package care.data4life.datadonation.session
 internal typealias SessionToken = String
 
 internal interface SessionTokenRepositoryContract {
-    suspend fun getUserSessionToken(): SessionToken
+    fun getUserSessionToken(): SessionToken
 
     companion object {
         const val CACHE_LIFETIME_IN_SECONDS = 60

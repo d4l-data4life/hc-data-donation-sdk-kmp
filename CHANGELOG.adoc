@@ -29,6 +29,8 @@ toc::[]
 
 === Changed
 
+* UserSessionTokenProvider does not need Callbacks any longer, it propagates via Result.
+
 === Deprecated
 
 === Removed
