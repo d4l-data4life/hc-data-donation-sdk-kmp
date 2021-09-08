@@ -46,6 +46,7 @@ import care.data4life.datadonation.networking.resolveNetworking
 import care.data4life.datadonation.session.SessionTokenRepositoryContract.Companion.CACHE_LIFETIME_IN_SECONDS
 import care.data4life.datadonation.session.resolveSessionKoinModule
 import care.data4life.sdk.util.test.coroutine.runWithContextBlockingTest
+import care.data4life.sdk.util.test.coroutine.testCoroutineContext
 import care.data4life.sdk.util.test.ktor.HttpMockClientFactory.createMockClientWithResponse
 import io.ktor.client.engine.mock.respond
 import io.ktor.client.engine.mock.toByteReadPacket
@@ -54,6 +55,7 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.fullPath
 import io.ktor.http.headersOf
 import io.ktor.util.KtorExperimentalAPI
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -108,7 +110,8 @@ class ClientConsentFlowModuleTest {
             modules(
                 resolveRootModule(
                     DataDonationSDK.Environment.DEV,
-                    UserSessionTokenProvider
+                    UserSessionTokenProvider,
+                    CoroutineScope(testCoroutineContext)
                 ),
                 resolveNetworking(),
                 resolveKtorPlugins(),
@@ -173,7 +176,8 @@ class ClientConsentFlowModuleTest {
             modules(
                 resolveRootModule(
                     DataDonationSDK.Environment.DEV,
-                    UserSessionTokenProvider
+                    UserSessionTokenProvider,
+                    CoroutineScope(testCoroutineContext)
                 ),
                 resolveNetworking(),
                 resolveKtorPlugins(),
@@ -265,7 +269,8 @@ class ClientConsentFlowModuleTest {
             modules(
                 resolveRootModule(
                     DataDonationSDK.Environment.DEV,
-                    UserSessionTokenProvider
+                    UserSessionTokenProvider,
+                    CoroutineScope(testCoroutineContext)
                 ),
                 resolveNetworking(),
                 resolveKtorPlugins(),
@@ -365,7 +370,8 @@ class ClientConsentFlowModuleTest {
             modules(
                 resolveRootModule(
                     DataDonationSDK.Environment.DEV,
-                    UserSessionTokenProvider
+                    UserSessionTokenProvider,
+                    CoroutineScope(testCoroutineContext)
                 ),
                 resolveNetworking(),
                 resolveKtorPlugins(),
