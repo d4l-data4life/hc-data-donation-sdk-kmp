@@ -897,8 +897,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/d4l-data4life/d4l-crypto-ios.git";
 			requirement = {
-				branch = "release/1.7.0/prepare-1.7.0";
-				kind = branch;
+				kind = upToNextMinorVersion;
+				minimumVersion = 1.7.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

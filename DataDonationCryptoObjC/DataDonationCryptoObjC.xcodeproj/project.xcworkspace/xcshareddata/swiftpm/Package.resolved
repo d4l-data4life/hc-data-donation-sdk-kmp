@@ -5,9 +5,9 @@
         "package": "Data4LifeCrypto",
         "repositoryURL": "https://github.com/d4l-data4life/d4l-crypto-ios.git",
         "state": {
-          "branch": "release/1.7.0/prepare-1.7.0",
-          "revision": "199f825507a74106c788ea123fb3a0993fcfbcde",
-          "version": null
+          "branch": null,
+          "revision": "94330b0803b7da45b55bd898b333ce4bbaac089f",
+          "version": "1.7.0"
         }
       }
     ]
