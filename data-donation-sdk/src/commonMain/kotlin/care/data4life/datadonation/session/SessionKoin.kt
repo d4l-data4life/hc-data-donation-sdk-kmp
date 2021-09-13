@@ -22,7 +22,7 @@ import org.koin.dsl.module
 internal fun resolveSessionKoinModule(): Module {
     return module {
         single<SessionTokenRepositoryContract> {
-            CachedUserSessionTokenRepository(get(), get())
+            CachedUserSessionTokenRepository(get(), get(), get())
         }
     }
 }

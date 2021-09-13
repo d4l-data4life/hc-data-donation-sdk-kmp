@@ -403,8 +403,8 @@ class ClientConsentFlowModuleTest {
     private object UserSessionTokenProvider : DataDonationSDK.UserSessionTokenProvider {
         const val sessionToken = "sessionToken"
 
-        override fun getUserSessionToken() = DataDonationSDK.Result.Success<SessionToken, Throwable>(
-            sessionToken
-        )
+        override fun getUserSessionToken(pipe: DataDonationSDK.Pipe<SessionToken, Throwable>) {
+            return pipe.onSuccess(sessionToken)
+        }
     }
 }

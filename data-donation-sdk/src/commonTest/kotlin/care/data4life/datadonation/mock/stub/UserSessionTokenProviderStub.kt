@@ -22,10 +22,10 @@ import care.data4life.datadonation.mock.MockException
 import care.data4life.datadonation.session.SessionToken
 
 internal class UserSessionTokenProviderStub : DataDonationSDK.UserSessionTokenProvider, MockContract.Stub {
-    var whenGetUserSessionToken: (() -> DataDonationSDK.Result<SessionToken, Throwable>)? = null
+    var whenGetUserSessionToken: ((pipe: DataDonationSDK.Pipe<SessionToken, Throwable>) -> Unit)? = null
 
-    override fun getUserSessionToken(): DataDonationSDK.Result<SessionToken, Throwable> {
-        return whenGetUserSessionToken?.invoke() ?: throw MockException()
+    override fun getUserSessionToken(pipe: DataDonationSDK.Pipe<SessionToken, Throwable>) {
+        return whenGetUserSessionToken?.invoke(pipe) ?: throw MockException()
     }
 
     override fun clear() {

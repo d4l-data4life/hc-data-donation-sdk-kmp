@@ -16,10 +16,10 @@
 
 package care.data4life.datadonation.session
 
-import care.data4life.datadonation.DataDonationSDK.Result
 import care.data4life.datadonation.error.CoreRuntimeError
 import care.data4life.datadonation.mock.stub.ClockStub
 import care.data4life.datadonation.mock.stub.UserSessionTokenProviderStub
+import care.data4life.sdk.util.coroutine.CoroutineScopeFactory
 import care.data4life.sdk.util.test.coroutine.runBlockingTest
 import care.data4life.sdk.util.test.coroutine.runWithContextBlockingTest
 import co.touchlab.stately.isolate.IsolateState
@@ -34,11 +34,14 @@ import kotlin.time.minutes
 import kotlin.time.seconds
 
 class CachedUserSessionTokenRepositoryTest {
+    private val testScope = CoroutineScopeFactory.createScope("testSession")
+
     @Test
     fun `It fulfils UserSessionTokenRepository`() {
         val repo: Any = CachedUserSessionTokenRepository(
             UserSessionTokenProviderStub(),
-            ClockStub()
+            ClockStub(),
+            testScope
         )
 
         assertTrue(repo is SessionTokenRepositoryContract)
@@ -51,13 +54,15 @@ class CachedUserSessionTokenRepositoryTest {
         val provider = UserSessionTokenProviderStub()
         val time = ClockStub()
 
-        provider.whenGetUserSessionToken = { Result.Error(error) }
+        provider.whenGetUserSessionToken = { pipe ->
+            pipe.onError(error)
+        }
 
         time.whenNow = {
             kotlinx.datetime.Instant.fromEpochMilliseconds(1.minutes.toLongMilliseconds())
         }
 
-        val repo = CachedUserSessionTokenRepository(provider, time)
+        val repo = CachedUserSessionTokenRepository(provider, time, testScope)
 
         runBlockingTest {
             // Then
@@ -80,13 +85,15 @@ class CachedUserSessionTokenRepositoryTest {
         val provider = UserSessionTokenProviderStub()
         val time = ClockStub()
 
-        provider.whenGetUserSessionToken = { Result.Success(token) }
+        provider.whenGetUserSessionToken = { pipe ->
+            pipe.onSuccess(token)
+        }
 
         time.whenNow = {
             kotlinx.datetime.Instant.fromEpochMilliseconds(1.minutes.toLongMilliseconds())
         }
 
-        val repo = CachedUserSessionTokenRepository(provider, time)
+        val repo = CachedUserSessionTokenRepository(provider, time, testScope)
 
         runBlockingTest {
             // When
@@ -110,7 +117,7 @@ class CachedUserSessionTokenRepositoryTest {
             kotlinx.datetime.Instant.fromEpochMilliseconds(0)
         }
 
-        val repo = CachedUserSessionTokenRepository(provider, time)
+        val repo = CachedUserSessionTokenRepository(provider, time, testScope)
 
         // Then
         val result = assertFailsWith<CoreRuntimeError.MissingSession> {
@@ -141,8 +148,8 @@ class CachedUserSessionTokenRepositoryTest {
             )
         }
 
-        provider.whenGetUserSessionToken = {
-            Result.Success(
+        provider.whenGetUserSessionToken = { pipe ->
+            pipe.onSuccess(
                 tokens.access { it.removeAt(0) }
             )
         }
@@ -150,7 +157,7 @@ class CachedUserSessionTokenRepositoryTest {
             lifeTime.access { it.removeAt(0) }
         }
 
-        val repo = CachedUserSessionTokenRepository(provider, time)
+        val repo = CachedUserSessionTokenRepository(provider, time, testScope)
 
         // When
         repo.getUserSessionToken()
@@ -184,16 +191,15 @@ class CachedUserSessionTokenRepositoryTest {
             )
         }
 
-        provider.whenGetUserSessionToken = {
-            Result.Success(
-                tokens.access { it.removeAt(0) }
-            )
+        provider.whenGetUserSessionToken = { pipe ->
+            pipe.onSuccess(tokens.access { it.removeAt(0) })
         }
+
         time.whenNow = {
             lifeTime.access { it.removeAt(0) }
         }
 
-        val repo = CachedUserSessionTokenRepository(provider, time)
+        val repo = CachedUserSessionTokenRepository(provider, time, testScope)
 
         // When
         repo.getUserSessionToken()

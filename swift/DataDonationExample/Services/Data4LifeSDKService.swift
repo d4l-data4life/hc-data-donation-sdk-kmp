@@ -27,34 +27,17 @@ final class Data4LifeSDKService {
             self.client = client
         }
 
-        func getUserSessionToken() -> Data4LifeDataDonationSDK.ResultProtocol<NSString, KotlinThrowable> {
-            let semaphore = DispatchSemaphore(value: 0)
-            var session: Data4LifeDataDonationSDK.ResultProtocol<NSString, KotlinThrowable> = Data4LifeDataDonationSDK.ResultError<NSString, KotlinThrowable>.init(
-                value: KotlinException(message: "Internal error - run before exceution for session token.")
-            );
-            
+        func getUserSessionToken(pipe: Data4LifeDataDonationSDK.ResultPipe<NSString, KotlinThrowable>) -> Void {
             client.refreshedAccessToken { result in
                 switch result {
                 case .success(.some(let token)):
-                    session = Data4LifeDataDonationSDK.ResultSuccess<NSString, KotlinThrowable>.init(
-                        value: token as NSString
-                    );
-                    semaphore.signal()
+                    pipe.onSuccess(value: token as NSString)
                 case .success(.none):
-                    session = Data4LifeDataDonationSDK.ResultError<NSString, KotlinThrowable>.init(
-                        value: KotlinException(message: "No token available")
-                    );
-                    semaphore.signal()
+                    pipe.onError(error: KotlinException(message: "No token available"))
                 case .failure(let error):
-                    session = Data4LifeDataDonationSDK.ResultError<NSString, KotlinThrowable>.init(
-                        value: KotlinException(message: error.localizedDescription)
-                    );
-                    semaphore.signal()
+                    pipe.onError(error: KotlinException(message: error.localizedDescription))
                 }
             };
-            
-            semaphore.wait()
-            return session;
         }
     }
 

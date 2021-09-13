@@ -14,14 +14,14 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.session
+package care.data4life.datadonation
 
-internal typealias SessionToken = String
+import kotlinx.coroutines.CoroutineScope
 
-internal interface SessionTokenRepositoryContract {
-    suspend fun getUserSessionToken(): SessionToken
-
-    companion object {
-        const val CACHE_LIFETIME_IN_SECONDS = 60
-    }
+expect class ResultPipe<Success, Error : Throwable>(
+    scope: CoroutineScope
+) : DataDonationSDK.Pipe<Success, Error> {
+    override fun onSuccess(value: Success)
+    override fun onError(error: Error)
+    override suspend fun receive(): Result<Success, Error>
 }

@@ -27,9 +27,11 @@ toc::[]
 
 === Added
 
+* ResultPipe.
+
 === Changed
 
-* UserSessionTokenProvider does not need Callbacks any longer, it propagates via Result.
+* UserSessionTokenProvider does take a Pipe now to make result propagation easier for common consumers.
 
 === Deprecated
 

@@ -17,19 +17,25 @@
 package care.data4life.datadonation.session
 
 import care.data4life.datadonation.DataDonationSDK
+import care.data4life.datadonation.Result
+import care.data4life.datadonation.ResultPipe
 import care.data4life.datadonation.error.CoreRuntimeError
 import care.data4life.datadonation.session.SessionTokenRepositoryContract.Companion.CACHE_LIFETIME_IN_SECONDS
 import co.touchlab.stately.isolate.IsolateState
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.datetime.Clock
 
 internal class CachedUserSessionTokenRepository(
     private val provider: DataDonationSDK.UserSessionTokenProvider,
-    clock: Clock
+    clock: Clock,
+    scope: CoroutineScope
 ) : SessionTokenRepositoryContract {
     private val cache = IsolateState { Cache(clock) }
+    private val pipe = ResultPipe<SessionToken, Throwable>(scope)
 
-    private fun fetchTokenFromApi(): DataDonationSDK.Result<SessionToken, Throwable> {
-        return provider.getUserSessionToken()
+    private suspend fun fetchTokenFromApi(): Result<SessionToken, Throwable> {
+        provider.getUserSessionToken(pipe)
+        return pipe.receive()
     }
 
     private fun fetchCachedTokenIfNotExpired(): SessionToken? {
@@ -42,15 +48,15 @@ internal class CachedUserSessionTokenRepository(
 
     private fun resolveSessionToken(result: Any): SessionToken {
         return when (result) {
-            is DataDonationSDK.Result.Success<*, *> -> (result.value as SessionToken).also { token ->
+            is Result.Success<*, *> -> (result.value as SessionToken).also { token ->
                 cache.access { it.update(token) }
             }
-            is DataDonationSDK.Result.Error<*, *> -> throw CoreRuntimeError.MissingSession(result.error)
+            is Result.Error<*, *> -> throw CoreRuntimeError.MissingSession(result.error)
             else -> throw CoreRuntimeError.MissingSession()
         }
     }
 
-    override fun getUserSessionToken(): SessionToken {
+    override suspend fun getUserSessionToken(): SessionToken {
         val cachedToken = fetchCachedTokenIfNotExpired()
 
         return if (cachedToken is SessionToken) {
