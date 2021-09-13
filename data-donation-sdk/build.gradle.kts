@@ -44,6 +44,7 @@ kotlin {
         binaries {
             framework {
                 baseName = LibraryConfig.iOS.packageName
+                export(project(":data-donation-sdk-api"))
             }
         }
     }
@@ -94,6 +95,8 @@ kotlin {
                 implementation(Dependency.multiplatform.dateTime)
 
                 // D4L
+                api(project(":data-donation-sdk-api"))
+
                 implementation(Dependency.d4l.fhir)
                 implementation(Dependency.d4l.sdkUtil)
                 implementation(Dependency.d4l.sdkFlow)

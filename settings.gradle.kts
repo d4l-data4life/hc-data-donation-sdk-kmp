@@ -29,6 +29,7 @@ plugins {
 rootProject.name = "hc-data-donation-sdk-kmp"
 
 include(
+    ":data-donation-sdk-api",
     ":data-donation-sdk",
     ":data-donation-crypto",
     ":docs",
