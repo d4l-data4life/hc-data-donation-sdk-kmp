@@ -100,6 +100,6 @@ interface DataDonationSDK {
     }
 
     fun interface UserSessionTokenProvider {
-        fun getUserSessionToken(pipe: Pipe<SessionToken, Throwable>)
+        fun getUserSessionToken(pipe: ResultPipe<SessionToken, Throwable>)
     }
 }

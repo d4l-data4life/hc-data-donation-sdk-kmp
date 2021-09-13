@@ -34,6 +34,7 @@ package care.data4life.datadonation.integration
 
 import care.data4life.datadonation.Client
 import care.data4life.datadonation.DataDonationSDK
+import care.data4life.datadonation.ResultPipe
 import care.data4life.datadonation.consent.consentdocument.ConsentDocumentError
 import care.data4life.datadonation.consent.consentdocument.resolveConsentDocumentKoinModule
 import care.data4life.datadonation.consent.userconsent.resolveConsentKoinModule
@@ -128,7 +129,7 @@ class ClientConsentFlowIosModuleTest {
     private object UserSessionTokenProvider : DataDonationSDK.UserSessionTokenProvider {
         const val sessionToken = "sessionToken"
 
-        override fun getUserSessionToken(pipe: DataDonationSDK.Pipe<SessionToken, Throwable>) {
+        override fun getUserSessionToken(pipe: ResultPipe<SessionToken, Throwable>) {
             pipe.onSuccess(sessionToken)
         }
     }

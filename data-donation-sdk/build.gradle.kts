@@ -239,8 +239,8 @@ val referencePrefix = "DLDDSDK"
 val swiftNameReplacements = mapOf(
     "Kotlinx_coroutines_coreCancellationException" to "KotlinCancellationError",
     "Kotlinx_coroutines_coreJob" to "KotlinJob",
-    "ResultSuccessProtocol" to "ResultSuccess",
-    "ResultErrorProtocol" to "ResultError"
+    "Result" to "DataDonationResult",
+    "PipeProtocol" to "Pipe"
 )
 
 project.afterEvaluate {
