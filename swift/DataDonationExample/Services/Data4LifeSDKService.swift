@@ -29,24 +29,24 @@ final class Data4LifeSDKService {
 
         func getUserSessionToken() -> Data4LifeDataDonationSDK.ResultProtocol<NSString, KotlinThrowable> {
             let semaphore = DispatchSemaphore(value: 0)
-            var session: Data4LifeDataDonationSDK.ResultProtocol<NSString, KotlinThrowable> = Data4LifeDataDonationSDK.ResultErrorProtocol<NSString, KotlinThrowable>.init(
+            var session: Data4LifeDataDonationSDK.ResultProtocol<NSString, KotlinThrowable> = Data4LifeDataDonationSDK.ResultError<NSString, KotlinThrowable>.init(
                 value: KotlinException(message: "Internal error - run before exceution for session token.")
             );
             
             client.refreshedAccessToken { result in
                 switch result {
                 case .success(.some(let token)):
-                    session = Data4LifeDataDonationSDK.ResultSuccessProtocol<NSString, KotlinThrowable>.init(
+                    session = Data4LifeDataDonationSDK.ResultSuccess<NSString, KotlinThrowable>.init(
                         value: token as NSString
                     );
                     semaphore.signal()
                 case .success(.none):
-                    session = Data4LifeDataDonationSDK.ResultErrorProtocol<NSString, KotlinThrowable>.init(
+                    session = Data4LifeDataDonationSDK.ResultError<NSString, KotlinThrowable>.init(
                         value: KotlinException(message: "No token available")
                     );
                     semaphore.signal()
                 case .failure(let error):
-                    session = Data4LifeDataDonationSDK.ResultErrorProtocol<NSString, KotlinThrowable>.init(
+                    session = Data4LifeDataDonationSDK.ResultError<NSString, KotlinThrowable>.init(
                         value: KotlinException(message: error.localizedDescription)
                     );
                     semaphore.signal()
@@ -85,10 +85,14 @@ final class Data4LifeSDKService {
         client.handle(url: url)
     }
 
-    func openLogin(from viewController: UIViewController, didLogin: @escaping (Result<Void, Error>) -> Void) {
-        client.presentLogin(on: viewController, animated: true) { result in
-            didLogin(result)
-        }
+    func openLogin(
+        from viewController: UIViewController,
+        didLogin: @escaping (Result<Void, Error>) -> Void
+    ) {
+        client.presentLogin(
+            on: viewController,
+            animated: true
+        ) { result in didLogin(result) }
     }
 
     var userSessionProvider: UserSessionTokenProviderProtocol {
