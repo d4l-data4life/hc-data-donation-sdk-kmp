@@ -1,11 +1,11 @@
 = Changelog
+:link-repository: https://github.com/d4l-data4life/hc-data-donation-sdk-kmp
 :doctype: article
 :toc: macro
 :toclevels: 1
 :toc-title:
 :icons: font
 :imagesdir: assets/images
-:link-repository: https://github.com/d4l-data4life/hc-data-donation-sdk-kmp
 ifdef::env-github[]
 :warning-caption: :warning:
 :caution-caption: :fire:
@@ -19,8 +19,11 @@ All notable changes to this project will be documented in this file.
 The format is based on http://keepachangelog.com/en/1.0.0/[Keep a Changelog]
 and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioning].
 
+Template could be found here: link:https://github.com/d4l-data4life/hc-readme-template/blob/main/TEMPLATE_CHANGELOG.adoc[CHANGELOG]
+
 [discrete]
 ==== Versions
+
 toc::[]
 
 == link:{link-repository}/releases/latest[Unreleased]
@@ -28,8 +31,11 @@ toc::[]
 === Added
 
 * link:https://github.com/d4l-data4life/hc-crypto-sdk-kmp[Data4Life Crypto KMP] (Dependency).
+* ResultPipe.
 
 === Changed
+
+* _**BREAKING**_ UserSessionTokenProvider does take a Pipe now to make result propagation easier for common consumers (see for more in our xref:./docs/modules/ROOT/pages/migrationGuide.adoc[Migration Guide]).
 
 === Deprecated
 
@@ -41,15 +47,28 @@ toc::[]
 
 === Bumped
 
+<<<<<<< HEAD
 * Desugar 1.0.4 -> 1.0.5
 * threeTenABP 1.1.1 -> 1.3.1
+=======
+=== Deprecated
+>>>>>>> main
 
 === Migration
 
 
+== link:{link-repository}/releases/tag/v0.2.1[0.2.1]
+
+See link:{link-repository}/compare/v0.2.0...v0.2.1[0.2.1]
+
+=== Added
+
+* `coroutineScope` as parameter to the ClientFactory.
+
+
 == link:{link-repository}/releases/tag/v0.2.0[0.2.0]
 
-See link:{link-repository}/compare/v0.2.0...v0.2.0[0.2.0]
+See link:{link-repository}/compare/v0.1.3...v0.2.0[0.2.0]
 
 === Added
 
@@ -72,6 +91,7 @@ See link:{link-repository}/compare/v0.2.0...v0.2.0[0.2.0]
 * _**BREAKING**_ sdk-util 1.9.0 -> 1.10.0.
 * Gradle 6.8.3 -> 6.9.1
 
+
 == link:{link-repository}/releases/tag/v0.1.3[0.1.3]
 
 See link:{link-repository}/compare/v0.1.2...v0.1.3[0.1.3]
@@ -81,6 +101,7 @@ See link:{link-repository}/compare/v0.1.2...v0.1.3[0.1.3]
 * Kotlin-date Duration usages caused App crashes.
 * ErrorMapping for revoke consent did not accepted 200 as valid response.
 
+
 == link:{link-repository}/releases/tag/v0.1.2[0.1.2]
 
 See link:{link-repository}/compare/v0.1.1...v0.1.2[0.1.2]
@@ -88,6 +109,7 @@ See link:{link-repository}/compare/v0.1.1...v0.1.2[0.1.2]
 === Fixed
 
 * versions are now covered as Strings to reflect semantic versioning of the Backend.
+
 
 == link:{link-repository}/releases/tag/v0.1.1[0.1.1]
 
@@ -101,6 +123,7 @@ See link:{link-repository}/compare/v0.1.0...v0.1.1[0.1.1]
 
 * `fetchUserDocuments` used wrong url parameter.
 * `version` at ConsentDocument.
+
 
 == link:{link-repository}/releases/tag/v0.1.0[0.1.0]
 
@@ -146,6 +169,7 @@ See link:{link-repository}/compare/v0.0.1...v0.1.0[0.1.0]
 * JUnit 4.13 -> 4.13.2
 * _**BREAKING**_ sdk-util 1.7.0 -> 1.9.0
 * _**BREAKING**_ fhir-sdk-kmp 0.1.0 -> 0.2.0
+
 
 == link:{link-repository}/releases/tag/v0.0.1[0.0.1]
 

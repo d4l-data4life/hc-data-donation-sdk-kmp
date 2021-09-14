@@ -13,6 +13,7 @@
  * applications and/or if you’d like to contribute to the development of the SDK, please
  * contact D4L by email to help@data4life.care.
  */
+
 pluginManagement {
     repositories {
         gradlePluginPortal()
@@ -25,8 +26,6 @@ pluginManagement {
 plugins {
     id("com.gradle.enterprise") version("3.4.1")
 }
-
-rootProject.name = "hc-data-donation-sdk-kmp"
 
 include(
     ":data-donation-sdk",
@@ -42,3 +41,5 @@ buildCache {
         removeUnusedEntriesAfterDays = 30
     }
 }
+
+rootProject.name = "hc-data-donation-sdk-kmp"
