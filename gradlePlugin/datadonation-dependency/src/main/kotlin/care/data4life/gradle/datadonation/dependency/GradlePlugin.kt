@@ -14,31 +14,10 @@
  * contact D4L by email to help@data4life.care.
  */
 
-import care.data4life.gradle.datadonation.dependency.d4l
-import care.data4life.gradle.datadonation.dependency.gitHub
+package care.data4life.gradle.datadonation.dependency
 
-plugins {
-    id("care.data4life.gradle.datadonation.dependency")
-
-    id("care.data4life.gradle.datadonation.script.dependency-updates")
-    id("care.data4life.gradle.datadonation.script.download-scripts")
-    id("care.data4life.gradle.datadonation.script.publishing")
-    id("care.data4life.gradle.datadonation.script.quality-spotless")
-    id("care.data4life.gradle.datadonation.script.versioning")
-}
-
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-
-        gitHub(project)
-
-        d4l()
-    }
-}
-
-tasks.named<Wrapper>("wrapper") {
-    gradleVersion = "6.9.1"
-    distributionType = Wrapper.DistributionType.ALL
+object GradlePlugin {
+    const val android = "com.android.tools.build:gradle:${Version.GradlePlugin.android}"
+    const val kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Version.GradlePlugin.kotlin}"
+    const val kotlinSerialisation = "org.jetbrains.kotlin:kotlin-serialization:${Version.GradlePlugin.kotlin}"
 }
