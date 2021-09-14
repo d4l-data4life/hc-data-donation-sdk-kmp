@@ -236,9 +236,11 @@ val uselessSwiftProtocols = listOf(
 )
 val referencePrefix = "DLDDSDK"
 
-val swiftNameReplacements = mapOf<String,String>(
+val swiftNameReplacements = mapOf(
     "Kotlinx_coroutines_coreCancellationException" to "KotlinCancellationError",
-    "Kotlinx_coroutines_coreJob" to "KotlinJob"
+    "Kotlinx_coroutines_coreJob" to "KotlinJob",
+    "Result" to "DataDonationResult",
+    "PipeProtocol" to "Pipe"
 )
 
 project.afterEvaluate {

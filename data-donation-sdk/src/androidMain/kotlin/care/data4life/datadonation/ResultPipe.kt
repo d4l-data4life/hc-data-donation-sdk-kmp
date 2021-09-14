@@ -14,22 +14,26 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.mock.stub
+package care.data4life.datadonation
 
-import care.data4life.datadonation.DataDonationSDK
-import care.data4life.datadonation.ResultPipe
-import care.data4life.datadonation.mock.MockContract
-import care.data4life.datadonation.mock.MockException
-import care.data4life.datadonation.session.SessionToken
+import care.data4life.datadonation.Result.Error
+import care.data4life.datadonation.Result.Success
+import kotlinx.coroutines.CoroutineScope
 
-internal class UserSessionTokenProviderStub : DataDonationSDK.UserSessionTokenProvider, MockContract.Stub {
-    var whenGetUserSessionToken: ((pipe: ResultPipe<SessionToken, Throwable>) -> Unit)? = null
+actual class ResultPipe<Success, Error : Throwable> actual constructor(
+    scope: CoroutineScope
+) : DataDonationSDK.Pipe<Success, Error> {
+    private lateinit var result: Result<Success, Error>
 
-    override fun getUserSessionToken(pipe: ResultPipe<SessionToken, Throwable>) {
-        return whenGetUserSessionToken?.invoke(pipe) ?: throw MockException()
+    actual override fun onSuccess(value: Success) {
+        result = Success(value)
     }
 
-    override fun clear() {
-        whenGetUserSessionToken = null
+    actual override fun onError(error: Error) {
+        result = Error(error)
+    }
+
+    actual override suspend fun receive(): Result<Success, Error> {
+        return result
     }
 }
