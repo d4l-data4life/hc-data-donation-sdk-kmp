@@ -15,7 +15,7 @@
 //
 
 import XCTest
-import DataDonationCryptoObjC
+@testable import DataDonationCryptoObjC
 import Data4LifeCrypto
 
 class DataDonationKeychainStoreModuleTests: XCTestCase {
@@ -30,40 +30,6 @@ class DataDonationKeychainStoreModuleTests: XCTestCase {
 
     func testGenerateKeyPairDoesNotThrowErrors() throws {
         XCTAssertNoThrow(try dataDonationKeychainStore.generateDonorKeyPair(with: testKeyIdentifier))
-    }
-
-    func testGetPrivateKeyDoesThrowErrorIfNotGeneratedBefore() throws {
-        XCTAssertThrowsError(try dataDonationKeychainStore.fetchDonorPrivateKeyAsBase64(with: testKeyIdentifier), "Private key creation should create errors")
-    }
-
-    func testGetPublicKeyDoesThrowErrorIfNotGeneratedBefore() throws {
-        XCTAssertThrowsError(try dataDonationKeychainStore.fetchDonorPublicKeyAsBase64(with: testKeyIdentifier), "Private key creation should not create errors")
-    }
-
-    func testGetPublicKeyReturnsAlwaysTheCreatedOne() throws {
-
-        // Given
-        try dataDonationKeychainStore.generateDonorKeyPair(with: testKeyIdentifier)
-
-        // When
-        let createdKey = try dataDonationKeychainStore.fetchDonorPublicKeyAsBase64(with: testKeyIdentifier)
-        let fetchedKey = try dataDonationKeychainStore.fetchDonorPublicKeyAsBase64(with: testKeyIdentifier)
-
-        // Then
-        XCTAssertEqual(createdKey, fetchedKey)
-    }
-
-    func testGetPrivateKeyReturnsAlwaysTheCreatedOne() throws {
-
-        // Given
-        try dataDonationKeychainStore.generateDonorKeyPair(with: testKeyIdentifier)
-        
-        // When
-        let createdKey = try dataDonationKeychainStore.fetchDonorPrivateKeyAsBase64(with: testKeyIdentifier)
-        let fetchedKey = try dataDonationKeychainStore.fetchDonorPrivateKeyAsBase64(with: testKeyIdentifier)
-
-        // Then
-        XCTAssertEqual(createdKey, fetchedKey)
     }
 
     func testStoreKeyPairFromDataDoesNotThrowErrors() throws {
@@ -83,11 +49,83 @@ class DataDonationKeychainStoreModuleTests: XCTestCase {
 
         // When
         try dataDonationKeychainStore.storeDonorKeyPairData(encodedKeyPairData, with: testKeyIdentifier)
-        let storedPublicKey = try dataDonationKeychainStore.fetchDonorPublicKeyAsBase64(with: testKeyIdentifier)
-        let storedPrivateKey = try dataDonationKeychainStore.fetchDonorPrivateKeyAsBase64(with: testKeyIdentifier)
+        let storedKeyPair = try dataDonationKeychainStore.fetchKeyPairAsBase64(with: testKeyIdentifier)
 
         // Then
-        XCTAssertEqual(try decodedKeyPair.privateKey.asBase64EncodedString(), storedPrivateKey)
-        XCTAssertEqual(try decodedKeyPair.publicKey.asBase64EncodedString(), storedPublicKey)
+        XCTAssertEqual(decodedKeyPair.objCKeyPair, storedKeyPair)
+    }
+
+    func testFetchKeypairDoesThrowErrorIfNotPresentBefore() throws {
+        XCTAssertThrowsError(try dataDonationKeychainStore.fetchKeyPairAsBase64(with: testKeyIdentifier))
+    }
+
+    func testFetchKeypairReturnsAlwaysTheCreatedOne() throws {
+
+        // Given
+        try dataDonationKeychainStore.generateDonorKeyPair(with: testKeyIdentifier)
+
+        // When
+        let createdKey = try dataDonationKeychainStore.fetchKeyPairAsBase64(with: testKeyIdentifier)
+        let fetchedKey = try dataDonationKeychainStore.fetchKeyPairAsBase64(with: testKeyIdentifier)
+
+        // Then
+        XCTAssertEqual(createdKey, fetchedKey)
+    }
+
+    func testUpdateKeyPairFromDataDoesNotThrowErrors() throws {
+
+        // Given
+        let keyPairData = keyFactory.keyPairData
+        try dataDonationKeychainStore.storeDonorKeyPairData(keyPairData, with: testKeyIdentifier)
+
+        // Then
+        XCTAssertNoThrow(try dataDonationKeychainStore.updateDonorKeyPair(keyPairData, with: testKeyIdentifier))
+    }
+
+    func testUpdateKeyPairFromDataThrowErrorIfNotPresentBefore() throws {
+
+        // Given
+        let keyPairData = keyFactory.keyPairData
+
+        // Then
+        XCTAssertThrowsError(try dataDonationKeychainStore.updateDonorKeyPair(keyPairData, with: testKeyIdentifier))
+    }
+
+    func testDeleteKeyPairDoesNotThrowErrors() throws {
+
+        // Given
+        let keyPairData = keyFactory.keyPairData
+        try dataDonationKeychainStore.storeDonorKeyPairData(keyPairData, with: testKeyIdentifier)
+
+        // Then
+        XCTAssertNoThrow(try dataDonationKeychainStore.deleteDonorKeyPair(with: testKeyIdentifier))
+    }
+
+    func testDeleteKeyPairThrowsErrorIfNotPresentBefore() throws {
+
+        // Then
+        XCTAssertThrowsError(try dataDonationKeychainStore.deleteDonorKeyPair(with: testKeyIdentifier))
+    }
+
+    func testHasSameKeyPairStoredReturnsTrueWhenTestingSameKeyPair() throws {
+        
+        // Given
+        let keyPairData = keyFactory.keyPairData
+        try dataDonationKeychainStore.storeDonorKeyPairData(keyPairData, with: testKeyIdentifier)
+        let objcKeyPair = keyFactory.keyPair.objCKeyPair
+
+        // Then
+        XCTAssertEqual(dataDonationKeychainStore.hasSameKeypairStored(as: objcKeyPair, with: testKeyIdentifier), true)
+    }
+
+    func testHasSameKeyPairStoredReturnsFalseWhenTestingDifferentKeyPair() throws {
+
+        // Given
+        let keyPairData = keyFactory.keyPairData
+        try dataDonationKeychainStore.storeDonorKeyPairData(keyPairData, with: testKeyIdentifier)
+        let objcKeyPair = ObjCKeyPair(privateKey: "another", publicKey: "keypair")
+
+        // Then
+        XCTAssertEqual(dataDonationKeychainStore.hasSameKeypairStored(as: objcKeyPair, with: testKeyIdentifier), false)
     }
 }

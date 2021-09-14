@@ -35,6 +35,8 @@
 		36B32E9B26D4E56500D16306 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 36B32E9A26D4E56500D16306 /* Preview Assets.xcassets */; };
 		36B32EA426D4EACB00D16306 /* asymmetricDataDonationKeyPair.json in Resources */ = {isa = PBXBuildFile; fileRef = 36B32EA326D4EACB00D16306 /* asymmetricDataDonationKeyPair.json */; };
 		36B32EA926D5140C00D16306 /* Bundle+Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36B32EA826D5140C00D16306 /* Bundle+Tests.swift */; };
+		36C6D63726F0FAE9008B120A /* ObjcDonorKeyPair.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36C6D63626F0FAE9008B120A /* ObjcDonorKeyPair.swift */; };
+		36C6D63926F0FD67008B120A /* ObjCKeyPairTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36C6D63826F0FD67008B120A /* ObjCKeyPairTests.swift */; };
 		36EA67C826E65E0D00A283DB /* DataDonationKeychainStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36EA67C726E65E0D00A283DB /* DataDonationKeychainStore.swift */; };
 		36EA67CA26E65FE700A283DB /* DataDonationKeychainStoreModuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36EA67C926E65FE700A283DB /* DataDonationKeychainStoreModuleTests.swift */; };
 		36EA67CE26E662FF00A283DB /* DataDonationKeychainStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36EA67CD26E662FF00A283DB /* DataDonationKeychainStoreTests.swift */; };
@@ -120,6 +122,8 @@
 		36B32E9C26D4E56500D16306 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		36B32EA326D4EACB00D16306 /* asymmetricDataDonationKeyPair.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = asymmetricDataDonationKeyPair.json; sourceTree = "<group>"; };
 		36B32EA826D5140C00D16306 /* Bundle+Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+Tests.swift"; sourceTree = "<group>"; };
+		36C6D63626F0FAE9008B120A /* ObjcDonorKeyPair.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjcDonorKeyPair.swift; sourceTree = "<group>"; };
+		36C6D63826F0FD67008B120A /* ObjCKeyPairTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjCKeyPairTests.swift; sourceTree = "<group>"; };
 		36EA67C726E65E0D00A283DB /* DataDonationKeychainStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataDonationKeychainStore.swift; sourceTree = "<group>"; };
 		36EA67C926E65FE700A283DB /* DataDonationKeychainStoreModuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDonationKeychainStoreModuleTests.swift; sourceTree = "<group>"; };
 		36EA67CD26E662FF00A283DB /* DataDonationKeychainStoreTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataDonationKeychainStoreTests.swift; sourceTree = "<group>"; };
@@ -176,6 +180,7 @@
 			isa = PBXGroup;
 			children = (
 				3661D4C126DE5D1F00BC51F3 /* EncryptedDataTests.swift */,
+				36C6D63826F0FD67008B120A /* ObjCKeyPairTests.swift */,
 			);
 			path = ModelTests;
 			sourceTree = "<group>";
@@ -184,6 +189,7 @@
 			isa = PBXGroup;
 			children = (
 				3661D4CA26DFB9E900BC51F3 /* HybridEncryptedData.swift */,
+				36C6D63626F0FAE9008B120A /* ObjcDonorKeyPair.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -545,6 +551,7 @@
 				3661D4CF26DFBE6900BC51F3 /* CoreCryptoService.swift in Sources */,
 				36EA67C826E65E0D00A283DB /* DataDonationKeychainStore.swift in Sources */,
 				3661D4CD26DFBDDC00BC51F3 /* DataDonationCryptoObjCFactory.swift in Sources */,
+				36C6D63726F0FAE9008B120A /* ObjcDonorKeyPair.swift in Sources */,
 				36FA37CB26D54A1800DDCC35 /* DataDonationCryptoObjC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -560,6 +567,7 @@
 				3661D4C626DE6F3700BC51F3 /* IVGeneratorMock.swift in Sources */,
 				36B32E8626D3DCB600D16306 /* DonorKeyHolderMock.swift in Sources */,
 				36FA37C826D5459500DDCC35 /* DonorKeyHolderTests.swift in Sources */,
+				36C6D63926F0FD67008B120A /* ObjCKeyPairTests.swift in Sources */,
 				36EA67D426E6671500A283DB /* DataDonationSignerTests.swift in Sources */,
 				36EA67D026E6649200A283DB /* DataDonationSignerModuleTests.swift in Sources */,
 				36EA67CE26E662FF00A283DB /* DataDonationKeychainStoreTests.swift in Sources */,

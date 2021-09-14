@@ -29,9 +29,10 @@ import Foundation
 @objc public protocol DataDonationKeychainStoreObjCProtocol {
     @objc func generateDonorKeyPair(with keyIdentifier: String) throws
     @objc func storeDonorKeyPairData(_ data: Data, with keyIdentifier: String) throws
-    @objc func fetchDonorPrivateKeyAsBase64(with keyIdentifier: String) throws -> String
-    @objc func fetchDonorPublicKeyAsBase64(with keyIdentifier: String) throws -> String
+    @objc func fetchKeyPairAsBase64(with keyIdentifier: String) throws -> ObjCKeyPair
+    @objc func updateDonorKeyPair(_ data: Data, with keyIdentifier: String) throws
     @objc func deleteDonorKeyPair(with keyIdentifier: String) throws
+    @objc func hasSameKeypairStored(as keyPair: ObjCKeyPair, with keyIdentifier: String) -> Bool
 }
 
 

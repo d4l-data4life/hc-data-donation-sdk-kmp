@@ -31,9 +31,12 @@ class ObjCCryptoIntegrationTest {
     private val keyIdentifier = "kmp.test.donor.identity"
 
     @Test
-    fun `It imports and runs the library without linking problems`() {
-
+    fun `It imports and creates a library object without linking problems`() {
         assertNotNull(keychainStore)
+    }
+
+    @Test
+    fun `It imports and runs a method from the library without linking problems`() {
 
         memScoped {
             val errorRef = alloc<ObjCObjectVar<NSError?>>()
@@ -44,7 +47,7 @@ class ObjCCryptoIntegrationTest {
     }
 
     @Test
-    fun `It gets an error when generating a key due to missing host app`() {
+    fun `It gets a "could not generate Key pair" error when generating a key due to missing host app`() {
 
         memScoped {
             val errorRef = alloc<ObjCObjectVar<NSError?>>()

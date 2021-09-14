@@ -38,14 +38,8 @@ class DataDonationKeychainStoreTests: XCTestCase {
         }
     }
 
-    func testGetPrivateKeyFlow() throws {
-        let _ = try keychainStore.fetchDonorPrivateKeyAsBase64(with: testKeyIdentifier)
-        XCTAssertEqual(keyHolderMock.isFetchCalled, true)
-        XCTAssertEqual(keyHolderMock.capturedFetchParameter, testKeyIdentifier)
-    }
-
-    func testGetPublicKeyFlow() throws {
-        let _ = try keychainStore.fetchDonorPublicKeyAsBase64(with: testKeyIdentifier)
+    func testFetchPrivateKeyFlow() throws {
+        let _ = try keychainStore.fetchKeyPairAsBase64(with: testKeyIdentifier)
         XCTAssertEqual(keyHolderMock.isFetchCalled, true)
         XCTAssertEqual(keyHolderMock.capturedFetchParameter, testKeyIdentifier)
     }
@@ -61,5 +55,14 @@ class DataDonationKeychainStoreTests: XCTestCase {
         try keychainStore.deleteDonorKeyPair(with: testKeyIdentifier)
         XCTAssertEqual(keyHolderMock.isDeleteCalled, true)
         XCTAssertEqual(keyHolderMock.capturedDeleteParameter, testKeyIdentifier)
+    }
+
+    func testUpdateFlow() throws {
+        try keychainStore.updateDonorKeyPair(Data(), with: testKeyIdentifier)
+        XCTAssertEqual(keyHolderMock.isDeleteCalled, true)
+        XCTAssertEqual(keyHolderMock.capturedDeleteParameter, testKeyIdentifier)
+        XCTAssertEqual(keyHolderMock.isCreateCalled, true)
+        XCTAssertEqual(keyHolderMock.capturedCreateParameters?.0, Data())
+        XCTAssertEqual(keyHolderMock.capturedCreateParameters?.1, testKeyIdentifier)
     }
 }

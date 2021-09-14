@@ -35,15 +35,25 @@ extension DataDonationKeychainStore: DataDonationKeychainStoreObjCProtocol {
         try keyHolder.createKeyPair(from: data, with: keyIdentifier)
     }
 
-    func fetchDonorPrivateKeyAsBase64(with keyIdentifier: String) throws -> String {
-        try keyHolder.fetchKeyPair(with: keyIdentifier).privateKey.asBase64EncodedString()
-    }
-
-    func fetchDonorPublicKeyAsBase64(with keyIdentifier: String) throws -> String {
-        try keyHolder.fetchKeyPair(with: keyIdentifier).publicKey.asBase64EncodedString()
+    func fetchKeyPairAsBase64(with keyIdentifier: String) throws -> ObjCKeyPair {
+        try keyHolder.fetchKeyPair(with: keyIdentifier).objCKeyPair
     }
 
     func deleteDonorKeyPair(with keyIdentifier: String) throws {
         try keyHolder.deleteKeyPair(with: keyIdentifier)
+    }
+
+    func updateDonorKeyPair(_ data: Data, with keyIdentifier: String) throws {
+        try keyHolder.deleteKeyPair(with: keyIdentifier)
+        try keyHolder.createKeyPair(from: data, with: keyIdentifier)
+    }
+
+    func hasSameKeypairStored(as keyPair: ObjCKeyPair, with keyIdentifier: String) -> Bool {
+        do {
+            let storedKeyPair = try fetchKeyPairAsBase64(with: keyIdentifier)
+            return storedKeyPair == keyPair
+        } catch {
+            return false
+        }
     }
 }
