@@ -72,7 +72,7 @@ Client.Factory.getInstance(
 ====
 You can also delegate the pipe to the actual consuming platform, which spares you entirely from taking care about freezing or context switches. However this might require an additional method on your AuthApp wrapper, which needs to be picked up by your consuming platforms.
 
-Alternatively you can ease up things a bit by pulling the Result listener out in it's own class:
+Alternatively you can ease up things a bit by pulling the ResultListener out in it's own class:
 [source,kotlin]
 ----
 class TokenListener(
