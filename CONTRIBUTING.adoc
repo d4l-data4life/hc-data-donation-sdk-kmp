@@ -35,13 +35,13 @@ Issues are very valuable to this project, please feel free to open link:{link-re
 * _**Ideas**_ are a great source for contributions
 * _**Problems**_ show where this project is lacking
 
-If you are reporting a problem, please help to us by providing as much information as possible. Ideally, that includes a description or small sample project how to reproduce the problem.
+If you are reporting a problem, please help us by providing as much information as possible. Ideally, that includes a description or small sample project how to reproduce the problem.
 
 It’s also a good practice to search for existing or related issues before submitting your own. Thank you!
 
 == Contribute Code
 
-=== Pull Requests
+=== Pull Request
 
 link:{link-repository}/pulls[Pull requests] are a great way to improve the project. But please, discuss your contribution with us before making changes.
 
@@ -49,7 +49,6 @@ If you contribute, you have:
 
 * signed Contributor License Agreement, see <<_licensing>>
 * made clear which problem you're trying to solve
-* followed our link:CODE-OF-CONDUCT.adoc[Code of conduct]
 * followed our link:DEVELOPING.adoc[Development process]
 
 ==== Create Pull Request
@@ -96,7 +95,7 @@ your contribution and validate if these criteria are met:
 Due to the private link:LICENSE[License] this repository is published under, external contributors need to sign a
 Contributor License Agreement. Please get in contact with mailto:&#109;o&#98;&#x69;&#x6c;&#x65;&#x40;&#100;&#x61;&#x74;a&#52;&#x6c;&#105;f&#101;&#46;&#99;a&#114;e[&#109;o&#98;&#x69;&#x6c;&#x65;&#x40;&#100;&#x61;&#x74;a&#52;&#x6c;&#105;f&#101;&#46;&#99;a&#114;e] before contributing to the project.
 
-== Components Using Other Licenses
+=== Components Using Other Licenses
 
 Contributing code and introducing dependencies into the repository from other projects that use one of the following licenses is allowed.
 

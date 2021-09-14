@@ -13,10 +13,21 @@
  * applications and/or if you’d like to contribute to the development of the SDK, please
  * contact D4L by email to help@data4life.care.
  */
-package care.data4life.sdk.datadonation.dependency
 
-object GradlePlugin {
-    const val android = "com.android.tools.build:gradle:${Version.GradlePlugin.android}"
-    const val kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Version.GradlePlugin.kotlin}"
-    const val kotlinSerialisation = "org.jetbrains.kotlin:kotlin-serialization:${Version.GradlePlugin.kotlin}"
+package care.data4life.gradle.datadonation.config
+
+object AppConfig {
+    const val group = "care.data4life.datadonation"
+
+    val android = AndroidConfig
+
+    object AndroidConfig {
+        const val minSdkVersion = LibraryConfig.android.minSdkVersion
+        const val compileSdkVersion = LibraryConfig.android.compileSdkVersion
+        const val targetSdkVersion = LibraryConfig.android.targetSdkVersion
+
+        const val versionCode = 1
+
+        const val applicationId = group
+    }
 }

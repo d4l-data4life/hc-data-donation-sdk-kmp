@@ -34,7 +34,7 @@ import kotlin.time.minutes
 import kotlin.time.seconds
 
 class CachedUserSessionTokenRepositoryTest {
-    private val testScope = CoroutineScopeFactory.createScope("test2Scope")
+    private val testScope = CoroutineScopeFactory.createScope("testSession")
 
     @Test
     fun `It fulfils UserSessionTokenRepository`() {
@@ -54,8 +54,8 @@ class CachedUserSessionTokenRepositoryTest {
         val provider = UserSessionTokenProviderStub()
         val time = ClockStub()
 
-        provider.whenGetUserSessionToken = { _, onError ->
-            onError(error)
+        provider.whenGetUserSessionToken = { pipe ->
+            pipe.onError(error)
         }
 
         time.whenNow = {
@@ -85,8 +85,8 @@ class CachedUserSessionTokenRepositoryTest {
         val provider = UserSessionTokenProviderStub()
         val time = ClockStub()
 
-        provider.whenGetUserSessionToken = { onSuccess, _ ->
-            onSuccess(token)
+        provider.whenGetUserSessionToken = { pipe ->
+            pipe.onSuccess(token)
         }
 
         time.whenNow = {
@@ -127,8 +127,10 @@ class CachedUserSessionTokenRepositoryTest {
             )
         }
 
-        provider.whenGetUserSessionToken = { onSuccess, _ ->
-            onSuccess(tokens.access { it.removeAt(0) })
+        provider.whenGetUserSessionToken = { pipe ->
+            pipe.onSuccess(
+                tokens.access { it.removeAt(0) }
+            )
         }
         time.whenNow = {
             lifeTime.access { it.removeAt(0) }
@@ -168,9 +170,10 @@ class CachedUserSessionTokenRepositoryTest {
             )
         }
 
-        provider.whenGetUserSessionToken = { onSuccess, _ ->
-            onSuccess(tokens.access { it.removeAt(0) })
+        provider.whenGetUserSessionToken = { pipe ->
+            pipe.onSuccess(tokens.access { it.removeAt(0) })
         }
+
         time.whenNow = {
             lifeTime.access { it.removeAt(0) }
         }
