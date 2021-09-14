@@ -133,7 +133,7 @@ Client.Factory.getInstance(
         override fun onError(exception: Throwable) {
             pipe.onError(exception)
         }
-    }.freeze())
+    })
 }
 ----
 
