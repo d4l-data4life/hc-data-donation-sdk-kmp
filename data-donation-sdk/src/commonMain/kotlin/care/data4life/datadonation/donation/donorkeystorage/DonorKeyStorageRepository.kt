@@ -18,45 +18,56 @@ package care.data4life.datadonation.donation.donorkeystorage
 
 import care.data4life.datadonation.DataDonationSDK
 import care.data4life.datadonation.DonationDataContract
-import care.data4life.datadonation.EncodedDonorIdentity
-import care.data4life.datadonation.RecordId
+import care.data4life.datadonation.Result
+import care.data4life.datadonation.ResultPipe
 import care.data4life.datadonation.donation.donorkeystorage.DonorKeyStorageRepositoryContract.Companion.DATA_DONATION_ANNOTATION
 import care.data4life.datadonation.donation.donorkeystorage.DonorKeyStorageRepositoryContract.Companion.PROGRAM_ANNOTATION_PREFIX
 import care.data4life.datadonation.donation.donorkeystorage.model.Donor
 import care.data4life.datadonation.donation.donorkeystorage.model.DonorKey
 import care.data4life.datadonation.donation.donorkeystorage.model.NewDonor
-import co.touchlab.stately.concurrency.AtomicReference
 import co.touchlab.stately.freeze
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.launch
 
-/*
-* Please note the provider does not share the same Context/Scope/Thread as the SDK.
-* This means the SDK needs to transfer any values from the Context/Scope/Thread of the provider
-* into it's own. Additionally Closures in Swift are not blocking.
-* Since the SDK Context/Scope/Thread is known and using Atomics like constant values is safe, the
-* SDK is able to launch a new coroutine.
-* The channel then makes the actual transfer from the provider Context/Scope/Thread into the
-* SDK Context/Scope/Thread. Also Channels are blocking which then take care of any async delay caused
-* by the coroutine of the Callbacks or Swift.
-*/
 internal class DonorKeyStorageRepository(
     private val provider: DataDonationSDK.DonorKeyStorageProvider,
     scope: CoroutineScope
 ) : DonorKeyStorageRepositoryContract {
-    private val scope = AtomicReference(scope)
+    private val loadPipe = ResultPipe<DataDonationSDK.DonorKeyRecord?, Throwable>(scope)
+    private val saveAndDeletePipe = ResultPipe<Unit?, Throwable>(scope)
 
-    private fun mapLoadResult(result: Any): Donor {
-        return when (result) {
-            is Donor -> result
-            is Exception -> throw DonorKeyStorageError.KeyLoadingError(result)
-            else -> throw DonorKeyStorageError.KeyLoadingError()
+    private fun mapDonor(
+        programName: String,
+        donorKeyRecord: DataDonationSDK.DonorKeyRecord
+    ): Donor {
+        return Donor(
+            recordId = donorKeyRecord.recordId,
+            donorIdentity = donorKeyRecord.data,
+            programName = programName
+        )
+    }
+
+    private fun mapDonorOrNull(
+        programName: String,
+        donorKeyRecord: Any?
+    ): Donor? {
+        return if (donorKeyRecord is DataDonationSDK.DonorKeyRecord) {
+            mapDonor(programName, donorKeyRecord)
+        } else {
+            null
         }
     }
 
-    override suspend fun load(programName: String): Donor {
-        val incoming = Channel<Any>()
+    private fun mapLoadResult(
+        programName: String,
+        result: Result<DataDonationSDK.DonorKeyRecord?, Throwable>
+    ): Donor? {
+        return when (result) {
+            is Result.Success<*, *> -> mapDonorOrNull(programName, result.value)
+            is Result.Error<*, *> -> throw DonorKeyStorageError.KeyLoadingError(result.error)
+        }
+    }
+
+    override suspend fun load(programName: String): Donor? {
         val annotations = setOf(
             "${PROGRAM_ANNOTATION_PREFIX}$programName",
             DATA_DONATION_ANNOTATION
@@ -64,26 +75,10 @@ internal class DonorKeyStorageRepository(
 
         provider.load(
             annotations = annotations.freeze(),
-            onSuccess = { recordId: RecordId, encodedDonorIdentity: EncodedDonorIdentity ->
-                scope.get().launch {
-                    incoming.send(
-                        Donor(
-                            recordId = recordId,
-                            donorIdentity = encodedDonorIdentity,
-                            programName = programName
-                        )
-                    )
-                }
-                Unit
-            }.freeze(),
-            onError = { error ->
-                scope.get().launch {
-                    incoming.send(error)
-                }
-            }
+            loadPipe
         )
 
-        return mapLoadResult(incoming.receive())
+        return mapLoadResult(programName, loadPipe.receive())
     }
 
     private fun mapDonorToDonorKey(newDonor: NewDonor): DonationDataContract.DonorKey {
@@ -97,63 +92,37 @@ internal class DonorKeyStorageRepository(
         )
     }
 
-    private fun mapSaveResult(result: Any) {
+    private fun mapSaveResult(result: Result<Unit?, Throwable>) {
         return when (result) {
-            is Unit -> result
-            is Exception -> throw DonorKeyStorageError.KeySavingError(result)
-            else -> throw DonorKeyStorageError.KeySavingError()
+            is Result.Success<*, *> -> Unit
+            is Result.Error<*, *> -> throw DonorKeyStorageError.KeySavingError(result.error)
         }
     }
 
     override suspend fun save(newDonor: NewDonor) {
-        val incoming = Channel<Any>()
-
         val donorKey = mapDonorToDonorKey(newDonor)
 
         provider.save(
             donorKey = donorKey.freeze(),
-            onSuccess = {
-                scope.get().launch {
-                    incoming.send(Unit)
-                }
-                Unit
-            }.freeze(),
-            onError = { error ->
-                scope.get().launch {
-                    incoming.send(error)
-                }
-            }
+            saveAndDeletePipe
         )
 
-        return mapSaveResult(incoming.receive())
+        return mapSaveResult(saveAndDeletePipe.receive())
     }
 
-    private fun mapDeleteResult(result: Any) {
+    private fun mapDeletionResult(result: Result<Unit?, Throwable>) {
         return when (result) {
-            is Unit -> result
-            is Exception -> throw DonorKeyStorageError.KeyDeletionError(result)
-            else -> throw DonorKeyStorageError.KeyDeletionError()
+            is Result.Success<*, *> -> Unit
+            is Result.Error<*, *> -> throw DonorKeyStorageError.KeyDeletionError(result.error)
         }
     }
 
     override suspend fun delete(donor: Donor) {
-        val incoming = Channel<Any>()
-
         provider.delete(
             recordId = donor.recordId.freeze(),
-            onSuccess = {
-                scope.get().launch {
-                    incoming.send(Unit)
-                }
-                Unit
-            }.freeze(),
-            onError = { error ->
-                scope.get().launch {
-                    incoming.send(error)
-                }
-            }
+            saveAndDeletePipe
         )
 
-        return mapDeleteResult(incoming.receive())
+        return mapDeletionResult(saveAndDeletePipe.receive())
     }
 }

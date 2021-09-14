@@ -17,6 +17,7 @@
 package care.data4life.datadonation.donation.donorkeystorage
 
 import care.data4life.datadonation.Annotations
+import care.data4life.datadonation.DataDonationSDK
 import care.data4life.datadonation.DonationDataContract
 import care.data4life.datadonation.RecordId
 import care.data4life.datadonation.donation.donorkeystorage.DonorKeyStorageRepositoryContract.Companion.DATA_DONATION_ANNOTATION
@@ -56,11 +57,11 @@ class DonorKeyStorageRepositoryTest {
         val provider = DonorKeyStorageProviderStub()
 
         val capturedAnnotations = Channel<Annotations>()
-        provider.whenLoad = { delegatedAnnotations, _, onError ->
+        provider.whenLoad = { delegatedAnnotations, pipe ->
             launch {
                 capturedAnnotations.send(delegatedAnnotations)
             }
-            onError(error)
+            pipe.onError(error)
         }
 
         // When
@@ -98,11 +99,12 @@ class DonorKeyStorageRepositoryTest {
         val provider = DonorKeyStorageProviderStub()
 
         val capturedAnnotations = Channel<Annotations>()
-        provider.whenLoad = { delegatedAnnotations, onSuccess, _ ->
+        provider.whenLoad = { delegatedAnnotations, pipe ->
             launch {
                 capturedAnnotations.send(delegatedAnnotations)
             }
-            onSuccess(recordId, data)
+
+            pipe.onSuccess(DataDonationSDK.DonorKeyRecord(recordId, data))
         }
 
         // When
@@ -147,11 +149,11 @@ class DonorKeyStorageRepositoryTest {
         val provider = DonorKeyStorageProviderStub()
 
         val capturedDonorKey = Channel<DonationDataContract.DonorKey>()
-        provider.whenSave = { delegatedDonorKey, _, onError ->
+        provider.whenSave = { delegatedDonorKey, pipe ->
             launch {
                 capturedDonorKey.send(delegatedDonorKey)
             }
-            onError(error)
+            pipe.onError(error)
         }
 
         // When
@@ -202,11 +204,11 @@ class DonorKeyStorageRepositoryTest {
         val provider = DonorKeyStorageProviderStub()
 
         val capturedDonorKey = Channel<DonationDataContract.DonorKey>()
-        provider.whenSave = { delegatedDonorKey, onSuccess, _ ->
+        provider.whenSave = { delegatedDonorKey, pipe ->
             launch {
                 capturedDonorKey.send(delegatedDonorKey)
             }
-            onSuccess()
+            pipe.onSuccess(null)
         }
 
         // When
@@ -257,11 +259,11 @@ class DonorKeyStorageRepositoryTest {
         val provider = DonorKeyStorageProviderStub()
 
         val capturedRecordId = Channel<RecordId>()
-        provider.whenDelete = { delegatedRecordId, _, onError ->
+        provider.whenDelete = { delegatedRecordId, pipe ->
             launch {
                 capturedRecordId.send(delegatedRecordId)
             }
-            onError(error)
+            pipe.onError(error)
         }
 
         // When
@@ -286,44 +288,45 @@ class DonorKeyStorageRepositoryTest {
     }
 
     @Test
-    fun `Given delete is called with a Donor, it delegates the call to its Provider and propagtes its Result`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
-        // Given
-        val programName = "potato"
-        val recordId = "ABC"
-        val data = "secret"
-        val donor = Donor(
-            recordId = recordId,
-            donorIdentity = data,
-            programName = programName
-        )
+    fun `Given delete is called with a Donor, it delegates the call to its Provider and propagtes its Result`() =
+        runWithContextBlockingTest(GlobalScope.coroutineContext) {
+            // Given
+            val programName = "potato"
+            val recordId = "ABC"
+            val data = "secret"
+            val donor = Donor(
+                recordId = recordId,
+                donorIdentity = data,
+                programName = programName
+            )
 
-        val provider = DonorKeyStorageProviderStub()
+            val provider = DonorKeyStorageProviderStub()
 
-        val capturedRecordId = Channel<RecordId>()
-        provider.whenDelete = { delegatedRecordId, onSuccess, _ ->
-            launch {
-                capturedRecordId.send(delegatedRecordId)
+            val capturedRecordId = Channel<RecordId>()
+            provider.whenDelete = { delegatedRecordId, pipe ->
+                launch {
+                    capturedRecordId.send(delegatedRecordId)
+                }
+                pipe.onSuccess(null)
             }
-            onSuccess()
+
+            // When
+            runBlockingTest {
+                val result = DonorKeyStorageRepository(
+                    provider,
+                    testScope
+                ).delete(donor)
+
+                // Then
+                assertSame(
+                    actual = result,
+                    expected = Unit
+                )
+
+                assertEquals(
+                    actual = capturedRecordId.receive(),
+                    expected = donor.recordId
+                )
+            }
         }
-
-        // When
-        runBlockingTest {
-            val result = DonorKeyStorageRepository(
-                provider,
-                testScope
-            ).delete(donor)
-
-            // Then
-            assertSame(
-                actual = result,
-                expected = Unit
-            )
-
-            assertEquals(
-                actual = capturedRecordId.receive(),
-                expected = donor.recordId
-            )
-        }
-    }
 }

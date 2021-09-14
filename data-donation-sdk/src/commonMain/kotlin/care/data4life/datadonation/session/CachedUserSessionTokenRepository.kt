@@ -45,13 +45,12 @@ internal class CachedUserSessionTokenRepository(
         }
     }
 
-    private fun resolveSessionToken(result: Any): SessionToken {
+    private fun resolveSessionToken(result: Result<SessionToken, Throwable>): SessionToken {
         return when (result) {
             is Result.Success<*, *> -> (result.value as SessionToken).also { token ->
                 cache.access { it.update(token) }
             }
             is Result.Error<*, *> -> throw UserSessionError.MissingSession(result.error)
-            else -> throw UserSessionError.MissingSession()
         }
     }
 

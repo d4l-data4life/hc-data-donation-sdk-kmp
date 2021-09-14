@@ -20,7 +20,7 @@ import care.data4life.datadonation.donation.donorkeystorage.model.Donor
 import care.data4life.datadonation.donation.donorkeystorage.model.NewDonor
 
 internal interface DonorKeyStorageRepositoryContract {
-    suspend fun load(programName: String): Donor
+    suspend fun load(programName: String): Donor?
     suspend fun save(newDonor: NewDonor)
     suspend fun delete(donor: Donor)
 

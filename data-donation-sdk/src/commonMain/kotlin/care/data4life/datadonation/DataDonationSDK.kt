@@ -103,23 +103,25 @@ interface DataDonationSDK {
         fun getUserSessionToken(pipe: ResultPipe<SessionToken, Throwable>)
     }
 
+    data class DonorKeyRecord(
+        val recordId: RecordId,
+        val data: EncodedDonorIdentity
+    )
+
     interface DonorKeyStorageProvider {
         fun load(
             annotations: Annotations,
-            onSuccess: (recordId: RecordId, data: EncodedDonorIdentity) -> Unit,
-            onError: (error: Exception) -> Unit
+            pipe: ResultPipe<DonorKeyRecord?, Throwable>
         )
 
         fun save(
             donorKey: DonationDataContract.DonorKey,
-            onSuccess: () -> Unit,
-            onError: (error: Exception) -> Unit
+            pipe: ResultPipe<Unit?, Throwable>
         )
 
         fun delete(
             recordId: RecordId,
-            onSuccess: () -> Unit,
-            onError: (error: Exception) -> Unit
+            pipe: ResultPipe<Unit?, Throwable>
         )
     }
 }
