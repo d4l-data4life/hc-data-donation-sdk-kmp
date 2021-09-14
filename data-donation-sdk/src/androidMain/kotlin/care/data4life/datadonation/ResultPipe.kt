@@ -14,20 +14,26 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.sdk.datadonation
+package care.data4life.datadonation
 
-object AppConfig {
-    const val group = "care.data4life.datadonation"
+import care.data4life.datadonation.Result.Error
+import care.data4life.datadonation.Result.Success
+import kotlinx.coroutines.CoroutineScope
 
-    val android = AndroidConfig
+actual class ResultPipe<Success, Error : Throwable> actual constructor(
+    scope: CoroutineScope
+) : DataDonationSDK.Pipe<Success, Error> {
+    private lateinit var result: Result<Success, Error>
 
-    object AndroidConfig {
-        const val minSdkVersion = LibraryConfig.android.minSdkVersion
-        const val compileSdkVersion = LibraryConfig.android.compileSdkVersion
-        const val targetSdkVersion = LibraryConfig.android.targetSdkVersion
+    actual override fun onSuccess(value: Success) {
+        result = Success(value)
+    }
 
-        const val versionCode = 1
+    actual override fun onError(error: Error) {
+        result = Error(error)
+    }
 
-        const val applicationId = group
+    actual override suspend fun receive(): Result<Success, Error> {
+        return result
     }
 }

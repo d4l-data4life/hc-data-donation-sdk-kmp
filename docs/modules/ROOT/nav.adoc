@@ -1,1 +1,2 @@
 * xref:index.adoc[Overview]
+* xref:../pages/migrationGuide.adoc[Migration Guide]

@@ -14,8 +14,9 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.sdk.datadonation
+package care.data4life.gradle.datadonation.script
 
+import care.data4life.gradle.datadonation.config.LibraryConfig
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.api.ResetCommand
 import org.eclipse.jgit.transport.PushResult
@@ -39,10 +40,10 @@ import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider
  *     mavenCentral()
  * }
  *
- * Now just add id("care.data4life.sdk.datadonation.publishing") to your rootProject build.gradle.kts plugins
+ * Now just add id("care.data4life.gradle.datadonation.script.publishing") to your rootProject build.gradle.kts plugins
  *
  * plugins {
- *     id("care.data4life.sdk.datadonation.publishing")
+ *     id("care.data4life.gradle.datadonation.script.publishing")
  * }
  *
  * Usage:
