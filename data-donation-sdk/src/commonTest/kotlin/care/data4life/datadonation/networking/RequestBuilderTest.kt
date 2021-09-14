@@ -20,6 +20,8 @@ import care.data4life.datadonation.DataDonationSDK.Environment
 import care.data4life.datadonation.error.CoreRuntimeError
 import care.data4life.datadonation.networking.Networking.RequestBuilder.Companion.ACCESS_TOKEN_FIELD
 import care.data4life.datadonation.networking.Networking.RequestBuilder.Companion.ACCESS_TOKEN_VALUE_PREFIX
+import care.data4life.datadonation.networking.plugin.HttpCustomContentType
+import care.data4life.datadonation.networking.plugin.KtorPluginsContract
 import care.data4life.sdk.util.test.coroutine.runWithContextBlockingTest
 import care.data4life.sdk.util.test.ktor.HttpMockClientFactory.createHelloWorldMockClient
 import care.data4life.sdk.util.test.ktor.HttpMockClientResponseFactory.createHelloWorldOkResponse
@@ -366,6 +368,10 @@ class RequestBuilderTest {
                         useArrayPolymorphism = false
                     }
                 )
+            }
+
+            install(HttpCustomContentType) {
+                this.replacementHeader = KtorPluginsContract.CustomTypeHeader.replacementHeader
             }
 
             engine {
