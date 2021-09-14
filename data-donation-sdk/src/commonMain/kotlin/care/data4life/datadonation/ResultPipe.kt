@@ -14,22 +14,15 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.mock.stub
+package care.data4life.datadonation
 
-import care.data4life.datadonation.DataDonationSDK
-import care.data4life.datadonation.ResultPipe
-import care.data4life.datadonation.mock.MockContract
-import care.data4life.datadonation.mock.MockException
-import care.data4life.datadonation.session.SessionToken
+import kotlinx.coroutines.CoroutineScope
 
-internal class UserSessionTokenProviderStub : DataDonationSDK.UserSessionTokenProvider, MockContract.Stub {
-    var whenGetUserSessionToken: ((pipe: ResultPipe<SessionToken, Throwable>) -> Unit)? = null
-
-    override fun getUserSessionToken(pipe: ResultPipe<SessionToken, Throwable>) {
-        return whenGetUserSessionToken?.invoke(pipe) ?: throw MockException()
-    }
-
-    override fun clear() {
-        whenGetUserSessionToken = null
-    }
+// TODO: Check if Result suffices with Swift 5.5
+expect class ResultPipe<Success, Error : Throwable>(
+    scope: CoroutineScope
+) : DataDonationSDK.Pipe<Success, Error> {
+    override fun onSuccess(value: Success)
+    override fun onError(error: Error)
+    override suspend fun receive(): Result<Success, Error>
 }
