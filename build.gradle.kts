@@ -13,23 +13,24 @@
  * applications and/or if you’d like to contribute to the development of the SDK, please
  * contact D4L by email to help@data4life.care.
  */
-import care.data4life.sdk.datadonation.dependency.d4l
-import care.data4life.sdk.datadonation.dependency.gitHub
+
+import care.data4life.gradle.datadonation.dependency.d4l
+import care.data4life.gradle.datadonation.dependency.gitHub
 
 plugins {
-    id("care.data4life.sdk.datadonation.dependency")
+    id("care.data4life.gradle.datadonation.dependency")
 
-    id("care.data4life.sdk.datadonation.dependency-updates")
-    id("care.data4life.sdk.datadonation.download-scripts")
-    id("care.data4life.sdk.datadonation.publishing")
-    id("care.data4life.sdk.datadonation.quality-spotless")
-    id("care.data4life.sdk.datadonation.versioning")
+    id("care.data4life.gradle.datadonation.script.dependency-updates")
+    id("care.data4life.gradle.datadonation.script.download-scripts")
+    id("care.data4life.gradle.datadonation.script.publishing")
+    id("care.data4life.gradle.datadonation.script.quality-spotless")
+    id("care.data4life.gradle.datadonation.script.versioning")
 }
 
 allprojects {
     repositories {
-        mavenCentral()
         google()
+        mavenCentral()
 
         gitHub(project)
 

@@ -13,15 +13,20 @@
  * applications and/or if you’d like to contribute to the development of the SDK, please
  * contact D4L by email to help@data4life.care.
  */
-package care.data4life.sdk.datadonation
+
+package care.data4life.gradle.datadonation.script
+
+import care.data4life.gradle.gitversion.VersionDetails
 
 /**
- * Usage:
+ * Versioning task to calculate the version based on git tags and branch names using [Gradle Git Version](https://github.com/d4l-data4life/gradle-git-version)
+ *
+ * Install:
  *
  * You need to add following dependencies to the buildSrc/build.gradle.kts
  *
  * dependencies {
- *     implementation("com.palantir.gradle.gitversion:gradle-git-version:0.12.3")
+ *     implementation("care.data4life.gradle.gitversion:gradle-git-version:0.12.4-d4l")
  * }
  *
  * and ensure that the gradlePluginPortal is available
@@ -30,11 +35,13 @@ package care.data4life.sdk.datadonation
  *     gradlePluginPortal()
  * }
  *
- * Now just add id("scripts.versioning") to your rootProject build.gradle.kts plugins
+ * Now just add id("care.data4life.gradle.datadonation.script.versioning") to your rootProject build.gradle.kts plugins
  *
  * plugins {
- *     id("scripts.versioning")
+ *     id("care.data4life.gradle.datadonation.script.versioning")
  * }
+ *
+ * Usage:
  *
  * Versions will be calculated based on the latest git tag v* and branch name. if no tag is present a git hash will be used instead
  *
@@ -45,15 +52,15 @@ package care.data4life.sdk.datadonation
  *
  * Review the generated version:
  * - ./gradlew versionInfo
- *
  */
 plugins {
-    id("com.palantir.git-version")
+    id("care.data4life.git-version")
 }
 
-val versionDetails: groovy.lang.Closure<com.palantir.gradle.gitversion.VersionDetails> by extra
+val versionDetails: groovy.lang.Closure<VersionDetails> by extra
 val patternNoQualifierBranch = "main|release/.*".toRegex()
 val patternFeatureBranch = "feature/(.*)".toRegex()
+val patternDependabotBranch = "dependabot/(.*)".toRegex()
 val patternTicketNumber = "[A-Z]{2,8}-.*/(.*)".toRegex()
 
 fun versionName(): String {
@@ -63,11 +70,12 @@ fun versionName(): String {
         details.branchName == null -> versionNameWithQualifier(details)
         patternNoQualifierBranch.matches(details.branchName) -> versionNameWithQualifier(details)
         patternFeatureBranch.matches(details.branchName) -> versionNameFeature(details)
+        patternDependabotBranch.matches(details.branchName) -> versionNameDependabot(details)
         else -> throw UnsupportedOperationException("branch name not supported: ${details.branchName}")
     }
 }
 
-fun versionNameFeature(details: com.palantir.gradle.gitversion.VersionDetails): String {
+fun versionNameFeature(details: VersionDetails): String {
     var featureName = patternFeatureBranch.matchEntire(details.branchName)!!.groups[1]!!.value
 
     if (patternTicketNumber.matches(featureName)) {
@@ -77,8 +85,18 @@ fun versionNameFeature(details: com.palantir.gradle.gitversion.VersionDetails): 
     return versionNameWithQualifier(details, featureName)
 }
 
+fun versionNameDependabot(details: VersionDetails): String {
+    var dependabotName = patternDependabotBranch.matchEntire(details.branchName)!!.groups[1]!!.value
+
+    dependabotName = dependabotName
+        .replace("_", "-")
+        .replace("/", "-")
+
+    return versionNameWithQualifier(details, "bump-$dependabotName")
+}
+
 fun versionNameWithQualifier(
-    details: com.palantir.gradle.gitversion.VersionDetails,
+    details: VersionDetails,
     name: String = ""
 ): String {
     val version = if (!details.isCleanTag) {
