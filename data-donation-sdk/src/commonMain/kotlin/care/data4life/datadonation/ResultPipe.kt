@@ -18,6 +18,7 @@ package care.data4life.datadonation
 
 import kotlinx.coroutines.CoroutineScope
 
+// TODO: Check if Result suffices with Swift 5.5
 expect class ResultPipe<Success, Error : Throwable>(
     scope: CoroutineScope
 ) : DataDonationSDK.Pipe<Success, Error> {

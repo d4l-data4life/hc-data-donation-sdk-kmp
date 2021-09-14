@@ -26,7 +26,7 @@ final class Data4LifeSDKService {
             self.client = client
         }
 
-        func getUserSessionToken(pipe: Data4LifeDataDonationSDK.ResultPipe<NSString, KotlinThrowable>) -> Void {
+        func getUserSessionToken(pipe: ResultPipe<NSString, KotlinThrowable>) -> Void {
             client.refreshedAccessToken { result in
                 switch result {
                 case .success(.some(let token)):
