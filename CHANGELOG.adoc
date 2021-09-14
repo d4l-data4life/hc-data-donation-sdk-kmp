@@ -31,7 +31,7 @@ toc::[]
 
 === Changed
 
-* UserSessionTokenProvider does take a Pipe now to make result propagation easier for common consumers.
+* _**BREAKING**_ UserSessionTokenProvider does take a Pipe now to make result propagation easier for common consumers (see for more in our xref:.gitattributes/docs/modules/ROOT/pages/migrationGuide.adoc[Migration Guide]).
 
 === Deprecated
 
