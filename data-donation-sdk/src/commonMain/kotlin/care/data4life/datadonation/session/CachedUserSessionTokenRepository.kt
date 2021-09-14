@@ -17,13 +17,11 @@
 package care.data4life.datadonation.session
 
 import care.data4life.datadonation.DataDonationSDK
+import care.data4life.datadonation.Result
+import care.data4life.datadonation.ResultPipe
 import care.data4life.datadonation.session.SessionTokenRepositoryContract.Companion.CACHE_LIFETIME_IN_SECONDS
-import co.touchlab.stately.concurrency.AtomicReference
-import co.touchlab.stately.freeze
 import co.touchlab.stately.isolate.IsolateState
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 
 internal class CachedUserSessionTokenRepository(
@@ -32,37 +30,11 @@ internal class CachedUserSessionTokenRepository(
     scope: CoroutineScope
 ) : SessionTokenRepositoryContract {
     private val cache = IsolateState { Cache(clock) }
-    private val scope = AtomicReference(scope)
+    private val pipe = ResultPipe<SessionToken, Throwable>(scope)
 
-    /*
-    * Please note the provider does not share the same Context/Scope/Thread as the SDK.
-    * This means the SDK needs to transfer the sessionToken from the Context/Scope/Thread of the provider
-    * into it's own. Additionally Closures in Swift are not blocking.
-    * Since the SDK Context/Scope/Thread is known and using Atomics like constant values is safe, the
-    * SDK is able to launch a new coroutine.
-    * The channel then makes the actual transfer from the provider Context/Scope/Thread into the
-    * SDK Context/Scope/Thread. Also Channels are blocking which then take care of any async delay caused
-    * by the coroutine of the Callbacks or Swift.
-    */
-    private suspend fun fetchTokenFromApi(): Any {
-        val incoming = Channel<Any>()
-
-        provider.getUserSessionToken(
-            onSuccess = { sessionToken: SessionToken ->
-                scope.get().launch {
-                    incoming.send(sessionToken)
-                }.start()
-                Unit
-            }.freeze(),
-            onError = { error: Exception ->
-                scope.get().launch {
-                    incoming.send(error)
-                }.start()
-                Unit
-            }.freeze()
-        )
-
-        return incoming.receive()
+    private suspend fun fetchTokenFromApi(): Result<SessionToken, Throwable> {
+        provider.getUserSessionToken(pipe)
+        return pipe.receive()
     }
 
     private fun fetchCachedTokenIfNotExpired(): SessionToken? {
@@ -75,8 +47,10 @@ internal class CachedUserSessionTokenRepository(
 
     private fun resolveSessionToken(result: Any): SessionToken {
         return when (result) {
-            is SessionToken -> result.also { cache.access { it.update(result) } }
-            is Exception -> throw UserSessionError.MissingSession(result)
+            is Result.Success<*, *> -> (result.value as SessionToken).also { token ->
+                cache.access { it.update(token) }
+            }
+            is Result.Error<*, *> -> throw UserSessionError.MissingSession(result.error)
             else -> throw UserSessionError.MissingSession()
         }
     }
@@ -87,7 +61,7 @@ internal class CachedUserSessionTokenRepository(
         return if (cachedToken is SessionToken) {
             cachedToken
         } else {
-            return resolveSessionToken(fetchTokenFromApi())
+            resolveSessionToken(fetchTokenFromApi())
         }
     }
 
