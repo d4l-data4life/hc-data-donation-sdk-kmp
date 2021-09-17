@@ -37,13 +37,19 @@ import org.koin.dsl.module
 
 internal fun initKoin(
     environment: Environment,
-    userSession: DataDonationSDK.UserSessionTokenProvider
+    userSession: DataDonationSDK.UserSessionTokenProvider,
+    coroutineScope: CoroutineScope?
 ): KoinApplication {
+    val scope = coroutineScope ?: CoroutineScopeFactory.createScope(
+        "DataDonationBackgroundThreadScope"
+    )
+
     return koinApplication {
         modules(
             resolveRootModule(
                 environment,
-                userSession
+                userSession,
+                scope
             ),
             resolveNetworking(),
             resolveKtorPlugins(),
@@ -56,7 +62,8 @@ internal fun initKoin(
 
 internal fun resolveRootModule(
     environment: Environment,
-    userSessionTokenProvider: DataDonationSDK.UserSessionTokenProvider
+    userSessionTokenProvider: DataDonationSDK.UserSessionTokenProvider,
+    coroutineScope: CoroutineScope
 ): Module {
     return module {
         single<Environment> { environment }
@@ -68,7 +75,7 @@ internal fun resolveRootModule(
         }
 
         single<CoroutineScope> {
-            CoroutineScopeFactory.createScope("DataDonationBackgroundThreadScope")
+            coroutineScope
         }
 
         single<DomainErrorMapperContract> {

@@ -1,0 +1,190 @@
+= Data4Life Data-Donation SDK - Migration Guide
+:doctype: article
+:!showtitle:
+:toc: macro
+:toclevels: 2
+:toc-title:
+:icons: font
+:imagesdir: assets/images
+:link-repository: https://github.com/d4l-data4life/hc-data-donation-sdk-kmp
+:link-docs: https://github.com/d4l-data4life/hc-data-donation-sdk-kmp/doc
+ifdef::env-github[]
+:warning-caption: :warning:
+:caution-caption: :fire:
+:important-caption: :exclamation:
+:note-caption: :paperclip:
+:tip-caption: :bulb:
+endif::[]
+
+[discrete]
+=== Table Of Contents
+toc::[]
+
+== Migration from v0.2.1 to vXXX
+
+=== UserSessionTokenProvider
+
+==== Reason
+
+The `UserSessionTokenProvider` and its counter part `UserSessionTokenProviderRepository` in the DataDonation-SDK suffered a lot from their complexity. Since the shared codebase was concerned with responsibility which actually belongs on the platform the causing parts had been pulled out and contained in their own implementation (`ResultPipe`). This should ease mostly the struggle in terms of native, which caused the most problems in regards of its coroutine scope or freezing.
+
+==== Common
+
+If your implementation currently looks something like the following:
+
+[source,kotlin]
+----
+Client.Factory.getInstance(
+    environment
+) { onSuccess, onError ->
+    d4lClient.getUserSessionToken(object {
+        override fun onSuccess(token: String) {
+            onSuccess(token.freeze())
+        }
+
+        override fun onError(exception: PlatformException) {
+            // or map the error into a Throwable
+            onError(RuntimeException("No token available").freeze())
+        }
+    }.freeze())
+}
+----
+
+You need simply change it to the following:
+[source,kotlin]
+----
+Client.Factory.getInstance(
+    environment,
+) { pipe ->
+    d4lClient.getUserSessionToken(object {
+        override fun onSuccess(token: String) {
+            pipe.onSuccess(token)
+        }
+
+        override fun onError(exception: PlatformException) {
+            // or map the error into a Throwable
+            pipe.onError(RuntimeException("No token available"))
+        }
+    }.freeze())
+}
+----
+[TIP]
+====
+You can also delegate the pipe to the actual consuming platform, which spares you entirely from taking care about freezing or context switches. However this might require an additional method on your AuthApp wrapper, which needs to be picked up by your consuming platforms.
+
+Alternatively you can ease up things a bit by pulling the ResultListener out in it's own class:
+[source,kotlin]
+----
+class TokenListener(
+    private val pipe: ResultPipe<String, Throwable>
+) {
+    init {
+        this.freeze()
+    }
+
+    override fun onSuccess(token: String) {
+        pipe.onSuccess(token)
+    }
+
+    override fun onError(exception: PlatformError) {
+        // or map the error into a Throwable
+        pipe.onError(RuntimeException("No token available"))
+    }
+}
+
+Client.Factory.getInstance(
+    environment
+) { pipe -> d4lClient.getUserSessionToken(TokenListener(pipe)) }
+----
+====
+
+==== Android
+
+If your implementation currently looks something like the following:
+
+[source,kotlin]
+----
+Client.Factory.getInstance(
+    environment
+) { onSuccess, onError ->
+    d4lClient.getUserSessionToken(object {
+        override fun onSuccess(token: String) {
+            onSuccess(token)
+        }
+
+        override fun onError(exception: Throwable) {
+            onError(exception)
+        }
+    })
+}
+----
+
+You need simply change it to the following:
+[source,kotlin]
+----
+Client.Factory.getInstance(
+    environment
+) { pipe ->
+    d4lClient.getUserSessionToken(object {
+        override fun onSuccess(token: String) {
+            pipe.onSuccess(token)
+        }
+
+        override fun onError(exception: Throwable) {
+            pipe.onError(exception)
+        }
+    })
+}
+----
+
+==== iOS
+
+If your implementation currently looks something like the following:
+
+[source,swift]
+----
+final class D4LTokenProvider: UserSessionTokenProviderProtocol {
+
+    private let client: Data4LifeClient
+    init(client: Data4LifeClient) {
+        self.client = client
+    }
+
+    func getUserSessionToken(onSuccess: @escaping (String) -> Void, onError: @escaping (KotlinException) -> Void) {
+        client.refreshedAccessToken { result in
+            switch result {
+            case .success(.some(let token)):
+                onSuccess(token)
+            case .success(.none):
+                onError(KotlinException(message: "No token available"))
+            case .failure(let error):
+                onError(KotlinException(message: error.localizedDescription))
+            }
+        };
+    }
+}
+----
+
+You need simply change it to the following:
+[source,swift]
+----
+final class D4LTokenProvider: UserSessionTokenProviderProtocol {
+   private let client: Data4LifeClient
+    init(client: Data4LifeClient) {
+        self.client = client
+    }
+
+    func getUserSessionToken(pipe: ResultPipe<NSString, KotlinThrowable>) -> Void {
+        client.refreshedAccessToken { result in
+            switch result {
+            case .success(.some(let token)):
+                pipe.onSuccess(value: token as NSString)
+            case .success(.none):
+                pipe.onError(error: KotlinException(message: "No token available"))
+            case .failure(let error):
+                pipe.onError(error: KotlinException(message: error.localizedDescription))
+            }
+        }
+    }
+}
+----

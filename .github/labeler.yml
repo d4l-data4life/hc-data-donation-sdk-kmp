@@ -1,6 +1,9 @@
 build:
   - .github/**/*
 
+scripts:
+  - buildSrc/src/main/kotlin/care/data4life/gradle/datadonation/script/**/*.kts
+
 dependencies:
   - buildSrc/**/*
 
@@ -13,12 +16,15 @@ documentation:
   - CONTRIBUTION.adoc
   - readmeOSS.adoc
 
+# Library
 library:
   - data-donation-sdk/**/*
+  - data-donation-crypto/**/*
 
-# Sample
+# Sample Apps
 sample-android:
   - sample-android/**/*
-
 sample-ios:
   - sample-ios/**/*
+sample-jvm:
+  - sample-jvm/**/*
