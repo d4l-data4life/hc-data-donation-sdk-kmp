@@ -20,7 +20,7 @@ plugins {
 }
 
 // To make it available as direct dependency
-group = "care.data4life.sdk.datadonation.dependency"
+group = "care.data4life.gradle.datadonation.dependency"
 version = "1.0.0-SNAPSHOT"
 
 repositories {
@@ -28,8 +28,8 @@ repositories {
 }
 
 gradlePlugin {
-    plugins.register("care.data4life.sdk.datadonation.dependency") {
-        id = "care.data4life.sdk.datadonation.dependency"
-        implementationClass = "care.data4life.sdk.datadonation.dependency.DependencyPlugin"
+    plugins.register("care.data4life.gradle.datadonation.dependency") {
+        id = "care.data4life.gradle.datadonation.dependency"
+        implementationClass = "care.data4life.gradle.datadonation.dependency.DependencyPlugin"
     }
 }

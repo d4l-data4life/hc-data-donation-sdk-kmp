@@ -14,14 +14,15 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.sdk.datadonation.dependency
+package care.data4life.datadonation
 
-import org.gradle.api.Plugin
-import org.gradle.api.Project
+import kotlinx.coroutines.CoroutineScope
 
-class DependencyPlugin : Plugin<Project> {
-
-    override fun apply(target: Project) {
-        // nothing to do
-    }
+// TODO: Check if Result suffices with Swift 5.5
+expect class ResultPipe<Success, Error : Throwable>(
+    scope: CoroutineScope
+) : DataDonationSDK.Pipe<Success, Error> {
+    override fun onSuccess(value: Success)
+    override fun onError(error: Error)
+    override suspend fun receive(): Result<Success, Error>
 }
