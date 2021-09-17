@@ -40,7 +40,7 @@ class ObjCCryptoIntegrationTest {
 
         memScoped {
             val errorRef = alloc<ObjCObjectVar<NSError?>>()
-            keychainStore.fetchDonorPublicKeyAsBase64With(keyIdentifier, errorRef.ptr)
+            keychainStore.fetchKeyPairAsBase64With(keyIdentifier, errorRef.ptr)
             val error = errorRef.value
             assertNotNull(error)
         }
@@ -51,7 +51,7 @@ class ObjCCryptoIntegrationTest {
 
         memScoped {
             val errorRef = alloc<ObjCObjectVar<NSError?>>()
-            keychainStore.fetchDonorPublicKeyAsBase64With(keyIdentifier, errorRef.ptr)
+            keychainStore.fetchKeyPairAsBase64With(keyIdentifier, errorRef.ptr)
 
             val error = errorRef.value
             val expectedError = NSErrorFactory.create(
