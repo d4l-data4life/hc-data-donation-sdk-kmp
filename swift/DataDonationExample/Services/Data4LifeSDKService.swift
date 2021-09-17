@@ -21,23 +21,22 @@ import Data4LifeDataDonationSDK
 final class Data4LifeSDKService {
 
     final class D4LTokenProvider: UserSessionTokenProviderProtocol {
-
-        private let client: Data4LifeClient
+       private let client: Data4LifeClient
         init(client: Data4LifeClient) {
             self.client = client
         }
 
-        func getUserSessionToken(onSuccess: @escaping (String) -> Void, onError: @escaping (KotlinException) -> Void) {
+        func getUserSessionToken(pipe: ResultPipe<NSString, KotlinThrowable>) -> Void {
             client.refreshedAccessToken { result in
                 switch result {
                 case .success(.some(let token)):
-                    onSuccess(token)
+                    pipe.onSuccess(value: token as NSString)
                 case .success(.none):
-                    onError(KotlinException(message: "No token available"))
+                    pipe.onError(error: KotlinException(message: "No token available"))
                 case .failure(let error):
-                    onError(KotlinException(message: error.localizedDescription))
+                    pipe.onError(error: KotlinException(message: error.localizedDescription))
                 }
-            }
+            };
         }
     }
 
@@ -68,10 +67,14 @@ final class Data4LifeSDKService {
         client.handle(url: url)
     }
 
-    func openLogin(from viewController: UIViewController, didLogin: @escaping (Result<Void, Error>) -> Void) {
-        client.presentLogin(on: viewController, animated: true) { result in
-            didLogin(result)
-        }
+    func openLogin(
+        from viewController: UIViewController,
+        didLogin: @escaping (Result<Void, Error>) -> Void
+    ) {
+        client.presentLogin(
+            on: viewController,
+            animated: true
+        ) { result in didLogin(result) }
     }
 
     var userSessionProvider: UserSessionTokenProviderProtocol {
