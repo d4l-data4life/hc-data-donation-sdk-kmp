@@ -7,13 +7,44 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3670E96426CD1E5D00FD5B79 /* DataDonationCryptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3670E95726CBF11200FD5B79 /* DataDonationCryptor.swift */; };
+		3670E96426CD1E5D00FD5B79 /* KeychainKeyProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3670E95726CBF11200FD5B79 /* KeychainKeyProvider.swift */; };
 		3670E96726CD1E6E00FD5B79 /* Data4LifeCrypto in Frameworks */ = {isa = PBXBuildFile; productRef = 3670E96626CD1E6E00FD5B79 /* Data4LifeCrypto */; };
 		3670E97326CD5FC100FD5B79 /* libDataDonationCryptoObjC.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3670E95D26CD1E4A00FD5B79 /* libDataDonationCryptoObjC.a */; };
+		36B32E8326CFF10F00D16306 /* DonorKeyHolder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36B32E8226CFF10F00D16306 /* DonorKeyHolder.swift */; };
+		36B32E8426CFF3AF00D16306 /* KeychainKeyProviderModuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3670E94826CBF02700FD5B79 /* KeychainKeyProviderModuleTests.swift */; };
+		36B32E8626D3DCB600D16306 /* DonorKeyHolderMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36B32E8526D3DCB600D16306 /* DonorKeyHolderMock.swift */; };
+		36B32E8926D3EF1500D16306 /* Data4LifeCrypto in Frameworks */ = {isa = PBXBuildFile; productRef = 36B32E8826D3EF1500D16306 /* Data4LifeCrypto */; };
+		36B32E8C26D3EF8A00D16306 /* KeyFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36B32E8B26D3EF8A00D16306 /* KeyFactory.swift */; };
+		36B32E9426D4E56300D16306 /* DataDonationCryptoHostAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36B32E9326D4E56300D16306 /* DataDonationCryptoHostAppApp.swift */; };
+		36B32E9626D4E56300D16306 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36B32E9526D4E56300D16306 /* ContentView.swift */; };
+		36B32E9826D4E56500D16306 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 36B32E9726D4E56500D16306 /* Assets.xcassets */; };
+		36B32E9B26D4E56500D16306 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 36B32E9A26D4E56500D16306 /* Preview Assets.xcassets */; };
+		36B32EA426D4EACB00D16306 /* donor-identity.json in Resources */ = {isa = PBXBuildFile; fileRef = 36B32EA326D4EACB00D16306 /* donor-identity.json */; };
+		36B32EA926D5140C00D16306 /* Bundle+Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36B32EA826D5140C00D16306 /* Bundle+Tests.swift */; };
+		36FA37C626D53F2400DDCC35 /* KeychainKeyProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FA37C526D53F2400DDCC35 /* KeychainKeyProviderTests.swift */; };
+		36FA37C826D5459500DDCC35 /* DonorKeyHolderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FA37C726D5459500DDCC35 /* DonorKeyHolderTests.swift */; };
+		36FA37CB26D54A1800DDCC35 /* DataDonationCryptoObjC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FA37CA26D54A1800DDCC35 /* DataDonationCryptoObjC.swift */; };
+		36FA37CE26D54AC200DDCC35 /* DataDonationCryptoObjCError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FA37CD26D54AC200DDCC35 /* DataDonationCryptoObjCError.swift */; };
+		36FA37E626D67FF600DDCC35 /* Data4LifeCrypto in Frameworks */ = {isa = PBXBuildFile; productRef = 36FA37E526D67FF600DDCC35 /* Data4LifeCrypto */; };
+		36FA37E726D67FF600DDCC35 /* libDataDonationCryptoObjC.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3670E95D26CD1E4A00FD5B79 /* libDataDonationCryptoObjC.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
 		3670E97426CD5FC100FD5B79 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3670E93126CBF02700FD5B79 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3670E95C26CD1E4A00FD5B79;
+			remoteInfo = DataDonationCryptoObjC;
+		};
+		36B32EA026D4E5A200D16306 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3670E93126CBF02700FD5B79 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 36B32E9026D4E56200D16306;
+			remoteInfo = DataDonationCryptoHostApp;
+		};
+		36FA37E826D67FF600DDCC35 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 3670E93126CBF02700FD5B79 /* Project object */;
 			proxyType = 1;
@@ -37,12 +68,27 @@
 /* Begin PBXFileReference section */
 		3670E93D26CBF02700FD5B79 /* DataDonationCryptoObjC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DataDonationCryptoObjC.h; sourceTree = "<group>"; };
 		3670E93E26CBF02700FD5B79 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		3670E94826CBF02700FD5B79 /* DataDonationCryptoObjCTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDonationCryptoObjCTests.swift; sourceTree = "<group>"; };
+		3670E94826CBF02700FD5B79 /* KeychainKeyProviderModuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainKeyProviderModuleTests.swift; sourceTree = "<group>"; };
 		3670E94A26CBF02800FD5B79 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		3670E95726CBF11200FD5B79 /* DataDonationCryptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDonationCryptor.swift; sourceTree = "<group>"; };
+		3670E95726CBF11200FD5B79 /* KeychainKeyProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainKeyProvider.swift; sourceTree = "<group>"; };
 		3670E95D26CD1E4A00FD5B79 /* libDataDonationCryptoObjC.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libDataDonationCryptoObjC.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		3670E96826CD286D00FD5B79 /* DataDonationCryptoObjC-BridgingHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "DataDonationCryptoObjC-BridgingHeader.h"; sourceTree = "<group>"; };
 		3670E96E26CD5FC100FD5B79 /* DataDonationCryptoObjCTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DataDonationCryptoObjCTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		36B32E8226CFF10F00D16306 /* DonorKeyHolder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DonorKeyHolder.swift; sourceTree = "<group>"; };
+		36B32E8526D3DCB600D16306 /* DonorKeyHolderMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DonorKeyHolderMock.swift; sourceTree = "<group>"; };
+		36B32E8B26D3EF8A00D16306 /* KeyFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyFactory.swift; sourceTree = "<group>"; };
+		36B32E9126D4E56200D16306 /* DataDonationCryptoHostApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DataDonationCryptoHostApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		36B32E9326D4E56300D16306 /* DataDonationCryptoHostAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDonationCryptoHostAppApp.swift; sourceTree = "<group>"; };
+		36B32E9526D4E56300D16306 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		36B32E9726D4E56500D16306 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		36B32E9A26D4E56500D16306 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		36B32E9C26D4E56500D16306 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		36B32EA326D4EACB00D16306 /* donor-identity.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "donor-identity.json"; sourceTree = "<group>"; };
+		36B32EA826D5140C00D16306 /* Bundle+Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+Tests.swift"; sourceTree = "<group>"; };
+		36FA37C526D53F2400DDCC35 /* KeychainKeyProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainKeyProviderTests.swift; sourceTree = "<group>"; };
+		36FA37C726D5459500DDCC35 /* DonorKeyHolderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DonorKeyHolderTests.swift; sourceTree = "<group>"; };
+		36FA37CA26D54A1800DDCC35 /* DataDonationCryptoObjC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDonationCryptoObjC.swift; sourceTree = "<group>"; };
+		36FA37CD26D54AC200DDCC35 /* DataDonationCryptoObjCError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDonationCryptoObjCError.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -50,7 +96,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3670E96726CD1E6E00FD5B79 /* Data4LifeCrypto in Frameworks */,
+				36FA37EC26D7CA6A00DDCC35 /* Data4LifeCrypto in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -58,7 +104,17 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				36B32E8926D3EF1500D16306 /* Data4LifeCrypto in Frameworks */,
 				3670E97326CD5FC100FD5B79 /* libDataDonationCryptoObjC.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		36B32E8E26D4E56200D16306 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				36FA37E726D67FF600DDCC35 /* libDataDonationCryptoObjC.a in Frameworks */,
+				36FA37E626D67FF600DDCC35 /* Data4LifeCrypto in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -70,6 +126,7 @@
 			children = (
 				3670E93C26CBF02700FD5B79 /* DataDonationCryptoObjC */,
 				3670E94726CBF02700FD5B79 /* DataDonationCryptoObjCTests */,
+				36B32E9226D4E56200D16306 /* DataDonationCryptoHostApp */,
 				3670E93B26CBF02700FD5B79 /* Products */,
 				3670E96526CD1E6E00FD5B79 /* Frameworks */,
 			);
@@ -80,6 +137,7 @@
 			children = (
 				3670E95D26CD1E4A00FD5B79 /* libDataDonationCryptoObjC.a */,
 				3670E96E26CD5FC100FD5B79 /* DataDonationCryptoObjCTests.xctest */,
+				36B32E9126D4E56200D16306 /* DataDonationCryptoHostApp.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -87,10 +145,10 @@
 		3670E93C26CBF02700FD5B79 /* DataDonationCryptoObjC */ = {
 			isa = PBXGroup;
 			children = (
+				36FA37CC26D54A9900DDCC35 /* Sources */,
 				3670E93D26CBF02700FD5B79 /* DataDonationCryptoObjC.h */,
-				3670E93E26CBF02700FD5B79 /* Info.plist */,
-				3670E95726CBF11200FD5B79 /* DataDonationCryptor.swift */,
 				3670E96826CD286D00FD5B79 /* DataDonationCryptoObjC-BridgingHeader.h */,
+				3670E93E26CBF02700FD5B79 /* Info.plist */,
 			);
 			path = DataDonationCryptoObjC;
 			sourceTree = "<group>";
@@ -98,7 +156,12 @@
 		3670E94726CBF02700FD5B79 /* DataDonationCryptoObjCTests */ = {
 			isa = PBXGroup;
 			children = (
-				3670E94826CBF02700FD5B79 /* DataDonationCryptoObjCTests.swift */,
+				36FA37C426D53ED300DDCC35 /* UnitTests */,
+				36FA37C326D53EC700DDCC35 /* ModuleTests */,
+				36B32EA726D513DD00D16306 /* Extension */,
+				36B32EA226D4EAAE00D16306 /* Resources */,
+				36B32E8A26D3EF6A00D16306 /* Factories */,
+				36B32E8726D3DCBA00D16306 /* Mocks */,
 				3670E94A26CBF02800FD5B79 /* Info.plist */,
 			);
 			path = DataDonationCryptoObjCTests;
@@ -109,6 +172,86 @@
 			children = (
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		36B32E8726D3DCBA00D16306 /* Mocks */ = {
+			isa = PBXGroup;
+			children = (
+				36B32E8526D3DCB600D16306 /* DonorKeyHolderMock.swift */,
+			);
+			path = Mocks;
+			sourceTree = "<group>";
+		};
+		36B32E8A26D3EF6A00D16306 /* Factories */ = {
+			isa = PBXGroup;
+			children = (
+				36B32E8B26D3EF8A00D16306 /* KeyFactory.swift */,
+			);
+			path = Factories;
+			sourceTree = "<group>";
+		};
+		36B32E9226D4E56200D16306 /* DataDonationCryptoHostApp */ = {
+			isa = PBXGroup;
+			children = (
+				36B32E9326D4E56300D16306 /* DataDonationCryptoHostAppApp.swift */,
+				36B32E9526D4E56300D16306 /* ContentView.swift */,
+				36B32E9726D4E56500D16306 /* Assets.xcassets */,
+				36B32E9C26D4E56500D16306 /* Info.plist */,
+				36B32E9926D4E56500D16306 /* Preview Content */,
+			);
+			path = DataDonationCryptoHostApp;
+			sourceTree = "<group>";
+		};
+		36B32E9926D4E56500D16306 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				36B32E9A26D4E56500D16306 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		36B32EA226D4EAAE00D16306 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				36B32EA326D4EACB00D16306 /* donor-identity.json */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		36B32EA726D513DD00D16306 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				36B32EA826D5140C00D16306 /* Bundle+Tests.swift */,
+			);
+			path = Extension;
+			sourceTree = "<group>";
+		};
+		36FA37C326D53EC700DDCC35 /* ModuleTests */ = {
+			isa = PBXGroup;
+			children = (
+				3670E94826CBF02700FD5B79 /* KeychainKeyProviderModuleTests.swift */,
+			);
+			path = ModuleTests;
+			sourceTree = "<group>";
+		};
+		36FA37C426D53ED300DDCC35 /* UnitTests */ = {
+			isa = PBXGroup;
+			children = (
+				36FA37C526D53F2400DDCC35 /* KeychainKeyProviderTests.swift */,
+				36FA37C726D5459500DDCC35 /* DonorKeyHolderTests.swift */,
+			);
+			path = UnitTests;
+			sourceTree = "<group>";
+		};
+		36FA37CC26D54A9900DDCC35 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				36FA37CA26D54A1800DDCC35 /* DataDonationCryptoObjC.swift */,
+				36FA37CD26D54AC200DDCC35 /* DataDonationCryptoObjCError.swift */,
+				3670E95726CBF11200FD5B79 /* KeychainKeyProvider.swift */,
+				36B32E8226CFF10F00D16306 /* DonorKeyHolder.swift */,
+			);
+			path = Sources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -129,7 +272,7 @@
 			);
 			name = DataDonationCryptoObjC;
 			packageProductDependencies = (
-				3670E96626CD1E6E00FD5B79 /* Data4LifeCrypto */,
+				36FA37EB26D7CA6A00DDCC35 /* Data4LifeCrypto */,
 			);
 			productName = DataDonationCryptoObjC;
 			productReference = 3670E95D26CD1E4A00FD5B79 /* libDataDonationCryptoObjC.a */;
@@ -147,11 +290,36 @@
 			);
 			dependencies = (
 				3670E97526CD5FC100FD5B79 /* PBXTargetDependency */,
+				36B32EA126D4E5A200D16306 /* PBXTargetDependency */,
 			);
 			name = DataDonationCryptoObjCTests;
+			packageProductDependencies = (
+				36B32E8826D3EF1500D16306 /* Data4LifeCrypto */,
+			);
 			productName = DataDonationCryptoObjCTests;
 			productReference = 3670E96E26CD5FC100FD5B79 /* DataDonationCryptoObjCTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		36B32E9026D4E56200D16306 /* DataDonationCryptoHostApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 36B32E9D26D4E56500D16306 /* Build configuration list for PBXNativeTarget "DataDonationCryptoHostApp" */;
+			buildPhases = (
+				36B32E8D26D4E56200D16306 /* Sources */,
+				36B32E8E26D4E56200D16306 /* Frameworks */,
+				36B32E8F26D4E56200D16306 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				36FA37E926D67FF600DDCC35 /* PBXTargetDependency */,
+			);
+			name = DataDonationCryptoHostApp;
+			packageProductDependencies = (
+				36FA37E526D67FF600DDCC35 /* Data4LifeCrypto */,
+			);
+			productName = DataDonationCryptoHostApp;
+			productReference = 36B32E9126D4E56200D16306 /* DataDonationCryptoHostApp.app */;
+			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
@@ -167,6 +335,10 @@
 					};
 					3670E96D26CD5FC100FD5B79 = {
 						CreatedOnToolsVersion = 12.5;
+						TestTargetID = 36B32E9026D4E56200D16306;
+					};
+					36B32E9026D4E56200D16306 = {
+						CreatedOnToolsVersion = 12.5;
 					};
 				};
 			};
@@ -180,7 +352,7 @@
 			);
 			mainGroup = 3670E93026CBF02700FD5B79;
 			packageReferences = (
-				3670E95426CBF0F900FD5B79 /* XCRemoteSwiftPackageReference "d4l-sdk-ios" */,
+				36FA37EA26D7CA6A00DDCC35 /* XCRemoteSwiftPackageReference "d4l-crypto-ios" */,
 			);
 			productRefGroup = 3670E93B26CBF02700FD5B79 /* Products */;
 			projectDirPath = "";
@@ -188,6 +360,7 @@
 			targets = (
 				3670E95C26CD1E4A00FD5B79 /* DataDonationCryptoObjC */,
 				3670E96D26CD5FC100FD5B79 /* DataDonationCryptoObjCTests */,
+				36B32E9026D4E56200D16306 /* DataDonationCryptoHostApp */,
 			);
 		};
 /* End PBXProject section */
@@ -197,6 +370,16 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				36B32EA426D4EACB00D16306 /* donor-identity.json in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		36B32E8F26D4E56200D16306 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				36B32E9B26D4E56500D16306 /* Preview Assets.xcassets in Resources */,
+				36B32E9826D4E56500D16306 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -228,7 +411,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3670E96426CD1E5D00FD5B79 /* DataDonationCryptor.swift in Sources */,
+				3670E96426CD1E5D00FD5B79 /* KeychainKeyProvider.swift in Sources */,
+				36B32E8326CFF10F00D16306 /* DonorKeyHolder.swift in Sources */,
+				36FA37CE26D54AC200DDCC35 /* DataDonationCryptoObjCError.swift in Sources */,
+				36FA37CB26D54A1800DDCC35 /* DataDonationCryptoObjC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -236,6 +422,21 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				36FA37C626D53F2400DDCC35 /* KeychainKeyProviderTests.swift in Sources */,
+				36B32E8426CFF3AF00D16306 /* KeychainKeyProviderModuleTests.swift in Sources */,
+				36B32EA926D5140C00D16306 /* Bundle+Tests.swift in Sources */,
+				36B32E8626D3DCB600D16306 /* DonorKeyHolderMock.swift in Sources */,
+				36FA37C826D5459500DDCC35 /* DonorKeyHolderTests.swift in Sources */,
+				36B32E8C26D3EF8A00D16306 /* KeyFactory.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		36B32E8D26D4E56200D16306 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				36B32E9626D4E56300D16306 /* ContentView.swift in Sources */,
+				36B32E9426D4E56300D16306 /* DataDonationCryptoHostAppApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -246,6 +447,16 @@
 			isa = PBXTargetDependency;
 			target = 3670E95C26CD1E4A00FD5B79 /* DataDonationCryptoObjC */;
 			targetProxy = 3670E97426CD5FC100FD5B79 /* PBXContainerItemProxy */;
+		};
+		36B32EA126D4E5A200D16306 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 36B32E9026D4E56200D16306 /* DataDonationCryptoHostApp */;
+			targetProxy = 36B32EA026D4E5A200D16306 /* PBXContainerItemProxy */;
+		};
+		36FA37E926D67FF600DDCC35 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3670E95C26CD1E4A00FD5B79 /* DataDonationCryptoObjC */;
+			targetProxy = 36FA37E826D67FF600DDCC35 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -378,6 +589,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = D2QJWMP9SU;
 				INSTALL_PATH = /Library;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				OTHER_LDFLAGS = "-ObjC";
 				PRIVATE_HEADERS_FOLDER_PATH = /Headers;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -386,6 +598,7 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "DataDonationCryptoObjC/DataDonationCryptoObjC-BridgingHeader.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				TVOS_DEPLOYMENT_TARGET = 13.0;
 			};
 			name = Debug;
 		};
@@ -395,6 +608,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = D2QJWMP9SU;
 				INSTALL_PATH = /Library;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				OTHER_LDFLAGS = "-ObjC";
 				PRIVATE_HEADERS_FOLDER_PATH = /Headers;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -403,15 +617,18 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "DataDonationCryptoObjC/DataDonationCryptoObjC-BridgingHeader.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				TVOS_DEPLOYMENT_TARGET = 13.0;
 			};
 			name = Release;
 		};
 		3670E97626CD5FC100FD5B79 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = D2QJWMP9SU;
 				INFOPLIST_FILE = DataDonationCryptoObjCTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -421,15 +638,19 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DataDonationCryptoHostApp.app/DataDonationCryptoHostApp";
+				TVOS_DEPLOYMENT_TARGET = 13.0;
 			};
 			name = Debug;
 		};
 		3670E97726CD5FC100FD5B79 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = D2QJWMP9SU;
 				INFOPLIST_FILE = DataDonationCryptoObjCTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -439,6 +660,54 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DataDonationCryptoHostApp.app/DataDonationCryptoHostApp";
+				TVOS_DEPLOYMENT_TARGET = 13.0;
+			};
+			name = Release;
+		};
+		36B32E9E26D4E56500D16306 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_ASSET_PATHS = "\"DataDonationCryptoHostApp/Preview Content\"";
+				DEVELOPMENT_TEAM = D2QJWMP9SU;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = DataDonationCryptoHostApp/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = de.gesundheitscloud.DataDonationCryptoHostApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TVOS_DEPLOYMENT_TARGET = 13.0;
+			};
+			name = Debug;
+		};
+		36B32E9F26D4E56500D16306 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_ASSET_PATHS = "\"DataDonationCryptoHostApp/Preview Content\"";
+				DEVELOPMENT_TEAM = D2QJWMP9SU;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = DataDonationCryptoHostApp/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = de.gesundheitscloud.DataDonationCryptoHostApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TVOS_DEPLOYMENT_TARGET = 13.0;
 			};
 			name = Release;
 		};
@@ -472,21 +741,40 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		36B32E9D26D4E56500D16306 /* Build configuration list for PBXNativeTarget "DataDonationCryptoHostApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				36B32E9E26D4E56500D16306 /* Debug */,
+				36B32E9F26D4E56500D16306 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		3670E95426CBF0F900FD5B79 /* XCRemoteSwiftPackageReference "d4l-sdk-ios" */ = {
+		36FA37EA26D7CA6A00DDCC35 /* XCRemoteSwiftPackageReference "d4l-crypto-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/d4l-data4life/d4l-sdk-ios.git";
+			repositoryURL = "https://github.com/d4l-data4life/d4l-crypto-ios.git";
 			requirement = {
 				kind = upToNextMinorVersion;
-				minimumVersion = 1.15.0;
+				minimumVersion = 1.6.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		3670E96626CD1E6E00FD5B79 /* Data4LifeCrypto */ = {
+		36FA37EB26D7CA6A00DDCC35 /* Data4LifeCrypto */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 36FA37EA26D7CA6A00DDCC35 /* XCRemoteSwiftPackageReference "d4l-crypto-ios" */;
+			productName = Data4LifeCrypto;
+		};
+		36B32E8826D3EF1500D16306 /* Data4LifeCrypto */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3670E95426CBF0F900FD5B79 /* XCRemoteSwiftPackageReference "d4l-sdk-ios" */;
+			productName = Data4LifeCrypto;
+		};
+		36FA37E526D67FF600DDCC35 /* Data4LifeCrypto */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 3670E95426CBF0F900FD5B79 /* XCRemoteSwiftPackageReference "d4l-sdk-ios" */;
 			productName = Data4LifeCrypto;
