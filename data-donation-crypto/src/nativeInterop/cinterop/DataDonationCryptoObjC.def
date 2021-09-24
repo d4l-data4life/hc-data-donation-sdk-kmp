@@ -4,10 +4,6 @@ language = Objective-C
 headers = include/DataDonationCryptoObjC/DataDonationCryptoObjC-Swift.h
 headerFilter = include/DataDonationCryptoObjC/*
 
-staticLibraries = libDataDonationCryptoObjC.a
-libraryPaths.ios_x64 = DataDonationCryptoObjC/build/Build/Products/Release-iphonesimulator
-libraryPaths.ios_arm64 = DataDonationCryptoObjC/build/Build/Products/Release-iphoneos
-
 linkerOpts = -L/usr/lib/swift
 linkerOpts.ios_x64 = -ios_simulator_version_min 13.0.0 -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator/
 linkerOpts.ios_arm64 = -iphoneos_version_min 13.0.0 -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/

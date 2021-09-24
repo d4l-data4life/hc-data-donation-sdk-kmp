@@ -37,7 +37,7 @@ object Version {
     const val kotlinCoroutines = "1.5.1-native-mt"
 
     // https://github.com/touchlab/Stately
-    const val stately = "1.1.6"
+    const val stately = "1.1.7"
 
     // https://github.com/Kotlin/kotlinx.serialization
     const val kotlinSerialization = "1.2.2"
