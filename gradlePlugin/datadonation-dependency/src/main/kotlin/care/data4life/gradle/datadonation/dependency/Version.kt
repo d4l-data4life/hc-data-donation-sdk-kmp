@@ -34,78 +34,83 @@ object Version {
     const val kotlin = "1.5.21"
 
     // https://github.com/Kotlin/kotlinx.coroutines
-    const val kotlinCoroutines = "1.4.3-native-mt"
+    const val kotlinCoroutines = "1.5.1-native-mt"
 
     // https://github.com/touchlab/Stately
     const val stately = "1.1.6"
 
     // https://github.com/Kotlin/kotlinx.serialization
-    const val kotlinSerialization = "1.0.1"
+    const val kotlinSerialization = "1.2.2"
 
     // https://github.com/Kotlin/kotlinx-datetime
-    const val dateTime = "0.1.1"
+    const val dateTime = "0.2.1"
 
     // https://developer.android.com/studio/write/java8-support
-    const val androidDesugar = "1.0.4"
+    const val androidDesugar = "1.0.9"
 
     // https://github.com/JakeWharton/ThreeTenABP/
-    const val threeTenABP = "1.1.1"
+    const val threeTenABP = "1.3.1"
 
     // AndroidX
-    const val androidX = "1.1.0"
-    const val androidXKtx = "1.2.0"
-    const val androidXAppCompat = "1.1.0"
-    const val androidXBrowser = "1.2.0"
+    object AndroidX {
+        /**
+         * [AndroidX](https://developer.android.com/jetpack/androidx)
+         */
+        const val core = "1.1.0"
+        const val ktx = "1.6.0"
+        const val appCompat = "1.3.1"
+        const val browser = "1.2.0"
 
-    const val androidXConstraintLayout = "2.0.0-beta4"
+        const val constraintLayout = "2.0.1"
+    }
 
     const val androidXLifecycle = "2.1.0"
     const val androidXNavigation = "2.2.0"
 
-    const val androidXTest = "1.1.1"
-    const val androidXEspresso = "3.2.0"
+    const val androidXTest = "1.4.1"
+    const val androidXEspresso = "3.4.0"
     const val androidXUiAutomator = "2.2.0"
 
     // Test
     const val robolectric = "4.6.1"
 
     // Material
-    const val material = "1.1.0-rc01"
+    const val material = "1.4.0"
 
     // Injection
     // https://github.com/InsertKoinIO/koin
-    const val koin = "3.0.1"
+    const val koin = "3.0.2"
 
     // http://www.slf4j.org/
     const val slf4j = "1.7.31"
 
     // Network
     // https://ktor.io/
-    const val ktor = "1.5.4"
+    const val ktor = "1.6.2"
 
     // https://github.com/benasher44/uuid
-    const val uuid = "0.2.3"
+    const val uuid = "0.3.1"
 
     // Encryption
     const val bouncyCastle = "1.64"
 
     // https://github.com/d4l-data4life/hc-fhir-sdk-kmp
-    const val fhir = "0.2.0"
+    const val fhir = "0.2.0-bump-updates-SNAPSHOT"
 
     // https://github.com/d4l-data4life/hc-util-sdk-kmp
-    const val sdkUtil = "1.10.0"
+    const val sdkUtil = "1.11.0"
 
     // https://github.com/d4l-data4life/hc-objc-util-sdk-kmp
-    const val sdkObjcUtil = "0.1.0"
+    const val sdkObjcUtil = "0.2.0"
 
     // https://github.com/d4l-data4life/hc-util-coroutine-sdk-kmp
-    const val sdkCoroutineUtil = "0.1.0"
+    const val sdkCoroutineUtil = "0.1.0-SNAPSHOT"
 
     // https://github.com/d4l-data4life/hc-result-sdk-kmp
-    const val sdkResult = "0.2.0"
+    const val sdkResult = "0.3.0"
 
     // https://github.com/d4l-data4life/hc-test-util-sdk-kmp
-    const val sdkTestUtil = "0.1.0"
+    const val sdkTestUtil = "0.3.0"
 
     // Junit Test
     const val testJUnit = "4.13.2"

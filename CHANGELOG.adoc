@@ -46,6 +46,28 @@ toc::[]
 
 === Bumped
 
+* Gradle 6.9 -> 7.2
+* *_BREAKING_* Kotlin 1.4.32 -> 1.5.21
+* *_BREAKING_* Android Gradle Plugin 4.2.2 -> 7.0.2
+* Koin 3.0.1 -> 3.0.2
+* *_BREAKING_* Ktor 1.5.4 -> 1.6.2
+* Kotlin Serialization 1.0.1 -> 1.2.2
+* Kotlin date-time 0.1.1 -> 0.2.1
+* uuid 0.2.3 -> 0.3.1
+* HC Util SDK 1.10.0 -> 1.11.0
+* HC Result SDK 0.2.0 -> 0.3.0
+* HC Coroutine Util SDK 0.1.0 -> 0.2.0
+* HC Objc SDK 0.1.0 -> 0.2.0
+* HC Test Util SDK 0.2.0 -> 0.3.0
+* HC FHIR SDK KMP 0.2.0 -> 0.3.0
+* Android Material Components 1.1.0-rc01 -> 1.4.0
+* Android Desugar 1.0.4 -> 1.0.9
+* Android XKtx 1.3.1 -> 1.6.0
+* Android AppCompat 1.2.0 -> 1.3.1
+* Android Test 1.1.1 -> 1.4.0
+* Android Espresso 3.2.0 -> 3.4.0
+* ThreeTenABP 1.1.1 -> 1.3.1
+
 === Deprecated
 
 === Migration
