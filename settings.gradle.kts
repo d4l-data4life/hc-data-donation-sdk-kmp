@@ -19,9 +19,9 @@ pluginManagement {
         gradlePluginPortal()
         google()
     }
-
-    includeBuild("gradlePlugin/datadonation-dependency")
 }
+
+includeBuild("gradlePlugin/datadonation-dependency")
 
 plugins {
     id("com.gradle.enterprise") version("3.4.1")
