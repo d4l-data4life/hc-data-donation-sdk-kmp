@@ -31,7 +31,7 @@ object Version {
 
     // Kotlin
     // https://github.com/JetBrains/kotlin
-    const val kotlin = "1.4.32"
+    const val kotlin = "1.5.21"
 
     // https://github.com/Kotlin/kotlinx.coroutines
     const val kotlinCoroutines = "1.4.3-native-mt"
