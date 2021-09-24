@@ -26,7 +26,7 @@ object Version {
 
         // Android
         // https://developer.android.com/studio
-        const val android = "4.2.2"
+        const val android = "7.0.2"
     }
 
     // Kotlin
