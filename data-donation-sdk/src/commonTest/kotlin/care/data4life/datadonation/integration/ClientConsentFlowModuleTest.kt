@@ -335,8 +335,8 @@ class ClientConsentFlowModuleTest {
                     actual = request.headers,
                     expected = headersOf(
                         "Authorization" to listOf("Bearer ${UserSessionTokenProvider.sessionToken}"),
+                        "Accept-Charset" to listOf("UTF-8"),
                         "Accept" to listOf("application/json"),
-                        "Accept-Charset" to listOf("UTF-8")
                     )
                 )
 
