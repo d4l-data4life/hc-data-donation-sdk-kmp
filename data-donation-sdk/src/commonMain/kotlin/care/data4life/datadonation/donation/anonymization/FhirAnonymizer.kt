@@ -48,8 +48,8 @@ internal class FhirAnonymizer(
     ): ResearchSubject {
         val rule = blurResolver.resolveBlurRule(
             fhirResource = null,
-            programRuleGlobal = programConfiguration.anonymization?.globalBlur,
-            programFhirResourceConfigurations = emptyList()
+            programRule = programConfiguration.programConfiguration?.programBlur,
+            fhirResourceConfigurations = emptyList()
         )
 
         return researchSubjectAnonymizer.anonymize(

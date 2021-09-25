@@ -171,9 +171,9 @@ class FhirAnonymizerTest {
         val blurResolver = BlurRuleResolverStub()
 
         val programConfig = programConfig.copy(
-            fhirResourceConfigurations = listOf(ProgramFhirResourceConfiguration(url = "123")),
-            anonymization = ProgramAnonymization(
-                globalBlur = ProgramAnonymizationGlobalBlur(targetTimeZone = "abc")
+            fhirResourceConfigurations = listOf(FhirResourceConfiguration(url = "123")),
+            programConfiguration = ProgramConfiguration(
+                programBlur = ProgramBlur(targetTimeZone = "abc")
             )
         )
 
@@ -182,13 +182,13 @@ class FhirAnonymizerTest {
         )
 
         var capturedFhirResource: FhirResource? = null
-        var capturedProgramAnonymizationGlobalBlur: ProgramAnonymizationGlobalBlur? = null
-        var capturedProgramFhirResourceConfigurations: List<ProgramFhirResourceConfiguration>? = null
+        var capturedProgramBlur: ProgramBlur? = null
+        var capturedFhirResourceConfigurations: List<FhirResourceConfiguration>? = null
 
         blurResolver.whenResolveBlurRule = { delegatedFhirResource, delegatedProgramAnonymizationBlur, delegatedProgramResources ->
             capturedFhirResource = delegatedFhirResource
-            capturedProgramAnonymizationGlobalBlur = delegatedProgramAnonymizationBlur
-            capturedProgramFhirResourceConfigurations = delegatedProgramResources
+            capturedProgramBlur = delegatedProgramAnonymizationBlur
+            capturedFhirResourceConfigurations = delegatedProgramResources
 
             rule
         }
@@ -220,11 +220,11 @@ class FhirAnonymizerTest {
 
         assertNull(capturedFhirResource)
         assertSame(
-            actual = capturedProgramAnonymizationGlobalBlur,
-            expected = programConfig.anonymization?.globalBlur
+            actual = capturedProgramBlur,
+            expected = programConfig.programConfiguration?.programBlur
         )
         assertEquals(
-            actual = capturedProgramFhirResourceConfigurations,
+            actual = capturedFhirResourceConfigurations,
             expected = emptyList()
         )
 

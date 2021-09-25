@@ -22,7 +22,7 @@ import care.data4life.hl7.fhir.stu3.model.Period
 import care.data4life.hl7.fhir.stu3.model.ResearchSubject
 
 internal class ResearchSubjectAnonymizer(
-    private val dateTimeSmearer: AnonymizationContract.DateTimeSmearer
+    private val dateTimeConcealer: AnonymizationContract.DateTimeConcealer
 ) : AnonymizationContract.ResearchSubjectAnonymizer {
     private fun blurPeriod(
         period: Period,
@@ -30,14 +30,14 @@ internal class ResearchSubjectAnonymizer(
     ): Period {
         return period.copy(
             start = period.start?.copy(
-                value = dateTimeSmearer.blur(
+                value = dateTimeConcealer.blur(
                     period.start?.value!!,
                     rule.targetTimeZone,
                     rule.researchSubject!!
                 )
             ),
             end = period.end?.copy(
-                value = dateTimeSmearer.blur(
+                value = dateTimeConcealer.blur(
                     period.end?.value!!,
                     rule.targetTimeZone,
                     rule.researchSubject!!
@@ -46,7 +46,7 @@ internal class ResearchSubjectAnonymizer(
         )
     }
 
-    private fun periodIsBlurable(
+    private fun periodIsConcealable(
         researchSubject: ResearchSubject,
         rule: BlurRule?
     ): Boolean {
@@ -58,7 +58,7 @@ internal class ResearchSubjectAnonymizer(
         researchSubject: ResearchSubject,
         rule: BlurRule?
     ): ResearchSubject {
-        return if (periodIsBlurable(researchSubject, rule)) {
+        return if (periodIsConcealable(researchSubject, rule)) {
             researchSubject.copy(
                 period = blurPeriod(
                     researchSubject.period!!,
