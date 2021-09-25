@@ -28,6 +28,10 @@ jobs:
         run: ./gradlew versionInfo
       - name: Build project
         run: ./gradlew build
+      - name: Reset iOS Simulators
+        run: xcrun simctl erase all
+      - name: Run Swift tests
+        run: xcodebuild -project DataDonationCryptoObjC/DataDonationCryptoObjC.xcodeproj -scheme DataDonationCryptoHostApp -sdk iphonesimulator -destination "name=iPhone 12" -derivedDataPath build/DataDonationCryptoObjC test
       - name: Publish to GitHub Packages
         run: ./gradlew publishAllPublicationToGitHubPackagesRepository
       - name: Publish Release to Maven Repo

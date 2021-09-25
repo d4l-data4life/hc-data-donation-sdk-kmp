@@ -24,7 +24,7 @@ import kotlin.test.assertTrue
 
 class UserConsentErrorHandlerTest {
     @Test
-    fun `It fulfils ConsentErrorHandler`() {
+    fun `It fulfils UserConsentErrorHandler`() {
         val switch: Any = UserConsentErrorHandler
 
         assertTrue(switch is UserConsentContract.ApiService.ErrorHandler)

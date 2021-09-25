@@ -9,7 +9,6 @@ gen/
 # IDEA/Android Studio ignores
 *iml
 .idea/*
-.idea/compiler.xml
 
 # IDEA/Android Studio includes
 !.idea/vcs.xml
@@ -26,6 +25,7 @@ swift/Data4LifeDataDonationSDK
 
 # generated
 data-donation-sdk/src-gen/commonTest/kotlin/care/data4life/datadonation/test/config/TestConfig.kt
+data-donation-crypto/src-gen/commonTest/kotlin/care/data4life/datadonation/test/config/TestConfig.kt
 
 # Others
 captures/

@@ -16,11 +16,12 @@
 
 package care.data4life.datadonation.donation.anonymization
 
+import care.data4life.datadonation.donation.anonymization.model.BlurModelContract
 import care.data4life.datadonation.donation.anonymization.model.BlurRule
-import care.data4life.datadonation.donation.program.model.ProgramAnonymization
-import care.data4life.datadonation.donation.program.model.ProgramAnonymizationGlobalBlur
+import care.data4life.datadonation.donation.program.model.FhirResourceConfiguration
+import care.data4life.datadonation.donation.program.model.ProgramBlur
+import care.data4life.datadonation.donation.program.model.ProgramConfiguration
 import care.data4life.datadonation.donation.program.model.ProgramDonationConfiguration
-import care.data4life.datadonation.donation.program.model.ProgramFhirResourceConfiguration
 import care.data4life.datadonation.donation.program.model.ProgramType
 import care.data4life.datadonation.mock.stub.donation.anonymization.BlurRuleResolverStub
 import care.data4life.datadonation.mock.stub.donation.anonymization.QuestionnaireResponseAnonymizerStub
@@ -47,14 +48,14 @@ class FhirAnonymizerTest {
     )
 
     @Test
-    fun `It fulfils FhirDateTimeSmearer`() {
-        val smearer: Any = FhirAnonymizer(
+    fun `It fulfils FhirAnonymizer`() {
+        val anonymizer: Any = FhirAnonymizer(
             BlurRuleResolverStub(),
             QuestionnaireResponseAnonymizerStub(),
             ResearchSubjectAnonymizerStub()
         )
 
-        assertTrue(smearer is AnonymizationContract.FhirAnonymizer)
+        assertTrue(anonymizer is AnonymizationContract.FhirAnonymizer)
     }
 
     @Test
@@ -89,9 +90,9 @@ class FhirAnonymizerTest {
         val blurResolver = BlurRuleResolverStub()
 
         val programConfig = programConfig.copy(
-            fhirResourceConfigurations = listOf(ProgramFhirResourceConfiguration(url = "123")),
-            anonymization = ProgramAnonymization(
-                globalBlur = ProgramAnonymizationGlobalBlur(targetTimeZone = "abc")
+            fhirResourceConfigurations = listOf(FhirResourceConfiguration(url = "123")),
+            programConfiguration = ProgramConfiguration(
+                programBlur = ProgramBlur(targetTimeZone = "abc")
             )
         )
 
@@ -100,13 +101,13 @@ class FhirAnonymizerTest {
         )
 
         var capturedFhirResource: FhirResource? = null
-        var capturedProgramAnonymizationGlobalBlur: ProgramAnonymizationGlobalBlur? = null
-        var capturedProgramFhirResourceConfigurations: List<ProgramFhirResourceConfiguration>? = null
+        var capturedProgramBlur: ProgramBlur? = null
+        var capturedFhirResourceConfigurations: List<FhirResourceConfiguration>? = null
 
         blurResolver.whenResolveBlurRule = { delegatedFhirResource, delegatedProgramAnonymizationBlur, delegatedProgramResources ->
             capturedFhirResource = delegatedFhirResource
-            capturedProgramAnonymizationGlobalBlur = delegatedProgramAnonymizationBlur
-            capturedProgramFhirResourceConfigurations = delegatedProgramResources
+            capturedProgramBlur = delegatedProgramAnonymizationBlur
+            capturedFhirResourceConfigurations = delegatedProgramResources
 
             rule
         }
@@ -115,7 +116,7 @@ class FhirAnonymizerTest {
 
         var capturedQuestionnaireResponse: QuestionnaireResponse? = null
         var capturedProgramType: ProgramType? = null
-        var capturedBlurRule: BlurRule? = null
+        var capturedBlurRule: BlurModelContract.QuestionnaireResponseBlur? = null
 
         questionnaireResponseAnonymizer.whenAnonymize = { delegatedQuestionnaireResponse, delegatedProgramType, delegatedRule ->
             capturedQuestionnaireResponse = delegatedQuestionnaireResponse
@@ -143,11 +144,11 @@ class FhirAnonymizerTest {
             expected = resource
         )
         assertSame(
-            actual = capturedProgramAnonymizationGlobalBlur,
-            expected = programConfig.anonymization?.globalBlur
+            actual = capturedProgramBlur,
+            expected = programConfig.programConfiguration?.programBlur
         )
         assertSame(
-            actual = capturedProgramFhirResourceConfigurations,
+            actual = capturedFhirResourceConfigurations,
             expected = programConfig.fhirResourceConfigurations
         )
 
@@ -179,9 +180,9 @@ class FhirAnonymizerTest {
         val blurResolver = BlurRuleResolverStub()
 
         val programConfig = programConfig.copy(
-            fhirResourceConfigurations = listOf(ProgramFhirResourceConfiguration(url = "123")),
-            anonymization = ProgramAnonymization(
-                globalBlur = ProgramAnonymizationGlobalBlur(targetTimeZone = "abc")
+            fhirResourceConfigurations = listOf(FhirResourceConfiguration(url = "123")),
+            programConfiguration = ProgramConfiguration(
+                programBlur = ProgramBlur(targetTimeZone = "abc")
             )
         )
 
@@ -190,13 +191,13 @@ class FhirAnonymizerTest {
         )
 
         var capturedFhirResource: FhirResource? = null
-        var capturedProgramAnonymizationGlobalBlur: ProgramAnonymizationGlobalBlur? = null
-        var capturedProgramFhirResourceConfigurations: List<ProgramFhirResourceConfiguration>? = null
+        var capturedProgramBlur: ProgramBlur? = null
+        var capturedFhirResourceConfigurations: List<FhirResourceConfiguration>? = null
 
         blurResolver.whenResolveBlurRule = { delegatedFhirResource, delegatedProgramAnonymizationBlur, delegatedProgramResources ->
             capturedFhirResource = delegatedFhirResource
-            capturedProgramAnonymizationGlobalBlur = delegatedProgramAnonymizationBlur
-            capturedProgramFhirResourceConfigurations = delegatedProgramResources
+            capturedProgramBlur = delegatedProgramAnonymizationBlur
+            capturedFhirResourceConfigurations = delegatedProgramResources
 
             rule
         }
@@ -204,7 +205,7 @@ class FhirAnonymizerTest {
         val researchSubjectAnonymizer = ResearchSubjectAnonymizerStub()
 
         var capturedResearchSubject: ResearchSubject? = null
-        var capturedBlurRule: BlurRule? = null
+        var capturedBlurRule: BlurModelContract.ResearchSubjectBlur? = null
 
         researchSubjectAnonymizer.whenAnonymize = { delegatedResearchSubject, delegatedRule ->
             capturedResearchSubject = delegatedResearchSubject
@@ -228,11 +229,11 @@ class FhirAnonymizerTest {
 
         assertNull(capturedFhirResource)
         assertSame(
-            actual = capturedProgramAnonymizationGlobalBlur,
-            expected = programConfig.anonymization?.globalBlur
+            actual = capturedProgramBlur,
+            expected = programConfig.programConfiguration?.programBlur
         )
         assertEquals(
-            actual = capturedProgramFhirResourceConfigurations,
+            actual = capturedFhirResourceConfigurations,
             expected = emptyList()
         )
 

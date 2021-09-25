@@ -17,17 +17,16 @@
 package care.data4life.datadonation.mock.stub
 
 import care.data4life.datadonation.DataDonationSDK
+import care.data4life.datadonation.ResultPipe
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
+import care.data4life.datadonation.session.SessionToken
 
 internal class UserSessionTokenProviderStub : DataDonationSDK.UserSessionTokenProvider, MockContract.Stub {
-    var whenGetUserSessionToken: ((((sessionToken: String) -> Unit), ((error: Exception) -> Unit)) -> Unit)? = null
+    var whenGetUserSessionToken: ((pipe: ResultPipe<SessionToken, Throwable>) -> Unit)? = null
 
-    override fun getUserSessionToken(
-        onSuccess: (sessionToken: String) -> Unit,
-        onError: (error: Exception) -> Unit
-    ) {
-        whenGetUserSessionToken?.invoke(onSuccess, onError) ?: throw MockException()
+    override fun getUserSessionToken(pipe: ResultPipe<SessionToken, Throwable>) {
+        return whenGetUserSessionToken?.invoke(pipe) ?: throw MockException()
     }
 
     override fun clear() {

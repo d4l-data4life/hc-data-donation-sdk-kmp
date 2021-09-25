@@ -20,7 +20,7 @@ import care.data4life.datadonation.donation.anonymization.model.BlurRule
 import care.data4life.datadonation.donation.program.model.BlurFunction
 import care.data4life.datadonation.donation.program.model.ProgramType
 import care.data4life.datadonation.donation.program.model.QuestionnaireResponseItemBlur
-import care.data4life.datadonation.mock.stub.donation.anonymization.DateTimeSmearerStub
+import care.data4life.datadonation.mock.stub.donation.anonymization.DateTimeConcealerStub
 import care.data4life.datadonation.mock.stub.donation.anonymization.RedactorStub
 import care.data4life.hl7.fhir.common.datetime.XsDate
 import care.data4life.hl7.fhir.common.datetime.XsDateTime
@@ -47,7 +47,7 @@ class QuestionnaireResponseAnonymizerTest {
     @Test
     fun `It fulfils QuestionnaireResponseAnonymizer`() {
         val anonymizer: Any = QuestionnaireResponseAnonymizer(
-            DateTimeSmearerStub(),
+            DateTimeConcealerStub(),
             RedactorStub()
         )
 
@@ -70,7 +70,7 @@ class QuestionnaireResponseAnonymizerTest {
 
         // When
         val result = QuestionnaireResponseAnonymizer(
-            DateTimeSmearerStub(),
+            DateTimeConcealerStub(),
             RedactorStub()
         ).anonymize(
             resource,
@@ -103,7 +103,7 @@ class QuestionnaireResponseAnonymizerTest {
 
         // When
         val result = QuestionnaireResponseAnonymizer(
-            DateTimeSmearerStub(),
+            DateTimeConcealerStub(),
             RedactorStub()
         ).anonymize(
             resource,
@@ -136,7 +136,7 @@ class QuestionnaireResponseAnonymizerTest {
 
         // When
         val result = QuestionnaireResponseAnonymizer(
-            DateTimeSmearerStub(),
+            DateTimeConcealerStub(),
             RedactorStub()
         ).anonymize(
             resource,
@@ -166,7 +166,7 @@ class QuestionnaireResponseAnonymizerTest {
             )
         )
 
-        val dateTimeSmearer = DateTimeSmearerStub()
+        val dateTimeSmearer = DateTimeConcealerStub()
 
         val rule = BlurRule(
             targetTimeZone = "somewhere",
@@ -232,7 +232,7 @@ class QuestionnaireResponseAnonymizerTest {
 
         // When
         val result = QuestionnaireResponseAnonymizer(
-            DateTimeSmearerStub(),
+            DateTimeConcealerStub(),
             RedactorStub()
         ).anonymize(
             resource,
@@ -257,7 +257,7 @@ class QuestionnaireResponseAnonymizerTest {
 
         // When
         val result = QuestionnaireResponseAnonymizer(
-            DateTimeSmearerStub(),
+            DateTimeConcealerStub(),
             RedactorStub()
         ).anonymize(
             resource,
@@ -286,7 +286,7 @@ class QuestionnaireResponseAnonymizerTest {
 
         // When
         val result = QuestionnaireResponseAnonymizer(
-            DateTimeSmearerStub(),
+            DateTimeConcealerStub(),
             RedactorStub()
         ).anonymize(
             resource,
@@ -315,7 +315,7 @@ class QuestionnaireResponseAnonymizerTest {
 
         // When
         val result = QuestionnaireResponseAnonymizer(
-            DateTimeSmearerStub(),
+            DateTimeConcealerStub(),
             RedactorStub()
         ).anonymize(
             resource,
@@ -344,7 +344,7 @@ class QuestionnaireResponseAnonymizerTest {
 
         // When
         val result = QuestionnaireResponseAnonymizer(
-            DateTimeSmearerStub(),
+            DateTimeConcealerStub(),
             RedactorStub()
         ).anonymize(
             resource,
@@ -382,7 +382,7 @@ class QuestionnaireResponseAnonymizerTest {
 
         // When
         val result = QuestionnaireResponseAnonymizer(
-            DateTimeSmearerStub(),
+            DateTimeConcealerStub(),
             RedactorStub()
         ).anonymize(
             resource,
@@ -414,7 +414,7 @@ class QuestionnaireResponseAnonymizerTest {
 
         // When
         val result = QuestionnaireResponseAnonymizer(
-            DateTimeSmearerStub(),
+            DateTimeConcealerStub(),
             RedactorStub()
         ).anonymize(
             resource,
@@ -443,7 +443,7 @@ class QuestionnaireResponseAnonymizerTest {
 
         // When
         val result = QuestionnaireResponseAnonymizer(
-            DateTimeSmearerStub(),
+            DateTimeConcealerStub(),
             RedactorStub()
         ).anonymize(
             resource,
@@ -476,7 +476,7 @@ class QuestionnaireResponseAnonymizerTest {
 
         // When
         val result = QuestionnaireResponseAnonymizer(
-            DateTimeSmearerStub(),
+            DateTimeConcealerStub(),
             redactor
         ).anonymize(
             resource,
@@ -509,7 +509,7 @@ class QuestionnaireResponseAnonymizerTest {
 
         // When
         val result = QuestionnaireResponseAnonymizer(
-            DateTimeSmearerStub(),
+            DateTimeConcealerStub(),
             redactor
         ).anonymize(
             resource,
@@ -546,7 +546,7 @@ class QuestionnaireResponseAnonymizerTest {
 
         // When
         val result = QuestionnaireResponseAnonymizer(
-            DateTimeSmearerStub(),
+            DateTimeConcealerStub(),
             redactor
         ).anonymize(
             resource,
@@ -583,7 +583,7 @@ class QuestionnaireResponseAnonymizerTest {
 
         // When
         val result = QuestionnaireResponseAnonymizer(
-            DateTimeSmearerStub(),
+            DateTimeConcealerStub(),
             redactor
         ).anonymize(
             resource,
@@ -630,7 +630,7 @@ class QuestionnaireResponseAnonymizerTest {
 
         // When
         val result = QuestionnaireResponseAnonymizer(
-            DateTimeSmearerStub(),
+            DateTimeConcealerStub(),
             redactor
         ).anonymize(
             resource,
@@ -681,7 +681,7 @@ class QuestionnaireResponseAnonymizerTest {
 
         // When
         val result = QuestionnaireResponseAnonymizer(
-            DateTimeSmearerStub(),
+            DateTimeConcealerStub(),
             redactor
         ).anonymize(
             resource,
@@ -725,7 +725,7 @@ class QuestionnaireResponseAnonymizerTest {
         redactor.whenRedact = { it }
 
         var wasCalled = false
-        val smearer = DateTimeSmearerStub()
+        val smearer = DateTimeConcealerStub()
 
         smearer.whenBlur = { _, _, _ ->
             wasCalled = true
@@ -735,7 +735,7 @@ class QuestionnaireResponseAnonymizerTest {
 
         val rule = BlurRule(
             targetTimeZone = "somewhere",
-            questionnaireResponseItemBlurMapping = listOf(
+            questionnaireResponseItems = listOf(
                 QuestionnaireResponseItemBlur(
                     linkId = "abc",
                     function = BlurFunction.END_OF_WEEK
@@ -745,7 +745,7 @@ class QuestionnaireResponseAnonymizerTest {
 
         // When
         val result = QuestionnaireResponseAnonymizer(
-            DateTimeSmearerStub(),
+            DateTimeConcealerStub(),
             redactor
         ).anonymize(
             resource,
@@ -786,7 +786,7 @@ class QuestionnaireResponseAnonymizerTest {
         redactor.whenRedact = { it }
 
         var wasCalled = false
-        val smearer = DateTimeSmearerStub()
+        val smearer = DateTimeConcealerStub()
 
         smearer.whenBlur = { _, _, _ ->
             wasCalled = true
@@ -796,7 +796,7 @@ class QuestionnaireResponseAnonymizerTest {
 
         // When
         val result = QuestionnaireResponseAnonymizer(
-            DateTimeSmearerStub(),
+            DateTimeConcealerStub(),
             redactor
         ).anonymize(resource, ProgramType.STUDY, null)
 
@@ -837,7 +837,7 @@ class QuestionnaireResponseAnonymizerTest {
         var capturedTargetZone: TargetTimeZone? = null
         var capturedBlurFunction: BlurFunction? = null
 
-        val smearer = DateTimeSmearerStub()
+        val smearer = DateTimeConcealerStub()
 
         smearer.whenBlur = { delegatedXsDateTime, delegatedTargetZone, delegatedBlurFunction ->
             capturedXsDateTime = delegatedXsDateTime
@@ -849,7 +849,7 @@ class QuestionnaireResponseAnonymizerTest {
 
         val rule = BlurRule(
             targetTimeZone = "somewhere",
-            questionnaireResponseItemBlurMapping = listOf(
+            questionnaireResponseItems = listOf(
                 QuestionnaireResponseItemBlur(
                     linkId = "match",
                     function = BlurFunction.START_OF_DAY
@@ -889,7 +889,7 @@ class QuestionnaireResponseAnonymizerTest {
         )
         assertSame(
             actual = capturedBlurFunction,
-            expected = rule.questionnaireResponseItemBlurMapping.first().function
+            expected = rule.questionnaireResponseItems.first().function
         )
     }
 }

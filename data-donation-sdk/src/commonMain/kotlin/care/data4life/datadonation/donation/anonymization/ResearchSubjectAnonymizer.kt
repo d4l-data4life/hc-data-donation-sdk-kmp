@@ -16,28 +16,28 @@
 
 package care.data4life.datadonation.donation.anonymization
 
-import care.data4life.datadonation.donation.anonymization.model.BlurRule
+import care.data4life.datadonation.donation.anonymization.model.BlurModelContract.ResearchSubjectBlur
 import care.data4life.datadonation.donation.program.model.BlurFunction
 import care.data4life.hl7.fhir.stu3.model.Period
 import care.data4life.hl7.fhir.stu3.model.ResearchSubject
 
 internal class ResearchSubjectAnonymizer(
-    private val dateTimeSmearer: AnonymizationContract.DateTimeSmearer
+    private val dateTimeConcealer: AnonymizationContract.DateTimeConcealer
 ) : AnonymizationContract.ResearchSubjectAnonymizer {
     private fun blurPeriod(
         period: Period,
-        rule: BlurRule
+        rule: ResearchSubjectBlur
     ): Period {
         return period.copy(
             start = period.start?.copy(
-                value = dateTimeSmearer.blur(
+                value = dateTimeConcealer.blur(
                     period.start?.value!!,
                     rule.targetTimeZone,
                     rule.researchSubject!!
                 )
             ),
             end = period.end?.copy(
-                value = dateTimeSmearer.blur(
+                value = dateTimeConcealer.blur(
                     period.end?.value!!,
                     rule.targetTimeZone,
                     rule.researchSubject!!
@@ -46,9 +46,9 @@ internal class ResearchSubjectAnonymizer(
         )
     }
 
-    private fun periodIsBlurable(
+    private fun isConcealablePeriod(
         researchSubject: ResearchSubject,
-        rule: BlurRule?
+        rule: ResearchSubjectBlur?
     ): Boolean {
         return rule?.researchSubject is BlurFunction &&
             researchSubject.period is Period
@@ -56,9 +56,9 @@ internal class ResearchSubjectAnonymizer(
 
     override fun anonymize(
         researchSubject: ResearchSubject,
-        rule: BlurRule?
+        rule: ResearchSubjectBlur?
     ): ResearchSubject {
-        return if (periodIsBlurable(researchSubject, rule)) {
+        return if (isConcealablePeriod(researchSubject, rule)) {
             researchSubject.copy(
                 period = blurPeriod(
                     researchSubject.period!!,

@@ -18,7 +18,7 @@ package care.data4life.datadonation.donation.anonymization
 
 import care.data4life.datadonation.donation.anonymization.model.BlurRule
 import care.data4life.datadonation.donation.program.model.BlurFunction
-import care.data4life.datadonation.mock.stub.donation.anonymization.DateTimeSmearerStub
+import care.data4life.datadonation.mock.stub.donation.anonymization.DateTimeConcealerStub
 import care.data4life.hl7.fhir.common.datetime.XsDate
 import care.data4life.hl7.fhir.common.datetime.XsDateTime
 import care.data4life.hl7.fhir.stu3.codesystem.ResearchSubjectStatus
@@ -40,7 +40,7 @@ class ResearchSubjectAnonymizerTest {
 
     @Test
     fun `It fulfils ResearchSubjectAnonymizer`() {
-        val anonymizer: Any = ResearchSubjectAnonymizer(DateTimeSmearerStub())
+        val anonymizer: Any = ResearchSubjectAnonymizer(DateTimeConcealerStub())
 
         assertTrue(anonymizer is AnonymizationContract.ResearchSubjectAnonymizer)
     }
@@ -52,7 +52,7 @@ class ResearchSubjectAnonymizerTest {
 
         // When
         val result = ResearchSubjectAnonymizer(
-            DateTimeSmearerStub()
+            DateTimeConcealerStub()
         ).anonymize(
             resource,
             null
@@ -75,7 +75,7 @@ class ResearchSubjectAnonymizerTest {
         )
         // When
         val result = ResearchSubjectAnonymizer(
-            DateTimeSmearerStub()
+            DateTimeConcealerStub()
         ).anonymize(
             resource,
             rule
@@ -99,7 +99,7 @@ class ResearchSubjectAnonymizerTest {
         )
         // When
         val result = ResearchSubjectAnonymizer(
-            DateTimeSmearerStub()
+            DateTimeConcealerStub()
         ).anonymize(
             resource,
             rule
@@ -125,7 +125,7 @@ class ResearchSubjectAnonymizerTest {
         )
         // When
         val result = ResearchSubjectAnonymizer(
-            DateTimeSmearerStub()
+            DateTimeConcealerStub()
         ).anonymize(
             resource,
             rule
@@ -156,9 +156,9 @@ class ResearchSubjectAnonymizerTest {
         var capturedTargetZone: TargetTimeZone? = null
         var capturedBlurFunction: BlurFunction? = null
 
-        val smearer = DateTimeSmearerStub()
+        val concealer = DateTimeConcealerStub()
 
-        smearer.whenBlur = { delegatedXsDateTime, delegatedTargetZone, delegatedBlurFunction ->
+        concealer.whenBlur = { delegatedXsDateTime, delegatedTargetZone, delegatedBlurFunction ->
             capturedXsDateTime = delegatedXsDateTime
             capturedTargetZone = delegatedTargetZone
             capturedBlurFunction = delegatedBlurFunction
@@ -171,7 +171,7 @@ class ResearchSubjectAnonymizerTest {
             researchSubject = BlurFunction.START_OF_DAY
         )
         // When
-        val result = ResearchSubjectAnonymizer(smearer).anonymize(
+        val result = ResearchSubjectAnonymizer(concealer).anonymize(
             resource,
             rule
         )
@@ -220,9 +220,9 @@ class ResearchSubjectAnonymizerTest {
         var capturedTargetZone: TargetTimeZone? = null
         var capturedBlurFunction: BlurFunction? = null
 
-        val smearer = DateTimeSmearerStub()
+        val concealer = DateTimeConcealerStub()
 
-        smearer.whenBlur = { delegatedXsDateTime, delegatedTargetZone, delegatedBlurFunction ->
+        concealer.whenBlur = { delegatedXsDateTime, delegatedTargetZone, delegatedBlurFunction ->
             capturedXsDateTime = delegatedXsDateTime
             capturedTargetZone = delegatedTargetZone
             capturedBlurFunction = delegatedBlurFunction
@@ -235,7 +235,7 @@ class ResearchSubjectAnonymizerTest {
             researchSubject = BlurFunction.START_OF_DAY
         )
         // When
-        val result = ResearchSubjectAnonymizer(smearer).anonymize(
+        val result = ResearchSubjectAnonymizer(concealer).anonymize(
             resource,
             rule
         )
@@ -286,9 +286,9 @@ class ResearchSubjectAnonymizerTest {
             )
         )
 
-        val smearer = DateTimeSmearerStub()
+        val concealer = DateTimeConcealerStub()
 
-        smearer.whenBlur = { delegatedXsDateTime, _, _ ->
+        concealer.whenBlur = { delegatedXsDateTime, _, _ ->
             if (delegatedXsDateTime == startDateTimeValue) {
                 expectedStart
             } else {
@@ -301,7 +301,7 @@ class ResearchSubjectAnonymizerTest {
             researchSubject = BlurFunction.START_OF_DAY
         )
         // When
-        val result = ResearchSubjectAnonymizer(smearer).anonymize(
+        val result = ResearchSubjectAnonymizer(concealer).anonymize(
             resource,
             rule
         )
