@@ -23,6 +23,6 @@ import care.data4life.datadonation.donation.program.model.QuestionnaireResponseI
 internal data class BlurRule(
     val targetTimeZone: TargetTimeZone,
     val questionnaireResponseAuthored: BlurFunction? = null,
+    val questionnaireResponseItems: List<QuestionnaireResponseItemBlur> = emptyList(),
     val researchSubject: BlurFunction? = null,
-    val questionnaireResponseItemBlurMapping: List<QuestionnaireResponseItemBlur> = emptyList()
 )

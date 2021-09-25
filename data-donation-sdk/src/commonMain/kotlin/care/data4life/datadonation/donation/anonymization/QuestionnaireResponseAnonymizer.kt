@@ -75,7 +75,7 @@ internal class QuestionnaireResponseAnonymizer(
         linkId: String,
         blurRule: BlurRule?
     ): QuestionnaireResponseItemBlur? {
-        return blurRule?.questionnaireResponseItemBlurMapping?.find { itemBlur ->
+        return blurRule?.questionnaireResponseItems?.find { itemBlur ->
             itemBlur.linkId == linkId
         }
     }

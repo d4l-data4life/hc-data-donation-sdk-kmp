@@ -615,7 +615,7 @@ class QuestionnaireResponseAnonymizerTest {
 
         val rule = BlurRule(
             targetTimeZone = "somewhere",
-            questionnaireResponseItemBlurMapping = listOf(
+            questionnaireResponseItems = listOf(
                 QuestionnaireResponseItemBlur(
                     linkId = "abc",
                     function = BlurFunction.END_OF_WEEK
@@ -725,7 +725,7 @@ class QuestionnaireResponseAnonymizerTest {
 
         val rule = BlurRule(
             targetTimeZone = "somewhere",
-            questionnaireResponseItemBlurMapping = listOf(
+            questionnaireResponseItems = listOf(
                 QuestionnaireResponseItemBlur(
                     linkId = "match",
                     function = BlurFunction.START_OF_DAY
@@ -761,7 +761,7 @@ class QuestionnaireResponseAnonymizerTest {
         )
         assertSame(
             actual = capturedBlurFunction,
-            expected = rule.questionnaireResponseItemBlurMapping.first().function
+            expected = rule.questionnaireResponseItems.first().function
         )
     }
 }
