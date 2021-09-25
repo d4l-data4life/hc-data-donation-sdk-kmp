@@ -23,15 +23,15 @@ import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 import care.data4life.hl7.fhir.common.datetime.XsDateTime
 
-internal class DateTimeSmearerStub : AnonymizationContract.DateTimeSmearer, MockContract.Stub {
+internal class DateTimeConcealerStub : AnonymizationContract.DateTimeConcealer, MockContract.Stub {
     var whenBlur: ((XsDateTime, TargetTimeZone, BlurFunction) -> XsDateTime)? = null
 
     override fun blur(
         fhirDateTime: XsDateTime,
         targetTimeZone: TargetTimeZone,
-        rule: BlurFunction
+        function: BlurFunction
     ): XsDateTime {
-        return whenBlur?.invoke(fhirDateTime, targetTimeZone, rule) ?: throw MockException()
+        return whenBlur?.invoke(fhirDateTime, targetTimeZone, function) ?: throw MockException()
     }
 
     override fun clear() {

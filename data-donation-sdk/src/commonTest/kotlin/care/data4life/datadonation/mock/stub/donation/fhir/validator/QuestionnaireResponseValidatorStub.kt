@@ -18,7 +18,7 @@ package care.data4life.datadonation.mock.stub.donation.fhir.validator
 
 import care.data4life.datadonation.donation.fhir.AllowedReference
 import care.data4life.datadonation.donation.fhir.validator.FhirResourceValidatorContract
-import care.data4life.datadonation.donation.program.model.ProgramFhirResourceBlur
+import care.data4life.datadonation.donation.program.model.QuestionnaireResponseBlur
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 import care.data4life.hl7.fhir.stu3.model.FhirQuestionnaireResponse
@@ -26,11 +26,11 @@ import care.data4life.hl7.fhir.stu3.model.FhirQuestionnaireResponse
 internal class QuestionnaireResponseValidatorStub :
     FhirResourceValidatorContract.QuestionnaireResponseValidator,
     MockContract.Stub {
-    var whenIsAllowed: ((FhirQuestionnaireResponse, Map<AllowedReference, ProgramFhirResourceBlur?>) -> Boolean)? = null
+    var whenIsAllowed: ((FhirQuestionnaireResponse, Map<AllowedReference, QuestionnaireResponseBlur?>) -> Boolean)? = null
 
     override fun isAllowed(
         resource: FhirQuestionnaireResponse,
-        blurMapping: Map<AllowedReference, ProgramFhirResourceBlur?>
+        blurMapping: Map<AllowedReference, QuestionnaireResponseBlur?>
     ): Boolean {
         return whenIsAllowed?.invoke(resource, blurMapping) ?: throw MockException()
     }

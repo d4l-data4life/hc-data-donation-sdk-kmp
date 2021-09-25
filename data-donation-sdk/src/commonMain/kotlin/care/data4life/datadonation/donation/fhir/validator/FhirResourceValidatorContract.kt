@@ -17,7 +17,7 @@
 package care.data4life.datadonation.donation.fhir.validator
 
 import care.data4life.datadonation.donation.fhir.AllowedReference
-import care.data4life.datadonation.donation.program.model.ProgramFhirResourceBlur
+import care.data4life.datadonation.donation.program.model.QuestionnaireResponseBlur
 import care.data4life.hl7.fhir.stu3.model.FhirObservation
 import care.data4life.hl7.fhir.stu3.model.FhirQuestionnaireResponse
 import care.data4life.hl7.fhir.stu3.model.FhirResearchSubject
@@ -27,14 +27,14 @@ internal interface FhirResourceValidatorContract {
     fun interface QuestionnaireResponseValidator {
         fun isAllowed(
             resource: FhirQuestionnaireResponse,
-            blurMapping: Map<AllowedReference, ProgramFhirResourceBlur?>
+            blurMapping: Map<AllowedReference, QuestionnaireResponseBlur?>
         ): Boolean
     }
 
     fun interface ObservationValidator {
         fun isAllowed(
             resource: FhirObservation,
-            blurMapping: Map<AllowedReference, ProgramFhirResourceBlur?>
+            blurMapping: Map<AllowedReference, QuestionnaireResponseBlur?>
         ): Boolean
     }
 
@@ -54,7 +54,7 @@ internal interface FhirResourceValidatorContract {
         fun isAllowed(
             resource: FhirResource,
             studyId: String,
-            blurMapping: Map<AllowedReference, ProgramFhirResourceBlur?>
+            blurMapping: Map<AllowedReference, QuestionnaireResponseBlur?>
         ): Boolean
     }
 }

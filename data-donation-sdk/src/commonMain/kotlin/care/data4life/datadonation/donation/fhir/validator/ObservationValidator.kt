@@ -18,7 +18,7 @@ package care.data4life.datadonation.donation.fhir.validator
 
 import care.data4life.datadonation.donation.fhir.AllowedReference
 import care.data4life.datadonation.donation.fhir.FhirContract.FhirResourceBlurMapper.Companion.REFERENCE_SEPARATOR
-import care.data4life.datadonation.donation.program.model.ProgramFhirResourceBlur
+import care.data4life.datadonation.donation.program.model.QuestionnaireResponseBlur
 import care.data4life.hl7.fhir.stu3.model.Coding
 import care.data4life.hl7.fhir.stu3.model.FhirObservation
 import care.data4life.hl7.fhir.stu3.model.FhirQuantity
@@ -36,7 +36,7 @@ internal object ObservationValidator : FhirResourceValidatorContract.Observation
 
     private fun matchesReference(
         resource: FhirObservation,
-        blurMapping: Map<AllowedReference, ProgramFhirResourceBlur?>
+        blurMapping: Map<AllowedReference, QuestionnaireResponseBlur?>
     ): Boolean {
         val code = resource.code.coding?.first()
 
@@ -51,7 +51,7 @@ internal object ObservationValidator : FhirResourceValidatorContract.Observation
 
     override fun isAllowed(
         resource: FhirObservation,
-        blurMapping: Map<AllowedReference, ProgramFhirResourceBlur?>
+        blurMapping: Map<AllowedReference, QuestionnaireResponseBlur?>
     ): Boolean {
         return when {
             resource.valueQuantity == null -> false

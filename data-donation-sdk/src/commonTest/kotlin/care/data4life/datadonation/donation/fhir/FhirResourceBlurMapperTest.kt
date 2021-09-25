@@ -17,8 +17,8 @@
 package care.data4life.datadonation.donation.fhir
 
 import care.data4life.datadonation.donation.program.model.BlurFunction
-import care.data4life.datadonation.donation.program.model.ProgramFhirResourceBlur
-import care.data4life.datadonation.donation.program.model.ProgramFhirResourceConfiguration
+import care.data4life.datadonation.donation.program.model.FhirResourceConfiguration
+import care.data4life.datadonation.donation.program.model.QuestionnaireResponseBlur
 import care.data4life.datadonation.donation.program.model.QuestionnaireResponseItemBlur
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -35,7 +35,7 @@ class FhirResourceBlurMapperTest {
     @Test
     fun `Given map is called with a empty List, it maps to a empty Map`() {
         // Given
-        val resources = emptyList<ProgramFhirResourceConfiguration>()
+        val resources = emptyList<FhirResourceConfiguration>()
 
         // When
         val result = FhirResourceBlurMapper.map(resources)
@@ -51,12 +51,12 @@ class FhirResourceBlurMapperTest {
     fun `Given map is called with a List of ProgramFhirResourceConfiguration it maps it to Map of AllowedReference, which has no Version to BlurFunction`() {
         // Given
         val programResources = listOf(
-            ProgramFhirResourceConfiguration(
+            FhirResourceConfiguration(
                 url = "somewhere over the rainbow",
-                fhirBlur = ProgramFhirResourceBlur(
+                fhirBlur = QuestionnaireResponseBlur(
                     targetTimeZone = "does not matter",
                     questionnaireResponseAuthored = BlurFunction.START_OF_DAY,
-                    itemBlurs = listOf(
+                    questionnaireResponseItemBlurs = listOf(
                         QuestionnaireResponseItemBlur(
                             linkId = "23",
                             function = BlurFunction.END_OF_DAY
@@ -82,13 +82,13 @@ class FhirResourceBlurMapperTest {
     fun `Given map is called with a List of ProgramFhirResourceConfiguration it maps it to Map of AllowedReference, which contains Versions to BlurFunction`() {
         // Given
         val programResources = listOf(
-            ProgramFhirResourceConfiguration(
+            FhirResourceConfiguration(
                 url = "somewhere over the rainbow",
                 versions = listOf("0.0.0", "0.1.0", "1.42.23"),
-                fhirBlur = ProgramFhirResourceBlur(
+                fhirBlur = QuestionnaireResponseBlur(
                     targetTimeZone = "does not matter",
                     questionnaireResponseAuthored = BlurFunction.START_OF_DAY,
-                    itemBlurs = listOf(
+                    questionnaireResponseItemBlurs = listOf(
                         QuestionnaireResponseItemBlur(
                             linkId = "23",
                             function = BlurFunction.END_OF_DAY

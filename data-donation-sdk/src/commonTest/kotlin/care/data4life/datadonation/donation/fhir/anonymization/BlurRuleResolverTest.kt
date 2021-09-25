@@ -17,8 +17,8 @@
 package care.data4life.datadonation.donation.fhir.anonymization
 
 import care.data4life.datadonation.donation.program.model.BlurFunction
-import care.data4life.datadonation.donation.program.model.ProgramAnonymizationGlobalBlur
-import care.data4life.datadonation.donation.program.model.ProgramFhirResourceBlur
+import care.data4life.datadonation.donation.program.model.ProgramBlur
+import care.data4life.datadonation.donation.program.model.QuestionnaireResponseBlur
 import care.data4life.datadonation.donation.program.model.QuestionnaireResponseItemBlur
 import care.data4life.hl7.fhir.stu3.codesystem.QuestionnaireResponseStatus
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
@@ -61,7 +61,7 @@ class BlurRuleResolverTest {
     fun `Given resolveBlurRule is called with a QuestionnaireResponse, a ProgramAnonymizationBlur and a empty List of ProgramResource it returns a BlurRule provided by the ProgramAnonymization`() {
         // Given
         val questionnaireResponse = questionnaireResponseTemplate.copy()
-        val globalBlur = ProgramAnonymizationGlobalBlur(
+        val programBlur = ProgramBlur(
             targetTimeZone = "does not matter",
             questionnaireResponseAuthored = BlurFunction.START_OF_DAY,
             researchSubject = BlurFunction.END_OF_DAY
@@ -70,27 +70,27 @@ class BlurRuleResolverTest {
         // When
         val result = BlurRuleResolver.resolveBlurRule(
             questionnaireResponse,
-            globalBlur,
+            programBlur,
             emptyMap()
         )
 
         // Then
         assertEquals(
             actual = result!!.targetTimeZone,
-            expected = globalBlur.targetTimeZone
+            expected = programBlur.targetTimeZone
         )
 
         assertEquals(
             actual = result.questionnaireResponseAuthored,
-            expected = globalBlur.questionnaireResponseAuthored
+            expected = programBlur.questionnaireResponseAuthored
         )
 
         assertEquals(
             actual = result.researchSubject,
-            expected = globalBlur.researchSubject
+            expected = programBlur.researchSubject
         )
         assertEquals(
-            actual = result.questionnaireResponseItemBlurMapping,
+            actual = result.questionnaireResponseItems,
             expected = emptyList()
         )
     }
@@ -99,12 +99,12 @@ class BlurRuleResolverTest {
     fun `Given resolveBlurRule is called with a null QuestionnaireResponse, null as ProgramAnonymizationBlur and a List of ProgramResource it returns null`() {
         // Given
         val questionnaireResponse = null
-        val globalBlur = null
-        val localBlur = mapOf(
-            "this is the one|1.0.0" to ProgramFhirResourceBlur(
+        val programBlur = null
+        val fhirResourceBlur = mapOf(
+            "this is the one|1.0.0" to QuestionnaireResponseBlur(
                 targetTimeZone = "here",
                 questionnaireResponseAuthored = BlurFunction.START_OF_MONTH,
-                itemBlurs = listOf(
+                questionnaireResponseItemBlurs = listOf(
                     QuestionnaireResponseItemBlur(
                         linkId = "42",
                         function = BlurFunction.END_OF_MONTH
@@ -116,8 +116,8 @@ class BlurRuleResolverTest {
         // When
         val result = BlurRuleResolver.resolveBlurRule(
             questionnaireResponse,
-            globalBlur,
-            localBlur
+            programBlur,
+            fhirResourceBlur
         )
 
         // Then
@@ -128,11 +128,11 @@ class BlurRuleResolverTest {
     fun `Given resolveBlurRule is called with a QuestionnaireResponse, null as ProgramAnonymizationBlur and a List of ProgramResource it returns null if no ProgramResource match the FHIRResource`() {
         // Given
         val questionnaireResponse = questionnaireResponseTemplate.copy()
-        val localBlur = mapOf(
-            "this is the one|1.0.0" to ProgramFhirResourceBlur(
+        val fhirResourceBlur = mapOf(
+            "this is the one|1.0.0" to QuestionnaireResponseBlur(
                 targetTimeZone = "does not matter",
                 questionnaireResponseAuthored = BlurFunction.START_OF_DAY,
-                itemBlurs = listOf(
+                questionnaireResponseItemBlurs = listOf(
                     QuestionnaireResponseItemBlur(
                         linkId = "23",
                         function = BlurFunction.END_OF_DAY
@@ -145,7 +145,7 @@ class BlurRuleResolverTest {
         val result = BlurRuleResolver.resolveBlurRule(
             questionnaireResponse,
             null,
-            localBlur
+            fhirResourceBlur
         )
 
         // Then
@@ -160,10 +160,10 @@ class BlurRuleResolverTest {
                 reference = "this is the one|1.0.0"
             )
         )
-        val localBlur = mapOf(
-            "this is the one|1.0.0" to ProgramFhirResourceBlur(
+        val fhirResourceBlur = mapOf(
+            "this is the one|1.0.0" to QuestionnaireResponseBlur(
                 questionnaireResponseAuthored = BlurFunction.START_OF_MONTH,
-                itemBlurs = listOf(
+                questionnaireResponseItemBlurs = listOf(
                     QuestionnaireResponseItemBlur(
                         linkId = "42",
                         function = BlurFunction.END_OF_MONTH
@@ -176,7 +176,7 @@ class BlurRuleResolverTest {
         val result = BlurRuleResolver.resolveBlurRule(
             questionnaireResponse,
             null,
-            localBlur
+            fhirResourceBlur
         )
 
         // Then
@@ -192,21 +192,21 @@ class BlurRuleResolverTest {
                 reference = reference
             )
         )
-        val localBlur = mapOf(
-            "somewhere over the rainbow|0.0.0" to ProgramFhirResourceBlur(
+        val fhirResourceBlur = mapOf(
+            "somewhere over the rainbow|0.0.0" to QuestionnaireResponseBlur(
                 targetTimeZone = "does not matter",
                 questionnaireResponseAuthored = BlurFunction.START_OF_DAY,
-                itemBlurs = listOf(
+                questionnaireResponseItemBlurs = listOf(
                     QuestionnaireResponseItemBlur(
                         linkId = "23",
                         function = BlurFunction.END_OF_DAY
                     )
                 )
             ),
-            reference to ProgramFhirResourceBlur(
+            reference to QuestionnaireResponseBlur(
                 targetTimeZone = "here",
                 questionnaireResponseAuthored = BlurFunction.START_OF_MONTH,
-                itemBlurs = listOf(
+                questionnaireResponseItemBlurs = listOf(
                     QuestionnaireResponseItemBlur(
                         linkId = "42",
                         function = BlurFunction.END_OF_MONTH
@@ -219,23 +219,23 @@ class BlurRuleResolverTest {
         val result = BlurRuleResolver.resolveBlurRule(
             questionnaireResponse,
             null,
-            localBlur
+            fhirResourceBlur
         )
 
         // Then
         assertEquals(
             actual = result!!.targetTimeZone,
-            expected = localBlur[reference]!!.targetTimeZone
+            expected = fhirResourceBlur[reference]!!.targetTimeZone
         )
 
         assertEquals(
             actual = result.questionnaireResponseAuthored,
-            expected = localBlur[reference]!!.questionnaireResponseAuthored
+            expected = fhirResourceBlur[reference]!!.questionnaireResponseAuthored
         )
 
         assertSame(
-            actual = result.questionnaireResponseItemBlurMapping,
-            expected = localBlur[reference]!!.itemBlurs
+            actual = result.questionnaireResponseItems,
+            expected = fhirResourceBlur[reference]!!.questionnaireResponseItemBlurs
         )
 
         assertNull(result.researchSubject)
@@ -250,26 +250,26 @@ class BlurRuleResolverTest {
                 reference = reference
             )
         )
-        val globalBlur = ProgramAnonymizationGlobalBlur(
+        val programBlur = ProgramBlur(
             targetTimeZone = "does not matter",
             questionnaireResponseAuthored = BlurFunction.START_OF_DAY,
             researchSubject = BlurFunction.END_OF_DAY
         )
-        val localBlur = mapOf(
-            "somewhere over the rainbow|0.0.0" to ProgramFhirResourceBlur(
+        val fhirResourceBlur = mapOf(
+            "somewhere over the rainbow|0.0.0" to QuestionnaireResponseBlur(
                 targetTimeZone = "does not matter",
                 questionnaireResponseAuthored = BlurFunction.START_OF_DAY,
-                itemBlurs = listOf(
+                questionnaireResponseItemBlurs = listOf(
                     QuestionnaireResponseItemBlur(
                         linkId = "23",
                         function = BlurFunction.END_OF_DAY
                     )
                 )
             ),
-            reference to ProgramFhirResourceBlur(
+            reference to QuestionnaireResponseBlur(
                 targetTimeZone = "here",
                 questionnaireResponseAuthored = BlurFunction.START_OF_MONTH,
-                itemBlurs = listOf(
+                questionnaireResponseItemBlurs = listOf(
                     QuestionnaireResponseItemBlur(
                         linkId = "42",
                         function = BlurFunction.END_OF_MONTH
@@ -281,29 +281,29 @@ class BlurRuleResolverTest {
         // When
         val result = BlurRuleResolver.resolveBlurRule(
             questionnaireResponse,
-            globalBlur,
-            localBlur
+            programBlur,
+            fhirResourceBlur
         )
 
         // Then
         assertEquals(
             actual = result!!.targetTimeZone,
-            expected = localBlur[reference]!!.targetTimeZone
+            expected = fhirResourceBlur[reference]!!.targetTimeZone
         )
 
         assertEquals(
             actual = result.questionnaireResponseAuthored,
-            expected = localBlur[reference]!!.questionnaireResponseAuthored
+            expected = fhirResourceBlur[reference]!!.questionnaireResponseAuthored
         )
 
         assertSame(
-            actual = result.questionnaireResponseItemBlurMapping,
-            expected = localBlur[reference]!!.itemBlurs
+            actual = result.questionnaireResponseItems,
+            expected = fhirResourceBlur[reference]!!.questionnaireResponseItemBlurs
         )
 
         assertEquals(
             actual = result.researchSubject,
-            expected = globalBlur.researchSubject
+            expected = programBlur.researchSubject
         )
     }
 }

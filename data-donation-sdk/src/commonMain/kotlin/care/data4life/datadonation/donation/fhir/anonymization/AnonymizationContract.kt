@@ -17,11 +17,12 @@
 package care.data4life.datadonation.donation.fhir.anonymization
 
 import care.data4life.datadonation.donation.fhir.AllowedReference
+import care.data4life.datadonation.donation.fhir.anonymization.model.BlurModelContract
 import care.data4life.datadonation.donation.fhir.anonymization.model.BlurRule
 import care.data4life.datadonation.donation.program.model.BlurFunction
-import care.data4life.datadonation.donation.program.model.ProgramAnonymizationGlobalBlur
-import care.data4life.datadonation.donation.program.model.ProgramFhirResourceBlur
+import care.data4life.datadonation.donation.program.model.ProgramBlur
 import care.data4life.datadonation.donation.program.model.ProgramType
+import care.data4life.datadonation.donation.program.model.QuestionnaireResponseBlur
 import care.data4life.hl7.fhir.common.datetime.XsDateTime
 import care.data4life.hl7.fhir.stu3.model.FhirQuestionnaireResponse
 import care.data4life.hl7.fhir.stu3.model.FhirResource
@@ -42,16 +43,16 @@ internal interface AnonymizationContract {
     interface BlurRuleResolver {
         fun resolveBlurRule(
             fhirResource: FhirQuestionnaireResponse?,
-            globalProgramRule: ProgramAnonymizationGlobalBlur?,
-            localResourceRule: Map<AllowedReference, ProgramFhirResourceBlur?>
+            programRule: ProgramBlur?,
+            fhirResourceConfigurations: Map<AllowedReference, QuestionnaireResponseBlur?>
         ): BlurRule?
     }
 
-    fun interface DateTimeSmearer {
+    fun interface DateTimeConcealer {
         fun blur(
             fhirDateTime: XsDateTime,
             targetTimeZone: TargetTimeZone,
-            rule: BlurFunction
+            function: BlurFunction
         ): XsDateTime
     }
 
@@ -59,14 +60,14 @@ internal interface AnonymizationContract {
         fun anonymize(
             questionnaireResponse: QuestionnaireResponse,
             programType: ProgramType,
-            rule: BlurRule?
+            rule: BlurModelContract.QuestionnaireResponseBlur?
         ): QuestionnaireResponse
     }
 
     interface ResearchSubjectAnonymizer {
         fun anonymize(
             researchSubject: ResearchSubject,
-            rule: BlurRule?
+            rule: BlurModelContract.ResearchSubjectBlur?
         ): ResearchSubject
     }
 
@@ -74,8 +75,8 @@ internal interface AnonymizationContract {
         fun anonymize(
             fhirResource: FhirResource,
             programType: ProgramType,
-            globalProgramRule: ProgramAnonymizationGlobalBlur?,
-            localResourceRule: Map<AllowedReference, ProgramFhirResourceBlur?>
+            globalProgramRule: ProgramBlur?,
+            localResourceRule: Map<AllowedReference, QuestionnaireResponseBlur?>
         ): FhirResource
     }
 }

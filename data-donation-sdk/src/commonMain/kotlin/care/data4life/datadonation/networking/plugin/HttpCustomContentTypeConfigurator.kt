@@ -14,23 +14,13 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.donation.fhir
+package care.data4life.datadonation.networking.plugin
 
-import care.data4life.datadonation.donation.program.model.FhirResourceConfiguration
-import care.data4life.datadonation.donation.program.model.QuestionnaireResponseBlur
-
-internal typealias AllowedReference = String
-
-internal interface FhirContract {
-    fun interface FhirResourceBlurMapper {
-        fun map(
-            fhirResourceConfigurations: List<FhirResourceConfiguration>
-        ): Map<AllowedReference, QuestionnaireResponseBlur?>
-
-        companion object {
-            const val REFERENCE_SEPARATOR = "|"
-        }
+internal object HttpCustomContentTypeConfigurator : KtorPluginsContract.HttpCustomContentTypeConfigurator {
+    override fun configure(
+        pluginConfiguration: HttpCustomContentType.Config,
+        subConfiguration: Any?
+    ) {
+        pluginConfiguration.replacementHeader = KtorPluginsContract.CustomTypeHeader.replacementHeader
     }
-
-    interface Controller
 }

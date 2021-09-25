@@ -17,8 +17,8 @@
 package care.data4life.datadonation.donation.fhir
 
 import care.data4life.datadonation.donation.fhir.FhirContract.FhirResourceBlurMapper.Companion.REFERENCE_SEPARATOR
-import care.data4life.datadonation.donation.program.model.ProgramFhirResourceBlur
-import care.data4life.datadonation.donation.program.model.ProgramFhirResourceConfiguration
+import care.data4life.datadonation.donation.program.model.FhirResourceConfiguration
+import care.data4life.datadonation.donation.program.model.QuestionnaireResponseBlur
 
 internal object FhirResourceBlurMapper : FhirContract.FhirResourceBlurMapper {
     private fun assembleReferences(
@@ -33,8 +33,8 @@ internal object FhirResourceBlurMapper : FhirContract.FhirResourceBlurMapper {
     }
 
     private fun addEntriesForFhirResourceConfiguration(
-        referenceMap: MutableMap<AllowedReference, ProgramFhirResourceBlur?>,
-        programFhirResourceConfigurations: ProgramFhirResourceConfiguration
+        referenceMap: MutableMap<AllowedReference, QuestionnaireResponseBlur?>,
+        programFhirResourceConfigurations: FhirResourceConfiguration
     ) {
         assembleReferences(
             programFhirResourceConfigurations.url,
@@ -45,9 +45,9 @@ internal object FhirResourceBlurMapper : FhirContract.FhirResourceBlurMapper {
     }
 
     override fun map(
-        fhirResourceConfigurations: List<ProgramFhirResourceConfiguration>
-    ): Map<AllowedReference, ProgramFhirResourceBlur?> {
-        val referenceMap = mutableMapOf<AllowedReference, ProgramFhirResourceBlur?>()
+        fhirResourceConfigurations: List<FhirResourceConfiguration>
+    ): Map<AllowedReference, QuestionnaireResponseBlur?> {
+        val referenceMap = mutableMapOf<AllowedReference, QuestionnaireResponseBlur?>()
 
         fhirResourceConfigurations.forEach { fhirResourcesConfiguration ->
             addEntriesForFhirResourceConfiguration(

@@ -14,23 +14,21 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.donation.fhir
+package care.data4life.datadonation.donation.fhir.anonymization.model
 
-import care.data4life.datadonation.donation.program.model.FhirResourceConfiguration
-import care.data4life.datadonation.donation.program.model.QuestionnaireResponseBlur
+import care.data4life.datadonation.donation.fhir.anonymization.TargetTimeZone
+import care.data4life.datadonation.donation.program.model.BlurFunction
+import care.data4life.datadonation.donation.program.model.QuestionnaireResponseItemBlur
 
-internal typealias AllowedReference = String
-
-internal interface FhirContract {
-    fun interface FhirResourceBlurMapper {
-        fun map(
-            fhirResourceConfigurations: List<FhirResourceConfiguration>
-        ): Map<AllowedReference, QuestionnaireResponseBlur?>
-
-        companion object {
-            const val REFERENCE_SEPARATOR = "|"
-        }
+internal interface BlurModelContract {
+    interface QuestionnaireResponseBlur {
+        val targetTimeZone: TargetTimeZone
+        val questionnaireResponseAuthored: BlurFunction?
+        val questionnaireResponseItems: List<QuestionnaireResponseItemBlur>
     }
 
-    interface Controller
+    interface ResearchSubjectBlur {
+        val targetTimeZone: TargetTimeZone
+        val researchSubject: BlurFunction?
+    }
 }

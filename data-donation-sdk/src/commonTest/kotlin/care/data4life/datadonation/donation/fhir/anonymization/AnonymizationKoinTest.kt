@@ -48,7 +48,7 @@ class AnonymizationKoinTest {
         }
 
         // Then
-        val repo: AnonymizationContract.DateTimeSmearer = koin.koin.get()
+        val repo: AnonymizationContract.DateTimeConcealer = koin.koin.get()
         assertNotNull(repo)
     }
 

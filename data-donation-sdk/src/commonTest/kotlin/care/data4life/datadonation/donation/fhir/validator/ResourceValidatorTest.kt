@@ -17,7 +17,7 @@
 package care.data4life.datadonation.donation.fhir.validator
 
 import care.data4life.datadonation.donation.fhir.AllowedReference
-import care.data4life.datadonation.donation.program.model.ProgramFhirResourceBlur
+import care.data4life.datadonation.donation.program.model.QuestionnaireResponseBlur
 import care.data4life.datadonation.mock.stub.donation.fhir.validator.ObservationValidatorStub
 import care.data4life.datadonation.mock.stub.donation.fhir.validator.QuestionnaireResponseValidatorStub
 import care.data4life.datadonation.mock.stub.donation.fhir.validator.ResearchSubjectValidatorStub
@@ -87,7 +87,7 @@ class ResourceValidatorTest {
         val questionnaireResponseValidator = QuestionnaireResponseValidatorStub()
 
         var capturedResource: FhirQuestionnaireResponse? = null
-        var capturedBlurMapping: Map<AllowedReference, ProgramFhirResourceBlur?>? = null
+        var capturedBlurMapping: Map<AllowedReference, QuestionnaireResponseBlur?>? = null
 
         questionnaireResponseValidator.whenIsAllowed = { delegatedResource, delegatedBlurMapping ->
             capturedResource = delegatedResource
@@ -136,7 +136,7 @@ class ResourceValidatorTest {
         val observationValidator = ObservationValidatorStub()
 
         var capturedResource: FhirObservation? = null
-        var capturedBlurMapping: Map<AllowedReference, ProgramFhirResourceBlur?>? = null
+        var capturedBlurMapping: Map<AllowedReference, QuestionnaireResponseBlur?>? = null
 
         observationValidator.whenIsAllowed = { delegatedResource, delegatedBlurMapping ->
             capturedResource = delegatedResource

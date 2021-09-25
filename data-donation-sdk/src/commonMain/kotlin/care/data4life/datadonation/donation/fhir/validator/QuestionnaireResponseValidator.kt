@@ -17,13 +17,13 @@
 package care.data4life.datadonation.donation.fhir.validator
 
 import care.data4life.datadonation.donation.fhir.AllowedReference
-import care.data4life.datadonation.donation.program.model.ProgramFhirResourceBlur
+import care.data4life.datadonation.donation.program.model.QuestionnaireResponseBlur
 import care.data4life.hl7.fhir.stu3.model.FhirQuestionnaireResponse
 
 internal object QuestionnaireResponseValidator : FhirResourceValidatorContract.QuestionnaireResponseValidator {
     override fun isAllowed(
         resource: FhirQuestionnaireResponse,
-        blurMapping: Map<AllowedReference, ProgramFhirResourceBlur?>
+        blurMapping: Map<AllowedReference, QuestionnaireResponseBlur?>
     ): Boolean {
         return blurMapping.containsKey(resource.questionnaire?.reference)
     }

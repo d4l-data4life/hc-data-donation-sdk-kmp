@@ -25,8 +25,8 @@ internal fun resolveAnonymizationKoinModule(): Module {
             BlurRuleResolver
         }
 
-        single<AnonymizationContract.DateTimeSmearer> {
-            DateTimeSmearer
+        single<AnonymizationContract.DateTimeConcealer> {
+            DateTimeConcealer
         }
 
         single<AnonymizationContract.Redactor> {

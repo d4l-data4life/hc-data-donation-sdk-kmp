@@ -17,11 +17,12 @@
 package care.data4life.datadonation.donation.fhir.anonymization
 
 import care.data4life.datadonation.donation.fhir.AllowedReference
+import care.data4life.datadonation.donation.fhir.anonymization.model.BlurModelContract
 import care.data4life.datadonation.donation.fhir.anonymization.model.BlurRule
 import care.data4life.datadonation.donation.program.model.BlurFunction
-import care.data4life.datadonation.donation.program.model.ProgramAnonymizationGlobalBlur
-import care.data4life.datadonation.donation.program.model.ProgramFhirResourceBlur
+import care.data4life.datadonation.donation.program.model.ProgramBlur
 import care.data4life.datadonation.donation.program.model.ProgramType
+import care.data4life.datadonation.donation.program.model.QuestionnaireResponseBlur
 import care.data4life.datadonation.donation.program.model.QuestionnaireResponseItemBlur
 import care.data4life.datadonation.mock.stub.donation.fhir.anonymization.BlurRuleResolverStub
 import care.data4life.datadonation.mock.stub.donation.fhir.anonymization.QuestionnaireResponseAnonymizerStub
@@ -40,16 +41,16 @@ import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 class FhirAnonymizerTest {
-    private val globalBlur = ProgramAnonymizationGlobalBlur(
+    private val programBlur = ProgramBlur(
         targetTimeZone = "does not matter",
         questionnaireResponseAuthored = BlurFunction.START_OF_DAY,
         researchSubject = BlurFunction.END_OF_DAY
     )
-    private val localBlur = mapOf(
-        "this is the one|1.0.0" to ProgramFhirResourceBlur(
+    private val fhirResourceBlur = mapOf(
+        "this is the one|1.0.0" to QuestionnaireResponseBlur(
             targetTimeZone = "here",
             questionnaireResponseAuthored = BlurFunction.START_OF_MONTH,
-            itemBlurs = listOf(
+            questionnaireResponseItemBlurs = listOf(
                 QuestionnaireResponseItemBlur(
                     linkId = "42",
                     function = BlurFunction.END_OF_MONTH
@@ -79,7 +80,7 @@ class FhirAnonymizerTest {
             BlurRuleResolverStub(),
             QuestionnaireResponseAnonymizerStub(),
             ResearchSubjectAnonymizerStub()
-        ).anonymize(resource, ProgramType.STUDY, globalBlur, localBlur)
+        ).anonymize(resource, ProgramType.STUDY, programBlur, fhirResourceBlur)
 
         // Then
         assertSame(
@@ -100,21 +101,21 @@ class FhirAnonymizerTest {
 
         val blurResolver = BlurRuleResolverStub()
 
-        val globalBlur = this.globalBlur.copy()
-        val localBlur = this.localBlur.toMap()
+        val programBlur = this.programBlur.copy()
+        val fhirResourceBlur = this.fhirResourceBlur.toMap()
 
         val rule = BlurRule(
             targetTimeZone = "somewhere"
         )
 
         var capturedFhirResource: FhirResource? = null
-        var capturedGlobalBlurRule: ProgramAnonymizationGlobalBlur? = null
-        var capturedLocalBlurRule: Map<AllowedReference, ProgramFhirResourceBlur?>? = null
+        var capturedProgramBlurRule: ProgramBlur? = null
+        var capturedFhirResourceBlurRule: Map<AllowedReference, QuestionnaireResponseBlur?>? = null
 
         blurResolver.whenResolveBlurRule = { delegatedFhirResource, delegatedGlobalRule, delegatedLocalRule ->
             capturedFhirResource = delegatedFhirResource
-            capturedGlobalBlurRule = delegatedGlobalRule
-            capturedLocalBlurRule = delegatedLocalRule
+            capturedProgramBlurRule = delegatedGlobalRule
+            capturedFhirResourceBlurRule = delegatedLocalRule
 
             rule
         }
@@ -123,7 +124,7 @@ class FhirAnonymizerTest {
 
         var capturedQuestionnaireResponse: QuestionnaireResponse? = null
         var capturedProgramType: ProgramType? = null
-        var capturedBlurRule: BlurRule? = null
+        var capturedBlurRule: BlurModelContract.QuestionnaireResponseBlur? = null
 
         questionnaireResponseAnonymizer.whenAnonymize = { delegatedQuestionnaireResponse, delegatedProgramType, delegatedRule ->
             capturedQuestionnaireResponse = delegatedQuestionnaireResponse
@@ -138,7 +139,7 @@ class FhirAnonymizerTest {
             blurResolver,
             questionnaireResponseAnonymizer,
             ResearchSubjectAnonymizerStub()
-        ).anonymize(resource, programType, globalBlur, localBlur)
+        ).anonymize(resource, programType, programBlur, fhirResourceBlur)
 
         // Then
         assertSame(
@@ -151,12 +152,12 @@ class FhirAnonymizerTest {
             expected = resource
         )
         assertSame(
-            actual = capturedGlobalBlurRule,
-            expected = globalBlur
+            actual = capturedProgramBlurRule,
+            expected = programBlur
         )
         assertSame(
-            actual = capturedLocalBlurRule,
-            expected = localBlur
+            actual = capturedFhirResourceBlurRule,
+            expected = fhirResourceBlur
         )
 
         assertSame(
@@ -186,21 +187,21 @@ class FhirAnonymizerTest {
 
         val blurResolver = BlurRuleResolverStub()
 
-        val globalBlur = this.globalBlur.copy()
-        val localBlur = this.localBlur.toMap()
+        val programBlur = this.programBlur.copy()
+        val fhirResourceBlur = this.fhirResourceBlur.toMap()
 
         val rule = BlurRule(
             targetTimeZone = "somewhere"
         )
 
         var capturedFhirResource: FhirResource? = null
-        var capturedGlobalBlurRule: ProgramAnonymizationGlobalBlur? = null
-        var capturedLocalBlurRule: Map<AllowedReference, ProgramFhirResourceBlur?>? = null
+        var capturedProgramBlurRule: ProgramBlur? = null
+        var capturedFhirResourceBlurRule: Map<AllowedReference, QuestionnaireResponseBlur?>? = null
 
         blurResolver.whenResolveBlurRule = { delegatedFhirResource, delegatedGlobalRule, delegatedLocalRule ->
             capturedFhirResource = delegatedFhirResource
-            capturedGlobalBlurRule = delegatedGlobalRule
-            capturedLocalBlurRule = delegatedLocalRule
+            capturedProgramBlurRule = delegatedGlobalRule
+            capturedFhirResourceBlurRule = delegatedLocalRule
 
             rule
         }
@@ -208,7 +209,7 @@ class FhirAnonymizerTest {
         val researchSubjectAnonymizer = ResearchSubjectAnonymizerStub()
 
         var capturedResearchSubject: ResearchSubject? = null
-        var capturedBlurRule: BlurRule? = null
+        var capturedBlurRule: BlurModelContract.ResearchSubjectBlur? = null
 
         researchSubjectAnonymizer.whenAnonymize = { delegatedResearchSubject, delegatedRule ->
             capturedResearchSubject = delegatedResearchSubject
@@ -222,7 +223,7 @@ class FhirAnonymizerTest {
             blurResolver,
             QuestionnaireResponseAnonymizerStub(),
             researchSubjectAnonymizer
-        ).anonymize(resource, ProgramType.STUDY, globalBlur, localBlur)
+        ).anonymize(resource, ProgramType.STUDY, programBlur, fhirResourceBlur)
 
         // Then
         assertSame(
@@ -232,11 +233,11 @@ class FhirAnonymizerTest {
 
         assertNull(capturedFhirResource)
         assertSame(
-            actual = capturedGlobalBlurRule,
-            expected = globalBlur
+            actual = capturedProgramBlurRule,
+            expected = programBlur
         )
         assertEquals(
-            actual = capturedLocalBlurRule,
+            actual = capturedFhirResourceBlurRule,
             expected = emptyMap()
         )
 

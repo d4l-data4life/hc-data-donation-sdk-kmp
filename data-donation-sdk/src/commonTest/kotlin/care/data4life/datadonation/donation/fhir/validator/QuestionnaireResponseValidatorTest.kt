@@ -16,7 +16,7 @@
 
 package care.data4life.datadonation.donation.fhir.validator
 
-import care.data4life.datadonation.donation.program.model.ProgramFhirResourceBlur
+import care.data4life.datadonation.donation.program.model.QuestionnaireResponseBlur
 import care.data4life.hl7.fhir.stu3.codesystem.QuestionnaireResponseStatus
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
 import care.data4life.hl7.fhir.stu3.model.Reference
@@ -39,8 +39,8 @@ class QuestionnaireResponseValidatorTest {
             status = QuestionnaireResponseStatus.COMPLETED
         )
         val blurMapping = mapOf(
-            "something" to ProgramFhirResourceBlur(
-                itemBlurs = emptyList()
+            "something" to QuestionnaireResponseBlur(
+                questionnaireResponseItemBlurs = emptyList()
             )
         )
 
@@ -66,8 +66,8 @@ class QuestionnaireResponseValidatorTest {
             )
         )
         val blurMapping = mapOf(
-            reference to ProgramFhirResourceBlur(
-                itemBlurs = emptyList()
+            reference to QuestionnaireResponseBlur(
+                questionnaireResponseItemBlurs = emptyList()
             )
         )
 

@@ -30,7 +30,7 @@ import kotlinx.datetime.plus
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 
-internal object DateTimeSmearer : AnonymizationContract.DateTimeSmearer {
+internal object DateTimeConcealer : AnonymizationContract.DateTimeConcealer {
     // see: https://github.com/moment/luxon/blob/9ef24d66e7a7737d9cb0146548c6c68d1606048b/src/datetime.js#L1411
     private fun LocalDateTime.startOfDay(timeZone: TimeZone): LocalDateTime {
         return this.toInstant(timeZone)
@@ -100,11 +100,11 @@ internal object DateTimeSmearer : AnonymizationContract.DateTimeSmearer {
 
     private fun useStartOf(
         timeBundle: Pair<LocalDateTime, TimeZone>,
-        rule: BlurFunction
+        function: BlurFunction
     ): LocalDateTime {
         val (dateTime, timeZone) = timeBundle
 
-        return when (rule) {
+        return when (function) {
             BlurFunction.START_OF_WEEK -> dateTime.startOfWeek(timeZone)
             BlurFunction.START_OF_MONTH -> dateTime.startOfMonth(timeZone)
             else -> dateTime.startOfDay(timeZone)
@@ -113,11 +113,11 @@ internal object DateTimeSmearer : AnonymizationContract.DateTimeSmearer {
 
     private fun useEndOf(
         timeBundle: Pair<LocalDateTime, TimeZone>,
-        rule: BlurFunction
+        function: BlurFunction
     ): LocalDateTime {
         val (dateTime, timeZone) = timeBundle
 
-        return when (rule) {
+        return when (function) {
             BlurFunction.END_OF_WEEK -> dateTime.endOfWeek(timeZone)
             BlurFunction.END_OF_MONTH -> dateTime.endOfMonth(timeZone)
             else -> dateTime.endOfDay(timeZone)
@@ -126,20 +126,20 @@ internal object DateTimeSmearer : AnonymizationContract.DateTimeSmearer {
 
     private fun resolveRootBlurFunction(
         timeBundle: Pair<LocalDateTime, TimeZone>,
-        rule: BlurFunction
+        function: BlurFunction
     ): LocalDateTime {
-        return if (rule.value.startsWith("start")) {
-            useStartOf(timeBundle, rule)
+        return if (function.value.startsWith("start")) {
+            useStartOf(timeBundle, function)
         } else {
-            useEndOf(timeBundle, rule)
+            useEndOf(timeBundle, function)
         }
     }
 
     private fun blurToXsDateTime(
         timeBundle: Pair<LocalDateTime, TimeZone>,
-        rule: BlurFunction
+        function: BlurFunction
     ): XsDateTime {
-        val dateTime = resolveRootBlurFunction(timeBundle, rule)
+        val dateTime = resolveRootBlurFunction(timeBundle, function)
 
         return XsDateTime(
             date = XsDate(
@@ -231,13 +231,13 @@ internal object DateTimeSmearer : AnonymizationContract.DateTimeSmearer {
 
     override fun blur(
         fhirDateTime: XsDateTime,
-        targetTimeZone: TargetTimeZone,
-        rule: BlurFunction
+        targetTimeZone: String,
+        function: BlurFunction
     ): XsDateTime {
         val timeBundle = resolveDateTime(fhirDateTime, targetTimeZone)
 
         return if (timeBundle is Pair<*, *>) {
-            blurToXsDateTime(timeBundle, rule)
+            blurToXsDateTime(timeBundle, function)
         } else {
             fhirDateTime
         }

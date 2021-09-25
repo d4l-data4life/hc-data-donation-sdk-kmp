@@ -16,7 +16,7 @@
 
 package care.data4life.datadonation.donation.fhir.validator
 
-import care.data4life.datadonation.donation.program.model.ProgramFhirResourceBlur
+import care.data4life.datadonation.donation.program.model.QuestionnaireResponseBlur
 import care.data4life.hl7.fhir.stu3.codesystem.ObservationStatus
 import care.data4life.hl7.fhir.stu3.model.CodeableConcept
 import care.data4life.hl7.fhir.stu3.model.Coding
@@ -45,8 +45,8 @@ class ObservationValidatorTest {
             code = CodeableConcept()
         )
         val blurMapping = mapOf(
-            reference to ProgramFhirResourceBlur(
-                itemBlurs = emptyList()
+            reference to QuestionnaireResponseBlur(
+                questionnaireResponseItemBlurs = emptyList()
             )
         )
 
@@ -73,8 +73,8 @@ class ObservationValidatorTest {
             valueQuantity = Quantity()
         )
         val blurMapping = mapOf(
-            reference to ProgramFhirResourceBlur(
-                itemBlurs = emptyList()
+            reference to QuestionnaireResponseBlur(
+                questionnaireResponseItemBlurs = emptyList()
             )
         )
 
@@ -101,8 +101,8 @@ class ObservationValidatorTest {
             valueQuantity = Quantity()
         )
         val blurMapping = mapOf(
-            reference to ProgramFhirResourceBlur(
-                itemBlurs = emptyList()
+            reference to QuestionnaireResponseBlur(
+                questionnaireResponseItemBlurs = emptyList()
             )
         )
 
@@ -137,8 +137,8 @@ class ObservationValidatorTest {
             valueQuantity = Quantity()
         )
         val blurMapping = mapOf(
-            reference to ProgramFhirResourceBlur(
-                itemBlurs = emptyList()
+            reference to QuestionnaireResponseBlur(
+                questionnaireResponseItemBlurs = emptyList()
             )
         )
 
@@ -175,8 +175,8 @@ class ObservationValidatorTest {
             )
         )
         val blurMapping = mapOf(
-            reference to ProgramFhirResourceBlur(
-                itemBlurs = emptyList()
+            reference to QuestionnaireResponseBlur(
+                questionnaireResponseItemBlurs = emptyList()
             )
         )
 
@@ -213,8 +213,8 @@ class ObservationValidatorTest {
             )
         )
         val blurMapping = mapOf(
-            reference to ProgramFhirResourceBlur(
-                itemBlurs = emptyList()
+            reference to QuestionnaireResponseBlur(
+                questionnaireResponseItemBlurs = emptyList()
             )
         )
 
@@ -251,8 +251,8 @@ class ObservationValidatorTest {
             )
         )
         val blurMapping = mapOf(
-            reference to ProgramFhirResourceBlur(
-                itemBlurs = emptyList()
+            reference to QuestionnaireResponseBlur(
+                questionnaireResponseItemBlurs = emptyList()
             )
         )
 
@@ -289,8 +289,8 @@ class ObservationValidatorTest {
             )
         )
         val blurMapping = mapOf(
-            reference to ProgramFhirResourceBlur(
-                itemBlurs = emptyList()
+            reference to QuestionnaireResponseBlur(
+                questionnaireResponseItemBlurs = emptyList()
             )
         )
 
