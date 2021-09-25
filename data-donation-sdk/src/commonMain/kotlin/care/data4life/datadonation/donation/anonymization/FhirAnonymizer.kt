@@ -32,8 +32,8 @@ internal class FhirAnonymizer(
     ): QuestionnaireResponse {
         val rule = blurResolver.resolveBlurRule(
             fhirResource = questionnaireResponse,
-            programRuleGlobal = programConfiguration.anonymization?.globalBlur,
-            programFhirResourceConfigurations = programConfiguration.fhirResourceConfigurations
+            programRule = programConfiguration.programConfiguration?.programBlur,
+            fhirResourceConfigurations = programConfiguration.fhirResourceConfigurations
         )
 
         return questionnaireResponseAnonymizer.anonymize(

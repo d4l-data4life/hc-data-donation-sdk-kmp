@@ -4,6 +4,7 @@
   "tenantID": "d4l",
   "type": "study",
   "donation": {
+    "revocation": "delete",
     "consentKey": "d4l.sample",
     "anonymization": {
       "blur": {

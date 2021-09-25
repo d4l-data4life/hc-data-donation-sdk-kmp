@@ -18,9 +18,9 @@ package care.data4life.datadonation.donation.anonymization
 
 import care.data4life.datadonation.donation.anonymization.model.BlurRule
 import care.data4life.datadonation.donation.program.model.BlurFunction
-import care.data4life.datadonation.donation.program.model.ProgramAnonymizationGlobalBlur
+import care.data4life.datadonation.donation.program.model.FhirResourceConfiguration
+import care.data4life.datadonation.donation.program.model.ProgramBlur
 import care.data4life.datadonation.donation.program.model.ProgramDonationConfiguration
-import care.data4life.datadonation.donation.program.model.ProgramFhirResourceConfiguration
 import care.data4life.hl7.fhir.common.datetime.XsDateTime
 import care.data4life.hl7.fhir.stu3.model.FhirQuestionnaireResponse
 import care.data4life.hl7.fhir.stu3.model.FhirResource
@@ -41,8 +41,8 @@ internal interface AnonymizationContract {
     interface BlurRuleResolver {
         fun resolveBlurRule(
             fhirResource: FhirQuestionnaireResponse?,
-            programRuleGlobal: ProgramAnonymizationGlobalBlur?,
-            programFhirResourceConfigurations: List<ProgramFhirResourceConfiguration>
+            programRule: ProgramBlur?,
+            fhirResourceConfigurations: List<FhirResourceConfiguration>
         ): BlurRule?
 
         companion object {
@@ -50,11 +50,11 @@ internal interface AnonymizationContract {
         }
     }
 
-    fun interface DateTimeSmearer {
+    fun interface DateTimeConcealer {
         fun blur(
             fhirDateTime: XsDateTime,
             targetTimeZone: TargetTimeZone,
-            rule: BlurFunction
+            function: BlurFunction
         ): XsDateTime
     }
 
