@@ -16,7 +16,7 @@
 
 package care.data4life.datadonation.donation.fhir.anonymization
 
-import care.data4life.datadonation.donation.program.model.BlurFunction
+import care.data4life.datadonation.donation.program.model.BlurFunctionReference
 import care.data4life.datadonation.donation.program.model.ProgramBlur
 import care.data4life.datadonation.donation.program.model.QuestionnaireResponseBlur
 import care.data4life.datadonation.donation.program.model.QuestionnaireResponseItemBlur
@@ -63,8 +63,8 @@ class BlurRuleResolverTest {
         val questionnaireResponse = questionnaireResponseTemplate.copy()
         val programBlur = ProgramBlur(
             targetTimeZone = "does not matter",
-            questionnaireResponseAuthored = BlurFunction.START_OF_DAY,
-            researchSubject = BlurFunction.END_OF_DAY
+            questionnaireResponseAuthoredBlurFunctionReference = BlurFunctionReference.START_OF_DAY,
+            researchSubjectBlurFunctionReference = BlurFunctionReference.END_OF_DAY
         )
 
         // When
@@ -82,12 +82,12 @@ class BlurRuleResolverTest {
 
         assertEquals(
             actual = result.questionnaireResponseAuthored,
-            expected = programBlur.questionnaireResponseAuthored
+            expected = programBlur.questionnaireResponseAuthoredBlurFunctionReference
         )
 
         assertEquals(
             actual = result.researchSubject,
-            expected = programBlur.researchSubject
+            expected = programBlur.researchSubjectBlurFunctionReference
         )
         assertEquals(
             actual = result.questionnaireResponseItems,
@@ -103,11 +103,11 @@ class BlurRuleResolverTest {
         val fhirResourceBlur = mapOf(
             "this is the one|1.0.0" to QuestionnaireResponseBlur(
                 targetTimeZone = "here",
-                questionnaireResponseAuthored = BlurFunction.START_OF_MONTH,
+                authoredBlurFunctionReference = BlurFunctionReference.START_OF_MONTH,
                 questionnaireResponseItemBlurs = listOf(
                     QuestionnaireResponseItemBlur(
                         linkId = "42",
-                        function = BlurFunction.END_OF_MONTH
+                        blurFunctionReference = BlurFunctionReference.END_OF_MONTH
                     )
                 )
             )
@@ -131,11 +131,11 @@ class BlurRuleResolverTest {
         val fhirResourceBlur = mapOf(
             "this is the one|1.0.0" to QuestionnaireResponseBlur(
                 targetTimeZone = "does not matter",
-                questionnaireResponseAuthored = BlurFunction.START_OF_DAY,
+                authoredBlurFunctionReference = BlurFunctionReference.START_OF_DAY,
                 questionnaireResponseItemBlurs = listOf(
                     QuestionnaireResponseItemBlur(
                         linkId = "23",
-                        function = BlurFunction.END_OF_DAY
+                        blurFunctionReference = BlurFunctionReference.END_OF_DAY
                     )
                 )
             )
@@ -162,11 +162,11 @@ class BlurRuleResolverTest {
         )
         val fhirResourceBlur = mapOf(
             "this is the one|1.0.0" to QuestionnaireResponseBlur(
-                questionnaireResponseAuthored = BlurFunction.START_OF_MONTH,
+                authoredBlurFunctionReference = BlurFunctionReference.START_OF_MONTH,
                 questionnaireResponseItemBlurs = listOf(
                     QuestionnaireResponseItemBlur(
                         linkId = "42",
-                        function = BlurFunction.END_OF_MONTH
+                        blurFunctionReference = BlurFunctionReference.END_OF_MONTH
                     )
                 )
             )
@@ -195,21 +195,21 @@ class BlurRuleResolverTest {
         val fhirResourceBlur = mapOf(
             "somewhere over the rainbow|0.0.0" to QuestionnaireResponseBlur(
                 targetTimeZone = "does not matter",
-                questionnaireResponseAuthored = BlurFunction.START_OF_DAY,
+                authoredBlurFunctionReference = BlurFunctionReference.START_OF_DAY,
                 questionnaireResponseItemBlurs = listOf(
                     QuestionnaireResponseItemBlur(
                         linkId = "23",
-                        function = BlurFunction.END_OF_DAY
+                        blurFunctionReference = BlurFunctionReference.END_OF_DAY
                     )
                 )
             ),
             reference to QuestionnaireResponseBlur(
                 targetTimeZone = "here",
-                questionnaireResponseAuthored = BlurFunction.START_OF_MONTH,
+                authoredBlurFunctionReference = BlurFunctionReference.START_OF_MONTH,
                 questionnaireResponseItemBlurs = listOf(
                     QuestionnaireResponseItemBlur(
                         linkId = "42",
-                        function = BlurFunction.END_OF_MONTH
+                        blurFunctionReference = BlurFunctionReference.END_OF_MONTH
                     )
                 )
             )
@@ -230,7 +230,7 @@ class BlurRuleResolverTest {
 
         assertEquals(
             actual = result.questionnaireResponseAuthored,
-            expected = fhirResourceBlur[reference]!!.questionnaireResponseAuthored
+            expected = fhirResourceBlur[reference]!!.authoredBlurFunctionReference
         )
 
         assertSame(
@@ -252,27 +252,27 @@ class BlurRuleResolverTest {
         )
         val programBlur = ProgramBlur(
             targetTimeZone = "does not matter",
-            questionnaireResponseAuthored = BlurFunction.START_OF_DAY,
-            researchSubject = BlurFunction.END_OF_DAY
+            questionnaireResponseAuthoredBlurFunctionReference = BlurFunctionReference.START_OF_DAY,
+            researchSubjectBlurFunctionReference = BlurFunctionReference.END_OF_DAY
         )
         val fhirResourceBlur = mapOf(
             "somewhere over the rainbow|0.0.0" to QuestionnaireResponseBlur(
                 targetTimeZone = "does not matter",
-                questionnaireResponseAuthored = BlurFunction.START_OF_DAY,
+                authoredBlurFunctionReference = BlurFunctionReference.START_OF_DAY,
                 questionnaireResponseItemBlurs = listOf(
                     QuestionnaireResponseItemBlur(
                         linkId = "23",
-                        function = BlurFunction.END_OF_DAY
+                        blurFunctionReference = BlurFunctionReference.END_OF_DAY
                     )
                 )
             ),
             reference to QuestionnaireResponseBlur(
                 targetTimeZone = "here",
-                questionnaireResponseAuthored = BlurFunction.START_OF_MONTH,
+                authoredBlurFunctionReference = BlurFunctionReference.START_OF_MONTH,
                 questionnaireResponseItemBlurs = listOf(
                     QuestionnaireResponseItemBlur(
                         linkId = "42",
-                        function = BlurFunction.END_OF_MONTH
+                        blurFunctionReference = BlurFunctionReference.END_OF_MONTH
                     )
                 )
             )
@@ -293,7 +293,7 @@ class BlurRuleResolverTest {
 
         assertEquals(
             actual = result.questionnaireResponseAuthored,
-            expected = fhirResourceBlur[reference]!!.questionnaireResponseAuthored
+            expected = fhirResourceBlur[reference]!!.authoredBlurFunctionReference
         )
 
         assertSame(
@@ -303,7 +303,7 @@ class BlurRuleResolverTest {
 
         assertEquals(
             actual = result.researchSubject,
-            expected = programBlur.researchSubject
+            expected = programBlur.researchSubjectBlurFunctionReference
         )
     }
 }

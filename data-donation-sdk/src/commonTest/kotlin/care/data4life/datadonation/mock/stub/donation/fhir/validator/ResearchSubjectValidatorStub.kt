@@ -26,7 +26,7 @@ internal class ResearchSubjectValidatorStub :
     MockContract.Stub {
     var whenIsAllowed: ((FhirResearchSubject, String) -> Boolean)? = null
 
-    override fun isAllowed(
+    override fun canBeDonated(
         resource: FhirResearchSubject,
         studyId: String
     ): Boolean {

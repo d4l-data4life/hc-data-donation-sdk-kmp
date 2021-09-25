@@ -28,7 +28,7 @@ internal class ObservationValidatorStub :
     MockContract.Stub {
     var whenIsAllowed: ((FhirObservation, Map<AllowedReference, QuestionnaireResponseBlur?>) -> Boolean)? = null
 
-    override fun isAllowed(
+    override fun canBeDonated(
         resource: FhirObservation,
         blurMapping: Map<AllowedReference, QuestionnaireResponseBlur?>
     ): Boolean {

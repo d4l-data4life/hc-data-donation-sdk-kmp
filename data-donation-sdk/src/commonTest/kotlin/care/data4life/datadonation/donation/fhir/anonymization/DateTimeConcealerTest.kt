@@ -16,7 +16,7 @@
 
 package care.data4life.datadonation.donation.fhir.anonymization
 
-import care.data4life.datadonation.donation.program.model.BlurFunction
+import care.data4life.datadonation.donation.program.model.BlurFunctionReference
 import care.data4life.hl7.fhir.common.datetime.XsDate
 import care.data4life.hl7.fhir.common.datetime.XsDateTime
 import care.data4life.hl7.fhir.common.datetime.XsTimeZone
@@ -38,7 +38,7 @@ class DateTimeConcealerTest {
         // Given
         val fhirDateTime = XsDateTimeParser.parse("2021-05-10T11:13:56.382Z")
         val location = "somewhere"
-        val function = BlurFunction.END_OF_MONTH
+        val function = BlurFunctionReference.END_OF_MONTH
 
         // When
         val result = DateTimeConcealer.blur(fhirDateTime, location, function)
@@ -57,7 +57,7 @@ class DateTimeConcealerTest {
             date = XsDate(2021, 5, 10)
         )
         val location = "Europe/Berlin"
-        val function = BlurFunction.START_OF_DAY
+        val function = BlurFunctionReference.START_OF_DAY
 
         // When
         val result = DateTimeConcealer.blur(fhirDateTime, location, function)
@@ -76,7 +76,7 @@ class DateTimeConcealerTest {
             timeZone = XsTimeZone(3)
         )
         val location = "Europe/Berlin"
-        val function = BlurFunction.START_OF_DAY
+        val function = BlurFunctionReference.START_OF_DAY
 
         // When
         val result = DateTimeConcealer.blur(fhirDateTime, location, function)
@@ -99,7 +99,7 @@ class DateTimeConcealerTest {
             timeZone = XsTimeZone(3)
         )
         val location = "Europe/Berlin"
-        val function = BlurFunction.START_OF_WEEK
+        val function = BlurFunctionReference.START_OF_WEEK
 
         // When
         val result = DateTimeConcealer.blur(fhirDateTime, location, function)
@@ -122,7 +122,7 @@ class DateTimeConcealerTest {
             date = XsDate(2021, 5, 10)
         )
         val location = "Europe/Berlin"
-        val function = BlurFunction.START_OF_WEEK
+        val function = BlurFunctionReference.START_OF_WEEK
 
         // When
         val result = DateTimeConcealer.blur(fhirDateTime, location, function)
@@ -141,7 +141,7 @@ class DateTimeConcealerTest {
             timeZone = XsTimeZone(3)
         )
         val location = "Europe/Berlin"
-        val function = BlurFunction.START_OF_MONTH
+        val function = BlurFunctionReference.START_OF_MONTH
 
         // When
         val result = DateTimeConcealer.blur(fhirDateTime, location, function)
@@ -165,7 +165,7 @@ class DateTimeConcealerTest {
             date = XsDate(2021, 5, 10)
         )
         val location = "Europe/Berlin"
-        val function = BlurFunction.START_OF_MONTH
+        val function = BlurFunctionReference.START_OF_MONTH
 
         // When
         val result = DateTimeConcealer.blur(fhirDateTime, location, function)
@@ -188,7 +188,7 @@ class DateTimeConcealerTest {
             timeZone = XsTimeZone(3)
         )
         val location = "Europe/Berlin"
-        val function = BlurFunction.END_OF_DAY
+        val function = BlurFunctionReference.END_OF_DAY
 
         // When
         val result = DateTimeConcealer.blur(fhirDateTime, location, function)
@@ -211,7 +211,7 @@ class DateTimeConcealerTest {
             date = XsDate(2021, 5, 10)
         )
         val location = "Europe/Berlin"
-        val function = BlurFunction.END_OF_DAY
+        val function = BlurFunctionReference.END_OF_DAY
 
         // When
         val result = DateTimeConcealer.blur(fhirDateTime, location, function)
@@ -230,7 +230,7 @@ class DateTimeConcealerTest {
             timeZone = XsTimeZone(3)
         )
         val location = "Europe/Berlin"
-        val function = BlurFunction.END_OF_WEEK
+        val function = BlurFunctionReference.END_OF_WEEK
 
         // When
         val result = DateTimeConcealer.blur(fhirDateTime, location, function)
@@ -253,7 +253,7 @@ class DateTimeConcealerTest {
             date = XsDate(2021, 5, 10)
         )
         val location = "Europe/Berlin"
-        val function = BlurFunction.END_OF_WEEK
+        val function = BlurFunctionReference.END_OF_WEEK
 
         // When
         val result = DateTimeConcealer.blur(fhirDateTime, location, function)
@@ -276,7 +276,7 @@ class DateTimeConcealerTest {
             timeZone = XsTimeZone(3)
         )
         val location = "Europe/Berlin"
-        val function = BlurFunction.END_OF_MONTH
+        val function = BlurFunctionReference.END_OF_MONTH
 
         // When
         val result = DateTimeConcealer.blur(fhirDateTime, location, function)
@@ -300,7 +300,7 @@ class DateTimeConcealerTest {
             date = XsDate(2021, 5, 10)
         )
         val location = "Europe/Berlin"
-        val function = BlurFunction.END_OF_MONTH
+        val function = BlurFunctionReference.END_OF_MONTH
 
         // When
         val result = DateTimeConcealer.blur(fhirDateTime, location, function)

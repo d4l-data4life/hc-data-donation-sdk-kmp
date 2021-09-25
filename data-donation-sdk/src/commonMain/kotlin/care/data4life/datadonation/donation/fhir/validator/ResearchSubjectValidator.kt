@@ -21,7 +21,7 @@ import care.data4life.datadonation.donation.fhir.validator.FhirResourceValidator
 import care.data4life.hl7.fhir.stu3.model.FhirResearchSubject
 
 internal object ResearchSubjectValidator : FhirResourceValidatorContract.ResearchSubjectValidator {
-    override fun isAllowed(
+    override fun canBeDonated(
         resource: FhirResearchSubject,
         studyId: String
     ): Boolean {

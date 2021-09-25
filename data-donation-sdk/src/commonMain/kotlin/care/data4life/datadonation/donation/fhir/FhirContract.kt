@@ -32,5 +32,5 @@ internal interface FhirContract {
         }
     }
 
-    interface Controller
+    interface Repository
 }

@@ -51,7 +51,7 @@ class ObservationValidatorTest {
         )
 
         // When
-        val result = ObservationValidator.isAllowed(
+        val result = ObservationValidator.canBeDonated(
             observation,
             blurMapping
         )
@@ -79,7 +79,7 @@ class ObservationValidatorTest {
         )
 
         // When
-        val result = ObservationValidator.isAllowed(
+        val result = ObservationValidator.canBeDonated(
             observation,
             blurMapping
         )
@@ -107,7 +107,7 @@ class ObservationValidatorTest {
         )
 
         // When
-        val result = ObservationValidator.isAllowed(
+        val result = ObservationValidator.canBeDonated(
             observation,
             blurMapping
         )
@@ -143,7 +143,7 @@ class ObservationValidatorTest {
         )
 
         // When
-        val result = ObservationValidator.isAllowed(
+        val result = ObservationValidator.canBeDonated(
             observation,
             blurMapping
         )
@@ -181,7 +181,7 @@ class ObservationValidatorTest {
         )
 
         // When
-        val result = ObservationValidator.isAllowed(
+        val result = ObservationValidator.canBeDonated(
             observation,
             blurMapping
         )
@@ -219,7 +219,7 @@ class ObservationValidatorTest {
         )
 
         // When
-        val result = ObservationValidator.isAllowed(
+        val result = ObservationValidator.canBeDonated(
             observation,
             blurMapping
         )
@@ -257,7 +257,7 @@ class ObservationValidatorTest {
         )
 
         // When
-        val result = ObservationValidator.isAllowed(
+        val result = ObservationValidator.canBeDonated(
             observation,
             blurMapping
         )
@@ -295,7 +295,7 @@ class ObservationValidatorTest {
         )
 
         // When
-        val result = ObservationValidator.isAllowed(
+        val result = ObservationValidator.canBeDonated(
             observation,
             blurMapping
         )

@@ -19,7 +19,7 @@ package care.data4life.datadonation.donation.fhir.anonymization
 import care.data4life.datadonation.donation.fhir.AllowedReference
 import care.data4life.datadonation.donation.fhir.anonymization.model.BlurModelContract
 import care.data4life.datadonation.donation.fhir.anonymization.model.BlurRule
-import care.data4life.datadonation.donation.program.model.BlurFunction
+import care.data4life.datadonation.donation.program.model.BlurFunctionReference
 import care.data4life.datadonation.donation.program.model.ProgramBlur
 import care.data4life.datadonation.donation.program.model.ProgramType
 import care.data4life.datadonation.donation.program.model.QuestionnaireResponseBlur
@@ -52,7 +52,7 @@ internal interface AnonymizationContract {
         fun blur(
             fhirDateTime: XsDateTime,
             targetTimeZone: TargetTimeZone,
-            function: BlurFunction
+            functionReference: BlurFunctionReference
         ): XsDateTime
     }
 

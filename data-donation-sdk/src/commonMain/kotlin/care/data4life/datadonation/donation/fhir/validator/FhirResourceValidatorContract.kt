@@ -25,21 +25,21 @@ import care.data4life.hl7.fhir.stu3.model.FhirResource
 
 internal interface FhirResourceValidatorContract {
     fun interface QuestionnaireResponseValidator {
-        fun isAllowed(
+        fun canBeDonated(
             resource: FhirQuestionnaireResponse,
             blurMapping: Map<AllowedReference, QuestionnaireResponseBlur?>
         ): Boolean
     }
 
     fun interface ObservationValidator {
-        fun isAllowed(
+        fun canBeDonated(
             resource: FhirObservation,
             blurMapping: Map<AllowedReference, QuestionnaireResponseBlur?>
         ): Boolean
     }
 
     fun interface ResearchSubjectValidator {
-        fun isAllowed(
+        fun canBeDonated(
             resource: FhirResearchSubject,
             studyId: String
         ): Boolean
@@ -51,7 +51,7 @@ internal interface FhirResourceValidatorContract {
     }
 
     interface ResourceValidator {
-        fun isAllowed(
+        fun canBeDonated(
             resource: FhirResource,
             studyId: String,
             blurMapping: Map<AllowedReference, QuestionnaireResponseBlur?>

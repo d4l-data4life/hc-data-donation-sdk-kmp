@@ -17,7 +17,7 @@
 package care.data4life.datadonation.donation.fhir.anonymization
 
 import care.data4life.datadonation.donation.fhir.anonymization.model.BlurModelContract.QuestionnaireResponseBlur
-import care.data4life.datadonation.donation.program.model.BlurFunction
+import care.data4life.datadonation.donation.program.model.BlurFunctionReference
 import care.data4life.datadonation.donation.program.model.ProgramType
 import care.data4life.datadonation.donation.program.model.QuestionnaireResponseItemBlur
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
@@ -96,7 +96,7 @@ internal class QuestionnaireResponseAnonymizer(
                 value = dateTimeConcealer.blur(
                     dateTime.value,
                     blurRule!!.targetTimeZone,
-                    itemBlur.function
+                    itemBlur.blurFunctionReference
                 )
             )
         } else {
@@ -140,7 +140,7 @@ internal class QuestionnaireResponseAnonymizer(
         blurRule: QuestionnaireResponseBlur?
     ): Boolean {
         return questionnaireResponse.authored is DateTime &&
-            blurRule?.questionnaireResponseAuthored is BlurFunction
+            blurRule?.questionnaireResponseAuthored is BlurFunctionReference
     }
 
     private fun blurAuthored(

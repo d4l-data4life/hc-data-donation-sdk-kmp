@@ -17,7 +17,7 @@
 package care.data4life.datadonation.donation.fhir.anonymization
 
 import care.data4life.datadonation.donation.fhir.anonymization.model.BlurModelContract.ResearchSubjectBlur
-import care.data4life.datadonation.donation.program.model.BlurFunction
+import care.data4life.datadonation.donation.program.model.BlurFunctionReference
 import care.data4life.hl7.fhir.stu3.model.Period
 import care.data4life.hl7.fhir.stu3.model.ResearchSubject
 
@@ -50,7 +50,7 @@ internal class ResearchSubjectAnonymizer(
         researchSubject: ResearchSubject,
         rule: ResearchSubjectBlur?
     ): Boolean {
-        return rule?.researchSubject is BlurFunction &&
+        return rule?.researchSubject is BlurFunctionReference &&
             researchSubject.period is Period
     }
 

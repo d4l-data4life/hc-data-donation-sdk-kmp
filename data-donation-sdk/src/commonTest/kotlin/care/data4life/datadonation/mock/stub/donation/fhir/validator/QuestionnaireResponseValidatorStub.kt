@@ -28,7 +28,7 @@ internal class QuestionnaireResponseValidatorStub :
     MockContract.Stub {
     var whenIsAllowed: ((FhirQuestionnaireResponse, Map<AllowedReference, QuestionnaireResponseBlur?>) -> Boolean)? = null
 
-    override fun isAllowed(
+    override fun canBeDonated(
         resource: FhirQuestionnaireResponse,
         blurMapping: Map<AllowedReference, QuestionnaireResponseBlur?>
     ): Boolean {

@@ -25,10 +25,10 @@ import care.data4life.hl7.fhir.stu3.model.FhirQuestionnaireResponse
 internal object BlurRuleResolver : AnonymizationContract.BlurRuleResolver {
     private fun findLocalBlurByFhirReference(
         reference: String?,
-        localResourceRule: Map<AllowedReference, QuestionnaireResponseBlur?>
+        fhirResourceRule: Map<AllowedReference, QuestionnaireResponseBlur?>
     ): QuestionnaireResponseBlur? {
         return if (reference is String) {
-            localResourceRule[reference]
+            fhirResourceRule[reference]
         } else {
             null
         }
@@ -43,9 +43,9 @@ internal object BlurRuleResolver : AnonymizationContract.BlurRuleResolver {
         return if (location is String) {
             BlurRule(
                 targetTimeZone = location,
-                questionnaireResponseAuthored = fhirResourceRule?.questionnaireResponseAuthored
-                    ?: programRule?.questionnaireResponseAuthored,
-                researchSubject = programRule?.researchSubject,
+                questionnaireResponseAuthored = fhirResourceRule?.authoredBlurFunctionReference
+                    ?: programRule?.questionnaireResponseAuthoredBlurFunctionReference,
+                researchSubject = programRule?.researchSubjectBlurFunctionReference,
                 questionnaireResponseItems = fhirResourceRule?.questionnaireResponseItemBlurs ?: emptyList()
             )
         } else {

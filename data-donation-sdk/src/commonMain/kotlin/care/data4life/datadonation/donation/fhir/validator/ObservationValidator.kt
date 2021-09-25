@@ -49,7 +49,7 @@ internal object ObservationValidator : FhirResourceValidatorContract.Observation
         }
     }
 
-    override fun isAllowed(
+    override fun canBeDonated(
         resource: FhirObservation,
         blurMapping: Map<AllowedReference, QuestionnaireResponseBlur?>
     ): Boolean {

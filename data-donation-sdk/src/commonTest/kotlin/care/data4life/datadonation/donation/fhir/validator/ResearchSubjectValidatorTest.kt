@@ -42,7 +42,7 @@ class ResearchSubjectValidatorTest {
         )
 
         // When
-        val result = ResearchSubjectValidator.isAllowed(
+        val result = ResearchSubjectValidator.canBeDonated(
             researchSubject,
             "Test"
         )
@@ -67,7 +67,7 @@ class ResearchSubjectValidatorTest {
         )
 
         // When
-        val result = ResearchSubjectValidator.isAllowed(
+        val result = ResearchSubjectValidator.canBeDonated(
             researchSubject,
             studyId
         )
@@ -93,7 +93,7 @@ class ResearchSubjectValidatorTest {
         )
 
         // When
-        val result = ResearchSubjectValidator.isAllowed(
+        val result = ResearchSubjectValidator.canBeDonated(
             researchSubject,
             studyId
         )
@@ -123,7 +123,7 @@ class ResearchSubjectValidatorTest {
         )
 
         // When
-        val result = ResearchSubjectValidator.isAllowed(
+        val result = ResearchSubjectValidator.canBeDonated(
             researchSubject,
             studyId
         )

@@ -28,15 +28,15 @@ internal class ResourceValidator(
     private val observationValidator: FhirResourceValidatorContract.ObservationValidator,
     private val researchSubjectValidator: FhirResourceValidatorContract.ResearchSubjectValidator
 ) : FhirResourceValidatorContract.ResourceValidator {
-    override fun isAllowed(
+    override fun canBeDonated(
         resource: FhirResource,
         studyId: String,
         blurMapping: Map<AllowedReference, QuestionnaireResponseBlur?>
     ): Boolean {
         return when (resource) {
-            is FhirQuestionnaireResponse -> questionnaireResponseValidator.isAllowed(resource, blurMapping)
-            is FhirObservation -> observationValidator.isAllowed(resource, blurMapping)
-            is FhirResearchSubject -> researchSubjectValidator.isAllowed(resource, studyId)
+            is FhirQuestionnaireResponse -> questionnaireResponseValidator.canBeDonated(resource, blurMapping)
+            is FhirObservation -> observationValidator.canBeDonated(resource, blurMapping)
+            is FhirResearchSubject -> researchSubjectValidator.canBeDonated(resource, studyId)
             else -> false
         }
     }

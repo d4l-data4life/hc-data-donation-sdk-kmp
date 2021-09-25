@@ -16,7 +16,7 @@
 
 package care.data4life.datadonation.donation.fhir.anonymization
 
-import care.data4life.datadonation.donation.program.model.BlurFunction
+import care.data4life.datadonation.donation.program.model.BlurFunctionReference
 import care.data4life.hl7.fhir.common.datetime.XsDate
 import care.data4life.hl7.fhir.common.datetime.XsDateTime
 import care.data4life.hl7.fhir.common.datetime.XsTime
@@ -100,46 +100,46 @@ internal object DateTimeConcealer : AnonymizationContract.DateTimeConcealer {
 
     private fun useStartOf(
         timeBundle: Pair<LocalDateTime, TimeZone>,
-        function: BlurFunction
+        functionReference: BlurFunctionReference
     ): LocalDateTime {
         val (dateTime, timeZone) = timeBundle
 
-        return when (function) {
-            BlurFunction.START_OF_WEEK -> dateTime.startOfWeek(timeZone)
-            BlurFunction.START_OF_MONTH -> dateTime.startOfMonth(timeZone)
+        return when (functionReference) {
+            BlurFunctionReference.START_OF_WEEK -> dateTime.startOfWeek(timeZone)
+            BlurFunctionReference.START_OF_MONTH -> dateTime.startOfMonth(timeZone)
             else -> dateTime.startOfDay(timeZone)
         }
     }
 
     private fun useEndOf(
         timeBundle: Pair<LocalDateTime, TimeZone>,
-        function: BlurFunction
+        functionReference: BlurFunctionReference
     ): LocalDateTime {
         val (dateTime, timeZone) = timeBundle
 
-        return when (function) {
-            BlurFunction.END_OF_WEEK -> dateTime.endOfWeek(timeZone)
-            BlurFunction.END_OF_MONTH -> dateTime.endOfMonth(timeZone)
+        return when (functionReference) {
+            BlurFunctionReference.END_OF_WEEK -> dateTime.endOfWeek(timeZone)
+            BlurFunctionReference.END_OF_MONTH -> dateTime.endOfMonth(timeZone)
             else -> dateTime.endOfDay(timeZone)
         }
     }
 
     private fun resolveRootBlurFunction(
         timeBundle: Pair<LocalDateTime, TimeZone>,
-        function: BlurFunction
+        functionReference: BlurFunctionReference
     ): LocalDateTime {
-        return if (function.value.startsWith("start")) {
-            useStartOf(timeBundle, function)
+        return if (functionReference.value.startsWith("start")) {
+            useStartOf(timeBundle, functionReference)
         } else {
-            useEndOf(timeBundle, function)
+            useEndOf(timeBundle, functionReference)
         }
     }
 
     private fun blurToXsDateTime(
         timeBundle: Pair<LocalDateTime, TimeZone>,
-        function: BlurFunction
+        functionReference: BlurFunctionReference
     ): XsDateTime {
-        val dateTime = resolveRootBlurFunction(timeBundle, function)
+        val dateTime = resolveRootBlurFunction(timeBundle, functionReference)
 
         return XsDateTime(
             date = XsDate(
@@ -232,12 +232,12 @@ internal object DateTimeConcealer : AnonymizationContract.DateTimeConcealer {
     override fun blur(
         fhirDateTime: XsDateTime,
         targetTimeZone: String,
-        function: BlurFunction
+        functionReference: BlurFunctionReference
     ): XsDateTime {
         val timeBundle = resolveDateTime(fhirDateTime, targetTimeZone)
 
         return if (timeBundle is Pair<*, *>) {
-            blurToXsDateTime(timeBundle, function)
+            blurToXsDateTime(timeBundle, functionReference)
         } else {
             fhirDateTime
         }

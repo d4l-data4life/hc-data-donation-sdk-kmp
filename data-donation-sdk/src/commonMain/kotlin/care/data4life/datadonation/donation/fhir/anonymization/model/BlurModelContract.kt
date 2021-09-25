@@ -17,18 +17,18 @@
 package care.data4life.datadonation.donation.fhir.anonymization.model
 
 import care.data4life.datadonation.donation.fhir.anonymization.TargetTimeZone
-import care.data4life.datadonation.donation.program.model.BlurFunction
+import care.data4life.datadonation.donation.program.model.BlurFunctionReference
 import care.data4life.datadonation.donation.program.model.QuestionnaireResponseItemBlur
 
 internal interface BlurModelContract {
     interface QuestionnaireResponseBlur {
         val targetTimeZone: TargetTimeZone
-        val questionnaireResponseAuthored: BlurFunction?
+        val questionnaireResponseAuthored: BlurFunctionReference?
         val questionnaireResponseItems: List<QuestionnaireResponseItemBlur>
     }
 
     interface ResearchSubjectBlur {
         val targetTimeZone: TargetTimeZone
-        val researchSubject: BlurFunction?
+        val researchSubject: BlurFunctionReference?
     }
 }

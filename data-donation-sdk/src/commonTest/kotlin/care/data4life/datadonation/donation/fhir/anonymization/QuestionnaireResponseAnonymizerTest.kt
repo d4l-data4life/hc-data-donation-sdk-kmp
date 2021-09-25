@@ -17,7 +17,7 @@
 package care.data4life.datadonation.donation.fhir.anonymization
 
 import care.data4life.datadonation.donation.fhir.anonymization.model.BlurRule
-import care.data4life.datadonation.donation.program.model.BlurFunction
+import care.data4life.datadonation.donation.program.model.BlurFunctionReference
 import care.data4life.datadonation.donation.program.model.ProgramType
 import care.data4life.datadonation.donation.program.model.QuestionnaireResponseItemBlur
 import care.data4life.datadonation.mock.stub.donation.fhir.anonymization.DateTimeConcealerStub
@@ -170,17 +170,17 @@ class QuestionnaireResponseAnonymizerTest {
 
         val rule = BlurRule(
             targetTimeZone = "somewhere",
-            questionnaireResponseAuthored = BlurFunction.END_OF_DAY
+            questionnaireResponseAuthored = BlurFunctionReference.END_OF_DAY
         )
 
         var capturedDateTime: XsDateTime? = null
         var capturedLocation: String? = null
-        var capturedBlurFunction: BlurFunction? = null
+        var capturedBlurFunctionReference: BlurFunctionReference? = null
 
         dateTimeSmearer.whenBlur = { delegatedDateTime, delegatedLocation, delegatedBlurFunction ->
             capturedDateTime = delegatedDateTime
             capturedLocation = delegatedLocation
-            capturedBlurFunction = delegatedBlurFunction
+            capturedBlurFunctionReference = delegatedBlurFunction
 
             bluredAuthoredDate
         }
@@ -214,7 +214,7 @@ class QuestionnaireResponseAnonymizerTest {
             expected = rule.targetTimeZone
         )
         assertSame(
-            actual = capturedBlurFunction,
+            actual = capturedBlurFunctionReference,
             expected = rule.questionnaireResponseAuthored
         )
     }
@@ -738,7 +738,7 @@ class QuestionnaireResponseAnonymizerTest {
             questionnaireResponseItems = listOf(
                 QuestionnaireResponseItemBlur(
                     linkId = "abc",
-                    function = BlurFunction.END_OF_WEEK
+                    blurFunctionReference = BlurFunctionReference.END_OF_WEEK
                 )
             )
         )
@@ -835,14 +835,14 @@ class QuestionnaireResponseAnonymizerTest {
 
         var capturedXsDateTime: XsDateTime? = null
         var capturedTargetZone: TargetTimeZone? = null
-        var capturedBlurFunction: BlurFunction? = null
+        var capturedBlurFunctionReference: BlurFunctionReference? = null
 
         val smearer = DateTimeConcealerStub()
 
         smearer.whenBlur = { delegatedXsDateTime, delegatedTargetZone, delegatedBlurFunction ->
             capturedXsDateTime = delegatedXsDateTime
             capturedTargetZone = delegatedTargetZone
-            capturedBlurFunction = delegatedBlurFunction
+            capturedBlurFunctionReference = delegatedBlurFunction
 
             expected
         }
@@ -852,11 +852,11 @@ class QuestionnaireResponseAnonymizerTest {
             questionnaireResponseItems = listOf(
                 QuestionnaireResponseItemBlur(
                     linkId = "match",
-                    function = BlurFunction.START_OF_DAY
+                    blurFunctionReference = BlurFunctionReference.START_OF_DAY
                 ),
                 QuestionnaireResponseItemBlur(
                     linkId = "match",
-                    function = BlurFunction.END_OF_MONTH
+                    blurFunctionReference = BlurFunctionReference.END_OF_MONTH
                 )
             )
         )
@@ -888,8 +888,8 @@ class QuestionnaireResponseAnonymizerTest {
             expected = rule.targetTimeZone
         )
         assertSame(
-            actual = capturedBlurFunction,
-            expected = rule.questionnaireResponseItems.first().function
+            actual = capturedBlurFunctionReference,
+            expected = rule.questionnaireResponseItems.first().blurFunctionReference
         )
     }
 }

@@ -18,20 +18,20 @@ package care.data4life.datadonation.mock.stub.donation.fhir.anonymization
 
 import care.data4life.datadonation.donation.fhir.anonymization.AnonymizationContract
 import care.data4life.datadonation.donation.fhir.anonymization.TargetTimeZone
-import care.data4life.datadonation.donation.program.model.BlurFunction
+import care.data4life.datadonation.donation.program.model.BlurFunctionReference
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 import care.data4life.hl7.fhir.common.datetime.XsDateTime
 
 internal class DateTimeConcealerStub : AnonymizationContract.DateTimeConcealer, MockContract.Stub {
-    var whenBlur: ((XsDateTime, TargetTimeZone, BlurFunction) -> XsDateTime)? = null
+    var whenBlur: ((XsDateTime, TargetTimeZone, BlurFunctionReference) -> XsDateTime)? = null
 
     override fun blur(
         fhirDateTime: XsDateTime,
         targetTimeZone: TargetTimeZone,
-        function: BlurFunction
+        functionReference: BlurFunctionReference
     ): XsDateTime {
-        return whenBlur?.invoke(fhirDateTime, targetTimeZone, function) ?: throw MockException()
+        return whenBlur?.invoke(fhirDateTime, targetTimeZone, functionReference) ?: throw MockException()
     }
 
     override fun clear() {

@@ -16,7 +16,7 @@
 
 package care.data4life.datadonation.donation.fhir
 
-import care.data4life.datadonation.donation.program.model.BlurFunction
+import care.data4life.datadonation.donation.program.model.BlurFunctionReference
 import care.data4life.datadonation.donation.program.model.FhirResourceConfiguration
 import care.data4life.datadonation.donation.program.model.QuestionnaireResponseBlur
 import care.data4life.datadonation.donation.program.model.QuestionnaireResponseItemBlur
@@ -55,11 +55,11 @@ class FhirResourceBlurMapperTest {
                 url = "somewhere over the rainbow",
                 fhirBlur = QuestionnaireResponseBlur(
                     targetTimeZone = "does not matter",
-                    questionnaireResponseAuthored = BlurFunction.START_OF_DAY,
+                    authoredBlurFunctionReference = BlurFunctionReference.START_OF_DAY,
                     questionnaireResponseItemBlurs = listOf(
                         QuestionnaireResponseItemBlur(
                             linkId = "23",
-                            function = BlurFunction.END_OF_DAY
+                            blurFunctionReference = BlurFunctionReference.END_OF_DAY
                         )
                     )
                 )
@@ -87,11 +87,11 @@ class FhirResourceBlurMapperTest {
                 versions = listOf("0.0.0", "0.1.0", "1.42.23"),
                 fhirBlur = QuestionnaireResponseBlur(
                     targetTimeZone = "does not matter",
-                    questionnaireResponseAuthored = BlurFunction.START_OF_DAY,
+                    authoredBlurFunctionReference = BlurFunctionReference.START_OF_DAY,
                     questionnaireResponseItemBlurs = listOf(
                         QuestionnaireResponseItemBlur(
                             linkId = "23",
-                            function = BlurFunction.END_OF_DAY
+                            blurFunctionReference = BlurFunctionReference.END_OF_DAY
                         )
                     )
                 )

@@ -65,7 +65,7 @@ class ResourceValidatorTest {
             QuestionnaireResponseValidatorStub(),
             ObservationValidatorStub(),
             ResearchSubjectValidatorStub()
-        ).isAllowed(resource, studyId, mapping)
+        ).canBeDonated(resource, studyId, mapping)
 
         // Then
         assertFalse(result)
@@ -101,7 +101,7 @@ class ResourceValidatorTest {
             questionnaireResponseValidator,
             ObservationValidatorStub(),
             ResearchSubjectValidatorStub()
-        ).isAllowed(resource, studyId, mapping)
+        ).canBeDonated(resource, studyId, mapping)
 
         // Then
         assertEquals(
@@ -150,7 +150,7 @@ class ResourceValidatorTest {
             QuestionnaireResponseValidatorStub(),
             observationValidator,
             ResearchSubjectValidatorStub()
-        ).isAllowed(resource, studyId, mapping)
+        ).canBeDonated(resource, studyId, mapping)
 
         // Then
         assertEquals(
@@ -200,7 +200,7 @@ class ResourceValidatorTest {
             QuestionnaireResponseValidatorStub(),
             ObservationValidatorStub(),
             researchSubjectValidator
-        ).isAllowed(resource, studyId, mapping)
+        ).canBeDonated(resource, studyId, mapping)
 
         // Then
         assertEquals(

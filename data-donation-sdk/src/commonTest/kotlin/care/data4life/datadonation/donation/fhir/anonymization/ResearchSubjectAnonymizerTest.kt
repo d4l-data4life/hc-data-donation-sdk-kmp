@@ -17,7 +17,7 @@
 package care.data4life.datadonation.donation.fhir.anonymization
 
 import care.data4life.datadonation.donation.fhir.anonymization.model.BlurRule
-import care.data4life.datadonation.donation.program.model.BlurFunction
+import care.data4life.datadonation.donation.program.model.BlurFunctionReference
 import care.data4life.datadonation.mock.stub.donation.fhir.anonymization.DateTimeConcealerStub
 import care.data4life.hl7.fhir.common.datetime.XsDate
 import care.data4life.hl7.fhir.common.datetime.XsDateTime
@@ -95,7 +95,7 @@ class ResearchSubjectAnonymizerTest {
 
         val rule = BlurRule(
             targetTimeZone = "any",
-            researchSubject = BlurFunction.START_OF_DAY
+            researchSubject = BlurFunctionReference.START_OF_DAY
         )
         // When
         val result = ResearchSubjectAnonymizer(
@@ -121,7 +121,7 @@ class ResearchSubjectAnonymizerTest {
 
         val rule = BlurRule(
             targetTimeZone = "any",
-            researchSubject = BlurFunction.START_OF_DAY
+            researchSubject = BlurFunctionReference.START_OF_DAY
         )
         // When
         val result = ResearchSubjectAnonymizer(
@@ -154,21 +154,21 @@ class ResearchSubjectAnonymizerTest {
 
         var capturedXsDateTime: XsDateTime? = null
         var capturedTargetZone: TargetTimeZone? = null
-        var capturedBlurFunction: BlurFunction? = null
+        var capturedBlurFunctionReference: BlurFunctionReference? = null
 
         val concealer = DateTimeConcealerStub()
 
         concealer.whenBlur = { delegatedXsDateTime, delegatedTargetZone, delegatedBlurFunction ->
             capturedXsDateTime = delegatedXsDateTime
             capturedTargetZone = delegatedTargetZone
-            capturedBlurFunction = delegatedBlurFunction
+            capturedBlurFunctionReference = delegatedBlurFunction
 
             expected
         }
 
         val rule = BlurRule(
             targetTimeZone = "any",
-            researchSubject = BlurFunction.START_OF_DAY
+            researchSubject = BlurFunctionReference.START_OF_DAY
         )
         // When
         val result = ResearchSubjectAnonymizer(concealer).anonymize(
@@ -197,7 +197,7 @@ class ResearchSubjectAnonymizerTest {
             expected = rule.targetTimeZone
         )
         assertSame(
-            actual = capturedBlurFunction,
+            actual = capturedBlurFunctionReference,
             expected = rule.researchSubject
         )
     }
@@ -218,21 +218,21 @@ class ResearchSubjectAnonymizerTest {
 
         var capturedXsDateTime: XsDateTime? = null
         var capturedTargetZone: TargetTimeZone? = null
-        var capturedBlurFunction: BlurFunction? = null
+        var capturedBlurFunctionReference: BlurFunctionReference? = null
 
         val concealer = DateTimeConcealerStub()
 
         concealer.whenBlur = { delegatedXsDateTime, delegatedTargetZone, delegatedBlurFunction ->
             capturedXsDateTime = delegatedXsDateTime
             capturedTargetZone = delegatedTargetZone
-            capturedBlurFunction = delegatedBlurFunction
+            capturedBlurFunctionReference = delegatedBlurFunction
 
             expected
         }
 
         val rule = BlurRule(
             targetTimeZone = "any",
-            researchSubject = BlurFunction.START_OF_DAY
+            researchSubject = BlurFunctionReference.START_OF_DAY
         )
         // When
         val result = ResearchSubjectAnonymizer(concealer).anonymize(
@@ -261,7 +261,7 @@ class ResearchSubjectAnonymizerTest {
             expected = rule.targetTimeZone
         )
         assertSame(
-            actual = capturedBlurFunction,
+            actual = capturedBlurFunctionReference,
             expected = rule.researchSubject
         )
     }
@@ -298,7 +298,7 @@ class ResearchSubjectAnonymizerTest {
 
         val rule = BlurRule(
             targetTimeZone = "any",
-            researchSubject = BlurFunction.START_OF_DAY
+            researchSubject = BlurFunctionReference.START_OF_DAY
         )
         // When
         val result = ResearchSubjectAnonymizer(concealer).anonymize(

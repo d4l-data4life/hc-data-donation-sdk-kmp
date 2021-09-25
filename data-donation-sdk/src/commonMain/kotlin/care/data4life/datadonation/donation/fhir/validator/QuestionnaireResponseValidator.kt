@@ -21,7 +21,7 @@ import care.data4life.datadonation.donation.program.model.QuestionnaireResponseB
 import care.data4life.hl7.fhir.stu3.model.FhirQuestionnaireResponse
 
 internal object QuestionnaireResponseValidator : FhirResourceValidatorContract.QuestionnaireResponseValidator {
-    override fun isAllowed(
+    override fun canBeDonated(
         resource: FhirQuestionnaireResponse,
         blurMapping: Map<AllowedReference, QuestionnaireResponseBlur?>
     ): Boolean {
