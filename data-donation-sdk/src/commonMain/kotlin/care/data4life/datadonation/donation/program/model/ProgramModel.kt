@@ -30,7 +30,7 @@ enum class BlurFunction(val value: String) {
     END_OF_MONTH("endOfMonth")
 }
 
-@Serializable(with = BlurFunctionSerializer::class)
+@Serializable(with = RevocationModeSerializer::class)
 enum class RevocationMode(val value: String) {
     DELETE("delete"),
     ANONYMIZE("anonymize")

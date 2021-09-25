@@ -77,7 +77,7 @@ kotlin -version
 
 === Android Studio
 
-For better interop with iOS you may install the link:https://plugins.jetbrains.com/plugin/14936-kotlin-multiplatform-mobile[KMM plugin for Android Studio]. It let's you run, test and debug shared code on Android and iOS without switching the IDEs.
+For better interop with iOS you may install the link:https://plugins.jetbrains.com/plugin/14936-kotlin-multiplatform-mobile[Kotlin Multiplaform Mobile (KMM) plugin for Android Studio]. It let's you run, test and debug shared code on Android and iOS without switching the IDEs.
 
 == Development Process
 
@@ -115,7 +115,7 @@ A release branches of from `main` branch with following pattern:
 Add following changes:
 
 * Update CHANGELOG.adoc by creating a new Unreleased section and change current unreleased to release version
-* Update README.adoc to release version
+* Update README.adoc `project-version` to release version
 * Update the latest release badge link:assets/images/badges.adoc[HowTo]
 
 Releases are automatically created when a tag in the form of `v{major}.{minor}.{patch}` is added.

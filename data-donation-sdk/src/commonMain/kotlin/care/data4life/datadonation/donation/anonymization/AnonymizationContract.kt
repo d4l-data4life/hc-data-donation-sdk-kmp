@@ -49,11 +49,11 @@ internal interface AnonymizationContract {
         }
     }
 
-    fun interface DateTimeSmearer {
+    fun interface DateTimeConcealer {
         fun blur(
             fhirDateTime: XsDateTime,
             targetTimeZone: TargetTimeZone,
-            rule: BlurFunction
+            function: BlurFunction
         ): XsDateTime
     }
 
