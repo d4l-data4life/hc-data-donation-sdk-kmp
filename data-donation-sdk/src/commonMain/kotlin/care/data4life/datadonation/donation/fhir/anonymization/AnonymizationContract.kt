@@ -18,7 +18,8 @@ package care.data4life.datadonation.donation.fhir.anonymization
 
 import care.data4life.datadonation.donation.fhir.AllowedReference
 import care.data4life.datadonation.donation.fhir.anonymization.model.BlurModelContract
-import care.data4life.datadonation.donation.fhir.anonymization.model.BlurRule
+import care.data4life.datadonation.donation.fhir.anonymization.model.QuestionnaireResponseBlurRule
+import care.data4life.datadonation.donation.fhir.anonymization.model.ResearchSubjectBlurRule
 import care.data4life.datadonation.donation.program.model.BlurFunctionReference
 import care.data4life.datadonation.donation.program.model.ProgramBlur
 import care.data4life.datadonation.donation.program.model.ProgramType
@@ -40,12 +41,18 @@ internal interface AnonymizationContract {
         }
     }
 
-    interface BlurRuleResolver {
+    interface QuestionnaireResponseBlurRuleResolver {
         fun resolveBlurRule(
-            fhirResource: FhirQuestionnaireResponse?,
+            questionnaireResponse: FhirQuestionnaireResponse,
             programRule: ProgramBlur?,
             fhirResourceConfigurations: Map<AllowedReference, QuestionnaireResponseBlur?>
-        ): BlurRule?
+        ): QuestionnaireResponseBlurRule?
+    }
+
+    interface ResearchSubjectBlurRuleResolver {
+        fun resolveBlurRule(
+            programRule: ProgramBlur?,
+        ): ResearchSubjectBlurRule?
     }
 
     fun interface DateTimeConcealer {

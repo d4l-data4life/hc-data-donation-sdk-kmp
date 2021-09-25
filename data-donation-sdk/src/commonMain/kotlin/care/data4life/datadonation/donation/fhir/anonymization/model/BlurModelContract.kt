@@ -21,14 +21,16 @@ import care.data4life.datadonation.donation.program.model.BlurFunctionReference
 import care.data4life.datadonation.donation.program.model.QuestionnaireResponseItemBlur
 
 internal interface BlurModelContract {
-    interface QuestionnaireResponseBlur {
+    interface BlurRule {
         val targetTimeZone: TargetTimeZone
+    }
+
+    interface QuestionnaireResponseBlur : BlurRule {
         val questionnaireResponseAuthored: BlurFunctionReference?
         val questionnaireResponseItems: List<QuestionnaireResponseItemBlur>
     }
 
-    interface ResearchSubjectBlur {
-        val targetTimeZone: TargetTimeZone
-        val researchSubject: BlurFunctionReference?
+    interface ResearchSubjectBlur : BlurRule {
+        val researchSubject: BlurFunctionReference
     }
 }

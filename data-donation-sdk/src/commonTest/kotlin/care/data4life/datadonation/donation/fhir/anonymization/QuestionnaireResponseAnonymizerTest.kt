@@ -16,7 +16,7 @@
 
 package care.data4life.datadonation.donation.fhir.anonymization
 
-import care.data4life.datadonation.donation.fhir.anonymization.model.BlurRule
+import care.data4life.datadonation.donation.fhir.anonymization.model.QuestionnaireResponseBlurRule
 import care.data4life.datadonation.donation.program.model.BlurFunctionReference
 import care.data4life.datadonation.donation.program.model.ProgramType
 import care.data4life.datadonation.donation.program.model.QuestionnaireResponseItemBlur
@@ -97,8 +97,10 @@ class QuestionnaireResponseAnonymizerTest {
             )
         )
 
-        val rule = BlurRule(
-            targetTimeZone = "somewhere"
+        val rule = QuestionnaireResponseBlurRule(
+            targetTimeZone = "somewhere",
+            questionnaireResponseAuthored = null,
+            questionnaireResponseItems = emptyList()
         )
 
         // When
@@ -130,8 +132,10 @@ class QuestionnaireResponseAnonymizerTest {
             )
         )
 
-        val rule = BlurRule(
-            targetTimeZone = "somewhere"
+        val rule = QuestionnaireResponseBlurRule(
+            targetTimeZone = "somewhere",
+            questionnaireResponseAuthored = null,
+            questionnaireResponseItems = emptyList()
         )
 
         // When
@@ -166,18 +170,19 @@ class QuestionnaireResponseAnonymizerTest {
             )
         )
 
-        val dateTimeSmearer = DateTimeConcealerStub()
+        val dateTimeConcealer = DateTimeConcealerStub()
 
-        val rule = BlurRule(
+        val rule = QuestionnaireResponseBlurRule(
             targetTimeZone = "somewhere",
-            questionnaireResponseAuthored = BlurFunctionReference.END_OF_DAY
+            questionnaireResponseAuthored = BlurFunctionReference.END_OF_DAY,
+            questionnaireResponseItems = emptyList()
         )
 
         var capturedDateTime: XsDateTime? = null
         var capturedLocation: String? = null
         var capturedBlurFunctionReference: BlurFunctionReference? = null
 
-        dateTimeSmearer.whenBlur = { delegatedDateTime, delegatedLocation, delegatedBlurFunction ->
+        dateTimeConcealer.whenBlur = { delegatedDateTime, delegatedLocation, delegatedBlurFunction ->
             capturedDateTime = delegatedDateTime
             capturedLocation = delegatedLocation
             capturedBlurFunctionReference = delegatedBlurFunction
@@ -187,7 +192,7 @@ class QuestionnaireResponseAnonymizerTest {
 
         // When
         val result = QuestionnaireResponseAnonymizer(
-            dateTimeSmearer,
+            dateTimeConcealer,
             RedactorStub()
         ).anonymize(
             resource,
@@ -226,8 +231,10 @@ class QuestionnaireResponseAnonymizerTest {
             item = null
         )
 
-        val rule = BlurRule(
-            targetTimeZone = "somewhere"
+        val rule = QuestionnaireResponseBlurRule(
+            targetTimeZone = "somewhere",
+            questionnaireResponseAuthored = null,
+            questionnaireResponseItems = emptyList()
         )
 
         // When
@@ -251,8 +258,10 @@ class QuestionnaireResponseAnonymizerTest {
             item = listOf(questionnaireResponseItemTemplate)
         )
 
-        val rule = BlurRule(
-            targetTimeZone = "somewhere"
+        val rule = QuestionnaireResponseBlurRule(
+            targetTimeZone = "somewhere",
+            questionnaireResponseAuthored = null,
+            questionnaireResponseItems = emptyList()
         )
 
         // When
@@ -280,8 +289,10 @@ class QuestionnaireResponseAnonymizerTest {
             )
         )
 
-        val rule = BlurRule(
-            targetTimeZone = "somewhere"
+        val rule = QuestionnaireResponseBlurRule(
+            targetTimeZone = "somewhere",
+            questionnaireResponseAuthored = null,
+            questionnaireResponseItems = emptyList()
         )
 
         // When
@@ -309,8 +320,10 @@ class QuestionnaireResponseAnonymizerTest {
             )
         )
 
-        val rule = BlurRule(
-            targetTimeZone = "somewhere"
+        val rule = QuestionnaireResponseBlurRule(
+            targetTimeZone = "somewhere",
+            questionnaireResponseAuthored = null,
+            questionnaireResponseItems = emptyList()
         )
 
         // When
@@ -338,8 +351,10 @@ class QuestionnaireResponseAnonymizerTest {
             )
         )
 
-        val rule = BlurRule(
-            targetTimeZone = "somewhere"
+        val rule = QuestionnaireResponseBlurRule(
+            targetTimeZone = "somewhere",
+            questionnaireResponseAuthored = null,
+            questionnaireResponseItems = emptyList()
         )
 
         // When
@@ -376,8 +391,10 @@ class QuestionnaireResponseAnonymizerTest {
             )
         )
 
-        val rule = BlurRule(
-            targetTimeZone = "somewhere"
+        val rule = QuestionnaireResponseBlurRule(
+            targetTimeZone = "somewhere",
+            questionnaireResponseAuthored = null,
+            questionnaireResponseItems = emptyList()
         )
 
         // When
@@ -408,8 +425,10 @@ class QuestionnaireResponseAnonymizerTest {
             )
         )
 
-        val rule = BlurRule(
-            targetTimeZone = "somewhere"
+        val rule = QuestionnaireResponseBlurRule(
+            targetTimeZone = "somewhere",
+            questionnaireResponseAuthored = null,
+            questionnaireResponseItems = emptyList()
         )
 
         // When
@@ -437,8 +456,10 @@ class QuestionnaireResponseAnonymizerTest {
             )
         )
 
-        val rule = BlurRule(
-            targetTimeZone = "somewhere"
+        val rule = QuestionnaireResponseBlurRule(
+            targetTimeZone = "somewhere",
+            questionnaireResponseAuthored = null,
+            questionnaireResponseItems = emptyList()
         )
 
         // When
@@ -470,8 +491,10 @@ class QuestionnaireResponseAnonymizerTest {
 
         redactor.whenRedact = { it }
 
-        val rule = BlurRule(
-            targetTimeZone = "somewhere"
+        val rule = QuestionnaireResponseBlurRule(
+            targetTimeZone = "somewhere",
+            questionnaireResponseAuthored = null,
+            questionnaireResponseItems = emptyList()
         )
 
         // When
@@ -503,8 +526,10 @@ class QuestionnaireResponseAnonymizerTest {
 
         redactor.whenRedact = { it }
 
-        val rule = BlurRule(
-            targetTimeZone = "somewhere"
+        val rule = QuestionnaireResponseBlurRule(
+            targetTimeZone = "somewhere",
+            questionnaireResponseAuthored = null,
+            questionnaireResponseItems = emptyList()
         )
 
         // When
@@ -540,8 +565,10 @@ class QuestionnaireResponseAnonymizerTest {
 
         redactor.whenRedact = { it }
 
-        val rule = BlurRule(
-            targetTimeZone = "somewhere"
+        val rule = QuestionnaireResponseBlurRule(
+            targetTimeZone = "somewhere",
+            questionnaireResponseAuthored = null,
+            questionnaireResponseItems = emptyList()
         )
 
         // When
@@ -577,8 +604,10 @@ class QuestionnaireResponseAnonymizerTest {
 
         redactor.whenRedact = { it }
 
-        val rule = BlurRule(
-            targetTimeZone = "somewhere"
+        val rule = QuestionnaireResponseBlurRule(
+            targetTimeZone = "somewhere",
+            questionnaireResponseAuthored = null,
+            questionnaireResponseItems = emptyList()
         )
 
         // When
@@ -624,8 +653,10 @@ class QuestionnaireResponseAnonymizerTest {
             delegatedValueString
         }
 
-        val rule = BlurRule(
-            targetTimeZone = "somewhere"
+        val rule = QuestionnaireResponseBlurRule(
+            targetTimeZone = "somewhere",
+            questionnaireResponseAuthored = null,
+            questionnaireResponseItems = emptyList()
         )
 
         // When
@@ -675,8 +706,10 @@ class QuestionnaireResponseAnonymizerTest {
             expected
         }
 
-        val rule = BlurRule(
-            targetTimeZone = "somewhere"
+        val rule = QuestionnaireResponseBlurRule(
+            targetTimeZone = "somewhere",
+            questionnaireResponseAuthored = null,
+            questionnaireResponseItems = emptyList()
         )
 
         // When
@@ -725,16 +758,17 @@ class QuestionnaireResponseAnonymizerTest {
         redactor.whenRedact = { it }
 
         var wasCalled = false
-        val smearer = DateTimeConcealerStub()
+        val dateTimeConcealer = DateTimeConcealerStub()
 
-        smearer.whenBlur = { _, _, _ ->
+        dateTimeConcealer.whenBlur = { _, _, _ ->
             wasCalled = true
 
             expected.value
         }
 
-        val rule = BlurRule(
+        val rule = QuestionnaireResponseBlurRule(
             targetTimeZone = "somewhere",
+            questionnaireResponseAuthored = null,
             questionnaireResponseItems = listOf(
                 QuestionnaireResponseItemBlur(
                     linkId = "abc",
@@ -786,9 +820,9 @@ class QuestionnaireResponseAnonymizerTest {
         redactor.whenRedact = { it }
 
         var wasCalled = false
-        val smearer = DateTimeConcealerStub()
+        val dateTimeConcealer = DateTimeConcealerStub()
 
-        smearer.whenBlur = { _, _, _ ->
+        dateTimeConcealer.whenBlur = { _, _, _ ->
             wasCalled = true
 
             expected.value
@@ -837,9 +871,9 @@ class QuestionnaireResponseAnonymizerTest {
         var capturedTargetZone: TargetTimeZone? = null
         var capturedBlurFunctionReference: BlurFunctionReference? = null
 
-        val smearer = DateTimeConcealerStub()
+        val dateTimeConcealer = DateTimeConcealerStub()
 
-        smearer.whenBlur = { delegatedXsDateTime, delegatedTargetZone, delegatedBlurFunction ->
+        dateTimeConcealer.whenBlur = { delegatedXsDateTime, delegatedTargetZone, delegatedBlurFunction ->
             capturedXsDateTime = delegatedXsDateTime
             capturedTargetZone = delegatedTargetZone
             capturedBlurFunctionReference = delegatedBlurFunction
@@ -847,8 +881,9 @@ class QuestionnaireResponseAnonymizerTest {
             expected
         }
 
-        val rule = BlurRule(
+        val rule = QuestionnaireResponseBlurRule(
             targetTimeZone = "somewhere",
+            questionnaireResponseAuthored = null,
             questionnaireResponseItems = listOf(
                 QuestionnaireResponseItemBlur(
                     linkId = "match",
@@ -863,7 +898,7 @@ class QuestionnaireResponseAnonymizerTest {
 
         // When
         val result = QuestionnaireResponseAnonymizer(
-            smearer,
+            dateTimeConcealer,
             redactor
         ).anonymize(
             resource,

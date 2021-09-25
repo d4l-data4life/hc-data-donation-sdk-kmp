@@ -20,9 +20,13 @@ import care.data4life.datadonation.donation.fhir.anonymization.TargetTimeZone
 import care.data4life.datadonation.donation.program.model.BlurFunctionReference
 import care.data4life.datadonation.donation.program.model.QuestionnaireResponseItemBlur
 
-internal data class BlurRule(
+internal data class QuestionnaireResponseBlurRule(
     override val targetTimeZone: TargetTimeZone,
-    override val questionnaireResponseAuthored: BlurFunctionReference? = null,
-    override val questionnaireResponseItems: List<QuestionnaireResponseItemBlur> = emptyList(),
-    override val researchSubject: BlurFunctionReference? = null,
-) : BlurModelContract.QuestionnaireResponseBlur, BlurModelContract.ResearchSubjectBlur
+    override val questionnaireResponseAuthored: BlurFunctionReference?,
+    override val questionnaireResponseItems: List<QuestionnaireResponseItemBlur>,
+) : BlurModelContract.QuestionnaireResponseBlur
+
+internal data class ResearchSubjectBlurRule(
+    override val targetTimeZone: TargetTimeZone,
+    override val researchSubject: BlurFunctionReference,
+) : BlurModelContract.ResearchSubjectBlur

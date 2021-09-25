@@ -16,6 +16,7 @@
 
 package care.data4life.datadonation.donation.program.model
 
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.descriptors.PrimitiveKind
@@ -36,6 +37,7 @@ internal class ProgramTypeSerializerTest {
         assertTrue(serializer is KSerializer<*>)
     }
 
+    @ExperimentalSerializationApi
     @Test
     fun `It has a proper descriptor`() {
         assertEquals(
@@ -49,6 +51,7 @@ internal class ProgramTypeSerializerTest {
         )
     }
 
+    @ExperimentalSerializationApi
     @Test
     fun `Given a Serializer is called with a ProgramType, it encodes it`() {
         // Given
@@ -70,6 +73,7 @@ internal class ProgramTypeSerializerTest {
         }
     }
 
+    @ExperimentalSerializationApi
     @Test
     fun `Given a Serializer is called with a serialized ProgramType, it decodes it`() {
         // Given

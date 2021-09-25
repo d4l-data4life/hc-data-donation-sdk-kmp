@@ -25,7 +25,8 @@ import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
 import care.data4life.hl7.fhir.stu3.model.ResearchSubject
 
 internal class FhirAnonymizer(
-    private val blurResolver: AnonymizationContract.BlurRuleResolver,
+    private val researchSubjectResponseBlurResolver: AnonymizationContract.ResearchSubjectBlurRuleResolver,
+    private val questionnaireResponseBlurResolver: AnonymizationContract.QuestionnaireResponseBlurRuleResolver,
     private val questionnaireResponseAnonymizer: AnonymizationContract.QuestionnaireResponseAnonymizer,
     private val researchSubjectAnonymizer: AnonymizationContract.ResearchSubjectAnonymizer
 ) : AnonymizationContract.FhirAnonymizer {
@@ -35,8 +36,8 @@ internal class FhirAnonymizer(
         globalProgramRule: ProgramBlur?,
         localResourceRule: Map<AllowedReference, QuestionnaireResponseBlur?>
     ): QuestionnaireResponse {
-        val rule = blurResolver.resolveBlurRule(
-            fhirResource = questionnaireResponse,
+        val rule = questionnaireResponseBlurResolver.resolveBlurRule(
+            questionnaireResponse = questionnaireResponse,
             programRule = globalProgramRule,
             fhirResourceConfigurations = localResourceRule
         )
@@ -52,10 +53,8 @@ internal class FhirAnonymizer(
         researchSubject: ResearchSubject,
         programRule: ProgramBlur?
     ): ResearchSubject {
-        val rule = blurResolver.resolveBlurRule(
-            fhirResource = null,
+        val rule = researchSubjectResponseBlurResolver.resolveBlurRule(
             programRule = programRule,
-            fhirResourceConfigurations = emptyMap()
         )
 
         return researchSubjectAnonymizer.anonymize(

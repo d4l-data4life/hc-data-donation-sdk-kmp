@@ -71,6 +71,7 @@ internal data class ProgramBlur(
     @SerialName("authored")
     val questionnaireResponseAuthoredBlurFunctionReference: BlurFunctionReference? = null,
     @Contextual
+    @SerialName("researchSubject")
     val researchSubjectBlurFunctionReference: BlurFunctionReference? = null
 )
 

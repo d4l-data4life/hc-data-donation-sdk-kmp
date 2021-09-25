@@ -18,15 +18,17 @@ package care.data4life.datadonation.donation.fhir.anonymization
 
 import care.data4life.datadonation.donation.fhir.AllowedReference
 import care.data4life.datadonation.donation.fhir.anonymization.model.BlurModelContract
-import care.data4life.datadonation.donation.fhir.anonymization.model.BlurRule
+import care.data4life.datadonation.donation.fhir.anonymization.model.QuestionnaireResponseBlurRule
+import care.data4life.datadonation.donation.fhir.anonymization.model.ResearchSubjectBlurRule
 import care.data4life.datadonation.donation.program.model.BlurFunctionReference
 import care.data4life.datadonation.donation.program.model.ProgramBlur
 import care.data4life.datadonation.donation.program.model.ProgramType
 import care.data4life.datadonation.donation.program.model.QuestionnaireResponseBlur
 import care.data4life.datadonation.donation.program.model.QuestionnaireResponseItemBlur
-import care.data4life.datadonation.mock.stub.donation.fhir.anonymization.BlurRuleResolverStub
 import care.data4life.datadonation.mock.stub.donation.fhir.anonymization.QuestionnaireResponseAnonymizerStub
+import care.data4life.datadonation.mock.stub.donation.fhir.anonymization.QuestionnaireResponseBlurRuleResolverStub
 import care.data4life.datadonation.mock.stub.donation.fhir.anonymization.ResearchSubjectAnonymizerStub
+import care.data4life.datadonation.mock.stub.donation.fhir.anonymization.ResearchSubjectBlurRuleResolverStub
 import care.data4life.hl7.fhir.stu3.codesystem.QuestionnaireResponseStatus
 import care.data4life.hl7.fhir.stu3.codesystem.ResearchSubjectStatus
 import care.data4life.hl7.fhir.stu3.model.DomainResource
@@ -35,8 +37,6 @@ import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
 import care.data4life.hl7.fhir.stu3.model.Reference
 import care.data4life.hl7.fhir.stu3.model.ResearchSubject
 import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertNull
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
@@ -60,14 +60,15 @@ class FhirAnonymizerTest {
     )
 
     @Test
-    fun `It fulfils FhirDateTimeSmearer`() {
-        val smearer: Any = FhirAnonymizer(
-            BlurRuleResolverStub(),
+    fun `It fulfils FhirAnonymizer`() {
+        val anonymizer: Any = FhirAnonymizer(
+            ResearchSubjectBlurRuleResolverStub(),
+            QuestionnaireResponseBlurRuleResolverStub(),
             QuestionnaireResponseAnonymizerStub(),
             ResearchSubjectAnonymizerStub()
         )
 
-        assertTrue(smearer is AnonymizationContract.FhirAnonymizer)
+        assertTrue(anonymizer is AnonymizationContract.FhirAnonymizer)
     }
 
     @Test
@@ -77,7 +78,8 @@ class FhirAnonymizerTest {
 
         // When
         val result = FhirAnonymizer(
-            BlurRuleResolverStub(),
+            ResearchSubjectBlurRuleResolverStub(),
+            QuestionnaireResponseBlurRuleResolverStub(),
             QuestionnaireResponseAnonymizerStub(),
             ResearchSubjectAnonymizerStub()
         ).anonymize(resource, ProgramType.STUDY, programBlur, fhirResourceBlur)
@@ -99,13 +101,15 @@ class FhirAnonymizerTest {
 
         val expected = resource.copy(status = QuestionnaireResponseStatus.COMPLETED)
 
-        val blurResolver = BlurRuleResolverStub()
+        val blurResolver = QuestionnaireResponseBlurRuleResolverStub()
 
         val programBlur = this.programBlur.copy()
         val fhirResourceBlur = this.fhirResourceBlur.toMap()
 
-        val rule = BlurRule(
-            targetTimeZone = "somewhere"
+        val rule = QuestionnaireResponseBlurRule(
+            targetTimeZone = "somewhere",
+            questionnaireResponseAuthored = null,
+            questionnaireResponseItems = emptyList()
         )
 
         var capturedFhirResource: FhirResource? = null
@@ -136,6 +140,7 @@ class FhirAnonymizerTest {
 
         // When
         val result = FhirAnonymizer(
+            ResearchSubjectBlurRuleResolverStub(),
             blurResolver,
             questionnaireResponseAnonymizer,
             ResearchSubjectAnonymizerStub()
@@ -185,23 +190,20 @@ class FhirAnonymizerTest {
 
         val expected = resource.copy(status = ResearchSubjectStatus.COMPLETED)
 
-        val blurResolver = BlurRuleResolverStub()
+        val blurResolver = ResearchSubjectBlurRuleResolverStub()
 
         val programBlur = this.programBlur.copy()
         val fhirResourceBlur = this.fhirResourceBlur.toMap()
 
-        val rule = BlurRule(
-            targetTimeZone = "somewhere"
+        val rule = ResearchSubjectBlurRule(
+            targetTimeZone = "somewhere",
+            researchSubject = BlurFunctionReference.END_OF_DAY
         )
 
-        var capturedFhirResource: FhirResource? = null
         var capturedProgramBlurRule: ProgramBlur? = null
-        var capturedFhirResourceBlurRule: Map<AllowedReference, QuestionnaireResponseBlur?>? = null
 
-        blurResolver.whenResolveBlurRule = { delegatedFhirResource, delegatedGlobalRule, delegatedLocalRule ->
-            capturedFhirResource = delegatedFhirResource
-            capturedProgramBlurRule = delegatedGlobalRule
-            capturedFhirResourceBlurRule = delegatedLocalRule
+        blurResolver.whenResolveBlurRule = { delegatedProgramRule ->
+            capturedProgramBlurRule = delegatedProgramRule
 
             rule
         }
@@ -221,6 +223,7 @@ class FhirAnonymizerTest {
         // When
         val result = FhirAnonymizer(
             blurResolver,
+            QuestionnaireResponseBlurRuleResolverStub(),
             QuestionnaireResponseAnonymizerStub(),
             researchSubjectAnonymizer
         ).anonymize(resource, ProgramType.STUDY, programBlur, fhirResourceBlur)
@@ -231,14 +234,9 @@ class FhirAnonymizerTest {
             expected = expected
         )
 
-        assertNull(capturedFhirResource)
         assertSame(
             actual = capturedProgramBlurRule,
             expected = programBlur
-        )
-        assertEquals(
-            actual = capturedFhirResourceBlurRule,
-            expected = emptyMap()
         )
 
         assertSame(

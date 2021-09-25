@@ -29,14 +29,26 @@ class AnonymizationKoinTest {
     }
 
     @Test
-    fun `Given resolveAnonymizationKoinModule is called it creates a Module, which contains a BlurRuleResolver`() {
+    fun `Given resolveAnonymizationKoinModule is called it creates a Module, which contains a ResearchSubjectBlurRuleResolver`() {
         // When
         val koin = koinApplication {
             modules(resolveAnonymizationKoinModule())
         }
 
         // Then
-        val repo: AnonymizationContract.BlurRuleResolver = koin.koin.get()
+        val repo: AnonymizationContract.ResearchSubjectBlurRuleResolver = koin.koin.get()
+        assertNotNull(repo)
+    }
+
+    @Test
+    fun `Given resolveAnonymizationKoinModule is called it creates a Module, which contains a QuestionnaireResponseBlurRuleResolver`() {
+        // When
+        val koin = koinApplication {
+            modules(resolveAnonymizationKoinModule())
+        }
+
+        // Then
+        val repo: AnonymizationContract.QuestionnaireResponseBlurRuleResolver = koin.koin.get()
         assertNotNull(repo)
     }
 

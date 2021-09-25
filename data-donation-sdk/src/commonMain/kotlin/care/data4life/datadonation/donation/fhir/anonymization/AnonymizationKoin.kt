@@ -21,8 +21,12 @@ import org.koin.dsl.module
 
 internal fun resolveAnonymizationKoinModule(): Module {
     return module {
-        single<AnonymizationContract.BlurRuleResolver> {
-            BlurRuleResolver
+        single<AnonymizationContract.ResearchSubjectBlurRuleResolver> {
+            ResearchSubjectBlurRuleResolver
+        }
+
+        single<AnonymizationContract.QuestionnaireResponseBlurRuleResolver> {
+            QuestionnaireResponseBlurRuleResolver
         }
 
         single<AnonymizationContract.DateTimeConcealer> {
@@ -42,7 +46,7 @@ internal fun resolveAnonymizationKoinModule(): Module {
         }
 
         single<AnonymizationContract.FhirAnonymizer> {
-            FhirAnonymizer(get(), get(), get())
+            FhirAnonymizer(get(), get(), get(), get())
         }
     }
 }

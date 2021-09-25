@@ -18,25 +18,27 @@ package care.data4life.datadonation.mock.stub.donation.fhir.anonymization
 
 import care.data4life.datadonation.donation.fhir.AllowedReference
 import care.data4life.datadonation.donation.fhir.anonymization.AnonymizationContract
-import care.data4life.datadonation.donation.fhir.anonymization.model.BlurRule
+import care.data4life.datadonation.donation.fhir.anonymization.model.QuestionnaireResponseBlurRule
 import care.data4life.datadonation.donation.program.model.ProgramBlur
 import care.data4life.datadonation.donation.program.model.QuestionnaireResponseBlur
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 import care.data4life.hl7.fhir.stu3.model.FhirQuestionnaireResponse
 
-internal class BlurRuleResolverStub : AnonymizationContract.BlurRuleResolver, MockContract.Stub {
-    var whenResolveBlurRule: ((FhirQuestionnaireResponse?, ProgramBlur?, Map<AllowedReference, QuestionnaireResponseBlur?>) -> BlurRule?)? = null
+internal class QuestionnaireResponseBlurRuleResolverStub :
+    AnonymizationContract.QuestionnaireResponseBlurRuleResolver,
+    MockContract.Stub {
+    var whenResolveBlurRule: ((FhirQuestionnaireResponse, ProgramBlur?, Map<AllowedReference, QuestionnaireResponseBlur?>) -> QuestionnaireResponseBlurRule?)? = null
 
     override fun resolveBlurRule(
-        fhirResource: FhirQuestionnaireResponse?,
+        questionnaireResponse: FhirQuestionnaireResponse,
         programRule: ProgramBlur?,
         fhirResourceConfigurations: Map<AllowedReference, QuestionnaireResponseBlur?>
-    ): BlurRule? {
+    ): QuestionnaireResponseBlurRule? {
         return if (whenResolveBlurRule == null) {
             throw MockException()
         } else {
-            whenResolveBlurRule?.invoke(fhirResource, programRule, fhirResourceConfigurations)
+            whenResolveBlurRule?.invoke(questionnaireResponse, programRule, fhirResourceConfigurations)
         }
     }
 

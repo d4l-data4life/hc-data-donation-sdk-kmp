@@ -29,25 +29,25 @@ import kotlin.test.assertNull
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
-class BlurRuleResolverTest {
+class QuestionnaireResponseBlurRuleResolverTest {
     private val questionnaireResponseTemplate = QuestionnaireResponse(
         status = QuestionnaireResponseStatus.COMPLETED
     )
 
     @Test
-    fun `It fulfils BlurFunctionReslover`() {
-        val resolver: Any = BlurRuleResolver
+    fun `It fulfils QuestionnaireResponseBlurRuleResolver`() {
+        val resolver: Any = QuestionnaireResponseBlurRuleResolver
 
-        assertTrue(resolver is AnonymizationContract.BlurRuleResolver)
+        assertTrue(resolver is AnonymizationContract.QuestionnaireResponseBlurRuleResolver)
     }
 
     @Test
-    fun `Given resolveBlurRule is called with a QuestionnaireResponse, null as ProgramAnonymizationBlur and a empty List of ProgramResource it returns null`() {
+    fun `Given resolveBlurRule is called with a QuestionnaireResponse, null as ProgramBlur and a empty List of ProgramResource it returns null`() {
         // Given
         val questionnaireResponse = questionnaireResponseTemplate.copy()
 
         // When
-        val result = BlurRuleResolver.resolveBlurRule(
+        val result = QuestionnaireResponseBlurRuleResolver.resolveBlurRule(
             questionnaireResponse,
             null,
             emptyMap()
@@ -58,7 +58,7 @@ class BlurRuleResolverTest {
     }
 
     @Test
-    fun `Given resolveBlurRule is called with a QuestionnaireResponse, a ProgramAnonymizationBlur and a empty List of ProgramResource it returns a BlurRule provided by the ProgramAnonymization`() {
+    fun `Given resolveBlurRule is called with a QuestionnaireResponse, a ProgramBlur and a empty List of ProgramResource it returns a BlurRule provided by the ProgramAnonymization`() {
         // Given
         val questionnaireResponse = questionnaireResponseTemplate.copy()
         val programBlur = ProgramBlur(
@@ -68,7 +68,7 @@ class BlurRuleResolverTest {
         )
 
         // When
-        val result = BlurRuleResolver.resolveBlurRule(
+        val result = QuestionnaireResponseBlurRuleResolver.resolveBlurRule(
             questionnaireResponse,
             programBlur,
             emptyMap()
@@ -84,11 +84,6 @@ class BlurRuleResolverTest {
             actual = result.questionnaireResponseAuthored,
             expected = programBlur.questionnaireResponseAuthoredBlurFunctionReference
         )
-
-        assertEquals(
-            actual = result.researchSubject,
-            expected = programBlur.researchSubjectBlurFunctionReference
-        )
         assertEquals(
             actual = result.questionnaireResponseItems,
             expected = emptyList()
@@ -96,36 +91,7 @@ class BlurRuleResolverTest {
     }
 
     @Test
-    fun `Given resolveBlurRule is called with a null QuestionnaireResponse, null as ProgramAnonymizationBlur and a List of ProgramResource it returns null`() {
-        // Given
-        val questionnaireResponse = null
-        val programBlur = null
-        val fhirResourceBlur = mapOf(
-            "this is the one|1.0.0" to QuestionnaireResponseBlur(
-                targetTimeZone = "here",
-                authoredBlurFunctionReference = BlurFunctionReference.START_OF_MONTH,
-                questionnaireResponseItemBlurs = listOf(
-                    QuestionnaireResponseItemBlur(
-                        linkId = "42",
-                        blurFunctionReference = BlurFunctionReference.END_OF_MONTH
-                    )
-                )
-            )
-        )
-
-        // When
-        val result = BlurRuleResolver.resolveBlurRule(
-            questionnaireResponse,
-            programBlur,
-            fhirResourceBlur
-        )
-
-        // Then
-        assertNull(result)
-    }
-
-    @Test
-    fun `Given resolveBlurRule is called with a QuestionnaireResponse, null as ProgramAnonymizationBlur and a List of ProgramResource it returns null if no ProgramResource match the FHIRResource`() {
+    fun `Given resolveBlurRule is called with a QuestionnaireResponse, null as ProgramBlur and a List of ProgramResource it returns null if no ProgramResource match the FHIRResource`() {
         // Given
         val questionnaireResponse = questionnaireResponseTemplate.copy()
         val fhirResourceBlur = mapOf(
@@ -142,7 +108,7 @@ class BlurRuleResolverTest {
         )
 
         // When
-        val result = BlurRuleResolver.resolveBlurRule(
+        val result = QuestionnaireResponseBlurRuleResolver.resolveBlurRule(
             questionnaireResponse,
             null,
             fhirResourceBlur
@@ -153,7 +119,7 @@ class BlurRuleResolverTest {
     }
 
     @Test
-    fun `Given resolveBlurRule is called with a QuestionnaireResponse, null as ProgramAnonymizationBlur and a List of ProgramResource it returns null if the matching ProgramResource contains no location`() {
+    fun `Given resolveBlurRule is called with a QuestionnaireResponse, null as ProgramBlur and a List of ProgramResource it returns null if the matching ProgramResource contains no location`() {
         // Given
         val questionnaireResponse = questionnaireResponseTemplate.copy(
             questionnaire = Reference(
@@ -173,7 +139,7 @@ class BlurRuleResolverTest {
         )
 
         // When
-        val result = BlurRuleResolver.resolveBlurRule(
+        val result = QuestionnaireResponseBlurRuleResolver.resolveBlurRule(
             questionnaireResponse,
             null,
             fhirResourceBlur
@@ -184,7 +150,7 @@ class BlurRuleResolverTest {
     }
 
     @Test
-    fun `Given resolveBlurRule is called with a QuestionnaireResponse, null as ProgramAnonymizationBlur and a List of ProgramResource it resolves the Blur for the given FHIRResource and returns a BlurRule provided by the ProgramResource`() {
+    fun `Given resolveBlurRule is called with a QuestionnaireResponse, null as ProgramBlur and a List of ProgramResource it resolves the Blur for the given FHIRResource and returns a BlurRule provided by the ProgramResource`() {
         // Given
         val reference = "this is the one|1.0.0"
         val questionnaireResponse = questionnaireResponseTemplate.copy(
@@ -216,7 +182,7 @@ class BlurRuleResolverTest {
         )
 
         // When
-        val result = BlurRuleResolver.resolveBlurRule(
+        val result = QuestionnaireResponseBlurRuleResolver.resolveBlurRule(
             questionnaireResponse,
             null,
             fhirResourceBlur
@@ -237,12 +203,10 @@ class BlurRuleResolverTest {
             actual = result.questionnaireResponseItems,
             expected = fhirResourceBlur[reference]!!.questionnaireResponseItemBlurs
         )
-
-        assertNull(result.researchSubject)
     }
 
     @Test
-    fun `Given resolveBlurRule is called with a QuestionnaireResponse, ProgramAnonymizationBlur and a List of ProgramResource it merges both rulessets in favour of the ProgramResource`() {
+    fun `Given resolveBlurRule is called with a QuestionnaireResponse, ProgramBlur and a List of ProgramResource it merges both rulessets in favour of the ProgramResource`() {
         // Given
         val reference = "this is the one|1.0.0"
         val questionnaireResponse = questionnaireResponseTemplate.copy(
@@ -279,7 +243,7 @@ class BlurRuleResolverTest {
         )
 
         // When
-        val result = BlurRuleResolver.resolveBlurRule(
+        val result = QuestionnaireResponseBlurRuleResolver.resolveBlurRule(
             questionnaireResponse,
             programBlur,
             fhirResourceBlur
@@ -299,11 +263,6 @@ class BlurRuleResolverTest {
         assertSame(
             actual = result.questionnaireResponseItems,
             expected = fhirResourceBlur[reference]!!.questionnaireResponseItemBlurs
-        )
-
-        assertEquals(
-            actual = result.researchSubject,
-            expected = programBlur.researchSubjectBlurFunctionReference
         )
     }
 }

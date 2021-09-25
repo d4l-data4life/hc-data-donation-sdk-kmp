@@ -40,7 +40,7 @@ internal object ProgramFixture {
                 programBlur = ProgramBlur(
                     targetTimeZone = "Europe/Berlin",
                     questionnaireResponseAuthoredBlurFunctionReference = BlurFunctionReference.START_OF_DAY,
-                    researchSubjectBlurFunctionReference = BlurFunctionReference.START_OF_DAY
+                    researchSubjectBlurFunctionReference = BlurFunctionReference.START_OF_MONTH
                 )
             ),
             fhirResourceConfigurations = listOf(

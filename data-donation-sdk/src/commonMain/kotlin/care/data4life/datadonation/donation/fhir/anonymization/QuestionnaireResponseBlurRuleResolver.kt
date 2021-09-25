@@ -17,12 +17,12 @@
 package care.data4life.datadonation.donation.fhir.anonymization
 
 import care.data4life.datadonation.donation.fhir.AllowedReference
-import care.data4life.datadonation.donation.fhir.anonymization.model.BlurRule
+import care.data4life.datadonation.donation.fhir.anonymization.model.QuestionnaireResponseBlurRule
 import care.data4life.datadonation.donation.program.model.ProgramBlur
 import care.data4life.datadonation.donation.program.model.QuestionnaireResponseBlur
 import care.data4life.hl7.fhir.stu3.model.FhirQuestionnaireResponse
 
-internal object BlurRuleResolver : AnonymizationContract.BlurRuleResolver {
+internal object QuestionnaireResponseBlurRuleResolver : AnonymizationContract.QuestionnaireResponseBlurRuleResolver {
     private fun findLocalBlurByFhirReference(
         reference: String?,
         fhirResourceRule: Map<AllowedReference, QuestionnaireResponseBlur?>
@@ -37,15 +37,14 @@ internal object BlurRuleResolver : AnonymizationContract.BlurRuleResolver {
     private fun mergeRuleSets(
         programRule: ProgramBlur?,
         fhirResourceRule: QuestionnaireResponseBlur?
-    ): BlurRule? {
+    ): QuestionnaireResponseBlurRule? {
         val location = fhirResourceRule?.targetTimeZone ?: programRule?.targetTimeZone
 
         return if (location is String) {
-            BlurRule(
+            QuestionnaireResponseBlurRule(
                 targetTimeZone = location,
                 questionnaireResponseAuthored = fhirResourceRule?.authoredBlurFunctionReference
                     ?: programRule?.questionnaireResponseAuthoredBlurFunctionReference,
-                researchSubject = programRule?.researchSubjectBlurFunctionReference,
                 questionnaireResponseItems = fhirResourceRule?.questionnaireResponseItemBlurs ?: emptyList()
             )
         } else {
@@ -54,12 +53,12 @@ internal object BlurRuleResolver : AnonymizationContract.BlurRuleResolver {
     }
 
     override fun resolveBlurRule(
-        fhirResource: FhirQuestionnaireResponse?,
+        questionnaireResponse: FhirQuestionnaireResponse,
         programRule: ProgramBlur?,
         fhirResourceConfigurations: Map<AllowedReference, QuestionnaireResponseBlur?>
-    ): BlurRule? {
+    ): QuestionnaireResponseBlurRule? {
         val resourceRule = findLocalBlurByFhirReference(
-            fhirResource?.questionnaire?.reference,
+            questionnaireResponse.questionnaire?.reference,
             fhirResourceConfigurations
         )
 

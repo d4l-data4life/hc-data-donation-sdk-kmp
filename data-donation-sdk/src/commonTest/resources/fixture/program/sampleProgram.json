@@ -10,7 +10,7 @@
       "blur": {
         "location": "Europe/Berlin",
         "authored": "startOfDay",
-        "researchSubject": "startOfDay"
+        "researchSubject": "startOfMonth"
       }
     },
     "includeList": [],
