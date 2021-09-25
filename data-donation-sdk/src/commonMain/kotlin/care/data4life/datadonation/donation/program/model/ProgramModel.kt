@@ -45,26 +45,26 @@ internal data class QuestionnaireResponseItemBlur(
 )
 
 @Serializable
-internal data class ProgramFhirResourceBlur(
+internal data class QuestionnaireResponseBlur(
     @SerialName("location")
     val targetTimeZone: String? = null,
     @Contextual
     @SerialName("authored")
     val questionnaireResponseAuthored: BlurFunction? = null,
     @SerialName("items")
-    val itemBlurs: List<QuestionnaireResponseItemBlur>
+    val questionnaireResponseItemBlurs: List<QuestionnaireResponseItemBlur>
 )
 
 @Serializable
-internal data class ProgramFhirResourceConfiguration(
+internal data class FhirResourceConfiguration(
     val url: String,
     val versions: List<String>? = null,
     @SerialName("blur")
-    val fhirBlur: ProgramFhirResourceBlur? = null
+    val fhirBlur: QuestionnaireResponseBlur? = null
 )
 
 @Serializable
-internal data class ProgramAnonymizationGlobalBlur(
+internal data class ProgramBlur(
     @SerialName("location")
     val targetTimeZone: String,
     @Contextual
@@ -75,17 +75,18 @@ internal data class ProgramAnonymizationGlobalBlur(
 )
 
 @Serializable
-internal data class ProgramAnonymization(
+internal data class ProgramConfiguration(
     @SerialName("blur")
-    val globalBlur: ProgramAnonymizationGlobalBlur? = null
+    val programBlur: ProgramBlur? = null
 )
 
 @Serializable
 internal data class ProgramDonationConfiguration(
     val consentKey: String,
     @SerialName("resources")
-    val fhirResourceConfigurations: List<ProgramFhirResourceConfiguration>,
-    val anonymization: ProgramAnonymization? = null,
+    val fhirResourceConfigurations: List<FhirResourceConfiguration>,
+    @SerialName("anonymization")
+    val programConfiguration: ProgramConfiguration? = null,
     val triggerList: List<String>? = null,
     val delay: Double,
     val studyID: String,
