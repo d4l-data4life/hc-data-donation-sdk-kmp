@@ -26,7 +26,7 @@ internal class FhirAnonymizer(
     private val questionnaireResponseAnonymizer: AnonymizationContract.QuestionnaireResponseAnonymizer,
     private val researchSubjectAnonymizer: AnonymizationContract.ResearchSubjectAnonymizer
 ) : AnonymizationContract.FhirAnonymizer {
-    private fun anonymizeQuestionaireResponse(
+    private fun anonymizeQuestionnaireResponse(
         questionnaireResponse: QuestionnaireResponse,
         programConfiguration: ProgramDonationConfiguration
     ): QuestionnaireResponse {
@@ -63,7 +63,7 @@ internal class FhirAnonymizer(
         programConfiguration: ProgramDonationConfiguration
     ): FhirResource {
         return when (fhirResource) {
-            is QuestionnaireResponse -> anonymizeQuestionaireResponse(
+            is QuestionnaireResponse -> anonymizeQuestionnaireResponse(
                 fhirResource,
                 programConfiguration
             )

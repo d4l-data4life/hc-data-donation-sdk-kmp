@@ -16,6 +16,7 @@
 
 package care.data4life.datadonation.donation.anonymization
 
+import care.data4life.datadonation.donation.anonymization.model.BlurModelContract
 import care.data4life.datadonation.donation.anonymization.model.BlurRule
 import care.data4life.datadonation.donation.program.model.FhirResourceConfiguration
 import care.data4life.datadonation.donation.program.model.ProgramBlur
@@ -112,7 +113,7 @@ class FhirAnonymizerTest {
         val questionnaireResponseAnonymizer = QuestionnaireResponseAnonymizerStub()
 
         var capturedQuestionnaireResponse: QuestionnaireResponse? = null
-        var capturedBlurRule: BlurRule? = null
+        var capturedBlurRule: BlurModelContract.QuestionnaireResponseBlur? = null
 
         questionnaireResponseAnonymizer.whenAnonymize = { delegatedQuestionnaireResponse, delegatedRule ->
             capturedQuestionnaireResponse = delegatedQuestionnaireResponse
@@ -196,7 +197,7 @@ class FhirAnonymizerTest {
         val researchSubjectAnonymizer = ResearchSubjectAnonymizerStub()
 
         var capturedResearchSubject: ResearchSubject? = null
-        var capturedBlurRule: BlurRule? = null
+        var capturedBlurRule: BlurModelContract.ResearchSubjectBlur? = null
 
         researchSubjectAnonymizer.whenAnonymize = { delegatedResearchSubject, delegatedRule ->
             capturedResearchSubject = delegatedResearchSubject

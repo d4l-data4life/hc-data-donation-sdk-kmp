@@ -16,6 +16,7 @@
 
 package care.data4life.datadonation.donation.anonymization
 
+import care.data4life.datadonation.donation.anonymization.model.BlurModelContract
 import care.data4life.datadonation.donation.anonymization.model.BlurRule
 import care.data4life.datadonation.donation.program.model.BlurFunction
 import care.data4life.datadonation.donation.program.model.FhirResourceConfiguration
@@ -61,14 +62,14 @@ internal interface AnonymizationContract {
     interface QuestionnaireResponseAnonymizer {
         fun anonymize(
             questionnaireResponse: QuestionnaireResponse,
-            rule: BlurRule?
+            rule: BlurModelContract.QuestionnaireResponseBlur?
         ): QuestionnaireResponse
     }
 
     interface ResearchSubjectAnonymizer {
         fun anonymize(
             researchSubject: ResearchSubject,
-            rule: BlurRule?
+            rule: BlurModelContract.ResearchSubjectBlur?
         ): ResearchSubject
     }
 
