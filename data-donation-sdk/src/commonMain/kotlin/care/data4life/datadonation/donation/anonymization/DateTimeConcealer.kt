@@ -30,7 +30,7 @@ import kotlinx.datetime.plus
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 
-internal object DateTimeSmearer : AnonymizationContract.DateTimeSmearer {
+internal object DateTimeConcealer : AnonymizationContract.DateTimeConcealer {
     // see: https://github.com/moment/luxon/blob/9ef24d66e7a7737d9cb0146548c6c68d1606048b/src/datetime.js#L1411
     private fun LocalDateTime.startOfDay(timeZone: TimeZone): LocalDateTime {
         return this.toInstant(timeZone)
@@ -229,12 +229,12 @@ internal object DateTimeSmearer : AnonymizationContract.DateTimeSmearer {
     override fun blur(
         fhirDateTime: XsDateTime,
         location: String,
-        rule: BlurFunction
+        function: BlurFunction
     ): XsDateTime {
         val timeBundle = resolveDateTime(fhirDateTime, location)
 
         return if (timeBundle is Pair<*, *>) {
-            blurToXsDateTime(timeBundle, rule)
+            blurToXsDateTime(timeBundle, function)
         } else {
             fhirDateTime
         }

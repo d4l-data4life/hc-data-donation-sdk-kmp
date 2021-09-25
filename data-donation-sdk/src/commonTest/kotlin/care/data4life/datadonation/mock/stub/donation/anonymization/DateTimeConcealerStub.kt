@@ -22,11 +22,11 @@ import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 import care.data4life.hl7.fhir.common.datetime.XsDateTime
 
-internal class DateTimeSmearerStub : AnonymizationContract.DateTimeSmearer, MockContract.Stub {
+internal class DateTimeConcealerStub : AnonymizationContract.DateTimeConcealer, MockContract.Stub {
     var whenBlur: ((XsDateTime, String, BlurFunction) -> XsDateTime)? = null
 
-    override fun blur(fhirDateTime: XsDateTime, location: String, rule: BlurFunction): XsDateTime {
-        return whenBlur?.invoke(fhirDateTime, location, rule) ?: throw MockException()
+    override fun blur(fhirDateTime: XsDateTime, location: String, function: BlurFunction): XsDateTime {
+        return whenBlur?.invoke(fhirDateTime, location, function) ?: throw MockException()
     }
 
     override fun clear() {

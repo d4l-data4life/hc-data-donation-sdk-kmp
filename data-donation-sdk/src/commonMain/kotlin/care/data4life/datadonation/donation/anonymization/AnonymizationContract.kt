@@ -46,15 +46,15 @@ internal interface AnonymizationContract {
         }
     }
 
-    fun interface DateTimeSmearer {
+    fun interface DateTimeConcealer {
         fun blur(
             fhirDateTime: XsDateTime,
             location: String,
-            rule: BlurFunction
+            function: BlurFunction
         ): XsDateTime
     }
 
-    interface FhirSmearer {
+    interface FhirConcealer {
         fun blurFhirResource(
             fhirResource: FhirResource,
             programConfiguration: ProgramDonationConfiguration

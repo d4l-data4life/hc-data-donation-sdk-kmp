@@ -23,17 +23,17 @@ import care.data4life.hl7.fhir.stu3.model.FhirResource
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
 import care.data4life.hl7.fhir.stu3.primitive.DateTime
 
-internal class FhirSmearer(
+internal class FhirConcealer(
     private val blurResolver: AnonymizationContract.BlurRuleResolver,
-    private val dateTimeSmearer: AnonymizationContract.DateTimeSmearer
-) : AnonymizationContract.FhirSmearer {
+    private val dateTimeConcealer: AnonymizationContract.DateTimeConcealer
+) : AnonymizationContract.FhirConcealer {
     private fun blurAutored(
         questionnaireResponse: QuestionnaireResponse,
         blurRule: BlurRule
     ): QuestionnaireResponse {
         return questionnaireResponse.copy(
             authored = questionnaireResponse.authored!!.copy(
-                value = dateTimeSmearer.blur(
+                value = dateTimeConcealer.blur(
                     questionnaireResponse.authored!!.value,
                     blurRule.location,
                     blurRule.authored!!

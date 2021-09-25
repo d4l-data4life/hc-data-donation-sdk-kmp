@@ -23,7 +23,7 @@ import care.data4life.datadonation.donation.program.model.ProgramAnonymizationBl
 import care.data4life.datadonation.donation.program.model.ProgramDonationConfiguration
 import care.data4life.datadonation.donation.program.model.ProgramResource
 import care.data4life.datadonation.mock.stub.donation.anonymization.BlurRuleResolverStub
-import care.data4life.datadonation.mock.stub.donation.anonymization.DateTimeSmearerStub
+import care.data4life.datadonation.mock.stub.donation.anonymization.DateTimeConcealerStub
 import care.data4life.hl7.fhir.common.datetime.XsDate
 import care.data4life.hl7.fhir.common.datetime.XsDateTime
 import care.data4life.hl7.fhir.stu3.codesystem.QuestionnaireResponseStatus
@@ -36,7 +36,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
-class FhirSmearerTest {
+class FhirConcealerTest {
     private val programConfig = ProgramDonationConfiguration(
         consentKey = "xxx",
         resources = listOf(),
@@ -45,13 +45,13 @@ class FhirSmearerTest {
     )
 
     @Test
-    fun `It fulfils FhirDateTimeSmearer`() {
-        val smearer: Any = FhirSmearer(
+    fun `It fulfils FhirDateTimeConcealer`() {
+        val concealer: Any = FhirConcealer(
             BlurRuleResolverStub(),
-            DateTimeSmearerStub()
+            DateTimeConcealerStub()
         )
 
-        assertTrue(smearer is AnonymizationContract.FhirSmearer)
+        assertTrue(concealer is AnonymizationContract.FhirConcealer)
     }
 
     @Test
@@ -60,9 +60,9 @@ class FhirSmearerTest {
         val resource = DomainResource()
 
         // When
-        val result = FhirSmearer(
+        val result = FhirConcealer(
             BlurRuleResolverStub(),
-            DateTimeSmearerStub()
+            DateTimeConcealerStub()
         ).blurFhirResource(resource, programConfig)
 
         // Then
@@ -82,9 +82,9 @@ class FhirSmearerTest {
         blurResolver.whenResolveBlurRule = { _, _, _ -> null }
 
         // When
-        val result = FhirSmearer(
+        val result = FhirConcealer(
             blurResolver,
-            DateTimeSmearerStub()
+            DateTimeConcealerStub()
         ).blurFhirResource(resource, programConfig)
 
         // Then
@@ -132,9 +132,9 @@ class FhirSmearerTest {
         }
 
         // When
-        val result = FhirSmearer(
+        val result = FhirConcealer(
             blurResolver,
-            DateTimeSmearerStub()
+            DateTimeConcealerStub()
         ).blurFhirResource(resource, programConfig)
 
         // Then
@@ -198,9 +198,9 @@ class FhirSmearerTest {
         }
 
         // When
-        val result = FhirSmearer(
+        val result = FhirConcealer(
             blurResolver,
-            DateTimeSmearerStub()
+            DateTimeConcealerStub()
         ).blurFhirResource(resource, programConfig)
 
         // Then
@@ -239,7 +239,7 @@ class FhirSmearerTest {
         )
 
         val blurResolver = BlurRuleResolverStub()
-        val dateTimeSmearer = DateTimeSmearerStub()
+        val dateTimeConcealer = DateTimeConcealerStub()
 
         val programConfig = programConfig.copy(
             resources = listOf(ProgramResource(url = "123")),
@@ -272,7 +272,7 @@ class FhirSmearerTest {
         var capturedLocation: String? = null
         var capturedBlurFunction: BlurFunction? = null
 
-        dateTimeSmearer.whenBlur = { delegatedDateTime, delegatedLocation, delegatedBlurFunction ->
+        dateTimeConcealer.whenBlur = { delegatedDateTime, delegatedLocation, delegatedBlurFunction ->
             capturedDateTime = delegatedDateTime
             capturedLocation = delegatedLocation
             capturedBlurFunction = delegatedBlurFunction
@@ -281,9 +281,9 @@ class FhirSmearerTest {
         }
 
         // When
-        val result = FhirSmearer(
+        val result = FhirConcealer(
             blurResolver,
-            dateTimeSmearer
+            dateTimeConcealer
         ).blurFhirResource(resource, programConfig)
 
         // Then
