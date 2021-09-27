@@ -43,4 +43,53 @@ interface CompatibilityWrapperContract {
             value: XsDateTime
         ): DateTime<DateValue>
     }
+
+    interface QuestionnaireResponseItemAnswer<ItemValue : FhirVersion, AnswerValue : FhirVersion, DateValue : FhirVersion> :
+        FhirWrapper, Stripper<AnswerValue> {
+        val valueString: String?
+        val valueDateTime: DateTime<DateValue>?
+        val item: QuestionnaireResponseItemList<ItemValue, AnswerValue, DateValue>?
+
+        fun copy(
+            valueString: String?,
+            valueDateTime: DateTime<DateValue>?,
+            item: QuestionnaireResponseItemList<ItemValue, AnswerValue, DateValue>?
+        ): QuestionnaireResponseItemAnswer<ItemValue, AnswerValue, DateValue>
+    }
+
+    interface QuestionnaireResponseItemAnswerListIterator<ItemValue : FhirVersion, AnswerValue : FhirVersion, DateValue : FhirVersion> :
+        ListIterator<QuestionnaireResponseItemAnswer<ItemValue, AnswerValue, DateValue>> {
+
+        fun unwrap(): ListIterator<AnswerValue>
+    }
+
+    interface QuestionnaireResponseItemAnswerList<ItemValue : FhirVersion, AnswerValue : FhirVersion, DateValue : FhirVersion> :
+        List<QuestionnaireResponseItemAnswer<ItemValue, AnswerValue, DateValue>> {
+
+        fun unwrap(): List<AnswerValue>
+    }
+
+    interface QuestionnaireResponseItem<ItemValue : FhirVersion, AnswerValue : FhirVersion, DateValue : FhirVersion> :
+        FhirWrapper, Stripper<ItemValue> {
+        val linkId: String
+        val item: QuestionnaireResponseItemList<ItemValue, AnswerValue, DateValue>?
+        val answer: QuestionnaireResponseItemAnswerList<ItemValue, AnswerValue, DateValue>?
+
+        fun copy(
+            item: QuestionnaireResponseItemList<ItemValue, AnswerValue, DateValue>?,
+            answer: QuestionnaireResponseItemAnswerList<ItemValue, AnswerValue, DateValue>?
+        ): QuestionnaireResponseItem<ItemValue, AnswerValue, DateValue>
+    }
+
+    interface QuestionnaireResponseItemListIterator<ItemValue : FhirVersion, AnswerValue : FhirVersion, DateValue : FhirVersion> :
+        ListIterator<QuestionnaireResponseItem<ItemValue, AnswerValue, DateValue>> {
+
+        fun unwrap(): ListIterator<ItemValue>
+    }
+
+    interface QuestionnaireResponseItemList<ItemValue : FhirVersion, AnswerValue : FhirVersion, DateValue : FhirVersion> :
+        List<QuestionnaireResponseItem<ItemValue, AnswerValue, DateValue>> {
+
+        fun unwrap(): List<ItemValue>
+    }
 }
