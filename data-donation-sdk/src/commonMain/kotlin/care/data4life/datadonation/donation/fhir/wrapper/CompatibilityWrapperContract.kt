@@ -19,15 +19,19 @@ package care.data4life.datadonation.donation.fhir.wrapper
 import care.data4life.hl7.fhir.FhirVersion
 import care.data4life.hl7.fhir.common.datetime.XsDateTime
 
+internal typealias Fhir3DateTime = care.data4life.hl7.fhir.stu3.primitive.DateTime
 internal typealias Fhir3QuestionnaireResponse = care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
 internal typealias Fhir3QuestionnaireResponseItem = care.data4life.hl7.fhir.stu3.model.QuestionnaireResponseItem
 internal typealias Fhir3QuestionnaireResponseItemAnswer = care.data4life.hl7.fhir.stu3.model.QuestionnaireResponseItemAnswer
-internal typealias Fhir3DateTime = care.data4life.hl7.fhir.stu3.primitive.DateTime
+internal typealias Fhir3Period = care.data4life.hl7.fhir.stu3.model.Period
+internal typealias Fhir3ResearchSubject = care.data4life.hl7.fhir.stu3.model.ResearchSubject
 
+internal typealias Fhir4DateTime = care.data4life.hl7.fhir.r4.primitive.DateTime
 internal typealias Fhir4QuestionnaireResponse = care.data4life.hl7.fhir.r4.model.QuestionnaireResponse
 internal typealias Fhir4QuestionnaireResponseItem = care.data4life.hl7.fhir.r4.model.QuestionnaireResponseItem
 internal typealias Fhir4QuestionnaireResponseItemAnswer = care.data4life.hl7.fhir.r4.model.QuestionnaireResponseItemAnswer
-internal typealias Fhir4DateTime = care.data4life.hl7.fhir.r4.primitive.DateTime
+internal typealias Fhir4Period = care.data4life.hl7.fhir.r4.model.Period
+internal typealias Fhir4ResearchSubject = care.data4life.hl7.fhir.r4.model.ResearchSubject
 
 interface CompatibilityWrapperContract {
     interface Stripper<WrappedValue : FhirVersion> {
@@ -103,5 +107,28 @@ interface CompatibilityWrapperContract {
             item: QuestionnaireResponseItemList<ItemValue, AnswerValue, DateValue>?,
             authored: DateTime<DateValue>?
         ): QuestionnaireResponse<ResponseValue, ItemValue, AnswerValue, DateValue>
+    }
+
+    interface Period<PeriodValue : FhirVersion, DateValue : FhirVersion> {
+        val start: DateTime<DateValue>?
+        val end: DateTime<DateValue>?
+
+        fun copy(
+            start: DateTime<DateValue>?,
+            end: DateTime<DateValue>?
+        ): Period<PeriodValue, DateValue>
+    }
+
+    interface ResearchSubject<ResearchSubjectValue : FhirVersion, PeriodValue : FhirVersion, DateValue : FhirVersion>
+        : Stripper<ResearchSubjectValue> {
+        val studyIdentifierSystem: String?
+        val studyIdentifierValue: String?
+        val individualIdentifierSystem: String?
+
+        val period: Period<PeriodValue, DateValue>?
+
+        fun copy(
+            period: Period<PeriodValue, DateValue>?
+        ): ResearchSubject<ResearchSubjectValue, PeriodValue, DateValue>
     }
 }
