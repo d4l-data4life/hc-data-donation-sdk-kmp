@@ -92,4 +92,16 @@ interface CompatibilityWrapperContract {
 
         fun unwrap(): List<ItemValue>
     }
+
+    interface QuestionnaireResponse<ResponseValue : FhirVersion, ItemValue : FhirVersion, AnswerValue : FhirVersion, DateValue : FhirVersion> :
+        FhirWrapper, Stripper<ResponseValue> {
+        val questionnaireReference: String?
+        val item: QuestionnaireResponseItemList<ItemValue, AnswerValue, DateValue>?
+        val authored: DateTime<DateValue>?
+
+        fun copy(
+            item: QuestionnaireResponseItemList<ItemValue, AnswerValue, DateValue>?,
+            authored: DateTime<DateValue>?
+        ): QuestionnaireResponse<ResponseValue, ItemValue, AnswerValue, DateValue>
+    }
 }
