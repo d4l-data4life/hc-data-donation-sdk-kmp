@@ -27,7 +27,8 @@ internal interface PublicKeyServiceContract {
     @Serializable(with = KeyDomainSerializer::class)
     enum class KeyDomain(val domain: String) {
         DonationService("donation_public_key"),
-        ALP("alp_public_key")
+        ALP("alp_public_key"),
+        UNKNOWN("unknown")
     }
 
     interface ApiService {

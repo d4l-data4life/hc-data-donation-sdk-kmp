@@ -17,7 +17,6 @@
 package care.data4life.datadonation.donation.publickeyservice.model
 
 import care.data4life.datadonation.donation.publickeyservice.PublicKeyServiceContract
-import care.data4life.datadonation.error.CoreRuntimeError
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
@@ -40,7 +39,7 @@ internal object KeyDomainSerializer : KSerializer<PublicKeyServiceContract.KeyDo
     override fun deserialize(decoder: Decoder): PublicKeyServiceContract.KeyDomain {
         val key = decoder.decodeString()
         return mapping.getOrElse(key) {
-            throw CoreRuntimeError.InternalFailure("Unknown KeyDomain $key.")
+            PublicKeyServiceContract.KeyDomain.UNKNOWN
         }
     }
 }

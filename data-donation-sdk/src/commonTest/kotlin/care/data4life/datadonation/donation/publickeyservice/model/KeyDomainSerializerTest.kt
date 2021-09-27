@@ -17,7 +17,6 @@
 package care.data4life.datadonation.donation.publickeyservice.model
 
 import care.data4life.datadonation.donation.publickeyservice.PublicKeyServiceContract
-import care.data4life.datadonation.error.CoreRuntimeError
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.descriptors.PrimitiveKind
@@ -27,7 +26,6 @@ import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.contextual
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
@@ -74,7 +72,7 @@ internal class KeyDomainSerializerTest {
     }
 
     @Test
-    fun `Given a Serializer is called with a serialized KeyDomain, it fails with a Internal Failure if the blur function is unknown`() {
+    fun `Given a Serializer is called with a serialized KeyDomain, it returns UNKNOWN`() {
         // Given
         val serializer = Json {
             serializersModule = SerializersModule {
@@ -82,15 +80,13 @@ internal class KeyDomainSerializerTest {
             }
         }
 
-        // Then
-        val error = assertFailsWith<CoreRuntimeError.InternalFailure> {
-            // When
-            serializer.decodeFromString<PublicKeyServiceContract.KeyDomain>("\"notJS\"")
-        }
+        // When
+        val field = serializer.decodeFromString<PublicKeyServiceContract.KeyDomain>("\"notJS\"")
 
+        // Then
         assertEquals(
-            actual = error.message,
-            expected = "Unknown KeyDomain notJS."
+            actual = field,
+            expected = PublicKeyServiceContract.KeyDomain.UNKNOWN
         )
     }
 
