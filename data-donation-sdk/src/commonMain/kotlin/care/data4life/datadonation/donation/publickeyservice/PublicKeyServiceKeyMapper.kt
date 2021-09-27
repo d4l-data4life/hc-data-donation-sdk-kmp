@@ -25,13 +25,27 @@ import care.data4life.datadonation.error.CoreRuntimeError
 internal class PublicKeyServiceKeyMapper(
     private val environment: DataDonationSDK.Environment
 ) : PublicKeyServiceContract.Repository.KeyMapper {
-    private fun filterRawKeys(rawKeys: RawKeys): Pair<RawServiceCredentialKey, RawServiceCredentialKey> {
-        val keys = rawKeys.credentials.filter { rawKey -> environment == rawKey.environment }
+    private val knownDomains = listOf(
+        PublicKeyServiceContract.KeyDomain.DonationService,
+        PublicKeyServiceContract.KeyDomain.ALP
+    )
 
-        return if (keys.size != 2) {
+    private fun isApplicableKey(
+        rawKey: RawServiceCredentialKey
+    ): Boolean {
+        return environment == rawKey.environment &&
+            knownDomains.contains(rawKey.domain)
+    }
+
+    private fun filterRawKeys(
+        rawKeys: RawKeys
+    ): List<RawServiceCredentialKey> {
+        val keys = rawKeys.credentials.filter { rawKey -> isApplicableKey(rawKey) }
+
+        return if (keys.size != knownDomains.size) {
             throw CoreRuntimeError.MissingCredentials("Malformed credential source.")
         } else {
-            Pair(keys.first(), keys.last())
+            keys
         }
     }
 
@@ -52,9 +66,7 @@ internal class PublicKeyServiceKeyMapper(
         }
     }
 
-    private fun mapToPublicKey(serviceCredentialKeyPair: Pair<RawServiceCredentialKey, RawServiceCredentialKey>): ServiceCredentialKeys {
-        val keys = serviceCredentialKeyPair.toList()
-
+    private fun mapToPublicKey(keys: List<RawServiceCredentialKey>): ServiceCredentialKeys {
         return ServiceCredentialKeys(
             donationService = retrieveDomainKey(keys, PublicKeyServiceContract.KeyDomain.DonationService),
             alp = retrieveDomainKey(keys, PublicKeyServiceContract.KeyDomain.ALP)
