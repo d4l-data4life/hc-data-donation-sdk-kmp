@@ -14,13 +14,13 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.donation.consentsignature.model
+package care.data4life.datadonation.networking.plugin
 
-import kotlinx.serialization.Serializable
-
-@Serializable(with = ConsentSignatureTypeSerializer::class)
-internal enum class ConsentSignatureType(val value: String) {
-    CONSENT_ONCE("consentOnce"),
-    NORMAL_USE("normalUse"),
-    REVOKE_ONCE("revokeOnce")
+internal object HttpCustomContentTypeConfigurator : KtorPluginsContract.HttpCustomContentTypeConfigurator {
+    override fun configure(
+        pluginConfiguration: HttpCustomContentType.Config,
+        subConfiguration: Any?
+    ) {
+        pluginConfiguration.replacementHeader = KtorPluginsContract.CustomTypeHeader.replacementHeader
+    }
 }
