@@ -5,6 +5,7 @@ local.properties
 gen/
 */build/
 */build/*
+toMove/
 
 # IDEA/Android Studio ignores
 *iml
