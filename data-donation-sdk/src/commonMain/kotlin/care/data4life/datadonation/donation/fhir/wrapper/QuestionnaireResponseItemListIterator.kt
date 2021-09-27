@@ -18,7 +18,7 @@ package care.data4life.datadonation.donation.fhir.wrapper
 
 import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract.QuestionnaireResponseItem
 
-data class Fhir3QuestionnaireResponseItemListIteratorWrapper(
+internal class Fhir3QuestionnaireResponseItemListIteratorWrapper(
     private val iterator: ListIterator<Fhir3QuestionnaireResponseItem>
 ) : CompatibilityWrapperContract.QuestionnaireResponseItemListIterator<Fhir3QuestionnaireResponseItem, Fhir3QuestionnaireResponseItemAnswer, Fhir3DateTime> {
     override fun hasNext(): Boolean {
@@ -50,7 +50,7 @@ data class Fhir3QuestionnaireResponseItemListIteratorWrapper(
     }
 }
 
-data class Fhir4QuestionnaireResponseItemListIteratorWrapper(
+internal class Fhir4QuestionnaireResponseItemListIteratorWrapper(
     private val iterator: ListIterator<Fhir4QuestionnaireResponseItem>
 ) : CompatibilityWrapperContract.QuestionnaireResponseItemListIterator<Fhir4QuestionnaireResponseItem, Fhir4QuestionnaireResponseItemAnswer, Fhir4DateTime> {
     override fun hasNext(): Boolean {
