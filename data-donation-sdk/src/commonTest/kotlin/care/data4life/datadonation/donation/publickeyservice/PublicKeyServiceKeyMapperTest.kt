@@ -17,13 +17,11 @@
 package care.data4life.datadonation.donation.publickeyservice
 
 import care.data4life.datadonation.DataDonationSDK
-import care.data4life.datadonation.donation.publickeyservice.model.RawServiceCredentialKey
 import care.data4life.datadonation.error.CoreRuntimeError
 import care.data4life.datadonation.mock.fixture.PublicKeyServiceFixture
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
-import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 class PublicKeyServiceKeyMapperTest {
@@ -101,30 +99,6 @@ class PublicKeyServiceKeyMapperTest {
             actual = error.message,
             expected = "Malformed credential source - No ALPKey found."
         )
-    }
-
-    @Test
-    fun `Given mapKeys is called with RawKeys, it it ignores unknown Keys`() {
-        // Given
-        val rawKeys = PublicKeyServiceFixture.sampleRawKeys.copy(
-            credentials = PublicKeyServiceFixture.sampleRawKeys.credentials.toMutableList().also {
-                it.add(
-                    RawServiceCredentialKey(
-                        domain = PublicKeyServiceContract.KeyDomain.UNKNOWN,
-                        environment = DataDonationSDK.Environment.DEVELOPMENT,
-                        key = "Not important"
-                    ),
-                )
-            }
-        )
-
-        // When
-        val result = PublicKeyServiceKeyMapper(DataDonationSDK.Environment.DEVELOPMENT).mapKeys(
-            rawKeys
-        )
-
-        // Then
-        assertNotNull(result)
     }
 
     @Test
