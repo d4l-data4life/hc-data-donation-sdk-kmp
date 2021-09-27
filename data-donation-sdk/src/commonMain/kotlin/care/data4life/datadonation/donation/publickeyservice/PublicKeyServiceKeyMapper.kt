@@ -17,15 +17,15 @@
 package care.data4life.datadonation.donation.publickeyservice
 
 import care.data4life.datadonation.DataDonationSDK
-import care.data4life.datadonation.donation.publickeyservice.model.PublicKeys
-import care.data4life.datadonation.donation.publickeyservice.model.RawKey
 import care.data4life.datadonation.donation.publickeyservice.model.RawKeys
+import care.data4life.datadonation.donation.publickeyservice.model.RawServiceCredentialKey
+import care.data4life.datadonation.donation.publickeyservice.model.ServiceCredentialKeys
 import care.data4life.datadonation.error.CoreRuntimeError
 
 internal class PublicKeyServiceKeyMapper(
     private val environment: DataDonationSDK.Environment
 ) : PublicKeyServiceContract.Repository.KeyMapper {
-    private fun filterRawKeys(rawKeys: RawKeys): Pair<RawKey, RawKey> {
+    private fun filterRawKeys(rawKeys: RawKeys): Pair<RawServiceCredentialKey, RawServiceCredentialKey> {
         val keys = rawKeys.credentials.filter { rawKey -> environment == rawKey.environment }
 
         return if (keys.size != 2) {
@@ -36,14 +36,14 @@ internal class PublicKeyServiceKeyMapper(
     }
 
     private fun retrieveDomainKey(
-        keyPair: List<RawKey>,
+        serviceCredentialKeyPair: List<RawServiceCredentialKey>,
         domain: PublicKeyServiceContract.KeyDomain
     ): String {
-        val key = keyPair.find { rawKey ->
+        val key = serviceCredentialKeyPair.find { rawKey ->
             rawKey.domain == domain
         }
 
-        return if (key is RawKey) {
+        return if (key is RawServiceCredentialKey) {
             key.key
         } else {
             throw CoreRuntimeError.MissingCredentials(
@@ -52,16 +52,16 @@ internal class PublicKeyServiceKeyMapper(
         }
     }
 
-    private fun mapToPublicKey(keyPair: Pair<RawKey, RawKey>): PublicKeys {
-        val keys = keyPair.toList()
+    private fun mapToPublicKey(serviceCredentialKeyPair: Pair<RawServiceCredentialKey, RawServiceCredentialKey>): ServiceCredentialKeys {
+        val keys = serviceCredentialKeyPair.toList()
 
-        return PublicKeys(
+        return ServiceCredentialKeys(
             donationService = retrieveDomainKey(keys, PublicKeyServiceContract.KeyDomain.DonationService),
             alp = retrieveDomainKey(keys, PublicKeyServiceContract.KeyDomain.ALP)
         )
     }
 
-    override fun mapKeys(rawKeys: RawKeys): PublicKeys {
+    override fun mapKeys(rawKeys: RawKeys): ServiceCredentialKeys {
         val potentialKeys = filterRawKeys(rawKeys)
         return mapToPublicKey(potentialKeys)
     }

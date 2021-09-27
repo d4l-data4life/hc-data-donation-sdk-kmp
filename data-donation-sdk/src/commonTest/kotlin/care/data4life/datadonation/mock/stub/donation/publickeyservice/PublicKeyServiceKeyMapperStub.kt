@@ -17,15 +17,15 @@
 package care.data4life.datadonation.mock.stub.donation.publickeyservice
 
 import care.data4life.datadonation.donation.publickeyservice.PublicKeyServiceContract
-import care.data4life.datadonation.donation.publickeyservice.model.PublicKeys
 import care.data4life.datadonation.donation.publickeyservice.model.RawKeys
+import care.data4life.datadonation.donation.publickeyservice.model.ServiceCredentialKeys
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 
 internal class PublicKeyServiceKeyMapperStub : PublicKeyServiceContract.Repository.KeyMapper, MockContract.Stub {
-    var whenMapKeys: ((rawKeys: RawKeys) -> PublicKeys)? = null
+    var whenMapKeys: ((rawKeys: RawKeys) -> ServiceCredentialKeys)? = null
 
-    override fun mapKeys(rawKeys: RawKeys): PublicKeys {
+    override fun mapKeys(rawKeys: RawKeys): ServiceCredentialKeys {
         return whenMapKeys?.invoke(rawKeys) ?: throw MockException()
     }
 

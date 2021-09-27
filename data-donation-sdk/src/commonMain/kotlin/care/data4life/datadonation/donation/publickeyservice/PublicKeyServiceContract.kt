@@ -17,8 +17,8 @@
 package care.data4life.datadonation.donation.publickeyservice
 
 import care.data4life.datadonation.donation.publickeyservice.model.KeyDomainSerializer
-import care.data4life.datadonation.donation.publickeyservice.model.PublicKeys
 import care.data4life.datadonation.donation.publickeyservice.model.RawKeys
+import care.data4life.datadonation.donation.publickeyservice.model.ServiceCredentialKeys
 import care.data4life.datadonation.networking.HttpRuntimeError
 import io.ktor.http.Headers
 import kotlinx.serialization.Serializable
@@ -45,10 +45,10 @@ internal interface PublicKeyServiceContract {
     }
 
     interface Repository {
-        suspend fun fetchPublicKeys(): PublicKeys
+        suspend fun fetchPublicKeys(): ServiceCredentialKeys
 
         fun interface KeyMapper {
-            fun mapKeys(rawKeys: RawKeys): PublicKeys
+            fun mapKeys(rawKeys: RawKeys): ServiceCredentialKeys
         }
     }
 }
