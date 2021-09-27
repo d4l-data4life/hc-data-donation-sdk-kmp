@@ -108,7 +108,7 @@ actual class CryptoService actual constructor() : CryptoContract.Service {
         }
     }
 
-    private fun resolvePublicKey(key: String): GCKeyPair {
+    private fun resolvePrivateKey(key: String): GCKeyPair {
         val asymExchangeKey = ExchangeKey(
             type = KeyType.APP_PRIVATE_KEY,
             privateKey = key,
@@ -127,7 +127,7 @@ actual class CryptoService actual constructor() : CryptoContract.Service {
     ): ByteArray {
         val signer = GCSignatureKeyPair.fromGCKeyPair(
             algorithm = resolveSignatureAlgorithm(saltLength),
-            keyPair = resolvePublicKey(privateKey)
+            keyPair = resolvePrivateKey(privateKey)
         ).toSigningSignature()
 
         signer.update(payload)
