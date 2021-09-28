@@ -17,21 +17,19 @@
 package care.data4life.datadonation.mock.stub.donation.anonymization
 
 import care.data4life.datadonation.donation.anonymization.AnonymizationContract
-import care.data4life.datadonation.donation.anonymization.model.BlurModelContract.QuestionnaireResponseBlur
+import care.data4life.datadonation.donation.anonymization.model.BlurModelContract.ResearchSubjectBlur
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
-import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
+import care.data4life.hl7.fhir.stu3.model.ResearchSubject
 
-internal class QuestionnaireResponseAnonymizerStub :
-    AnonymizationContract.QuestionnaireResponseAnonymizer,
-    MockContract.Stub {
-    var whenAnonymize: ((questionnaireResponse: QuestionnaireResponse, rule: QuestionnaireResponseBlur?) -> QuestionnaireResponse)? = null
+internal class ResearchSubjectAnonymizerStub : AnonymizationContract.ResearchSubjectAnonymizer, MockContract.Stub {
+    var whenAnonymize: ((ResearchSubject, ResearchSubjectBlur?) -> ResearchSubject)? = null
 
     override fun anonymize(
-        questionnaireResponse: QuestionnaireResponse,
-        rule: QuestionnaireResponseBlur?
-    ): QuestionnaireResponse {
-        return whenAnonymize?.invoke(questionnaireResponse, rule) ?: throw MockException()
+        researchSubject: ResearchSubject,
+        rule: ResearchSubjectBlur?
+    ): ResearchSubject {
+        return whenAnonymize?.invoke(researchSubject, rule) ?: throw MockException()
     }
 
     override fun clear() {
