@@ -16,16 +16,15 @@
 
 import Foundation
 
-@objc public enum DataDonationCryptoObjCError: Int, Error, Equatable {
-    case couldNotCreateKeyPairFromData
-    case couldNotGenerateKeyPair
-    case couldNotFetchKeyPair
-    case couldNotDeleteKeyPair
-    case couldNotStoreKeyPair
-    
-    case couldNotEncryptData
-    case couldNotDecryptData
+@objc public final class DataDonationCryptoObjCFactory: NSObject {
 
-    case couldNotSignData
-    case couldNotVerifyData
+    @objc static public var dataDonationKeychainStore: DataDonationKeychainStoreObjCProtocol {
+        DataDonationKeychainStore()
+    }
+    @objc static public var dataDonationCryptor: DataDonationCryptorObjCProtocol {
+        DataDonationCryptor()
+    }
+    @objc static public var dataDonationSigner: DataDonationSignerObjCProtocol {
+        DataDonationSigner()
+    }
 }

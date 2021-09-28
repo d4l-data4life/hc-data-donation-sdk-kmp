@@ -15,17 +15,25 @@
 //
 
 import Foundation
+@testable import DataDonationCryptoObjC
+import Data4LifeCrypto
 
-@objc public enum DataDonationCryptoObjCError: Int, Error, Equatable {
-    case couldNotCreateKeyPairFromData
-    case couldNotGenerateKeyPair
-    case couldNotFetchKeyPair
-    case couldNotDeleteKeyPair
-    case couldNotStoreKeyPair
-    
-    case couldNotEncryptData
-    case couldNotDecryptData
+final class IVGeneratorMock: InitializationVectorGeneratorProtocol {
 
-    case couldNotSignData
-    case couldNotVerifyData
+    var isRandomIVCalled = false
+    var capturedRandomParameter: Int?
+    var whenRandom: ((Int) -> Result<Data, Error>)?
+    func randomIVData(of size: Int) -> Data {
+        isRandomIVCalled = true
+        capturedRandomParameter = size
+        if let result = whenRandom?(size), let iv = try? result.get() {
+            return iv
+        } else {
+            return defaultResult(of: size)
+        }
+    }
+
+    private func defaultResult(of size: Int) -> Data {
+        InitializationVectorGenerator().randomIVData(of: size)
+    }
 }

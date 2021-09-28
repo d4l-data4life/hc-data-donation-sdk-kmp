@@ -15,29 +15,8 @@
 //
 
 import Foundation
-import Data4LifeCrypto
 
-final class KeyFactory {
-
-    private let bundle: Foundation.Bundle
-
-    init(bundle: Foundation.Bundle = Bundle.current) {
-        self.bundle = bundle
-    }
-
-    lazy var keyPairData: Data = {
-        try! bundle.data(fromJSON: "donor-identity")
-    }()
-
-    lazy var keyPair: KeyPair = {
-        try! bundle.decodable(fromJSON: "donor-identity")
-    }()
-
-    var privateKey: AsymmetricKey {
-        keyPair.privateKey
-    }
-
-    var publicKey: AsymmetricKey {
-        keyPair.publicKey
-    }
+enum MockError: Error {
+    case random
+    case resultNotDefined
 }
