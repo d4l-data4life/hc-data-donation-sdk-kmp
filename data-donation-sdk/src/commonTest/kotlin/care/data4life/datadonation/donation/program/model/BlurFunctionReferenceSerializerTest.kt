@@ -17,6 +17,7 @@
 package care.data4life.datadonation.donation.program.model
 
 import care.data4life.datadonation.error.CoreRuntimeError
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.descriptors.PrimitiveKind
@@ -30,37 +31,39 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
-internal class BlurFunctionSerializerTest {
+internal class BlurFunctionReferenceSerializerTest {
     @Test
     fun `It fulfils KSerializer`() {
-        val serializer: Any = BlurFunctionSerializer
+        val serializer: Any = BlurFunctionReferenceSerializer
 
         assertTrue(serializer is KSerializer<*>)
     }
 
+    @ExperimentalSerializationApi
     @Test
     fun `It has a proper descriptor`() {
         assertEquals(
-            actual = BlurFunctionSerializer.descriptor.kind,
+            actual = BlurFunctionReferenceSerializer.descriptor.kind,
             expected = PrimitiveKind.STRING
         )
 
         assertEquals(
-            actual = BlurFunctionSerializer.descriptor.serialName,
+            actual = BlurFunctionReferenceSerializer.descriptor.serialName,
             expected = "BlurFunction"
         )
     }
 
+    @ExperimentalSerializationApi
     @Test
     fun `Given a Serializer is called with a BlurFunction, it encodes it`() {
         // Given
         val serializer = Json {
             serializersModule = SerializersModule {
-                contextual(BlurFunctionSerializer)
+                contextual(BlurFunctionReferenceSerializer)
             }
         }
 
-        for (field in BlurFunction.values()) {
+        for (field in BlurFunctionReference.values()) {
             // When
             val result = serializer.encodeToString(field)
 
@@ -72,20 +75,20 @@ internal class BlurFunctionSerializerTest {
         }
     }
 
+    @ExperimentalSerializationApi
     @Test
     fun `Given a Serializer is called with a serialized BlurFunction, it fails with a Internal Failure if the blur function is unknown`() {
         // Given
         val serializer = Json {
             serializersModule = SerializersModule {
-                contextual(BlurFunctionSerializer)
+                contextual(BlurFunctionReferenceSerializer)
             }
         }
 
         // Then
         val error = assertFailsWith<CoreRuntimeError.InternalFailure> {
             // When
-            val result =
-                serializer.decodeFromString<BlurFunction>("\"notJS\"")
+            serializer.decodeFromString<BlurFunctionReference>("\"notJS\"")
         }
 
         assertEquals(
@@ -94,18 +97,19 @@ internal class BlurFunctionSerializerTest {
         )
     }
 
+    @ExperimentalSerializationApi
     @Test
     fun `Given a Serializer is called with a serialized BlurFunction, it decodes it`() {
         // Given
         val serializer = Json {
             serializersModule = SerializersModule {
-                contextual(BlurFunctionSerializer)
+                contextual(BlurFunctionReferenceSerializer)
             }
         }
 
-        for (field in BlurFunction.values()) {
+        for (field in BlurFunctionReference.values()) {
             // When
-            val result = serializer.decodeFromString<BlurFunction>("\"${field.value}\"")
+            val result = serializer.decodeFromString<BlurFunctionReference>("\"${field.value}\"")
 
             // Then
             assertSame(

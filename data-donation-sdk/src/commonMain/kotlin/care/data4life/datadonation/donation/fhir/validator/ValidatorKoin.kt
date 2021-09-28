@@ -14,16 +14,27 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.donation.anonymization
+package care.data4life.datadonation.donation.fhir.validator
 
-import care.data4life.hl7.fhir.stu3.model.FhirResource
+import org.koin.core.module.Module
+import org.koin.dsl.module
 
-internal interface AnonymizationContract {
-    interface Redactor {
-        suspend fun redact(resource: FhirResource): FhirResource
+internal fun resolveResourceValidatorKoinModule(): Module {
+    return module {
+        single<FhirResourceValidatorContract.QuestionnaireResponseValidator> {
+            QuestionnaireResponseValidator
+        }
 
-        companion object {
-            const val REDACTED = "REDACTED"
+        single<FhirResourceValidatorContract.ObservationValidator> {
+            ObservationValidator
+        }
+
+        single<FhirResourceValidatorContract.ResearchSubjectValidator> {
+            ResearchSubjectValidator
+        }
+
+        single<FhirResourceValidatorContract.ResourceValidator> {
+            ResourceValidator(get(), get(), get())
         }
     }
 }
