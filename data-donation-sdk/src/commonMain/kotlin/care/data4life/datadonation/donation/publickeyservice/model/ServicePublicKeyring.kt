@@ -15,7 +15,7 @@
  */
 package care.data4life.datadonation.donation.publickeyservice.model
 
-internal data class ServiceCredentialKeys(
-    val donationService: String,
-    val alp: String
+internal data class ServicePublicKeyring(
+    val donationKeyBase64Encoded: String,
+    val alpKeyBase64Encoded: String
 )

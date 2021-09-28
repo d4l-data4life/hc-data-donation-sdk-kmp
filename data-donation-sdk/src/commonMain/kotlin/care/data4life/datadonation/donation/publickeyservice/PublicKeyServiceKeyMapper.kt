@@ -19,7 +19,7 @@ package care.data4life.datadonation.donation.publickeyservice
 import care.data4life.datadonation.DataDonationSDK
 import care.data4life.datadonation.donation.publickeyservice.model.RawKeys
 import care.data4life.datadonation.donation.publickeyservice.model.RawServiceCredentialKey
-import care.data4life.datadonation.donation.publickeyservice.model.ServiceCredentialKeys
+import care.data4life.datadonation.donation.publickeyservice.model.ServicePublicKeyring
 import care.data4life.datadonation.error.CoreRuntimeError
 
 internal class PublicKeyServiceKeyMapper(
@@ -66,14 +66,14 @@ internal class PublicKeyServiceKeyMapper(
         }
     }
 
-    private fun mapToPublicKey(keys: List<RawServiceCredentialKey>): ServiceCredentialKeys {
-        return ServiceCredentialKeys(
-            donationService = retrieveDomainKey(keys, PublicKeyServiceContract.KeyDomain.DonationService),
-            alp = retrieveDomainKey(keys, PublicKeyServiceContract.KeyDomain.ALP)
+    private fun mapToPublicKey(keys: List<RawServiceCredentialKey>): ServicePublicKeyring {
+        return ServicePublicKeyring(
+            donationKeyBase64Encoded = retrieveDomainKey(keys, PublicKeyServiceContract.KeyDomain.DonationService),
+            alpKeyBase64Encoded = retrieveDomainKey(keys, PublicKeyServiceContract.KeyDomain.ALP)
         )
     }
 
-    override fun mapKeys(rawKeys: RawKeys): ServiceCredentialKeys {
+    override fun mapKeys(rawKeys: RawKeys): ServicePublicKeyring {
         val potentialKeys = filterRawKeys(rawKeys)
         return mapToPublicKey(potentialKeys)
     }

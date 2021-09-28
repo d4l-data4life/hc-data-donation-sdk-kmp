@@ -147,11 +147,11 @@ class PublicKeyServiceKeyMapperTest {
 
         // Then
         assertEquals(
-            actual = result.donationService,
+            actual = result.donationKeyBase64Encoded,
             expected = donationKey
         )
         assertEquals(
-            actual = result.alp,
+            actual = result.alpKeyBase64Encoded,
             expected = alpKey
         )
     }
@@ -176,11 +176,11 @@ class PublicKeyServiceKeyMapperTest {
 
         // Then
         assertEquals(
-            actual = result.donationService,
+            actual = result.donationKeyBase64Encoded,
             expected = donationKey
         )
         assertEquals(
-            actual = result.alp,
+            actual = result.alpKeyBase64Encoded,
             expected = alpKey
         )
     }
@@ -205,11 +205,11 @@ class PublicKeyServiceKeyMapperTest {
 
         // Then
         assertEquals(
-            actual = result.donationService,
+            actual = result.donationKeyBase64Encoded,
             expected = donationKey
         )
         assertEquals(
-            actual = result.alp,
+            actual = result.alpKeyBase64Encoded,
             expected = alpKey
         )
     }
@@ -234,11 +234,11 @@ class PublicKeyServiceKeyMapperTest {
 
         // Then
         assertEquals(
-            actual = result.donationService,
+            actual = result.donationKeyBase64Encoded,
             expected = donationKey
         )
         assertEquals(
-            actual = result.alp,
+            actual = result.alpKeyBase64Encoded,
             expected = alpKey
         )
     }

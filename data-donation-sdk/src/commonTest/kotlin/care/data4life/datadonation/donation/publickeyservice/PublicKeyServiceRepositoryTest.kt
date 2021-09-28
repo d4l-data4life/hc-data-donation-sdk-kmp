@@ -17,7 +17,7 @@
 package care.data4life.datadonation.donation.publickeyservice
 
 import care.data4life.datadonation.donation.publickeyservice.model.RawKeys
-import care.data4life.datadonation.donation.publickeyservice.model.ServiceCredentialKeys
+import care.data4life.datadonation.donation.publickeyservice.model.ServicePublicKeyring
 import care.data4life.datadonation.mock.stub.donation.publickeyservice.PublicKeyServiceApiServiceStub
 import care.data4life.datadonation.mock.stub.donation.publickeyservice.PublicKeyServiceKeyMapperStub
 import care.data4life.sdk.util.test.coroutine.runBlockingTest
@@ -40,7 +40,7 @@ class PublicKeyServiceRepositoryTest {
     fun `Given fetchPublicKeys is called it retrieves the Keys from the API and maps the response with the KeyMapper and returns the result`() = runBlockingTest {
         // Given
         val rawKeys = RawKeys(credentials = emptyList())
-        val publicKeys = ServiceCredentialKeys("donation", "alp")
+        val publicKeys = ServicePublicKeyring("donation", "alp")
 
         val apiService = PublicKeyServiceApiServiceStub()
         val keyMapper = PublicKeyServiceKeyMapperStub()

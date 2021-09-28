@@ -16,13 +16,13 @@
 
 package care.data4life.datadonation.donation.publickeyservice
 
-import care.data4life.datadonation.donation.publickeyservice.model.ServiceCredentialKeys
+import care.data4life.datadonation.donation.publickeyservice.model.ServicePublicKeyring
 
 internal class PublicKeyServiceRepository(
     private val apiService: PublicKeyServiceContract.ApiService,
     private val keyMapper: PublicKeyServiceContract.Repository.KeyMapper
 ) : PublicKeyServiceContract.Repository {
-    override suspend fun fetchPublicKeys(): ServiceCredentialKeys {
+    override suspend fun fetchPublicKeys(): ServicePublicKeyring {
         return keyMapper.mapKeys(
             apiService.fetchPublicKeys()
         )
