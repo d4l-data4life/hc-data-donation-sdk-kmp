@@ -20,8 +20,8 @@ import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-@Serializable(with = BlurFunctionSerializer::class)
-internal enum class BlurFunction(val value: String) {
+@Serializable(with = BlurFunctionReferenceSerializer::class)
+internal enum class BlurFunctionReference(val value: String) {
     START_OF_DAY("startOfDay"),
     END_OF_DAY("endOfDay"),
     START_OF_WEEK("startOfWeek"),
@@ -41,7 +41,7 @@ internal data class QuestionnaireResponseItemBlur(
     val linkId: String,
     @SerialName("fn")
     @Contextual
-    val function: BlurFunction
+    val blurFunctionReference: BlurFunctionReference
 )
 
 @Serializable
@@ -50,7 +50,7 @@ internal data class QuestionnaireResponseBlur(
     val targetTimeZone: String? = null,
     @Contextual
     @SerialName("authored")
-    val questionnaireResponseAuthored: BlurFunction? = null,
+    val authoredBlurFunctionReference: BlurFunctionReference? = null,
     @SerialName("items")
     val questionnaireResponseItemBlurs: List<QuestionnaireResponseItemBlur>
 )
@@ -69,9 +69,10 @@ internal data class ProgramBlur(
     val targetTimeZone: String,
     @Contextual
     @SerialName("authored")
-    val questionnaireResponseAuthored: BlurFunction? = null,
+    val questionnaireResponseAuthoredBlurFunctionReference: BlurFunctionReference? = null,
     @Contextual
-    val researchSubject: BlurFunction? = null
+    @SerialName("researchSubject")
+    val researchSubjectBlurFunctionReference: BlurFunctionReference? = null
 )
 
 @Serializable

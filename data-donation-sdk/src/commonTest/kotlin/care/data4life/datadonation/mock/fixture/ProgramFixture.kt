@@ -16,7 +16,7 @@
 
 package care.data4life.datadonation.mock.fixture
 
-import care.data4life.datadonation.donation.program.model.BlurFunction
+import care.data4life.datadonation.donation.program.model.BlurFunctionReference
 import care.data4life.datadonation.donation.program.model.FhirResourceConfiguration
 import care.data4life.datadonation.donation.program.model.Program
 import care.data4life.datadonation.donation.program.model.ProgramBlur
@@ -39,8 +39,8 @@ internal object ProgramFixture {
             programConfiguration = ProgramConfiguration(
                 programBlur = ProgramBlur(
                     targetTimeZone = "Europe/Berlin",
-                    questionnaireResponseAuthored = BlurFunction.START_OF_DAY,
-                    researchSubject = BlurFunction.START_OF_DAY
+                    questionnaireResponseAuthoredBlurFunctionReference = BlurFunctionReference.START_OF_DAY,
+                    researchSubjectBlurFunctionReference = BlurFunctionReference.START_OF_MONTH
                 )
             ),
             fhirResourceConfigurations = listOf(
@@ -85,7 +85,7 @@ internal object ProgramFixture {
                         questionnaireResponseItemBlurs = listOf(
                             QuestionnaireResponseItemBlur(
                                 linkId = "when_done_something_first_time",
-                                function = BlurFunction.START_OF_DAY
+                                blurFunctionReference = BlurFunctionReference.START_OF_DAY
                             )
                         )
                     )
@@ -101,7 +101,7 @@ internal object ProgramFixture {
                         questionnaireResponseItemBlurs = listOf(
                             QuestionnaireResponseItemBlur(
                                 linkId = "when_done_something_second_time",
-                                function = BlurFunction.START_OF_DAY
+                                blurFunctionReference = BlurFunctionReference.START_OF_DAY
                             )
                         )
                     )
