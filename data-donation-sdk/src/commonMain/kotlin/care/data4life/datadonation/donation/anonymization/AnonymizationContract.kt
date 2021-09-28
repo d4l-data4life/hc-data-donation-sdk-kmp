@@ -22,6 +22,7 @@ import care.data4life.datadonation.donation.program.model.BlurFunction
 import care.data4life.datadonation.donation.program.model.FhirResourceConfiguration
 import care.data4life.datadonation.donation.program.model.ProgramBlur
 import care.data4life.datadonation.donation.program.model.ProgramDonationConfiguration
+import care.data4life.datadonation.donation.program.model.ProgramType
 import care.data4life.hl7.fhir.common.datetime.XsDateTime
 import care.data4life.hl7.fhir.stu3.model.FhirQuestionnaireResponse
 import care.data4life.hl7.fhir.stu3.model.FhirResource
@@ -62,6 +63,7 @@ internal interface AnonymizationContract {
     interface QuestionnaireResponseAnonymizer {
         fun anonymize(
             questionnaireResponse: QuestionnaireResponse,
+            programType: ProgramType,
             rule: BlurModelContract.QuestionnaireResponseBlur?
         ): QuestionnaireResponse
     }
@@ -76,6 +78,7 @@ internal interface AnonymizationContract {
     interface FhirAnonymizer {
         fun anonymize(
             fhirResource: FhirResource,
+            programType: ProgramType,
             programConfiguration: ProgramDonationConfiguration
         ): FhirResource
     }
