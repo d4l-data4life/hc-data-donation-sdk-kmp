@@ -45,6 +45,7 @@ internal interface Networking {
     }
 
     enum class Method(name: String) {
+        HEAD("head"),
         DELETE("delete"),
         GET("get"),
         POST("post"),
@@ -66,10 +67,12 @@ internal interface Networking {
         companion object {
             const val ACCESS_TOKEN_FIELD = "Authorization"
             const val ACCESS_TOKEN_VALUE_PREFIX = "Bearer"
+            val BODYLESS_METHODS = listOf(Method.HEAD, Method.GET)
         }
     }
 
     interface RequestBuilderFactory {
         fun create(): RequestBuilder
+        fun withHost(host: String): RequestBuilderFactory
     }
 }

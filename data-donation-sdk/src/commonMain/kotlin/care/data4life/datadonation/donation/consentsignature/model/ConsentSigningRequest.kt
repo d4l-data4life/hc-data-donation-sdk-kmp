@@ -16,13 +16,14 @@
 
 package care.data4life.datadonation.donation.consentsignature.model
 
-import kotlinx.serialization.Contextual
+import care.data4life.datadonation.donation.DonationContract
+import care.data4life.datadonation.donation.model.ConsentSignatureTypeFullSerializer
 import kotlinx.serialization.Serializable
 
 @Serializable
 internal data class ConsentSigningRequest(
     val consentDocumentKey: String,
     val payload: String,
-    @Contextual
-    val signatureType: ConsentSignatureType
+    @Serializable(with = ConsentSignatureTypeFullSerializer::class)
+    val signatureType: DonationContract.ConsentSignatureType
 )
