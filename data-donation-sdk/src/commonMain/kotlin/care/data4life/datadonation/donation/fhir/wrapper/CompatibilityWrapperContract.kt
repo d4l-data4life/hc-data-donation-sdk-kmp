@@ -149,7 +149,7 @@ interface CompatibilityWrapperContract {
     }
 
     interface Coding : FhirWrapper {
-        val code: String
+        val code: String?
     }
 
     interface Observation<ObservationValue : FhirVersion> :
