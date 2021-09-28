@@ -48,6 +48,12 @@ interface CompatibilityWrapperContract {
         fun unwrap(): WrappedValue
     }
 
+    interface FhirListIterator<T> : ListIterator<T>, FhirWrapper
+
+    interface FhirWrapperList<T> : List<T>, FhirWrapper {
+        fun map(action: (T) -> T): FhirWrapperList<T>
+    }
+
     interface DateTime<DateValue : FhirVersion> : FhirWrapper, Stripper<DateValue> {
         val value: XsDateTime
 
@@ -70,13 +76,13 @@ interface CompatibilityWrapperContract {
     }
 
     interface QuestionnaireResponseItemAnswerListIterator<ItemValue : FhirVersion, AnswerValue : FhirVersion, DateValue : FhirVersion> :
-        ListIterator<QuestionnaireResponseItemAnswer<ItemValue, AnswerValue, DateValue>> {
+        FhirListIterator<QuestionnaireResponseItemAnswer<ItemValue, AnswerValue, DateValue>> {
 
         fun unwrap(): ListIterator<AnswerValue>
     }
 
     interface QuestionnaireResponseItemAnswerList<ItemValue : FhirVersion, AnswerValue : FhirVersion, DateValue : FhirVersion> :
-        List<QuestionnaireResponseItemAnswer<ItemValue, AnswerValue, DateValue>> {
+        FhirWrapperList<QuestionnaireResponseItemAnswer<ItemValue, AnswerValue, DateValue>> {
 
         fun unwrap(): List<AnswerValue>
     }
@@ -94,13 +100,13 @@ interface CompatibilityWrapperContract {
     }
 
     interface QuestionnaireResponseItemListIterator<ItemValue : FhirVersion, AnswerValue : FhirVersion, DateValue : FhirVersion> :
-        ListIterator<QuestionnaireResponseItem<ItemValue, AnswerValue, DateValue>> {
+        FhirListIterator<QuestionnaireResponseItem<ItemValue, AnswerValue, DateValue>> {
 
         fun unwrap(): ListIterator<ItemValue>
     }
 
     interface QuestionnaireResponseItemList<ItemValue : FhirVersion, AnswerValue : FhirVersion, DateValue : FhirVersion> :
-        FhirWrapper, List<QuestionnaireResponseItem<ItemValue, AnswerValue, DateValue>> {
+        FhirWrapperList<QuestionnaireResponseItem<ItemValue, AnswerValue, DateValue>> {
 
         fun unwrap(): List<ItemValue>
     }

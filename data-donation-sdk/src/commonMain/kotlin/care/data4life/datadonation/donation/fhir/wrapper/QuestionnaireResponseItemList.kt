@@ -17,10 +17,11 @@
 package care.data4life.datadonation.donation.fhir.wrapper
 
 import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract.QuestionnaireResponseItem
+import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract.QuestionnaireResponseItemList
 
 internal class Fhir3QuestionnaireResponseItemListWrapper(
     private val itemList: List<Fhir3QuestionnaireResponseItem>
-) : CompatibilityWrapperContract.QuestionnaireResponseItemList<Fhir3QuestionnaireResponseItem, Fhir3QuestionnaireResponseItemAnswer, Fhir3DateTime> {
+) : QuestionnaireResponseItemList<Fhir3QuestionnaireResponseItem, Fhir3QuestionnaireResponseItemAnswer, Fhir3DateTime> {
     override val size: Int
         get() = itemList.size
 
@@ -84,6 +85,12 @@ internal class Fhir3QuestionnaireResponseItemListWrapper(
 
     override fun unwrap(): List<Fhir3QuestionnaireResponseItem> {
         return itemList
+    }
+
+    override fun map(action: (QuestionnaireResponseItem<Fhir3QuestionnaireResponseItem, Fhir3QuestionnaireResponseItemAnswer, Fhir3DateTime>) -> QuestionnaireResponseItem<Fhir3QuestionnaireResponseItem, Fhir3QuestionnaireResponseItemAnswer, Fhir3DateTime>): CompatibilityWrapperContract.FhirWrapperList<QuestionnaireResponseItem<Fhir3QuestionnaireResponseItem, Fhir3QuestionnaireResponseItemAnswer, Fhir3DateTime>> {
+        return Fhir3QuestionnaireResponseItemListWrapper(
+            mapFhirList(action)
+        )
     }
 }
 
@@ -153,5 +160,13 @@ internal class Fhir4QuestionnaireResponseItemListWrapper(
 
     override fun unwrap(): List<Fhir4QuestionnaireResponseItem> {
         return itemList
+    }
+
+    override fun map(
+        action: (QuestionnaireResponseItem<Fhir4QuestionnaireResponseItem, Fhir4QuestionnaireResponseItemAnswer, Fhir4DateTime>) -> QuestionnaireResponseItem<Fhir4QuestionnaireResponseItem, Fhir4QuestionnaireResponseItemAnswer, Fhir4DateTime>
+    ): CompatibilityWrapperContract.FhirWrapperList<QuestionnaireResponseItem<Fhir4QuestionnaireResponseItem, Fhir4QuestionnaireResponseItemAnswer, Fhir4DateTime>> {
+        return Fhir4QuestionnaireResponseItemListWrapper(
+            mapFhirList(action)
+        )
     }
 }

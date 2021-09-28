@@ -20,8 +20,7 @@ import care.data4life.datadonation.donation.fhir.AllowedReference
 import care.data4life.datadonation.donation.fhir.anonymization.model.BlurModelContract
 import care.data4life.datadonation.donation.fhir.anonymization.model.QuestionnaireResponseBlurRule
 import care.data4life.datadonation.donation.fhir.anonymization.model.ResearchSubjectBlurRule
-import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract
-import care.data4life.datadonation.donation.fhir.wrapper.Fhir3QuestionnaireResponse
+import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract.QuestionnaireResponse
 import care.data4life.datadonation.donation.program.model.BlurFunctionReference
 import care.data4life.datadonation.donation.program.model.ProgramBlur
 import care.data4life.datadonation.donation.program.model.ProgramType
@@ -44,7 +43,7 @@ internal interface AnonymizationContract {
 
     interface QuestionnaireResponseBlurRuleResolver {
         fun resolveBlurRule(
-            questionnaireResponse: CompatibilityWrapperContract.QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>,
+            questionnaireResponse: QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>,
             programRule: ProgramBlur?,
             fhirResourceConfigurations: Map<AllowedReference, QuestionnaireResponseBlur?>
         ): QuestionnaireResponseBlurRule?
@@ -66,10 +65,10 @@ internal interface AnonymizationContract {
 
     interface QuestionnaireResponseAnonymizer {
         fun anonymize(
-            questionnaireResponse: Fhir3QuestionnaireResponse,
+            questionnaireResponse: QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>,
             programType: ProgramType,
             rule: BlurModelContract.QuestionnaireResponseBlur?
-        ): Fhir3QuestionnaireResponse
+        ): QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>
     }
 
     interface ResearchSubjectAnonymizer {

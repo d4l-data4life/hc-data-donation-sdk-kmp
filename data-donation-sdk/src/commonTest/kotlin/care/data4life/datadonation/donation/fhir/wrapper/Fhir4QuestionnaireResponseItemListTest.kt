@@ -355,6 +355,36 @@ class Fhir4QuestionnaireResponseItemListTest {
         )
     }
 
+    @Test
+    fun `Given map is called with an action it applies the action to each item and returns the modified List`() {
+        // Given
+        val action: (CompatibilityWrapperContract.QuestionnaireResponseItem<Fhir4QuestionnaireResponseItem, Fhir4QuestionnaireResponseItemAnswer, Fhir4DateTime>) -> CompatibilityWrapperContract.QuestionnaireResponseItem<Fhir4QuestionnaireResponseItem, Fhir4QuestionnaireResponseItemAnswer, Fhir4DateTime> =
+            { item ->
+                item.copy(
+                    item = Fhir4QuestionnaireResponseItemListWrapper(emptyList()),
+                    answer = null
+                )
+            }
+
+        val givenItems = listOf(
+            Fhir4QuestionnaireResponseItem(linkId = "1"),
+            Fhir4QuestionnaireResponseItem(linkId = "2"),
+            Fhir4QuestionnaireResponseItem(linkId = "3"),
+        )
+
+        // When
+        val actual: Any = Fhir4QuestionnaireResponseItemListWrapper(givenItems).map(action)
+
+        // Then
+        assertTrue(actual is Fhir4QuestionnaireResponseItemListWrapper)
+        actual.unwrap().forEach { item ->
+            assertEquals(
+                actual = item.item,
+                expected = emptyList()
+            )
+        }
+    }
+
     private class Fhir4ResponseItemCollection : Collection<CompatibilityWrapperContract.QuestionnaireResponseItem<Fhir4QuestionnaireResponseItem, Fhir4QuestionnaireResponseItemAnswer, Fhir4DateTime>> {
         override val size: Int
             get() = TODO("Not yet implemented")

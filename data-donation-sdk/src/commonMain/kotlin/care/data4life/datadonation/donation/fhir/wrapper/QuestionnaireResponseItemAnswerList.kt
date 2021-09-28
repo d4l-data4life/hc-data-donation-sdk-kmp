@@ -85,6 +85,12 @@ internal data class Fhir3QuestionnaireResponseItemAnswerListWrapper(
     override fun unwrap(): List<Fhir3QuestionnaireResponseItemAnswer> {
         return itemAnswerList
     }
+
+    override fun map(action: (QuestionnaireResponseItemAnswer<Fhir3QuestionnaireResponseItem, Fhir3QuestionnaireResponseItemAnswer, Fhir3DateTime>) -> QuestionnaireResponseItemAnswer<Fhir3QuestionnaireResponseItem, Fhir3QuestionnaireResponseItemAnswer, Fhir3DateTime>): CompatibilityWrapperContract.FhirWrapperList<QuestionnaireResponseItemAnswer<Fhir3QuestionnaireResponseItem, Fhir3QuestionnaireResponseItemAnswer, Fhir3DateTime>> {
+        return Fhir3QuestionnaireResponseItemAnswerListWrapper(
+            mapFhirList(action)
+        )
+    }
 }
 
 internal data class Fhir4QuestionnaireResponseItemAnswerListWrapper(
@@ -153,5 +159,11 @@ internal data class Fhir4QuestionnaireResponseItemAnswerListWrapper(
 
     override fun unwrap(): List<Fhir4QuestionnaireResponseItemAnswer> {
         return itemAnswerList
+    }
+
+    override fun map(action: (QuestionnaireResponseItemAnswer<Fhir4QuestionnaireResponseItem, Fhir4QuestionnaireResponseItemAnswer, Fhir4DateTime>) -> QuestionnaireResponseItemAnswer<Fhir4QuestionnaireResponseItem, Fhir4QuestionnaireResponseItemAnswer, Fhir4DateTime>): CompatibilityWrapperContract.FhirWrapperList<QuestionnaireResponseItemAnswer<Fhir4QuestionnaireResponseItem, Fhir4QuestionnaireResponseItemAnswer, Fhir4DateTime>> {
+        return Fhir4QuestionnaireResponseItemAnswerListWrapper(
+            mapFhirList(action)
+        )
     }
 }

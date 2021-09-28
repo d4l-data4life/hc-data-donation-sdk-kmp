@@ -39,17 +39,19 @@ internal class FhirAnonymizer(
         globalProgramRule: ProgramBlur?,
         localResourceRule: Map<AllowedReference, QuestionnaireResponseBlur?>
     ): QuestionnaireResponse {
+        val response = Fhir3QuestionnaireResponseWrapper(questionnaireResponse) as CompatibilityWrapperContract.QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>
+
         val rule = questionnaireResponseBlurResolver.resolveBlurRule(
-            questionnaireResponse = Fhir3QuestionnaireResponseWrapper(questionnaireResponse) as CompatibilityWrapperContract.QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>,
+            questionnaireResponse = response,
             programRule = globalProgramRule,
             fhirResourceConfigurations = localResourceRule
         )
 
         return questionnaireResponseAnonymizer.anonymize(
-            questionnaireResponse,
+            response,
             programType,
             rule
-        )
+        ).unwrap() as QuestionnaireResponse
     }
 
     private fun anonymizeResearchSubject(
