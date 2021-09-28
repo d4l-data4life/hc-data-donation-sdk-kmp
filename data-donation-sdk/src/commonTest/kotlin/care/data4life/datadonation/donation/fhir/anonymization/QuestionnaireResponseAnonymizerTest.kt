@@ -17,18 +17,21 @@
 package care.data4life.datadonation.donation.fhir.anonymization
 
 import care.data4life.datadonation.donation.fhir.anonymization.model.QuestionnaireResponseBlurRule
+import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract
+import care.data4life.datadonation.donation.fhir.wrapper.Fhir3DateTime
+import care.data4life.datadonation.donation.fhir.wrapper.Fhir3QuestionnaireResponse
+import care.data4life.datadonation.donation.fhir.wrapper.Fhir3QuestionnaireResponseItem
+import care.data4life.datadonation.donation.fhir.wrapper.Fhir3QuestionnaireResponseItemAnswer
+import care.data4life.datadonation.donation.fhir.wrapper.Fhir3QuestionnaireResponseWrapper
 import care.data4life.datadonation.donation.program.model.BlurFunctionReference
 import care.data4life.datadonation.donation.program.model.ProgramType
 import care.data4life.datadonation.donation.program.model.QuestionnaireResponseItemBlur
 import care.data4life.datadonation.mock.stub.donation.fhir.anonymization.DateTimeConcealerStub
 import care.data4life.datadonation.mock.stub.donation.fhir.anonymization.RedactorStub
+import care.data4life.hl7.fhir.FhirVersion
 import care.data4life.hl7.fhir.common.datetime.XsDate
 import care.data4life.hl7.fhir.common.datetime.XsDateTime
 import care.data4life.hl7.fhir.stu3.codesystem.QuestionnaireResponseStatus
-import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
-import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponseItem
-import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponseItemAnswer
-import care.data4life.hl7.fhir.stu3.primitive.DateTime
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -38,11 +41,11 @@ import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 class QuestionnaireResponseAnonymizerTest {
-    private val questionnaireResponseTemplate = QuestionnaireResponse(
+    private val questionnaireResponseTemplate = Fhir3QuestionnaireResponse(
         status = QuestionnaireResponseStatus.COMPLETED
     )
-    private val questionnaireResponseItemTemplate = QuestionnaireResponseItem(linkId = "does not matter")
-    private val questionnaireResponseItemAnswerTemplate = QuestionnaireResponseItemAnswer()
+    private val questionnaireResponseItemTemplate = Fhir3QuestionnaireResponseItem(linkId = "does not matter")
+    private val questionnaireResponseItemAnswerTemplate = Fhir3QuestionnaireResponseItemAnswer()
 
     @Test
     fun `It fulfils QuestionnaireResponseAnonymizer`() {
@@ -57,14 +60,16 @@ class QuestionnaireResponseAnonymizerTest {
     @Test
     fun `Given anonymize is called with a QuestionaireResponse and null as a BlurRule it ignores the authored field, if no BlurFunction was provided for the field`() {
         // Given
-        val resource = QuestionnaireResponse(
-            status = QuestionnaireResponseStatus.AMENDED,
-            authored = DateTime(
-                value = XsDateTime(
-                    date = XsDate(2022, 1, 1)
+        val resource = Fhir3QuestionnaireResponseWrapper(
+            Fhir3QuestionnaireResponse(
+                status = QuestionnaireResponseStatus.AMENDED,
+                authored = Fhir3DateTime(
+                    value = XsDateTime(
+                        date = XsDate(2022, 1, 1)
+                    )
                 )
             )
-        )
+        ) as CompatibilityWrapperContract.QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>
 
         val rule = null
 
@@ -80,22 +85,24 @@ class QuestionnaireResponseAnonymizerTest {
 
         // Then
         assertEquals(
-            actual = result,
-            expected = resource
+            actual = result.unwrap(),
+            expected = resource.unwrap()
         )
     }
 
     @Test
     fun `Given anonymize is called with a QuestionaireResponse and a BlurRule it ignores the authored field, if no BlurFunction was provided for the field`() {
         // Given
-        val resource = QuestionnaireResponse(
-            status = QuestionnaireResponseStatus.AMENDED,
-            authored = DateTime(
-                value = XsDateTime(
-                    date = XsDate(2022, 1, 1)
+        val resource = Fhir3QuestionnaireResponseWrapper(
+            Fhir3QuestionnaireResponse(
+                status = QuestionnaireResponseStatus.AMENDED,
+                authored = Fhir3DateTime(
+                    value = XsDateTime(
+                        date = XsDate(2022, 1, 1)
+                    )
                 )
             )
-        )
+        ) as CompatibilityWrapperContract.QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>
 
         val rule = QuestionnaireResponseBlurRule(
             targetTimeZone = "somewhere",
@@ -115,22 +122,24 @@ class QuestionnaireResponseAnonymizerTest {
 
         // Then
         assertEquals(
-            actual = result,
-            expected = resource
+            actual = result.unwrap(),
+            expected = resource.unwrap()
         )
     }
 
     @Test
     fun `Given anonymize is called with a QuestionaireResponse and a BlurRule it ignores the authored field, if it does not exists`() {
         // Given
-        val resource = QuestionnaireResponse(
-            status = QuestionnaireResponseStatus.AMENDED,
-            authored = DateTime(
-                value = XsDateTime(
-                    date = XsDate(2022, 1, 1)
+        val resource = Fhir3QuestionnaireResponseWrapper(
+            Fhir3QuestionnaireResponse(
+                status = QuestionnaireResponseStatus.AMENDED,
+                authored = Fhir3DateTime(
+                    value = XsDateTime(
+                        date = XsDate(2022, 1, 1)
+                    )
                 )
             )
-        )
+        ) as CompatibilityWrapperContract.QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>
 
         val rule = QuestionnaireResponseBlurRule(
             targetTimeZone = "somewhere",
@@ -150,8 +159,8 @@ class QuestionnaireResponseAnonymizerTest {
 
         // Then
         assertEquals(
-            actual = result,
-            expected = resource
+            actual = result.unwrap(),
+            expected = resource.unwrap()
         )
     }
 
@@ -161,14 +170,17 @@ class QuestionnaireResponseAnonymizerTest {
         val bluredAuthoredDate = XsDateTime(
             date = XsDate(2022, 1, 23)
         )
-        val resource = QuestionnaireResponse(
+        val strippedResource = Fhir3QuestionnaireResponse(
             status = QuestionnaireResponseStatus.AMENDED,
-            authored = DateTime(
+            authored = Fhir3DateTime(
                 value = XsDateTime(
                     date = XsDate(2022, 1, 1)
                 )
             )
         )
+        val resource = Fhir3QuestionnaireResponseWrapper(
+            strippedResource
+        ) as CompatibilityWrapperContract.QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>
 
         val dateTimeConcealer = DateTimeConcealerStub()
 
@@ -202,9 +214,9 @@ class QuestionnaireResponseAnonymizerTest {
 
         // Then
         assertEquals(
-            actual = result,
-            expected = resource.copy(
-                authored = resource.authored!!.copy(
+            actual = result.unwrap(),
+            expected = strippedResource.copy(
+                authored = strippedResource.authored!!.copy(
                     value = bluredAuthoredDate
                 )
             )
@@ -227,9 +239,11 @@ class QuestionnaireResponseAnonymizerTest {
     @Test
     fun `Given anonymize is called with a QuestionaireResponse and a BlurRule, it maps Items of a QuestionnaireResponses to null, if they are null`() {
         // Given
-        val resource = questionnaireResponseTemplate.copy(
-            item = null
-        )
+        val resource = Fhir3QuestionnaireResponseWrapper(
+            questionnaireResponseTemplate.copy(
+                item = null
+            )
+        ) as CompatibilityWrapperContract.QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>
 
         val rule = QuestionnaireResponseBlurRule(
             targetTimeZone = "somewhere",
@@ -254,9 +268,11 @@ class QuestionnaireResponseAnonymizerTest {
     @Test
     fun `Given anonymize is called with a QuestionaireResponse and a BlurRule, it maps Items of a QuestionnaireResponses, if they are not null or empty`() {
         // Given
-        val resource = questionnaireResponseTemplate.copy(
-            item = listOf(questionnaireResponseItemTemplate)
-        )
+        val resource = Fhir3QuestionnaireResponseWrapper(
+            questionnaireResponseTemplate.copy(
+                item = listOf(questionnaireResponseItemTemplate)
+            )
+        ) as CompatibilityWrapperContract.QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>
 
         val rule = QuestionnaireResponseBlurRule(
             targetTimeZone = "somewhere",
@@ -281,13 +297,15 @@ class QuestionnaireResponseAnonymizerTest {
     @Test
     fun `Given anonymize is called with a QuestionaireResponse and a BlurRule, it maps Items of a QuestionnaireResponseItem to null, if they are null`() {
         // Given
-        val resource = questionnaireResponseTemplate.copy(
-            item = listOf(
-                questionnaireResponseItemTemplate.copy(
-                    item = null
+        val resource = Fhir3QuestionnaireResponseWrapper(
+            questionnaireResponseTemplate.copy(
+                item = listOf(
+                    questionnaireResponseItemTemplate.copy(
+                        item = null
+                    )
                 )
             )
-        )
+        ) as CompatibilityWrapperContract.QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>
 
         val rule = QuestionnaireResponseBlurRule(
             targetTimeZone = "somewhere",
@@ -312,13 +330,15 @@ class QuestionnaireResponseAnonymizerTest {
     @Test
     fun `Given anonymize is called with a QuestionaireResponse and a BlurRule, it maps Items of a QuestionnaireResponseItem to null, if they are empty`() {
         // Given
-        val resource = questionnaireResponseTemplate.copy(
-            item = listOf(
-                questionnaireResponseItemTemplate.copy(
-                    item = emptyList()
+        val resource = Fhir3QuestionnaireResponseWrapper(
+            questionnaireResponseTemplate.copy(
+                item = listOf(
+                    questionnaireResponseItemTemplate.copy(
+                        item = emptyList()
+                    )
                 )
             )
-        )
+        ) as CompatibilityWrapperContract.QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>
 
         val rule = QuestionnaireResponseBlurRule(
             targetTimeZone = "somewhere",
@@ -343,13 +363,15 @@ class QuestionnaireResponseAnonymizerTest {
     @Test
     fun `Given anonymize is called with a QuestionaireResponse and a BlurRule, it maps Items of a QuestionnaireResponseItem, if they are not null or empty`() {
         // Given
-        val resource = questionnaireResponseTemplate.copy(
-            item = listOf(
-                questionnaireResponseItemTemplate.copy(
-                    item = listOf(questionnaireResponseItemTemplate)
+        val resource = Fhir3QuestionnaireResponseWrapper(
+            questionnaireResponseTemplate.copy(
+                item = listOf(
+                    questionnaireResponseItemTemplate.copy(
+                        item = listOf(questionnaireResponseItemTemplate)
+                    )
                 )
             )
-        )
+        ) as CompatibilityWrapperContract.QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>
 
         val rule = QuestionnaireResponseBlurRule(
             targetTimeZone = "somewhere",
@@ -379,17 +401,19 @@ class QuestionnaireResponseAnonymizerTest {
             item = null
         )
 
-        val resource = questionnaireResponseTemplate.copy(
-            item = listOf(
-                questionnaireResponseItemTemplate.copy(
-                    item = listOf(
-                        questionnaireResponseItemTemplate.copy(
-                            item = listOf(innerItem)
+        val resource = Fhir3QuestionnaireResponseWrapper(
+            questionnaireResponseTemplate.copy(
+                item = listOf(
+                    questionnaireResponseItemTemplate.copy(
+                        item = listOf(
+                            questionnaireResponseItemTemplate.copy(
+                                item = listOf(innerItem)
+                            )
                         )
                     )
                 )
             )
-        )
+        ) as CompatibilityWrapperContract.QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>
 
         val rule = QuestionnaireResponseBlurRule(
             targetTimeZone = "somewhere",
@@ -409,7 +433,7 @@ class QuestionnaireResponseAnonymizerTest {
 
         // Then
         assertEquals(
-            actual = result.item!!.first().item!!.first().item!!.first(),
+            actual = result.item!!.first().item!!.first().item!!.first().unwrap(),
             expected = innerItem
         )
     }
@@ -417,13 +441,15 @@ class QuestionnaireResponseAnonymizerTest {
     @Test
     fun `Given anonymize is called with a QuestionaireResponse and a BlurRule, it maps Answers of a QuestionnaireResponseItem to null, if they are null`() {
         // Given
-        val resource = questionnaireResponseTemplate.copy(
-            item = listOf(
-                questionnaireResponseItemTemplate.copy(
-                    answer = null
+        val resource = Fhir3QuestionnaireResponseWrapper(
+            questionnaireResponseTemplate.copy(
+                item = listOf(
+                    questionnaireResponseItemTemplate.copy(
+                        answer = null
+                    )
                 )
             )
-        )
+        ) as CompatibilityWrapperContract.QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>
 
         val rule = QuestionnaireResponseBlurRule(
             targetTimeZone = "somewhere",
@@ -448,13 +474,15 @@ class QuestionnaireResponseAnonymizerTest {
     @Test
     fun `Given anonymize is called with a QuestionaireResponse and a BlurRule, it maps Answers of a QuestionnaireResponseItem to null, if they are empty`() {
         // Given
-        val resource = questionnaireResponseTemplate.copy(
-            item = listOf(
-                questionnaireResponseItemTemplate.copy(
-                    answer = emptyList()
+        val resource = Fhir3QuestionnaireResponseWrapper(
+            questionnaireResponseTemplate.copy(
+                item = listOf(
+                    questionnaireResponseItemTemplate.copy(
+                        answer = emptyList()
+                    )
                 )
             )
-        )
+        ) as CompatibilityWrapperContract.QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>
 
         val rule = QuestionnaireResponseBlurRule(
             targetTimeZone = "somewhere",
@@ -479,13 +507,15 @@ class QuestionnaireResponseAnonymizerTest {
     @Test
     fun `Given anonymize is called with a QuestionaireResponse and a BlurRule, it maps Answers of a QuestionnaireResponseItem, if they are not empty or null`() {
         // Given
-        val resource = questionnaireResponseTemplate.copy(
-            item = listOf(
-                questionnaireResponseItemTemplate.copy(
-                    answer = listOf(questionnaireResponseItemAnswerTemplate)
+        val resource = Fhir3QuestionnaireResponseWrapper(
+            questionnaireResponseTemplate.copy(
+                item = listOf(
+                    questionnaireResponseItemTemplate.copy(
+                        answer = listOf(questionnaireResponseItemAnswerTemplate)
+                    )
                 )
             )
-        )
+        ) as CompatibilityWrapperContract.QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>
 
         val redactor = RedactorStub()
 
@@ -514,13 +544,15 @@ class QuestionnaireResponseAnonymizerTest {
     @Test
     fun `Given anonymize is called with a QuestionaireResponse and a BlurRule, it maps Item of the QuestionnaireResponseItemAnswer to null, if they are null`() {
         // Given
-        val resource = questionnaireResponseTemplate.copy(
-            item = listOf(
-                questionnaireResponseItemTemplate.copy(
-                    answer = listOf(questionnaireResponseItemAnswerTemplate)
+        val resource = Fhir3QuestionnaireResponseWrapper(
+            questionnaireResponseTemplate.copy(
+                item = listOf(
+                    questionnaireResponseItemTemplate.copy(
+                        answer = listOf(questionnaireResponseItemAnswerTemplate)
+                    )
                 )
             )
-        )
+        ) as CompatibilityWrapperContract.QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>
 
         val redactor = RedactorStub()
 
@@ -549,17 +581,19 @@ class QuestionnaireResponseAnonymizerTest {
     @Test
     fun `Given anonymize is called with a QuestionaireResponse and a BlurRule, it maps Item of the QuestionnaireResponseItemAnswer to null, if they are empty`() {
         // Given
-        val resource = questionnaireResponseTemplate.copy(
-            item = listOf(
-                questionnaireResponseItemTemplate.copy(
-                    answer = listOf(
-                        questionnaireResponseItemAnswerTemplate.copy(
-                            item = emptyList()
+        val resource = Fhir3QuestionnaireResponseWrapper(
+            questionnaireResponseTemplate.copy(
+                item = listOf(
+                    questionnaireResponseItemTemplate.copy(
+                        answer = listOf(
+                            questionnaireResponseItemAnswerTemplate.copy(
+                                item = emptyList()
+                            )
                         )
                     )
                 )
             )
-        )
+        ) as CompatibilityWrapperContract.QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>
 
         val redactor = RedactorStub()
 
@@ -588,17 +622,19 @@ class QuestionnaireResponseAnonymizerTest {
     @Test
     fun `Given anonymize is called with a QuestionaireResponse and a BlurRule, it maps Item of the QuestionnaireResponseItemAnswer, if they are not null or empty`() {
         // Given
-        val resource = questionnaireResponseTemplate.copy(
-            item = listOf(
-                questionnaireResponseItemTemplate.copy(
-                    answer = listOf(
-                        questionnaireResponseItemAnswerTemplate.copy(
-                            item = listOf(questionnaireResponseItemTemplate)
+        val resource = Fhir3QuestionnaireResponseWrapper(
+            questionnaireResponseTemplate.copy(
+                item = listOf(
+                    questionnaireResponseItemTemplate.copy(
+                        answer = listOf(
+                            questionnaireResponseItemAnswerTemplate.copy(
+                                item = listOf(questionnaireResponseItemTemplate)
+                            )
                         )
                     )
                 )
             )
-        )
+        ) as CompatibilityWrapperContract.QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>
 
         val redactor = RedactorStub()
 
@@ -628,20 +664,21 @@ class QuestionnaireResponseAnonymizerTest {
     fun `Given anonymize is called with a QuestionaireResponse and a BlurRule, it ignores the valueString of a QuestionnaireResponseItemAnswer if the ProgramType is STUDY`() {
         // Given
         val valueString = "potato"
-        val expected = "soup"
 
-        val resource = questionnaireResponseTemplate.copy(
-            item = listOf(
-                questionnaireResponseItemTemplate.copy(
-                    answer = listOf(
-                        questionnaireResponseItemAnswerTemplate.copy(
-                            item = listOf(questionnaireResponseItemTemplate),
-                            valueString = valueString
+        val resource = Fhir3QuestionnaireResponseWrapper(
+            questionnaireResponseTemplate.copy(
+                item = listOf(
+                    questionnaireResponseItemTemplate.copy(
+                        answer = listOf(
+                            questionnaireResponseItemAnswerTemplate.copy(
+                                item = listOf(questionnaireResponseItemTemplate),
+                                valueString = valueString
+                            )
                         )
                     )
                 )
             )
-        )
+        ) as CompatibilityWrapperContract.QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>
 
         val redactor = RedactorStub()
 
@@ -683,18 +720,20 @@ class QuestionnaireResponseAnonymizerTest {
         val valueString = "potato"
         val expected = "soup"
 
-        val resource = questionnaireResponseTemplate.copy(
-            item = listOf(
-                questionnaireResponseItemTemplate.copy(
-                    answer = listOf(
-                        questionnaireResponseItemAnswerTemplate.copy(
-                            item = listOf(questionnaireResponseItemTemplate),
-                            valueString = valueString
+        val resource = Fhir3QuestionnaireResponseWrapper(
+            questionnaireResponseTemplate.copy(
+                item = listOf(
+                    questionnaireResponseItemTemplate.copy(
+                        answer = listOf(
+                            questionnaireResponseItemAnswerTemplate.copy(
+                                item = listOf(questionnaireResponseItemTemplate),
+                                valueString = valueString
+                            )
                         )
                     )
                 )
             )
-        )
+        ) as CompatibilityWrapperContract.QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>
 
         val redactor = RedactorStub()
 
@@ -736,23 +775,26 @@ class QuestionnaireResponseAnonymizerTest {
     @Test
     fun `Given anonymize is called with a QuestionaireResponse and a BlurRule, it ignores the valueDateTime of a QuestionnaireResponseItemAnswer if no BlurFunction could be determined`() {
         // Given
-        val expected = DateTime(
+        val expected = Fhir3DateTime(
             value = XsDateTime(XsDate(1, 2, 3))
         )
 
-        val resource = questionnaireResponseTemplate.copy(
-            item = listOf(
-                questionnaireResponseItemTemplate.copy(
-                    linkId = "bcc",
-                    answer = listOf(
-                        questionnaireResponseItemAnswerTemplate.copy(
-                            item = listOf(questionnaireResponseItemTemplate),
-                            valueDateTime = expected
+        val resource = Fhir3QuestionnaireResponseWrapper(
+            questionnaireResponseTemplate.copy(
+                item = listOf(
+                    questionnaireResponseItemTemplate.copy(
+                        linkId = "bcc",
+                        answer = listOf(
+                            questionnaireResponseItemAnswerTemplate.copy(
+                                item = listOf(questionnaireResponseItemTemplate),
+                                valueDateTime = expected
+                            )
                         )
                     )
+
                 )
             )
-        )
+        ) as CompatibilityWrapperContract.QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>
 
         val redactor = RedactorStub()
         redactor.whenRedact = { it }
@@ -790,7 +832,7 @@ class QuestionnaireResponseAnonymizerTest {
         // Then
         assertFalse(wasCalled)
         assertEquals(
-            actual = result.item!!.first().answer!!.first().valueDateTime,
+            actual = result.item!!.first().answer!!.first().valueDateTime?.unwrap(),
             expected = expected
         )
     }
@@ -798,23 +840,25 @@ class QuestionnaireResponseAnonymizerTest {
     @Test
     fun `Given anonymize is called with a QuestionaireResponse and null as a BlurRule, it ignores the valueDateTime of a QuestionnaireResponseItemAnswer if no BlurFunction could be determined`() {
         // Given
-        val expected = DateTime(
+        val expected = Fhir3DateTime(
             value = XsDateTime(XsDate(1, 2, 3))
         )
 
-        val resource = questionnaireResponseTemplate.copy(
-            item = listOf(
-                questionnaireResponseItemTemplate.copy(
-                    linkId = "bcc",
-                    answer = listOf(
-                        questionnaireResponseItemAnswerTemplate.copy(
-                            item = listOf(questionnaireResponseItemTemplate),
-                            valueDateTime = expected
+        val resource = Fhir3QuestionnaireResponseWrapper(
+            questionnaireResponseTemplate.copy(
+                item = listOf(
+                    questionnaireResponseItemTemplate.copy(
+                        linkId = "bcc",
+                        answer = listOf(
+                            questionnaireResponseItemAnswerTemplate.copy(
+                                item = listOf(questionnaireResponseItemTemplate),
+                                valueDateTime = expected
+                            )
                         )
                     )
                 )
             )
-        )
+        ) as CompatibilityWrapperContract.QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>
 
         val redactor = RedactorStub()
         redactor.whenRedact = { it }
@@ -837,7 +881,7 @@ class QuestionnaireResponseAnonymizerTest {
         // Then
         assertFalse(wasCalled)
         assertEquals(
-            actual = result.item!!.first().answer!!.first().valueDateTime,
+            actual = result.item!!.first().answer!!.first().valueDateTime?.unwrap(),
             expected = expected
         )
     }
@@ -848,21 +892,23 @@ class QuestionnaireResponseAnonymizerTest {
         val valueDateTimeValue = XsDateTime(XsDate(42, 12, 1))
         val expected = XsDateTime(XsDate(1, 2, 3))
 
-        val resource = questionnaireResponseTemplate.copy(
-            item = listOf(
-                questionnaireResponseItemTemplate.copy(
-                    linkId = "match",
-                    answer = listOf(
-                        questionnaireResponseItemAnswerTemplate.copy(
-                            item = listOf(questionnaireResponseItemTemplate),
-                            valueDateTime = DateTime(
-                                value = valueDateTimeValue
+        val resource = Fhir3QuestionnaireResponseWrapper(
+            questionnaireResponseTemplate.copy(
+                item = listOf(
+                    questionnaireResponseItemTemplate.copy(
+                        linkId = "match",
+                        answer = listOf(
+                            questionnaireResponseItemAnswerTemplate.copy(
+                                item = listOf(questionnaireResponseItemTemplate),
+                                valueDateTime = Fhir3DateTime(
+                                    value = valueDateTimeValue
+                                )
                             )
                         )
                     )
                 )
             )
-        )
+        ) as CompatibilityWrapperContract.QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>
 
         val redactor = RedactorStub()
         redactor.whenRedact = { it }
@@ -908,8 +954,8 @@ class QuestionnaireResponseAnonymizerTest {
 
         // Then
         assertEquals(
-            actual = result.item!!.first().answer!!.first().valueDateTime,
-            expected = DateTime(
+            actual = result.item!!.first().answer!!.first().valueDateTime?.unwrap(),
+            expected = Fhir3DateTime(
                 value = expected
             )
         )

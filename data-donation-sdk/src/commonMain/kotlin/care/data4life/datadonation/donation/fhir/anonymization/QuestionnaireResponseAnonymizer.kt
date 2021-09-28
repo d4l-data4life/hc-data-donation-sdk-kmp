@@ -37,10 +37,10 @@ internal class QuestionnaireResponseAnonymizer(
         list: FhirWrapperList<T>?,
         action: (T) -> T
     ): FhirWrapperList<T>? {
-        return if (list.isNullOrEmpty()) {
-            null
-        } else {
+        return if (list is List<*> && list.size > 0) {
             list.map { item -> action(item) }
+        } else {
+            null
         }
     }
 
@@ -48,10 +48,10 @@ internal class QuestionnaireResponseAnonymizer(
         questionnaireResponse: QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>,
         programType: ProgramType,
         blurRule: QuestionnaireResponseBlur?
-    ): QuestionnaireResponseItemList<FhirVersion, FhirVersion, FhirVersion> {
+    ): QuestionnaireResponseItemList<FhirVersion, FhirVersion, FhirVersion>? {
         return mapOrNull(questionnaireResponse.item) { item ->
             mapQuestionnaireResponseItem(item, programType, blurRule)
-        } as QuestionnaireResponseItemList
+        } as QuestionnaireResponseItemList<FhirVersion, FhirVersion, FhirVersion>?
     }
 
     private fun mapQuestionnaireResponseItem(
@@ -61,7 +61,7 @@ internal class QuestionnaireResponseAnonymizer(
     ): QuestionnaireResponseItem<FhirVersion, FhirVersion, FhirVersion> {
         val item = mapOrNull(responseItem.item) { item ->
             mapQuestionnaireResponseItem(item, programType, blurRule)
-        } as QuestionnaireResponseItemList
+        } as QuestionnaireResponseItemList?
         val answer = mapOrNull(responseItem.answer) { answer ->
             mapQuestionnaireResponseItemAnswer(
                 answer,
@@ -69,7 +69,7 @@ internal class QuestionnaireResponseAnonymizer(
                 responseItem.linkId,
                 blurRule
             )
-        } as QuestionnaireResponseItemAnswerList
+        } as QuestionnaireResponseItemAnswerList?
 
         return responseItem.copy(
             item = item,
@@ -122,7 +122,7 @@ internal class QuestionnaireResponseAnonymizer(
     ): QuestionnaireResponseItemAnswer<FhirVersion, FhirVersion, FhirVersion> {
         val item = mapOrNull(itemAnswer.item) { item ->
             mapQuestionnaireResponseItem(item, programType, blurRule)
-        } as QuestionnaireResponseItemList
+        } as QuestionnaireResponseItemList?
         val valueString = redact(itemAnswer.valueString, programType)
         val valueDateTime = blurValueDateTime(
             itemAnswer.valueDateTime,

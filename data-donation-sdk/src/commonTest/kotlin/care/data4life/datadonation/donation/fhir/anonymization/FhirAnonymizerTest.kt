@@ -21,6 +21,7 @@ import care.data4life.datadonation.donation.fhir.anonymization.model.BlurModelCo
 import care.data4life.datadonation.donation.fhir.anonymization.model.QuestionnaireResponseBlurRule
 import care.data4life.datadonation.donation.fhir.anonymization.model.ResearchSubjectBlurRule
 import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract
+import care.data4life.datadonation.donation.fhir.wrapper.Fhir3QuestionnaireResponseWrapper
 import care.data4life.datadonation.donation.program.model.BlurFunctionReference
 import care.data4life.datadonation.donation.program.model.ProgramBlur
 import care.data4life.datadonation.donation.program.model.ProgramType
@@ -30,6 +31,7 @@ import care.data4life.datadonation.mock.stub.donation.fhir.anonymization.Questio
 import care.data4life.datadonation.mock.stub.donation.fhir.anonymization.QuestionnaireResponseBlurRuleResolverStub
 import care.data4life.datadonation.mock.stub.donation.fhir.anonymization.ResearchSubjectAnonymizerStub
 import care.data4life.datadonation.mock.stub.donation.fhir.anonymization.ResearchSubjectBlurRuleResolverStub
+import care.data4life.hl7.fhir.FhirVersion
 import care.data4life.hl7.fhir.stu3.codesystem.QuestionnaireResponseStatus
 import care.data4life.hl7.fhir.stu3.codesystem.ResearchSubjectStatus
 import care.data4life.hl7.fhir.stu3.model.DomainResource
@@ -99,7 +101,9 @@ class FhirAnonymizerTest {
             status = QuestionnaireResponseStatus.AMENDED,
         )
 
-        val expected = resource.copy(status = QuestionnaireResponseStatus.COMPLETED)
+        val expected = Fhir3QuestionnaireResponseWrapper(
+            resource.copy(status = QuestionnaireResponseStatus.COMPLETED)
+        ) as CompatibilityWrapperContract.QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>
 
         val blurResolver = QuestionnaireResponseBlurRuleResolverStub()
 
@@ -112,7 +116,7 @@ class FhirAnonymizerTest {
             questionnaireResponseItems = emptyList()
         )
 
-        var capturedFhirResource: CompatibilityWrapperContract.FhirWrapper? = null
+        var capturedFhirResource: CompatibilityWrapperContract.QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>? = null
         var capturedProgramBlurRule: ProgramBlur? = null
         var capturedFhirResourceBlurRule: Map<AllowedReference, QuestionnaireResponseBlur?>? = null
 
@@ -126,7 +130,7 @@ class FhirAnonymizerTest {
 
         val questionnaireResponseAnonymizer = QuestionnaireResponseAnonymizerStub()
 
-        var capturedQuestionnaireResponse: QuestionnaireResponse? = null
+        var capturedQuestionnaireResponse: CompatibilityWrapperContract.QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>? = null
         var capturedProgramType: ProgramType? = null
         var capturedBlurRule: BlurModelContract.QuestionnaireResponseBlur? = null
 
@@ -149,11 +153,11 @@ class FhirAnonymizerTest {
         // Then
         assertSame(
             actual = result,
-            expected = expected
+            expected = expected.unwrap()
         )
 
         assertSame(
-            actual = capturedFhirResource,
+            actual = capturedFhirResource?.unwrap(),
             expected = resource
         )
         assertSame(
@@ -166,7 +170,7 @@ class FhirAnonymizerTest {
         )
 
         assertSame(
-            actual = capturedQuestionnaireResponse,
+            actual = capturedQuestionnaireResponse?.unwrap(),
             expected = resource
         )
         assertSame(
