@@ -20,6 +20,8 @@ import care.data4life.datadonation.DataDonationSDK.Environment
 import care.data4life.datadonation.error.CoreRuntimeError
 import care.data4life.datadonation.networking.Networking.RequestBuilder.Companion.ACCESS_TOKEN_FIELD
 import care.data4life.datadonation.networking.Networking.RequestBuilder.Companion.ACCESS_TOKEN_VALUE_PREFIX
+import care.data4life.datadonation.networking.plugin.HttpCustomContentType
+import care.data4life.datadonation.networking.plugin.KtorPluginsContract
 import care.data4life.sdk.util.test.coroutine.runWithContextBlockingTest
 import care.data4life.sdk.util.test.ktor.HttpMockClientFactory.createHelloWorldMockClient
 import care.data4life.sdk.util.test.ktor.HttpMockClientResponseFactory.createHelloWorldOkResponse
@@ -29,6 +31,8 @@ import io.ktor.client.engine.mock.toByteReadPacket
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.json.serializer.KotlinxSerializer
 import io.ktor.client.request.HttpRequestData
+import io.ktor.client.request.headers
+import io.ktor.client.request.request
 import io.ktor.http.HttpMethod
 import io.ktor.http.URLProtocol
 import io.ktor.http.fullPath
@@ -57,7 +61,7 @@ class RequestBuilderTest {
     @Test
     fun `It fulfils RequestBuilderTemplate`() {
         // Given
-        val env = Environment.DEV
+        val env = Environment.DEVELOPMENT
         val client = createHelloWorldMockClient()
 
         // When
@@ -68,9 +72,22 @@ class RequestBuilderTest {
     }
 
     @Test
+    fun `Given withHost is called with Host it returns a RequestBuilderFactory`() {
+        // Given
+        val env = Environment.DEVELOPMENT
+        val client = createHelloWorldMockClient()
+
+        // When
+        val builder: Any = RequestBuilder.Factory(env, client).withHost("somewhere")
+
+        // Then
+        assertTrue(builder is Networking.RequestBuilderFactory)
+    }
+
+    @Test
     fun `Given create is called with a Environment and a HttpClient it returns a RequestBuilder`() {
         // Given
-        val env = Environment.DEV
+        val env = Environment.DEVELOPMENT
         val client = createHelloWorldMockClient()
 
         // When
@@ -83,7 +100,7 @@ class RequestBuilderTest {
     @Test
     fun `Given a instance was create with an Environment and it was prepared and executed it uses GET by default`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
-        val env = Environment.DEV
+        val env = Environment.DEVELOPMENT
         val client = createMockClientWithAssertion { request ->
             // Then
             assertEquals(
@@ -94,13 +111,13 @@ class RequestBuilderTest {
 
         // When
         val builder = RequestBuilder.Factory(env, client).create()
-        builder.prepare().receive()
+        builder.prepare().execute()
     }
 
     @Test
     fun `Given a instance was create with a Environment and it was prepared and executed it calls the given Host`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
-        val env = Environment.DEV
+        val env = Environment.DEVELOPMENT
         val client = createMockClientWithAssertion { request ->
             // Then
             assertEquals(
@@ -111,13 +128,33 @@ class RequestBuilderTest {
 
         // When
         val builder = RequestBuilder.Factory(env, client).create()
-        builder.prepare().receive()
+        builder.prepare().execute()
+    }
+
+    @Test
+    fun `Given a instance was create with a overruled Host and it was prepared and executed it calls the overruled Host`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+        // Given
+        val host = "somewhere"
+        val client = createMockClientWithAssertion { request ->
+            // Then
+            assertEquals(
+                actual = request.url.host,
+                expected = host
+            )
+        }
+
+        // When
+        val builder = RequestBuilder.Factory(Environment.DEVELOPMENT, client)
+            .withHost(host)
+            .create()
+
+        builder.prepare().execute()
     }
 
     @Test
     fun `Given a instance was create with a Environment and it was prepared and executed it calls the root by default`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
-        val env = Environment.DEV
+        val env = Environment.DEVELOPMENT
         val client = createMockClientWithAssertion { request ->
             // Then
             assertEquals(
@@ -128,7 +165,7 @@ class RequestBuilderTest {
 
         // When
         val builder = RequestBuilder.Factory(env, client).create()
-        builder.prepare().receive()
+        builder.prepare().execute()
     }
 
     @Test
@@ -136,7 +173,7 @@ class RequestBuilderTest {
         // Given
         val path = listOf("somewhere", "in", "the", "FileTree")
 
-        val env = Environment.DEV
+        val env = Environment.DEVELOPMENT
         val client = createMockClientWithAssertion { request ->
             // Then
             assertEquals(
@@ -164,13 +201,13 @@ class RequestBuilderTest {
 
         // When
         val builder = RequestBuilder.Factory(env, client).create()
-        builder.prepare().receive()
+        builder.prepare().execute()
     }
 
     @Test
     fun `Given a instance was create with a Environment and it was prepared and executed it uses the default Port`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
-        val env = Environment.DEV
+        val env = Environment.DEVELOPMENT
         val client = createMockClientWithAssertion { request ->
             // Then
             assertEquals(
@@ -181,7 +218,7 @@ class RequestBuilderTest {
 
         // When
         val builder = RequestBuilder.Factory(env, client).create()
-        builder.prepare().receive()
+        builder.prepare().execute()
     }
 
     @Test
@@ -189,7 +226,7 @@ class RequestBuilderTest {
         // Given
         val port = 17
 
-        val env = Environment.DEV
+        val env = Environment.DEVELOPMENT
         val client = createMockClientWithAssertion { request ->
             // Then
             assertEquals(
@@ -200,13 +237,13 @@ class RequestBuilderTest {
 
         // When
         val builder = RequestBuilder.Factory(env, client, port).create()
-        builder.prepare().receive()
+        builder.prepare().execute()
     }
 
     @Test
     fun `Given a instance was create with a Environment and it was prepared and executed itsets no custom headers to the request by default`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
-        val env = Environment.DEV
+        val env = Environment.DEVELOPMENT
         val client = createMockClientWithAssertion { request ->
             // Then
             assertEquals(
@@ -220,7 +257,7 @@ class RequestBuilderTest {
 
         // When
         val builder = RequestBuilder.Factory(env, client).create()
-        builder.prepare().receive()
+        builder.prepare().execute()
     }
 
     @Test
@@ -231,7 +268,7 @@ class RequestBuilderTest {
             "HEADER2" to "head"
         )
 
-        val env = Environment.DEV
+        val env = Environment.DEVELOPMENT
         val client = createMockClientWithAssertion { request ->
             // Then
             assertEquals<Any>(
@@ -247,13 +284,13 @@ class RequestBuilderTest {
 
         // When
         val builder = RequestBuilder.Factory(env, client).create()
-        builder.setHeaders(headers).prepare().receive()
+        builder.setHeaders(headers).prepare().execute()
     }
 
     @Test
     fun `Given a instance was create with a Environment and it was prepared and executed itsets no custom parameter to the request by default`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
-        val env = Environment.DEV
+        val env = Environment.DEVELOPMENT
         val client = createMockClientWithAssertion { request ->
             // Then
             assertEquals(
@@ -264,7 +301,7 @@ class RequestBuilderTest {
 
         // When
         val builder = RequestBuilder.Factory(env, client).create()
-        builder.prepare().receive()
+        builder.prepare().execute()
     }
 
     @Test
@@ -275,7 +312,7 @@ class RequestBuilderTest {
             "PARAM2" to "par2",
         )
 
-        val env = Environment.DEV
+        val env = Environment.DEVELOPMENT
         val client = createMockClientWithAssertion { request ->
             // Then
             assertEquals<Any>(
@@ -289,13 +326,13 @@ class RequestBuilderTest {
 
         // When
         val builder = RequestBuilder.Factory(env, client).create()
-        builder.setParameter(parameter).prepare().receive()
+        builder.setParameter(parameter).prepare().execute()
     }
 
     @Test
     fun `Given a instance was create with a Environment and it was prepared and executed ithas no AccessToken by default`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
-        val env = Environment.DEV
+        val env = Environment.DEVELOPMENT
         val client = createMockClientWithAssertion { request ->
             // Then
             assertFalse(request.headers.toMap().containsKey(ACCESS_TOKEN_FIELD))
@@ -303,7 +340,7 @@ class RequestBuilderTest {
 
         // When
         val builder = RequestBuilder.Factory(env, client).create()
-        builder.prepare().receive()
+        builder.prepare().execute()
     }
 
     @Test
@@ -311,7 +348,7 @@ class RequestBuilderTest {
         // Given
         val token = "TOKEN"
 
-        val env = Environment.DEV
+        val env = Environment.DEVELOPMENT
         val client = createMockClientWithAssertion { request ->
             // Then
             assertTrue(request.headers.toMap().containsKey(ACCESS_TOKEN_FIELD))
@@ -327,13 +364,13 @@ class RequestBuilderTest {
 
         // When
         val builder = RequestBuilder.Factory(env, client).create()
-        builder.setAccessToken(token).prepare().receive()
+        builder.setAccessToken(token).prepare().execute()
     }
 
     @Test
     fun `Given a instance was create with a Environment and it was prepared and executed itsets no custom ContentType by default`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
-        val env = Environment.DEV
+        val env = Environment.DEVELOPMENT
         val client = createMockClientWithAssertion { request ->
             // Then
             assertEquals(
@@ -347,13 +384,13 @@ class RequestBuilderTest {
 
         // When
         val builder = RequestBuilder.Factory(env, client).create()
-        builder.prepare().receive()
+        builder.prepare().execute()
     }
 
     @Test
     fun `Given a instance was create with a Environment, useJsonContentType is called and it was prepared and executed itsets the ContentType for JSON to the request`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
-        val env = Environment.DEV
+        val env = Environment.DEVELOPMENT
         val client = HttpClient(MockEngine) {
             install(JsonFeature) {
                 serializer = KotlinxSerializer(
@@ -364,6 +401,10 @@ class RequestBuilderTest {
                         useArrayPolymorphism = false
                     }
                 )
+            }
+
+            install(HttpCustomContentType) {
+                this.replacementHeader = KtorPluginsContract.CustomTypeHeader.replacementHeader
             }
 
             engine {
@@ -384,14 +425,14 @@ class RequestBuilderTest {
 
         // When
         val builder = RequestBuilder.Factory(env, client).create()
-        builder.useJsonContentType().prepare().receive()
+        builder.useJsonContentType().prepare().execute()
     }
 
     @Test
     fun `Given a instance was create with a Environment and it was prepared and executed ithas no Body by default`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
 
-        val env = Environment.DEV
+        val env = Environment.DEVELOPMENT
         val client = createMockClientWithAssertion { request ->
             // Then
             assertEquals(
@@ -402,13 +443,13 @@ class RequestBuilderTest {
 
         // When
         val builder = RequestBuilder.Factory(env, client).create()
-        builder.prepare().receive()
+        builder.prepare().execute()
     }
 
     @Test
     fun `Given a instance was create with a Environment, setBody is called with a Payload and it was prepared and executed with GET, it fails`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
-        val env = Environment.DEV
+        val env = Environment.DEVELOPMENT
         val client = createHelloWorldMockClient()
 
         val error = assertFailsWith<CoreRuntimeError.RequestValidationFailure> {
@@ -425,9 +466,28 @@ class RequestBuilderTest {
     }
 
     @Test
+    fun `Given a instance was create with a Environment, setBody is called with a Payload and it was prepared and executed with HEAD, it fails`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+        // Given
+        val env = Environment.DEVELOPMENT
+        val client = createHelloWorldMockClient()
+
+        val error = assertFailsWith<CoreRuntimeError.RequestValidationFailure> {
+            // When
+            val builder = RequestBuilder.Factory(env, client).create()
+            builder.setBody("Wups").prepare(Networking.Method.HEAD)
+        }
+
+        // Then
+        assertEquals(
+            actual = error.message,
+            expected = "HEAD cannot be combined with a RequestBody."
+        )
+    }
+
+    @Test
     fun `Given a instance was create with a Environment, setBody was not called and it was prepared and executed with POST, it fails`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
-        val env = Environment.DEV
+        val env = Environment.DEVELOPMENT
         val client = createHelloWorldMockClient()
 
         // When
@@ -447,7 +507,7 @@ class RequestBuilderTest {
     @Test
     fun `Given a instance was create with a Environment, setBody was not called and it was prepared and executed with PUT, it fails`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
-        val env = Environment.DEV
+        val env = Environment.DEVELOPMENT
         val client = createHelloWorldMockClient()
 
         val error = assertFailsWith<CoreRuntimeError.RequestValidationFailure> {
@@ -466,7 +526,7 @@ class RequestBuilderTest {
     @Test
     fun `Given a instance was create with a Environment, setBody was not called and it was prepared and executed with DELETE, it fails`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
-        val env = Environment.DEV
+        val env = Environment.DEVELOPMENT
         val client = createHelloWorldMockClient()
 
         val error = assertFailsWith<CoreRuntimeError.RequestValidationFailure> {
@@ -483,11 +543,28 @@ class RequestBuilderTest {
     }
 
     @Test
+    fun `Given a instance was create with a Environment and it was prepared and executed with HEAD it uses head`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
+        // Given
+        val env = Environment.DEVELOPMENT
+        val client = createMockClientWithAssertion { request ->
+            // Then
+            assertEquals(
+                actual = request.method,
+                expected = HttpMethod.Head
+            )
+        }
+
+        // When
+        val builder = RequestBuilder.Factory(env, client).create()
+        builder.prepare(Networking.Method.HEAD).execute()
+    }
+
+    @Test
     fun `Given a instance was create with a Environment, setBody was called with a Payload and it was prepared and executed with POST it uses post`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
         // Given
         val payload = "蕃茄湯"
 
-        val env = Environment.DEV
+        val env = Environment.DEVELOPMENT
         val client = createMockClientWithAssertion { request ->
             // Then
             assertEquals(
@@ -498,7 +575,7 @@ class RequestBuilderTest {
 
         // When
         val builder = RequestBuilder.Factory(env, client).create()
-        builder.setBody(payload).prepare(Networking.Method.POST)
+        builder.setBody(payload).prepare(Networking.Method.POST).execute()
     }
 
     @KtorExperimentalAPI
@@ -507,7 +584,7 @@ class RequestBuilderTest {
         // Given
         val payload = "蕃茄湯"
 
-        val env = Environment.DEV
+        val env = Environment.DEVELOPMENT
         val client = HttpClient(MockEngine) {
             engine {
                 addHandler { request ->
@@ -523,7 +600,7 @@ class RequestBuilderTest {
 
         // When
         val builder = RequestBuilder.Factory(env, client).create()
-        builder.setBody(payload).prepare(Networking.Method.POST)
+        builder.setBody(payload).prepare(Networking.Method.POST).execute()
     }
 
     @Test
@@ -531,7 +608,7 @@ class RequestBuilderTest {
         // Given
         val payload = "蕃茄湯"
 
-        val env = Environment.DEV
+        val env = Environment.DEVELOPMENT
         val client = createMockClientWithAssertion { request ->
             // Then
             assertEquals(
@@ -542,7 +619,7 @@ class RequestBuilderTest {
 
         // When
         val builder = RequestBuilder.Factory(env, client).create()
-        builder.setBody(payload).prepare(Networking.Method.PUT)
+        builder.setBody(payload).prepare(Networking.Method.PUT).execute()
     }
 
     @KtorExperimentalAPI
@@ -551,7 +628,7 @@ class RequestBuilderTest {
         // Given
         val payload = "蕃茄湯"
 
-        val env = Environment.DEV
+        val env = Environment.DEVELOPMENT
         val client = HttpClient(MockEngine) {
             engine {
                 addHandler { request ->
@@ -568,7 +645,7 @@ class RequestBuilderTest {
 
         // When
         val builder = RequestBuilder.Factory(env, client).create()
-        builder.setBody(payload).prepare(Networking.Method.PUT)
+        builder.setBody(payload).prepare(Networking.Method.PUT).execute()
     }
 
     @Test
@@ -576,7 +653,7 @@ class RequestBuilderTest {
         // Given
         val payload = "蕃茄湯"
 
-        val env = Environment.DEV
+        val env = Environment.DEVELOPMENT
         val client = createMockClientWithAssertion { request ->
             // Then
             assertEquals(
@@ -587,7 +664,7 @@ class RequestBuilderTest {
 
         // When
         val builder = RequestBuilder.Factory(env, client).create()
-        builder.setBody(payload).prepare(Networking.Method.DELETE)
+        builder.setBody(payload).prepare(Networking.Method.DELETE).execute()
     }
 
     @KtorExperimentalAPI
@@ -596,7 +673,7 @@ class RequestBuilderTest {
         // Given
         val payload = "蕃茄湯"
 
-        val env = Environment.DEV
+        val env = Environment.DEVELOPMENT
         val client = HttpClient(MockEngine) {
             engine {
                 addHandler { request ->
@@ -613,6 +690,6 @@ class RequestBuilderTest {
 
         // When
         val builder = RequestBuilder.Factory(env, client).create()
-        builder.setBody(payload).prepare(Networking.Method.DELETE)
+        builder.setBody(payload).prepare(Networking.Method.DELETE).execute()
     }
 }

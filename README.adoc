@@ -1,5 +1,6 @@
 = Data4Life Data-Donation SDK
-:library_version: 0.1.3
+:link-repository: https://github.com/d4l-data4life/hc-data-donation-sdk-kmp
+:project-version: 0.2.1
 :doctype: article
 :!showtitle:
 :toc: macro
@@ -7,7 +8,6 @@
 :toc-title:
 :icons: font
 :imagesdir: assets/images
-:link-repository: https://github.com/d4l-data4life/hc-data-donation-sdk-kmp
 ifdef::env-github[]
 :warning-caption: :warning:
 :caution-caption: :fire:
@@ -19,13 +19,15 @@ endif::[]
 ++++
 <div align="center">
     <p><!-- PROJECT LOGO -->
-        <a><img src="assets/images/d4l-logo.svg" width="150"/></a>
+        <a href="https://github.com/d4l-data4life/hc-data-donation-sdk-kmp">
+            <img src="assets/images/d4l-logo.svg" width="150"/>
+        </a>
     </p>
     <p><!-- PROJECT TITLE -->
-        <h3>Data4Life's Data-Donation SDK for Android and iOS</h3>
+        <h3>Data4Life Data Donation SDK</h3>
     </p>
     <p><!-- PROJECT DESCRIPTION -->
-        A crossplatfrom SDK for Data-Donation on Android and iOS.
+        A crossplatfrom SDK for Data-Donation on Android and iOS
     </p>
     <p><!-- PROJECT DOCUMENTATION -->
         <a href="README.adoc"><strong>Explore the docs »</strong></a>
@@ -37,10 +39,10 @@ endif::[]
     </p>
     <p><!-- PROJECT BADGES see badges.adoc how to change them -->
         <a href="https://github.com/d4l-data4life/hc-data-donation-sdk-kmp/releases">
-            <img src="assets/images/badge-release-latest.svg" alt="Latest version"/>
+            <img src="assets/images/badge-release-latest.svg" alt="Latest release"/>
         </a>
         <a href="https://github.com/d4l-data4life/hc-data-donation-sdk-kmp/actions">
-            <img src="https://github.com/d4l-data4life/hc-data-donation-sdk-kmp/actions/workflows/d4l-ci-latest-version.yml/badge.svg" alt="Build Status"/>
+            <img src="https://github.com/d4l-data4life/hc-data-donation-sdk-kmp/actions/workflows/d4l-ci-latest-version.yml/badge.svg" alt="D4L CI - Latest Version"/>
         </a>
         <a>
             <img src="assets/images/badge-platform-support.svg" alt="Platform"/>
@@ -54,6 +56,7 @@ endif::[]
 
 [discrete]
 === Table Of Contents
+
 toc::[]
 
 == About The Project
@@ -178,4 +181,6 @@ You want to help or share a proposal? You have a specific problem? Read the foll
 
 == Copyright and License
 
-Copyright (c) 2021 D4L data4life gGmbH / All rights reserved. Please refer to our link:LICENSE[License] for further details.
+Copyright (c) 2021 D4L data4life gGmbH / All rights reserved.
+
+Please refer to our link:LICENSE[License] for further details.
