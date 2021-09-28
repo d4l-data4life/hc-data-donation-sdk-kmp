@@ -14,13 +14,11 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.donation.consentsignature.model
+package care.data4life.datadonation.donation.donationserivce.model
 
-import kotlinx.serialization.Serializable
+import care.data4life.datadonation.donation.DonationContract
 
-@Serializable(with = ConsentSignatureTypeSerializer::class)
-internal enum class ConsentSignatureType(val value: String) {
-    CONSENT_ONCE("consentOnce"),
-    NORMAL_USE("normalUse"),
-    REVOKE_ONCE("revokeOnce")
-}
+internal data class ConsentMessage(
+    val consentDocumentKey: String,
+    val signatureType: DonationContract.ConsentSignatureType
+)
