@@ -7,21 +7,44 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3670E96426CD1E5D00FD5B79 /* KeychainKeyProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3670E95726CBF11200FD5B79 /* KeychainKeyProvider.swift */; };
-		3670E96726CD1E6E00FD5B79 /* Data4LifeCrypto in Frameworks */ = {isa = PBXBuildFile; productRef = 3670E96626CD1E6E00FD5B79 /* Data4LifeCrypto */; };
+		3661D4BF26DE45FF00BC51F3 /* DataDonationCryptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3661D4BE26DE45FF00BC51F3 /* DataDonationCryptor.swift */; };
+		3661D4C226DE5D1F00BC51F3 /* EncryptedDataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3661D4C126DE5D1F00BC51F3 /* EncryptedDataTests.swift */; };
+		3661D4C426DE6D3A00BC51F3 /* DataDonationCryptorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3661D4C326DE6D3A00BC51F3 /* DataDonationCryptorTests.swift */; };
+		3661D4C626DE6F3700BC51F3 /* IVGeneratorMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3661D4C526DE6F3700BC51F3 /* IVGeneratorMock.swift */; };
+		3661D4CB26DFB9E900BC51F3 /* HybridEncryptedData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3661D4CA26DFB9E900BC51F3 /* HybridEncryptedData.swift */; };
+		3661D4CD26DFBDDC00BC51F3 /* DataDonationCryptoObjCFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3661D4CC26DFBDDC00BC51F3 /* DataDonationCryptoObjCFactory.swift */; };
+		3661D4CF26DFBE6900BC51F3 /* CoreCryptoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3661D4CE26DFBE6900BC51F3 /* CoreCryptoService.swift */; };
+		3661D4D126DFC2A400BC51F3 /* CoreCryptoServiceMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3661D4D026DFC2A400BC51F3 /* CoreCryptoServiceMock.swift */; };
+		3661D4D326DFC2F700BC51F3 /* MockError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3661D4D226DFC2F700BC51F3 /* MockError.swift */; };
+		3661D4D526DFD11800BC51F3 /* encryptedDataOutput.txt in Resources */ = {isa = PBXBuildFile; fileRef = 3661D4D426DFD11800BC51F3 /* encryptedDataOutput.txt */; };
+		3661D4D726DFD16F00BC51F3 /* plainDataInput.txt in Resources */ = {isa = PBXBuildFile; fileRef = 3661D4D626DFD16F00BC51F3 /* plainDataInput.txt */; };
+		3661D4D926DFD1D600BC51F3 /* symmetricKey.txt in Resources */ = {isa = PBXBuildFile; fileRef = 3661D4D826DFD1D600BC51F3 /* symmetricKey.txt */; };
+		3661D4DB26DFD36E00BC51F3 /* CryptedDataFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3661D4DA26DFD36E00BC51F3 /* CryptedDataFactory.swift */; };
+		3661D4DD26DFD98300BC51F3 /* iv.txt in Resources */ = {isa = PBXBuildFile; fileRef = 3661D4DC26DFD98300BC51F3 /* iv.txt */; };
+		3661D4E026E0D0C800BC51F3 /* DataDonationCryptorModuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3661D4DF26E0D0C800BC51F3 /* DataDonationCryptorModuleTests.swift */; };
 		3670E97326CD5FC100FD5B79 /* libDataDonationCryptoObjC.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3670E95D26CD1E4A00FD5B79 /* libDataDonationCryptoObjC.a */; };
+		367B639726E264D00020C4B5 /* DataDonationSigner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367B639626E264D00020C4B5 /* DataDonationSigner.swift */; };
+		367B639B26E26E5C0020C4B5 /* Data4LifeCrypto in Frameworks */ = {isa = PBXBuildFile; productRef = 367B639A26E26E5C0020C4B5 /* Data4LifeCrypto */; };
 		36B32E8326CFF10F00D16306 /* DonorKeyHolder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36B32E8226CFF10F00D16306 /* DonorKeyHolder.swift */; };
-		36B32E8426CFF3AF00D16306 /* KeychainKeyProviderModuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3670E94826CBF02700FD5B79 /* KeychainKeyProviderModuleTests.swift */; };
 		36B32E8626D3DCB600D16306 /* DonorKeyHolderMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36B32E8526D3DCB600D16306 /* DonorKeyHolderMock.swift */; };
 		36B32E8926D3EF1500D16306 /* Data4LifeCrypto in Frameworks */ = {isa = PBXBuildFile; productRef = 36B32E8826D3EF1500D16306 /* Data4LifeCrypto */; };
-		36B32E8C26D3EF8A00D16306 /* KeyFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36B32E8B26D3EF8A00D16306 /* KeyFactory.swift */; };
+		36B32E8C26D3EF8A00D16306 /* KeyFixtureFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36B32E8B26D3EF8A00D16306 /* KeyFixtureFactory.swift */; };
 		36B32E9426D4E56300D16306 /* DataDonationCryptoHostAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36B32E9326D4E56300D16306 /* DataDonationCryptoHostAppApp.swift */; };
 		36B32E9626D4E56300D16306 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36B32E9526D4E56300D16306 /* ContentView.swift */; };
 		36B32E9826D4E56500D16306 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 36B32E9726D4E56500D16306 /* Assets.xcassets */; };
 		36B32E9B26D4E56500D16306 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 36B32E9A26D4E56500D16306 /* Preview Assets.xcassets */; };
-		36B32EA426D4EACB00D16306 /* donor-identity.json in Resources */ = {isa = PBXBuildFile; fileRef = 36B32EA326D4EACB00D16306 /* donor-identity.json */; };
+		36B32EA426D4EACB00D16306 /* asymmetricDataDonationKeyPair.json in Resources */ = {isa = PBXBuildFile; fileRef = 36B32EA326D4EACB00D16306 /* asymmetricDataDonationKeyPair.json */; };
 		36B32EA926D5140C00D16306 /* Bundle+Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36B32EA826D5140C00D16306 /* Bundle+Tests.swift */; };
-		36FA37C626D53F2400DDCC35 /* KeychainKeyProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FA37C526D53F2400DDCC35 /* KeychainKeyProviderTests.swift */; };
+		36C6D63726F0FAE9008B120A /* ObjcDonorKeyPair.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36C6D63626F0FAE9008B120A /* ObjcDonorKeyPair.swift */; };
+		36C6D63926F0FD67008B120A /* ObjCKeyPairTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36C6D63826F0FD67008B120A /* ObjCKeyPairTests.swift */; };
+		36EA67C826E65E0D00A283DB /* DataDonationKeychainStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36EA67C726E65E0D00A283DB /* DataDonationKeychainStore.swift */; };
+		36EA67CA26E65FE700A283DB /* DataDonationKeychainStoreModuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36EA67C926E65FE700A283DB /* DataDonationKeychainStoreModuleTests.swift */; };
+		36EA67CE26E662FF00A283DB /* DataDonationKeychainStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36EA67CD26E662FF00A283DB /* DataDonationKeychainStoreTests.swift */; };
+		36EA67D026E6649200A283DB /* DataDonationSignerModuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36EA67CF26E6649200A283DB /* DataDonationSignerModuleTests.swift */; };
+		36EA67D426E6671500A283DB /* DataDonationSignerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36EA67D326E6671500A283DB /* DataDonationSignerTests.swift */; };
+		36EA67D626E6697000A283DB /* signerDataInput.txt in Resources */ = {isa = PBXBuildFile; fileRef = 36EA67D526E6697000A283DB /* signerDataInput.txt */; };
+		36EA67D926E669BC00A283DB /* ExampleSignature0.txt in Resources */ = {isa = PBXBuildFile; fileRef = 36EA67D726E669BC00A283DB /* ExampleSignature0.txt */; };
+		36EA67DA26E669BC00A283DB /* ExampleSignature32.txt in Resources */ = {isa = PBXBuildFile; fileRef = 36EA67D826E669BC00A283DB /* ExampleSignature32.txt */; };
 		36FA37C826D5459500DDCC35 /* DonorKeyHolderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FA37C726D5459500DDCC35 /* DonorKeyHolderTests.swift */; };
 		36FA37CB26D54A1800DDCC35 /* DataDonationCryptoObjC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FA37CA26D54A1800DDCC35 /* DataDonationCryptoObjC.swift */; };
 		36FA37CE26D54AC200DDCC35 /* DataDonationCryptoObjCError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FA37CD26D54AC200DDCC35 /* DataDonationCryptoObjCError.swift */; };
@@ -66,26 +89,49 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		3661D4BE26DE45FF00BC51F3 /* DataDonationCryptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDonationCryptor.swift; sourceTree = "<group>"; };
+		3661D4C126DE5D1F00BC51F3 /* EncryptedDataTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncryptedDataTests.swift; sourceTree = "<group>"; };
+		3661D4C326DE6D3A00BC51F3 /* DataDonationCryptorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDonationCryptorTests.swift; sourceTree = "<group>"; };
+		3661D4C526DE6F3700BC51F3 /* IVGeneratorMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IVGeneratorMock.swift; sourceTree = "<group>"; };
+		3661D4CA26DFB9E900BC51F3 /* HybridEncryptedData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HybridEncryptedData.swift; sourceTree = "<group>"; };
+		3661D4CC26DFBDDC00BC51F3 /* DataDonationCryptoObjCFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDonationCryptoObjCFactory.swift; sourceTree = "<group>"; };
+		3661D4CE26DFBE6900BC51F3 /* CoreCryptoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreCryptoService.swift; sourceTree = "<group>"; };
+		3661D4D026DFC2A400BC51F3 /* CoreCryptoServiceMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreCryptoServiceMock.swift; sourceTree = "<group>"; };
+		3661D4D226DFC2F700BC51F3 /* MockError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockError.swift; sourceTree = "<group>"; };
+		3661D4D426DFD11800BC51F3 /* encryptedDataOutput.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = encryptedDataOutput.txt; sourceTree = "<group>"; };
+		3661D4D626DFD16F00BC51F3 /* plainDataInput.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = plainDataInput.txt; sourceTree = "<group>"; };
+		3661D4D826DFD1D600BC51F3 /* symmetricKey.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = symmetricKey.txt; sourceTree = "<group>"; };
+		3661D4DA26DFD36E00BC51F3 /* CryptedDataFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CryptedDataFactory.swift; sourceTree = "<group>"; };
+		3661D4DC26DFD98300BC51F3 /* iv.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = iv.txt; sourceTree = "<group>"; };
+		3661D4DF26E0D0C800BC51F3 /* DataDonationCryptorModuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDonationCryptorModuleTests.swift; sourceTree = "<group>"; };
 		3670E93D26CBF02700FD5B79 /* DataDonationCryptoObjC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DataDonationCryptoObjC.h; sourceTree = "<group>"; };
 		3670E93E26CBF02700FD5B79 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		3670E94826CBF02700FD5B79 /* KeychainKeyProviderModuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainKeyProviderModuleTests.swift; sourceTree = "<group>"; };
 		3670E94A26CBF02800FD5B79 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		3670E95726CBF11200FD5B79 /* KeychainKeyProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainKeyProvider.swift; sourceTree = "<group>"; };
 		3670E95D26CD1E4A00FD5B79 /* libDataDonationCryptoObjC.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libDataDonationCryptoObjC.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		3670E96826CD286D00FD5B79 /* DataDonationCryptoObjC-BridgingHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "DataDonationCryptoObjC-BridgingHeader.h"; sourceTree = "<group>"; };
 		3670E96E26CD5FC100FD5B79 /* DataDonationCryptoObjCTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DataDonationCryptoObjCTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		367B639626E264D00020C4B5 /* DataDonationSigner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDonationSigner.swift; sourceTree = "<group>"; };
 		36B32E8226CFF10F00D16306 /* DonorKeyHolder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DonorKeyHolder.swift; sourceTree = "<group>"; };
 		36B32E8526D3DCB600D16306 /* DonorKeyHolderMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DonorKeyHolderMock.swift; sourceTree = "<group>"; };
-		36B32E8B26D3EF8A00D16306 /* KeyFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyFactory.swift; sourceTree = "<group>"; };
+		36B32E8B26D3EF8A00D16306 /* KeyFixtureFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyFixtureFactory.swift; sourceTree = "<group>"; };
 		36B32E9126D4E56200D16306 /* DataDonationCryptoHostApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DataDonationCryptoHostApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		36B32E9326D4E56300D16306 /* DataDonationCryptoHostAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDonationCryptoHostAppApp.swift; sourceTree = "<group>"; };
 		36B32E9526D4E56300D16306 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		36B32E9726D4E56500D16306 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		36B32E9A26D4E56500D16306 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		36B32E9C26D4E56500D16306 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		36B32EA326D4EACB00D16306 /* donor-identity.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "donor-identity.json"; sourceTree = "<group>"; };
+		36B32EA326D4EACB00D16306 /* asymmetricDataDonationKeyPair.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = asymmetricDataDonationKeyPair.json; sourceTree = "<group>"; };
 		36B32EA826D5140C00D16306 /* Bundle+Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+Tests.swift"; sourceTree = "<group>"; };
-		36FA37C526D53F2400DDCC35 /* KeychainKeyProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainKeyProviderTests.swift; sourceTree = "<group>"; };
+		36C6D63626F0FAE9008B120A /* ObjcDonorKeyPair.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjcDonorKeyPair.swift; sourceTree = "<group>"; };
+		36C6D63826F0FD67008B120A /* ObjCKeyPairTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjCKeyPairTests.swift; sourceTree = "<group>"; };
+		36EA67C726E65E0D00A283DB /* DataDonationKeychainStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataDonationKeychainStore.swift; sourceTree = "<group>"; };
+		36EA67C926E65FE700A283DB /* DataDonationKeychainStoreModuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDonationKeychainStoreModuleTests.swift; sourceTree = "<group>"; };
+		36EA67CD26E662FF00A283DB /* DataDonationKeychainStoreTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataDonationKeychainStoreTests.swift; sourceTree = "<group>"; };
+		36EA67CF26E6649200A283DB /* DataDonationSignerModuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDonationSignerModuleTests.swift; sourceTree = "<group>"; };
+		36EA67D326E6671500A283DB /* DataDonationSignerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDonationSignerTests.swift; sourceTree = "<group>"; };
+		36EA67D526E6697000A283DB /* signerDataInput.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = signerDataInput.txt; sourceTree = "<group>"; };
+		36EA67D726E669BC00A283DB /* ExampleSignature0.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ExampleSignature0.txt; sourceTree = "<group>"; };
+		36EA67D826E669BC00A283DB /* ExampleSignature32.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ExampleSignature32.txt; sourceTree = "<group>"; };
 		36FA37C726D5459500DDCC35 /* DonorKeyHolderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DonorKeyHolderTests.swift; sourceTree = "<group>"; };
 		36FA37CA26D54A1800DDCC35 /* DataDonationCryptoObjC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDonationCryptoObjC.swift; sourceTree = "<group>"; };
 		36FA37CD26D54AC200DDCC35 /* DataDonationCryptoObjCError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDonationCryptoObjCError.swift; sourceTree = "<group>"; };
@@ -96,7 +142,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				36FA37EC26D7CA6A00DDCC35 /* Data4LifeCrypto in Frameworks */,
+				367B639B26E26E5C0020C4B5 /* Data4LifeCrypto in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -121,6 +167,44 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3661D4BD26DE451600BC51F3 /* InternalServices */ = {
+			isa = PBXGroup;
+			children = (
+				3661D4CE26DFBE6900BC51F3 /* CoreCryptoService.swift */,
+				36B32E8226CFF10F00D16306 /* DonorKeyHolder.swift */,
+			);
+			path = InternalServices;
+			sourceTree = "<group>";
+		};
+		3661D4C026DE5D1000BC51F3 /* ModelTests */ = {
+			isa = PBXGroup;
+			children = (
+				3661D4C126DE5D1F00BC51F3 /* EncryptedDataTests.swift */,
+				36C6D63826F0FD67008B120A /* ObjCKeyPairTests.swift */,
+			);
+			path = ModelTests;
+			sourceTree = "<group>";
+		};
+		3661D4C926DFB9DA00BC51F3 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				3661D4CA26DFB9E900BC51F3 /* HybridEncryptedData.swift */,
+				36C6D63626F0FAE9008B120A /* ObjcDonorKeyPair.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		3661D4E126E0D32B00BC51F3 /* CryptorTestModel */ = {
+			isa = PBXGroup;
+			children = (
+				3661D4D426DFD11800BC51F3 /* encryptedDataOutput.txt */,
+				3661D4D626DFD16F00BC51F3 /* plainDataInput.txt */,
+				3661D4D826DFD1D600BC51F3 /* symmetricKey.txt */,
+				3661D4DC26DFD98300BC51F3 /* iv.txt */,
+			);
+			path = CryptorTestModel;
+			sourceTree = "<group>";
+		};
 		3670E93026CBF02700FD5B79 = {
 			isa = PBXGroup;
 			children = (
@@ -156,6 +240,7 @@
 		3670E94726CBF02700FD5B79 /* DataDonationCryptoObjCTests */ = {
 			isa = PBXGroup;
 			children = (
+				3661D4C026DE5D1000BC51F3 /* ModelTests */,
 				36FA37C426D53ED300DDCC35 /* UnitTests */,
 				36FA37C326D53EC700DDCC35 /* ModuleTests */,
 				36B32EA726D513DD00D16306 /* Extension */,
@@ -174,10 +259,23 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		367B639826E268270020C4B5 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				3661D4BE26DE45FF00BC51F3 /* DataDonationCryptor.swift */,
+				36EA67C726E65E0D00A283DB /* DataDonationKeychainStore.swift */,
+				367B639626E264D00020C4B5 /* DataDonationSigner.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
 		36B32E8726D3DCBA00D16306 /* Mocks */ = {
 			isa = PBXGroup;
 			children = (
+				3661D4D026DFC2A400BC51F3 /* CoreCryptoServiceMock.swift */,
 				36B32E8526D3DCB600D16306 /* DonorKeyHolderMock.swift */,
+				3661D4C526DE6F3700BC51F3 /* IVGeneratorMock.swift */,
+				3661D4D226DFC2F700BC51F3 /* MockError.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -185,7 +283,8 @@
 		36B32E8A26D3EF6A00D16306 /* Factories */ = {
 			isa = PBXGroup;
 			children = (
-				36B32E8B26D3EF8A00D16306 /* KeyFactory.swift */,
+				36B32E8B26D3EF8A00D16306 /* KeyFixtureFactory.swift */,
+				3661D4DA26DFD36E00BC51F3 /* CryptedDataFactory.swift */,
 			);
 			path = Factories;
 			sourceTree = "<group>";
@@ -213,7 +312,9 @@
 		36B32EA226D4EAAE00D16306 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				36B32EA326D4EACB00D16306 /* donor-identity.json */,
+				36EA67D226E6657800A283DB /* Shared */,
+				36EA67D126E6656A00A283DB /* SignerTestModel */,
+				3661D4E126E0D32B00BC51F3 /* CryptorTestModel */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -226,10 +327,30 @@
 			path = Extension;
 			sourceTree = "<group>";
 		};
+		36EA67D126E6656A00A283DB /* SignerTestModel */ = {
+			isa = PBXGroup;
+			children = (
+				36EA67D726E669BC00A283DB /* ExampleSignature0.txt */,
+				36EA67D826E669BC00A283DB /* ExampleSignature32.txt */,
+				36EA67D526E6697000A283DB /* signerDataInput.txt */,
+			);
+			path = SignerTestModel;
+			sourceTree = "<group>";
+		};
+		36EA67D226E6657800A283DB /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				36B32EA326D4EACB00D16306 /* asymmetricDataDonationKeyPair.json */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
 		36FA37C326D53EC700DDCC35 /* ModuleTests */ = {
 			isa = PBXGroup;
 			children = (
-				3670E94826CBF02700FD5B79 /* KeychainKeyProviderModuleTests.swift */,
+				3661D4DF26E0D0C800BC51F3 /* DataDonationCryptorModuleTests.swift */,
+				36EA67C926E65FE700A283DB /* DataDonationKeychainStoreModuleTests.swift */,
+				36EA67CF26E6649200A283DB /* DataDonationSignerModuleTests.swift */,
 			);
 			path = ModuleTests;
 			sourceTree = "<group>";
@@ -237,8 +358,10 @@
 		36FA37C426D53ED300DDCC35 /* UnitTests */ = {
 			isa = PBXGroup;
 			children = (
-				36FA37C526D53F2400DDCC35 /* KeychainKeyProviderTests.swift */,
 				36FA37C726D5459500DDCC35 /* DonorKeyHolderTests.swift */,
+				3661D4C326DE6D3A00BC51F3 /* DataDonationCryptorTests.swift */,
+				36EA67CD26E662FF00A283DB /* DataDonationKeychainStoreTests.swift */,
+				36EA67D326E6671500A283DB /* DataDonationSignerTests.swift */,
 			);
 			path = UnitTests;
 			sourceTree = "<group>";
@@ -246,10 +369,12 @@
 		36FA37CC26D54A9900DDCC35 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				367B639826E268270020C4B5 /* Services */,
+				3661D4C926DFB9DA00BC51F3 /* Model */,
+				3661D4BD26DE451600BC51F3 /* InternalServices */,
 				36FA37CA26D54A1800DDCC35 /* DataDonationCryptoObjC.swift */,
 				36FA37CD26D54AC200DDCC35 /* DataDonationCryptoObjCError.swift */,
-				3670E95726CBF11200FD5B79 /* KeychainKeyProvider.swift */,
-				36B32E8226CFF10F00D16306 /* DonorKeyHolder.swift */,
+				3661D4CC26DFBDDC00BC51F3 /* DataDonationCryptoObjCFactory.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -272,7 +397,7 @@
 			);
 			name = DataDonationCryptoObjC;
 			packageProductDependencies = (
-				36FA37EB26D7CA6A00DDCC35 /* Data4LifeCrypto */,
+				367B639A26E26E5C0020C4B5 /* Data4LifeCrypto */,
 			);
 			productName = DataDonationCryptoObjC;
 			productReference = 3670E95D26CD1E4A00FD5B79 /* libDataDonationCryptoObjC.a */;
@@ -352,7 +477,7 @@
 			);
 			mainGroup = 3670E93026CBF02700FD5B79;
 			packageReferences = (
-				36FA37EA26D7CA6A00DDCC35 /* XCRemoteSwiftPackageReference "d4l-crypto-ios" */,
+				367B639926E26E5C0020C4B5 /* XCRemoteSwiftPackageReference "d4l-crypto-ios" */,
 			);
 			productRefGroup = 3670E93B26CBF02700FD5B79 /* Products */;
 			projectDirPath = "";
@@ -370,7 +495,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				36B32EA426D4EACB00D16306 /* donor-identity.json in Resources */,
+				3661D4DD26DFD98300BC51F3 /* iv.txt in Resources */,
+				36EA67D926E669BC00A283DB /* ExampleSignature0.txt in Resources */,
+				36EA67D626E6697000A283DB /* signerDataInput.txt in Resources */,
+				3661D4D926DFD1D600BC51F3 /* symmetricKey.txt in Resources */,
+				36B32EA426D4EACB00D16306 /* asymmetricDataDonationKeyPair.json in Resources */,
+				3661D4D526DFD11800BC51F3 /* encryptedDataOutput.txt in Resources */,
+				3661D4D726DFD16F00BC51F3 /* plainDataInput.txt in Resources */,
+				36EA67DA26E669BC00A283DB /* ExampleSignature32.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -411,9 +543,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3670E96426CD1E5D00FD5B79 /* KeychainKeyProvider.swift in Sources */,
+				367B639726E264D00020C4B5 /* DataDonationSigner.swift in Sources */,
+				3661D4CB26DFB9E900BC51F3 /* HybridEncryptedData.swift in Sources */,
 				36B32E8326CFF10F00D16306 /* DonorKeyHolder.swift in Sources */,
+				3661D4BF26DE45FF00BC51F3 /* DataDonationCryptor.swift in Sources */,
 				36FA37CE26D54AC200DDCC35 /* DataDonationCryptoObjCError.swift in Sources */,
+				3661D4CF26DFBE6900BC51F3 /* CoreCryptoService.swift in Sources */,
+				36EA67C826E65E0D00A283DB /* DataDonationKeychainStore.swift in Sources */,
+				3661D4CD26DFBDDC00BC51F3 /* DataDonationCryptoObjCFactory.swift in Sources */,
+				36C6D63726F0FAE9008B120A /* ObjcDonorKeyPair.swift in Sources */,
 				36FA37CB26D54A1800DDCC35 /* DataDonationCryptoObjC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -422,12 +560,22 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				36FA37C626D53F2400DDCC35 /* KeychainKeyProviderTests.swift in Sources */,
-				36B32E8426CFF3AF00D16306 /* KeychainKeyProviderModuleTests.swift in Sources */,
+				3661D4D326DFC2F700BC51F3 /* MockError.swift in Sources */,
+				36EA67CA26E65FE700A283DB /* DataDonationKeychainStoreModuleTests.swift in Sources */,
+				3661D4D126DFC2A400BC51F3 /* CoreCryptoServiceMock.swift in Sources */,
 				36B32EA926D5140C00D16306 /* Bundle+Tests.swift in Sources */,
+				3661D4C626DE6F3700BC51F3 /* IVGeneratorMock.swift in Sources */,
 				36B32E8626D3DCB600D16306 /* DonorKeyHolderMock.swift in Sources */,
 				36FA37C826D5459500DDCC35 /* DonorKeyHolderTests.swift in Sources */,
-				36B32E8C26D3EF8A00D16306 /* KeyFactory.swift in Sources */,
+				36C6D63926F0FD67008B120A /* ObjCKeyPairTests.swift in Sources */,
+				36EA67D426E6671500A283DB /* DataDonationSignerTests.swift in Sources */,
+				36EA67D026E6649200A283DB /* DataDonationSignerModuleTests.swift in Sources */,
+				36EA67CE26E662FF00A283DB /* DataDonationKeychainStoreTests.swift in Sources */,
+				3661D4DB26DFD36E00BC51F3 /* CryptedDataFactory.swift in Sources */,
+				3661D4C426DE6D3A00BC51F3 /* DataDonationCryptorTests.swift in Sources */,
+				3661D4C226DE5D1F00BC51F3 /* EncryptedDataTests.swift in Sources */,
+				3661D4E026E0D0C800BC51F3 /* DataDonationCryptorModuleTests.swift in Sources */,
+				36B32E8C26D3EF8A00D16306 /* KeyFixtureFactory.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -753,30 +901,28 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		36FA37EA26D7CA6A00DDCC35 /* XCRemoteSwiftPackageReference "d4l-crypto-ios" */ = {
+		367B639926E26E5C0020C4B5 /* XCRemoteSwiftPackageReference "d4l-crypto-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/d4l-data4life/d4l-crypto-ios.git";
 			requirement = {
 				kind = upToNextMinorVersion;
-				minimumVersion = 1.6.0;
+				minimumVersion = 1.7.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		36FA37EB26D7CA6A00DDCC35 /* Data4LifeCrypto */ = {
+		367B639A26E26E5C0020C4B5 /* Data4LifeCrypto */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 36FA37EA26D7CA6A00DDCC35 /* XCRemoteSwiftPackageReference "d4l-crypto-ios" */;
+			package = 367B639926E26E5C0020C4B5 /* XCRemoteSwiftPackageReference "d4l-crypto-ios" */;
 			productName = Data4LifeCrypto;
 		};
 		36B32E8826D3EF1500D16306 /* Data4LifeCrypto */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 3670E95426CBF0F900FD5B79 /* XCRemoteSwiftPackageReference "d4l-sdk-ios" */;
 			productName = Data4LifeCrypto;
 		};
 		36FA37E526D67FF600DDCC35 /* Data4LifeCrypto */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 3670E95426CBF0F900FD5B79 /* XCRemoteSwiftPackageReference "d4l-sdk-ios" */;
 			productName = Data4LifeCrypto;
 		};
 /* End XCSwiftPackageProductDependency section */

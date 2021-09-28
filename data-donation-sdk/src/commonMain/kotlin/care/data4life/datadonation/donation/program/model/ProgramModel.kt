@@ -20,8 +20,8 @@ import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-@Serializable(with = BlurFunctionSerializer::class)
-enum class BlurFunction(val value: String) {
+@Serializable(with = BlurFunctionReferenceSerializer::class)
+internal enum class BlurFunctionReference(val value: String) {
     START_OF_DAY("startOfDay"),
     END_OF_DAY("endOfDay"),
     START_OF_WEEK("startOfWeek"),
@@ -30,54 +30,64 @@ enum class BlurFunction(val value: String) {
     END_OF_MONTH("endOfMonth")
 }
 
-@Serializable(with = BlurFunctionSerializer::class)
+@Serializable(with = RevocationModeSerializer::class)
 enum class RevocationMode(val value: String) {
     DELETE("delete"),
     ANONYMIZE("anonymize")
 }
 
 @Serializable
-internal data class ProgramResourceBlurItem(
+internal data class QuestionnaireResponseItemBlur(
     val linkId: String,
     @SerialName("fn")
     @Contextual
-    val function: BlurFunction
+    val blurFunctionReference: BlurFunctionReference
 )
 
 @Serializable
-internal data class ProgramResourceBlur(
-    val location: String? = null,
+internal data class QuestionnaireResponseBlur(
+    @SerialName("location")
+    val targetTimeZone: String? = null,
     @Contextual
-    val authored: BlurFunction? = null,
-    val items: List<ProgramResourceBlurItem>
+    @SerialName("authored")
+    val authoredBlurFunctionReference: BlurFunctionReference? = null,
+    @SerialName("items")
+    val questionnaireResponseItemBlurs: List<QuestionnaireResponseItemBlur>
 )
 
 @Serializable
-internal data class ProgramResource(
+internal data class FhirResourceConfiguration(
     val url: String,
     val versions: List<String>? = null,
-    val blur: ProgramResourceBlur? = null
+    @SerialName("blur")
+    val fhirBlur: QuestionnaireResponseBlur? = null
 )
 
 @Serializable
-internal data class ProgramAnonymizationBlur(
-    val location: String,
+internal data class ProgramBlur(
+    @SerialName("location")
+    val targetTimeZone: String,
     @Contextual
-    val authored: BlurFunction? = null,
+    @SerialName("authored")
+    val questionnaireResponseAuthoredBlurFunctionReference: BlurFunctionReference? = null,
     @Contextual
-    val researchSubject: BlurFunction? = null
+    @SerialName("researchSubject")
+    val researchSubjectBlurFunctionReference: BlurFunctionReference? = null
 )
 
 @Serializable
-internal data class ProgramAnonymization(
-    val blur: ProgramAnonymizationBlur? = null
+internal data class ProgramConfiguration(
+    @SerialName("blur")
+    val programBlur: ProgramBlur? = null
 )
 
 @Serializable
 internal data class ProgramDonationConfiguration(
     val consentKey: String,
-    val resources: List<ProgramResource>,
-    val anonymization: ProgramAnonymization? = null,
+    @SerialName("resources")
+    val fhirResourceConfigurations: List<FhirResourceConfiguration>,
+    @SerialName("anonymization")
+    val programConfiguration: ProgramConfiguration? = null,
     val triggerList: List<String>? = null,
     val delay: Double,
     val studyID: String,
@@ -85,11 +95,19 @@ internal data class ProgramDonationConfiguration(
     val revocation: RevocationMode = RevocationMode.DELETE
 )
 
+@Serializable(with = ProgramTypeSerializer::class)
+internal enum class ProgramType(val value: String) {
+    DIARY("diary"),
+    STUDY("study")
+}
+
 @Serializable
 internal data class Program(
     val name: String,
     val slug: String,
     val tenantID: String,
+    @Contextual
+    val type: ProgramType,
     @SerialName("donation")
     val configuration: ProgramDonationConfiguration? = null
 )
