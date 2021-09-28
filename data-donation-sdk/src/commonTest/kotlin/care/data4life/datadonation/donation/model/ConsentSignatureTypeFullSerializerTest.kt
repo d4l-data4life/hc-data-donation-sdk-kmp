@@ -14,58 +14,51 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.donation.program.model
+package care.data4life.datadonation.donation.model
 
+import care.data4life.datadonation.donation.DonationContract
 import care.data4life.datadonation.error.CoreRuntimeError
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.descriptors.PrimitiveKind
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.modules.SerializersModule
-import kotlinx.serialization.modules.contextual
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
-internal class BlurFunctionSerializerTest {
+internal class ConsentSignatureTypeFullSerializerTest {
     @Test
     fun `It fulfils KSerializer`() {
-        val serializer: Any = BlurFunctionSerializer
+        val serializer: Any = ConsentSignatureTypeFullSerializer
 
         assertTrue(serializer is KSerializer<*>)
     }
 
-    @ExperimentalSerializationApi
     @Test
     fun `It has a proper descriptor`() {
         assertEquals(
-            actual = BlurFunctionSerializer.descriptor.kind,
+            actual = ConsentSignatureTypeFullSerializer.descriptor.kind,
             expected = PrimitiveKind.STRING
         )
 
         assertEquals(
-            actual = BlurFunctionSerializer.descriptor.serialName,
-            expected = "BlurFunction"
+            actual = ConsentSignatureTypeFullSerializer.descriptor.serialName,
+            expected = "ConsentSignatureType"
         )
     }
 
-    @ExperimentalSerializationApi
     @Test
-    fun `Given a Serializer is called with a BlurFunction, it encodes it`() {
+    fun `Given a Serializer is called with a ConsentSignatureType, it encodes it`() {
         // Given
-        val serializer = Json {
-            serializersModule = SerializersModule {
-                contextual(BlurFunctionSerializer)
-            }
-        }
+        val serializer = Json
 
-        for (field in BlurFunction.values()) {
+        for (field in DonationContract.ConsentSignatureType.values()) {
             // When
-            val result = serializer.encodeToString(field)
+            val result = serializer.encodeToString(
+                ConsentSignatureTypeFullSerializer,
+                field
+            )
 
             // Then
             assertEquals(
@@ -75,41 +68,37 @@ internal class BlurFunctionSerializerTest {
         }
     }
 
-    @ExperimentalSerializationApi
     @Test
-    fun `Given a Serializer is called with a serialized BlurFunction, it fails with a Internal Failure if the blur function is unknown`() {
+    fun `Given a Serializer is called with a serialized ConsentSignatureType, it fails with a Internal Failure if the blur function is unknown`() {
         // Given
-        val serializer = Json {
-            serializersModule = SerializersModule {
-                contextual(BlurFunctionSerializer)
-            }
-        }
+        val serializer = Json
 
         // Then
         val error = assertFailsWith<CoreRuntimeError.InternalFailure> {
             // When
-            serializer.decodeFromString<BlurFunction>("\"notJS\"")
+            serializer.decodeFromString(
+                ConsentSignatureTypeFullSerializer,
+                "\"notJS\""
+            )
         }
 
         assertEquals(
             actual = error.message,
-            expected = "Unknown blur function notJS."
+            expected = "Unknown ConsentSignatureType notJS."
         )
     }
 
-    @ExperimentalSerializationApi
     @Test
-    fun `Given a Serializer is called with a serialized BlurFunction, it decodes it`() {
+    fun `Given a Serializer is called with a serialized ConsentSignatureType, it decodes it`() {
         // Given
-        val serializer = Json {
-            serializersModule = SerializersModule {
-                contextual(BlurFunctionSerializer)
-            }
-        }
+        val serializer = Json
 
-        for (field in BlurFunction.values()) {
+        for (field in DonationContract.ConsentSignatureType.values()) {
             // When
-            val result = serializer.decodeFromString<BlurFunction>("\"${field.value}\"")
+            val result = serializer.decodeFromString(
+                ConsentSignatureTypeFullSerializer,
+                "\"${field.value}\""
+            )
 
             // Then
             assertSame(

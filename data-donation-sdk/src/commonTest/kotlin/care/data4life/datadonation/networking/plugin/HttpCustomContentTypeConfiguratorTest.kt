@@ -14,44 +14,38 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.donation.anonymization
+package care.data4life.datadonation.networking.plugin
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-class RedactorTest {
+class HttpCustomContentTypeConfiguratorTest {
     @Test
-    fun `It fulfils Redaction`() {
-        val redaction: Any = Redactor
+    fun `It fulfils HttpCustomContentTypeConfigurator`() {
+        val configurator: Any = HttpCustomContentTypeConfigurator
 
-        assertTrue(redaction is AnonymizationContract.Redactor)
+        assertTrue(configurator is KtorPluginsContract.HttpCustomContentTypeConfigurator)
     }
 
     @Test
-    fun `Given a redact is called with null, it returns null`() {
+    fun `Given configure is called with a HttpCustomContentTypeConfig it sets the replacementHeader`() {
         // Given
-        val valueString = null
+        val config = HttpCustomContentType.Config()
 
         // When
-        val result = Redactor.redact(valueString)
-
-        // Then
-        assertNull(result)
-    }
-
-    @Test
-    fun `Given a redact is called with a String, it returns REDACTED`() {
-        val valueString = "something"
-
-        // When
-        val result = Redactor.redact(valueString)
+        HttpCustomContentTypeConfigurator.configure(
+            config,
+            null
+        )
 
         // Then
         assertEquals(
-            actual = result,
-            expected = "REDACTED"
+            actual = config.replacementHeader,
+            expected = "X-Custom-Type-Replacement"
         )
+
+        assertNull(config.amendmentHeader)
     }
 }

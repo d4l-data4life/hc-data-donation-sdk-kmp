@@ -14,25 +14,24 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.donation.consentsignature.model
+package care.data4life.datadonation.mock.stub.donation.anonymization
 
-import care.data4life.datadonation.donation.DonationContract
-import care.data4life.datadonation.donation.model.ConsentSignatureTypeFullSerializer
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import care.data4life.datadonation.donation.anonymization.AnonymizationContract
+import care.data4life.datadonation.mock.MockContract
+import care.data4life.datadonation.mock.MockException
 
-@Serializable
-internal data class DeletionMessage(
-    val consentDocumentKey: String,
-    @Serializable(with = ConsentSignatureTypeFullSerializer::class)
-    val signatureType: DonationContract.ConsentSignatureType,
-    val date: String,
-    val uuid: String
-)
+internal class RedactorStub : AnonymizationContract.Redactor, MockContract.Stub {
+    var whenRedact: ((String?) -> String?)? = null
 
-@Serializable
-internal data class SignedDeletionMessage(
-    @SerialName("deletionMessage")
-    val message: DeletionMessage,
-    val signature: String
-)
+    override fun redact(valueString: String?): String? {
+        return if (whenRedact == null) {
+            throw MockException()
+        } else {
+            whenRedact!!.invoke(valueString)
+        }
+    }
+
+    override fun clear() {
+        whenRedact = null
+    }
+}

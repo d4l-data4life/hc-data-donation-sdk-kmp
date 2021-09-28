@@ -14,8 +14,9 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.donation.consentsignature.model
+package care.data4life.datadonation.donation.model
 
+import care.data4life.datadonation.donation.DonationContract
 import care.data4life.datadonation.error.CoreRuntimeError
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind
@@ -24,18 +25,18 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
-internal object ConsentSignatureTypeSerializer : KSerializer<ConsentSignatureType> {
+internal object ConsentSignatureTypeFullSerializer : KSerializer<DonationContract.ConsentSignatureType> {
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor(
         "ConsentSignatureType",
         PrimitiveKind.STRING
     )
-    private val mapping = ConsentSignatureType.values().associateBy { it.value }
+    private val mapping = DonationContract.ConsentSignatureType.values().associateBy { it.value }
 
-    override fun serialize(encoder: Encoder, value: ConsentSignatureType) {
+    override fun serialize(encoder: Encoder, value: DonationContract.ConsentSignatureType) {
         encoder.encodeString(value.value)
     }
 
-    override fun deserialize(decoder: Decoder): ConsentSignatureType {
+    override fun deserialize(decoder: Decoder): DonationContract.ConsentSignatureType {
         val key = decoder.decodeString()
         return mapping.getOrElse(key) {
             throw CoreRuntimeError.InternalFailure("Unknown ConsentSignatureType $key.")
