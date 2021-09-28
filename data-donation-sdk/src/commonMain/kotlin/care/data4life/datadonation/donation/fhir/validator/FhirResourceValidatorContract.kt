@@ -20,8 +20,6 @@ import care.data4life.datadonation.donation.fhir.AllowedReference
 import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract
 import care.data4life.datadonation.donation.program.model.QuestionnaireResponseBlur
 import care.data4life.hl7.fhir.FhirVersion
-import care.data4life.hl7.fhir.stu3.model.FhirResearchSubject
-import care.data4life.hl7.fhir.stu3.model.FhirResource
 
 internal interface FhirResourceValidatorContract {
     fun interface QuestionnaireResponseValidator {
@@ -52,7 +50,7 @@ internal interface FhirResourceValidatorContract {
 
     interface ResourceValidator {
         fun canBeDonated(
-            resource: FhirResource,
+            resource: CompatibilityWrapperContract.FhirWrapper<FhirVersion>,
             studyId: String,
             blurMapping: Map<AllowedReference, QuestionnaireResponseBlur?>
         ): Boolean

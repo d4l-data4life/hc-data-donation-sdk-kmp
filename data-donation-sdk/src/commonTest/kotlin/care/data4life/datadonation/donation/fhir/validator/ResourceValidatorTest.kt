@@ -18,6 +18,10 @@ package care.data4life.datadonation.donation.fhir.validator
 
 import care.data4life.datadonation.donation.fhir.AllowedReference
 import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract
+import care.data4life.datadonation.donation.fhir.wrapper.Fhir3ObservationWrapper
+import care.data4life.datadonation.donation.fhir.wrapper.Fhir3QuestionnaireResponseItemWrapper
+import care.data4life.datadonation.donation.fhir.wrapper.Fhir3QuestionnaireResponseWrapper
+import care.data4life.datadonation.donation.fhir.wrapper.Fhir3ResearchSubjectWrapper
 import care.data4life.datadonation.donation.program.model.QuestionnaireResponseBlur
 import care.data4life.datadonation.mock.stub.donation.fhir.validator.ObservationValidatorStub
 import care.data4life.datadonation.mock.stub.donation.fhir.validator.QuestionnaireResponseValidatorStub
@@ -27,11 +31,9 @@ import care.data4life.hl7.fhir.stu3.codesystem.ObservationStatus
 import care.data4life.hl7.fhir.stu3.codesystem.QuestionnaireResponseStatus
 import care.data4life.hl7.fhir.stu3.codesystem.ResearchSubjectStatus
 import care.data4life.hl7.fhir.stu3.model.CodeableConcept
-import care.data4life.hl7.fhir.stu3.model.DomainResource
-import care.data4life.hl7.fhir.stu3.model.FhirObservation
-import care.data4life.hl7.fhir.stu3.model.FhirResearchSubject
 import care.data4life.hl7.fhir.stu3.model.Observation
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
+import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponseItem
 import care.data4life.hl7.fhir.stu3.model.Reference
 import care.data4life.hl7.fhir.stu3.model.ResearchSubject
 import kotlin.test.Test
@@ -55,7 +57,9 @@ class ResourceValidatorTest {
     @Test
     fun `Given isAllowed is called with a arbitrary FhirResource, a StudyId and a BlurMapping, it returns false`() {
         // Given
-        val resource = DomainResource()
+        val resource = Fhir3QuestionnaireResponseItemWrapper(
+            QuestionnaireResponseItem(linkId = "23")
+        )
         val studyId = "Test"
         val mapping = mapOf(
             "something" to null
@@ -66,7 +70,11 @@ class ResourceValidatorTest {
             QuestionnaireResponseValidatorStub(),
             ObservationValidatorStub(),
             ResearchSubjectValidatorStub()
-        ).canBeDonated(resource, studyId, mapping)
+        ).canBeDonated(
+            resource as CompatibilityWrapperContract.FhirWrapper<FhirVersion>,
+            studyId,
+            mapping
+        )
 
         // Then
         assertFalse(result)
@@ -75,8 +83,10 @@ class ResourceValidatorTest {
     @Test
     fun `Given isAllowed is called with a QuestionnaireRespose, a StudyId and a BlurMapping, it delegates to call to QuestionnaireResposeValidator and returns its result`() {
         // Given
-        val resource = QuestionnaireResponse(
-            status = QuestionnaireResponseStatus.COMPLETED
+        val resource = Fhir3QuestionnaireResponseWrapper(
+            QuestionnaireResponse(
+                status = QuestionnaireResponseStatus.COMPLETED
+            )
         )
         val studyId = "Test"
         val mapping = mapOf(
@@ -102,7 +112,11 @@ class ResourceValidatorTest {
             questionnaireResponseValidator,
             ObservationValidatorStub(),
             ResearchSubjectValidatorStub()
-        ).canBeDonated(resource, studyId, mapping)
+        ).canBeDonated(
+            resource as CompatibilityWrapperContract.FhirWrapper<FhirVersion>,
+            studyId,
+            mapping
+        )
 
         // Then
         assertEquals(
@@ -112,7 +126,7 @@ class ResourceValidatorTest {
 
         assertSame(
             actual = capturedResource?.unwrap(),
-            expected = resource
+            expected = resource.unwrap()
         )
         assertSame(
             actual = capturedBlurMapping,
@@ -123,9 +137,11 @@ class ResourceValidatorTest {
     @Test
     fun `Given isAllowed is called with a Observation, a StudyId and a BlurMapping, it delegates to call to ObservationValidator and returns its result`() {
         // Given
-        val resource = Observation(
-            status = ObservationStatus.AMENDED,
-            code = CodeableConcept()
+        val resource = Fhir3ObservationWrapper(
+            Observation(
+                status = ObservationStatus.AMENDED,
+                code = CodeableConcept()
+            )
         )
         val studyId = "Test"
         val mapping = mapOf(
@@ -151,7 +167,11 @@ class ResourceValidatorTest {
             QuestionnaireResponseValidatorStub(),
             observationValidator,
             ResearchSubjectValidatorStub()
-        ).canBeDonated(resource, studyId, mapping)
+        ).canBeDonated(
+            resource as CompatibilityWrapperContract.FhirWrapper<FhirVersion>,
+            studyId,
+            mapping
+        )
 
         // Then
         assertEquals(
@@ -160,8 +180,8 @@ class ResourceValidatorTest {
         )
 
         assertSame(
-            actual = capturedResource,
-            expected = resource
+            actual = capturedResource?.unwrap(),
+            expected = resource.unwrap()
         )
         assertSame(
             actual = capturedBlurMapping,
@@ -172,10 +192,12 @@ class ResourceValidatorTest {
     @Test
     fun `Given isAllowed is called with a ResearchSubject, a StudyId and a BlurMapping, it delegates to call to ResearchSubjectValidator and returns its result`() {
         // Given
-        val resource = ResearchSubject(
-            status = ResearchSubjectStatus.SUSPENDED,
-            study = Reference(),
-            individual = Reference()
+        val resource = Fhir3ResearchSubjectWrapper(
+            ResearchSubject(
+                status = ResearchSubjectStatus.SUSPENDED,
+                study = Reference(),
+                individual = Reference()
+            )
         )
         val studyId = "Test"
         val mapping = mapOf(
@@ -201,7 +223,11 @@ class ResourceValidatorTest {
             QuestionnaireResponseValidatorStub(),
             ObservationValidatorStub(),
             researchSubjectValidator
-        ).canBeDonated(resource, studyId, mapping)
+        ).canBeDonated(
+            resource as CompatibilityWrapperContract.FhirWrapper<FhirVersion>,
+            studyId,
+            mapping
+        )
 
         // Then
         assertEquals(
@@ -211,7 +237,7 @@ class ResourceValidatorTest {
 
         assertSame(
             actual = capturedResource?.unwrap(),
-            expected = resource
+            expected = resource.unwrap()
         )
         assertSame(
             actual = capturedStudyId,

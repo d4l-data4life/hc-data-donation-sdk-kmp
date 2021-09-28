@@ -17,11 +17,9 @@
 package care.data4life.datadonation.donation.fhir.validator
 
 import care.data4life.datadonation.donation.fhir.AllowedReference
+import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract
 import care.data4life.datadonation.donation.program.model.QuestionnaireResponseBlur
-import care.data4life.hl7.fhir.stu3.model.FhirObservation
-import care.data4life.hl7.fhir.stu3.model.FhirQuestionnaireResponse
-import care.data4life.hl7.fhir.stu3.model.FhirResearchSubject
-import care.data4life.hl7.fhir.stu3.model.FhirResource
+import care.data4life.hl7.fhir.FhirVersion
 
 internal class ResourceValidator(
     private val questionnaireResponseValidator: FhirResourceValidatorContract.QuestionnaireResponseValidator,
@@ -29,14 +27,23 @@ internal class ResourceValidator(
     private val researchSubjectValidator: FhirResourceValidatorContract.ResearchSubjectValidator
 ) : FhirResourceValidatorContract.ResourceValidator {
     override fun canBeDonated(
-        resource: FhirResource,
+        resource: CompatibilityWrapperContract.FhirWrapper<FhirVersion>,
         studyId: String,
         blurMapping: Map<AllowedReference, QuestionnaireResponseBlur?>
     ): Boolean {
         return when (resource) {
-            is FhirQuestionnaireResponse -> TODO()// questionnaireResponseValidator.canBeDonated(resource, blurMapping)
-            is FhirObservation -> TODO() //observationValidator.canBeDonated(resource, blurMapping)
-            is FhirResearchSubject -> TODO() // researchSubjectValidator.canBeDonated(resource, studyId)
+            is CompatibilityWrapperContract.QuestionnaireResponse<*, *, *, *> -> questionnaireResponseValidator.canBeDonated(
+                resource as CompatibilityWrapperContract.QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>,
+                blurMapping
+            )
+            is CompatibilityWrapperContract.Observation<*, *> -> observationValidator.canBeDonated(
+                resource as CompatibilityWrapperContract.Observation<FhirVersion, FhirVersion>,
+                blurMapping
+            )
+            is CompatibilityWrapperContract.ResearchSubject<*, *, *> -> researchSubjectValidator.canBeDonated(
+                resource as CompatibilityWrapperContract.ResearchSubject<FhirVersion, FhirVersion, FhirVersion>,
+                studyId
+            )
             else -> false
         }
     }

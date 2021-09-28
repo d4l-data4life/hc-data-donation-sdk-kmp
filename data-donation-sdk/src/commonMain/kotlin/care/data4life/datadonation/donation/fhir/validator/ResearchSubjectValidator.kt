@@ -20,7 +20,6 @@ import care.data4life.datadonation.donation.fhir.validator.FhirResourceValidator
 import care.data4life.datadonation.donation.fhir.validator.FhirResourceValidatorContract.ResearchSubjectValidator.Companion.STUDY_IDENTIFIER_SYSTEM
 import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract
 import care.data4life.hl7.fhir.FhirVersion
-import care.data4life.hl7.fhir.stu3.model.FhirResearchSubject
 
 internal object ResearchSubjectValidator : FhirResourceValidatorContract.ResearchSubjectValidator {
     override fun canBeDonated(
