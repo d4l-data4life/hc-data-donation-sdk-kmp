@@ -17,6 +17,7 @@
 package care.data4life.datadonation.donation.program.model
 
 import care.data4life.datadonation.error.CoreRuntimeError
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.descriptors.PrimitiveKind
@@ -38,6 +39,7 @@ internal class BlurFunctionSerializerTest {
         assertTrue(serializer is KSerializer<*>)
     }
 
+    @ExperimentalSerializationApi
     @Test
     fun `It has a proper descriptor`() {
         assertEquals(
@@ -51,6 +53,7 @@ internal class BlurFunctionSerializerTest {
         )
     }
 
+    @ExperimentalSerializationApi
     @Test
     fun `Given a Serializer is called with a BlurFunction, it encodes it`() {
         // Given
@@ -72,6 +75,7 @@ internal class BlurFunctionSerializerTest {
         }
     }
 
+    @ExperimentalSerializationApi
     @Test
     fun `Given a Serializer is called with a serialized BlurFunction, it fails with a Internal Failure if the blur function is unknown`() {
         // Given
@@ -84,8 +88,7 @@ internal class BlurFunctionSerializerTest {
         // Then
         val error = assertFailsWith<CoreRuntimeError.InternalFailure> {
             // When
-            val result =
-                serializer.decodeFromString<BlurFunction>("\"notJS\"")
+            serializer.decodeFromString<BlurFunction>("\"notJS\"")
         }
 
         assertEquals(
@@ -94,6 +97,7 @@ internal class BlurFunctionSerializerTest {
         )
     }
 
+    @ExperimentalSerializationApi
     @Test
     fun `Given a Serializer is called with a serialized BlurFunction, it decodes it`() {
         // Given
