@@ -152,9 +152,21 @@ interface CompatibilityWrapperContract {
         val code: String?
     }
 
-    interface Observation<ObservationValue : FhirVersion> :
+    interface CodingListIterator<CodingValue : FhirVersion> :
+        ListIterator<Coding> {
+
+        fun unwrap(): ListIterator<CodingValue>
+    }
+
+    interface CodingList<CodingValue : FhirVersion> :
+        FhirWrapper, List<Coding> {
+
+        fun unwrap(): List<CodingValue>
+    }
+
+    interface Observation<ObservationValue : FhirVersion, CodingValue : FhirVersion> :
         FhirWrapper, Stripper<ObservationValue> {
-        val coding: List<Coding>?
-        val quantity: Quantity
+        val coding: CodingList<CodingValue>?
+        val valueQuantity: Quantity?
     }
 }
