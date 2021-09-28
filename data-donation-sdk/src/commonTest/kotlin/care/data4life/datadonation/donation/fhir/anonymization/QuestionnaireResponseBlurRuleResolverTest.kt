@@ -16,14 +16,12 @@
 
 package care.data4life.datadonation.donation.fhir.anonymization
 
-import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract.QuestionnaireResponse
 import care.data4life.datadonation.donation.fhir.wrapper.Fhir3QuestionnaireResponse
 import care.data4life.datadonation.donation.fhir.wrapper.Fhir3QuestionnaireResponseWrapper
 import care.data4life.datadonation.donation.program.model.BlurFunctionReference
 import care.data4life.datadonation.donation.program.model.ProgramBlur
 import care.data4life.datadonation.donation.program.model.QuestionnaireResponseBlur
 import care.data4life.datadonation.donation.program.model.QuestionnaireResponseItemBlur
-import care.data4life.hl7.fhir.FhirVersion
 import care.data4life.hl7.fhir.stu3.codesystem.QuestionnaireResponseStatus
 import care.data4life.hl7.fhir.stu3.model.Reference
 import kotlin.test.Test
@@ -47,7 +45,7 @@ class QuestionnaireResponseBlurRuleResolverTest {
     @Test
     fun `Given resolveBlurRule is called with a QuestionnaireResponse, null as ProgramBlur and a empty List of ProgramResource it returns null`() {
         // Given
-        val questionnaireResponse = Fhir3QuestionnaireResponseWrapper(questionnaireResponseTemplate.copy()) as QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>
+        val questionnaireResponse = Fhir3QuestionnaireResponseWrapper(questionnaireResponseTemplate.copy())
 
         // When
         val result = QuestionnaireResponseBlurRuleResolver.resolveBlurRule(
@@ -63,7 +61,7 @@ class QuestionnaireResponseBlurRuleResolverTest {
     @Test
     fun `Given resolveBlurRule is called with a QuestionnaireResponse, a ProgramBlur and a empty List of ProgramResource it returns a BlurRule provided by the ProgramAnonymization`() {
         // Given
-        val questionnaireResponse = Fhir3QuestionnaireResponseWrapper(questionnaireResponseTemplate.copy()) as QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>
+        val questionnaireResponse = Fhir3QuestionnaireResponseWrapper(questionnaireResponseTemplate.copy())
         val programBlur = ProgramBlur(
             targetTimeZone = "does not matter",
             questionnaireResponseAuthoredBlurFunctionReference = BlurFunctionReference.START_OF_DAY,
@@ -96,7 +94,7 @@ class QuestionnaireResponseBlurRuleResolverTest {
     @Test
     fun `Given resolveBlurRule is called with a QuestionnaireResponse, null as ProgramBlur and a List of ProgramResource it returns null if no ProgramResource match the FHIRResource`() {
         // Given
-        val questionnaireResponse = Fhir3QuestionnaireResponseWrapper(questionnaireResponseTemplate.copy()) as QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>
+        val questionnaireResponse = Fhir3QuestionnaireResponseWrapper(questionnaireResponseTemplate.copy())
         val fhirResourceBlur = mapOf(
             "this is the one|1.0.0" to QuestionnaireResponseBlur(
                 targetTimeZone = "does not matter",
@@ -130,7 +128,7 @@ class QuestionnaireResponseBlurRuleResolverTest {
                     reference = "this is the one|1.0.0"
                 )
             )
-        ) as QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>
+        )
         val fhirResourceBlur = mapOf(
             "this is the one|1.0.0" to QuestionnaireResponseBlur(
                 authoredBlurFunctionReference = BlurFunctionReference.START_OF_MONTH,
@@ -164,7 +162,7 @@ class QuestionnaireResponseBlurRuleResolverTest {
                     reference = reference
                 )
             )
-        ) as QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>
+        )
         val fhirResourceBlur = mapOf(
             "somewhere over the rainbow|0.0.0" to QuestionnaireResponseBlur(
                 targetTimeZone = "does not matter",
@@ -222,7 +220,7 @@ class QuestionnaireResponseBlurRuleResolverTest {
                     reference = reference
                 )
             )
-        ) as QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>
+        )
         val programBlur = ProgramBlur(
             targetTimeZone = "does not matter",
             questionnaireResponseAuthoredBlurFunctionReference = BlurFunctionReference.START_OF_DAY,

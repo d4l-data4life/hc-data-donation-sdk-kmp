@@ -18,7 +18,7 @@ package care.data4life.datadonation.donation.fhir.anonymization
 
 import care.data4life.datadonation.donation.fhir.AllowedReference
 import care.data4life.datadonation.donation.fhir.anonymization.model.QuestionnaireResponseBlurRule
-import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract
+import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract.QuestionnaireResponse
 import care.data4life.datadonation.donation.program.model.ProgramBlur
 import care.data4life.datadonation.donation.program.model.QuestionnaireResponseBlur
 import care.data4life.hl7.fhir.FhirVersion
@@ -54,7 +54,7 @@ internal object QuestionnaireResponseBlurRuleResolver : AnonymizationContract.Qu
     }
 
     override fun resolveBlurRule(
-        questionnaireResponse: CompatibilityWrapperContract.QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>,
+        questionnaireResponse: QuestionnaireResponse<out FhirVersion, out FhirVersion, out FhirVersion, out FhirVersion>,
         programRule: ProgramBlur?,
         fhirResourceConfigurations: Map<AllowedReference, QuestionnaireResponseBlur?>
     ): QuestionnaireResponseBlurRule? {

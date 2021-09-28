@@ -43,7 +43,7 @@ internal interface AnonymizationContract {
 
     interface QuestionnaireResponseBlurRuleResolver {
         fun resolveBlurRule(
-            questionnaireResponse: QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>,
+            questionnaireResponse: QuestionnaireResponse<out FhirVersion, out FhirVersion, out FhirVersion, out FhirVersion>,
             programRule: ProgramBlur?,
             fhirResourceConfigurations: Map<AllowedReference, QuestionnaireResponseBlur?>
         ): QuestionnaireResponseBlurRule?
