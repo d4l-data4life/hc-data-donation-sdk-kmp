@@ -21,7 +21,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable(with = BlurFunctionSerializer::class)
-enum class BlurFunction(val value: String) {
+internal enum class BlurFunction(val value: String) {
     START_OF_DAY("startOfDay"),
     END_OF_DAY("endOfDay"),
     START_OF_WEEK("startOfWeek"),
@@ -94,11 +94,19 @@ internal data class ProgramDonationConfiguration(
     val revocation: RevocationMode = RevocationMode.DELETE
 )
 
+@Serializable(with = ProgramTypeSerializer::class)
+internal enum class ProgramType(val value: String) {
+    DIARY("diary"),
+    STUDY("study")
+}
+
 @Serializable
 internal data class Program(
     val name: String,
     val slug: String,
     val tenantID: String,
+    @Contextual
+    val type: ProgramType,
     @SerialName("donation")
     val configuration: ProgramDonationConfiguration? = null
 )

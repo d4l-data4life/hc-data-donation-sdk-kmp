@@ -17,6 +17,7 @@
 package care.data4life.datadonation.donation.anonymization
 
 import care.data4life.datadonation.donation.program.model.ProgramDonationConfiguration
+import care.data4life.datadonation.donation.program.model.ProgramType
 import care.data4life.hl7.fhir.stu3.model.FhirResource
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
 import care.data4life.hl7.fhir.stu3.model.ResearchSubject
@@ -28,6 +29,7 @@ internal class FhirAnonymizer(
 ) : AnonymizationContract.FhirAnonymizer {
     private fun anonymizeQuestionnaireResponse(
         questionnaireResponse: QuestionnaireResponse,
+        programType: ProgramType,
         programConfiguration: ProgramDonationConfiguration
     ): QuestionnaireResponse {
         val rule = blurResolver.resolveBlurRule(
@@ -38,6 +40,7 @@ internal class FhirAnonymizer(
 
         return questionnaireResponseAnonymizer.anonymize(
             questionnaireResponse,
+            programType,
             rule
         )
     }
@@ -60,11 +63,13 @@ internal class FhirAnonymizer(
 
     override fun anonymize(
         fhirResource: FhirResource,
+        programType: ProgramType,
         programConfiguration: ProgramDonationConfiguration
     ): FhirResource {
         return when (fhirResource) {
             is QuestionnaireResponse -> anonymizeQuestionnaireResponse(
                 fhirResource,
+                programType,
                 programConfiguration
             )
             is ResearchSubject -> anonymizeResearchSubject(
