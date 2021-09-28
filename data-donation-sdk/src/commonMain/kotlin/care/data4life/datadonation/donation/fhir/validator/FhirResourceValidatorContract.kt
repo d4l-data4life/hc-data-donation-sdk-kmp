@@ -40,7 +40,7 @@ internal interface FhirResourceValidatorContract {
 
     fun interface ResearchSubjectValidator {
         fun canBeDonated(
-            resource: FhirResearchSubject,
+            resource: CompatibilityWrapperContract.ResearchSubject<FhirVersion, FhirVersion, FhirVersion>,
             studyId: String
         ): Boolean
 

@@ -17,17 +17,18 @@
 package care.data4life.datadonation.mock.stub.donation.fhir.validator
 
 import care.data4life.datadonation.donation.fhir.validator.FhirResourceValidatorContract
+import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
-import care.data4life.hl7.fhir.stu3.model.FhirResearchSubject
+import care.data4life.hl7.fhir.FhirVersion
 
 internal class ResearchSubjectValidatorStub :
     FhirResourceValidatorContract.ResearchSubjectValidator,
     MockContract.Stub {
-    var whenIsAllowed: ((FhirResearchSubject, String) -> Boolean)? = null
+    var whenIsAllowed: ((CompatibilityWrapperContract.ResearchSubject<FhirVersion, FhirVersion, FhirVersion>, String) -> Boolean)? = null
 
     override fun canBeDonated(
-        resource: FhirResearchSubject,
+        resource: CompatibilityWrapperContract.ResearchSubject<FhirVersion, FhirVersion, FhirVersion>,
         studyId: String
     ): Boolean {
         return whenIsAllowed?.invoke(resource, studyId) ?: throw MockException()

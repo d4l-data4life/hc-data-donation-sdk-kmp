@@ -186,7 +186,7 @@ class ResourceValidatorTest {
 
         val researchSubjectValidator = ResearchSubjectValidatorStub()
 
-        var capturedResource: FhirResearchSubject? = null
+        var capturedResource: CompatibilityWrapperContract.ResearchSubject<FhirVersion, FhirVersion, FhirVersion>? = null
         var capturedStudyId: String? = null
 
         researchSubjectValidator.whenIsAllowed = { delegatedResource, delegatedBlurMapping ->
@@ -210,7 +210,7 @@ class ResourceValidatorTest {
         )
 
         assertSame(
-            actual = capturedResource,
+            actual = capturedResource?.unwrap(),
             expected = resource
         )
         assertSame(

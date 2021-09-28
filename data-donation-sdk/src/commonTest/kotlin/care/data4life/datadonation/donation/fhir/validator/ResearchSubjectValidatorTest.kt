@@ -16,6 +16,9 @@
 
 package care.data4life.datadonation.donation.fhir.validator
 
+import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract
+import care.data4life.datadonation.donation.fhir.wrapper.Fhir3ResearchSubjectWrapper
+import care.data4life.hl7.fhir.FhirVersion
 import care.data4life.hl7.fhir.stu3.codesystem.ResearchSubjectStatus
 import care.data4life.hl7.fhir.stu3.model.Identifier
 import care.data4life.hl7.fhir.stu3.model.Reference
@@ -35,15 +38,17 @@ class ResearchSubjectValidatorTest {
     @Test
     fun `Given isAllowed with a ResearchSubject and StudyId, it returns false if the ResearchSubject does not statify the StudySystemIdentifier`() {
         // Given
-        val researchSubject = ResearchSubject(
-            status = ResearchSubjectStatus.ACTIVE,
-            study = Reference(),
-            individual = Reference()
+        val researchSubject = Fhir3ResearchSubjectWrapper(
+            ResearchSubject(
+                status = ResearchSubjectStatus.ACTIVE,
+                study = Reference(),
+                individual = Reference()
+            )
         )
 
         // When
         val result = ResearchSubjectValidator.canBeDonated(
-            researchSubject,
+            researchSubject as CompatibilityWrapperContract.ResearchSubject<FhirVersion, FhirVersion, FhirVersion>,
             "Test"
         )
 
@@ -56,19 +61,21 @@ class ResearchSubjectValidatorTest {
         // Given
         val studyId = "a Test"
 
-        val researchSubject = ResearchSubject(
-            status = ResearchSubjectStatus.ACTIVE,
-            study = Reference(
-                identifier = Identifier(
-                    system = "http://fhir.data4life.care/stu3/CodeSystem/research-study-id"
-                )
-            ),
-            individual = Reference()
+        val researchSubject = Fhir3ResearchSubjectWrapper(
+            ResearchSubject(
+                status = ResearchSubjectStatus.ACTIVE,
+                study = Reference(
+                    identifier = Identifier(
+                        system = "http://fhir.data4life.care/stu3/CodeSystem/research-study-id"
+                    )
+                ),
+                individual = Reference()
+            )
         )
 
         // When
         val result = ResearchSubjectValidator.canBeDonated(
-            researchSubject,
+            researchSubject as CompatibilityWrapperContract.ResearchSubject<FhirVersion, FhirVersion, FhirVersion>,
             studyId
         )
 
@@ -81,20 +88,22 @@ class ResearchSubjectValidatorTest {
         // Given
         val studyId = "a Test"
 
-        val researchSubject = ResearchSubject(
-            status = ResearchSubjectStatus.ACTIVE,
-            study = Reference(
-                identifier = Identifier(
-                    value = studyId,
-                    system = "http://fhir.data4life.care/stu3/CodeSystem/research-study-id"
-                )
-            ),
-            individual = Reference()
+        val researchSubject = Fhir3ResearchSubjectWrapper(
+            ResearchSubject(
+                status = ResearchSubjectStatus.ACTIVE,
+                study = Reference(
+                    identifier = Identifier(
+                        value = studyId,
+                        system = "http://fhir.data4life.care/stu3/CodeSystem/research-study-id"
+                    )
+                ),
+                individual = Reference()
+            )
         )
 
         // When
         val result = ResearchSubjectValidator.canBeDonated(
-            researchSubject,
+            researchSubject as CompatibilityWrapperContract.ResearchSubject<FhirVersion, FhirVersion, FhirVersion>,
             studyId
         )
 
@@ -107,24 +116,26 @@ class ResearchSubjectValidatorTest {
         // Given
         val studyId = "a Test"
 
-        val researchSubject = ResearchSubject(
-            status = ResearchSubjectStatus.ACTIVE,
-            study = Reference(
-                identifier = Identifier(
-                    value = studyId,
-                    system = "http://fhir.data4life.care/stu3/CodeSystem/research-study-id"
-                )
-            ),
-            individual = Reference(
-                identifier = Identifier(
-                    system = "http://fhir.data4life.care/stu3/CodeSystem/alp-encrypted-external-id"
+        val researchSubject = Fhir3ResearchSubjectWrapper(
+            ResearchSubject(
+                status = ResearchSubjectStatus.ACTIVE,
+                study = Reference(
+                    identifier = Identifier(
+                        value = studyId,
+                        system = "http://fhir.data4life.care/stu3/CodeSystem/research-study-id"
+                    )
+                ),
+                individual = Reference(
+                    identifier = Identifier(
+                        system = "http://fhir.data4life.care/stu3/CodeSystem/alp-encrypted-external-id"
+                    )
                 )
             )
         )
 
         // When
         val result = ResearchSubjectValidator.canBeDonated(
-            researchSubject,
+            researchSubject as CompatibilityWrapperContract.ResearchSubject<FhirVersion, FhirVersion, FhirVersion>,
             studyId
         )
 

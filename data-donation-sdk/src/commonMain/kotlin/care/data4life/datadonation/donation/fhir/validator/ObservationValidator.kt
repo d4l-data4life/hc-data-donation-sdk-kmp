@@ -51,11 +51,10 @@ internal object ObservationValidator : FhirResourceValidatorContract.Observation
         resource: CompatibilityWrapperContract.Observation<FhirVersion, FhirVersion>,
         blurMapping: Map<AllowedReference, QuestionnaireResponseBlur?>
     ): Boolean {
-        return when {
-            resource.valueQuantity == null -> false
-            resource.coding.isNullOrEmpty() -> false
-            else -> matchesReference(resource, blurMapping) &&
-                hasQuantityValue(resource.valueQuantity!!)
+        return if (resource.coding.isNullOrEmpty()) {
+            false
+        } else {
+            matchesReference(resource, blurMapping) && hasQuantityValue(resource.valueQuantity!!)
         }
     }
 }
