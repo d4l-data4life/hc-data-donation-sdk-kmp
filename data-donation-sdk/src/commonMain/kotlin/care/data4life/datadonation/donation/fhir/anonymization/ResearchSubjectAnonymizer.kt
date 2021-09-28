@@ -17,6 +17,7 @@
 package care.data4life.datadonation.donation.fhir.anonymization
 
 import care.data4life.datadonation.donation.fhir.anonymization.model.BlurModelContract.ResearchSubjectBlur
+import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract.DateTime
 import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract.Period
 import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract.ResearchSubject
 import care.data4life.hl7.fhir.FhirVersion
@@ -24,25 +25,30 @@ import care.data4life.hl7.fhir.FhirVersion
 internal class ResearchSubjectAnonymizer(
     private val dateTimeConcealer: AnonymizationContract.DateTimeConcealer
 ) : AnonymizationContract.ResearchSubjectAnonymizer {
+    private fun blurDateTime(
+        dateTime: DateTime<FhirVersion>?,
+        rule: ResearchSubjectBlur
+    ): DateTime<FhirVersion>? {
+        return if (dateTime is DateTime<*>) {
+            dateTime.copy(
+                value = dateTimeConcealer.blur(
+                    dateTime.value,
+                    rule.targetTimeZone,
+                    rule.researchSubject
+                )
+            )
+        } else {
+            null
+        }
+    }
+
     private fun blurPeriod(
         period: Period<FhirVersion, FhirVersion>,
         rule: ResearchSubjectBlur
     ): Period<FhirVersion, FhirVersion> {
         return period.copy(
-            start = period.start?.copy(
-                value = dateTimeConcealer.blur(
-                    period.start?.value!!,
-                    rule.targetTimeZone,
-                    rule.researchSubject
-                )
-            ),
-            end = period.end?.copy(
-                value = dateTimeConcealer.blur(
-                    period.end?.value!!,
-                    rule.targetTimeZone,
-                    rule.researchSubject
-                )
-            )
+            start = blurDateTime(period.start, rule),
+            end = blurDateTime(period.end, rule)
         )
     }
 

@@ -37,10 +37,10 @@ internal class QuestionnaireResponseAnonymizer(
         list: FhirWrapperList<T>?,
         action: (T) -> T
     ): FhirWrapperList<T>? {
-        return if (list is List<*> && list.size > 0) {
-            list.map { item -> action(item) }
-        } else {
+        return if (list.isNullOrEmpty()) {
             null
+        } else {
+            list.map { item -> action(item) }
         }
     }
 
@@ -62,6 +62,7 @@ internal class QuestionnaireResponseAnonymizer(
         val item = mapOrNull(responseItem.item) { item ->
             mapQuestionnaireResponseItem(item, programType, blurRule)
         } as QuestionnaireResponseItemList?
+
         val answer = mapOrNull(responseItem.answer) { answer ->
             mapQuestionnaireResponseItemAnswer(
                 answer,

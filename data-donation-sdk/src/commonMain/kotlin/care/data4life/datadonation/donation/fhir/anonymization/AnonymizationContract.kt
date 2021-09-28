@@ -32,6 +32,7 @@ import care.data4life.hl7.fhir.common.datetime.XsDateTime
 
 internal typealias TargetTimeZone = String
 
+// TODO Move type cast if necessary into the Anonymizer
 internal interface AnonymizationContract {
     fun interface Redactor {
         fun redact(valueString: String?): String?

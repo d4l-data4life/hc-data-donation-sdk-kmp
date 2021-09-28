@@ -20,10 +20,14 @@ import care.data4life.datadonation.donation.fhir.AllowedReference
 import care.data4life.datadonation.donation.fhir.anonymization.model.BlurModelContract
 import care.data4life.datadonation.donation.fhir.anonymization.model.QuestionnaireResponseBlurRule
 import care.data4life.datadonation.donation.fhir.anonymization.model.ResearchSubjectBlurRule
-import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract
+import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract.FhirWrapper
+import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract.QuestionnaireResponse
+import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract.ResearchSubject
 import care.data4life.datadonation.donation.fhir.wrapper.Fhir3Observation
 import care.data4life.datadonation.donation.fhir.wrapper.Fhir3ObservationWrapper
+import care.data4life.datadonation.donation.fhir.wrapper.Fhir3QuestionnaireResponse
 import care.data4life.datadonation.donation.fhir.wrapper.Fhir3QuestionnaireResponseWrapper
+import care.data4life.datadonation.donation.fhir.wrapper.Fhir3ResearchSubject
 import care.data4life.datadonation.donation.fhir.wrapper.Fhir3ResearchSubjectWrapper
 import care.data4life.datadonation.donation.program.model.BlurFunctionReference
 import care.data4life.datadonation.donation.program.model.ProgramBlur
@@ -39,9 +43,7 @@ import care.data4life.hl7.fhir.stu3.codesystem.ObservationStatus
 import care.data4life.hl7.fhir.stu3.codesystem.QuestionnaireResponseStatus
 import care.data4life.hl7.fhir.stu3.codesystem.ResearchSubjectStatus
 import care.data4life.hl7.fhir.stu3.model.CodeableConcept
-import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
 import care.data4life.hl7.fhir.stu3.model.Reference
-import care.data4life.hl7.fhir.stu3.model.ResearchSubject
 import kotlin.test.Test
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
@@ -92,7 +94,7 @@ class FhirAnonymizerTest {
             QuestionnaireResponseAnonymizerStub(),
             ResearchSubjectAnonymizerStub()
         ).anonymize(
-            Fhir3ObservationWrapper(resource) as CompatibilityWrapperContract.FhirWrapper<FhirVersion>,
+            Fhir3ObservationWrapper(resource) as FhirWrapper<FhirVersion>,
             ProgramType.STUDY,
             programBlur,
             fhirResourceBlur
@@ -109,13 +111,13 @@ class FhirAnonymizerTest {
     fun `Given anonymize is called with a QuestionaireResponse and a ProgramDonationConfiguration it resolves the BlurRule and delegates the call to QuestionaireResponseAnonymizer`() {
         // Given
         val programType = ProgramType.DIARY
-        val resource = QuestionnaireResponse(
+        val resource = Fhir3QuestionnaireResponse(
             status = QuestionnaireResponseStatus.AMENDED,
         )
 
         val expected = Fhir3QuestionnaireResponseWrapper(
             resource.copy(status = QuestionnaireResponseStatus.COMPLETED)
-        ) as CompatibilityWrapperContract.QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>
+        ) as QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>
 
         val blurResolver = QuestionnaireResponseBlurRuleResolverStub()
 
@@ -128,7 +130,7 @@ class FhirAnonymizerTest {
             questionnaireResponseItems = emptyList()
         )
 
-        var capturedFhirResource: CompatibilityWrapperContract.QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>? = null
+        var capturedFhirResource: QuestionnaireResponse<out FhirVersion, out FhirVersion, out FhirVersion, out FhirVersion>? = null
         var capturedProgramBlurRule: ProgramBlur? = null
         var capturedFhirResourceBlurRule: Map<AllowedReference, QuestionnaireResponseBlur?>? = null
 
@@ -142,7 +144,7 @@ class FhirAnonymizerTest {
 
         val questionnaireResponseAnonymizer = QuestionnaireResponseAnonymizerStub()
 
-        var capturedQuestionnaireResponse: CompatibilityWrapperContract.QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>? = null
+        var capturedQuestionnaireResponse: QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>? = null
         var capturedProgramType: ProgramType? = null
         var capturedBlurRule: BlurModelContract.QuestionnaireResponseBlur? = null
 
@@ -161,7 +163,7 @@ class FhirAnonymizerTest {
             questionnaireResponseAnonymizer,
             ResearchSubjectAnonymizerStub()
         ).anonymize(
-            Fhir3QuestionnaireResponseWrapper(resource) as CompatibilityWrapperContract.FhirWrapper<FhirVersion>,
+            Fhir3QuestionnaireResponseWrapper(resource) as FhirWrapper<FhirVersion>,
             programType,
             programBlur,
             fhirResourceBlur
@@ -203,7 +205,7 @@ class FhirAnonymizerTest {
     @Test
     fun `Given anonymize is called with a ResearchSubject and a ProgramDonationConfiguration it resolves the BlurRule and delegates the call to ResearchSubjectAnonymizer`() {
         // Given
-        val resource = ResearchSubject(
+        val resource = Fhir3ResearchSubject(
             status = ResearchSubjectStatus.ACTIVE,
             study = Reference(),
             individual = Reference()
@@ -211,7 +213,7 @@ class FhirAnonymizerTest {
 
         val expected = Fhir3ResearchSubjectWrapper(
             resource.copy(status = ResearchSubjectStatus.COMPLETED)
-        )
+        ) as ResearchSubject<FhirVersion, FhirVersion, FhirVersion>
 
         val blurResolver = ResearchSubjectBlurRuleResolverStub()
 
@@ -233,14 +235,14 @@ class FhirAnonymizerTest {
 
         val researchSubjectAnonymizer = ResearchSubjectAnonymizerStub()
 
-        var capturedResearchSubject: CompatibilityWrapperContract.ResearchSubject<FhirVersion, FhirVersion, FhirVersion>? = null
+        var capturedResearchSubject: ResearchSubject<FhirVersion, FhirVersion, FhirVersion>? = null
         var capturedBlurRule: BlurModelContract.ResearchSubjectBlur? = null
 
         researchSubjectAnonymizer.whenAnonymize = { delegatedResearchSubject, delegatedRule ->
             capturedResearchSubject = delegatedResearchSubject
             capturedBlurRule = delegatedRule
 
-            expected as CompatibilityWrapperContract.ResearchSubject<FhirVersion, FhirVersion, FhirVersion>
+            expected
         }
 
         // When
@@ -250,7 +252,7 @@ class FhirAnonymizerTest {
             QuestionnaireResponseAnonymizerStub(),
             researchSubjectAnonymizer
         ).anonymize(
-            Fhir3ResearchSubjectWrapper(resource) as CompatibilityWrapperContract.FhirWrapper<FhirVersion>,
+            Fhir3ResearchSubjectWrapper(resource) as FhirWrapper<FhirVersion>,
             ProgramType.STUDY,
             programBlur,
             fhirResourceBlur
