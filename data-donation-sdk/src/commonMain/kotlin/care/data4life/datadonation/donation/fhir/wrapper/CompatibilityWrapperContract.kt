@@ -25,9 +25,10 @@ internal typealias Fhir3QuestionnaireResponseItem = care.data4life.hl7.fhir.stu3
 internal typealias Fhir3QuestionnaireResponseItemAnswer = care.data4life.hl7.fhir.stu3.model.QuestionnaireResponseItemAnswer
 internal typealias Fhir3Period = care.data4life.hl7.fhir.stu3.model.Period
 internal typealias Fhir3ResearchSubject = care.data4life.hl7.fhir.stu3.model.ResearchSubject
-internal typealias Fhir3Code = care.data4life.hl7.fhir.stu3.Code
+internal typealias Fhir3Coding = care.data4life.hl7.fhir.stu3.model.Coding
 internal typealias Fhir3Quantity = care.data4life.hl7.fhir.stu3.model.Quantity
 internal typealias Fhir3Observation = care.data4life.hl7.fhir.stu3.model.Observation
+internal typealias Fhir3Decimal = care.data4life.hl7.fhir.stu3.primitive.Decimal
 
 internal typealias Fhir4DateTime = care.data4life.hl7.fhir.r4.primitive.DateTime
 internal typealias Fhir4QuestionnaireResponse = care.data4life.hl7.fhir.r4.model.QuestionnaireResponse
@@ -35,9 +36,10 @@ internal typealias Fhir4QuestionnaireResponseItem = care.data4life.hl7.fhir.r4.m
 internal typealias Fhir4QuestionnaireResponseItemAnswer = care.data4life.hl7.fhir.r4.model.QuestionnaireResponseItemAnswer
 internal typealias Fhir4Period = care.data4life.hl7.fhir.r4.model.Period
 internal typealias Fhir4ResearchSubject = care.data4life.hl7.fhir.r4.model.ResearchSubject
-internal typealias Fhir4Code = care.data4life.hl7.fhir.r4.Code
+internal typealias Fhir4Coding = care.data4life.hl7.fhir.r4.model.Coding
 internal typealias Fhir4Quantity = care.data4life.hl7.fhir.r4.model.Quantity
 internal typealias Fhir4Observation = care.data4life.hl7.fhir.r4.model.Observation
+internal typealias Fhir4Decimal = care.data4life.hl7.fhir.r4.primitive.Decimal
 
 interface CompatibilityWrapperContract {
     interface FhirWrapper
@@ -140,19 +142,19 @@ interface CompatibilityWrapperContract {
     }
 
     interface Quantity : FhirWrapper {
-        val hasValue: Boolean
-        val hasCode: Boolean
-        val hasSystem: Boolean
-        val hasUnit: Boolean
+        fun hasValue(): Boolean
+        fun hasCode(): Boolean
+        fun hasSystem(): Boolean
+        fun hasUnit(): Boolean
     }
 
-    interface Code : FhirWrapper {
+    interface Coding : FhirWrapper {
         val code: String
     }
 
     interface Observation<ObservationValue : FhirVersion> :
         FhirWrapper, Stripper<ObservationValue> {
-        val coding: List<Code>?
+        val coding: List<Coding>?
         val quantity: Quantity
     }
 }
