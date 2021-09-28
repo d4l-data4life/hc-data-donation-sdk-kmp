@@ -16,7 +16,10 @@
 
 package care.data4life.datadonation.donation.fhir.validator
 
+import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract
+import care.data4life.datadonation.donation.fhir.wrapper.Fhir3QuestionnaireResponseWrapper
 import care.data4life.datadonation.donation.program.model.QuestionnaireResponseBlur
+import care.data4life.hl7.fhir.FhirVersion
 import care.data4life.hl7.fhir.stu3.codesystem.QuestionnaireResponseStatus
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
 import care.data4life.hl7.fhir.stu3.model.Reference
@@ -35,8 +38,10 @@ class QuestionnaireResponseValidatorTest {
     @Test
     fun `Given isAllowed with a QuestionnaireResponse and BlurMapping, it returns false if the BlurMapping does not contain the reference of the QuestionnaireResponse`() {
         // Given
-        val questionnaireResponse = QuestionnaireResponse(
-            status = QuestionnaireResponseStatus.COMPLETED
+        val questionnaireResponse = Fhir3QuestionnaireResponseWrapper(
+            QuestionnaireResponse(
+                status = QuestionnaireResponseStatus.COMPLETED
+            )
         )
         val blurMapping = mapOf(
             "something" to QuestionnaireResponseBlur(
@@ -46,7 +51,7 @@ class QuestionnaireResponseValidatorTest {
 
         // When
         val result = QuestionnaireResponseValidator.canBeDonated(
-            questionnaireResponse,
+            questionnaireResponse as CompatibilityWrapperContract.QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>,
             blurMapping
         )
 
@@ -59,10 +64,12 @@ class QuestionnaireResponseValidatorTest {
         // Given
         val reference = "reference"
 
-        val questionnaireResponse = QuestionnaireResponse(
-            status = QuestionnaireResponseStatus.COMPLETED,
-            questionnaire = Reference(
-                reference = reference
+        val questionnaireResponse = Fhir3QuestionnaireResponseWrapper(
+            QuestionnaireResponse(
+                status = QuestionnaireResponseStatus.COMPLETED,
+                questionnaire = Reference(
+                    reference = reference
+                )
             )
         )
         val blurMapping = mapOf(
@@ -73,7 +80,7 @@ class QuestionnaireResponseValidatorTest {
 
         // When
         val result = QuestionnaireResponseValidator.canBeDonated(
-            questionnaireResponse,
+            questionnaireResponse as CompatibilityWrapperContract.QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>,
             blurMapping
         )
 

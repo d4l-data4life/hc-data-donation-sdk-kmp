@@ -17,17 +17,18 @@
 package care.data4life.datadonation.donation.fhir.validator
 
 import care.data4life.datadonation.donation.fhir.AllowedReference
+import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract
 import care.data4life.datadonation.donation.program.model.QuestionnaireResponseBlur
 import care.data4life.datadonation.mock.stub.donation.fhir.validator.ObservationValidatorStub
 import care.data4life.datadonation.mock.stub.donation.fhir.validator.QuestionnaireResponseValidatorStub
 import care.data4life.datadonation.mock.stub.donation.fhir.validator.ResearchSubjectValidatorStub
+import care.data4life.hl7.fhir.FhirVersion
 import care.data4life.hl7.fhir.stu3.codesystem.ObservationStatus
 import care.data4life.hl7.fhir.stu3.codesystem.QuestionnaireResponseStatus
 import care.data4life.hl7.fhir.stu3.codesystem.ResearchSubjectStatus
 import care.data4life.hl7.fhir.stu3.model.CodeableConcept
 import care.data4life.hl7.fhir.stu3.model.DomainResource
 import care.data4life.hl7.fhir.stu3.model.FhirObservation
-import care.data4life.hl7.fhir.stu3.model.FhirQuestionnaireResponse
 import care.data4life.hl7.fhir.stu3.model.FhirResearchSubject
 import care.data4life.hl7.fhir.stu3.model.Observation
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
@@ -86,7 +87,7 @@ class ResourceValidatorTest {
 
         val questionnaireResponseValidator = QuestionnaireResponseValidatorStub()
 
-        var capturedResource: FhirQuestionnaireResponse? = null
+        var capturedResource: CompatibilityWrapperContract.QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>? = null
         var capturedBlurMapping: Map<AllowedReference, QuestionnaireResponseBlur?>? = null
 
         questionnaireResponseValidator.whenIsAllowed = { delegatedResource, delegatedBlurMapping ->
@@ -110,7 +111,7 @@ class ResourceValidatorTest {
         )
 
         assertSame(
-            actual = capturedResource,
+            actual = capturedResource?.unwrap(),
             expected = resource
         )
         assertSame(
