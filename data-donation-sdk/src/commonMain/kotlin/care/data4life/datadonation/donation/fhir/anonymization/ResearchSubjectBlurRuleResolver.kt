@@ -16,7 +16,7 @@
 
 package care.data4life.datadonation.donation.fhir.anonymization
 
-import care.data4life.datadonation.donation.fhir.anonymization.model.ResearchSubjectBlurRuleRule
+import care.data4life.datadonation.donation.fhir.anonymization.model.ResearchSubjectBlurRule
 import care.data4life.datadonation.donation.program.model.BlurFunctionReference
 import care.data4life.datadonation.donation.program.model.ProgramBlur
 
@@ -30,9 +30,9 @@ internal object ResearchSubjectBlurRuleResolver : AnonymizationContract.Research
 
     private fun resolveRuleSets(
         programRule: ProgramBlur?
-    ): ResearchSubjectBlurRuleRule? {
+    ): ResearchSubjectBlurRule? {
         return if (fulfilsRequirements(programRule)) {
-            ResearchSubjectBlurRuleRule(
+            ResearchSubjectBlurRule(
                 targetTimeZone = programRule!!.targetTimeZone,
                 researchSubject = programRule.researchSubjectBlurFunctionReference!!,
             )
@@ -43,7 +43,7 @@ internal object ResearchSubjectBlurRuleResolver : AnonymizationContract.Research
 
     override fun resolveBlurRule(
         programRule: ProgramBlur?
-    ): ResearchSubjectBlurRuleRule? {
+    ): ResearchSubjectBlurRule? {
         return resolveRuleSets(programRule)
     }
 }

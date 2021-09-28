@@ -24,7 +24,7 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-class ResearchSubjectBlurRuleRuleResolverTest {
+class ResearchSubjectBlurRuleResolverTest {
     @Test
     fun `It fulfils ResearchSubjectBlurRuleResolver`() {
         val resolver: Any = ResearchSubjectBlurRuleResolver

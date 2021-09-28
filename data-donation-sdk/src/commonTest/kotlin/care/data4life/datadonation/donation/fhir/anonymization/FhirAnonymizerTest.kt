@@ -19,7 +19,7 @@ package care.data4life.datadonation.donation.fhir.anonymization
 import care.data4life.datadonation.donation.fhir.AllowedReference
 import care.data4life.datadonation.donation.fhir.anonymization.model.BlurModelContract
 import care.data4life.datadonation.donation.fhir.anonymization.model.QuestionnaireResponseBlurRule
-import care.data4life.datadonation.donation.fhir.anonymization.model.ResearchSubjectBlurRuleRule
+import care.data4life.datadonation.donation.fhir.anonymization.model.ResearchSubjectBlurRule
 import care.data4life.datadonation.donation.program.model.BlurFunctionReference
 import care.data4life.datadonation.donation.program.model.ProgramBlur
 import care.data4life.datadonation.donation.program.model.ProgramType
@@ -195,7 +195,7 @@ class FhirAnonymizerTest {
         val programBlur = this.programBlur.copy()
         val fhirResourceBlur = this.fhirResourceBlur.toMap()
 
-        val rule = ResearchSubjectBlurRuleRule(
+        val rule = ResearchSubjectBlurRule(
             targetTimeZone = "somewhere",
             researchSubject = BlurFunctionReference.END_OF_DAY
         )
