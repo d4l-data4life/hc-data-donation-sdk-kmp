@@ -16,7 +16,7 @@
 
 package care.data4life.datadonation.donation.consentsignature
 
-import care.data4life.datadonation.donation.consentsignature.model.ConsentSignatureType
+import care.data4life.datadonation.donation.DonationContract
 import care.data4life.datadonation.donation.consentsignature.model.ConsentSigningRequest
 import care.data4life.datadonation.donation.consentsignature.model.DeletionMessage
 import care.data4life.datadonation.donation.consentsignature.model.SignedDeletionMessage
@@ -88,7 +88,7 @@ class ConsentSignatureRepositoryTest {
             expected = ConsentSigningRequest(
                 consentDocumentKey = consentDocumentKey,
                 payload = message,
-                signatureType = ConsentSignatureType.CONSENT_ONCE
+                signatureType = DonationContract.ConsentSignatureType.CONSENT_ONCE
             )
         )
     }
@@ -142,7 +142,7 @@ class ConsentSignatureRepositoryTest {
             expected = ConsentSigningRequest(
                 consentDocumentKey = consentDocumentKey,
                 payload = message,
-                signatureType = ConsentSignatureType.NORMAL_USE
+                signatureType = DonationContract.ConsentSignatureType.NORMAL_USE
             )
         )
     }
@@ -157,7 +157,7 @@ class ConsentSignatureRepositoryTest {
         val deletionMessage = SignedDeletionMessage(
             message = DeletionMessage(
                 "soup",
-                ConsentSignatureType.REVOKE_ONCE,
+                DonationContract.ConsentSignatureType.REVOKE_ONCE,
                 "1981",
                 "abc"
             ),
