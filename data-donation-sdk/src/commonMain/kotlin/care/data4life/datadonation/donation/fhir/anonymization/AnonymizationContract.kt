@@ -67,14 +67,14 @@ internal interface AnonymizationContract {
         fun anonymize(
             questionnaireResponse: QuestionnaireResponse,
             programType: ProgramType,
-            rule: BlurModelContract.QuestionnaireResponseBlur?
+            rule: BlurModelContract.QuestionnaireResponseBlurRule?
         ): QuestionnaireResponse
     }
 
     interface ResearchSubjectAnonymizer {
         fun anonymize(
             researchSubject: ResearchSubject,
-            rule: BlurModelContract.ResearchSubjectBlur?
+            rule: BlurModelContract.ResearchSubjectBlurRule?
         ): ResearchSubject
     }
 

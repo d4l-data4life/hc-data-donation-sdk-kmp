@@ -24,7 +24,7 @@ import care.data4life.datadonation.networking.receive
 
 internal class ProgramApiService constructor(
     private val requestBuilderFactory: Networking.RequestBuilderFactory,
-    private val errorMapper: ProgramContract.ErrorMapper,
+    private val errorMapper: ProgramContract.ApiService.ErrorHandler,
 ) : ProgramContract.ApiService {
     override suspend fun fetchProgram(
         accessToken: AccessToken,

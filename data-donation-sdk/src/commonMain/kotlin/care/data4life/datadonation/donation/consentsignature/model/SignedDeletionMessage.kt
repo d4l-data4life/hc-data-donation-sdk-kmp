@@ -16,15 +16,16 @@
 
 package care.data4life.datadonation.donation.consentsignature.model
 
-import kotlinx.serialization.Contextual
+import care.data4life.datadonation.donation.DonationContract
+import care.data4life.datadonation.donation.model.ConsentSignatureTypeFullSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 internal data class DeletionMessage(
     val consentDocumentKey: String,
-    @Contextual
-    val signatureType: ConsentSignatureType,
+    @Serializable(with = ConsentSignatureTypeFullSerializer::class)
+    val signatureType: DonationContract.ConsentSignatureType,
     val date: String,
     val uuid: String
 )
