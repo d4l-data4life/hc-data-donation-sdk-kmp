@@ -14,38 +14,47 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.donation.program
+package care.data4life.datadonation.donation.publickeyservice
 
-import care.data4life.datadonation.donation.program.model.Program
-import care.data4life.datadonation.networking.AccessToken
+import care.data4life.datadonation.donation.publickeyservice.PublicKeyServiceContract.ApiService.Companion.ROUTE
+import care.data4life.datadonation.donation.publickeyservice.model.RawKeys
 import care.data4life.datadonation.networking.HttpRuntimeError
 import care.data4life.datadonation.networking.Networking
+import care.data4life.datadonation.networking.head
 import care.data4life.datadonation.networking.receive
+import io.ktor.http.Headers
 
-internal class ProgramApiService constructor(
+internal class PublicKeyServiceApiService(
     private val requestBuilderFactory: Networking.RequestBuilderFactory,
-    private val errorMapper: ProgramContract.ApiService.ErrorHandler,
-) : ProgramContract.ApiService {
-    override suspend fun fetchProgram(
-        accessToken: AccessToken,
-        programName: String,
-    ): Program {
-        val path = ProgramContract.ApiService.ROUTE.toMutableList().also {
-            it.add(programName)
-        }
-
+    private val errorHandler: PublicKeyServiceContract.ApiService.ErrorHandler
+) : PublicKeyServiceContract.ApiService {
+    override suspend fun fetchPublicKeyHeaders(): Headers {
         val request = requestBuilderFactory
             .create()
-            .setAccessToken(accessToken)
             .prepare(
-                Networking.Method.GET,
-                path
+                Networking.Method.HEAD,
+                ROUTE
             )
 
         return try {
-            receive<Program>(request)
+            head(request)
         } catch (error: HttpRuntimeError) {
-            throw errorMapper.mapFetchProgram(error)
+            throw errorHandler.handleFetchLatestUpdate(error)
+        }
+    }
+
+    override suspend fun fetchPublicKeys(): RawKeys {
+        val request = requestBuilderFactory
+            .create()
+            .prepare(
+                Networking.Method.GET,
+                ROUTE
+            )
+
+        return try {
+            receive(request)
+        } catch (error: HttpRuntimeError) {
+            throw errorHandler.handleFetchPublicKeys(error)
         }
     }
 }

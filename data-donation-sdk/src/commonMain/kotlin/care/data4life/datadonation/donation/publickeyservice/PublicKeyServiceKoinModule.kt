@@ -14,18 +14,27 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.donation.program
+package care.data4life.datadonation.donation.publickeyservice
 
-import care.data4life.datadonation.networking.HttpRuntimeError
-import io.ktor.http.HttpStatusCode
+import org.koin.core.module.Module
+import org.koin.dsl.module
 
-internal object ProgramErrorMapper :
-    ProgramContract.ErrorMapper {
-    override fun mapFetchProgram(error: HttpRuntimeError): ProgramError {
-        return if (error.statusCode == HttpStatusCode.NotFound) {
-            ProgramError.NotFoundError()
-        } else {
-            ProgramError.UnexpectedError(error.statusCode.value)
+internal fun resolvePublicKeyServiceKoinModule(): Module {
+    return module {
+        single<PublicKeyServiceContract.ApiService.ErrorHandler> {
+            PublicKeyServiceErrorHandler
+        }
+
+        single<PublicKeyServiceContract.ApiService> {
+            PublicKeyServiceApiService(get(), get())
+        }
+
+        single<PublicKeyServiceContract.Repository.KeyMapper> {
+            PublicKeyServiceKeyMapper(get())
+        }
+
+        single<PublicKeyServiceContract.Repository> {
+            PublicKeyServiceRepository(get(), get())
         }
     }
 }

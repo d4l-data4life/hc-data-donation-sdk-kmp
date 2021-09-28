@@ -14,23 +14,26 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.donation.program
+package care.data4life.datadonation.donation.publickeyservice.model
 
-import org.koin.core.module.Module
-import org.koin.dsl.module
+import care.data4life.datadonation.DataDonationSDK
+import care.data4life.datadonation.donation.publickeyservice.PublicKeyServiceContract
+import kotlinx.serialization.Contextual
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-internal fun resolveProgramKoinModule(): Module {
-    return module {
-        single<ProgramContract.ApiService.ErrorHandler> {
-            ProgramErrorHandler
-        }
+@Serializable
+internal data class RawServiceCredentialKey(
+    @SerialName("name")
+    @Contextual
+    val domain: PublicKeyServiceContract.KeyDomain,
+    @Contextual
+    val environment: DataDonationSDK.Environment,
+    @SerialName("value")
+    val key: String
+)
 
-        single<ProgramContract.ApiService> {
-            ProgramApiService(get(), get())
-        }
-
-        single<ProgramContract.Repository> {
-            ProgramRepository(get())
-        }
-    }
-}
+@Serializable
+internal data class RawKeys(
+    val credentials: List<RawServiceCredentialKey>
+)

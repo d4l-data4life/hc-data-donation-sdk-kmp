@@ -14,7 +14,7 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.donation.program
+package care.data4life.datadonation.donation.publickeyservice
 
 import care.data4life.datadonation.networking.HttpRuntimeError
 import io.ktor.http.HttpStatusCode
@@ -22,24 +22,24 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class ProgramErrorMapperTest {
+class PublicKeyServiceErrorHandlerTest {
     @Test
-    fun `It fulfils ProgramErrorMapper`() {
-        val handler: Any = ProgramErrorMapper
+    fun `It fulfils PublicKeyServiceErrorHandler`() {
+        val switch: Any = PublicKeyServiceErrorHandler
 
-        assertTrue(handler is ProgramContract.ErrorMapper)
+        assertTrue(switch is PublicKeyServiceContract.ApiService.ErrorHandler)
     }
 
     @Test
-    fun `Given mapFetchProgram is called with HttpRuntimeError, it propagates it as UnexpectedError by default`() {
+    fun `Given handleFetchPublicKeys is called with HttpRuntimeError, it propagates it as UnexpectedError by default`() {
         // Given
         val error = HttpRuntimeError(HttpStatusCode.ServiceUnavailable)
 
         // When
-        val result = ProgramErrorMapper.mapFetchProgram(error)
+        val result = PublicKeyServiceErrorHandler.handleFetchPublicKeys(error)
 
         // Then
-        assertTrue(result is ProgramError.UnexpectedError)
+        assertTrue(result is PublicKeyServiceError.UnexpectedFailure)
         assertEquals(
             actual = result.httpStatus,
             expected = 503
@@ -47,14 +47,18 @@ class ProgramErrorMapperTest {
     }
 
     @Test
-    fun `Given mapFetchProgram is called with HttpRuntimeError, it propagates it as 404 as NotFoundError`() {
+    fun `Given handleLatestUpdate is called with HttpRuntimeError, it propagates it as UnexpectedError by default`() {
         // Given
-        val error = HttpRuntimeError(HttpStatusCode.NotFound)
+        val error = HttpRuntimeError(HttpStatusCode.ServiceUnavailable)
 
         // When
-        val result = ProgramErrorMapper.mapFetchProgram(error)
+        val result = PublicKeyServiceErrorHandler.handleFetchLatestUpdate(error)
 
         // Then
-        assertTrue(result is ProgramError.NotFoundError)
+        assertTrue(result is PublicKeyServiceError.UnexpectedFailure)
+        assertEquals(
+            actual = result.httpStatus,
+            expected = 503
+        )
     }
 }

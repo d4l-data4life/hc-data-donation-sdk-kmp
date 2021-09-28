@@ -14,23 +14,17 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.donation.program
+package care.data4life.datadonation.donation.publickeyservice
 
-import org.koin.core.module.Module
-import org.koin.dsl.module
+import care.data4life.datadonation.donation.publickeyservice.model.ServicePublicKeyring
 
-internal fun resolveProgramKoinModule(): Module {
-    return module {
-        single<ProgramContract.ApiService.ErrorHandler> {
-            ProgramErrorHandler
-        }
-
-        single<ProgramContract.ApiService> {
-            ProgramApiService(get(), get())
-        }
-
-        single<ProgramContract.Repository> {
-            ProgramRepository(get())
-        }
+internal class PublicKeyServiceRepository(
+    private val apiService: PublicKeyServiceContract.ApiService,
+    private val keyMapper: PublicKeyServiceContract.Repository.KeyMapper
+) : PublicKeyServiceContract.Repository {
+    override suspend fun fetchPublicKeys(): ServicePublicKeyring {
+        return keyMapper.mapKeys(
+            apiService.fetchPublicKeys()
+        )
     }
 }

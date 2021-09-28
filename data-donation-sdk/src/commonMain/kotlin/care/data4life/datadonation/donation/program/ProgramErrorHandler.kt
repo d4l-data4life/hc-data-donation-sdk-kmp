@@ -16,21 +16,15 @@
 
 package care.data4life.datadonation.donation.program
 
-import org.koin.core.module.Module
-import org.koin.dsl.module
+import care.data4life.datadonation.networking.HttpRuntimeError
+import io.ktor.http.HttpStatusCode
 
-internal fun resolveProgramKoinModule(): Module {
-    return module {
-        single<ProgramContract.ApiService.ErrorHandler> {
-            ProgramErrorHandler
-        }
-
-        single<ProgramContract.ApiService> {
-            ProgramApiService(get(), get())
-        }
-
-        single<ProgramContract.Repository> {
-            ProgramRepository(get())
+internal object ProgramErrorHandler : ProgramContract.ApiService.ErrorHandler {
+    override fun mapFetchProgram(error: HttpRuntimeError): ProgramError {
+        return if (error.statusCode == HttpStatusCode.NotFound) {
+            ProgramError.NotFoundError()
+        } else {
+            ProgramError.UnexpectedError(error.statusCode.value)
         }
     }
 }
