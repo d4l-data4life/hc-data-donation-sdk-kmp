@@ -19,7 +19,7 @@ package care.data4life.datadonation.donation.fhir.anonymization
 import care.data4life.datadonation.donation.fhir.AllowedReference
 import care.data4life.datadonation.donation.fhir.anonymization.model.BlurModelContract
 import care.data4life.datadonation.donation.fhir.anonymization.model.QuestionnaireResponseBlurRule
-import care.data4life.datadonation.donation.fhir.anonymization.model.ResearchSubjectBlurRule
+import care.data4life.datadonation.donation.fhir.anonymization.model.ResearchSubjectBlurRuleRule
 import care.data4life.datadonation.donation.program.model.BlurFunctionReference
 import care.data4life.datadonation.donation.program.model.ProgramBlur
 import care.data4life.datadonation.donation.program.model.ProgramType
@@ -128,7 +128,7 @@ class FhirAnonymizerTest {
 
         var capturedQuestionnaireResponse: QuestionnaireResponse? = null
         var capturedProgramType: ProgramType? = null
-        var capturedBlurRule: BlurModelContract.QuestionnaireResponseBlur? = null
+        var capturedBlurRule: BlurModelContract.QuestionnaireResponseBlurRule? = null
 
         questionnaireResponseAnonymizer.whenAnonymize = { delegatedQuestionnaireResponse, delegatedProgramType, delegatedRule ->
             capturedQuestionnaireResponse = delegatedQuestionnaireResponse
@@ -195,7 +195,7 @@ class FhirAnonymizerTest {
         val programBlur = this.programBlur.copy()
         val fhirResourceBlur = this.fhirResourceBlur.toMap()
 
-        val rule = ResearchSubjectBlurRule(
+        val rule = ResearchSubjectBlurRuleRule(
             targetTimeZone = "somewhere",
             researchSubject = BlurFunctionReference.END_OF_DAY
         )
@@ -211,11 +211,11 @@ class FhirAnonymizerTest {
         val researchSubjectAnonymizer = ResearchSubjectAnonymizerStub()
 
         var capturedResearchSubject: ResearchSubject? = null
-        var capturedBlurRule: BlurModelContract.ResearchSubjectBlur? = null
+        var capturedBlurRuleRule: BlurModelContract.ResearchSubjectBlurRule? = null
 
         researchSubjectAnonymizer.whenAnonymize = { delegatedResearchSubject, delegatedRule ->
             capturedResearchSubject = delegatedResearchSubject
-            capturedBlurRule = delegatedRule
+            capturedBlurRuleRule = delegatedRule
 
             expected
         }
@@ -244,7 +244,7 @@ class FhirAnonymizerTest {
             expected = resource
         )
         assertSame(
-            actual = capturedBlurRule,
+            actual = capturedBlurRuleRule,
             expected = rule
         )
     }

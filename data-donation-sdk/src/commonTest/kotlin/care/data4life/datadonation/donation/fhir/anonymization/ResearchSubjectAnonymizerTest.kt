@@ -16,7 +16,7 @@
 
 package care.data4life.datadonation.donation.fhir.anonymization
 
-import care.data4life.datadonation.donation.fhir.anonymization.model.ResearchSubjectBlurRule
+import care.data4life.datadonation.donation.fhir.anonymization.model.ResearchSubjectBlurRuleRule
 import care.data4life.datadonation.donation.program.model.BlurFunctionReference
 import care.data4life.datadonation.mock.stub.donation.fhir.anonymization.DateTimeConcealerStub
 import care.data4life.hl7.fhir.common.datetime.XsDate
@@ -70,7 +70,7 @@ class ResearchSubjectAnonymizerTest {
         // Given
         val resource = researchSubjectTemplate.copy()
 
-        val rule = ResearchSubjectBlurRule(
+        val rule = ResearchSubjectBlurRuleRule(
             targetTimeZone = "any",
             researchSubject = BlurFunctionReference.END_OF_DAY
         )
@@ -94,7 +94,7 @@ class ResearchSubjectAnonymizerTest {
         // Given
         val resource = researchSubjectTemplate.copy()
 
-        val rule = ResearchSubjectBlurRule(
+        val rule = ResearchSubjectBlurRuleRule(
             targetTimeZone = "any",
             researchSubject = BlurFunctionReference.START_OF_DAY
         )
@@ -120,7 +120,7 @@ class ResearchSubjectAnonymizerTest {
             period = Period()
         )
 
-        val rule = ResearchSubjectBlurRule(
+        val rule = ResearchSubjectBlurRuleRule(
             targetTimeZone = "any",
             researchSubject = BlurFunctionReference.START_OF_DAY
         )
@@ -167,7 +167,7 @@ class ResearchSubjectAnonymizerTest {
             expected
         }
 
-        val rule = ResearchSubjectBlurRule(
+        val rule = ResearchSubjectBlurRuleRule(
             targetTimeZone = "any",
             researchSubject = BlurFunctionReference.START_OF_DAY
         )
@@ -231,7 +231,7 @@ class ResearchSubjectAnonymizerTest {
             expected
         }
 
-        val rule = ResearchSubjectBlurRule(
+        val rule = ResearchSubjectBlurRuleRule(
             targetTimeZone = "any",
             researchSubject = BlurFunctionReference.START_OF_DAY
         )
@@ -297,7 +297,7 @@ class ResearchSubjectAnonymizerTest {
             }
         }
 
-        val rule = ResearchSubjectBlurRule(
+        val rule = ResearchSubjectBlurRuleRule(
             targetTimeZone = "any",
             researchSubject = BlurFunctionReference.START_OF_DAY
         )

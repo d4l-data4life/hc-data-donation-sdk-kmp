@@ -17,7 +17,7 @@
 package care.data4life.datadonation.mock.stub.donation.fhir.anonymization
 
 import care.data4life.datadonation.donation.fhir.anonymization.AnonymizationContract
-import care.data4life.datadonation.donation.fhir.anonymization.model.ResearchSubjectBlurRule
+import care.data4life.datadonation.donation.fhir.anonymization.model.ResearchSubjectBlurRuleRule
 import care.data4life.datadonation.donation.program.model.ProgramBlur
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
@@ -25,11 +25,11 @@ import care.data4life.datadonation.mock.MockException
 internal class ResearchSubjectBlurRuleResolverStub :
     AnonymizationContract.ResearchSubjectBlurRuleResolver,
     MockContract.Stub {
-    var whenResolveBlurRule: ((ProgramBlur?) -> ResearchSubjectBlurRule?)? = null
+    var whenResolveBlurRule: ((ProgramBlur?) -> ResearchSubjectBlurRuleRule?)? = null
 
     override fun resolveBlurRule(
         programRule: ProgramBlur?,
-    ): ResearchSubjectBlurRule? {
+    ): ResearchSubjectBlurRuleRule? {
         return if (whenResolveBlurRule == null) {
             throw MockException()
         } else {
