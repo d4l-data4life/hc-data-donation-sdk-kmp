@@ -20,14 +20,15 @@ import care.data4life.datadonation.donation.fhir.AllowedReference
 import care.data4life.datadonation.donation.fhir.anonymization.model.BlurModelContract
 import care.data4life.datadonation.donation.fhir.anonymization.model.QuestionnaireResponseBlurRule
 import care.data4life.datadonation.donation.fhir.anonymization.model.ResearchSubjectBlurRule
+import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract
+import care.data4life.datadonation.donation.fhir.wrapper.Fhir3QuestionnaireResponse
 import care.data4life.datadonation.donation.program.model.BlurFunctionReference
 import care.data4life.datadonation.donation.program.model.ProgramBlur
 import care.data4life.datadonation.donation.program.model.ProgramType
 import care.data4life.datadonation.donation.program.model.QuestionnaireResponseBlur
+import care.data4life.hl7.fhir.FhirVersion
 import care.data4life.hl7.fhir.common.datetime.XsDateTime
-import care.data4life.hl7.fhir.stu3.model.FhirQuestionnaireResponse
 import care.data4life.hl7.fhir.stu3.model.FhirResource
-import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
 import care.data4life.hl7.fhir.stu3.model.ResearchSubject
 
 internal typealias TargetTimeZone = String
@@ -43,7 +44,7 @@ internal interface AnonymizationContract {
 
     interface QuestionnaireResponseBlurRuleResolver {
         fun resolveBlurRule(
-            questionnaireResponse: FhirQuestionnaireResponse,
+            questionnaireResponse: CompatibilityWrapperContract.QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>,
             programRule: ProgramBlur?,
             fhirResourceConfigurations: Map<AllowedReference, QuestionnaireResponseBlur?>
         ): QuestionnaireResponseBlurRule?
@@ -65,10 +66,10 @@ internal interface AnonymizationContract {
 
     interface QuestionnaireResponseAnonymizer {
         fun anonymize(
-            questionnaireResponse: QuestionnaireResponse,
+            questionnaireResponse: Fhir3QuestionnaireResponse,
             programType: ProgramType,
             rule: BlurModelContract.QuestionnaireResponseBlur?
-        ): QuestionnaireResponse
+        ): Fhir3QuestionnaireResponse
     }
 
     interface ResearchSubjectAnonymizer {

@@ -20,6 +20,7 @@ import care.data4life.datadonation.donation.fhir.AllowedReference
 import care.data4life.datadonation.donation.fhir.anonymization.model.BlurModelContract
 import care.data4life.datadonation.donation.fhir.anonymization.model.QuestionnaireResponseBlurRule
 import care.data4life.datadonation.donation.fhir.anonymization.model.ResearchSubjectBlurRule
+import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract
 import care.data4life.datadonation.donation.program.model.BlurFunctionReference
 import care.data4life.datadonation.donation.program.model.ProgramBlur
 import care.data4life.datadonation.donation.program.model.ProgramType
@@ -32,7 +33,6 @@ import care.data4life.datadonation.mock.stub.donation.fhir.anonymization.Researc
 import care.data4life.hl7.fhir.stu3.codesystem.QuestionnaireResponseStatus
 import care.data4life.hl7.fhir.stu3.codesystem.ResearchSubjectStatus
 import care.data4life.hl7.fhir.stu3.model.DomainResource
-import care.data4life.hl7.fhir.stu3.model.FhirResource
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
 import care.data4life.hl7.fhir.stu3.model.Reference
 import care.data4life.hl7.fhir.stu3.model.ResearchSubject
@@ -112,7 +112,7 @@ class FhirAnonymizerTest {
             questionnaireResponseItems = emptyList()
         )
 
-        var capturedFhirResource: FhirResource? = null
+        var capturedFhirResource: CompatibilityWrapperContract.FhirWrapper? = null
         var capturedProgramBlurRule: ProgramBlur? = null
         var capturedFhirResourceBlurRule: Map<AllowedReference, QuestionnaireResponseBlur?>? = null
 

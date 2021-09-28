@@ -17,9 +17,12 @@
 package care.data4life.datadonation.donation.fhir.anonymization
 
 import care.data4life.datadonation.donation.fhir.AllowedReference
+import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract
+import care.data4life.datadonation.donation.fhir.wrapper.Fhir3QuestionnaireResponseWrapper
 import care.data4life.datadonation.donation.program.model.ProgramBlur
 import care.data4life.datadonation.donation.program.model.ProgramType
 import care.data4life.datadonation.donation.program.model.QuestionnaireResponseBlur
+import care.data4life.hl7.fhir.FhirVersion
 import care.data4life.hl7.fhir.stu3.model.FhirResource
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
 import care.data4life.hl7.fhir.stu3.model.ResearchSubject
@@ -37,7 +40,7 @@ internal class FhirAnonymizer(
         localResourceRule: Map<AllowedReference, QuestionnaireResponseBlur?>
     ): QuestionnaireResponse {
         val rule = questionnaireResponseBlurResolver.resolveBlurRule(
-            questionnaireResponse = questionnaireResponse,
+            questionnaireResponse = Fhir3QuestionnaireResponseWrapper(questionnaireResponse) as CompatibilityWrapperContract.QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>,
             programRule = globalProgramRule,
             fhirResourceConfigurations = localResourceRule
         )

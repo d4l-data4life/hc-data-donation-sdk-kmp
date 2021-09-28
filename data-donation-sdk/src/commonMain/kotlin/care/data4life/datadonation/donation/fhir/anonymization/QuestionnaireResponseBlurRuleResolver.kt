@@ -18,9 +18,10 @@ package care.data4life.datadonation.donation.fhir.anonymization
 
 import care.data4life.datadonation.donation.fhir.AllowedReference
 import care.data4life.datadonation.donation.fhir.anonymization.model.QuestionnaireResponseBlurRule
+import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract
 import care.data4life.datadonation.donation.program.model.ProgramBlur
 import care.data4life.datadonation.donation.program.model.QuestionnaireResponseBlur
-import care.data4life.hl7.fhir.stu3.model.FhirQuestionnaireResponse
+import care.data4life.hl7.fhir.FhirVersion
 
 internal object QuestionnaireResponseBlurRuleResolver : AnonymizationContract.QuestionnaireResponseBlurRuleResolver {
     private fun findLocalBlurByFhirReference(
@@ -53,12 +54,12 @@ internal object QuestionnaireResponseBlurRuleResolver : AnonymizationContract.Qu
     }
 
     override fun resolveBlurRule(
-        questionnaireResponse: FhirQuestionnaireResponse,
+        questionnaireResponse: CompatibilityWrapperContract.QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>,
         programRule: ProgramBlur?,
         fhirResourceConfigurations: Map<AllowedReference, QuestionnaireResponseBlur?>
     ): QuestionnaireResponseBlurRule? {
         val resourceRule = findLocalBlurByFhirReference(
-            questionnaireResponse.questionnaire?.reference,
+            questionnaireResponse.questionnaireReference,
             fhirResourceConfigurations
         )
 
