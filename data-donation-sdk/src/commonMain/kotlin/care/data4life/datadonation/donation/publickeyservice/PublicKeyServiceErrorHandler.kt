@@ -14,23 +14,16 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.donation.program
+package care.data4life.datadonation.donation.publickeyservice
 
-import org.koin.core.module.Module
-import org.koin.dsl.module
+import care.data4life.datadonation.networking.HttpRuntimeError
 
-internal fun resolveProgramKoinModule(): Module {
-    return module {
-        single<ProgramContract.ApiService.ErrorHandler> {
-            ProgramErrorHandler
-        }
+internal object PublicKeyServiceErrorHandler : PublicKeyServiceContract.ApiService.ErrorHandler {
+    override fun handleFetchPublicKeys(error: HttpRuntimeError): PublicKeyServiceError {
+        return PublicKeyServiceError.UnexpectedFailure(error.statusCode.value)
+    }
 
-        single<ProgramContract.ApiService> {
-            ProgramApiService(get(), get())
-        }
-
-        single<ProgramContract.Repository> {
-            ProgramRepository(get())
-        }
+    override fun handleFetchLatestUpdate(error: HttpRuntimeError): PublicKeyServiceError {
+        return PublicKeyServiceError.UnexpectedFailure(error.statusCode.value)
     }
 }

@@ -21,7 +21,7 @@ import care.data4life.datadonation.donation.program.ProgramError
 import care.data4life.datadonation.mock.MockException
 import care.data4life.datadonation.networking.HttpRuntimeError
 
-internal class ProgramErrorMapperStub : ProgramContract.ErrorMapper {
+internal class ProgramErrorHandlerStub : ProgramContract.ApiService.ErrorHandler {
     var whenMapFetchProgram: ((HttpRuntimeError) -> ProgramError)? = null
 
     override fun mapFetchProgram(error: HttpRuntimeError): ProgramError {
