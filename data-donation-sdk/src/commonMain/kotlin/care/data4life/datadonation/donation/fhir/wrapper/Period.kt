@@ -27,27 +27,26 @@ internal class Fhir3PeriodWrapper(
         }
     }
 
-    override var start: CompatibilityWrapperContract.DateTime<Fhir3DateTime>?
+    override val start: CompatibilityWrapperContract.DateTime<Fhir3DateTime>?
         get() = getDateTimeField(period.start)
-        set(value) {
-            period = if (value is CompatibilityWrapperContract.DateTime<*>) {
-                period.copy(start = value.unwrap())
-            } else {
-                period.copy(start = null)
-            }
-        }
-    override var end: CompatibilityWrapperContract.DateTime<Fhir3DateTime>?
+
+    override val end: CompatibilityWrapperContract.DateTime<Fhir3DateTime>?
         get() = getDateTimeField(period.end)
-        set(value) {
-            period = if (value is CompatibilityWrapperContract.DateTime<*>) {
-                period.copy(end = value.unwrap())
-            } else {
-                period.copy(end = null)
-            }
-        }
 
     override fun unwrap(): Fhir3Period {
         return period
+    }
+
+    override fun copy(
+        start: CompatibilityWrapperContract.DateTime<Fhir3DateTime>?,
+        end: CompatibilityWrapperContract.DateTime<Fhir3DateTime>?
+    ): CompatibilityWrapperContract.Period<Fhir3Period, Fhir3DateTime> {
+        return Fhir3PeriodWrapper(
+            period.copy(
+                start = start?.unwrap(),
+                end = end?.unwrap()
+            )
+        )
     }
 }
 
@@ -62,26 +61,25 @@ internal class Fhir4PeriodWrapper(
         }
     }
 
-    override var start: CompatibilityWrapperContract.DateTime<Fhir4DateTime>?
+    override val start: CompatibilityWrapperContract.DateTime<Fhir4DateTime>?
         get() = getDateTimeField(period.start)
-        set(value) {
-            period = if (value is CompatibilityWrapperContract.DateTime<*>) {
-                period.copy(start = value.unwrap())
-            } else {
-                period.copy(start = null)
-            }
-        }
-    override var end: CompatibilityWrapperContract.DateTime<Fhir4DateTime>?
+
+    override val end: CompatibilityWrapperContract.DateTime<Fhir4DateTime>?
         get() = getDateTimeField(period.end)
-        set(value) {
-            period = if (value is CompatibilityWrapperContract.DateTime<*>) {
-                period.copy(end = value.unwrap())
-            } else {
-                period.copy(end = null)
-            }
-        }
 
     override fun unwrap(): Fhir4Period {
         return period
+    }
+
+    override fun copy(
+        start: CompatibilityWrapperContract.DateTime<Fhir4DateTime>?,
+        end: CompatibilityWrapperContract.DateTime<Fhir4DateTime>?
+    ): CompatibilityWrapperContract.Period<Fhir4Period, Fhir4DateTime> {
+        return Fhir4PeriodWrapper(
+            period.copy(
+                start = start?.unwrap(),
+                end = end?.unwrap()
+            )
+        )
     }
 }

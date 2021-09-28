@@ -109,7 +109,8 @@ interface CompatibilityWrapperContract {
         ): QuestionnaireResponse<ResponseValue, ItemValue, AnswerValue, DateValue>
     }
 
-    interface Period<PeriodValue : FhirVersion, DateValue : FhirVersion> {
+    interface Period<PeriodValue : FhirVersion, DateValue : FhirVersion> :
+        Stripper<PeriodValue> {
         val start: DateTime<DateValue>?
         val end: DateTime<DateValue>?
 
@@ -119,8 +120,8 @@ interface CompatibilityWrapperContract {
         ): Period<PeriodValue, DateValue>
     }
 
-    interface ResearchSubject<ResearchSubjectValue : FhirVersion, PeriodValue : FhirVersion, DateValue : FhirVersion>
-        : Stripper<ResearchSubjectValue> {
+    interface ResearchSubject<ResearchSubjectValue : FhirVersion, PeriodValue : FhirVersion, DateValue : FhirVersion> :
+        Stripper<ResearchSubjectValue> {
         val studyIdentifierSystem: String?
         val studyIdentifierValue: String?
         val individualIdentifierSystem: String?
