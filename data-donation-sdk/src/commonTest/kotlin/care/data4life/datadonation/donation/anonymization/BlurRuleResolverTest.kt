@@ -91,7 +91,7 @@ class BlurRuleResolverTest {
             expected = programAnonymization.researchSubject
         )
         assertEquals(
-            actual = result.questionnaireResponseItemBlurMapping,
+            actual = result.questionnaireResponseItems,
             expected = emptyList()
         )
     }
@@ -254,7 +254,7 @@ class BlurRuleResolverTest {
         )
 
         assertSame(
-            actual = result.questionnaireResponseItemBlurMapping,
+            actual = result.questionnaireResponseItems,
             expected = programResources[1].fhirBlur!!.questionnaireResponseItemBlurs
         )
 
@@ -324,7 +324,7 @@ class BlurRuleResolverTest {
         )
 
         assertSame(
-            actual = result.questionnaireResponseItemBlurMapping,
+            actual = result.questionnaireResponseItems,
             expected = programResources[1].fhirBlur!!.questionnaireResponseItemBlurs
         )
 

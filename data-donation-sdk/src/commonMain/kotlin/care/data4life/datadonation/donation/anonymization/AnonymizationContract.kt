@@ -16,6 +16,7 @@
 
 package care.data4life.datadonation.donation.anonymization
 
+import care.data4life.datadonation.donation.anonymization.model.BlurModelContract
 import care.data4life.datadonation.donation.anonymization.model.BlurRule
 import care.data4life.datadonation.donation.program.model.BlurFunction
 import care.data4life.datadonation.donation.program.model.FhirResourceConfiguration
@@ -25,6 +26,7 @@ import care.data4life.hl7.fhir.common.datetime.XsDateTime
 import care.data4life.hl7.fhir.stu3.model.FhirQuestionnaireResponse
 import care.data4life.hl7.fhir.stu3.model.FhirResource
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
+import care.data4life.hl7.fhir.stu3.model.ResearchSubject
 
 internal typealias TargetTimeZone = String
 
@@ -60,8 +62,15 @@ internal interface AnonymizationContract {
     interface QuestionnaireResponseAnonymizer {
         fun anonymize(
             questionnaireResponse: QuestionnaireResponse,
-            rule: BlurRule?
+            rule: BlurModelContract.QuestionnaireResponseBlur?
         ): QuestionnaireResponse
+    }
+
+    interface ResearchSubjectAnonymizer {
+        fun anonymize(
+            researchSubject: ResearchSubject,
+            rule: BlurModelContract.ResearchSubjectBlur?
+        ): ResearchSubject
     }
 
     interface FhirAnonymizer {

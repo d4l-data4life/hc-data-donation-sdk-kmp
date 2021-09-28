@@ -59,7 +59,7 @@ internal object BlurRuleResolver : AnonymizationContract.BlurRuleResolver {
                 questionnaireResponseAuthored = fhirResourceRule?.questionnaireResponseAuthored
                     ?: programRule?.questionnaireResponseAuthored,
                 researchSubject = programRule?.researchSubject,
-                questionnaireResponseItemBlurMapping = fhirResourceRule?.questionnaireResponseItemBlurs ?: emptyList()
+                questionnaireResponseItems = fhirResourceRule?.questionnaireResponseItemBlurs ?: emptyList()
             )
         } else {
             null
