@@ -34,11 +34,11 @@ internal typealias Fhir4Period = care.data4life.hl7.fhir.r4.model.Period
 internal typealias Fhir4ResearchSubject = care.data4life.hl7.fhir.r4.model.ResearchSubject
 
 interface CompatibilityWrapperContract {
+    interface FhirWrapper
+
     interface Stripper<WrappedValue : FhirVersion> {
         fun unwrap(): WrappedValue
     }
-
-    interface FhirWrapper
 
     interface DateTime<DateValue : FhirVersion> : FhirWrapper, Stripper<DateValue> {
         val value: XsDateTime
@@ -110,7 +110,7 @@ interface CompatibilityWrapperContract {
     }
 
     interface Period<PeriodValue : FhirVersion, DateValue : FhirVersion> :
-        Stripper<PeriodValue> {
+        FhirWrapper, Stripper<PeriodValue> {
         val start: DateTime<DateValue>?
         val end: DateTime<DateValue>?
 
@@ -121,7 +121,7 @@ interface CompatibilityWrapperContract {
     }
 
     interface ResearchSubject<ResearchSubjectValue : FhirVersion, PeriodValue : FhirVersion, DateValue : FhirVersion> :
-        Stripper<ResearchSubjectValue> {
+        FhirWrapper, Stripper<ResearchSubjectValue> {
         val studyIdentifierSystem: String?
         val studyIdentifierValue: String?
         val individualIdentifierSystem: String?
