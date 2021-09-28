@@ -25,12 +25,12 @@ internal interface BlurModelContract {
         val targetTimeZone: TargetTimeZone
     }
 
-    interface QuestionnaireResponseBlur : BlurRule {
+    interface QuestionnaireResponseBlurRule : BlurRule {
         val questionnaireResponseAuthored: BlurFunctionReference?
         val questionnaireResponseItems: List<QuestionnaireResponseItemBlur>
     }
 
-    interface ResearchSubjectBlur : BlurRule {
+    interface ResearchSubjectBlurRule : BlurRule {
         val researchSubject: BlurFunctionReference
     }
 }

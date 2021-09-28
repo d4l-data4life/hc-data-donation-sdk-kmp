@@ -146,7 +146,7 @@ class FhirAnonymizerTest {
 
         var capturedQuestionnaireResponse: QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>? = null
         var capturedProgramType: ProgramType? = null
-        var capturedBlurRule: BlurModelContract.QuestionnaireResponseBlur? = null
+        var capturedBlurRule: BlurModelContract.QuestionnaireResponseBlurRule? = null
 
         questionnaireResponseAnonymizer.whenAnonymize = { delegatedQuestionnaireResponse, delegatedProgramType, delegatedRule ->
             capturedQuestionnaireResponse = delegatedQuestionnaireResponse
@@ -236,7 +236,7 @@ class FhirAnonymizerTest {
         val researchSubjectAnonymizer = ResearchSubjectAnonymizerStub()
 
         var capturedResearchSubject: ResearchSubject<FhirVersion, FhirVersion, FhirVersion>? = null
-        var capturedBlurRule: BlurModelContract.ResearchSubjectBlur? = null
+        var capturedBlurRule: BlurModelContract.ResearchSubjectBlurRule? = null
 
         researchSubjectAnonymizer.whenAnonymize = { delegatedResearchSubject, delegatedRule ->
             capturedResearchSubject = delegatedResearchSubject

@@ -16,7 +16,7 @@
 
 package care.data4life.datadonation.donation.fhir.anonymization
 
-import care.data4life.datadonation.donation.fhir.anonymization.model.BlurModelContract.ResearchSubjectBlur
+import care.data4life.datadonation.donation.fhir.anonymization.model.BlurModelContract.ResearchSubjectBlurRule
 import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract.DateTime
 import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract.Period
 import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract.ResearchSubject
@@ -27,7 +27,7 @@ internal class ResearchSubjectAnonymizer(
 ) : AnonymizationContract.ResearchSubjectAnonymizer {
     private fun blurDateTime(
         dateTime: DateTime<FhirVersion>?,
-        rule: ResearchSubjectBlur
+        rule: ResearchSubjectBlurRule
     ): DateTime<FhirVersion>? {
         return if (dateTime is DateTime<*>) {
             dateTime.copy(
@@ -44,7 +44,7 @@ internal class ResearchSubjectAnonymizer(
 
     private fun blurPeriod(
         period: Period<FhirVersion, FhirVersion>,
-        rule: ResearchSubjectBlur
+        rule: ResearchSubjectBlurRule
     ): Period<FhirVersion, FhirVersion> {
         return period.copy(
             start = blurDateTime(period.start, rule),
@@ -54,15 +54,15 @@ internal class ResearchSubjectAnonymizer(
 
     private fun isConcealablePeriod(
         researchSubject: ResearchSubject<FhirVersion, FhirVersion, FhirVersion>,
-        rule: ResearchSubjectBlur?
+        rule: ResearchSubjectBlurRule?
     ): Boolean {
-        return rule is ResearchSubjectBlur &&
+        return rule is ResearchSubjectBlurRule &&
             researchSubject.period is Period<FhirVersion, FhirVersion>
     }
 
     override fun anonymize(
         researchSubject: ResearchSubject<FhirVersion, FhirVersion, FhirVersion>,
-        rule: ResearchSubjectBlur?
+        rule: ResearchSubjectBlurRule?
     ): ResearchSubject<FhirVersion, FhirVersion, FhirVersion> {
         return if (isConcealablePeriod(researchSubject, rule)) {
             researchSubject.copy(
