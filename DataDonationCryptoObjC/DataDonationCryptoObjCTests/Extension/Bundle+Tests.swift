@@ -25,7 +25,7 @@ extension Bundle {
         #if SWIFT_PACKAGE
         return Bundle.module
         #else
-        return Bundle(for: KeychainKeyProviderTests.self)
+        return Bundle(for: DonorKeyHolderTests.self)
         #endif
     }
 
