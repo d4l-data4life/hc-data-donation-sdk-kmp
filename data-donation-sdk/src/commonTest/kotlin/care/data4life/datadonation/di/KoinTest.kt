@@ -38,7 +38,7 @@ class KoinTest {
     fun `Given initKoin is called with its appropriate parameter, the resulting KoinApplication contains a ConsentInteractor`() {
         // When
         val app = initKoin(
-            Environment.DEV,
+            Environment.DEVELOPMENT,
             UserSessionTokenProviderStub(),
             CoroutineScope(testCoroutineContext)
         )
@@ -51,7 +51,7 @@ class KoinTest {
     fun `Given initKoin is called with its appropriate parameter, the resulting KoinApplication contains a ConsentDocumentsInteractor`() {
         // When
         val app = initKoin(
-            Environment.DEV,
+            Environment.DEVELOPMENT,
             UserSessionTokenProviderStub(),
             CoroutineScope(testCoroutineContext)
         )
@@ -67,7 +67,7 @@ class KoinTest {
 
         // When
         val app = initKoin(
-            Environment.DEV,
+            Environment.DEVELOPMENT,
             UserSessionTokenProviderStub(),
             scope
         )
@@ -83,7 +83,7 @@ class KoinTest {
     fun `Given initKoin is called with its appropriate parameter, which contain null, the resulting KoinApplication contains a CoroutineScope`() {
         // When
         val app = initKoin(
-            Environment.DEV,
+            Environment.DEVELOPMENT,
             UserSessionTokenProviderStub(),
             null
         )

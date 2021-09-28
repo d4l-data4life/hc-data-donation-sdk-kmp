@@ -20,6 +20,8 @@ import care.data4life.datadonation.DataDonationSDK.Environment
 import care.data4life.datadonation.error.CoreRuntimeError
 import care.data4life.datadonation.networking.Networking.RequestBuilder.Companion.ACCESS_TOKEN_FIELD
 import care.data4life.datadonation.networking.Networking.RequestBuilder.Companion.ACCESS_TOKEN_VALUE_PREFIX
+import care.data4life.datadonation.networking.Networking.RequestBuilder.Companion.BODYLESS_METHODS
+import care.data4life.datadonation.networking.plugin.KtorPluginsContract
 import io.ktor.client.HttpClient
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.header
@@ -66,13 +68,13 @@ internal class RequestBuilder private constructor(
 
     private fun validateBodyAgainstMethod(method: Networking.Method) {
         if (body != null) {
-            if (method == Networking.Method.GET) {
+            if (BODYLESS_METHODS.contains(method)) {
                 throw CoreRuntimeError.RequestValidationFailure(
-                    "GET cannot be combined with a RequestBody."
+                    "${method.name.toUpperCase()} cannot be combined with a RequestBody."
                 )
             }
         } else {
-            if (method != Networking.Method.GET) {
+            if (!BODYLESS_METHODS.contains(method)) {
                 throw CoreRuntimeError.RequestValidationFailure(
                     "${method.name.toUpperCase()} must be combined with a RequestBody."
                 )
@@ -127,8 +129,24 @@ internal class RequestBuilder private constructor(
         }
     }
 
+    private fun resolveContentType(): ContentType? {
+        return if (useJson) {
+            ContentType.Application.Json
+        } else {
+            null
+        }
+    }
+
     private fun setContentType(builder: HttpRequestBuilder) {
-        if (useJson) {
+        val contentType = resolveContentType()
+
+        if (contentType is ContentType) {
+            builder.header(
+                KtorPluginsContract.CustomTypeHeader.replacementHeader,
+                contentType
+            )
+
+            // Note: This is necessary to keep the Serialization Plugin working
             builder.contentType(ContentType.Application.Json)
         }
     }
@@ -161,16 +179,34 @@ internal class RequestBuilder private constructor(
         )
     }
 
-    class Factory(
-        private val environment: Environment,
+    class Factory private constructor(
+        private val host: String,
         private val client: HttpClient,
         private val port: Int? = null
     ) : Networking.RequestBuilderFactory {
+        constructor(
+            environment: Environment,
+            client: HttpClient,
+            port: Int? = null
+        ) : this(
+            host = environment.url,
+            client = client,
+            port = port
+        )
+
         override fun create(): Networking.RequestBuilder {
             return RequestBuilder(
                 client,
-                environment.url,
+                host,
                 URLProtocol.HTTPS,
+                port
+            )
+        }
+
+        override fun withHost(host: String): Networking.RequestBuilderFactory {
+            return Factory(
+                host,
+                client,
                 port
             )
         }

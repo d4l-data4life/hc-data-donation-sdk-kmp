@@ -21,8 +21,8 @@ import org.koin.dsl.module
 
 internal fun resolveProgramKoinModule(): Module {
     return module {
-        single<ProgramContract.ErrorMapper> {
-            ProgramErrorMapper
+        single<ProgramContract.ApiService.ErrorHandler> {
+            ProgramErrorHandler
         }
 
         single<ProgramContract.ApiService> {

@@ -63,7 +63,7 @@ class ClientTest {
     @Test
     fun `Given getInstance is called with a Configuration it returns a DataDonation`() {
         val client: Any = Client.getInstance(
-            Environment.DEV,
+            Environment.DEVELOPMENT,
             UserSessionTokenProviderStub()
         )
 

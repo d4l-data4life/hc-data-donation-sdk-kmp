@@ -27,35 +27,35 @@ import kotlin.test.assertNotNull
 
 class ObjCCryptoIntegrationTest {
 
-    private val keychainKeyProvider = KeychainKeyProvider()
-    private val programName = "kmp.test.program.name"
+    private val keychainStore = DataDonationCryptoObjCFactory.dataDonationKeychainStore()
+    private val keyIdentifier = "kmp.test.donor.identity"
 
     @Test
-    fun `It imports and runs the library without linking problems`() {
+    fun `It imports and creates a library object without linking problems`() {
+        assertNotNull(keychainStore)
+    }
 
-        val keyProvider: KeychainKeyProvider = KeychainKeyProvider()
-        assertNotNull(keyProvider)
+    @Test
+    fun `It imports and runs a method from the library without linking problems`() {
 
         memScoped {
             val errorRef = alloc<ObjCObjectVar<NSError?>>()
-            keyProvider.getDonorPublicKeyFor(programName, errorRef.ptr)
+            keychainStore.fetchKeyPairAsBase64With(keyIdentifier, errorRef.ptr)
             val error = errorRef.value
             assertNotNull(error)
         }
     }
 
     @Test
-    fun `It gets an error when generating a key due to missing host app`() {
-
-        val keyProvider: KeychainKeyProvider = KeychainKeyProvider()
+    fun `It gets a "could not generate Key pair" error when generating a key due to missing host app`() {
 
         memScoped {
             val errorRef = alloc<ObjCObjectVar<NSError?>>()
-            keyProvider.getDonorPublicKeyFor(programName, errorRef.ptr)
+            keychainStore.fetchKeyPairAsBase64With(keyIdentifier, errorRef.ptr)
 
             val error = errorRef.value
             val expectedError = NSErrorFactory.create(
-                code = 1, // DataDonationCryptoObjCError.couldNotGenerateKeyPair
+                code = 2, // DataDonationCryptoObjCError.couldNotGenerateKeyPair
                 domain = DataDonationCryptoObjCErrorDomain,
                 localizedDescription = "non-important",
                 kotlinError = Throwable("non-important")

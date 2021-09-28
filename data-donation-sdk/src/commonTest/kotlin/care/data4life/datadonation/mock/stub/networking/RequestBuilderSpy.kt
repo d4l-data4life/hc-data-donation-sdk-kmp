@@ -97,11 +97,19 @@ internal class RequestBuilderSpy private constructor(
         val createdInstances: Int
             get() = instanceCounter
 
+        private var host: String? = null
+        val givenHost: String?
+            get() = host
+
         override fun create(): Networking.RequestBuilder {
             return RequestBuilderSpy(onPrepare).also {
                 this.instance = it
                 this.instanceCounter++
             }
+        }
+
+        override fun withHost(host: String): Networking.RequestBuilderFactory {
+            return this.also { this.host = host }
         }
 
         override fun clear() {

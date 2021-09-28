@@ -39,7 +39,7 @@ class RootKoinTest {
     @Test
     fun `Given resolveRootModule is called with its appropriate parameter it creates a Module, which contains a Environment`() {
         // Given
-        val env = DataDonationSDK.Environment.DEV
+        val env = DataDonationSDK.Environment.DEVELOPMENT
         val provider = UserSessionTokenProviderStub()
         val scope = CoroutineScope(testCoroutineContext)
 
@@ -64,7 +64,7 @@ class RootKoinTest {
     @Test
     fun `Given resolveRootModule is called with its appropriate parameter it creates a Module, which contains a Clock`() {
         // Given
-        val env = DataDonationSDK.Environment.DEV
+        val env = DataDonationSDK.Environment.DEVELOPMENT
         val provider = UserSessionTokenProviderStub()
         val scope = CoroutineScope(testCoroutineContext)
 
@@ -87,7 +87,7 @@ class RootKoinTest {
     @Test
     fun `Given resolveRootModule is called with its appropriate parameter it creates a Module, which contains a UserSessionTokenProvider`() {
         // Given
-        val env = DataDonationSDK.Environment.DEV
+        val env = DataDonationSDK.Environment.DEVELOPMENT
         val provider: DataDonationSDK.UserSessionTokenProvider = UserSessionTokenProviderStub()
         val scope = CoroutineScope(testCoroutineContext)
 
@@ -112,7 +112,7 @@ class RootKoinTest {
     @Test
     fun `Given resolveRootModule is called with its appropriate parameter it creates a Module, which contains a CoroutineContext`() {
         // Given
-        val env = DataDonationSDK.Environment.DEV
+        val env = DataDonationSDK.Environment.DEVELOPMENT
         val provider = UserSessionTokenProviderStub()
         val scope = CoroutineScope(testCoroutineContext)
 
@@ -137,7 +137,7 @@ class RootKoinTest {
     @Test
     fun `Given resolveRootModule is called with its appropriate parameter it creates a Module, which contains a DomainErrorMapperContract object`() {
         // Given
-        val env = DataDonationSDK.Environment.DEV
+        val env = DataDonationSDK.Environment.DEVELOPMENT
         val provider = UserSessionTokenProviderStub()
         val scope = CoroutineScope(testCoroutineContext)
 
@@ -160,7 +160,7 @@ class RootKoinTest {
     @Test
     fun `Given resolveRootModule is called with its appropriate parameter it creates a Module, which contains a D4LSDKFlowFactoryContract object`() {
         // Given
-        val env = DataDonationSDK.Environment.DEV
+        val env = DataDonationSDK.Environment.DEVELOPMENT
         val provider = UserSessionTokenProviderStub()
         val scope = CoroutineScope(testCoroutineContext)
 

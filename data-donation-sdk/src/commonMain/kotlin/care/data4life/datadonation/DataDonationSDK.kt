@@ -34,10 +34,12 @@ package care.data4life.datadonation
 
 import care.data4life.datadonation.ConsentDataContract.ConsentDocument
 import care.data4life.datadonation.ConsentDataContract.UserConsent
+import care.data4life.datadonation.donation.publickeyservice.model.EnvironmentSerializer
 import care.data4life.datadonation.session.SessionToken
 import care.data4life.sdk.flow.D4LSDKFlow
 import co.touchlab.stately.freeze
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.serialization.Serializable
 
 sealed class Result<Success, Error>(
     val value: Success?,
@@ -59,8 +61,9 @@ sealed class Result<Success, Error>(
 }
 
 interface DataDonationSDK {
+    @Serializable(with = EnvironmentSerializer::class)
     enum class Environment(val url: String) {
-        DEV("api-phdp-dev.hpsgc.de"),
+        DEVELOPMENT("api-phdp-dev.hpsgc.de"),
         SANDBOX("api-phdp-sandbox.hpsgc.de"),
         STAGING("api-staging.data4life.care"),
         PRODUCTION("api.data4life.care")
