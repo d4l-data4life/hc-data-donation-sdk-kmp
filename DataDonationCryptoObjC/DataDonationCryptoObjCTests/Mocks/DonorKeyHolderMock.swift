@@ -18,64 +18,61 @@ import Foundation
 @testable import DataDonationCryptoObjC
 import Data4LifeCrypto
 
-enum MockDefaultError: Error {
-    case resultNotDefined
-}
-
 final class DonorKeyHolderMock: DonorKeyHolderProtocol {
 
-    var isDeleteCalled = false
-    var capturedDeleteParameter: String?
-    var deleteError: Error?
-    func deleteKeyPair(for programName: String) throws {
-        isDeleteCalled = true
-        capturedDeleteParameter = programName
-        if let error = deleteError {
-            throw error
+    var isGenerateCalled = false
+    var capturedGenerateParameter: String?
+    var whenGenerate: ((String) -> Result<KeyPair,Error>)?
+    
+    func generateKeyPair(with keyIdentifier: String) throws -> KeyPair {
+        isGenerateCalled = true
+        capturedGenerateParameter = keyIdentifier
+        if let result = whenGenerate?(keyIdentifier) {
+            return try result.get()
+        } else {
+            throw MockError.resultNotDefined
         }
     }
 
     var isCreateCalled = false
     var capturedCreateParameters: (Data, String)?
-    var createError: Error?
-    func createKeyPair(from data: Data, for programName: String) throws {
+    var whenCreate: ((Data, String) -> Result<KeyPair,Error>)?
+
+    func createKeyPair(from data: Data, with keyIdentifier: String) throws -> KeyPair {
         isCreateCalled = true
-        capturedCreateParameters = (data, programName)
-        if let error = createError {
-            throw error
+        capturedCreateParameters = (data, keyIdentifier)
+        if let result = whenCreate?(data, keyIdentifier) {
+            return try result.get()
+        } else {
+            throw MockError.resultNotDefined
         }
     }
 
+    var isFetchCalled = false
+    var capturedFetchParameter: String?
+    var whenFetch: ((String) -> Result<KeyPair,Error>)?
 
-    var isPrivateCalled = false
-    var capturedPrivateParameter: String?
-    var privateResult: AsymmetricKey?
-    var privateError: Error?
-    func privateKey(for programName: String) throws -> AsymmetricKey {
-        isPrivateCalled = true
-        capturedPrivateParameter = programName
-        if let error = privateError {
-            throw error
-        } else if let result = privateResult {
-            return result
+    func fetchKeyPair(with keyIdentifier: String) throws -> KeyPair {
+        isFetchCalled = true
+        capturedFetchParameter = keyIdentifier
+        if let result = whenFetch?(keyIdentifier) {
+            return try result.get()
         } else {
-            throw MockDefaultError.resultNotDefined
+            throw MockError.resultNotDefined
         }
     }
 
-    var isPublicCalled = false
-    var capturedPublicParameter: String?
-    var publicResult: AsymmetricKey?
-    var publicError: Error?
-    func publicKey(for programName: String) throws -> AsymmetricKey {
-        isPublicCalled = true
-        capturedPublicParameter = programName
-        if let error = publicError {
-            throw error
-        } else if let result = publicResult {
-            return result
+    var isDeleteCalled = false
+    var capturedDeleteParameter: String?
+    var whenDelete: ((String) -> Result<Void,Error>)?
+
+    func deleteKeyPair(with keyIdentifier: String) throws {
+        isDeleteCalled = true
+        capturedDeleteParameter = keyIdentifier
+        if let result = whenDelete?(keyIdentifier) {
+            try result.get()
         } else {
-            throw MockDefaultError.resultNotDefined
+            throw MockError.resultNotDefined
         }
     }
 }
