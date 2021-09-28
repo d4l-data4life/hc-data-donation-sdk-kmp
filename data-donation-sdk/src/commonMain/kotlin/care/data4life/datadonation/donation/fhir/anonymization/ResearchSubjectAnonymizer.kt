@@ -17,16 +17,17 @@
 package care.data4life.datadonation.donation.fhir.anonymization
 
 import care.data4life.datadonation.donation.fhir.anonymization.model.BlurModelContract.ResearchSubjectBlur
-import care.data4life.hl7.fhir.stu3.model.Period
-import care.data4life.hl7.fhir.stu3.model.ResearchSubject
+import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract.Period
+import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract.ResearchSubject
+import care.data4life.hl7.fhir.FhirVersion
 
 internal class ResearchSubjectAnonymizer(
     private val dateTimeConcealer: AnonymizationContract.DateTimeConcealer
 ) : AnonymizationContract.ResearchSubjectAnonymizer {
     private fun blurPeriod(
-        period: Period,
+        period: Period<FhirVersion, FhirVersion>,
         rule: ResearchSubjectBlur
-    ): Period {
+    ): Period<FhirVersion, FhirVersion> {
         return period.copy(
             start = period.start?.copy(
                 value = dateTimeConcealer.blur(
@@ -46,17 +47,17 @@ internal class ResearchSubjectAnonymizer(
     }
 
     private fun isConcealablePeriod(
-        researchSubject: ResearchSubject,
+        researchSubject: ResearchSubject<FhirVersion, FhirVersion, FhirVersion>,
         rule: ResearchSubjectBlur?
     ): Boolean {
         return rule is ResearchSubjectBlur &&
-            researchSubject.period is Period
+            researchSubject.period is Period<FhirVersion, FhirVersion>
     }
 
     override fun anonymize(
-        researchSubject: ResearchSubject,
+        researchSubject: ResearchSubject<FhirVersion, FhirVersion, FhirVersion>,
         rule: ResearchSubjectBlur?
-    ): ResearchSubject {
+    ): ResearchSubject<FhirVersion, FhirVersion, FhirVersion> {
         return if (isConcealablePeriod(researchSubject, rule)) {
             researchSubject.copy(
                 period = blurPeriod(

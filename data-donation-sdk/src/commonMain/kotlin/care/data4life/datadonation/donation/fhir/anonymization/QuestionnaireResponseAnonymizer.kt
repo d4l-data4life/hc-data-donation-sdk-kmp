@@ -17,13 +17,13 @@
 package care.data4life.datadonation.donation.fhir.anonymization
 
 import care.data4life.datadonation.donation.fhir.anonymization.model.BlurModelContract.QuestionnaireResponseBlur
+import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract.DateTime
+import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract.FhirWrapperList
 import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract.QuestionnaireResponse
 import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract.QuestionnaireResponseItem
-import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract.QuestionnaireResponseItemList
 import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract.QuestionnaireResponseItemAnswer
 import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract.QuestionnaireResponseItemAnswerList
-import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract.FhirWrapperList
-import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract.DateTime
+import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract.QuestionnaireResponseItemList
 import care.data4life.datadonation.donation.program.model.BlurFunctionReference
 import care.data4life.datadonation.donation.program.model.ProgramType
 import care.data4life.datadonation.donation.program.model.QuestionnaireResponseItemBlur

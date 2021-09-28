@@ -18,17 +18,19 @@ package care.data4life.datadonation.mock.stub.donation.fhir.anonymization
 
 import care.data4life.datadonation.donation.fhir.anonymization.AnonymizationContract
 import care.data4life.datadonation.donation.fhir.anonymization.model.BlurModelContract.ResearchSubjectBlur
+import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
+import care.data4life.hl7.fhir.FhirVersion
 import care.data4life.hl7.fhir.stu3.model.ResearchSubject
 
 internal class ResearchSubjectAnonymizerStub : AnonymizationContract.ResearchSubjectAnonymizer, MockContract.Stub {
-    var whenAnonymize: ((ResearchSubject, ResearchSubjectBlur?) -> ResearchSubject)? = null
+    var whenAnonymize: ((CompatibilityWrapperContract.ResearchSubject<FhirVersion, FhirVersion, FhirVersion>, ResearchSubjectBlur?) -> CompatibilityWrapperContract.ResearchSubject<FhirVersion, FhirVersion, FhirVersion>)? = null
 
     override fun anonymize(
-        researchSubject: ResearchSubject,
+        researchSubject: CompatibilityWrapperContract.ResearchSubject<FhirVersion, FhirVersion, FhirVersion>,
         rule: ResearchSubjectBlur?
-    ): ResearchSubject {
+    ): CompatibilityWrapperContract.ResearchSubject<FhirVersion, FhirVersion, FhirVersion> {
         return whenAnonymize?.invoke(researchSubject, rule) ?: throw MockException()
     }
 

@@ -19,6 +19,7 @@ package care.data4life.datadonation.donation.fhir.anonymization
 import care.data4life.datadonation.donation.fhir.AllowedReference
 import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract
 import care.data4life.datadonation.donation.fhir.wrapper.Fhir3QuestionnaireResponseWrapper
+import care.data4life.datadonation.donation.fhir.wrapper.Fhir3ResearchSubjectWrapper
 import care.data4life.datadonation.donation.program.model.ProgramBlur
 import care.data4life.datadonation.donation.program.model.ProgramType
 import care.data4life.datadonation.donation.program.model.QuestionnaireResponseBlur
@@ -57,13 +58,13 @@ internal class FhirAnonymizer(
     private fun anonymizeResearchSubject(
         researchSubject: ResearchSubject,
         programRule: ProgramBlur?
-    ): ResearchSubject {
+    ): CompatibilityWrapperContract.ResearchSubject<FhirVersion, FhirVersion, FhirVersion> {
         val rule = researchSubjectResponseBlurResolver.resolveBlurRule(
             programRule = programRule,
         )
 
         return researchSubjectAnonymizer.anonymize(
-            researchSubject,
+            Fhir3ResearchSubjectWrapper(researchSubject) as CompatibilityWrapperContract.ResearchSubject<FhirVersion, FhirVersion, FhirVersion>,
             rule
         )
     }
@@ -84,7 +85,7 @@ internal class FhirAnonymizer(
             is ResearchSubject -> anonymizeResearchSubject(
                 fhirResource,
                 globalProgramRule
-            )
+            ).unwrap() as FhirResource
             else -> fhirResource
         }
     }

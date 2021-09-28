@@ -17,8 +17,11 @@
 package care.data4life.datadonation.donation.fhir.anonymization
 
 import care.data4life.datadonation.donation.fhir.anonymization.model.ResearchSubjectBlurRule
+import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract
+import care.data4life.datadonation.donation.fhir.wrapper.Fhir3ResearchSubjectWrapper
 import care.data4life.datadonation.donation.program.model.BlurFunctionReference
 import care.data4life.datadonation.mock.stub.donation.fhir.anonymization.DateTimeConcealerStub
+import care.data4life.hl7.fhir.FhirVersion
 import care.data4life.hl7.fhir.common.datetime.XsDate
 import care.data4life.hl7.fhir.common.datetime.XsDateTime
 import care.data4life.hl7.fhir.stu3.codesystem.ResearchSubjectStatus
@@ -48,7 +51,9 @@ class ResearchSubjectAnonymizerTest {
     @Test
     fun `Given anonymize is called with a ResearchSubject and null as BlurRule it reflects the given ResearchSubject`() {
         // Given
-        val resource = researchSubjectTemplate.copy()
+        val resource = Fhir3ResearchSubjectWrapper(
+            researchSubjectTemplate.copy()
+        ) as CompatibilityWrapperContract.ResearchSubject<FhirVersion, FhirVersion, FhirVersion>
 
         // When
         val result = ResearchSubjectAnonymizer(
@@ -60,15 +65,17 @@ class ResearchSubjectAnonymizerTest {
 
         // Then
         assertSame(
-            actual = result,
-            expected = resource
+            actual = result.unwrap(),
+            expected = resource.unwrap()
         )
     }
 
     @Test
     fun `Given anonymize is called with a ResearchSubject and BlurRule it reflects the given ResearchSubject, if the rule contains no matching BlurFunction`() {
         // Given
-        val resource = researchSubjectTemplate.copy()
+        val resource = Fhir3ResearchSubjectWrapper(
+            researchSubjectTemplate.copy()
+        ) as CompatibilityWrapperContract.ResearchSubject<FhirVersion, FhirVersion, FhirVersion>
 
         val rule = ResearchSubjectBlurRule(
             targetTimeZone = "any",
@@ -84,15 +91,17 @@ class ResearchSubjectAnonymizerTest {
 
         // Then
         assertSame(
-            actual = result,
-            expected = resource
+            actual = result.unwrap(),
+            expected = resource.unwrap()
         )
     }
 
     @Test
     fun `Given anonymize is called with a ResearchSubject and BlurRule it reflects the given ResearchSubject, if the ReseachSubject has no periode property`() {
         // Given
-        val resource = researchSubjectTemplate.copy()
+        val resource = Fhir3ResearchSubjectWrapper(
+            researchSubjectTemplate.copy()
+        ) as CompatibilityWrapperContract.ResearchSubject<FhirVersion, FhirVersion, FhirVersion>
 
         val rule = ResearchSubjectBlurRule(
             targetTimeZone = "any",
@@ -108,17 +117,19 @@ class ResearchSubjectAnonymizerTest {
 
         // Then
         assertSame(
-            actual = result,
-            expected = resource
+            actual = result.unwrap(),
+            expected = resource.unwrap()
         )
     }
 
     @Test
     fun `Given anonymize is called with a ResearchSubject and BlurRule it reflects the given ResearchSubject, if the Periode has neigther start nor end`() {
         // Given
-        val resource = researchSubjectTemplate.copy(
-            period = Period()
-        )
+        val resource = Fhir3ResearchSubjectWrapper(
+            researchSubjectTemplate.copy(
+                period = Period()
+            )
+        ) as CompatibilityWrapperContract.ResearchSubject<FhirVersion, FhirVersion, FhirVersion>
 
         val rule = ResearchSubjectBlurRule(
             targetTimeZone = "any",
@@ -134,8 +145,8 @@ class ResearchSubjectAnonymizerTest {
 
         // Then
         assertEquals(
-            actual = result,
-            expected = resource
+            actual = result.unwrap(),
+            expected = resource.unwrap()
         )
     }
 
@@ -145,13 +156,17 @@ class ResearchSubjectAnonymizerTest {
         val expected = XsDateTime(date = XsDate(42, 12, 23))
         val startDateTimeValue = XsDateTime(date = XsDate(1, 2, 3))
 
-        val resource = researchSubjectTemplate.copy(
+        val strippedResource = researchSubjectTemplate.copy(
             period = Period(
                 start = DateTime(
                     value = startDateTimeValue
                 )
             )
         )
+
+        val resource = Fhir3ResearchSubjectWrapper(
+            strippedResource
+        ) as CompatibilityWrapperContract.ResearchSubject<FhirVersion, FhirVersion, FhirVersion>
 
         var capturedXsDateTime: XsDateTime? = null
         var capturedTargetZone: TargetTimeZone? = null
@@ -179,10 +194,10 @@ class ResearchSubjectAnonymizerTest {
 
         // Then
         assertEquals(
-            actual = result,
-            expected = resource.copy(
-                period = resource.period!!.copy(
-                    start = resource.period!!.start!!.copy(
+            actual = result.unwrap(),
+            expected = strippedResource.copy(
+                period = strippedResource.period!!.copy(
+                    start = strippedResource.period!!.start!!.copy(
                         value = expected
                     )
                 )
@@ -209,13 +224,17 @@ class ResearchSubjectAnonymizerTest {
         val expected = XsDateTime(date = XsDate(42, 12, 23))
         val endDateTimeValue = XsDateTime(date = XsDate(1, 2, 3))
 
-        val resource = researchSubjectTemplate.copy(
+        val strippedResource = researchSubjectTemplate.copy(
             period = Period(
                 end = DateTime(
                     value = endDateTimeValue
                 )
             )
         )
+
+        val resource = Fhir3ResearchSubjectWrapper(
+            strippedResource
+        ) as CompatibilityWrapperContract.ResearchSubject<FhirVersion, FhirVersion, FhirVersion>
 
         var capturedXsDateTime: XsDateTime? = null
         var capturedTargetZone: TargetTimeZone? = null
@@ -243,10 +262,10 @@ class ResearchSubjectAnonymizerTest {
 
         // Then
         assertEquals(
-            actual = result,
-            expected = resource.copy(
-                period = resource.period!!.copy(
-                    end = resource.period!!.end!!.copy(
+            actual = result.unwrap(),
+            expected = strippedResource.copy(
+                period = strippedResource.period!!.copy(
+                    end = strippedResource.period!!.end!!.copy(
                         value = expected
                     )
                 )
@@ -276,7 +295,7 @@ class ResearchSubjectAnonymizerTest {
         val startDateTimeValue = XsDateTime(date = XsDate(42, 2, 3))
         val endDateTimeValue = XsDateTime(date = XsDate(1, 2, 3))
 
-        val resource = researchSubjectTemplate.copy(
+        val strippedResource = researchSubjectTemplate.copy(
             period = Period(
                 start = DateTime(
                     value = startDateTimeValue
@@ -286,6 +305,10 @@ class ResearchSubjectAnonymizerTest {
                 )
             )
         )
+
+        val resource = Fhir3ResearchSubjectWrapper(
+            strippedResource
+        ) as CompatibilityWrapperContract.ResearchSubject<FhirVersion, FhirVersion, FhirVersion>
 
         val concealer = DateTimeConcealerStub()
 
@@ -309,13 +332,13 @@ class ResearchSubjectAnonymizerTest {
 
         // Then
         assertEquals(
-            actual = result,
-            expected = resource.copy(
-                period = resource.period!!.copy(
-                    start = resource.period!!.end!!.copy(
+            actual = result.unwrap(),
+            expected = strippedResource.copy(
+                period = strippedResource.period!!.copy(
+                    start = strippedResource.period!!.end!!.copy(
                         value = expectedStart
                     ),
-                    end = resource.period!!.end!!.copy(
+                    end = strippedResource.period!!.end!!.copy(
                         value = expectedEnd
                     )
                 )

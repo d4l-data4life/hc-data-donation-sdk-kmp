@@ -21,6 +21,7 @@ import care.data4life.datadonation.donation.fhir.anonymization.model.BlurModelCo
 import care.data4life.datadonation.donation.fhir.anonymization.model.QuestionnaireResponseBlurRule
 import care.data4life.datadonation.donation.fhir.anonymization.model.ResearchSubjectBlurRule
 import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract.QuestionnaireResponse
+import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract.ResearchSubject
 import care.data4life.datadonation.donation.program.model.BlurFunctionReference
 import care.data4life.datadonation.donation.program.model.ProgramBlur
 import care.data4life.datadonation.donation.program.model.ProgramType
@@ -28,7 +29,6 @@ import care.data4life.datadonation.donation.program.model.QuestionnaireResponseB
 import care.data4life.hl7.fhir.FhirVersion
 import care.data4life.hl7.fhir.common.datetime.XsDateTime
 import care.data4life.hl7.fhir.stu3.model.FhirResource
-import care.data4life.hl7.fhir.stu3.model.ResearchSubject
 
 internal typealias TargetTimeZone = String
 
@@ -73,9 +73,9 @@ internal interface AnonymizationContract {
 
     interface ResearchSubjectAnonymizer {
         fun anonymize(
-            researchSubject: ResearchSubject,
+            researchSubject: ResearchSubject<FhirVersion, FhirVersion, FhirVersion>,
             rule: BlurModelContract.ResearchSubjectBlur?
-        ): ResearchSubject
+        ): ResearchSubject<FhirVersion, FhirVersion, FhirVersion>
     }
 
     interface FhirAnonymizer {

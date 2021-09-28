@@ -16,13 +16,13 @@
 
 package care.data4life.datadonation.donation.fhir.anonymization
 
+import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract.QuestionnaireResponse
 import care.data4life.datadonation.donation.fhir.wrapper.Fhir3QuestionnaireResponse
 import care.data4life.datadonation.donation.fhir.wrapper.Fhir3QuestionnaireResponseWrapper
 import care.data4life.datadonation.donation.program.model.BlurFunctionReference
 import care.data4life.datadonation.donation.program.model.ProgramBlur
 import care.data4life.datadonation.donation.program.model.QuestionnaireResponseBlur
 import care.data4life.datadonation.donation.program.model.QuestionnaireResponseItemBlur
-import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract.QuestionnaireResponse
 import care.data4life.hl7.fhir.FhirVersion
 import care.data4life.hl7.fhir.stu3.codesystem.QuestionnaireResponseStatus
 import care.data4life.hl7.fhir.stu3.model.Reference

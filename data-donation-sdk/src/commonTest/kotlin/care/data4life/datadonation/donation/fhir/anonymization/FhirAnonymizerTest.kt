@@ -22,6 +22,7 @@ import care.data4life.datadonation.donation.fhir.anonymization.model.Questionnai
 import care.data4life.datadonation.donation.fhir.anonymization.model.ResearchSubjectBlurRule
 import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract
 import care.data4life.datadonation.donation.fhir.wrapper.Fhir3QuestionnaireResponseWrapper
+import care.data4life.datadonation.donation.fhir.wrapper.Fhir3ResearchSubjectWrapper
 import care.data4life.datadonation.donation.program.model.BlurFunctionReference
 import care.data4life.datadonation.donation.program.model.ProgramBlur
 import care.data4life.datadonation.donation.program.model.ProgramType
@@ -192,7 +193,9 @@ class FhirAnonymizerTest {
             individual = Reference()
         )
 
-        val expected = resource.copy(status = ResearchSubjectStatus.COMPLETED)
+        val expected = Fhir3ResearchSubjectWrapper(
+            resource.copy(status = ResearchSubjectStatus.COMPLETED)
+        )
 
         val blurResolver = ResearchSubjectBlurRuleResolverStub()
 
@@ -214,14 +217,14 @@ class FhirAnonymizerTest {
 
         val researchSubjectAnonymizer = ResearchSubjectAnonymizerStub()
 
-        var capturedResearchSubject: ResearchSubject? = null
+        var capturedResearchSubject: CompatibilityWrapperContract.ResearchSubject<FhirVersion, FhirVersion, FhirVersion>? = null
         var capturedBlurRule: BlurModelContract.ResearchSubjectBlur? = null
 
         researchSubjectAnonymizer.whenAnonymize = { delegatedResearchSubject, delegatedRule ->
             capturedResearchSubject = delegatedResearchSubject
             capturedBlurRule = delegatedRule
 
-            expected
+            expected as CompatibilityWrapperContract.ResearchSubject<FhirVersion, FhirVersion, FhirVersion>
         }
 
         // When
@@ -235,7 +238,7 @@ class FhirAnonymizerTest {
         // Then
         assertSame(
             actual = result,
-            expected = expected
+            expected = expected.unwrap()
         )
 
         assertSame(
@@ -244,7 +247,7 @@ class FhirAnonymizerTest {
         )
 
         assertSame(
-            actual = capturedResearchSubject,
+            actual = capturedResearchSubject?.unwrap(),
             expected = resource
         )
         assertSame(
