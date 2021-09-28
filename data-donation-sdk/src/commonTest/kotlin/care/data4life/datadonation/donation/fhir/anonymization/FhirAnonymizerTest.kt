@@ -128,7 +128,7 @@ class FhirAnonymizerTest {
 
         var capturedQuestionnaireResponse: QuestionnaireResponse? = null
         var capturedProgramType: ProgramType? = null
-        var capturedBlurRule: BlurModelContract.QuestionnaireResponseBlur? = null
+        var capturedBlurRule: BlurModelContract.QuestionnaireResponseBlurRule? = null
 
         questionnaireResponseAnonymizer.whenAnonymize = { delegatedQuestionnaireResponse, delegatedProgramType, delegatedRule ->
             capturedQuestionnaireResponse = delegatedQuestionnaireResponse
@@ -211,11 +211,11 @@ class FhirAnonymizerTest {
         val researchSubjectAnonymizer = ResearchSubjectAnonymizerStub()
 
         var capturedResearchSubject: ResearchSubject? = null
-        var capturedBlurRule: BlurModelContract.ResearchSubjectBlur? = null
+        var capturedBlurRuleRule: BlurModelContract.ResearchSubjectBlurRule? = null
 
         researchSubjectAnonymizer.whenAnonymize = { delegatedResearchSubject, delegatedRule ->
             capturedResearchSubject = delegatedResearchSubject
-            capturedBlurRule = delegatedRule
+            capturedBlurRuleRule = delegatedRule
 
             expected
         }
@@ -244,7 +244,7 @@ class FhirAnonymizerTest {
             expected = resource
         )
         assertSame(
-            actual = capturedBlurRule,
+            actual = capturedBlurRuleRule,
             expected = rule
         )
     }

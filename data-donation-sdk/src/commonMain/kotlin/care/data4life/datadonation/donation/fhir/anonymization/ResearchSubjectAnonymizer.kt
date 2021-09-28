@@ -16,7 +16,7 @@
 
 package care.data4life.datadonation.donation.fhir.anonymization
 
-import care.data4life.datadonation.donation.fhir.anonymization.model.BlurModelContract.ResearchSubjectBlur
+import care.data4life.datadonation.donation.fhir.anonymization.model.BlurModelContract.ResearchSubjectBlurRule
 import care.data4life.hl7.fhir.stu3.model.Period
 import care.data4life.hl7.fhir.stu3.model.ResearchSubject
 
@@ -25,7 +25,7 @@ internal class ResearchSubjectAnonymizer(
 ) : AnonymizationContract.ResearchSubjectAnonymizer {
     private fun blurPeriod(
         period: Period,
-        rule: ResearchSubjectBlur
+        rule: ResearchSubjectBlurRule
     ): Period {
         return period.copy(
             start = period.start?.copy(
@@ -47,15 +47,15 @@ internal class ResearchSubjectAnonymizer(
 
     private fun isConcealablePeriod(
         researchSubject: ResearchSubject,
-        rule: ResearchSubjectBlur?
+        rule: ResearchSubjectBlurRule?
     ): Boolean {
-        return rule is ResearchSubjectBlur &&
+        return rule is ResearchSubjectBlurRule &&
             researchSubject.period is Period
     }
 
     override fun anonymize(
         researchSubject: ResearchSubject,
-        rule: ResearchSubjectBlur?
+        rule: ResearchSubjectBlurRule?
     ): ResearchSubject {
         return if (isConcealablePeriod(researchSubject, rule)) {
             researchSubject.copy(

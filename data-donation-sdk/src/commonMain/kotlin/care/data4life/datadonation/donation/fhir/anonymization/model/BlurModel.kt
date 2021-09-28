@@ -24,9 +24,9 @@ internal data class QuestionnaireResponseBlurRule(
     override val targetTimeZone: TargetTimeZone,
     override val questionnaireResponseAuthored: BlurFunctionReference?,
     override val questionnaireResponseItems: List<QuestionnaireResponseItemBlur>,
-) : BlurModelContract.QuestionnaireResponseBlur
+) : BlurModelContract.QuestionnaireResponseBlurRule
 
 internal data class ResearchSubjectBlurRule(
     override val targetTimeZone: TargetTimeZone,
     override val researchSubject: BlurFunctionReference,
-) : BlurModelContract.ResearchSubjectBlur
+) : BlurModelContract.ResearchSubjectBlurRule

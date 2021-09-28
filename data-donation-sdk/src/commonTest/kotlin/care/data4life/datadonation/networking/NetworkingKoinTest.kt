@@ -48,7 +48,7 @@ class NetworkingKoinTest {
                 resolveNetworking(),
                 module(override = true) {
                     single { createHelloWorldMockClient() }
-                    single { DataDonationSDK.Environment.DEV }
+                    single { DataDonationSDK.Environment.DEVELOPMENT }
                 }
             )
         }
@@ -65,7 +65,7 @@ class NetworkingKoinTest {
                 resolveNetworking(),
                 module(override = true) {
                     single { createHelloWorldMockClient() }
-                    single { DataDonationSDK.Environment.DEV }
+                    single { DataDonationSDK.Environment.DEVELOPMENT }
                 }
             )
         }
@@ -83,7 +83,7 @@ class NetworkingKoinTest {
                 resolveNetworking(),
                 module(override = true) {
                     single { createHelloWorldMockClient() }
-                    single { DataDonationSDK.Environment.DEV }
+                    single { DataDonationSDK.Environment.DEVELOPMENT }
                 }
             )
         }
@@ -123,7 +123,7 @@ class NetworkingKoinTest {
                     single<List<Networking.HttpPluginInstaller<out Any, out Any?>>> {
                         features
                     }
-                    single { DataDonationSDK.Environment.DEV }
+                    single { DataDonationSDK.Environment.DEVELOPMENT }
                 }
             )
         }

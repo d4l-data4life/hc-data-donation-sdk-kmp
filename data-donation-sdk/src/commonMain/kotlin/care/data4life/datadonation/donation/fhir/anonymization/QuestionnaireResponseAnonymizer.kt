@@ -16,7 +16,7 @@
 
 package care.data4life.datadonation.donation.fhir.anonymization
 
-import care.data4life.datadonation.donation.fhir.anonymization.model.BlurModelContract.QuestionnaireResponseBlur
+import care.data4life.datadonation.donation.fhir.anonymization.model.BlurModelContract.QuestionnaireResponseBlurRule
 import care.data4life.datadonation.donation.program.model.BlurFunctionReference
 import care.data4life.datadonation.donation.program.model.ProgramType
 import care.data4life.datadonation.donation.program.model.QuestionnaireResponseItemBlur
@@ -43,7 +43,7 @@ internal class QuestionnaireResponseAnonymizer(
     private fun mapQuestionnaireResponse(
         questionnaireResponse: QuestionnaireResponse,
         programType: ProgramType,
-        blurRule: QuestionnaireResponseBlur?
+        blurRule: QuestionnaireResponseBlurRule?
     ): QuestionnaireResponse {
         return questionnaireResponse.copy(
             item = mapOrNull(questionnaireResponse.item) { item ->
@@ -55,7 +55,7 @@ internal class QuestionnaireResponseAnonymizer(
     private fun mapQuestionnaireResponseItem(
         responseItem: QuestionnaireResponseItem,
         programType: ProgramType,
-        blurRule: QuestionnaireResponseBlur?
+        blurRule: QuestionnaireResponseBlurRule?
     ): QuestionnaireResponseItem {
         val item = mapOrNull(responseItem.item) { item ->
             mapQuestionnaireResponseItem(item, programType, blurRule)
@@ -77,7 +77,7 @@ internal class QuestionnaireResponseAnonymizer(
 
     private fun determineItemBlur(
         linkId: String,
-        blurRule: QuestionnaireResponseBlur?
+        blurRule: QuestionnaireResponseBlurRule?
     ): QuestionnaireResponseItemBlur? {
         return blurRule?.questionnaireResponseItems?.find { itemBlur ->
             itemBlur.linkId == linkId
@@ -87,7 +87,7 @@ internal class QuestionnaireResponseAnonymizer(
     private fun blurValueDateTime(
         dateTime: DateTime?,
         linkId: String,
-        blurRule: QuestionnaireResponseBlur?,
+        blurRule: QuestionnaireResponseBlurRule?,
     ): DateTime? {
         val itemBlur = determineItemBlur(linkId, blurRule)
 
@@ -116,7 +116,7 @@ internal class QuestionnaireResponseAnonymizer(
         itemAnswer: QuestionnaireResponseItemAnswer,
         programType: ProgramType,
         linkId: String,
-        blurRule: QuestionnaireResponseBlur?
+        blurRule: QuestionnaireResponseBlurRule?
     ): QuestionnaireResponseItemAnswer {
         val item = mapOrNull(itemAnswer.item) { item ->
             mapQuestionnaireResponseItem(item, programType, blurRule)
@@ -137,7 +137,7 @@ internal class QuestionnaireResponseAnonymizer(
 
     private fun isConcealableAuthoredField(
         questionnaireResponse: QuestionnaireResponse,
-        blurRule: QuestionnaireResponseBlur?
+        blurRule: QuestionnaireResponseBlurRule?
     ): Boolean {
         return questionnaireResponse.authored is DateTime &&
             blurRule?.questionnaireResponseAuthored is BlurFunctionReference
@@ -145,7 +145,7 @@ internal class QuestionnaireResponseAnonymizer(
 
     private fun blurAuthored(
         questionnaireResponse: QuestionnaireResponse,
-        blurRule: QuestionnaireResponseBlur?
+        blurRule: QuestionnaireResponseBlurRule?
     ): QuestionnaireResponse {
         return if (isConcealableAuthoredField(questionnaireResponse, blurRule)) {
             questionnaireResponse.copy(
@@ -165,7 +165,7 @@ internal class QuestionnaireResponseAnonymizer(
     override fun anonymize(
         questionnaireResponse: QuestionnaireResponse,
         programType: ProgramType,
-        rule: QuestionnaireResponseBlur?
+        rule: QuestionnaireResponseBlurRule?
     ): QuestionnaireResponse {
         return mapQuestionnaireResponse(
             blurAuthored(questionnaireResponse, rule),
