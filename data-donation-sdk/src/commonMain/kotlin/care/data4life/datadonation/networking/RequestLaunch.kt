@@ -19,8 +19,8 @@ package care.data4life.datadonation.networking
 import care.data4life.datadonation.error.CoreRuntimeError
 import io.ktor.client.call.NoTransformationFoundException
 import io.ktor.client.statement.HttpStatement
-import io.ktor.http.HttpStatusCode
 import io.ktor.http.Headers
+import io.ktor.http.HttpStatusCode
 
 internal suspend inline fun <reified T> receive(
     request: HttpStatement,
