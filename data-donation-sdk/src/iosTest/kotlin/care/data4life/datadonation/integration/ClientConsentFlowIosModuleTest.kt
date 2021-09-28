@@ -85,7 +85,7 @@ class ClientConsentFlowIosModuleTest {
         val koin = koinApplication {
             modules(
                 resolveRootModule(
-                    DataDonationSDK.Environment.DEV,
+                    DataDonationSDK.Environment.DEVELOPMENT,
                     UserSessionTokenProvider,
                     CoroutineScope(testCoroutineContext)
                 ),
