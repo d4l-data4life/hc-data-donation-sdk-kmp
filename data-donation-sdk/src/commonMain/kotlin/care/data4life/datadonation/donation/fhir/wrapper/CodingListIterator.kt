@@ -27,7 +27,7 @@ internal class Fhir3CodingListIteratorWrapper(
         return iterator.hasPrevious()
     }
 
-    override fun next(): CompatibilityWrapperContract.Coding {
+    override fun next(): CompatibilityWrapperContract.Coding<Fhir3Coding> {
         return Fhir3CodingWrapper(iterator.next())
     }
 
@@ -35,7 +35,7 @@ internal class Fhir3CodingListIteratorWrapper(
         return iterator.nextIndex()
     }
 
-    override fun previous(): CompatibilityWrapperContract.Coding {
+    override fun previous(): CompatibilityWrapperContract.Coding<Fhir3Coding> {
         return Fhir3CodingWrapper(iterator.previous())
     }
 
@@ -59,7 +59,7 @@ internal class Fhir4CodingListIteratorWrapper(
         return iterator.hasPrevious()
     }
 
-    override fun next(): CompatibilityWrapperContract.Coding {
+    override fun next(): CompatibilityWrapperContract.Coding<Fhir4Coding> {
         return Fhir4CodingWrapper(iterator.next())
     }
 
@@ -67,7 +67,7 @@ internal class Fhir4CodingListIteratorWrapper(
         return iterator.nextIndex()
     }
 
-    override fun previous(): CompatibilityWrapperContract.Coding {
+    override fun previous(): CompatibilityWrapperContract.Coding<Fhir4Coding> {
         return Fhir4CodingWrapper(iterator.previous())
     }
 

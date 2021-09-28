@@ -18,14 +18,22 @@ package care.data4life.datadonation.donation.fhir.wrapper
 
 internal class Fhir3CodingWrapper(
     private val coding: Fhir3Coding
-) : CompatibilityWrapperContract.Coding {
+) : CompatibilityWrapperContract.Coding<Fhir3Coding> {
     override val code: String?
         get() = coding.code
+
+    override fun unwrap(): Fhir3Coding {
+        return coding
+    }
 }
 
 internal class Fhir4CodingWrapper(
     private val coding: Fhir4Coding
-) : CompatibilityWrapperContract.Coding {
+) : CompatibilityWrapperContract.Coding<Fhir4Coding> {
     override val code: String?
         get() = coding.code
+
+    override fun unwrap(): Fhir4Coding {
+        return coding
+    }
 }

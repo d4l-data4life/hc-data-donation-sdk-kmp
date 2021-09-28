@@ -148,18 +148,18 @@ interface CompatibilityWrapperContract {
         fun hasUnit(): Boolean
     }
 
-    interface Coding : FhirWrapper {
+    interface Coding<CodingValue : FhirVersion> : FhirWrapper, Stripper<CodingValue> {
         val code: String?
     }
 
     interface CodingListIterator<CodingValue : FhirVersion> :
-        ListIterator<Coding> {
+        ListIterator<Coding<CodingValue>> {
 
         fun unwrap(): ListIterator<CodingValue>
     }
 
     interface CodingList<CodingValue : FhirVersion> :
-        FhirWrapper, List<Coding> {
+        FhirWrapper, List<Coding<CodingValue>> {
 
         fun unwrap(): List<CodingValue>
     }

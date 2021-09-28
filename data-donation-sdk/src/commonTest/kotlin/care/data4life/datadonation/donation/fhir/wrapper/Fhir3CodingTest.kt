@@ -27,7 +27,22 @@ class Fhir3CodingTest {
             Fhir3Coding()
         )
 
-        assertTrue(coding is CompatibilityWrapperContract.Coding)
+        assertTrue(coding is CompatibilityWrapperContract.Coding<*>)
+    }
+
+    @Test
+    fun `Given unwrap is called it returns the given Fhir3Coding`() {
+        // Given
+        val givenCoding = Fhir3Coding()
+
+        // When
+        val actual = Fhir3CodingWrapper(givenCoding).unwrap()
+
+        // Then
+        assertSame(
+            actual = actual,
+            expected = givenCoding
+        )
     }
 
     @Test
