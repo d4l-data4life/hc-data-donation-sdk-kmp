@@ -18,7 +18,7 @@ package care.data4life.datadonation.mock.stub.donation.fhir.validator
 
 import care.data4life.datadonation.donation.fhir.AllowedReference
 import care.data4life.datadonation.donation.fhir.validator.FhirResourceValidatorContract
-import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract
+import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract.Observation
 import care.data4life.datadonation.donation.program.model.QuestionnaireResponseBlur
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
@@ -27,10 +27,10 @@ import care.data4life.hl7.fhir.FhirVersion
 internal class ObservationValidatorStub :
     FhirResourceValidatorContract.ObservationValidator,
     MockContract.Stub {
-    var whenIsAllowed: ((CompatibilityWrapperContract.Observation<FhirVersion, FhirVersion>, Map<AllowedReference, QuestionnaireResponseBlur?>) -> Boolean)? = null
+    var whenIsAllowed: ((Observation<out FhirVersion, out FhirVersion>, Map<AllowedReference, QuestionnaireResponseBlur?>) -> Boolean)? = null
 
     override fun canBeDonated(
-        resource: CompatibilityWrapperContract.Observation<FhirVersion, FhirVersion>,
+        resource: Observation<out FhirVersion, out FhirVersion>,
         blurMapping: Map<AllowedReference, QuestionnaireResponseBlur?>
     ): Boolean {
         return whenIsAllowed?.invoke(resource, blurMapping) ?: throw MockException()

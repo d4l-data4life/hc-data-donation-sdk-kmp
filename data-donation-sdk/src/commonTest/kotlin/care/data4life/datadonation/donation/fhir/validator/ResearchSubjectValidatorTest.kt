@@ -75,7 +75,7 @@ class ResearchSubjectValidatorTest {
 
         // When
         val result = ResearchSubjectValidator.canBeDonated(
-            researchSubject as CompatibilityWrapperContract.ResearchSubject<FhirVersion, FhirVersion, FhirVersion>,
+            researchSubject,
             studyId
         )
 
@@ -103,7 +103,7 @@ class ResearchSubjectValidatorTest {
 
         // When
         val result = ResearchSubjectValidator.canBeDonated(
-            researchSubject as CompatibilityWrapperContract.ResearchSubject<FhirVersion, FhirVersion, FhirVersion>,
+            researchSubject,
             studyId
         )
 
@@ -135,7 +135,7 @@ class ResearchSubjectValidatorTest {
 
         // When
         val result = ResearchSubjectValidator.canBeDonated(
-            researchSubject as CompatibilityWrapperContract.ResearchSubject<FhirVersion, FhirVersion, FhirVersion>,
+            researchSubject,
             studyId
         )
 

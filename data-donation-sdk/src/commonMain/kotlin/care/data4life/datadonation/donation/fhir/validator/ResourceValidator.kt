@@ -27,21 +27,21 @@ internal class ResourceValidator(
     private val researchSubjectValidator: FhirResourceValidatorContract.ResearchSubjectValidator
 ) : FhirResourceValidatorContract.ResourceValidator {
     override fun canBeDonated(
-        resource: CompatibilityWrapperContract.FhirWrapper<FhirVersion>,
+        resource: CompatibilityWrapperContract.FhirWrapper<out FhirVersion>,
         studyId: String,
         blurMapping: Map<AllowedReference, QuestionnaireResponseBlur?>
     ): Boolean {
         return when (resource) {
             is CompatibilityWrapperContract.QuestionnaireResponse<*, *, *, *> -> questionnaireResponseValidator.canBeDonated(
-                resource as CompatibilityWrapperContract.QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>,
+                resource,
                 blurMapping
             )
             is CompatibilityWrapperContract.Observation<*, *> -> observationValidator.canBeDonated(
-                resource as CompatibilityWrapperContract.Observation<FhirVersion, FhirVersion>,
+                resource,
                 blurMapping
             )
             is CompatibilityWrapperContract.ResearchSubject<*, *, *> -> researchSubjectValidator.canBeDonated(
-                resource as CompatibilityWrapperContract.ResearchSubject<FhirVersion, FhirVersion, FhirVersion>,
+                resource,
                 studyId
             )
             else -> false

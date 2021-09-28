@@ -16,10 +16,8 @@
 
 package care.data4life.datadonation.donation.fhir.validator
 
-import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract
 import care.data4life.datadonation.donation.fhir.wrapper.Fhir3ObservationWrapper
 import care.data4life.datadonation.donation.program.model.QuestionnaireResponseBlur
-import care.data4life.hl7.fhir.FhirVersion
 import care.data4life.hl7.fhir.stu3.codesystem.ObservationStatus
 import care.data4life.hl7.fhir.stu3.model.CodeableConcept
 import care.data4life.hl7.fhir.stu3.model.Coding
@@ -57,7 +55,7 @@ class ObservationValidatorTest {
 
         // When
         val result = ObservationValidator.canBeDonated(
-            observation as CompatibilityWrapperContract.Observation<FhirVersion, FhirVersion>,
+            observation,
             blurMapping
         )
 
@@ -87,7 +85,7 @@ class ObservationValidatorTest {
 
         // When
         val result = ObservationValidator.canBeDonated(
-            observation as CompatibilityWrapperContract.Observation<FhirVersion, FhirVersion>,
+            observation,
             blurMapping
         )
 
@@ -117,7 +115,7 @@ class ObservationValidatorTest {
 
         // When
         val result = ObservationValidator.canBeDonated(
-            observation as CompatibilityWrapperContract.Observation<FhirVersion, FhirVersion>,
+            observation,
             blurMapping
         )
 
@@ -155,7 +153,7 @@ class ObservationValidatorTest {
 
         // When
         val result = ObservationValidator.canBeDonated(
-            observation as CompatibilityWrapperContract.Observation<FhirVersion, FhirVersion>,
+            observation,
             blurMapping
         )
 
@@ -195,7 +193,7 @@ class ObservationValidatorTest {
 
         // When
         val result = ObservationValidator.canBeDonated(
-            observation as CompatibilityWrapperContract.Observation<FhirVersion, FhirVersion>,
+            observation,
             blurMapping
         )
 
@@ -235,7 +233,7 @@ class ObservationValidatorTest {
 
         // When
         val result = ObservationValidator.canBeDonated(
-            observation as CompatibilityWrapperContract.Observation<FhirVersion, FhirVersion>,
+            observation,
             blurMapping
         )
 
@@ -275,7 +273,7 @@ class ObservationValidatorTest {
 
         // When
         val result = ObservationValidator.canBeDonated(
-            observation as CompatibilityWrapperContract.Observation<FhirVersion, FhirVersion>,
+            observation,
             blurMapping
         )
 
@@ -315,7 +313,7 @@ class ObservationValidatorTest {
 
         // When
         val result = ObservationValidator.canBeDonated(
-            observation as CompatibilityWrapperContract.Observation<FhirVersion, FhirVersion>,
+            observation,
             blurMapping
         )
 

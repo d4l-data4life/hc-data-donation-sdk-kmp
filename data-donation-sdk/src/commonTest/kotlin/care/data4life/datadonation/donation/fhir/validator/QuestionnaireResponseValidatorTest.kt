@@ -16,10 +16,8 @@
 
 package care.data4life.datadonation.donation.fhir.validator
 
-import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract
 import care.data4life.datadonation.donation.fhir.wrapper.Fhir3QuestionnaireResponseWrapper
 import care.data4life.datadonation.donation.program.model.QuestionnaireResponseBlur
-import care.data4life.hl7.fhir.FhirVersion
 import care.data4life.hl7.fhir.stu3.codesystem.QuestionnaireResponseStatus
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
 import care.data4life.hl7.fhir.stu3.model.Reference
@@ -51,7 +49,7 @@ class QuestionnaireResponseValidatorTest {
 
         // When
         val result = QuestionnaireResponseValidator.canBeDonated(
-            questionnaireResponse as CompatibilityWrapperContract.QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>,
+            questionnaireResponse,
             blurMapping
         )
 
@@ -80,7 +78,7 @@ class QuestionnaireResponseValidatorTest {
 
         // When
         val result = QuestionnaireResponseValidator.canBeDonated(
-            questionnaireResponse as CompatibilityWrapperContract.QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>,
+            questionnaireResponse,
             blurMapping
         )
 

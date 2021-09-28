@@ -17,10 +17,15 @@
 package care.data4life.datadonation.donation.fhir.validator
 
 import care.data4life.datadonation.donation.fhir.AllowedReference
-import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract
+import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract.Observation
+import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract.QuestionnaireResponse
+import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract.ResearchSubject
+import care.data4life.datadonation.donation.fhir.wrapper.Fhir3Observation
 import care.data4life.datadonation.donation.fhir.wrapper.Fhir3ObservationWrapper
+import care.data4life.datadonation.donation.fhir.wrapper.Fhir3QuestionnaireResponse
 import care.data4life.datadonation.donation.fhir.wrapper.Fhir3QuestionnaireResponseItemWrapper
 import care.data4life.datadonation.donation.fhir.wrapper.Fhir3QuestionnaireResponseWrapper
+import care.data4life.datadonation.donation.fhir.wrapper.Fhir3ResearchSubject
 import care.data4life.datadonation.donation.fhir.wrapper.Fhir3ResearchSubjectWrapper
 import care.data4life.datadonation.donation.program.model.QuestionnaireResponseBlur
 import care.data4life.datadonation.mock.stub.donation.fhir.validator.ObservationValidatorStub
@@ -31,11 +36,8 @@ import care.data4life.hl7.fhir.stu3.codesystem.ObservationStatus
 import care.data4life.hl7.fhir.stu3.codesystem.QuestionnaireResponseStatus
 import care.data4life.hl7.fhir.stu3.codesystem.ResearchSubjectStatus
 import care.data4life.hl7.fhir.stu3.model.CodeableConcept
-import care.data4life.hl7.fhir.stu3.model.Observation
-import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponseItem
 import care.data4life.hl7.fhir.stu3.model.Reference
-import care.data4life.hl7.fhir.stu3.model.ResearchSubject
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -71,7 +73,7 @@ class ResourceValidatorTest {
             ObservationValidatorStub(),
             ResearchSubjectValidatorStub()
         ).canBeDonated(
-            resource as CompatibilityWrapperContract.FhirWrapper<FhirVersion>,
+            resource,
             studyId,
             mapping
         )
@@ -84,7 +86,7 @@ class ResourceValidatorTest {
     fun `Given isAllowed is called with a QuestionnaireRespose, a StudyId and a BlurMapping, it delegates to call to QuestionnaireResposeValidator and returns its result`() {
         // Given
         val resource = Fhir3QuestionnaireResponseWrapper(
-            QuestionnaireResponse(
+            Fhir3QuestionnaireResponse(
                 status = QuestionnaireResponseStatus.COMPLETED
             )
         )
@@ -97,7 +99,7 @@ class ResourceValidatorTest {
 
         val questionnaireResponseValidator = QuestionnaireResponseValidatorStub()
 
-        var capturedResource: CompatibilityWrapperContract.QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>? = null
+        var capturedResource: QuestionnaireResponse<out FhirVersion, out FhirVersion, out FhirVersion, out FhirVersion>? = null
         var capturedBlurMapping: Map<AllowedReference, QuestionnaireResponseBlur?>? = null
 
         questionnaireResponseValidator.whenIsAllowed = { delegatedResource, delegatedBlurMapping ->
@@ -113,7 +115,7 @@ class ResourceValidatorTest {
             ObservationValidatorStub(),
             ResearchSubjectValidatorStub()
         ).canBeDonated(
-            resource as CompatibilityWrapperContract.FhirWrapper<FhirVersion>,
+            resource,
             studyId,
             mapping
         )
@@ -138,7 +140,7 @@ class ResourceValidatorTest {
     fun `Given isAllowed is called with a Observation, a StudyId and a BlurMapping, it delegates to call to ObservationValidator and returns its result`() {
         // Given
         val resource = Fhir3ObservationWrapper(
-            Observation(
+            Fhir3Observation(
                 status = ObservationStatus.AMENDED,
                 code = CodeableConcept()
             )
@@ -152,7 +154,7 @@ class ResourceValidatorTest {
 
         val observationValidator = ObservationValidatorStub()
 
-        var capturedResource: CompatibilityWrapperContract.Observation<FhirVersion, FhirVersion>? = null
+        var capturedResource: Observation<out FhirVersion, out FhirVersion>? = null
         var capturedBlurMapping: Map<AllowedReference, QuestionnaireResponseBlur?>? = null
 
         observationValidator.whenIsAllowed = { delegatedResource, delegatedBlurMapping ->
@@ -168,7 +170,7 @@ class ResourceValidatorTest {
             observationValidator,
             ResearchSubjectValidatorStub()
         ).canBeDonated(
-            resource as CompatibilityWrapperContract.FhirWrapper<FhirVersion>,
+            resource,
             studyId,
             mapping
         )
@@ -193,7 +195,7 @@ class ResourceValidatorTest {
     fun `Given isAllowed is called with a ResearchSubject, a StudyId and a BlurMapping, it delegates to call to ResearchSubjectValidator and returns its result`() {
         // Given
         val resource = Fhir3ResearchSubjectWrapper(
-            ResearchSubject(
+            Fhir3ResearchSubject(
                 status = ResearchSubjectStatus.SUSPENDED,
                 study = Reference(),
                 individual = Reference()
@@ -208,7 +210,7 @@ class ResourceValidatorTest {
 
         val researchSubjectValidator = ResearchSubjectValidatorStub()
 
-        var capturedResource: CompatibilityWrapperContract.ResearchSubject<FhirVersion, FhirVersion, FhirVersion>? = null
+        var capturedResource: ResearchSubject<out FhirVersion, out FhirVersion, out FhirVersion>? = null
         var capturedStudyId: String? = null
 
         researchSubjectValidator.whenIsAllowed = { delegatedResource, delegatedBlurMapping ->
@@ -224,7 +226,7 @@ class ResourceValidatorTest {
             ObservationValidatorStub(),
             researchSubjectValidator
         ).canBeDonated(
-            resource as CompatibilityWrapperContract.FhirWrapper<FhirVersion>,
+            resource,
             studyId,
             mapping
         )

@@ -18,14 +18,14 @@ package care.data4life.datadonation.donation.fhir.validator
 
 import care.data4life.datadonation.donation.fhir.AllowedReference
 import care.data4life.datadonation.donation.fhir.FhirContract.FhirResourceBlurMapper.Companion.REFERENCE_SEPARATOR
-import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract
+import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract.Coding
+import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract.Observation
+import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract.Quantity
 import care.data4life.datadonation.donation.program.model.QuestionnaireResponseBlur
 import care.data4life.hl7.fhir.FhirVersion
 
 internal object ObservationValidator : FhirResourceValidatorContract.ObservationValidator {
-    private fun hasQuantityValue(
-        quantity: CompatibilityWrapperContract.Quantity
-    ): Boolean {
+    private fun hasQuantityValue(quantity: Quantity): Boolean {
         return quantity.hasValue() ||
             quantity.hasCode() ||
             quantity.hasSystem() ||
@@ -33,12 +33,12 @@ internal object ObservationValidator : FhirResourceValidatorContract.Observation
     }
 
     private fun matchesReference(
-        resource: CompatibilityWrapperContract.Observation<FhirVersion, FhirVersion>,
+        resource: Observation<out FhirVersion, out FhirVersion>,
         blurMapping: Map<AllowedReference, QuestionnaireResponseBlur?>
     ): Boolean {
         val code = resource.coding?.first()
 
-        return if (code is CompatibilityWrapperContract.Coding) {
+        return if (code is Coding) {
             blurMapping.containsKey(
                 "Observation${REFERENCE_SEPARATOR}${code.system}${REFERENCE_SEPARATOR}${code.code}"
             )
@@ -48,7 +48,7 @@ internal object ObservationValidator : FhirResourceValidatorContract.Observation
     }
 
     override fun canBeDonated(
-        resource: CompatibilityWrapperContract.Observation<FhirVersion, FhirVersion>,
+        resource: Observation<out FhirVersion, out FhirVersion>,
         blurMapping: Map<AllowedReference, QuestionnaireResponseBlur?>
     ): Boolean {
         return if (resource.coding.isNullOrEmpty()) {

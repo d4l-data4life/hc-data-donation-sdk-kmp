@@ -17,28 +17,31 @@
 package care.data4life.datadonation.donation.fhir.validator
 
 import care.data4life.datadonation.donation.fhir.AllowedReference
-import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract
+import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract.FhirWrapper
+import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract.Observation
+import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract.QuestionnaireResponse
+import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract.ResearchSubject
 import care.data4life.datadonation.donation.program.model.QuestionnaireResponseBlur
 import care.data4life.hl7.fhir.FhirVersion
 
 internal interface FhirResourceValidatorContract {
     fun interface QuestionnaireResponseValidator {
         fun canBeDonated(
-            resource: CompatibilityWrapperContract.QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>,
+            resource: QuestionnaireResponse<out FhirVersion, out FhirVersion, out FhirVersion, out FhirVersion>,
             blurMapping: Map<AllowedReference, QuestionnaireResponseBlur?>
         ): Boolean
     }
 
     fun interface ObservationValidator {
         fun canBeDonated(
-            resource: CompatibilityWrapperContract.Observation<FhirVersion, FhirVersion>,
+            resource: Observation<out FhirVersion, out FhirVersion>,
             blurMapping: Map<AllowedReference, QuestionnaireResponseBlur?>
         ): Boolean
     }
 
     fun interface ResearchSubjectValidator {
         fun canBeDonated(
-            resource: CompatibilityWrapperContract.ResearchSubject<FhirVersion, FhirVersion, FhirVersion>,
+            resource: ResearchSubject<out FhirVersion, out FhirVersion, out FhirVersion>,
             studyId: String
         ): Boolean
 
@@ -50,7 +53,7 @@ internal interface FhirResourceValidatorContract {
 
     interface ResourceValidator {
         fun canBeDonated(
-            resource: CompatibilityWrapperContract.FhirWrapper<FhirVersion>,
+            resource: FhirWrapper<out FhirVersion>,
             studyId: String,
             blurMapping: Map<AllowedReference, QuestionnaireResponseBlur?>
         ): Boolean

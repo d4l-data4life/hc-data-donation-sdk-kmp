@@ -18,12 +18,12 @@ package care.data4life.datadonation.donation.fhir.validator
 
 import care.data4life.datadonation.donation.fhir.validator.FhirResourceValidatorContract.ResearchSubjectValidator.Companion.INDIVIDUAL_IDENTIFIER_SYSTEM
 import care.data4life.datadonation.donation.fhir.validator.FhirResourceValidatorContract.ResearchSubjectValidator.Companion.STUDY_IDENTIFIER_SYSTEM
-import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract
+import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract.ResearchSubject
 import care.data4life.hl7.fhir.FhirVersion
 
 internal object ResearchSubjectValidator : FhirResourceValidatorContract.ResearchSubjectValidator {
     override fun canBeDonated(
-        resource: CompatibilityWrapperContract.ResearchSubject<FhirVersion, FhirVersion, FhirVersion>,
+        resource: ResearchSubject<out FhirVersion, out FhirVersion, out FhirVersion>,
         studyId: String
     ): Boolean {
         return when {
