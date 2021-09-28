@@ -16,11 +16,11 @@
 
 package care.data4life.datadonation.donation.fhir.wrapper
 
+import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract.FhirWrapper
 import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract.FhirWrapperList
-import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract.Stripper
 import care.data4life.hl7.fhir.FhirVersion
 
-internal fun <K : FhirVersion, T : Stripper<K>> FhirWrapperList<T>.mapFhirList(action: (T) -> T): List<K> {
+internal fun <K : FhirVersion, T : FhirWrapper<K>> FhirWrapperList<T>.mapFhirList(action: (T) -> T): List<K> {
     val result = mutableListOf<K>()
 
     this.forEach { item ->

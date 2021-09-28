@@ -21,6 +21,8 @@ import care.data4life.datadonation.donation.fhir.anonymization.model.BlurModelCo
 import care.data4life.datadonation.donation.fhir.anonymization.model.QuestionnaireResponseBlurRule
 import care.data4life.datadonation.donation.fhir.anonymization.model.ResearchSubjectBlurRule
 import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract
+import care.data4life.datadonation.donation.fhir.wrapper.Fhir3Observation
+import care.data4life.datadonation.donation.fhir.wrapper.Fhir3ObservationWrapper
 import care.data4life.datadonation.donation.fhir.wrapper.Fhir3QuestionnaireResponseWrapper
 import care.data4life.datadonation.donation.fhir.wrapper.Fhir3ResearchSubjectWrapper
 import care.data4life.datadonation.donation.program.model.BlurFunctionReference
@@ -33,9 +35,10 @@ import care.data4life.datadonation.mock.stub.donation.fhir.anonymization.Questio
 import care.data4life.datadonation.mock.stub.donation.fhir.anonymization.ResearchSubjectAnonymizerStub
 import care.data4life.datadonation.mock.stub.donation.fhir.anonymization.ResearchSubjectBlurRuleResolverStub
 import care.data4life.hl7.fhir.FhirVersion
+import care.data4life.hl7.fhir.stu3.codesystem.ObservationStatus
 import care.data4life.hl7.fhir.stu3.codesystem.QuestionnaireResponseStatus
 import care.data4life.hl7.fhir.stu3.codesystem.ResearchSubjectStatus
-import care.data4life.hl7.fhir.stu3.model.DomainResource
+import care.data4life.hl7.fhir.stu3.model.CodeableConcept
 import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
 import care.data4life.hl7.fhir.stu3.model.Reference
 import care.data4life.hl7.fhir.stu3.model.ResearchSubject
@@ -77,7 +80,10 @@ class FhirAnonymizerTest {
     @Test
     fun `Given anonymize is called with a arbitrary FhirResource and a ProgramDonationConfiguration it reflects the Resource`() {
         // Given
-        val resource = DomainResource()
+        val resource = Fhir3Observation(
+            status = ObservationStatus.FINAL,
+            code = CodeableConcept()
+        )
 
         // When
         val result = FhirAnonymizer(
@@ -85,11 +91,16 @@ class FhirAnonymizerTest {
             QuestionnaireResponseBlurRuleResolverStub(),
             QuestionnaireResponseAnonymizerStub(),
             ResearchSubjectAnonymizerStub()
-        ).anonymize(resource, ProgramType.STUDY, programBlur, fhirResourceBlur)
+        ).anonymize(
+            Fhir3ObservationWrapper(resource) as CompatibilityWrapperContract.FhirWrapper<FhirVersion>,
+            ProgramType.STUDY,
+            programBlur,
+            fhirResourceBlur
+        )
 
         // Then
         assertSame(
-            actual = result,
+            actual = result.unwrap(),
             expected = resource
         )
     }
@@ -149,11 +160,16 @@ class FhirAnonymizerTest {
             blurResolver,
             questionnaireResponseAnonymizer,
             ResearchSubjectAnonymizerStub()
-        ).anonymize(resource, programType, programBlur, fhirResourceBlur)
+        ).anonymize(
+            Fhir3QuestionnaireResponseWrapper(resource) as CompatibilityWrapperContract.FhirWrapper<FhirVersion>,
+            programType,
+            programBlur,
+            fhirResourceBlur
+        )
 
         // Then
         assertSame(
-            actual = result,
+            actual = result.unwrap(),
             expected = expected.unwrap()
         )
 
@@ -233,11 +249,16 @@ class FhirAnonymizerTest {
             QuestionnaireResponseBlurRuleResolverStub(),
             QuestionnaireResponseAnonymizerStub(),
             researchSubjectAnonymizer
-        ).anonymize(resource, ProgramType.STUDY, programBlur, fhirResourceBlur)
+        ).anonymize(
+            Fhir3ResearchSubjectWrapper(resource) as CompatibilityWrapperContract.FhirWrapper<FhirVersion>,
+            ProgramType.STUDY,
+            programBlur,
+            fhirResourceBlur
+        )
 
         // Then
         assertSame(
-            actual = result,
+            actual = result.unwrap(),
             expected = expected.unwrap()
         )
 

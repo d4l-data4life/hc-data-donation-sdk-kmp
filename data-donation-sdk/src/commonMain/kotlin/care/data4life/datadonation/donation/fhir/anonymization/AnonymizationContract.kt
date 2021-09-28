@@ -20,6 +20,7 @@ import care.data4life.datadonation.donation.fhir.AllowedReference
 import care.data4life.datadonation.donation.fhir.anonymization.model.BlurModelContract
 import care.data4life.datadonation.donation.fhir.anonymization.model.QuestionnaireResponseBlurRule
 import care.data4life.datadonation.donation.fhir.anonymization.model.ResearchSubjectBlurRule
+import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract.FhirWrapper
 import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract.QuestionnaireResponse
 import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract.ResearchSubject
 import care.data4life.datadonation.donation.program.model.BlurFunctionReference
@@ -28,7 +29,6 @@ import care.data4life.datadonation.donation.program.model.ProgramType
 import care.data4life.datadonation.donation.program.model.QuestionnaireResponseBlur
 import care.data4life.hl7.fhir.FhirVersion
 import care.data4life.hl7.fhir.common.datetime.XsDateTime
-import care.data4life.hl7.fhir.stu3.model.FhirResource
 
 internal typealias TargetTimeZone = String
 
@@ -80,10 +80,10 @@ internal interface AnonymizationContract {
 
     interface FhirAnonymizer {
         fun anonymize(
-            fhirResource: FhirResource,
+            fhirResource: FhirWrapper<FhirVersion>,
             programType: ProgramType,
             globalProgramRule: ProgramBlur?,
             localResourceRule: Map<AllowedReference, QuestionnaireResponseBlur?>
-        ): FhirResource
+        ): FhirWrapper<FhirVersion>
     }
 }

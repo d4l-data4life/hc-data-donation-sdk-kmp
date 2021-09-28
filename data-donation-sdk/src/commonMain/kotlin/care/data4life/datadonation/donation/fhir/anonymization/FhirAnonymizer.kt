@@ -17,16 +17,13 @@
 package care.data4life.datadonation.donation.fhir.anonymization
 
 import care.data4life.datadonation.donation.fhir.AllowedReference
-import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract
-import care.data4life.datadonation.donation.fhir.wrapper.Fhir3QuestionnaireResponseWrapper
-import care.data4life.datadonation.donation.fhir.wrapper.Fhir3ResearchSubjectWrapper
+import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract.FhirWrapper
+import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract.QuestionnaireResponse
+import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract.ResearchSubject
 import care.data4life.datadonation.donation.program.model.ProgramBlur
 import care.data4life.datadonation.donation.program.model.ProgramType
 import care.data4life.datadonation.donation.program.model.QuestionnaireResponseBlur
 import care.data4life.hl7.fhir.FhirVersion
-import care.data4life.hl7.fhir.stu3.model.FhirResource
-import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
-import care.data4life.hl7.fhir.stu3.model.ResearchSubject
 
 internal class FhirAnonymizer(
     private val researchSubjectResponseBlurResolver: AnonymizationContract.ResearchSubjectBlurRuleResolver,
@@ -35,57 +32,55 @@ internal class FhirAnonymizer(
     private val researchSubjectAnonymizer: AnonymizationContract.ResearchSubjectAnonymizer
 ) : AnonymizationContract.FhirAnonymizer {
     private fun anonymizeQuestionnaireResponse(
-        questionnaireResponse: QuestionnaireResponse,
+        questionnaireResponse: QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>,
         programType: ProgramType,
         globalProgramRule: ProgramBlur?,
         localResourceRule: Map<AllowedReference, QuestionnaireResponseBlur?>
-    ): QuestionnaireResponse {
-        val response = Fhir3QuestionnaireResponseWrapper(questionnaireResponse) as CompatibilityWrapperContract.QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>
-
+    ): QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion> {
         val rule = questionnaireResponseBlurResolver.resolveBlurRule(
-            questionnaireResponse = response,
+            questionnaireResponse = questionnaireResponse,
             programRule = globalProgramRule,
             fhirResourceConfigurations = localResourceRule
         )
 
         return questionnaireResponseAnonymizer.anonymize(
-            response,
+            questionnaireResponse,
             programType,
             rule
-        ).unwrap() as QuestionnaireResponse
+        )
     }
 
     private fun anonymizeResearchSubject(
-        researchSubject: ResearchSubject,
+        researchSubject: ResearchSubject<FhirVersion, FhirVersion, FhirVersion>,
         programRule: ProgramBlur?
-    ): CompatibilityWrapperContract.ResearchSubject<FhirVersion, FhirVersion, FhirVersion> {
+    ): ResearchSubject<FhirVersion, FhirVersion, FhirVersion> {
         val rule = researchSubjectResponseBlurResolver.resolveBlurRule(
             programRule = programRule,
         )
 
         return researchSubjectAnonymizer.anonymize(
-            Fhir3ResearchSubjectWrapper(researchSubject) as CompatibilityWrapperContract.ResearchSubject<FhirVersion, FhirVersion, FhirVersion>,
+            researchSubject,
             rule
         )
     }
 
     override fun anonymize(
-        fhirResource: FhirResource,
+        fhirResource: FhirWrapper<FhirVersion>,
         programType: ProgramType,
         globalProgramRule: ProgramBlur?,
         localResourceRule: Map<AllowedReference, QuestionnaireResponseBlur?>
-    ): FhirResource {
+    ): FhirWrapper<FhirVersion> {
         return when (fhirResource) {
-            is QuestionnaireResponse -> anonymizeQuestionnaireResponse(
-                fhirResource,
+            is QuestionnaireResponse<*, *, *, *> -> anonymizeQuestionnaireResponse(
+                fhirResource as QuestionnaireResponse<FhirVersion, FhirVersion, FhirVersion, FhirVersion>,
                 programType,
                 globalProgramRule,
                 localResourceRule
             )
-            is ResearchSubject -> anonymizeResearchSubject(
-                fhirResource,
+            is ResearchSubject<*, *, *> -> anonymizeResearchSubject(
+                fhirResource as ResearchSubject<FhirVersion, FhirVersion, FhirVersion>,
                 globalProgramRule
-            ).unwrap() as FhirResource
+            )
             else -> fhirResource
         }
     }

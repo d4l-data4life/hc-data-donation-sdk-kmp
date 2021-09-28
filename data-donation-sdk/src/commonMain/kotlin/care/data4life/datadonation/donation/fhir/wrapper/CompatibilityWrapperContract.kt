@@ -42,19 +42,17 @@ internal typealias Fhir4Observation = care.data4life.hl7.fhir.r4.model.Observati
 internal typealias Fhir4Decimal = care.data4life.hl7.fhir.r4.primitive.Decimal
 
 interface CompatibilityWrapperContract {
-    interface FhirWrapper
-
-    interface Stripper<WrappedValue : FhirVersion> {
+    interface FhirWrapper<WrappedValue : FhirVersion> {
         fun unwrap(): WrappedValue
     }
 
-    interface FhirListIterator<T> : ListIterator<T>, FhirWrapper
+    interface FhirListIterator<T> : ListIterator<T>
 
-    interface FhirWrapperList<T> : List<T>, FhirWrapper {
+    interface FhirWrapperList<T> : List<T> {
         fun map(action: (T) -> T): FhirWrapperList<T>
     }
 
-    interface DateTime<DateValue : FhirVersion> : FhirWrapper, Stripper<DateValue> {
+    interface DateTime<DateValue : FhirVersion> : FhirWrapper<DateValue> {
         val value: XsDateTime
 
         fun copy(
@@ -63,7 +61,7 @@ interface CompatibilityWrapperContract {
     }
 
     interface QuestionnaireResponseItemAnswer<ItemValue : FhirVersion, AnswerValue : FhirVersion, DateValue : FhirVersion> :
-        FhirWrapper, Stripper<AnswerValue> {
+        FhirWrapper<AnswerValue> {
         val valueString: String?
         val valueDateTime: DateTime<DateValue>?
         val item: QuestionnaireResponseItemList<ItemValue, AnswerValue, DateValue>?
@@ -88,7 +86,7 @@ interface CompatibilityWrapperContract {
     }
 
     interface QuestionnaireResponseItem<ItemValue : FhirVersion, AnswerValue : FhirVersion, DateValue : FhirVersion> :
-        FhirWrapper, Stripper<ItemValue> {
+        FhirWrapper<ItemValue> {
         val linkId: String
         val item: QuestionnaireResponseItemList<ItemValue, AnswerValue, DateValue>?
         val answer: QuestionnaireResponseItemAnswerList<ItemValue, AnswerValue, DateValue>?
@@ -112,7 +110,7 @@ interface CompatibilityWrapperContract {
     }
 
     interface QuestionnaireResponse<ResponseValue : FhirVersion, ItemValue : FhirVersion, AnswerValue : FhirVersion, DateValue : FhirVersion> :
-        FhirWrapper, Stripper<ResponseValue> {
+        FhirWrapper<ResponseValue> {
         val questionnaireReference: String?
         val item: QuestionnaireResponseItemList<ItemValue, AnswerValue, DateValue>?
         val authored: DateTime<DateValue>?
@@ -124,7 +122,7 @@ interface CompatibilityWrapperContract {
     }
 
     interface Period<PeriodValue : FhirVersion, DateValue : FhirVersion> :
-        FhirWrapper, Stripper<PeriodValue> {
+        FhirWrapper<PeriodValue> {
         val start: DateTime<DateValue>?
         val end: DateTime<DateValue>?
 
@@ -135,7 +133,7 @@ interface CompatibilityWrapperContract {
     }
 
     interface ResearchSubject<ResearchSubjectValue : FhirVersion, PeriodValue : FhirVersion, DateValue : FhirVersion> :
-        FhirWrapper, Stripper<ResearchSubjectValue> {
+        FhirWrapper<ResearchSubjectValue> {
         val studyIdentifierSystem: String?
         val studyIdentifierValue: String?
         val individualIdentifierSystem: String?
@@ -147,14 +145,14 @@ interface CompatibilityWrapperContract {
         ): ResearchSubject<ResearchSubjectValue, PeriodValue, DateValue>
     }
 
-    interface Quantity : FhirWrapper {
+    interface Quantity {
         fun hasValue(): Boolean
         fun hasCode(): Boolean
         fun hasSystem(): Boolean
         fun hasUnit(): Boolean
     }
 
-    interface Coding<CodingValue : FhirVersion> : FhirWrapper, Stripper<CodingValue> {
+    interface Coding<CodingValue : FhirVersion> : FhirWrapper<CodingValue> {
         val code: String?
     }
 
@@ -164,14 +162,13 @@ interface CompatibilityWrapperContract {
         fun unwrap(): ListIterator<CodingValue>
     }
 
-    interface CodingList<CodingValue : FhirVersion> :
-        FhirWrapper, List<Coding<CodingValue>> {
+    interface CodingList<CodingValue : FhirVersion> : List<Coding<CodingValue>> {
 
         fun unwrap(): List<CodingValue>
     }
 
     interface Observation<ObservationValue : FhirVersion, CodingValue : FhirVersion> :
-        FhirWrapper, Stripper<ObservationValue> {
+        FhirWrapper<ObservationValue> {
         val coding: CodingList<CodingValue>?
         val valueQuantity: Quantity?
     }
