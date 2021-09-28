@@ -63,4 +63,23 @@ class Fhir3CodingTest {
             expected = givenCoding.code
         )
     }
+
+    @Test
+    fun `It exposes the system of the wrapped Fhir3Coding`() {
+        // Given
+        val givenCoding = Fhir3Coding(
+            system = "something"
+        )
+
+        // When
+        val actual = Fhir3CodingWrapper(
+            givenCoding
+        )
+
+        // Then
+        assertSame(
+            actual = actual.system,
+            expected = givenCoding.system
+        )
+    }
 }

@@ -136,7 +136,7 @@ class ResourceValidatorTest {
 
         val observationValidator = ObservationValidatorStub()
 
-        var capturedResource: FhirObservation? = null
+        var capturedResource: CompatibilityWrapperContract.Observation<FhirVersion, FhirVersion>? = null
         var capturedBlurMapping: Map<AllowedReference, QuestionnaireResponseBlur?>? = null
 
         observationValidator.whenIsAllowed = { delegatedResource, delegatedBlurMapping ->

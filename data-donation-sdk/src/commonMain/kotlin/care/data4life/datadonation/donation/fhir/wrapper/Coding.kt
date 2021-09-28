@@ -22,6 +22,9 @@ internal class Fhir3CodingWrapper(
     override val code: String?
         get() = coding.code
 
+    override val system: String?
+        get() = coding.system
+
     override fun unwrap(): Fhir3Coding {
         return coding
     }
@@ -32,6 +35,9 @@ internal class Fhir4CodingWrapper(
 ) : CompatibilityWrapperContract.Coding<Fhir4Coding> {
     override val code: String?
         get() = coding.code
+
+    override val system: String?
+        get() = coding.system
 
     override fun unwrap(): Fhir4Coding {
         return coding

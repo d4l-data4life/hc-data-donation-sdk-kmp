@@ -16,7 +16,10 @@
 
 package care.data4life.datadonation.donation.fhir.validator
 
+import care.data4life.datadonation.donation.fhir.wrapper.CompatibilityWrapperContract
+import care.data4life.datadonation.donation.fhir.wrapper.Fhir3ObservationWrapper
 import care.data4life.datadonation.donation.program.model.QuestionnaireResponseBlur
+import care.data4life.hl7.fhir.FhirVersion
 import care.data4life.hl7.fhir.stu3.codesystem.ObservationStatus
 import care.data4life.hl7.fhir.stu3.model.CodeableConcept
 import care.data4life.hl7.fhir.stu3.model.Coding
@@ -40,9 +43,11 @@ class ObservationValidatorTest {
         // Given
         val reference = "reference"
 
-        val observation = Observation(
-            status = ObservationStatus.AMENDED,
-            code = CodeableConcept()
+        val observation = Fhir3ObservationWrapper(
+            Observation(
+                status = ObservationStatus.AMENDED,
+                code = CodeableConcept()
+            )
         )
         val blurMapping = mapOf(
             reference to QuestionnaireResponseBlur(
@@ -52,7 +57,7 @@ class ObservationValidatorTest {
 
         // When
         val result = ObservationValidator.canBeDonated(
-            observation,
+            observation as CompatibilityWrapperContract.Observation<FhirVersion, FhirVersion>,
             blurMapping
         )
 
@@ -65,12 +70,14 @@ class ObservationValidatorTest {
         // Given
         val reference = "reference"
 
-        val observation = Observation(
-            status = ObservationStatus.AMENDED,
-            code = CodeableConcept(
-                coding = emptyList()
-            ),
-            valueQuantity = Quantity()
+        val observation = Fhir3ObservationWrapper(
+            Observation(
+                status = ObservationStatus.AMENDED,
+                code = CodeableConcept(
+                    coding = emptyList()
+                ),
+                valueQuantity = Quantity()
+            )
         )
         val blurMapping = mapOf(
             reference to QuestionnaireResponseBlur(
@@ -80,7 +87,7 @@ class ObservationValidatorTest {
 
         // When
         val result = ObservationValidator.canBeDonated(
-            observation,
+            observation as CompatibilityWrapperContract.Observation<FhirVersion, FhirVersion>,
             blurMapping
         )
 
@@ -93,12 +100,14 @@ class ObservationValidatorTest {
         // Given
         val reference = "reference"
 
-        val observation = Observation(
-            status = ObservationStatus.AMENDED,
-            code = CodeableConcept(
-                coding = listOf(Coding())
-            ),
-            valueQuantity = Quantity()
+        val observation = Fhir3ObservationWrapper(
+            Observation(
+                status = ObservationStatus.AMENDED,
+                code = CodeableConcept(
+                    coding = listOf(Coding())
+                ),
+                valueQuantity = Quantity()
+            )
         )
         val blurMapping = mapOf(
             reference to QuestionnaireResponseBlur(
@@ -108,7 +117,7 @@ class ObservationValidatorTest {
 
         // When
         val result = ObservationValidator.canBeDonated(
-            observation,
+            observation as CompatibilityWrapperContract.Observation<FhirVersion, FhirVersion>,
             blurMapping
         )
 
@@ -124,17 +133,19 @@ class ObservationValidatorTest {
 
         val reference = "Observation|$system|$code"
 
-        val observation = Observation(
-            status = ObservationStatus.AMENDED,
-            code = CodeableConcept(
-                coding = listOf(
-                    Coding(
-                        system = system,
-                        code = code
+        val observation = Fhir3ObservationWrapper(
+            Observation(
+                status = ObservationStatus.AMENDED,
+                code = CodeableConcept(
+                    coding = listOf(
+                        Coding(
+                            system = system,
+                            code = code
+                        )
                     )
-                )
-            ),
-            valueQuantity = Quantity()
+                ),
+                valueQuantity = Quantity()
+            )
         )
         val blurMapping = mapOf(
             reference to QuestionnaireResponseBlur(
@@ -144,7 +155,7 @@ class ObservationValidatorTest {
 
         // When
         val result = ObservationValidator.canBeDonated(
-            observation,
+            observation as CompatibilityWrapperContract.Observation<FhirVersion, FhirVersion>,
             blurMapping
         )
 
@@ -160,18 +171,20 @@ class ObservationValidatorTest {
 
         val reference = "Observation|$system|$code"
 
-        val observation = Observation(
-            status = ObservationStatus.AMENDED,
-            code = CodeableConcept(
-                coding = listOf(
-                    Coding(
-                        system = system,
-                        code = code
+        val observation = Fhir3ObservationWrapper(
+            Observation(
+                status = ObservationStatus.AMENDED,
+                code = CodeableConcept(
+                    coding = listOf(
+                        Coding(
+                            system = system,
+                            code = code
+                        )
                     )
+                ),
+                valueQuantity = Quantity(
+                    value = Decimal(0.1)
                 )
-            ),
-            valueQuantity = Quantity(
-                value = Decimal(0.1)
             )
         )
         val blurMapping = mapOf(
@@ -182,7 +195,7 @@ class ObservationValidatorTest {
 
         // When
         val result = ObservationValidator.canBeDonated(
-            observation,
+            observation as CompatibilityWrapperContract.Observation<FhirVersion, FhirVersion>,
             blurMapping
         )
 
@@ -198,18 +211,20 @@ class ObservationValidatorTest {
 
         val reference = "Observation|$system|$code"
 
-        val observation = Observation(
-            status = ObservationStatus.AMENDED,
-            code = CodeableConcept(
-                coding = listOf(
-                    Coding(
-                        system = system,
-                        code = code
+        val observation = Fhir3ObservationWrapper(
+            Observation(
+                status = ObservationStatus.AMENDED,
+                code = CodeableConcept(
+                    coding = listOf(
+                        Coding(
+                            system = system,
+                            code = code
+                        )
                     )
+                ),
+                valueQuantity = Quantity(
+                    unit = "something"
                 )
-            ),
-            valueQuantity = Quantity(
-                unit = "something"
             )
         )
         val blurMapping = mapOf(
@@ -220,7 +235,7 @@ class ObservationValidatorTest {
 
         // When
         val result = ObservationValidator.canBeDonated(
-            observation,
+            observation as CompatibilityWrapperContract.Observation<FhirVersion, FhirVersion>,
             blurMapping
         )
 
@@ -236,18 +251,20 @@ class ObservationValidatorTest {
 
         val reference = "Observation|$system|$code"
 
-        val observation = Observation(
-            status = ObservationStatus.AMENDED,
-            code = CodeableConcept(
-                coding = listOf(
-                    Coding(
-                        system = system,
-                        code = code
+        val observation = Fhir3ObservationWrapper(
+            Observation(
+                status = ObservationStatus.AMENDED,
+                code = CodeableConcept(
+                    coding = listOf(
+                        Coding(
+                            system = system,
+                            code = code
+                        )
                     )
+                ),
+                valueQuantity = Quantity(
+                    code = "something"
                 )
-            ),
-            valueQuantity = Quantity(
-                code = "something"
             )
         )
         val blurMapping = mapOf(
@@ -258,7 +275,7 @@ class ObservationValidatorTest {
 
         // When
         val result = ObservationValidator.canBeDonated(
-            observation,
+            observation as CompatibilityWrapperContract.Observation<FhirVersion, FhirVersion>,
             blurMapping
         )
 
@@ -274,18 +291,20 @@ class ObservationValidatorTest {
 
         val reference = "Observation|$system|$code"
 
-        val observation = Observation(
-            status = ObservationStatus.AMENDED,
-            code = CodeableConcept(
-                coding = listOf(
-                    Coding(
-                        system = system,
-                        code = code
+        val observation = Fhir3ObservationWrapper(
+            Observation(
+                status = ObservationStatus.AMENDED,
+                code = CodeableConcept(
+                    coding = listOf(
+                        Coding(
+                            system = system,
+                            code = code
+                        )
                     )
+                ),
+                valueQuantity = Quantity(
+                    system = "something"
                 )
-            ),
-            valueQuantity = Quantity(
-                system = "something"
             )
         )
         val blurMapping = mapOf(
@@ -296,7 +315,7 @@ class ObservationValidatorTest {
 
         // When
         val result = ObservationValidator.canBeDonated(
-            observation,
+            observation as CompatibilityWrapperContract.Observation<FhirVersion, FhirVersion>,
             blurMapping
         )
 

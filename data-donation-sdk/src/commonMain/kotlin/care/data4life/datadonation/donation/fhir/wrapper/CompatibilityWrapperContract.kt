@@ -154,6 +154,7 @@ interface CompatibilityWrapperContract {
 
     interface Coding<CodingValue : FhirVersion> : FhirWrapper<CodingValue> {
         val code: String?
+        val system: String?
     }
 
     interface CodingListIterator<CodingValue : FhirVersion> :

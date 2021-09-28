@@ -35,7 +35,7 @@ internal class ResourceValidator(
     ): Boolean {
         return when (resource) {
             is FhirQuestionnaireResponse -> TODO()// questionnaireResponseValidator.canBeDonated(resource, blurMapping)
-            is FhirObservation -> observationValidator.canBeDonated(resource, blurMapping)
+            is FhirObservation -> TODO() //observationValidator.canBeDonated(resource, blurMapping)
             is FhirResearchSubject -> researchSubjectValidator.canBeDonated(resource, studyId)
             else -> false
         }
