@@ -16,27 +16,12 @@
 
 package care.data4life.datadonation.donation.anonymization
 
-import care.data4life.datadonation.donation.anonymization.AnonymizationContract.Redactor.Companion.REDACTED
-import care.data4life.hl7.fhir.stu3.codesystem.QuestionnaireResponseStatus
-import care.data4life.hl7.fhir.stu3.model.DomainResource
-import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponse
-import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponseItem
-import care.data4life.hl7.fhir.stu3.model.QuestionnaireResponseItemAnswer
-import care.data4life.sdk.util.test.coroutine.runBlockingTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
 import kotlin.test.assertNull
-import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 class RedactorTest {
-    private val questionnaireResponseTemplate = QuestionnaireResponse(
-        status = QuestionnaireResponseStatus.COMPLETED
-    )
-    private val questionnaireResponseItemTemplate = QuestionnaireResponseItem(linkId = "does not matter")
-    private val questionnaireResponseItemAnswerTemplate = QuestionnaireResponseItemAnswer()
-
     @Test
     fun `It fulfils Redaction`() {
         val redaction: Any = Redactor
@@ -45,306 +30,28 @@ class RedactorTest {
     }
 
     @Test
-    fun `Given a redact is called, it will pass through non QuestionnaireResponses`() = runBlockingTest {
+    fun `Given a redact is called with null, it returns null`() {
         // Given
-        val resource = DomainResource()
+        val valueString = null
 
         // When
-        val result = Redactor.redact(resource)
+        val result = Redactor.redact(valueString)
 
         // Then
-        assertSame(
-            actual = resource,
-            expected = result
-        )
+        assertNull(result)
     }
 
     @Test
-    fun `Given a redact is called, it maps Items of a QuestionnaireResponses to null, if they are null`() = runBlockingTest {
-        // Given
-        val resource = questionnaireResponseTemplate.copy(
-            item = null
-        )
+    fun `Given a redact is called with a String, it returns REDACTED`() {
+        val valueString = "something"
 
         // When
-        val result = Redactor.redact(resource)
+        val result = Redactor.redact(valueString)
 
         // Then
-        assertTrue(result is QuestionnaireResponse)
-        assertNull(result.item)
-    }
-
-    @Test
-    fun `Given a redact is called, it maps Items of a QuestionnaireResponses, if they are not null or empty`() = runBlockingTest {
-        // Given
-        val resource = questionnaireResponseTemplate.copy(
-            item = listOf(questionnaireResponseItemTemplate)
-        )
-
-        // When
-        val result = Redactor.redact(resource)
-
-        // Then
-        assertTrue(result is QuestionnaireResponse)
-        assertNotNull(result.item)
-    }
-
-    @Test
-    fun `Given a redact is called, it maps Items of a QuestionnaireResponseItem to null, if they are null`() = runBlockingTest {
-        // Given
-        val resource = questionnaireResponseTemplate.copy(
-            item = listOf(
-                questionnaireResponseItemTemplate.copy(
-                    item = null
-                )
-            )
-        )
-
-        // When
-        val result = Redactor.redact(resource)
-
-        // Then
-        assertTrue(result is QuestionnaireResponse)
-        assertNull(result.item!!.first().item)
-    }
-
-    @Test
-    fun `Given a redact is called, it maps Items of a QuestionnaireResponseItem to null, if they are empty`() = runBlockingTest {
-        // Given
-        val resource = questionnaireResponseTemplate.copy(
-            item = listOf(
-                questionnaireResponseItemTemplate.copy(
-                    item = emptyList()
-                )
-            )
-        )
-
-        // When
-        val result = Redactor.redact(resource)
-
-        // Then
-        assertTrue(result is QuestionnaireResponse)
-        assertNull(result.item!!.first().item)
-    }
-
-    @Test
-    fun `Given a redact is called, it maps Items of a QuestionnaireResponseItem, if they are not null or empty`() = runBlockingTest {
-        // Given
-        val resource = questionnaireResponseTemplate.copy(
-            item = listOf(
-                questionnaireResponseItemTemplate.copy(
-                    item = listOf(questionnaireResponseItemTemplate)
-                )
-            )
-        )
-
-        // When
-        val result = Redactor.redact(resource)
-
-        // Then
-        assertTrue(result is QuestionnaireResponse)
-        assertNotNull(result.item!!.first().item)
-    }
-
-    @Test
-    fun `Given a Uses had been create with and execute is called it maps Items of a QuestionnaireResponseItem recursively`() = runBlockingTest {
-        // Given
-        val innerItem = questionnaireResponseItemTemplate.copy(
-            linkId = "potato",
-            item = null
-        )
-
-        val resource = questionnaireResponseTemplate.copy(
-            item = listOf(
-                questionnaireResponseItemTemplate.copy(
-                    item = listOf(
-                        questionnaireResponseItemTemplate.copy(
-                            item = listOf(innerItem)
-                        )
-                    )
-                )
-            )
-        )
-
-        // When
-        val result = Redactor.redact(resource)
-
-        // Then
-        assertTrue(result is QuestionnaireResponse)
         assertEquals(
-            actual = result.item!!.first().item!!.first().item!!.first(),
-            expected = innerItem
-        )
-    }
-
-    @Test
-    fun `Given a redact is called, it maps Answers of a QuestionnaireResponseItem to null, if they are null`() = runBlockingTest {
-        // Given
-        val resource = questionnaireResponseTemplate.copy(
-            item = listOf(
-                questionnaireResponseItemTemplate.copy(
-                    answer = null
-                )
-            )
-        )
-
-        // When
-        val result = Redactor.redact(resource)
-
-        // Then
-        assertTrue(result is QuestionnaireResponse)
-        assertNull(result.item!!.first().answer)
-    }
-
-    @Test
-    fun `Given a redact is called, it maps Answers of a QuestionnaireResponseItem to null, if they are empty`() = runBlockingTest {
-        // Given
-        val resource = questionnaireResponseTemplate.copy(
-            item = listOf(
-                questionnaireResponseItemTemplate.copy(
-                    answer = emptyList()
-                )
-            )
-        )
-
-        // When
-        val result = Redactor.redact(resource)
-
-        // Then
-        assertTrue(result is QuestionnaireResponse)
-        assertNull(result.item!!.first().answer)
-    }
-
-    @Test
-    fun `Given a redact is called, it maps Answers of a QuestionnaireResponseItem, if they are not empty or null`() = runBlockingTest {
-        // Given
-        val resource = questionnaireResponseTemplate.copy(
-            item = listOf(
-                questionnaireResponseItemTemplate.copy(
-                    answer = listOf(questionnaireResponseItemAnswerTemplate)
-                )
-            )
-        )
-
-        // When
-        val result = Redactor.redact(resource)
-
-        // Then
-        assertTrue(result is QuestionnaireResponse)
-        assertNotNull(result.item!!.first().answer)
-    }
-
-    @Test
-    fun `Given a redact is called, it maps Item of the QuestionnaireResponseItemAnswer to null, if they are null`() = runBlockingTest {
-        // Given
-        val resource = questionnaireResponseTemplate.copy(
-            item = listOf(
-                questionnaireResponseItemTemplate.copy(
-                    answer = listOf(questionnaireResponseItemAnswerTemplate)
-                )
-            )
-        )
-
-        // When
-        val result = Redactor.redact(resource)
-
-        // Then
-        assertTrue(result is QuestionnaireResponse)
-        assertNull(result.item!!.first().answer!!.first().item)
-    }
-
-    @Test
-    fun `Given a redact is called, it maps Item of the QuestionnaireResponseItemAnswer to null, if they are empty`() = runBlockingTest {
-        // Given
-        val resource = questionnaireResponseTemplate.copy(
-            item = listOf(
-                questionnaireResponseItemTemplate.copy(
-                    answer = listOf(
-                        questionnaireResponseItemAnswerTemplate.copy(
-                            item = emptyList()
-                        )
-                    )
-                )
-            )
-        )
-
-        // When
-        val result = Redactor.redact(resource)
-
-        // Then
-        assertTrue(result is QuestionnaireResponse)
-        assertNull(result.item!!.first().answer!!.first().item)
-    }
-
-    @Test
-    fun `Given a redact is called, it maps Item of the QuestionnaireResponseItemAnswer, if they are not null or empty`() = runBlockingTest {
-        // Given
-        val resource = questionnaireResponseTemplate.copy(
-            item = listOf(
-                questionnaireResponseItemTemplate.copy(
-                    answer = listOf(
-                        questionnaireResponseItemAnswerTemplate.copy(
-                            item = listOf(questionnaireResponseItemTemplate)
-                        )
-                    )
-                )
-            )
-        )
-
-        // When
-        val result = Redactor.redact(resource)
-
-        // Then
-        assertTrue(result is QuestionnaireResponse)
-        assertNotNull(result.item!!.first().answer!!.first().item)
-    }
-
-    @Test
-    fun `Given a redact is called, it maps ValueStrings of the QuestionnaireResponseItemAnswer to null, if they are null`() = runBlockingTest {
-        // Given
-        val resource = questionnaireResponseTemplate.copy(
-            item = listOf(
-                questionnaireResponseItemTemplate.copy(
-                    answer = listOf(
-                        questionnaireResponseItemAnswerTemplate.copy(
-                            valueString = null
-                        )
-                    )
-                )
-            )
-        )
-
-        // When
-        val result = Redactor.redact(resource)
-
-        // Then
-        assertTrue(result is QuestionnaireResponse)
-        assertNull(result.item!!.first().answer!!.first().valueString)
-    }
-
-    @Test
-    fun `Given a redact is called, it maps ValueStrings of the QuestionnaireResponseItemAnswer to REDACTED, if they are not null`() = runBlockingTest {
-        // Given
-        val resource = questionnaireResponseTemplate.copy(
-            item = listOf(
-                questionnaireResponseItemTemplate.copy(
-                    answer = listOf(
-                        questionnaireResponseItemAnswerTemplate.copy(
-                            valueString = "tomato"
-                        )
-                    )
-                )
-            )
-        )
-
-        // When
-        val result = Redactor.redact(resource)
-
-        // Then
-        assertTrue(result is QuestionnaireResponse)
-        assertEquals(
-            actual = result.item!!.first().answer!!.first().valueString,
-            expected = REDACTED
+            actual = result,
+            expected = "REDACTED"
         )
     }
 }

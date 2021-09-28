@@ -98,6 +98,58 @@ internal object DateTimeConcealer : AnonymizationContract.DateTimeConcealer {
         )
     }
 
+    private fun useStartOf(
+        timeBundle: Pair<LocalDateTime, TimeZone>,
+        function: BlurFunction
+    ): LocalDateTime {
+        val (dateTime, timeZone) = timeBundle
+
+        return when (function) {
+            BlurFunction.START_OF_WEEK -> dateTime.startOfWeek(timeZone)
+            BlurFunction.START_OF_MONTH -> dateTime.startOfMonth(timeZone)
+            else -> dateTime.startOfDay(timeZone)
+        }
+    }
+
+    private fun useEndOf(
+        timeBundle: Pair<LocalDateTime, TimeZone>,
+        function: BlurFunction
+    ): LocalDateTime {
+        val (dateTime, timeZone) = timeBundle
+
+        return when (function) {
+            BlurFunction.END_OF_WEEK -> dateTime.endOfWeek(timeZone)
+            BlurFunction.END_OF_MONTH -> dateTime.endOfMonth(timeZone)
+            else -> dateTime.endOfDay(timeZone)
+        }
+    }
+
+    private fun resolveRootBlurFunction(
+        timeBundle: Pair<LocalDateTime, TimeZone>,
+        function: BlurFunction
+    ): LocalDateTime {
+        return if (function.value.startsWith("start")) {
+            useStartOf(timeBundle, function)
+        } else {
+            useEndOf(timeBundle, function)
+        }
+    }
+
+    private fun blurToXsDateTime(
+        timeBundle: Pair<LocalDateTime, TimeZone>,
+        function: BlurFunction
+    ): XsDateTime {
+        val dateTime = resolveRootBlurFunction(timeBundle, function)
+
+        return XsDateTime(
+            date = XsDate(
+                year = dateTime.year,
+                month = dateTime.monthNumber,
+                day = dateTime.dayOfMonth
+            )
+        )
+    }
+
     // TODO: Remove with Kotlin 1.5.x
     private fun normalizeToUTC(
         fhirTimeZone: XsTimeZone,
@@ -162,9 +214,12 @@ internal object DateTimeConcealer : AnonymizationContract.DateTimeConcealer {
         }
     }
 
-    private fun resolveDateTime(fhirDateTime: XsDateTime, location: String): Pair<LocalDateTime, TimeZone>? {
+    private fun resolveDateTime(
+        fhirDateTime: XsDateTime,
+        targetTimeZone: TargetTimeZone
+    ): Pair<LocalDateTime, TimeZone>? {
         return try {
-            val targetZone = TimeZone.of(location)
+            val targetZone = TimeZone.of(targetTimeZone)
             val dateTime = convertFhirDate(fhirDateTime)
 
             return dateTime to targetZone
@@ -174,64 +229,12 @@ internal object DateTimeConcealer : AnonymizationContract.DateTimeConcealer {
         }
     }
 
-    private fun useStartOf(
-        timeBundle: Pair<LocalDateTime, TimeZone>,
-        rule: BlurFunction
-    ): LocalDateTime {
-        val (dateTime, timeZone) = timeBundle
-
-        return when (rule) {
-            BlurFunction.START_OF_WEEK -> dateTime.startOfWeek(timeZone)
-            BlurFunction.START_OF_MONTH -> dateTime.startOfMonth(timeZone)
-            else -> dateTime.startOfDay(timeZone)
-        }
-    }
-
-    private fun useEndOf(
-        timeBundle: Pair<LocalDateTime, TimeZone>,
-        rule: BlurFunction
-    ): LocalDateTime {
-        val (dateTime, timeZone) = timeBundle
-
-        return when (rule) {
-            BlurFunction.END_OF_WEEK -> dateTime.endOfWeek(timeZone)
-            BlurFunction.END_OF_MONTH -> dateTime.endOfMonth(timeZone)
-            else -> dateTime.endOfDay(timeZone)
-        }
-    }
-
-    private fun resolveRootBlurFunction(
-        timeBundle: Pair<LocalDateTime, TimeZone>,
-        rule: BlurFunction
-    ): LocalDateTime {
-        return if (rule.value.startsWith("start")) {
-            useStartOf(timeBundle, rule)
-        } else {
-            useEndOf(timeBundle, rule)
-        }
-    }
-
-    private fun blurToXsDateTime(
-        timeBundle: Pair<LocalDateTime, TimeZone>,
-        rule: BlurFunction
-    ): XsDateTime {
-        val dateTime = resolveRootBlurFunction(timeBundle, rule)
-
-        return XsDateTime(
-            date = XsDate(
-                year = dateTime.year,
-                month = dateTime.monthNumber,
-                day = dateTime.dayOfMonth
-            )
-        )
-    }
-
     override fun blur(
         fhirDateTime: XsDateTime,
-        location: String,
+        targetTimeZone: String,
         function: BlurFunction
     ): XsDateTime {
-        val timeBundle = resolveDateTime(fhirDateTime, location)
+        val timeBundle = resolveDateTime(fhirDateTime, targetTimeZone)
 
         return if (timeBundle is Pair<*, *>) {
             blurToXsDateTime(timeBundle, function)

@@ -37,7 +37,7 @@ enum class RevocationMode(val value: String) {
 }
 
 @Serializable
-internal data class ProgramResourceBlurItem(
+internal data class QuestionnaireResponseItemBlur(
     val linkId: String,
     @SerialName("fn")
     @Contextual
@@ -45,39 +45,48 @@ internal data class ProgramResourceBlurItem(
 )
 
 @Serializable
-internal data class ProgramResourceBlur(
-    val location: String? = null,
+internal data class QuestionnaireResponseBlur(
+    @SerialName("location")
+    val targetTimeZone: String? = null,
     @Contextual
-    val authored: BlurFunction? = null,
-    val items: List<ProgramResourceBlurItem>
+    @SerialName("authored")
+    val questionnaireResponseAuthored: BlurFunction? = null,
+    @SerialName("items")
+    val questionnaireResponseItemBlurs: List<QuestionnaireResponseItemBlur>
 )
 
 @Serializable
-internal data class ProgramResource(
+internal data class FhirResourceConfiguration(
     val url: String,
     val versions: List<String>? = null,
-    val blur: ProgramResourceBlur? = null
+    @SerialName("blur")
+    val fhirBlur: QuestionnaireResponseBlur? = null
 )
 
 @Serializable
-internal data class ProgramAnonymizationBlur(
-    val location: String,
+internal data class ProgramBlur(
+    @SerialName("location")
+    val targetTimeZone: String,
     @Contextual
-    val authored: BlurFunction? = null,
+    @SerialName("authored")
+    val questionnaireResponseAuthored: BlurFunction? = null,
     @Contextual
     val researchSubject: BlurFunction? = null
 )
 
 @Serializable
-internal data class ProgramAnonymization(
-    val blur: ProgramAnonymizationBlur? = null
+internal data class ProgramConfiguration(
+    @SerialName("blur")
+    val programBlur: ProgramBlur? = null
 )
 
 @Serializable
 internal data class ProgramDonationConfiguration(
     val consentKey: String,
-    val resources: List<ProgramResource>,
-    val anonymization: ProgramAnonymization? = null,
+    @SerialName("resources")
+    val fhirResourceConfigurations: List<FhirResourceConfiguration>,
+    @SerialName("anonymization")
+    val programConfiguration: ProgramConfiguration? = null,
     val triggerList: List<String>? = null,
     val delay: Double,
     val studyID: String,

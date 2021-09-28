@@ -17,16 +17,21 @@
 package care.data4life.datadonation.mock.stub.donation.anonymization
 
 import care.data4life.datadonation.donation.anonymization.AnonymizationContract
+import care.data4life.datadonation.donation.anonymization.TargetTimeZone
 import care.data4life.datadonation.donation.program.model.BlurFunction
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 import care.data4life.hl7.fhir.common.datetime.XsDateTime
 
 internal class DateTimeConcealerStub : AnonymizationContract.DateTimeConcealer, MockContract.Stub {
-    var whenBlur: ((XsDateTime, String, BlurFunction) -> XsDateTime)? = null
+    var whenBlur: ((XsDateTime, TargetTimeZone, BlurFunction) -> XsDateTime)? = null
 
-    override fun blur(fhirDateTime: XsDateTime, location: String, function: BlurFunction): XsDateTime {
-        return whenBlur?.invoke(fhirDateTime, location, function) ?: throw MockException()
+    override fun blur(
+        fhirDateTime: XsDateTime,
+        targetTimeZone: TargetTimeZone,
+        function: BlurFunction
+    ): XsDateTime {
+        return whenBlur?.invoke(fhirDateTime, targetTimeZone, function) ?: throw MockException()
     }
 
     override fun clear() {
