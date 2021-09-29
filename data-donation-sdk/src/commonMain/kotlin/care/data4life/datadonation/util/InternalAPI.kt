@@ -14,18 +14,9 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.consent.userconsent.model
+package care.data4life.datadonation.util
 
-import care.data4life.datadonation.ConsentDataContract
-import care.data4life.datadonation.util.InternalAPI
-import kotlinx.serialization.Serializable
-
-@Serializable
-@InternalAPI("UserConsent is consider as unstable for external usage and might be restricted to internal usage in the future. Please consider to use its interface instead.")
-data class UserConsent(
-    override val consentDocumentKey: String,
-    override val consentDocumentVersion: String,
-    override val accountId: String, // UUID
-    override val event: ConsentDataContract.ConsentEvent,
-    override val createdAt: String = "" /* Timestamp */
-) : ConsentDataContract.UserConsent
+@Repeatable
+@Retention(AnnotationRetention.SOURCE)
+@MustBeDocumented
+annotation class InternalAPI(val message: String)

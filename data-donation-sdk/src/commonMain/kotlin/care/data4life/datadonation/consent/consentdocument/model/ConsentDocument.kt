@@ -17,11 +17,13 @@
 package care.data4life.datadonation.consent.consentdocument.model
 
 import care.data4life.datadonation.ConsentDataContract
+import care.data4life.datadonation.util.InternalAPI
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal data class ConsentDocument(
+@InternalAPI("ConsentDocument is consider as unstable for external usage and might be restricted to internal usage in the future. Please consider to use its interface instead.")
+data class ConsentDocument(
     override val key: String,
     override val version: String,
     override val processor: String,

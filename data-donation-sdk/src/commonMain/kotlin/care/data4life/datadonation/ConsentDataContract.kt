@@ -24,6 +24,7 @@ interface ConsentDataContract {
     enum class ConsentEvent {
         @SerialName("consent")
         Consent,
+
         @SerialName("revoke")
         Revoke
     }
