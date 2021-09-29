@@ -24,7 +24,7 @@ import care.data4life.sdk.util.test.annotation.RunWithRobolectricTestRunner
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
-@AndroidOnly // TODO: Remove once iOS s ready
+@AndroidOnly // TODO: Remove once iOS is ready
 @RunWithRobolectricTestRunner(RobolectricTestRunner::class)
 class KeyFactoryTest {
     @Test

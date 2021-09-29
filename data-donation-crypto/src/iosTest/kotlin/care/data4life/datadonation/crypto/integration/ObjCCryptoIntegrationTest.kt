@@ -20,13 +20,12 @@ import care.data4life.sdk.util.objc.NSErrorFactory
 import kotlinx.cinterop.*
 import objc.datadonation.crypto.*
 import platform.Foundation.NSError
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
-@Ignore // Test are broken
 class ObjCCryptoIntegrationTest {
+
     private val keychainStore = DataDonationCryptoObjCFactory.dataDonationKeychainStore()
     private val keyIdentifier = "kmp.test.donor.identity"
 

@@ -42,14 +42,14 @@ internal class GCSignatureKeyPair constructor(
     }
 
     private fun prepareSignature(): Signature {
-        return Signature.getInstance(algorithm.transformation).also {
-            it.setParameter(algorithm.spec)
+        return Signature.getInstance(algorithm.transformation).also { signature ->
+            signature.setParameter(algorithm.spec)
         }
     }
 
     fun toSigningSignature(): Signature {
-        return prepareSignature().also {
-            it.initSign(
+        return prepareSignature().also { signature ->
+            signature.initSign(
                 privateKey.value as PrivateKey,
                 random
             )
@@ -57,8 +57,8 @@ internal class GCSignatureKeyPair constructor(
     }
 
     fun toVerificationSignature(): Signature {
-        return prepareSignature().also {
-            it.initVerify(publicKey.value as PublicKey)
+        return prepareSignature().also { signature ->
+            signature.initVerify(publicKey.value as PublicKey)
         }
     }
 
