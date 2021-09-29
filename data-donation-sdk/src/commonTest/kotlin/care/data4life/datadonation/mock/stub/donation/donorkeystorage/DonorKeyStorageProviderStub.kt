@@ -19,40 +19,35 @@ package care.data4life.datadonation.mock.stub.donation.donorkeystorage
 import care.data4life.datadonation.Annotations
 import care.data4life.datadonation.DataDonationSDK
 import care.data4life.datadonation.DonationDataContract
-import care.data4life.datadonation.EncodedDonorIdentity
 import care.data4life.datadonation.RecordId
+import care.data4life.datadonation.ResultPipe
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 
 class DonorKeyStorageProviderStub : DataDonationSDK.DonorKeyStorageProvider, MockContract.Stub {
-    var whenLoad: ((Annotations, (RecordId, EncodedDonorIdentity) -> Unit, () -> Unit, (Exception) -> Unit) -> Unit)? = null
-    var whenSave: ((DonationDataContract.DonorRecord, () -> Unit, (Exception) -> Unit) -> Unit)? = null
-    var whenDelete: ((RecordId, () -> Unit, (Exception) -> Unit) -> Unit)? = null
+    var whenLoad: ((Annotations, ResultPipe<DataDonationSDK.DonorKeyRecord?, Throwable>) -> Unit)? = null
+    var whenSave: ((DonationDataContract.DonorRecord, ResultPipe<Unit?, Throwable>) -> Unit)? = null
+    var whenDelete: ((RecordId, ResultPipe<Unit?, Throwable>) -> Unit)? = null
 
     override fun load(
         annotations: Annotations,
-        onSuccess: (recordId: RecordId, data: EncodedDonorIdentity) -> Unit,
-        onNotFound: () -> Unit,
-        onError: (error: Exception) -> Unit
+        pipe: ResultPipe<DataDonationSDK.DonorKeyRecord?, Throwable>
     ) {
-        return whenLoad?.invoke(
-            annotations,
-            onSuccess,
-            onNotFound,
-            onError
-        ) ?: throw MockException()
+        return whenLoad?.invoke(annotations, pipe) ?: throw MockException()
     }
 
     override fun save(
         donorRecord: DonationDataContract.DonorRecord,
-        onSuccess: () -> Unit,
-        onError: (error: Exception) -> Unit
+        pipe: ResultPipe<Unit?, Throwable>
     ) {
-        return whenSave?.invoke(donorRecord, onSuccess, onError) ?: throw MockException()
+        return whenSave?.invoke(donorRecord, pipe) ?: throw MockException()
     }
 
-    override fun delete(recordId: RecordId, onSuccess: () -> Unit, onError: (error: Exception) -> Unit) {
-        return whenDelete?.invoke(recordId, onSuccess, onError) ?: throw MockException()
+    override fun delete(
+        recordId: RecordId,
+        pipe: ResultPipe<Unit?, Throwable>
+    ) {
+        return whenDelete?.invoke(recordId, pipe) ?: throw MockException()
     }
 
     override fun clear() {

@@ -27,7 +27,7 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-@AndroidOnly // TODO: Remove once iOS s ready
+@AndroidOnly // TODO: Remove once iOS is ready
 @RunWithRobolectricTestRunner(RobolectricTestRunner::class)
 class CryptoServiceTest {
     @Test

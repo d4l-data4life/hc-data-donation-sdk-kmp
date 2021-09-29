@@ -152,7 +152,7 @@ class CryptoVerificationTest {
     }
 
     @Test
-    fun `Given verify is called with a Message, Signature, PublicKey and 0 as Salt, it returns false if Signature does not match`() {
+    fun `Given verify is called with a Message, Signature, PublicKey and 32 as Salt, it returns false if Signature does not match`() {
         // Given
         val signature = ResourceLoader.loader.load("/fixture/crypto/ExampleInvalidSignature.txt")
         val key = ResourceLoader.loader.load("/fixture/crypto/DonationServicePublicKey.txt")

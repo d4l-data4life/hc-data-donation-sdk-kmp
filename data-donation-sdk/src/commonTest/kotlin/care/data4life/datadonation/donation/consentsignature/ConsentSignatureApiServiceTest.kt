@@ -56,89 +56,137 @@ class ConsentSignatureApiServiceTest {
     }
 
     @Test
-    fun `Given enableSigning was called with a AccessToken, a ConsentDocumentKey and a Message it delegates HttpRequestErrors to its ErrorHandler`() = runBlockingTest {
-        // Given
-        val requestTemplate = RequestBuilderSpy.Factory()
+    fun `Given enableSigning was called with a AccessToken, a ConsentDocumentKey and a Message it delegates HttpRequestErrors to its ErrorHandler`() =
+        runBlockingTest {
+            // Given
+            val requestTemplate = RequestBuilderSpy.Factory()
 
-        val accessToken = "potato"
-        val consentDocumentKey = "custom-consent-key"
-        val signingRequest = "soup"
+            val accessToken = "potato"
+            val consentDocumentKey = "custom-consent-key"
+            val signingRequest = "soup"
 
-        val error = HttpRuntimeError(HttpStatusCode.TooManyRequests)
-        val outgoingError = ConsentSignatureError.SigningIsAlreadyDisabled()
-        var capturedError: HttpRuntimeError? = null
+            val error = HttpRuntimeError(HttpStatusCode.TooManyRequests)
+            val outgoingError = ConsentSignatureError.SigningIsAlreadyDisabled()
+            var capturedError: HttpRuntimeError? = null
 
-        val client = HttpMockClientFactory.createErrorMockClient(error)
+            val client = HttpMockClientFactory.createErrorMockClient(error)
 
-        val errorHandler = ConsentSignatureErrorHandlerStub()
+            val errorHandler = ConsentSignatureErrorHandlerStub()
 
-        errorHandler.whenHandleEnableSigning = { delegatedError ->
-            capturedError = delegatedError
-            outgoingError
-        }
+            errorHandler.whenHandleEnableSigning = { delegatedError ->
+                capturedError = delegatedError
+                outgoingError
+            }
 
-        requestTemplate.onPrepare = { _, _ ->
-            HttpStatement(
-                dummyKtor,
-                client
+            requestTemplate.onPrepare = { _, _ ->
+                HttpStatement(
+                    dummyKtor,
+                    client
+                )
+            }
+
+            // Then
+            val result = assertFailsWith<ConsentSignatureError.SigningIsAlreadyDisabled> {
+                // When
+                ConsentSignatureApiService(
+                    requestTemplate,
+                    errorHandler,
+                ).enableSigning(
+                    accessToken = accessToken,
+                    consentDocumentKey = consentDocumentKey,
+                    signingRequest = signingRequest
+                )
+            }
+
+            // Then
+            assertSame(
+                actual = capturedError,
+                expected = error
+            )
+            assertSame<Any>(
+                actual = result,
+                expected = outgoingError
             )
         }
-
-        // Then
-        val result = assertFailsWith<ConsentSignatureError.SigningIsAlreadyDisabled> {
-            // When
-            ConsentSignatureApiService(
-                requestTemplate,
-                errorHandler,
-            ).enableSigning(
-                accessToken = accessToken,
-                consentDocumentKey = consentDocumentKey,
-                signingRequest = signingRequest
-            )
-        }
-
-        // Then
-        assertSame(
-            actual = capturedError,
-            expected = error
-        )
-        assertSame<Any>(
-            actual = result,
-            expected = outgoingError
-        )
-    }
 
     @Test
-    fun `Given enableSigning was called with a AccessToken, a ConsentDocumentKey and a Message, it fails due to unexpected response`() = runBlockingTest {
-        // Given
-        val requestTemplate = RequestBuilderSpy.Factory()
-        val client = HttpMockClientFactory.createMockClientWithResponse { scope, _ ->
-            return@createMockClientWithResponse scope.respond(
-                content = "something"
+    fun `Given enableSigning was called with a AccessToken, a ConsentDocumentKey and a Message, it fails due to unexpected response`() =
+        runBlockingTest {
+            // Given
+            val requestTemplate = RequestBuilderSpy.Factory()
+            val client = HttpMockClientFactory.createMockClientWithResponse { scope, _ ->
+                return@createMockClientWithResponse scope.respond(
+                    content = "something"
+                )
+            }
+
+            val clock = ClockStub()
+
+            val accessToken = "potato"
+            val consentDocumentKey = "custom-consent-key"
+            val signingRequest = "soup"
+
+            val expectedTime = Instant.DISTANT_PAST
+
+            clock.whenNow = { expectedTime }
+
+            requestTemplate.onPrepare = { _, _ ->
+                HttpStatement(
+                    dummyKtor,
+                    client
+                )
+            }
+
+            // Then
+            val error = assertFailsWith<CoreRuntimeError.ResponseTransformFailure> {
+                // When
+                ConsentSignatureApiService(
+                    requestTemplate,
+                    ConsentSignatureErrorHandlerStub(),
+                ).enableSigning(
+                    accessToken = accessToken,
+                    consentDocumentKey = consentDocumentKey,
+                    signingRequest = signingRequest
+                )
+            }
+
+            assertEquals(
+                actual = error.message,
+                expected = "Unexpected Response"
             )
         }
 
-        val clock = ClockStub()
+    @Test
+    fun `Given enableSigning was called with a AccessToken, a ConsentDocumentKey and a Message, it calls the API and returns a ConsentSignature`() =
+        runBlockingTest {
+            // Given
+            val requestTemplate = RequestBuilderSpy.Factory()
+            val accessToken = "potato"
+            val consentDocumentKey = "custom-consent-key"
+            val signingRequest = "soup"
 
-        val accessToken = "potato"
-        val consentDocumentKey = "custom-consent-key"
-        val signingRequest = "soup"
+            val response = ConsentSignatureFixture.sampleConsentSignature
 
-        val expectedTime = Instant.DISTANT_PAST
+            var capturedMethod: Networking.Method? = null
+            var capturedPath: Path? = null
 
-        clock.whenNow = { expectedTime }
+            val client = HttpMockClientFactory.createMockClientWithResponse(listOf(response)) { scope, _ ->
+                return@createMockClientWithResponse scope.respondOk(
+                    content = ""
+                )
+            }
 
-        requestTemplate.onPrepare = { _, _ ->
-            HttpStatement(
-                dummyKtor,
-                client
-            )
-        }
+            requestTemplate.onPrepare = { method, path ->
+                capturedMethod = method
+                capturedPath = path
+                HttpStatement(
+                    dummyKtor,
+                    client
+                )
+            }
 
-        // Then
-        val error = assertFailsWith<CoreRuntimeError.ResponseTransformFailure> {
             // When
-            ConsentSignatureApiService(
+            val result = ConsentSignatureApiService(
                 requestTemplate,
                 ConsentSignatureErrorHandlerStub(),
             ).enableSigning(
@@ -146,176 +194,183 @@ class ConsentSignatureApiServiceTest {
                 consentDocumentKey = consentDocumentKey,
                 signingRequest = signingRequest
             )
-        }
 
-        assertEquals(
-            actual = error.message,
-            expected = "Unexpected Response"
-        )
-    }
+            // Then
+            assertSame(
+                actual = result,
+                expected = response
+            )
+
+            assertEquals(
+                actual = capturedMethod,
+                expected = Networking.Method.POST
+            )
+            assertEquals(
+                actual = capturedPath,
+                expected = listOf("consent", "api", "v1", "userConsents").toMutableList().also {
+                    it.add(consentDocumentKey)
+                    it.add("signatures")
+                }
+            )
+
+            assertEquals(
+                actual = requestTemplate.createdInstances,
+                expected = 1
+            )
+            assertEquals(
+                actual = requestTemplate.lastInstance!!.delegatedAccessToken,
+                expected = accessToken
+            )
+            assertTrue(requestTemplate.lastInstance!!.delegatedJsonFlag)
+            assertEquals(
+                actual = requestTemplate.lastInstance!!.delegatedBody,
+                expected = signingRequest
+            )
+        }
 
     @Test
-    fun `Given enableSigning was called with a AccessToken, a ConsentDocumentKey and a Message, it calls the API and returns a ConsentSignature`() = runBlockingTest {
-        // Given
-        val requestTemplate = RequestBuilderSpy.Factory()
-        val accessToken = "potato"
-        val consentDocumentKey = "custom-consent-key"
-        val signingRequest = "soup"
-
-        val response = ConsentSignatureFixture.sampleConsentSignature
-
-        var capturedMethod: Networking.Method? = null
-        var capturedPath: Path? = null
-
-        val client = HttpMockClientFactory.createMockClientWithResponse(listOf(response)) { scope, _ ->
-            return@createMockClientWithResponse scope.respondOk(
-                content = ""
-            )
-        }
-
-        requestTemplate.onPrepare = { method, path ->
-            capturedMethod = method
-            capturedPath = path
-            HttpStatement(
-                dummyKtor,
-                client
-            )
-        }
-
-        // When
-        val result = ConsentSignatureApiService(
-            requestTemplate,
-            ConsentSignatureErrorHandlerStub(),
-        ).enableSigning(
-            accessToken = accessToken,
-            consentDocumentKey = consentDocumentKey,
-            signingRequest = signingRequest
-        )
-
-        // Then
-        assertSame(
-            actual = result,
-            expected = response
-        )
-
-        assertEquals(
-            actual = capturedMethod,
-            expected = Networking.Method.POST
-        )
-        assertEquals(
-            actual = capturedPath,
-            expected = listOf("consent", "api", "v1", "userConsents").toMutableList().also {
-                it.add(consentDocumentKey)
-                it.add("signatures")
-            }
-        )
-
-        assertEquals(
-            actual = requestTemplate.createdInstances,
-            expected = 1
-        )
-        assertEquals(
-            actual = requestTemplate.lastInstance!!.delegatedAccessToken,
-            expected = accessToken
-        )
-        assertTrue(requestTemplate.lastInstance!!.delegatedJsonFlag)
-        assertEquals(
-            actual = requestTemplate.lastInstance!!.delegatedBody,
-            expected = signingRequest
-        )
-    }
-
-    @Test
-    fun `Given sign was called with a AccessToken, a ConsentDocumentKey and a Message it delegates HttpRequestErrors to its ErrorHandler`() = runBlockingTest {
-        // Given
-        val requestTemplate = RequestBuilderSpy.Factory()
-        val accessToken = "potato"
-        val consentDocumentKey = "custom-consent-key"
-        val signingRequest = ConsentSigningRequest(
-            consentDocumentKey = consentDocumentKey,
-            payload = "soup",
-            signatureType = DonationContract.ConsentSignatureType.NORMAL_USE
-        )
-
-        val error = HttpRuntimeError(HttpStatusCode.TooManyRequests)
-        val outgoingError = ConsentSignatureError.SigningIsAlreadyDisabled()
-        var capturedError: HttpRuntimeError? = null
-
-        val client = HttpMockClientFactory.createErrorMockClient(error)
-
-        val errorHandler = ConsentSignatureErrorHandlerStub()
-
-        errorHandler.whenHandleSigning = { delegatedError ->
-            capturedError = delegatedError
-            outgoingError
-        }
-
-        requestTemplate.onPrepare = { _, _ ->
-            HttpStatement(
-                dummyKtor,
-                client
-            )
-        }
-
-        // Then
-        val result = assertFailsWith<ConsentSignatureError.SigningIsAlreadyDisabled> {
-            // When
-            ConsentSignatureApiService(
-                requestTemplate,
-                errorHandler,
-            ).sign(
-                accessToken = accessToken,
+    fun `Given sign was called with a AccessToken, a ConsentDocumentKey and a Message it delegates HttpRequestErrors to its ErrorHandler`() =
+        runBlockingTest {
+            // Given
+            val requestTemplate = RequestBuilderSpy.Factory()
+            val accessToken = "potato"
+            val consentDocumentKey = "custom-consent-key"
+            val signingRequest = ConsentSigningRequest(
                 consentDocumentKey = consentDocumentKey,
-                signingRequest = signingRequest
+                payload = "soup",
+                signatureType = DonationContract.ConsentSignatureType.NORMAL_USE
+            )
+
+            val error = HttpRuntimeError(HttpStatusCode.TooManyRequests)
+            val outgoingError = ConsentSignatureError.SigningIsAlreadyDisabled()
+            var capturedError: HttpRuntimeError? = null
+
+            val client = HttpMockClientFactory.createErrorMockClient(error)
+
+            val errorHandler = ConsentSignatureErrorHandlerStub()
+
+            errorHandler.whenHandleSigning = { delegatedError ->
+                capturedError = delegatedError
+                outgoingError
+            }
+
+            requestTemplate.onPrepare = { _, _ ->
+                HttpStatement(
+                    dummyKtor,
+                    client
+                )
+            }
+
+            // Then
+            val result = assertFailsWith<ConsentSignatureError.SigningIsAlreadyDisabled> {
+                // When
+                ConsentSignatureApiService(
+                    requestTemplate,
+                    errorHandler,
+                ).sign(
+                    accessToken = accessToken,
+                    consentDocumentKey = consentDocumentKey,
+                    signingRequest = signingRequest
+                )
+            }
+
+            // Then
+            assertSame(
+                actual = capturedError,
+                expected = error
+            )
+            assertSame<Any>(
+                actual = result,
+                expected = outgoingError
             )
         }
-
-        // Then
-        assertSame(
-            actual = capturedError,
-            expected = error
-        )
-        assertSame<Any>(
-            actual = result,
-            expected = outgoingError
-        )
-    }
 
     @Test
-    fun `Given sign was called with a AccessToken, a ConsentDocumentKey and a Message, it fails due to unexpected response`() = runBlockingTest {
-        // Given
-        val requestTemplate = RequestBuilderSpy.Factory()
-        val client = HttpMockClientFactory.createMockClientWithResponse { scope, _ ->
-            return@createMockClientWithResponse scope.respond(
-                content = "something"
+    fun `Given sign was called with a AccessToken, a ConsentDocumentKey and a Message, it fails due to unexpected response`() =
+        runBlockingTest {
+            // Given
+            val requestTemplate = RequestBuilderSpy.Factory()
+            val client = HttpMockClientFactory.createMockClientWithResponse { scope, _ ->
+                return@createMockClientWithResponse scope.respond(
+                    content = "something"
+                )
+            }
+
+            val clock = ClockStub()
+
+            val accessToken = "potato"
+            val consentDocumentKey = "custom-consent-key"
+            val signingRequest = ConsentSigningRequest(
+                consentDocumentKey = consentDocumentKey,
+                payload = "soup",
+                signatureType = DonationContract.ConsentSignatureType.NORMAL_USE
+            )
+
+            val expectedTime = Instant.DISTANT_PAST
+
+            clock.whenNow = { expectedTime }
+
+            requestTemplate.onPrepare = { _, _ ->
+                HttpStatement(
+                    dummyKtor,
+                    client
+                )
+            }
+
+            // Then
+            val error = assertFailsWith<CoreRuntimeError.ResponseTransformFailure> {
+                // When
+                ConsentSignatureApiService(
+                    requestTemplate,
+                    ConsentSignatureErrorHandlerStub(),
+                ).sign(
+                    accessToken = accessToken,
+                    consentDocumentKey = consentDocumentKey,
+                    signingRequest = signingRequest
+                )
+            }
+
+            assertEquals(
+                actual = error.message,
+                expected = "Unexpected Response"
             )
         }
 
-        val clock = ClockStub()
-
-        val accessToken = "potato"
-        val consentDocumentKey = "custom-consent-key"
-        val signingRequest = ConsentSigningRequest(
-            consentDocumentKey = consentDocumentKey,
-            payload = "soup",
-            signatureType = DonationContract.ConsentSignatureType.NORMAL_USE
-        )
-
-        val expectedTime = Instant.DISTANT_PAST
-
-        clock.whenNow = { expectedTime }
-
-        requestTemplate.onPrepare = { _, _ ->
-            HttpStatement(
-                dummyKtor,
-                client
+    @Test
+    fun `Given sign was called with a AccessToken, a ConsentDocumentKey and a Message, it calls the API and returns a ConsentSignature`() =
+        runBlockingTest {
+            // Given
+            val requestTemplate = RequestBuilderSpy.Factory()
+            val accessToken = "potato"
+            val consentDocumentKey = "custom-consent-key"
+            val signingRequest = ConsentSigningRequest(
+                consentDocumentKey = consentDocumentKey,
+                payload = "soup",
+                signatureType = DonationContract.ConsentSignatureType.NORMAL_USE
             )
-        }
 
-        // Then
-        val error = assertFailsWith<CoreRuntimeError.ResponseTransformFailure> {
+            val response = ConsentSignatureFixture.sampleConsentSignature
+
+            var capturedMethod: Networking.Method? = null
+            var capturedPath: Path? = null
+
+            val client = HttpMockClientFactory.createMockClientWithResponse(listOf(response)) { scope, _ ->
+                return@createMockClientWithResponse scope.respondOk(
+                    content = ""
+                )
+            }
+
+            requestTemplate.onPrepare = { method, path ->
+                capturedMethod = method
+                capturedPath = path
+                HttpStatement(
+                    dummyKtor,
+                    client
+                )
+            }
+
             // When
-            ConsentSignatureApiService(
+            val result = ConsentSignatureApiService(
                 requestTemplate,
                 ConsentSignatureErrorHandlerStub(),
             ).sign(
@@ -323,225 +378,178 @@ class ConsentSignatureApiServiceTest {
                 consentDocumentKey = consentDocumentKey,
                 signingRequest = signingRequest
             )
-        }
 
-        assertEquals(
-            actual = error.message,
-            expected = "Unexpected Response"
-        )
-    }
+            // Then
+            assertSame(
+                actual = result,
+                expected = response
+            )
+
+            assertEquals(
+                actual = capturedMethod,
+                expected = Networking.Method.PUT
+            )
+            assertEquals(
+                actual = capturedPath,
+                expected = listOf("consent", "api", "v1", "userConsents").toMutableList().also {
+                    it.add(consentDocumentKey)
+                    it.add("signatures")
+                }
+            )
+
+            assertEquals(
+                actual = requestTemplate.createdInstances,
+                expected = 1
+            )
+            assertEquals(
+                actual = requestTemplate.lastInstance!!.delegatedAccessToken,
+                expected = accessToken
+            )
+            assertTrue(requestTemplate.lastInstance!!.delegatedJsonFlag)
+            assertEquals(
+                actual = requestTemplate.lastInstance!!.delegatedBody,
+                expected = signingRequest
+            )
+        }
 
     @Test
-    fun `Given sign was called with a AccessToken, a ConsentDocumentKey and a Message, it calls the API and returns a ConsentSignature`() = runBlockingTest {
-        // Given
-        val requestTemplate = RequestBuilderSpy.Factory()
-        val accessToken = "potato"
-        val consentDocumentKey = "custom-consent-key"
-        val signingRequest = ConsentSigningRequest(
-            consentDocumentKey = consentDocumentKey,
-            payload = "soup",
-            signatureType = DonationContract.ConsentSignatureType.NORMAL_USE
-        )
-
-        val response = ConsentSignatureFixture.sampleConsentSignature
-
-        var capturedMethod: Networking.Method? = null
-        var capturedPath: Path? = null
-
-        val client = HttpMockClientFactory.createMockClientWithResponse(listOf(response)) { scope, _ ->
-            return@createMockClientWithResponse scope.respondOk(
-                content = ""
+    fun `Given disableSigning was called with a AccessToken, a ConsentDocumentKey and a SignedDeletionMessage it delegates HttpRequestErrors to its ErrorHandler`() =
+        runBlockingTest {
+            // Given
+            val requestTemplate = RequestBuilderSpy.Factory()
+            val accessToken = "potato"
+            val consentDocumentKey = "custom-consent-key"
+            val signingRequest = SignedDeletionMessage(
+                message = DeletionMessage(
+                    "soup",
+                    DonationContract.ConsentSignatureType.REVOKE_ONCE,
+                    "1981",
+                    "abc"
+                ),
+                signature = "super-secret"
             )
-        }
 
-        requestTemplate.onPrepare = { method, path ->
-            capturedMethod = method
-            capturedPath = path
-            HttpStatement(
-                dummyKtor,
-                client
-            )
-        }
+            val error = HttpRuntimeError(HttpStatusCode.TooManyRequests)
+            val outgoingError = ConsentSignatureError.SigningIsAlreadyDisabled()
+            var capturedError: HttpRuntimeError? = null
 
-        // When
-        val result = ConsentSignatureApiService(
-            requestTemplate,
-            ConsentSignatureErrorHandlerStub(),
-        ).sign(
-            accessToken = accessToken,
-            consentDocumentKey = consentDocumentKey,
-            signingRequest = signingRequest
-        )
+            val client = HttpMockClientFactory.createErrorMockClient(error)
 
-        // Then
-        assertSame(
-            actual = result,
-            expected = response
-        )
+            val errorHandler = ConsentSignatureErrorHandlerStub()
 
-        assertEquals(
-            actual = capturedMethod,
-            expected = Networking.Method.PUT
-        )
-        assertEquals(
-            actual = capturedPath,
-            expected = listOf("consent", "api", "v1", "userConsents").toMutableList().also {
-                it.add(consentDocumentKey)
-                it.add("signatures")
+            errorHandler.whenHandleDisableSigning = { delegatedError ->
+                capturedError = delegatedError
+                outgoingError
             }
-        )
 
-        assertEquals(
-            actual = requestTemplate.createdInstances,
-            expected = 1
-        )
-        assertEquals(
-            actual = requestTemplate.lastInstance!!.delegatedAccessToken,
-            expected = accessToken
-        )
-        assertTrue(requestTemplate.lastInstance!!.delegatedJsonFlag)
-        assertEquals(
-            actual = requestTemplate.lastInstance!!.delegatedBody,
-            expected = signingRequest
-        )
-    }
+            requestTemplate.onPrepare = { _, _ ->
+                HttpStatement(
+                    dummyKtor,
+                    client
+                )
+            }
 
-    @Test
-    fun `Given disableSigning was called with a AccessToken, a ConsentDocumentKey and a SignedDeletionMessage it delegates HttpRequestErrors to its ErrorHandler`() = runBlockingTest {
-        // Given
-        val requestTemplate = RequestBuilderSpy.Factory()
-        val accessToken = "potato"
-        val consentDocumentKey = "custom-consent-key"
-        val signingRequest = SignedDeletionMessage(
-            message = DeletionMessage(
-                "soup",
-                DonationContract.ConsentSignatureType.REVOKE_ONCE,
-                "1981",
-                "abc"
-            ),
-            signature = "super-secret"
-        )
+            // Then
+            val result = assertFailsWith<ConsentSignatureError.SigningIsAlreadyDisabled> {
+                // When
+                ConsentSignatureApiService(
+                    requestTemplate,
+                    errorHandler,
+                ).disableSigning(
+                    accessToken = accessToken,
+                    consentDocumentKey = consentDocumentKey,
+                    deletionRequest = signingRequest
+                )
+            }
 
-        val error = HttpRuntimeError(HttpStatusCode.TooManyRequests)
-        val outgoingError = ConsentSignatureError.SigningIsAlreadyDisabled()
-        var capturedError: HttpRuntimeError? = null
-
-        val client = HttpMockClientFactory.createErrorMockClient(error)
-
-        val errorHandler = ConsentSignatureErrorHandlerStub()
-
-        errorHandler.whenHandleDisableSigning = { delegatedError ->
-            capturedError = delegatedError
-            outgoingError
-        }
-
-        requestTemplate.onPrepare = { _, _ ->
-            HttpStatement(
-                dummyKtor,
-                client
+            // Then
+            assertSame(
+                actual = capturedError,
+                expected = error
+            )
+            assertSame<Any>(
+                actual = result,
+                expected = outgoingError
             )
         }
 
-        // Then
-        val result = assertFailsWith<ConsentSignatureError.SigningIsAlreadyDisabled> {
+    @Test
+    fun `Given disableSigning was called with a AccessToken, a ConsentDocumentKey and a SignedDeletionMessage, it calls the API and just runs`() =
+        runBlockingTest {
+            // Given
+            val requestTemplate = RequestBuilderSpy.Factory()
+
+            val accessToken = "potato"
+            val consentDocumentKey = "custom-consent-key"
+            val signingRequest = SignedDeletionMessage(
+                message = DeletionMessage(
+                    "soup",
+                    DonationContract.ConsentSignatureType.REVOKE_ONCE,
+                    "1981",
+                    "abc"
+                ),
+                signature = "super-secret"
+            )
+
+            var capturedMethod: Networking.Method? = null
+            var capturedPath: Path? = null
+
+            val client = HttpMockClientFactory.createMockClientWithResponse { scope, _ ->
+                return@createMockClientWithResponse scope.respond(
+                    content = "",
+                    status = HttpStatusCode.NoContent
+                )
+            }
+
+            requestTemplate.onPrepare = { method, path ->
+                capturedMethod = method
+                capturedPath = path
+                HttpStatement(
+                    dummyKtor,
+                    client
+                )
+            }
+
             // When
-            ConsentSignatureApiService(
+            val result = ConsentSignatureApiService(
                 requestTemplate,
-                errorHandler,
+                ConsentSignatureErrorHandlerStub(),
             ).disableSigning(
                 accessToken = accessToken,
                 consentDocumentKey = consentDocumentKey,
                 deletionRequest = signingRequest
             )
-        }
 
-        // Then
-        assertSame(
-            actual = capturedError,
-            expected = error
-        )
-        assertSame<Any>(
-            actual = result,
-            expected = outgoingError
-        )
-    }
+            // Then
+            assertSame(
+                actual = result,
+                expected = Unit
+            )
 
-    @Test
-    fun `Given disableSigning was called with a AccessToken, a ConsentDocumentKey and a SignedDeletionMessage, it calls the API and just runs`() = runBlockingTest {
-        // Given
-        val requestTemplate = RequestBuilderSpy.Factory()
+            assertEquals(
+                actual = capturedMethod,
+                expected = Networking.Method.DELETE
+            )
+            assertEquals(
+                actual = capturedPath,
+                expected = listOf("consent", "api", "v1", "userConsents").toMutableList().also {
+                    it.add(consentDocumentKey)
+                    it.add("signatures")
+                }
+            )
 
-        val accessToken = "potato"
-        val consentDocumentKey = "custom-consent-key"
-        val signingRequest = SignedDeletionMessage(
-            message = DeletionMessage(
-                "soup",
-                DonationContract.ConsentSignatureType.REVOKE_ONCE,
-                "1981",
-                "abc"
-            ),
-            signature = "super-secret"
-        )
-
-        var capturedMethod: Networking.Method? = null
-        var capturedPath: Path? = null
-
-        val client = HttpMockClientFactory.createMockClientWithResponse { scope, _ ->
-            return@createMockClientWithResponse scope.respond(
-                content = "",
-                status = HttpStatusCode.NoContent
+            assertEquals(
+                actual = requestTemplate.createdInstances,
+                expected = 1
+            )
+            assertEquals(
+                actual = requestTemplate.lastInstance!!.delegatedAccessToken,
+                expected = accessToken
+            )
+            assertTrue(requestTemplate.lastInstance!!.delegatedJsonFlag)
+            assertEquals(
+                actual = requestTemplate.lastInstance!!.delegatedBody,
+                expected = signingRequest
             )
         }
-
-        requestTemplate.onPrepare = { method, path ->
-            capturedMethod = method
-            capturedPath = path
-            HttpStatement(
-                dummyKtor,
-                client
-            )
-        }
-
-        // When
-        val result = ConsentSignatureApiService(
-            requestTemplate,
-            ConsentSignatureErrorHandlerStub(),
-        ).disableSigning(
-            accessToken = accessToken,
-            consentDocumentKey = consentDocumentKey,
-            deletionRequest = signingRequest
-        )
-
-        // Then
-        assertSame(
-            actual = result,
-            expected = Unit
-        )
-
-        assertEquals(
-            actual = capturedMethod,
-            expected = Networking.Method.DELETE
-        )
-        assertEquals(
-            actual = capturedPath,
-            expected = listOf("consent", "api", "v1", "userConsents").toMutableList().also {
-                it.add(consentDocumentKey)
-                it.add("signatures")
-            }
-        )
-
-        assertEquals(
-            actual = requestTemplate.createdInstances,
-            expected = 1
-        )
-        assertEquals(
-            actual = requestTemplate.lastInstance!!.delegatedAccessToken,
-            expected = accessToken
-        )
-        assertTrue(requestTemplate.lastInstance!!.delegatedJsonFlag)
-        assertEquals(
-            actual = requestTemplate.lastInstance!!.delegatedBody,
-            expected = signingRequest
-        )
-    }
 }

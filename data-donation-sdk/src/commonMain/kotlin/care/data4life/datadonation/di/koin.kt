@@ -29,6 +29,8 @@ import care.data4life.datadonation.donation.resolveDonationKoinModule
 import care.data4life.datadonation.networking.plugin.resolveKtorPlugins
 import care.data4life.datadonation.networking.resolveNetworking
 import care.data4life.datadonation.session.resolveSessionKoinModule
+import care.data4life.sdk.util.coroutine.CoroutineScopeFactory
+import kotlinx.coroutines.CoroutineScope
 import org.koin.core.KoinApplication
 import org.koin.core.module.Module
 import org.koin.dsl.koinApplication
@@ -36,12 +38,18 @@ import org.koin.dsl.koinApplication
 internal fun initKoin(
     environment: Environment,
     userSession: DataDonationSDK.UserSessionTokenProvider,
-    keyStorage: DataDonationSDK.DonorKeyStorageProvider
+    keyStorage: DataDonationSDK.DonorKeyStorageProvider,
+    scope: CoroutineScope?
 ): KoinApplication {
     val dependencies = mutableListOf<Module>()
 
     dependencies.addAll(
-        sharedDependencies(environment, userSession, keyStorage)
+        sharedDependencies(
+            environment,
+            userSession,
+            keyStorage,
+            scope
+        )
     )
 
     dependencies.addAll(
@@ -60,13 +68,15 @@ internal fun initKoin(
 internal fun sharedDependencies(
     environment: Environment,
     userSession: DataDonationSDK.UserSessionTokenProvider,
-    keyStorage: DataDonationSDK.DonorKeyStorageProvider
+    keyStorage: DataDonationSDK.DonorKeyStorageProvider,
+    scope: CoroutineScope?
 ): List<Module> {
     return listOf(
         resolveRootModule(
             environment,
             userSession,
-            keyStorage
+            keyStorage,
+            scope ?: CoroutineScopeFactory.createScope("DataDonationBackgroundThreadScope")
         ),
         resolveNetworking(),
         resolveKtorPlugins(),

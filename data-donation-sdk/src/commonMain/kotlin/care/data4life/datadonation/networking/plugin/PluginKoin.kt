@@ -46,6 +46,11 @@ internal fun resolveKtorPlugins(): Module {
                         HttpSuccessfulResponseValidator,
                         HttpErrorMapper
                     )
+                ),
+                Networking.HttpPluginInstaller(
+                    HttpCustomContentType,
+                    HttpCustomContentTypeConfigurator,
+                    null
                 )
             )
         }

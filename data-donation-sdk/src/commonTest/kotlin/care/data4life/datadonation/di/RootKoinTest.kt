@@ -23,6 +23,7 @@ import care.data4life.datadonation.mock.stub.session.UserSessionTokenProviderStu
 import care.data4life.datadonation.util.JsonConfiguratorContract
 import care.data4life.sdk.flow.D4LSDKFlowFactoryContract
 import care.data4life.sdk.util.coroutine.DomainErrorMapperContract
+import care.data4life.sdk.util.test.coroutine.testCoroutineContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.datetime.Clock
 import kotlinx.serialization.json.Json
@@ -48,6 +49,7 @@ class RootKoinTest {
         val env = DataDonationSDK.Environment.DEVELOPMENT
         val sessionProvider = UserSessionTokenProviderStub()
         val keyStorageProvider = DonorKeyStorageProviderStub()
+        val scope = CoroutineScope(testCoroutineContext)
 
         // When
         val koin = koinApplication {
@@ -55,13 +57,17 @@ class RootKoinTest {
                 resolveRootModule(
                     env,
                     sessionProvider,
-                    keyStorageProvider
+                    keyStorageProvider,
+                    scope
                 )
             )
         }
+
         // Then
-        val builder: DataDonationSDK.Environment = koin.koin.get()
-        assertNotNull(builder)
+        assertSame(
+            actual = koin.koin.get(),
+            expected = env
+        )
     }
 
     @Test
@@ -70,6 +76,7 @@ class RootKoinTest {
         val env = DataDonationSDK.Environment.DEVELOPMENT
         val sessionProvider = UserSessionTokenProviderStub()
         val keyStorageProvider = DonorKeyStorageProviderStub()
+        val scope = CoroutineScope(testCoroutineContext)
 
         // When
         val koin = koinApplication {
@@ -77,10 +84,12 @@ class RootKoinTest {
                 resolveRootModule(
                     env,
                     sessionProvider,
-                    keyStorageProvider
+                    keyStorageProvider,
+                    scope
                 )
             )
         }
+
         // Then
         val clock: Clock = koin.koin.get()
         assertNotNull(clock)
@@ -92,6 +101,7 @@ class RootKoinTest {
         val env = DataDonationSDK.Environment.DEVELOPMENT
         val sessionProvider = UserSessionTokenProviderStub()
         val keyStorageProvider = DonorKeyStorageProviderStub()
+        val scope = CoroutineScope(testCoroutineContext)
 
         // When
         val koin = koinApplication {
@@ -99,13 +109,19 @@ class RootKoinTest {
                 resolveRootModule(
                     env,
                     sessionProvider,
-                    keyStorageProvider
+                    keyStorageProvider,
+                    scope
                 )
             )
         }
+
         // Then
         val provider: DataDonationSDK.UserSessionTokenProvider = koin.koin.get()
         assertNotNull(provider)
+        assertSame(
+            actual = provider,
+            expected = sessionProvider
+        )
     }
 
     @Test
@@ -114,6 +130,7 @@ class RootKoinTest {
         val env = DataDonationSDK.Environment.DEVELOPMENT
         val sessionProvider = UserSessionTokenProviderStub()
         val keyStorageProvider = DonorKeyStorageProviderStub()
+        val scope = CoroutineScope(testCoroutineContext)
 
         // When
         val koin = koinApplication {
@@ -121,13 +138,17 @@ class RootKoinTest {
                 resolveRootModule(
                     env,
                     sessionProvider,
-                    keyStorageProvider
+                    keyStorageProvider,
+                    scope
                 )
             )
         }
+
         // Then
-        val scope: CoroutineScope = koin.koin.get()
-        assertNotNull(scope)
+        assertSame(
+            actual = koin.koin.get(),
+            expected = scope
+        )
     }
 
     @Test
@@ -136,6 +157,7 @@ class RootKoinTest {
         val env = DataDonationSDK.Environment.DEVELOPMENT
         val sessionProvider = UserSessionTokenProviderStub()
         val keyStorageProvider = DonorKeyStorageProviderStub()
+        val scope = CoroutineScope(testCoroutineContext)
 
         // When
         val koin = koinApplication {
@@ -143,10 +165,12 @@ class RootKoinTest {
                 resolveRootModule(
                     env,
                     sessionProvider,
-                    keyStorageProvider
+                    keyStorageProvider,
+                    scope
                 )
             )
         }
+
         // Then
         val mapper: DomainErrorMapperContract = koin.koin.get()
         assertNotNull(mapper)
@@ -158,6 +182,7 @@ class RootKoinTest {
         val env = DataDonationSDK.Environment.DEVELOPMENT
         val sessionProvider = UserSessionTokenProviderStub()
         val keyStorageProvider = DonorKeyStorageProviderStub()
+        val scope = CoroutineScope(testCoroutineContext)
 
         // When
         val koin = koinApplication {
@@ -165,10 +190,12 @@ class RootKoinTest {
                 resolveRootModule(
                     env,
                     sessionProvider,
-                    keyStorageProvider
+                    keyStorageProvider,
+                    scope
                 )
             )
         }
+
         // Then
         val factory: D4LSDKFlowFactoryContract = koin.koin.get()
         assertNotNull(factory)
@@ -180,6 +207,7 @@ class RootKoinTest {
         val env = DataDonationSDK.Environment.DEVELOPMENT
         val sessionProvider = UserSessionTokenProviderStub()
         val keyStorageProvider = DonorKeyStorageProviderStub()
+        val scope = CoroutineScope(testCoroutineContext)
 
         // When
         val koin = koinApplication {
@@ -187,7 +215,8 @@ class RootKoinTest {
                 resolveRootModule(
                     env,
                     sessionProvider,
-                    keyStorageProvider
+                    keyStorageProvider,
+                    scope
                 )
             )
         }
@@ -202,6 +231,7 @@ class RootKoinTest {
         val env = DataDonationSDK.Environment.DEVELOPMENT
         val sessionProvider = UserSessionTokenProviderStub()
         val keyStorageProvider = DonorKeyStorageProviderStub()
+        val scope = CoroutineScope(testCoroutineContext)
 
         // When
         val koin = koinApplication {
@@ -209,7 +239,8 @@ class RootKoinTest {
                 resolveRootModule(
                     env,
                     sessionProvider,
-                    keyStorageProvider
+                    keyStorageProvider,
+                    scope
                 )
             )
         }
@@ -224,6 +255,7 @@ class RootKoinTest {
         val env = DataDonationSDK.Environment.DEVELOPMENT
         val sessionProvider = UserSessionTokenProviderStub()
         val keyStorageProvider = DonorKeyStorageProviderStub()
+        val scope = CoroutineScope(testCoroutineContext)
 
         // When
         val koin = koinApplication {
@@ -231,7 +263,8 @@ class RootKoinTest {
                 resolveRootModule(
                     env,
                     sessionProvider,
-                    keyStorageProvider
+                    keyStorageProvider,
+                    scope
                 )
             )
         }
@@ -246,6 +279,7 @@ class RootKoinTest {
         val env = DataDonationSDK.Environment.DEVELOPMENT
         val sessionProvider = UserSessionTokenProviderStub()
         val keyStorageProvider = DonorKeyStorageProviderStub()
+        val scope = CoroutineScope(testCoroutineContext)
 
         // When
         val koin = koinApplication {
@@ -253,7 +287,8 @@ class RootKoinTest {
                 resolveRootModule(
                     env,
                     sessionProvider,
-                    keyStorageProvider
+                    keyStorageProvider,
+                    scope
                 )
             )
         }
@@ -268,6 +303,7 @@ class RootKoinTest {
         val env = DataDonationSDK.Environment.DEVELOPMENT
         val sessionProvider = UserSessionTokenProviderStub()
         val keyStorageProvider = DonorKeyStorageProviderStub()
+        val scope = CoroutineScope(testCoroutineContext)
 
         // When
         val koin = koinApplication {
@@ -275,7 +311,8 @@ class RootKoinTest {
                 resolveRootModule(
                     env,
                     sessionProvider,
-                    keyStorageProvider
+                    keyStorageProvider,
+                    scope
                 )
             )
         }
@@ -290,6 +327,7 @@ class RootKoinTest {
         val env = DataDonationSDK.Environment.DEVELOPMENT
         val sessionProvider = UserSessionTokenProviderStub()
         val keyStorageProvider = DonorKeyStorageProviderStub()
+        val scope = CoroutineScope(testCoroutineContext)
 
         val expected = SerializersModule { }
 
@@ -299,7 +337,8 @@ class RootKoinTest {
                 resolveRootModule(
                     env,
                     sessionProvider,
-                    keyStorageProvider
+                    keyStorageProvider,
+                    scope
                 ),
                 module {
                     single(

@@ -13,9 +13,10 @@
  * applications and/or if you’d like to contribute to the development of the SDK, please
  * contact D4L by email to help@data4life.care.
  */
-import care.data4life.sdk.datadonation.LibraryConfig
-import care.data4life.sdk.datadonation.dependency.Dependency
-import care.data4life.sdk.datadonation.dependency.Version
+
+import care.data4life.gradle.datadonation.config.LibraryConfig
+import care.data4life.gradle.datadonation.dependency.Dependency
+import care.data4life.gradle.datadonation.dependency.Version
 
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
@@ -30,7 +31,7 @@ plugins {
     id("com.android.library")
 
     // Publish
-    id("care.data4life.sdk.datadonation.publishing-config")
+    id("care.data4life.gradle.datadonation.script.publishing-config")
 }
 
 group = LibraryConfig.group
@@ -244,9 +245,11 @@ val uselessSwiftProtocols = listOf(
 )
 val referencePrefix = "DLDDSDK"
 
-val swiftNameReplacements = mapOf<String,String>(
+val swiftNameReplacements = mapOf(
     "Kotlinx_coroutines_coreCancellationException" to "KotlinCancellationError",
-    "Kotlinx_coroutines_coreJob" to "KotlinJob"
+    "Kotlinx_coroutines_coreJob" to "KotlinJob",
+    "Result" to "DataDonationResult",
+    "PipeProtocol" to "Pipe"
 )
 
 project.afterEvaluate {

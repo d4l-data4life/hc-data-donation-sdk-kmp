@@ -17,8 +17,8 @@
 package care.data4life.datadonation.donation.publickeyservice
 
 import care.data4life.datadonation.donation.publickeyservice.model.KeyDomainSerializer
-import care.data4life.datadonation.donation.publickeyservice.model.PublicKeys
 import care.data4life.datadonation.donation.publickeyservice.model.RawKeys
+import care.data4life.datadonation.donation.publickeyservice.model.ServicePublicKeyring
 import care.data4life.datadonation.networking.HttpRuntimeError
 import io.ktor.http.Headers
 import kotlinx.serialization.Serializable
@@ -27,7 +27,8 @@ internal interface PublicKeyServiceContract {
     @Serializable(with = KeyDomainSerializer::class)
     enum class KeyDomain(val domain: String) {
         DonationService("donation_public_key"),
-        ALP("alp_public_key")
+        ALP("alp_public_key"),
+        UNKNOWN("unknown")
     }
 
     interface ApiService {
@@ -45,10 +46,10 @@ internal interface PublicKeyServiceContract {
     }
 
     interface Repository {
-        suspend fun fetchPublicKeys(): PublicKeys
+        suspend fun fetchPublicKeys(): ServicePublicKeyring
 
         fun interface KeyMapper {
-            fun mapKeys(rawKeys: RawKeys): PublicKeys
+            fun mapKeys(rawKeys: RawKeys): ServicePublicKeyring
         }
     }
 }

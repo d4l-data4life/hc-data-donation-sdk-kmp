@@ -17,16 +17,16 @@
 package care.data4life.datadonation.mock.stub.donation.publickeyservice
 
 import care.data4life.datadonation.donation.publickeyservice.PublicKeyServiceContract
-import care.data4life.datadonation.donation.publickeyservice.model.PublicKeys
+import care.data4life.datadonation.donation.publickeyservice.model.ServicePublicKeyring
 import care.data4life.datadonation.mock.MockContract
 import care.data4life.datadonation.mock.MockException
 
 internal class PublicKeyServiceRepositoryStub :
     PublicKeyServiceContract.Repository,
     MockContract.Stub {
-    var whenFetchPublicKeys: (() -> PublicKeys)? = null
+    var whenFetchPublicKeys: (() -> ServicePublicKeyring)? = null
 
-    override suspend fun fetchPublicKeys(): PublicKeys {
+    override suspend fun fetchPublicKeys(): ServicePublicKeyring {
         return whenFetchPublicKeys?.invoke() ?: throw MockException()
     }
 

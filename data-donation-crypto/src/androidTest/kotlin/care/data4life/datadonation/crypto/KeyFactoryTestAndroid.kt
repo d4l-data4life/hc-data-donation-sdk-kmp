@@ -35,7 +35,7 @@ class KeyFactoryTestAndroid {
         } throws nestedError
 
         // Then
-        val error = assertFailsWith<CryptoError.MalFormedKeyGeneration> {
+        val error = assertFailsWith<CryptoError.MalformedKeyGeneration> {
             // When
             KeyFactory.createKeyPair()
         }

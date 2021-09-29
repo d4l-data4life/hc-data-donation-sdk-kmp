@@ -41,7 +41,7 @@ class PluginKoinTest {
         // Then
         assertEquals(
             actual = configuration.size,
-            expected = 3
+            expected = 4
         )
         assertEquals<Any>(
             actual = configuration[0],
@@ -68,6 +68,14 @@ class PluginKoinTest {
                     HttpSuccessfulResponseValidator,
                     HttpErrorMapper
                 )
+            )
+        )
+        assertEquals<Any>(
+            actual = configuration[3],
+            expected = Networking.HttpPluginInstaller(
+                HttpCustomContentType,
+                HttpCustomContentTypeConfigurator,
+                null
             )
         )
     }

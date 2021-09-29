@@ -23,7 +23,11 @@ final class DataDonationSDKService {
     private let client: DataDonationClientProtocol!
     init(userSessionProvider: UserSessionTokenProviderProtocol) {
         self.userSessionProvider = userSessionProvider
-        self.client = Client.Factory().getInstance(environment: .staging, userSession: userSessionProvider)
+        self.client = Client.Factory().getInstance(
+            environment: .staging,
+            userSession: userSessionProvider,
+            coroutineScope: nil
+        )
     }
 
     private var currentJob: KotlinJob?

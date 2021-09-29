@@ -37,7 +37,28 @@ import care.data4life.datadonation.ConsentDataContract.UserConsent
 import care.data4life.datadonation.donation.publickeyservice.model.EnvironmentSerializer
 import care.data4life.datadonation.networking.AccessToken
 import care.data4life.sdk.flow.D4LSDKFlow
+import co.touchlab.stately.freeze
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.serialization.Serializable
+
+sealed class Result<Success, Error>(
+    val value: Success?,
+    val error: Error?
+) {
+    init {
+        this.freeze()
+    }
+
+    class Error<Succ : Any?, Err : Throwable>(value: Err) : Result<Succ, Err>(
+        value = null,
+        error = value
+    )
+
+    class Success<Succ, Err : Throwable?>(value: Succ) : Result<Succ, Err>(
+        value = value,
+        error = null
+    )
+}
 
 interface DataDonationSDK {
     @Serializable(with = EnvironmentSerializer::class)
@@ -46,34 +67,6 @@ interface DataDonationSDK {
         SANDBOX("api-phdp-sandbox.hpsgc.de"),
         STAGING("api-staging.data4life.care"),
         PRODUCTION("api.data4life.care")
-    }
-
-    fun interface UserSessionTokenProvider {
-        fun getUserSessionToken(
-            onSuccess: (sessionToken: AccessToken) -> Unit,
-            onError: (error: Exception) -> Unit
-        )
-    }
-
-    interface DonorKeyStorageProvider {
-        fun load(
-            annotations: Annotations,
-            onSuccess: (recordId: RecordId, data: EncodedDonorIdentity) -> Unit,
-            onNotFound: () -> Unit,
-            onError: (error: Exception) -> Unit
-        )
-
-        fun save(
-            donorRecord: DonationDataContract.DonorRecord,
-            onSuccess: () -> Unit,
-            onError: (error: Exception) -> Unit
-        )
-
-        fun delete(
-            recordId: RecordId,
-            onSuccess: () -> Unit,
-            onError: (error: Exception) -> Unit
-        )
     }
 
     interface DataDonationClient {
@@ -101,7 +94,40 @@ interface DataDonationSDK {
         fun getInstance(
             environment: Environment,
             userSession: UserSessionTokenProvider,
-            keyStorage: DonorKeyStorageProvider
+            keyStorage: DonorKeyStorageProvider,
+            coroutineScope: CoroutineScope? = null
         ): DataDonationClient
+    }
+
+    interface Pipe<Success, Error : Throwable> {
+        fun onSuccess(value: Success)
+        fun onError(error: Error)
+        suspend fun receive(): Result<Success, Error>
+    }
+
+    fun interface UserSessionTokenProvider {
+        fun getUserSessionToken(pipe: ResultPipe<AccessToken, Throwable>)
+    }
+
+    data class DonorKeyRecord(
+        val recordId: RecordId,
+        val data: EncodedDonorIdentity
+    )
+
+    interface DonorKeyStorageProvider {
+        fun load(
+            annotations: Annotations,
+            pipe: ResultPipe<DonorKeyRecord?, Throwable>
+        )
+
+        fun save(
+            donorRecord: DonationDataContract.DonorRecord,
+            pipe: ResultPipe<Unit?, Throwable>
+        )
+
+        fun delete(
+            recordId: RecordId,
+            pipe: ResultPipe<Unit?, Throwable>
+        )
     }
 }

@@ -48,13 +48,7 @@ internal class GCSignatureAlgorithm private constructor(
         }
 
     override val transformation: String
-        get() {
-            return if (hash == Hash.SHA256) {
-                "SHA256with$cipher/${schema.name}"
-            } else {
-                "" // Not possible
-            }
-        }
+        get() = "${Hash.SHA256.name}with$cipher/${schema.name}"
 
     companion object {
         fun createUnsaltedKey() = GCSignatureAlgorithm(salt = Salt.SALT_0)

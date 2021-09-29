@@ -125,13 +125,15 @@ class Client internal constructor(
         override fun getInstance(
             environment: DataDonationSDK.Environment,
             userSession: DataDonationSDK.UserSessionTokenProvider,
-            keyStorage: DataDonationSDK.DonorKeyStorageProvider
+            keyStorage: DataDonationSDK.DonorKeyStorageProvider,
+            coroutineScope: CoroutineScope?
         ): DataDonationSDK.DataDonationClient {
             return Client(
                 initKoin(
                     environment,
                     userSession,
-                    keyStorage
+                    keyStorage,
+                    coroutineScope
                 )
             )
         }

@@ -25,7 +25,6 @@ import care.data4life.datadonation.util.JsonConfigurator
 import care.data4life.datadonation.util.JsonConfiguratorContract
 import care.data4life.sdk.flow.D4LSDKFlow
 import care.data4life.sdk.flow.D4LSDKFlowFactoryContract
-import care.data4life.sdk.util.coroutine.CoroutineScopeFactory
 import care.data4life.sdk.util.coroutine.DomainErrorMapperContract
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.datetime.Clock
@@ -37,7 +36,8 @@ import org.koin.dsl.module
 internal fun resolveRootModule(
     environment: DataDonationSDK.Environment,
     userSessionTokenProvider: DataDonationSDK.UserSessionTokenProvider,
-    donorKeyStorageProvider: DataDonationSDK.DonorKeyStorageProvider
+    donorKeyStorageProvider: DataDonationSDK.DonorKeyStorageProvider,
+    scope: CoroutineScope
 ): Module {
     return module {
         single<DataDonationSDK.Environment> { environment }
@@ -53,7 +53,7 @@ internal fun resolveRootModule(
         }
 
         single<CoroutineScope> {
-            CoroutineScopeFactory.createScope("DataDonationBackgroundThreadScope")
+            scope
         }
 
         single<DomainErrorMapperContract> {

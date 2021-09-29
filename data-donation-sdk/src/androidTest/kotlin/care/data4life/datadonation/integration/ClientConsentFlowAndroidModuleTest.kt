@@ -36,17 +36,20 @@ import care.data4life.datadonation.Annotations
 import care.data4life.datadonation.Client
 import care.data4life.datadonation.DataDonationSDK
 import care.data4life.datadonation.DonationDataContract
-import care.data4life.datadonation.EncodedDonorIdentity
 import care.data4life.datadonation.RecordId
+import care.data4life.datadonation.ResultPipe
 import care.data4life.datadonation.consent.consentdocument.ConsentDocumentError
 import care.data4life.datadonation.di.consentFlowDependencies
 import care.data4life.datadonation.di.donationFlowDependencies
 import care.data4life.datadonation.di.sharedDependencies
+import care.data4life.datadonation.networking.AccessToken
 import care.data4life.sdk.util.test.coroutine.runBlockingTest
+import care.data4life.sdk.util.test.coroutine.testCoroutineContext
 import care.data4life.sdk.util.test.ktor.HttpMockClientFactory.createMockClientWithResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.respond
 import io.ktor.http.HttpStatusCode
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.catch
@@ -75,7 +78,8 @@ class ClientConsentFlowAndroidModuleTest {
             sharedDependencies(
                 DataDonationSDK.Environment.DEVELOPMENT,
                 UserSessionTokenProvider,
-                DonorKeyStorageProvider
+                DonorKeyStorageProvider,
+                CoroutineScope(testCoroutineContext)
             )
         )
 
@@ -137,35 +141,21 @@ class ClientConsentFlowAndroidModuleTest {
     private object UserSessionTokenProvider : DataDonationSDK.UserSessionTokenProvider {
         const val sessionToken = "sessionToken"
 
-        override fun getUserSessionToken(
-            onSuccess: (sessionToken: String) -> Unit,
-            onError: (error: Exception) -> Unit
-        ) { onSuccess(sessionToken) }
+        override fun getUserSessionToken(pipe: ResultPipe<AccessToken, Throwable>) {
+            pipe.onSuccess(sessionToken)
+        }
     }
 
     private object DonorKeyStorageProvider : DataDonationSDK.DonorKeyStorageProvider {
-        override fun load(
-            annotations: Annotations,
-            onSuccess: (recordId: RecordId, data: EncodedDonorIdentity) -> Unit,
-            onNotFound: () -> Unit,
-            onError: (error: Exception) -> Unit
-        ) {
+        override fun load(annotations: Annotations, pipe: ResultPipe<DataDonationSDK.DonorKeyRecord?, Throwable>) {
             TODO("Not yet implemented")
         }
 
-        override fun save(
-            donorRecord: DonationDataContract.DonorRecord,
-            onSuccess: () -> Unit,
-            onError: (error: Exception) -> Unit
-        ) {
+        override fun save(donorRecord: DonationDataContract.DonorRecord, pipe: ResultPipe<Unit?, Throwable>) {
             TODO("Not yet implemented")
         }
 
-        override fun delete(
-            recordId: RecordId,
-            onSuccess: () -> Unit,
-            onError: (error: Exception) -> Unit
-        ) {
+        override fun delete(recordId: RecordId, pipe: ResultPipe<Unit?, Throwable>) {
             TODO("Not yet implemented")
         }
     }

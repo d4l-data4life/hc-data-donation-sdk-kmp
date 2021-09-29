@@ -2,14 +2,15 @@
   "name": "sample",
   "slug": "sample",
   "tenantID": "d4l",
-  "type": "study",
+  "type": "diary",
   "donation": {
+    "revocation": "delete",
     "consentKey": "d4l.sample",
     "anonymization": {
       "blur": {
         "location": "Europe/Berlin",
         "authored": "startOfDay",
-        "researchSubject": "startOfDay"
+        "researchSubject": "startOfMonth"
       }
     },
     "includeList": [],

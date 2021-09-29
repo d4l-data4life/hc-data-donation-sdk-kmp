@@ -48,7 +48,12 @@ internal interface KtorPluginsContract {
         val errorMapper: HttpErrorMapper? = null
     )
 
+    object CustomTypeHeader {
+        const val replacementHeader = "X-Custom-Type-Replacement"
+    }
+
     fun interface HttpSerializerConfigurator : Networking.HttpPluginConfigurator<JsonFeature.Config, JsonConfiguratorContract>
     fun interface HttpLoggingConfigurator : Networking.HttpPluginConfigurator<Logging.Config, care.data4life.sdk.log.Logger>
     fun interface HttpResponseValidatorConfigurator : Networking.HttpPluginConfigurator<HttpCallValidator.Config, HttpResponseValidationConfiguration>
+    fun interface HttpCustomContentTypeConfigurator : Networking.HttpPluginConfigurator<HttpCustomContentType.Config, Any?>
 }
