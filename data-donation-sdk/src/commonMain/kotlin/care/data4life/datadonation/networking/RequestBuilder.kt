@@ -21,6 +21,7 @@ import care.data4life.datadonation.error.CoreRuntimeError
 import care.data4life.datadonation.networking.Networking.RequestBuilder.Companion.ACCESS_TOKEN_FIELD
 import care.data4life.datadonation.networking.Networking.RequestBuilder.Companion.ACCESS_TOKEN_VALUE_PREFIX
 import care.data4life.datadonation.networking.Networking.RequestBuilder.Companion.BODYLESS_METHODS
+import care.data4life.datadonation.networking.plugin.KtorPluginsContract
 import io.ktor.client.HttpClient
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.header
@@ -128,8 +129,24 @@ internal class RequestBuilder private constructor(
         }
     }
 
+    private fun resolveContentType(): ContentType? {
+        return if (useJson) {
+            ContentType.Application.Json
+        } else {
+            null
+        }
+    }
+
     private fun setContentType(builder: HttpRequestBuilder) {
-        if (useJson) {
+        val contentType = resolveContentType()
+
+        if (contentType is ContentType) {
+            builder.header(
+                KtorPluginsContract.CustomTypeHeader.replacementHeader,
+                contentType
+            )
+
+            // Note: This is necessary to keep the Serialization Plugin working
             builder.contentType(ContentType.Application.Json)
         }
     }

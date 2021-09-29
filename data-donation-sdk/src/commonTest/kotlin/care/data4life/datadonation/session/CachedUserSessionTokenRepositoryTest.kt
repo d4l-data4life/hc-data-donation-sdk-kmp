@@ -29,11 +29,12 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
+import kotlin.time.ExperimentalTime
 import kotlin.time.minutes
 import kotlin.time.seconds
 
 class CachedUserSessionTokenRepositoryTest {
-    private val testScope = CoroutineScopeFactory.createScope("testSessionScope")
+    private val testScope = CoroutineScopeFactory.createScope("testSession")
 
     @Test
     fun `It fulfils UserSessionTokenRepository`() {
@@ -46,144 +47,154 @@ class CachedUserSessionTokenRepositoryTest {
         assertTrue(repo is SessionTokenRepositoryContract)
     }
 
+    @ExperimentalTime
     @Test
-    fun `Given getUserSessionToken is called, it fails, if it has no valid cached Token and the Provider delegates an Exception`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
-        // Given
-        val error = RuntimeException("error")
-        val provider = UserSessionTokenProviderStub()
-        val time = ClockStub()
+    fun `Given getUserSessionToken is called, it fails, if it has no valid cached Token and the Provider delegates an Exception`() =
+        runWithContextBlockingTest(GlobalScope.coroutineContext) {
+            // Given
+            val error = RuntimeException("error")
+            val provider = UserSessionTokenProviderStub()
+            val time = ClockStub()
 
-        provider.whenGetUserSessionToken = { _, onError ->
-            onError(error)
-        }
-
-        time.whenNow = {
-            Instant.fromEpochMilliseconds(1.minutes.toLongMilliseconds())
-        }
-
-        val repo = CachedUserSessionTokenRepository(provider, time, testScope)
-
-        runBlockingTest {
-            // Then
-            val result = assertFailsWith<UserSessionError.MissingSession> {
-                // When
-                repo.getUserSessionToken()
+            provider.whenGetUserSessionToken = { pipe ->
+                pipe.onError(error)
             }
 
-            assertSame(
-                actual = result.cause,
-                expected = error
-            )
+            time.whenNow = {
+                Instant.fromEpochMilliseconds(1.minutes.toLongMilliseconds())
+            }
+
+            val repo = CachedUserSessionTokenRepository(provider, time, testScope)
+
+            runBlockingTest {
+                // Then
+                val result = assertFailsWith<UserSessionError.MissingSession> {
+                    // When
+                    repo.getUserSessionToken()
+                }
+
+                assertSame(
+                    actual = result.cause,
+                    expected = error
+                )
+            }
         }
-    }
+
+    @ExperimentalTime
+    @Test
+    fun `Given getUserSessionToken is called, returns a new Token, if it has no valid cached Token and the Provider delegates a SessionToken`() =
+        runWithContextBlockingTest(GlobalScope.coroutineContext) {
+            // Given
+            val token = "tomato"
+            val provider = UserSessionTokenProviderStub()
+            val time = ClockStub()
+
+            provider.whenGetUserSessionToken = { pipe ->
+                pipe.onSuccess(token)
+            }
+
+            time.whenNow = {
+                Instant.fromEpochMilliseconds(1.minutes.toLongMilliseconds())
+            }
+
+            val repo = CachedUserSessionTokenRepository(provider, time, testScope)
+
+            runBlockingTest {
+                // When
+                val result = repo.getUserSessionToken()
+
+                // Then
+                assertEquals(
+                    actual = result,
+                    expected = token
+                )
+            }
+        }
 
     @Test
-    fun `Given getUserSessionToken is called, returns a new Token, if it has no valid cached Token and the Provider delegates a SessionToken`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
-        // Given
-        val token = "tomato"
-        val provider = UserSessionTokenProviderStub()
-        val time = ClockStub()
-
-        provider.whenGetUserSessionToken = { onSuccess, _ ->
-            onSuccess(token)
-        }
-
-        time.whenNow = {
-            Instant.fromEpochMilliseconds(1.minutes.toLongMilliseconds())
-        }
-
-        val repo = CachedUserSessionTokenRepository(provider, time, testScope)
-
+    fun `Given getUserSessionToken is called, it returns a cached token, if a token had been previously stored and it used in its 1 minute lifetime`() =
         runBlockingTest {
+            // Given
+            val expectedToken = "potato"
+            val tokens = IsolateState {
+                mutableListOf(
+                    expectedToken,
+                    "tomato"
+                )
+            }
+            val provider = UserSessionTokenProviderStub()
+            val time = ClockStub()
+            val lifeTime = IsolateState {
+                mutableListOf(
+                    Instant.fromEpochSeconds(60),
+                    Instant.fromEpochSeconds(90),
+                    Instant.fromEpochSeconds(105)
+                )
+            }
+
+            provider.whenGetUserSessionToken = { pipe ->
+                pipe.onSuccess(
+                    tokens.access { it.removeAt(0) }
+                )
+            }
+            time.whenNow = {
+                lifeTime.access { it.removeAt(0) }
+            }
+
+            val repo = CachedUserSessionTokenRepository(provider, time, testScope)
+
             // When
+            repo.getUserSessionToken()
             val result = repo.getUserSessionToken()
 
             // Then
             assertEquals(
                 actual = result,
-                expected = token
+                expected = expectedToken
             )
         }
-    }
 
+    @ExperimentalTime
     @Test
-    fun `Given getUserSessionToken is called, it returns a cached token, if a token had been previously stored and it used in its 1 minute lifetime`() = runBlockingTest {
-        // Given
-        val expectedToken = "potato"
-        val tokens = IsolateState {
-            mutableListOf(
-                expectedToken,
-                "tomato"
+    fun `Given getUserSessionToken is called, it returns a fresh token, if a token had been expired its 1 minute lifetime`() =
+        runBlockingTest {
+            // Given
+            val expectedToken = "potato"
+            val tokens = IsolateState {
+                mutableListOf(
+                    "tomato",
+                    expectedToken
+                )
+            }
+            val provider = UserSessionTokenProviderStub()
+            val time = ClockStub()
+            val lifeTime = IsolateState {
+                mutableListOf(
+                    Instant.fromEpochMilliseconds(2.minutes.toLongMilliseconds()),
+                    Instant.fromEpochMilliseconds(2.minutes.plus(1.seconds).toLongMilliseconds()),
+                    Instant.fromEpochMilliseconds(2.minutes.plus(2.minutes).toLongMilliseconds()),
+                    Instant.fromEpochMilliseconds(2.minutes.plus(2.minutes).toLongMilliseconds())
+                )
+            }
+
+            provider.whenGetUserSessionToken = { pipe ->
+                pipe.onSuccess(tokens.access { it.removeAt(0) })
+            }
+
+            time.whenNow = {
+                lifeTime.access { it.removeAt(0) }
+            }
+
+            val repo = CachedUserSessionTokenRepository(provider, time, testScope)
+
+            // When
+            repo.getUserSessionToken()
+            val result = repo.getUserSessionToken()
+
+            // Then
+            assertEquals(
+                actual = result,
+                expected = expectedToken
             )
         }
-        val provider = UserSessionTokenProviderStub()
-        val time = ClockStub()
-        val lifeTime = IsolateState {
-            mutableListOf(
-                Instant.fromEpochSeconds(60),
-                Instant.fromEpochSeconds(90),
-                Instant.fromEpochSeconds(105)
-            )
-        }
-
-        provider.whenGetUserSessionToken = { onSuccess, _ ->
-            onSuccess(tokens.access { it.removeAt(0) })
-        }
-        time.whenNow = {
-            lifeTime.access { it.removeAt(0) }
-        }
-
-        val repo = CachedUserSessionTokenRepository(provider, time, testScope)
-
-        // When
-        repo.getUserSessionToken()
-        val result = repo.getUserSessionToken()
-
-        // Then
-        assertEquals(
-            actual = result,
-            expected = expectedToken
-        )
-    }
-
-    @Test
-    fun `Given getUserSessionToken is called, it returns a fresh token, if a token had been expired its 1 minute lifetime`() = runBlockingTest {
-        // Given
-        val expectedToken = "potato"
-        val tokens = IsolateState {
-            mutableListOf(
-                "tomato",
-                expectedToken
-            )
-        }
-        val provider = UserSessionTokenProviderStub()
-        val time = ClockStub()
-        val lifeTime = IsolateState {
-            mutableListOf(
-                Instant.fromEpochMilliseconds(2.minutes.toLongMilliseconds()),
-                Instant.fromEpochMilliseconds(2.minutes.plus(1.seconds).toLongMilliseconds()),
-                Instant.fromEpochMilliseconds(2.minutes.plus(2.minutes).toLongMilliseconds()),
-                Instant.fromEpochMilliseconds(2.minutes.plus(2.minutes).toLongMilliseconds())
-            )
-        }
-
-        provider.whenGetUserSessionToken = { onSuccess, _ ->
-            onSuccess(tokens.access { it.removeAt(0) })
-        }
-        time.whenNow = {
-            lifeTime.access { it.removeAt(0) }
-        }
-
-        val repo = CachedUserSessionTokenRepository(provider, time, testScope)
-
-        // When
-        repo.getUserSessionToken()
-        val result = repo.getUserSessionToken()
-
-        // Then
-        assertEquals(
-            actual = result,
-            expected = expectedToken
-        )
-    }
 }

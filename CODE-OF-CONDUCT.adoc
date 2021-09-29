@@ -1,10 +1,22 @@
 = Contributor Covenant Code of Conduct
+:link-repository: https://github.com/d4l-data4life/hc-data-donation-sdk-kmp
+:doctype: article
 :toc: macro
 :toclevels: 2
 :toc-title:
+:icons: font
+:imagesdir: assets/images
+ifdef::env-github[]
+:warning-caption: :warning:
+:caution-caption: :fire:
+:important-caption: :exclamation:
+:note-caption: :paperclip:
+:tip-caption: :bulb:
+endif::[]
 
 [discrete]
 ==== Table Of Contents
+
 toc::[]
 
 == Our Pledge

@@ -16,14 +16,15 @@
 
 package care.data4life.datadonation.mock.fixture
 
-import care.data4life.datadonation.donation.program.model.BlurFunction
+import care.data4life.datadonation.donation.program.model.BlurFunctionReference
+import care.data4life.datadonation.donation.program.model.FhirResourceConfiguration
 import care.data4life.datadonation.donation.program.model.Program
-import care.data4life.datadonation.donation.program.model.ProgramAnonymization
-import care.data4life.datadonation.donation.program.model.ProgramAnonymizationBlur
+import care.data4life.datadonation.donation.program.model.ProgramBlur
+import care.data4life.datadonation.donation.program.model.ProgramConfiguration
 import care.data4life.datadonation.donation.program.model.ProgramDonationConfiguration
-import care.data4life.datadonation.donation.program.model.ProgramResource
-import care.data4life.datadonation.donation.program.model.ProgramResourceBlur
-import care.data4life.datadonation.donation.program.model.ProgramResourceBlurItem
+import care.data4life.datadonation.donation.program.model.ProgramType
+import care.data4life.datadonation.donation.program.model.QuestionnaireResponseBlur
+import care.data4life.datadonation.donation.program.model.QuestionnaireResponseItemBlur
 import kotlin.native.concurrent.ThreadLocal
 
 @ThreadLocal
@@ -32,17 +33,18 @@ internal object ProgramFixture {
         name = "sample",
         slug = "sample",
         tenantID = "d4l",
+        type = ProgramType.DIARY,
         configuration = ProgramDonationConfiguration(
             consentDocumentKey = "d4l.sample",
-            anonymization = ProgramAnonymization(
-                blur = ProgramAnonymizationBlur(
-                    location = "Europe/Berlin",
-                    authored = BlurFunction.START_OF_DAY,
-                    researchSubject = BlurFunction.START_OF_DAY
+            programConfiguration = ProgramConfiguration(
+                programBlur = ProgramBlur(
+                    targetTimeZone = "Europe/Berlin",
+                    questionnaireResponseAuthoredBlurFunctionReference = BlurFunctionReference.START_OF_DAY,
+                    researchSubjectBlurFunctionReference = BlurFunctionReference.START_OF_MONTH
                 )
             ),
-            resources = listOf(
-                ProgramResource(
+            fhirResourceConfigurations = listOf(
+                FhirResourceConfiguration(
                     url = "http://fhir.data4life.care/stu3/SAMLPE/Questionnaire/personal_info",
                     versions = listOf(
                         "1.0.0",
@@ -51,21 +53,21 @@ internal object ProgramFixture {
                         "1.2.0"
                     )
                 ),
-                ProgramResource(
+                FhirResourceConfiguration(
                     url = "http://fhir.data4life.care/stu3/SAMLPE/Questionnaire/covid_exposition",
                     versions = listOf(
                         "1.0.0",
                         "1.0.1"
                     ),
                 ),
-                ProgramResource(
+                FhirResourceConfiguration(
                     url = "http://fhir.data4life.care/stu3/SAMLPE/Questionnaire/corona_testing",
                     versions = listOf(
                         "1.0.0",
                         "1.1.0"
                     )
                 ),
-                ProgramResource(
+                FhirResourceConfiguration(
                     url = "http://fhir.data4life.care/stu3/SAMLPE/Questionnaire/corona_testing_and_symptoms",
                     versions = listOf(
                         "1.0.0",
@@ -73,41 +75,41 @@ internal object ProgramFixture {
                         "1.2.0"
                     )
                 ),
-                ProgramResource(
+                FhirResourceConfiguration(
                     url = "http://fhir.data4life.care/stu3/SAMLPE/Questionnaire/covid_first_something",
                     versions = listOf(
                         "1.0.0",
                         "1.1.0"
                     ),
-                    blur = ProgramResourceBlur(
-                        items = listOf(
-                            ProgramResourceBlurItem(
+                    fhirBlur = QuestionnaireResponseBlur(
+                        questionnaireResponseItemBlurs = listOf(
+                            QuestionnaireResponseItemBlur(
                                 linkId = "when_done_something_first_time",
-                                function = BlurFunction.START_OF_DAY
+                                blurFunctionReference = BlurFunctionReference.START_OF_DAY
                             )
                         )
                     )
                 ),
-                ProgramResource(
+                FhirResourceConfiguration(
                     url = "http://fhir.data4life.care/stu3/SAMLPE/Questionnaire/covid_second_something",
                     versions = listOf(
                         "1.0.0",
                         "1.1.0",
                         "1.2.0"
                     ),
-                    blur = ProgramResourceBlur(
-                        items = listOf(
-                            ProgramResourceBlurItem(
+                    fhirBlur = QuestionnaireResponseBlur(
+                        questionnaireResponseItemBlurs = listOf(
+                            QuestionnaireResponseItemBlur(
                                 linkId = "when_done_something_second_time",
-                                function = BlurFunction.START_OF_DAY
+                                blurFunctionReference = BlurFunctionReference.START_OF_DAY
                             )
                         )
                     )
                 ),
-                ProgramResource(
+                FhirResourceConfiguration(
                     url = "http://fhir.data4life.care/stu3/SAMLPE/Questionnaire/vaccination_side_effects_a|1.0.0"
                 ),
-                ProgramResource(
+                FhirResourceConfiguration(
                     url = "http://fhir.data4life.care/stu3/SAMLPE/Questionnaire/vaccination_side_effects_b|1.0.0"
                 )
             ),

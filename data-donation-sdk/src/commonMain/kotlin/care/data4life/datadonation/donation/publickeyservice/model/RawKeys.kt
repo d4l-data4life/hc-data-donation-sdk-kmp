@@ -23,7 +23,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal data class RawKey(
+internal data class RawServiceCredentialKey(
     @SerialName("name")
     @Contextual
     val domain: PublicKeyServiceContract.KeyDomain,
@@ -35,5 +35,5 @@ internal data class RawKey(
 
 @Serializable
 internal data class RawKeys(
-    val credentials: List<RawKey>
+    val credentials: List<RawServiceCredentialKey>
 )

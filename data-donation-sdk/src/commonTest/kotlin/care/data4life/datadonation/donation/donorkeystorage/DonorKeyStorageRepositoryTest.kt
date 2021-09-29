@@ -17,6 +17,7 @@
 package care.data4life.datadonation.donation.donorkeystorage
 
 import care.data4life.datadonation.Annotations
+import care.data4life.datadonation.DataDonationSDK
 import care.data4life.datadonation.DonationDataContract
 import care.data4life.datadonation.RecordId
 import care.data4life.datadonation.donation.donorkeystorage.DonorKeyStorageRepositoryContract.Companion.DATA_DONATION_ANNOTATION
@@ -35,7 +36,6 @@ import kotlinx.serialization.json.Json
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
-import kotlin.test.assertNull
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
@@ -54,320 +54,291 @@ class DonorKeyStorageRepositoryTest {
     }
 
     @Test
-    fun `Given load is called with a ProgramName, it delegates the call to its Provider and propagtes its Error`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
-        // Given
-        val programName = "potato"
-        val error = RuntimeException()
-        val provider = DonorKeyStorageProviderStub()
+    fun `Given load is called with a ProgramName, it delegates the call to its Provider and propagtes its Error`() =
+        runWithContextBlockingTest(GlobalScope.coroutineContext) {
+            // Given
+            val programName = "potato"
+            val error = RuntimeException()
+            val provider = DonorKeyStorageProviderStub()
 
-        val capturedAnnotations = Channel<Annotations>()
-        provider.whenLoad = { delegatedAnnotations, _, _, onError ->
-            launch {
-                capturedAnnotations.send(delegatedAnnotations)
+            val capturedAnnotations = Channel<Annotations>()
+            provider.whenLoad = { delegatedAnnotations, pipe ->
+                launch {
+                    capturedAnnotations.send(delegatedAnnotations)
+                }
+                pipe.onError(error)
             }
-            onError(error)
+
+            // When
+            runBlockingTest {
+                val failure = assertFailsWith<DonorKeyStorageError.KeyLoadingError> {
+                    DonorKeyStorageRepository(
+                        provider,
+                        Json,
+                        testScope
+                    ).load(programName)
+                }
+
+                // Then
+                assertSame(
+                    actual = failure.cause,
+                    expected = error
+                )
+                assertEquals(
+                    actual = capturedAnnotations.receive(),
+                    expected = listOf(
+                        "program:$programName",
+                        DATA_DONATION_ANNOTATION
+                    )
+                )
+            }
         }
 
-        // When
-        runBlockingTest {
-            val failure = assertFailsWith<DonorKeyStorageError.KeyLoadingError> {
-                DonorKeyStorageRepository(
+    @Test
+    fun `Given load is called with a ProgramName, it delegates the call to its Provider and propagtes its Result`() =
+        runWithContextBlockingTest(GlobalScope.coroutineContext) {
+            // Given
+            val programName = "potato"
+
+            val recordId = "ABC"
+            val data = ResourceLoader.loader.load("/fixture/donation/ExampleDonorIdentity.json")
+
+            val provider = DonorKeyStorageProviderStub()
+
+            val capturedAnnotations = Channel<Annotations>()
+            provider.whenLoad = { delegatedAnnotations, pipe ->
+                launch {
+                    capturedAnnotations.send(delegatedAnnotations)
+                }
+
+                pipe.onSuccess(DataDonationSDK.DonorKeyRecord(recordId, data))
+            }
+
+            // When
+            runBlockingTest {
+                val result = DonorKeyStorageRepository(
                     provider,
                     Json,
                     testScope
                 ).load(programName)
-            }
 
-            // Then
-            assertSame(
-                actual = failure.cause,
-                expected = error
-            )
-            assertEquals(
-                actual = capturedAnnotations.receive(),
-                expected = listOf(
-                    "program:$programName",
-                    DATA_DONATION_ANNOTATION
+                // Then
+                assertEquals(
+                    actual = result,
+                    expected = Donor(
+                        recordId = recordId,
+                        donorIdentity = DonorIdentityFixture.sampleIdentity,
+                        programName = programName
+                    )
                 )
-            )
+                assertEquals(
+                    actual = capturedAnnotations.receive(),
+                    expected = listOf(
+                        "program:$programName",
+                        DATA_DONATION_ANNOTATION
+                    )
+                )
+            }
         }
-    }
 
     @Test
-    fun `Given load is called with a ProgramName, it delegates the call to its Provider and propagtes its Result, if nothing was found`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
-        // Given
-        val programName = "potato"
-
-        val provider = DonorKeyStorageProviderStub()
-
-        val capturedAnnotations = Channel<Annotations>()
-        provider.whenLoad = { delegatedAnnotations, _, onNotFound, _ ->
-            launch {
-                capturedAnnotations.send(delegatedAnnotations)
-            }
-            onNotFound()
-        }
-
-        // When
-        runBlockingTest {
-            val result = DonorKeyStorageRepository(
-                provider,
-                Json,
-                testScope
-            ).load(programName)
-
-            // Then
-            assertNull(result)
-            assertEquals(
-                actual = capturedAnnotations.receive(),
-                expected = listOf(
-                    "program:$programName",
-                    DATA_DONATION_ANNOTATION
-                )
+    fun `Given save is called with a Donor, it delegates the call to its Provider and propagtes its Error`() =
+        runWithContextBlockingTest(GlobalScope.coroutineContext) {
+            // Given
+            val programName = "potato"
+            val recordId = "ABC"
+            val donor = NewDonor(
+                recordId = recordId,
+                donorIdentity = DonorIdentityFixture.sampleIdentity,
+                programName = programName
             )
+
+            val error = RuntimeException()
+            val provider = DonorKeyStorageProviderStub()
+
+            val capturedDonorKey = Channel<DonationDataContract.DonorRecord>()
+            provider.whenSave = { delegatedDonorKey, pipe ->
+                launch {
+                    capturedDonorKey.send(delegatedDonorKey)
+                }
+                pipe.onError(error)
+            }
+
+            // When
+            runBlockingTest {
+                val failure = assertFailsWith<DonorKeyStorageError.KeySavingError> {
+                    DonorKeyStorageRepository(
+                        provider,
+                        Json,
+                        testScope
+                    ).save(donor)
+                }
+
+                assertSame(
+                    actual = failure.cause,
+                    expected = error
+                )
+
+                val donorKey = capturedDonorKey.receive()
+                assertEquals(
+                    actual = donorKey.recordId,
+                    expected = donor.recordId
+                )
+                assertEquals(
+                    actual = donorKey.data,
+                    expected = "{\"t\":\"dataDonationKey\",\"priv\":\"PrivateKey\",\"pub\":\"PublicKey\",\"v\":1,\"scope\":\"d4l.sample\"}"
+                )
+                assertEquals(
+                    actual = donorKey.annotations,
+                    expected = listOf(
+                        "program:$programName",
+                        DATA_DONATION_ANNOTATION
+                    )
+                )
+            }
         }
-    }
 
     @Test
-    fun `Given load is called with a ProgramName, it delegates the call to its Provider and propagtes its Result`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
-        // Given
-        val programName = "potato"
-
-        val recordId = "ABC"
-        val data = ResourceLoader.loader.load("/fixture/donation/ExampleDonorIdentity.json")
-
-        val provider = DonorKeyStorageProviderStub()
-
-        val capturedAnnotations = Channel<Annotations>()
-        provider.whenLoad = { delegatedAnnotations, onSuccess, _, _ ->
-            launch {
-                capturedAnnotations.send(delegatedAnnotations)
-            }
-            onSuccess(recordId, data)
-        }
-
-        // When
-        runBlockingTest {
-            val result = DonorKeyStorageRepository(
-                provider,
-                Json,
-                testScope
-            ).load(programName)
-
-            // Then
-            assertEquals(
-                actual = result,
-                expected = Donor(
-                    recordId = recordId,
-                    donorIdentity = DonorIdentityFixture.sampleIdentity,
-                    programName = programName
-                )
+    fun `Given save is called with a Donor, it delegates the call to its Provider and propagtes its Result`() =
+        runWithContextBlockingTest(GlobalScope.coroutineContext) {
+            // Given
+            val programName = "potato"
+            val recordId = "ABC"
+            val data = "{\"t\":\"dataDonationKey\",\"priv\":\"PrivateKey\",\"pub\":\"PublicKey\",\"v\":1,\"scope\":\"d4l.sample\"}"
+            val donor = NewDonor(
+                recordId = recordId,
+                donorIdentity = DonorIdentityFixture.sampleIdentity,
+                programName = programName
             )
-            assertEquals(
-                actual = capturedAnnotations.receive(),
-                expected = listOf(
-                    "program:$programName",
-                    DATA_DONATION_ANNOTATION
-                )
-            )
-        }
-    }
 
-    @Test
-    fun `Given save is called with a Donor, it delegates the call to its Provider and propagtes its Error`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
-        // Given
-        val programName = "potato"
-        val recordId = "ABC"
-        val data = DonorIdentityFixture.sampleIdentity
-        val donor = NewDonor(
-            recordId = recordId,
-            donorIdentity = data,
-            programName = programName
-        )
+            val provider = DonorKeyStorageProviderStub()
 
-        val error = RuntimeException()
-        val provider = DonorKeyStorageProviderStub()
-
-        val capturedDonorRecord = Channel<DonationDataContract.DonorRecord>()
-        provider.whenSave = { delegatedDonorRecord, _, onError ->
-            launch {
-                capturedDonorRecord.send(delegatedDonorRecord)
+            val capturedDonorKey = Channel<DonationDataContract.DonorRecord>()
+            provider.whenSave = { delegatedDonorKey, pipe ->
+                launch {
+                    capturedDonorKey.send(delegatedDonorKey)
+                }
+                pipe.onSuccess(null)
             }
-            onError(error)
-        }
 
-        // When
-        runBlockingTest {
-            val failure = assertFailsWith<DonorKeyStorageError.KeySavingError> {
-                DonorKeyStorageRepository(
+            // When
+            runBlockingTest {
+                val result = DonorKeyStorageRepository(
                     provider,
                     Json,
                     testScope
                 ).save(donor)
-            }
 
-            assertSame(
-                actual = failure.cause,
-                expected = error
-            )
-
-            val donorRecord = capturedDonorRecord.receive()
-            assertEquals(
-                actual = donorRecord.recordId,
-                expected = donor.recordId
-            )
-            assertEquals(
-                actual = donorRecord.data,
-                expected = "{\"t\":\"${data.keyType}\",\"priv\":\"${data.privateKey}\",\"pub\":\"${data.publicKey}\",\"v\":${data.version},\"scope\":\"${data.scope}\"}"
-            )
-            assertEquals(
-                actual = donorRecord.annotations,
-                expected = listOf(
-                    "program:$programName",
-                    DATA_DONATION_ANNOTATION
+                // Then
+                assertSame(
+                    actual = result,
+                    expected = Unit
                 )
-            )
+
+                val donorKey = capturedDonorKey.receive()
+                assertEquals(
+                    actual = donorKey.recordId,
+                    expected = donor.recordId
+                )
+                assertEquals(
+                    actual = donorKey.data,
+                    expected = data
+                )
+                assertEquals(
+                    actual = donorKey.annotations,
+                    expected = listOf(
+                        "program:$programName",
+                        DATA_DONATION_ANNOTATION
+                    )
+                )
+            }
         }
-    }
 
     @Test
-    fun `Given save is called with a Donor, it delegates the call to its Provider and propagtes its Result`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
-        // Given
-        val programName = "potato"
-        val recordId = "ABC"
-        val data = DonorIdentityFixture.sampleIdentity
-        val donor = NewDonor(
-            recordId = recordId,
-            donorIdentity = data,
-            programName = programName
-        )
+    fun `Given delete is called with a Donor, it delegates the call to its Provider and propagtes its Error`() =
+        runWithContextBlockingTest(GlobalScope.coroutineContext) {
+            // Given
+            val programName = "potato"
+            val recordId = "ABC"
+            val donor = Donor(
+                recordId = recordId,
+                donorIdentity = DonorIdentityFixture.sampleIdentity,
+                programName = programName
+            )
 
-        val provider = DonorKeyStorageProviderStub()
+            val error = RuntimeException()
+            val provider = DonorKeyStorageProviderStub()
 
-        val capturedDonorRecord = Channel<DonationDataContract.DonorRecord>()
-        provider.whenSave = { delegatedDonorRecord, onSuccess, _ ->
-            launch {
-                capturedDonorRecord.send(delegatedDonorRecord)
+            val capturedRecordId = Channel<RecordId>()
+            provider.whenDelete = { delegatedRecordId, pipe ->
+                launch {
+                    capturedRecordId.send(delegatedRecordId)
+                }
+                pipe.onError(error)
             }
-            onSuccess()
-        }
 
-        // When
-        runBlockingTest {
-            val result = DonorKeyStorageRepository(
-                provider,
-                Json,
-                testScope
-            ).save(donor)
+            // When
+            runBlockingTest {
+                val failure = assertFailsWith<DonorKeyStorageError.KeyDeletionError> {
+                    DonorKeyStorageRepository(
+                        provider,
+                        Json,
+                        testScope
+                    ).delete(donor)
+                }
 
-            // Then
-            assertSame(
-                actual = result,
-                expected = Unit
-            )
-
-            val donorRecord = capturedDonorRecord.receive()
-            assertEquals(
-                actual = donorRecord.recordId,
-                expected = donor.recordId
-            )
-            assertEquals(
-                actual = donorRecord.data,
-                expected = "{\"t\":\"${data.keyType}\",\"priv\":\"${data.privateKey}\",\"pub\":\"${data.publicKey}\",\"v\":${data.version},\"scope\":\"${data.scope}\"}"
-            )
-            assertEquals(
-                actual = donorRecord.annotations,
-                expected = listOf(
-                    "program:$programName",
-                    DATA_DONATION_ANNOTATION
+                assertSame(
+                    actual = failure.cause,
+                    expected = error
                 )
-            )
+
+                assertEquals(
+                    actual = capturedRecordId.receive(),
+                    expected = donor.recordId
+                )
+            }
         }
-    }
 
     @Test
-    fun `Given delete is called with a Donor, it delegates the call to its Provider and propagtes its Error`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
-        // Given
-        val programName = "potato"
-        val recordId = "ABC"
-        val donor = Donor(
-            recordId = recordId,
-            donorIdentity = DonorIdentityFixture.sampleIdentity,
-            programName = programName
-        )
+    fun `Given delete is called with a Donor, it delegates the call to its Provider and propagtes its Result`() =
+        runWithContextBlockingTest(GlobalScope.coroutineContext) {
+            // Given
+            val programName = "potato"
+            val recordId = "ABC"
+            val donor = Donor(
+                recordId = recordId,
+                donorIdentity = DonorIdentityFixture.sampleIdentity,
+                programName = programName
+            )
 
-        val error = RuntimeException()
-        val provider = DonorKeyStorageProviderStub()
+            val provider = DonorKeyStorageProviderStub()
 
-        val capturedRecordId = Channel<RecordId>()
-        provider.whenDelete = { delegatedRecordId, _, onError ->
-            launch {
-                capturedRecordId.send(delegatedRecordId)
+            val capturedRecordId = Channel<RecordId>()
+            provider.whenDelete = { delegatedRecordId, pipe ->
+                launch {
+                    capturedRecordId.send(delegatedRecordId)
+                }
+                pipe.onSuccess(null)
             }
-            onError(error)
-        }
 
-        // When
-        runBlockingTest {
-            val failure = assertFailsWith<DonorKeyStorageError.KeyDeletionError> {
-                DonorKeyStorageRepository(
+            // When
+            runBlockingTest {
+                val result = DonorKeyStorageRepository(
                     provider,
                     Json,
                     testScope
                 ).delete(donor)
+
+                // Then
+                assertSame(
+                    actual = result,
+                    expected = Unit
+                )
+
+                assertEquals(
+                    actual = capturedRecordId.receive(),
+                    expected = donor.recordId
+                )
             }
-
-            assertSame(
-                actual = failure.cause,
-                expected = error
-            )
-
-            assertEquals(
-                actual = capturedRecordId.receive(),
-                expected = donor.recordId
-            )
         }
-    }
-
-    @Test
-    fun `Given delete is called with a Donor, it delegates the call to its Provider and propagtes its Result`() = runWithContextBlockingTest(GlobalScope.coroutineContext) {
-        // Given
-        val programName = "potato"
-        val recordId = "ABC"
-        val donor = Donor(
-            recordId = recordId,
-            donorIdentity = DonorIdentityFixture.sampleIdentity,
-            programName = programName
-        )
-
-        val provider = DonorKeyStorageProviderStub()
-
-        val capturedRecordId = Channel<RecordId>()
-        provider.whenDelete = { delegatedRecordId, onSuccess, _ ->
-            launch {
-                capturedRecordId.send(delegatedRecordId)
-            }
-            onSuccess()
-        }
-
-        // When
-        runBlockingTest {
-            val result = DonorKeyStorageRepository(
-                provider,
-                Json,
-                testScope
-            ).delete(donor)
-
-            // Then
-            assertSame(
-                actual = result,
-                expected = Unit
-            )
-
-            assertEquals(
-                actual = capturedRecordId.receive(),
-                expected = donor.recordId
-            )
-        }
-    }
 }

@@ -34,17 +34,21 @@ package care.data4life.datadonation.integration
 
 import care.data4life.datadonation.Client
 import care.data4life.datadonation.DataDonationSDK
+import care.data4life.datadonation.ResultPipe
 import care.data4life.datadonation.consent.consentdocument.ConsentDocumentError
 import care.data4life.datadonation.consent.consentdocument.resolveConsentDocumentKoinModule
 import care.data4life.datadonation.consent.userconsent.resolveConsentKoinModule
 import care.data4life.datadonation.di.resolveRootModule
+import care.data4life.datadonation.networking.AccessToken
 import care.data4life.datadonation.networking.plugin.resolveKtorPlugins
 import care.data4life.datadonation.networking.resolveNetworking
 import care.data4life.datadonation.session.resolveSessionKoinModule
 import care.data4life.sdk.util.test.coroutine.runBlockingTest
+import care.data4life.sdk.util.test.coroutine.testCoroutineContext
 import care.data4life.sdk.util.test.ktor.HttpMockClientFactory.createMockClientWithResponse
 import io.ktor.client.engine.mock.respond
 import io.ktor.http.HttpStatusCode
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
@@ -82,7 +86,8 @@ class ClientConsentFlowIosModuleTest {
             modules(
                 resolveRootModule(
                     DataDonationSDK.Environment.DEVELOPMENT,
-                    UserSessionTokenProvider
+                    UserSessionTokenProvider,
+                    CoroutineScope(testCoroutineContext)
                 ),
                 resolveNetworking(),
                 resolveKtorPlugins(),
@@ -124,9 +129,8 @@ class ClientConsentFlowIosModuleTest {
     private object UserSessionTokenProvider : DataDonationSDK.UserSessionTokenProvider {
         const val sessionToken = "sessionToken"
 
-        override fun getUserSessionToken(
-            onSuccess: (sessionToken: String) -> Unit,
-            onError: (error: Exception) -> Unit
-        ) { onSuccess(sessionToken) }
+        override fun getUserSessionToken(pipe: ResultPipe<AccessToken, Throwable>) {
+            pipe.onSuccess(sessionToken)
+        }
     }
 }

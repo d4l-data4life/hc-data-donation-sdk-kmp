@@ -89,12 +89,12 @@ internal class DonationController(
             token = token,
             consentDocumentKey = program.configuration.consentDocumentKey,
             donorPublicKey = donorIdentity.publicKey,
-            donationServicePublicKey = publicKeys.donationService
+            donationServicePublicKey = publicKeys.donationKeyBase64Encoded
         )
 
         return donationService.register(
             signedConsent,
-            publicKeys.donationService
+            publicKeys.donationKeyBase64Encoded
         )
     }
 }
