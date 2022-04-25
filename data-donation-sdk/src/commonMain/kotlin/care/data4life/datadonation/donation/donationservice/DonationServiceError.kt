@@ -14,16 +14,15 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.donation.donationserivce.model
+package care.data4life.datadonation.donation.donationservice
 
-import care.data4life.datadonation.donation.donationserivce.DonorId
-import care.data4life.datadonation.donation.donationserivce.Token
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import care.data4life.sdk.lang.D4LRuntimeException
 
-@Serializable
-internal data class RegistrationRequest(
-    val token: Token,
-    @SerialName("donorID")
-    val donorId: DonorId
-)
+sealed class DonationServiceError(
+    open val httpStatus: Int
+) : D4LRuntimeException() {
+    class UnexpectedFailure(override val httpStatus: Int) : DonationServiceError(httpStatus)
+    class BadRequest : DonationServiceError(400)
+    class Unauthorized : DonationServiceError(401)
+    class InternalServer : DonationServiceError(500)
+}

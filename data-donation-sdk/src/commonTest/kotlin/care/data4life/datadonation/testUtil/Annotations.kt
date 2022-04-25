@@ -14,14 +14,14 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.donation.donationserivce.model
+package care.data4life.datadonation.testUtil
 
-import care.data4life.datadonation.donation.donationserivce.SerializedJson
-import care.data4life.datadonation.donation.donationserivce.Signature
-import kotlinx.serialization.Serializable
+import kotlin.reflect.KClass
 
-@Serializable
-internal data class SignedConsentMessage(
-    val consentMessageJSON: SerializedJson,
-    val signature: Signature
-)
+expect abstract class AbstractRunner
+expect abstract class ParentRunner<T> : AbstractRunner
+expect class FrameworkMethod
+expect open class BlockClassRunner : ParentRunner<FrameworkMethod>
+expect open class SandboxTestRunner : BlockClassRunner
+expect class RobolectricTestRunner : SandboxTestRunner
+expect annotation class RunWith(val value: KClass<out AbstractRunner>)

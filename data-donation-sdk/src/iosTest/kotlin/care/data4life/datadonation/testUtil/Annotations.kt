@@ -14,18 +14,22 @@
  * contact D4L by email to help@data4life.care.
  */
 
-package care.data4life.datadonation.donation.donationserivce.model
+package care.data4life.datadonation.testUtil
 
-import care.data4life.datadonation.donation.donationserivce.DonationServiceContract
-import care.data4life.datadonation.donation.donationserivce.DonorId
-import care.data4life.datadonation.donation.donationserivce.UUID
-import kotlinx.serialization.Contextual
-import kotlinx.serialization.SerialName
+import kotlin.reflect.KClass
 
-internal data class RevocationMessage(
-    @SerialName("donorID")
-    val donorId: DonorId,
-    @Contextual
-    val revocationType: DonationServiceContract.RevocationType,
-    val uuid: UUID
-)
+abstract class AbstractNoop
+abstract class NoopParent<T> : AbstractNoop()
+class NoopFramework
+open class NoopBlock : NoopParent<NoopFramework>()
+open class NoopSandBox : NoopBlock()
+class NoopRunner : NoopSandBox()
+annotation class NoopRunWith(val value: KClass<out AbstractRunner>)
+
+actual typealias AbstractRunner = AbstractNoop
+actual typealias FrameworkMethod = NoopFramework
+actual typealias ParentRunner<T> = NoopParent<T>
+actual typealias BlockClassRunner = NoopBlock
+actual typealias SandboxTestRunner = NoopSandBox
+actual typealias RobolectricTestRunner = NoopRunner
+actual typealias RunWith = NoopRunWith
