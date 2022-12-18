@@ -53,6 +53,7 @@ kotlin {
                 // Path to .def file
                 defFile("$projectDir/src/nativeInterop/cinterop/DataDonationCryptoObjC.def")
                 includeDirs(libraryPath)
+                compilerOpts("-DNS_FORMAT_ARGUMENT(A)=")
             }
         }
 
@@ -64,6 +65,7 @@ kotlin {
                 // Path to .def file
                 defFile("$projectDir/src/nativeInterop/cinterop/DataDonationCryptoObjC.def")
                 includeDirs.headerFilterOnly(libraryPath)
+                compilerOpts("-DNS_FORMAT_ARGUMENT(A)=")
             }
         }
 
@@ -90,6 +92,7 @@ kotlin {
                 // Path to .def file
                 defFile("$projectDir/src/nativeInterop/cinterop/DataDonationCryptoObjC.def")
                 includeDirs(libraryPath)
+                compilerOpts("-DNS_FORMAT_ARGUMENT(A)=")
             }
         }
 
@@ -101,6 +104,7 @@ kotlin {
                 // Path to .def file
                 defFile("$projectDir/src/nativeInterop/cinterop/DataDonationCryptoObjC.def")
                 includeDirs(libraryPath)
+                compilerOpts("-DNS_FORMAT_ARGUMENT(A)=")
             }
         }
 
